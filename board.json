@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 109,
+  "sequence": 110,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -20,12 +20,12 @@
         "verification/project-audit/2026-11-20-integration.json",
         "verification/project-audit/integration/"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "claimed_at": "2026-11-20T16:10:26+00:00",
-      "updated_at": "2026-11-20T16:17:43+00:00",
-      "note": "12 порций объединены в рабочей ветке, 35 шагов ПК и 17 M32R прошли. Обновляю общий снимок и карточки с точными границами; окончательная компоновка всех новых функций и выпуск BIN ещё открыты.",
-      "result": null
+      "updated_at": "2026-11-20T16:21:14+00:00",
+      "note": "Опубликовано объединение 12 порций с повторными ПК/M32R проверками, свежим аудитом и картой памяти. 226 исходных и 48 доказательных хешей совпали с Git-архивом. Оба рабочих BIN ещё отсутствуют; границы явно записаны.",
+      "result": "952658bff619a36f4921d637a2f0efae621f416d"
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -1271,9 +1271,17 @@
       "action": "claim",
       "claim_id": "a16c78536102430583d910e97b8385d3",
       "at": "2026-11-20T16:20:52+00:00"
+    },
+    {
+      "operation_id": "4c651fefa4774ef2826ac0c7c487a2ff",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "review",
+      "claim_id": "68c8347a91944cb3929878ea53cc9204",
+      "at": "2026-11-20T16:21:14+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:20:52+00:00",
+  "updated_at": "2026-11-20T16:21:14+00:00",
   "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {
