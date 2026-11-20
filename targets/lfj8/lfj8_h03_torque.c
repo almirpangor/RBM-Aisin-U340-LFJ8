@@ -84,24 +84,28 @@ static bool admits_level(Lfj8TorqueProfile profile, unsigned level)
     return level > 0u && level < 8u && (profile.levels & (1u << level)) != 0u;
 }
 
+static const Lfj8TorqueProfile *shift_profile(const Lfj8TorqueCalibration *cal, unsigned from, unsigned to)
+{
+    if (!cal || from < 1u || from > 4u || to < 1u || to > 4u) {
+        return NULL;
+    }
+    if (from + 1u == to) {
+        return &cal->up[from - 1u];
+    }
+    if (to + 1u == from) {
+        return &cal->down[to - 1u];
+    }
+    return NULL;
+}
+
 static void begin(Lfj8H03Torque *link, const Lfj8TorqueInput *input,
                   const Lfj8TorqueCalibration *cal, uint32_t now_us)
 {
     unsigned from = input->demand.from_gear;
     unsigned to = input->demand.to_gear;
-    const Lfj8TorqueProfile *profile;
-    if (!cal || input->observed_gear != from || from < 1u || from > 4u ||
-        to < 1u || to > 4u) {
-        return;
-    }
-    if (from + 1u == to) {
-        profile = &cal->up[from - 1u];
-    } else if (to + 1u == from) {
-        profile = &cal->down[to - 1u];
-    } else {
-        return;
-    }
-    if (!admits_level(*profile, input->demand.level) || profile->reduction_q8 < 1u ||
+    const Lfj8TorqueProfile *profile = shift_profile(cal, from, to);
+    if (!profile || input->observed_gear != from ||
+        !admits_level(*profile, input->demand.level) || profile->reduction_q8 < 1u ||
         profile->reduction_q8 > 64u || profile->duration < 1u || profile->duration > 30u ||
         !link->have_status || now_us - link->last_status_at >= STATUS_MAX_AGE ||
         link->status_reduction || (link->status_phase >= 1u && link->status_phase <= 3u)) {
@@ -165,12 +169,16 @@ void lfj8_h03_torque_poll(Lfj8H03Torque *link, const Lfj8TorqueInput *input,
     bool is_fresh = fresh(input, now_us);
     bool eligible = is_fresh && permitted(input);
     if (running(link)) {
+        const Lfj8TorqueProfile *profile = shift_profile(cal, link->from_gear, link->to_gear);
+        const bool same_profile = profile && profile->levels == link->profile.levels &&
+                                  profile->reduction_q8 == link->profile.reduction_q8 &&
+                                  profile->duration == link->profile.duration;
         bool same_demand = is_fresh && input->demand.active && input->demand.from_gear == link->from_gear &&
                            input->demand.to_gear == link->to_gear &&
                            admits_level(link->profile, input->demand.level);
         bool timed_out = now_us - (link->have_ack ? link->progress_at : link->started_at) >= PROGRESS_TIMEOUT;
-        if (!eligible || !cal || timed_out || !same_demand || elapsed >= duration) {
-            release(link, timed_out || !eligible || !cal, now_us);
+        if (!eligible || !same_profile || timed_out || !same_demand || elapsed >= duration) {
+            release(link, timed_out || !eligible || !same_profile, now_us);
         }
     }
     if (link->phase == LFJ8_TORQUE_RELEASING && now_us - link->release_at >= RELEASE_TIMEOUT) {
