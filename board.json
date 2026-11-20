@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 733,
+  "sequence": 734,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -270,26 +270,24 @@
       "based_on_reviews": []
     },
     "MODE-02": {
-      "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
-      "label": "Codex MODE-02 — квалифицированная ручная цель",
-      "branch": "codex/mode02-qualified-target-892d",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "label": "Codex MODE-02 — конфликт Tiptronic между событиями Toyota",
+      "branch": "codex/mode02-chord-1121-c7e4",
       "files": [
-        "targets/lfj8/check_h03_toyota_source.py",
-        "targets/lfj8/lfj8_h03_input_binding.c",
-        "targets/lfj8/lfj8_h03_input_binding.h",
         "targets/lfj8/lfj8_range_control.c",
-        "targets/lfj8/lfj8_range_control.h",
         "targets/lfj8/test_lfj8_h03_input_binding.c",
         "targets/lfj8/test_lfj8_h03_toyota_source.c",
-        "verification/project-audit/mode02-qualified-manual-target.md"
+        "verification/project-audit/mode02-h03-conflict-recovery.md"
       ],
-      "stage": "review",
-      "claim_id": "cda1c6bb3edf45bd993ee765cf29e055",
-      "claimed_at": "2026-11-20T21:53:04+00:00",
-      "updated_at": "2026-11-20T22:04:39+00:00",
-      "note": "Нативный источник take_toyota исполнил адаптер MODE-02/03 с квалификацией, удержанием и отзывом цели. ПК 41 этап/179 тестов, входы ПК/M32R, нативный TML0 и AN2/P1DATA, 22+8 M32R, 6 размещённых групп. +692 байта Flash, +8 RAM. Старый check_h03_link воспроизводимо падает и на чистой main. Требуются финальная rbm_h03_target_take_toyota, поставщики driver/range/load и измеренные карта/OD/срок цели. Отчёт verification/project-audit/mode02-qualified-manual-target.md.",
-      "result": "5d793be878e4b3732133535f3255609bc7c44dd3",
-      "based_on_reviews": []
+      "stage": "in_progress",
+      "claim_id": "4a65fba7869f4e4b9d9ae39ae27d33a4",
+      "claimed_at": "2026-11-20T22:42:45+00:00",
+      "updated_at": "2026-11-20T22:42:45+00:00",
+      "note": "Продолжаю 5d793be: удерживаю запрет после одновременных плюс/минус до подтверждённого отпускания обоих, включая конфликт между событиями Toyota. Профиль ADC и OD не меняю.",
+      "result": null,
+      "based_on_reviews": [
+        "cda1c6bb3edf45bd993ee765cf29e055"
+      ]
     },
     "TOY-05": {
       "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
@@ -9431,9 +9429,37 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "e88594f04e104cc3b40342e1290737fd",
+      "task": "MODE-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "claim",
+      "claim_id": "4a65fba7869f4e4b9d9ae39ae27d33a4",
+      "at": "2026-11-20T22:42:45+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex MODE-02 — конфликт Tiptronic между событиями Toyota",
+        "branch": "codex/mode02-chord-1121-c7e4",
+        "files": [
+          "targets/lfj8/lfj8_range_control.c",
+          "targets/lfj8/test_lfj8_h03_input_binding.c",
+          "targets/lfj8/test_lfj8_h03_toyota_source.c",
+          "verification/project-audit/mode02-h03-conflict-recovery.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "4a65fba7869f4e4b9d9ae39ae27d33a4",
+        "claimed_at": "2026-11-20T22:42:45+00:00",
+        "updated_at": "2026-11-20T22:42:45+00:00",
+        "note": "Продолжаю 5d793be: удерживаю запрет после одновременных плюс/минус до подтверждённого отпускания обоих, включая конфликт между событиями Toyota. Профиль ADC и OD не меняю.",
+        "result": null,
+        "based_on_reviews": [
+          "cda1c6bb3edf45bd993ee765cf29e055"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:42:30+00:00",
+  "updated_at": "2026-11-20T22:42:45+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
