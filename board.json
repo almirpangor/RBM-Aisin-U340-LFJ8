@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 385,
+  "sequence": 386,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -148,11 +148,11 @@
         "targets/lfj8/test_lfj8_h03_nvm.c",
         "verification/project-audit/dtc04-h03-nvm.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "df8ec9e7df1a4383b71e3070e9462547",
       "claimed_at": "2026-11-20T18:06:13+00:00",
-      "updated_at": "2026-11-20T18:16:11+00:00",
-      "note": "Передаю интегратору геометрию 13 блоков H03, полусловный backend журнала и восстановление перед запуском. ПК 37 шагов и 102 теста, M32R 45 прерываний записи, 33 стирания и 256 битовых отказов, INTEGRATION3 native и components PASS. Expanded повторил дефицит 448 байт. Носитель, физический драйвер и штатный вызов открыты. Отчёт verification/project-audit/dtc04-h03-nvm.md.",
+      "updated_at": "2026-11-20T18:35:09+00:00",
+      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
       "result": "e54b8051439965f4274969e46af534d4d98284db"
     },
     "H03-02": {
@@ -3651,9 +3651,17 @@
       "action": "claim",
       "claim_id": "941f259113e042a39db21686bc935bc8",
       "at": "2026-11-20T18:34:34+00:00"
+    },
+    {
+      "operation_id": "7e8191a6d0554095805f02f6c5e3827f",
+      "task": "DTC-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "df8ec9e7df1a4383b71e3070e9462547",
+      "at": "2026-11-20T18:35:09+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:34:34+00:00",
+  "updated_at": "2026-11-20T18:35:09+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
