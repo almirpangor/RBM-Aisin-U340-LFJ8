@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 327,
+  "sequence": 328,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -144,25 +144,21 @@
     },
     "DTC-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex — подтверждение долговечной очистки DTC",
-      "branch": "codex/dtc04-durable-clear-32e6ac79",
+      "label": "Codex — геометрия NVM и backend DTC H03",
+      "branch": "codex/dtc04-h03-nvm-32e6ac79",
       "files": [
-        "diagnostics/chery_dtc.c",
-        "diagnostics/chery_dtc.h",
-        "diagnostics/chery_dtc_can.c",
-        "diagnostics/chery_dtc_can.h",
-        "diagnostics/chery_dtc_link.c",
-        "diagnostics/chery_dtc_link.h",
-        "diagnostics/test_chery_dtc_journal.c",
-        "diagnostics/test_chery_dtc_link.c",
-        "verification/project-audit/dtc04-durable-clear.md"
+        "targets/lfj8/check_h03_nvm.py",
+        "targets/lfj8/lfj8_h03_nvm.c",
+        "targets/lfj8/lfj8_h03_nvm.h",
+        "targets/lfj8/test_lfj8_h03_nvm.c",
+        "verification/project-audit/dtc04-h03-nvm.md"
       ],
-      "stage": "done",
-      "claim_id": "08c2265b7b3d431fb60bc73ce5c54109",
-      "claimed_at": "2026-11-20T16:38:27+00:00",
-      "updated_at": "2026-11-20T17:39:02+00:00",
-      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
-      "result": "acd7d12c2e65cbb521331b175365aa2ae8ffc343"
+      "stage": "in_progress",
+      "claim_id": "df8ec9e7df1a4383b71e3070e9462547",
+      "claimed_at": "2026-11-20T18:06:13+00:00",
+      "updated_at": "2026-11-20T18:06:13+00:00",
+      "note": "Уточняю геометрию и ограничения NVM по H03 и Renesas. Реализую программный запуск журнала и долговечную запись через подтверждённый носитель с проверкой прерванных операций, без назначения непроверенных адресов.",
+      "result": null
     },
     "H03-02": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -3200,9 +3196,17 @@
       "action": "claim",
       "claim_id": "9a8289b65d604e5dabe669d1c94e2dba",
       "at": "2026-11-20T18:05:58+00:00"
+    },
+    {
+      "operation_id": "b5bd7077d29440acaebd68f69a4f1ad8",
+      "task": "DTC-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "df8ec9e7df1a4383b71e3070e9462547",
+      "at": "2026-11-20T18:06:13+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:05:58+00:00",
+  "updated_at": "2026-11-20T18:06:13+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
