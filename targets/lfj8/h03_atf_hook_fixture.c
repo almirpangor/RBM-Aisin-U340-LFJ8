@@ -2,6 +2,7 @@
 #include "lfj8_h03_atf_target.h"
 
 volatile Lfj8H03Atf rbm_h03_atf_state;
+volatile uint8_t rbm_h03_tml0_1mhz_qualified;
 volatile uint32_t atf_fixture_adc_us = 100;
 volatile uint32_t atf_fixture_publish_us = 102;
 volatile uint32_t atf_fixture_clock_fail;
@@ -24,14 +25,17 @@ static uint32_t read_psw(void)
     return psw;
 }
 
-int rbm_h03_atf_now_us(uint32_t *now_us)
+int __real_rbm_h03_atf_now_us(uint32_t *now_us);
+
+int __wrap_rbm_h03_atf_now_us(uint32_t *now_us)
 {
     atf_fixture_irq_enabled |= read_psw() & 0x40u;
-    if (atf_fixture_clock_fail & clock_stage) {
-        return 0;
-    }
-    *now_us = clock_us;
-    return 1;
+    const uint32_t failure = atf_fixture_clock_fail & clock_stage;
+    rbm_h03_tml0_1mhz_qualified = failure != 1u;
+    *(volatile uint8_t *)0x800203 = failure == 2u ? 8u : 9u;
+    *(volatile uint8_t *)0x8003EB = failure == 4u ? 0u : 1u;
+    *(volatile uint32_t *)0x8003E0 = clock_us;
+    return __real_rbm_h03_atf_now_us(now_us);
 }
 
 void __real_rbm_h03_atf_adc_callback(void);

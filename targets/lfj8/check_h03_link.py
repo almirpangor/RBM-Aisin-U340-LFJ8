@@ -63,7 +63,8 @@ DTC_ROOTS = (
 CAN_EXTENSION_FILES = ("lfj8_h03_torque.c", "lfj8_h03_dtc_can.c", "lfj8_h03_dtc_rx_queue.c",
                        "lfj8_h03_torque_can.c", "ta2005_engine_qualifier.c", "lfj8_h03_cycle.c",
                        "lfj8_h03_phase_clock.c", "lfj8_h03_phase_startup.c",
-                       "lfj8_h03_engine_feed.c", "lfj8_h03_can13.c")
+                       "lfj8_h03_engine_feed.c", "lfj8_h03_can13.c",
+                       "lfj8_h03_atf_feed.c")
 CAN_EXTENSION_ROOTS = (
     "lfj8_h03_torque_demand", "lfj8_h03_torque_init", "lfj8_h03_torque_poll",
     "lfj8_h03_torque_tx_done", "lfj8_h03_torque_receive", "lfj8_h03_torque_applied",
@@ -77,6 +78,7 @@ CAN_EXTENSION_ROOTS = (
     "lfj8_h03_phase_clock_init", "lfj8_h03_phase_clock_release", "lfj8_h03_phase_clock_take",
     "lfj8_h03_phase_startup", "lfj8_h03_takeover_check_phase", "lfj8_h03_takeover_take_phase",
     "lfj8_h03_engine_feed_task2", "lfj8_h03_can13_init", "lfj8_h03_can13_poll",
+    "lfj8_h03_atf_feed",
 )
 S01_LINK_TABLES = (
     ("learning_001C3C", 800, "8276650f90e31262d21eca82fd06ce04c9ed0456b74c9456cebf2b11b0b9fd5b"),
@@ -231,7 +233,7 @@ def stage_test(stage, engine_payloads):
     can_extension = [HERE / name for name in (*CAN_EXTENSION_FILES, "test_lfj8_h03_torque.c",
                     "test_lfj8_h03_dtc_can.c", "test_lfj8_h03_dtc_rx_queue.c", "test_lfj8_h03_torque_can.c",
                     "test_ta2005_engine_qualifier.c", "test_lfj8_h03_cycle.c", "test_lfj8_h03_phase_clock.c",
-                    "test_lfj8_h03_engine_feed.c", "test_lfj8_h03_can13.c")]
+                    "test_lfj8_h03_engine_feed.c", "test_lfj8_h03_can13.c", "test_lfj8_h03_atf_feed.c")]
     for item in (*sources, *headers, *dtc_inputs, *can_extension, HERE / "host_check.c", HERE / "test_lfj8_h03_atf.c",
                  HERE / "test_lfj8_h03_mmio.c", HERE / "test_lfj8_gear_observer.c",
                  HERE / "lfj8_h03_outputs.c", HERE / "test_lfj8_h03_outputs.c",
@@ -415,6 +417,7 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
         component_tests = [
             ("lfj8_io", "host_check.c", ("bridge.o",)),
             ("h03_atf", "test_lfj8_h03_atf.c", ("compact.o",)),
+            ("h03_atf_feed", "test_lfj8_h03_atf_feed.c", ("compact.o", "lfj8_h03_atf_feed.o")),
             ("h03_mmio", "test_lfj8_h03_mmio.c", ("compact.o",)),
             ("gear_observer", "test_lfj8_gear_observer.c", ("compact.o",)),
             ("h03_output_plan", "test_lfj8_h03_outputs.c", ("compact.o",)),
