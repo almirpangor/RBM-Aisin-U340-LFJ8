@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "sequence": 1,
+  "claims": {
+    "ORG-01": {
+      "owner": "codex-coordination-27a510e",
+      "label": "Текущий чат — совместная работа Codex",
+      "branch": "main",
+      "files": [
+        ".github/",
+        "AGENTS.md",
+        "README.md",
+        "data/project-tasks.json",
+        "docs/decisions.md",
+        "docs/multi-chat.md",
+        "docs/project-map.md",
+        "tests/test_project_status.py",
+        "tests/test_task_coordination.py",
+        "tools/project_status.py",
+        "tools/task_coordination.py",
+        "verification/project-audit/"
+      ],
+      "stage": "in_progress",
+      "claim_id": "640a773925544cfd8486c913f6839c07",
+      "claimed_at": "2026-11-20T15:30:42+00:00",
+      "updated_at": "2026-11-20T15:30:42+00:00",
+      "note": "Публикую аудит и настраиваю общий учёт задач, занятости файлов и проверки нескольких чатов.",
+      "result": null
+    }
+  },
+  "events": [
+    {
+      "operation_id": "3227994eabd6495ebaada16c0198b7e3",
+      "task": "ORG-01",
+      "owner": "codex-coordination-27a510e",
+      "action": "claim",
+      "claim_id": "640a773925544cfd8486c913f6839c07",
+      "at": "2026-11-20T15:30:42+00:00"
+    }
+  ],
+  "updated_at": "2026-11-20T15:30:42+00:00",
+  "main_commit": "27a510e17771a541ac6ecd27f4c4856a8c965ca6",
+  "catalog": [
+    {
+      "id": "ORG-01",
+      "title": "Основа проекта и локальная работа",
+      "status": "closed"
+    },
+    {
+      "id": "TOY-01",
+      "title": "Перенос ядра и единое состояние Toyota",
+      "status": "model"
+    },
+    {
+      "id": "TOY-02",
+      "title": "Подтверждённая нагрузка двигателя для Toyota",
+      "status": "open"
+    },
+    {
+      "id": "TOY-03",
+      "title": "Независимые разрешающие сигналы диапазона",
+      "status": "open"
+    },
+    {
+      "id": "TOY-04",
+      "title": "Полная последовательность переключений",
+      "status": "open"
+    },
+    {
+      "id": "TOY-05",
+      "title": "Обучение и сохранение адаптаций",
+      "status": "open"
+    },
+    {
+      "id": "TOY-06",
+      "title": "Блокировка гидротрансформатора SLU",
+      "status": "open"
+    },
+    {
+      "id": "CAN-01",
+      "title": "Форматы CAN и квалификация RPM/ОЖ",
+      "status": "model"
+    },
+    {
+      "id": "CAN-02",
+      "title": "Общий диспетчер CAN13",
+      "status": "model"
+    },
+    {
+      "id": "CAN-03",
+      "title": "Штатный запуск, IRQ и восстановление CAN0",
+      "status": "open"
+    },
+    {
+      "id": "CAN-04",
+      "title": "Запрос снижения момента по RB",
+      "status": "model"
+    },
+    {
+      "id": "CAN-05",
+      "title": "Полнота штатного обмена Chery",
+      "status": "open"
+    },
+    {
+      "id": "ECU-01",
+      "title": "Проверочная сборка Bosch E4M3",
+      "status": "model"
+    },
+    {
+      "id": "ECU-02",
+      "title": "Калибровка момента и работа двигателя",
+      "status": "measure"
+    },
+    {
+      "id": "H03-01",
+      "title": "Выбранная основа 9E1C и карта подключения",
+      "status": "closed"
+    },
+    {
+      "id": "H03-02",
+      "title": "S51, S83 и температура ATF",
+      "status": "model"
+    },
+    {
+      "id": "H03-03",
+      "title": "Единое расписание и запуск приложения H03",
+      "status": "open"
+    },
+    {
+      "id": "H03-04",
+      "title": "Память, стек и сервисные пути",
+      "status": "open"
+    },
+    {
+      "id": "H03-05",
+      "title": "SLT, силовые выходы и реакция на отказ",
+      "status": "measure"
+    },
+    {
+      "id": "IO-01",
+      "title": "Два дополнительных реле",
+      "status": "deferred"
+    },
+    {
+      "id": "VSS-01",
+      "title": "Точный расчёт VSS и скорость по CAN",
+      "status": "model"
+    },
+    {
+      "id": "VSS-02",
+      "title": "Кинематика и параметры реальной скорости",
+      "status": "measure"
+    },
+    {
+      "id": "PANEL-01",
+      "title": "Импульсы Bosch на приборную панель",
+      "status": "deferred"
+    },
+    {
+      "id": "MODE-01",
+      "title": "Логика шести положений и кнопок",
+      "status": "model"
+    },
+    {
+      "id": "MODE-02",
+      "title": "Подключение селектора, Tiptronic и Overdrive",
+      "status": "open"
+    },
+    {
+      "id": "MODE-03",
+      "title": "Окончательная политика режимов",
+      "status": "open"
+    },
+    {
+      "id": "SRC-01",
+      "title": "Реестр происхождения и контроль исходников",
+      "status": "closed"
+    },
+    {
+      "id": "AUD-01",
+      "title": "Программный аудит истории E4M3",
+      "status": "closed"
+    },
+    {
+      "id": "DTC-01",
+      "title": "Прикладной сеанс и статусы Chery",
+      "status": "model"
+    },
+    {
+      "id": "DTC-02",
+      "title": "Штатный приём BasicCAN для диагностического сеанса",
+      "status": "open"
+    },
+    {
+      "id": "DTC-03",
+      "title": "Все диагностические события и соответствия Toyota/Chery",
+      "status": "open"
+    },
+    {
+      "id": "DTC-04",
+      "title": "Хранение DTC после выключения питания",
+      "status": "open"
+    },
+    {
+      "id": "REL-01",
+      "title": "Два целевых BIN и воспроизводимый комплект",
+      "status": "open"
+    },
+    {
+      "id": "REL-02",
+      "title": "Приёмка новой связки на оборудовании",
+      "status": "measure"
+    }
+  ]
+}
