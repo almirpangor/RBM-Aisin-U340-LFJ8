@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 217,
+  "sequence": 218,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -212,12 +212,12 @@
         "targets/lfj8/lfj8_h03_atf_fault.h",
         "verification/project-audit/dtc03-h03-atf-monitor.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "d048f56f20764374915133ea2b7bbcde",
       "claimed_at": "2026-11-20T16:39:32+00:00",
-      "updated_at": "2026-11-20T16:45:21+00:00",
-      "note": "20 проверок пройдены. Включаю адаптер в штатную сборку H03 и её манифест. Общий реестр остаётся у интегратора.",
-      "result": null
+      "updated_at": "2026-11-20T16:47:24+00:00",
+      "note": "Передаю интегратору адаптер штатного статуса ATF H03. Код встроен в перемещаемый мост, 20 сценариев и 2 отрицательные проверки M32R, ПК 35 шагов/71 тест, H03 link 17 компонентов PASS. Отчёт verification/project-audit/dtc03-h03-atf-monitor.md. Четыре файла кода внести в общий аудит при приёмке и выполнить complete после публикации main. Штатный вызов, отображение P0710 и стенд открыты.",
+      "result": "d487840ba2505064c7f281305a10813cbdf3b695"
     },
     "TOY-02": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -2284,9 +2284,17 @@
       "action": "review",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "at": "2026-11-20T16:47:15+00:00"
+    },
+    {
+      "operation_id": "7e97756d1cee4788adb9006ce6dc5efd",
+      "task": "DTC-03",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "review",
+      "claim_id": "d048f56f20764374915133ea2b7bbcde",
+      "at": "2026-11-20T16:47:24+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:47:15+00:00",
+  "updated_at": "2026-11-20T16:47:24+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
