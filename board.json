@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 474,
+  "sequence": 475,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -191,11 +191,11 @@
         "diagnostics/verify_atf_circuit.py",
         "verification/project-audit/dtc03-ta2005-p0710.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "0c37e0c652cd4b8285cdd4458b796cef",
       "claimed_at": "2026-11-20T18:18:10+00:00",
-      "updated_at": "2026-11-20T18:25:56+00:00",
-      "note": "Передаю переносимый P0710: 6920 сравнений с S03, отдельные тесты ПК/M32R, общая регрессия ПК и комплекты H03 M32R прошли. Результат в verification/project-audit/dtc03-ta2005-p0710.md. Подключение к H03 ждёт подтверждённых диапазонов датчика, опоры и периода вызова. Аппаратная проверка открыта.",
+      "updated_at": "2026-11-20T19:25:07+00:00",
+      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
       "result": "69ccd6c59ad096fd2e1de078955cef8ae6ee1081"
     },
     "TOY-02": {
@@ -4352,9 +4352,17 @@
       "action": "complete",
       "claim_id": "59327b6eafdb4bdcac7a920397975731",
       "at": "2026-11-20T19:24:47+00:00"
+    },
+    {
+      "operation_id": "19f9135a35194ad2a7ca421e66cffa55",
+      "task": "DTC-03",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "complete",
+      "claim_id": "0c37e0c652cd4b8285cdd4458b796cef",
+      "at": "2026-11-20T19:25:07+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:24:47+00:00",
+  "updated_at": "2026-11-20T19:25:07+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
