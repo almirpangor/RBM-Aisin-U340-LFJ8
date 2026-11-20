@@ -23,6 +23,7 @@ typedef struct {
     Ta2005EngineQualifier qualifier;
     CheryDtcState dtc;
     RbmU340eQualifiedEngineFeed feed;
+    Lfj8H03CanOwner owner;
     uint32_t now_us;
     uint16_t timestamp;
     uint16_t status;
@@ -30,6 +31,7 @@ typedef struct {
     uint8_t data[2 * SLOT_SIZE];
     unsigned lock_depth;
     unsigned clock_reads;
+    bool tml0_ready;
 } Fixture;
 
 static const Ta2005EngineQualificationContext context = {
@@ -368,6 +370,99 @@ static void check_shared_model_snapshot(void)
     assert(!fixture.feed.coherent && fixture.clock_reads == at_refusal);
 }
 
+static Fixture *clock_fixture;
+
+static int target_clock(uint32_t *now_us)
+{
+    assert(clock_fixture->lock_depth != 0u);
+    if (!clock_fixture->tml0_ready) {
+        return 0;
+    }
+    *now_us = clock_fixture->now_us;
+    return 1;
+}
+
+static void check_target_owner_and_tml0(void)
+{
+    Fixture fixture = {
+        .owner = {.initialized = true, .setup_generation = UINT32_MAX},
+        .now_us = UINT32_MAX - 1u, .timestamp = UINT16_MAX - 1u,
+    };
+    clock_fixture = &fixture;
+    const Lfj8RegisterIo io = registers(&fixture);
+    const Lfj8H03EngineFeedTarget target = {
+        .rx = &fixture.receiver, .qualifier = &fixture.qualifier, .dtc = &fixture.dtc,
+        .io = &io, .can_owner = &fixture.owner, .now_us = target_clock,
+    };
+    chery_dtc_init(&fixture.dtc);
+    fixture.dtc.history[2] = RPM_BIT;
+    assert(!lfj8_h03_engine_feed_target_init(&target, 0, 30));
+    assert(lfj8_h03_engine_feed_target_init(&target, FRAME_MAX_AGE, 30));
+    assert(fixture.receiver.generation_source == &fixture.owner.setup_generation);
+    assert(fixture.dtc.history[2] == RPM_BIT);
+
+    /* The pending generation has not been admitted by the CAN owner. */
+    fixture.owner.grant = 1u;
+    fixture.tml0_ready = true;
+    lfj8_h03_engine_feed_target_poll(&target);
+    assert(!fixture.clock_reads && !fixture.slots[0] && !fixture.slots[1]);
+
+    fixture.owner.admitted_generation = UINT32_MAX;
+    fixture.tml0_ready = false;
+    lfj8_h03_engine_feed_target_poll(&target);
+    assert(!fixture.clock_reads && !fixture.slots[0] && !fixture.slots[1]);
+    fixture.tml0_ready = true;
+    Lfj8H03EngineModelSample model;
+    assert(lfj8_h03_engine_feed_target_task2(&target, &context, false,
+                &fixture.feed, &model) == TA2005_ENGINE_EVALUATED);
+    expect_model(model, LFJ8_H03_MODEL_INHIBITED, 0xff, 0xff, 0xff);
+    assert(fixture.slots[0] == 0x40u && fixture.slots[1] == 0x40u);
+
+    const uint8_t payload[] = {0x12, 0xc0, 0x21, 0x32, 0, 0x43, 0, 0};
+    next_release(&fixture, 3u, payload);
+    /* The RX-only call advances the clock without consuming a debounce step. */
+    lfj8_h03_engine_feed_target_poll(&target);
+    next_release(&fixture, 0u, NULL);
+    assert(lfj8_h03_engine_feed_target_task2(&target, &context, false,
+                &fixture.feed, &model) == TA2005_ENGINE_EVALUATED);
+    expect_model(model, LFJ8_H03_MODEL_EVALUATE, 0x21, 0x32, 0x43);
+    assert(fixture.now_us == 0u && fixture.timestamp == 0u);
+    assert(fixture.feed.fa62 == 9600u && fixture.feed.f9b8 == 137u);
+
+    next_release(&fixture, 3u, payload);
+    fixture.owner.grant = 0u;
+    fixture.owner.setup_generation = 0u;
+    const unsigned before_reset = fixture.clock_reads;
+    assert(lfj8_h03_engine_feed_target_task2(&target, &context, false,
+                &fixture.feed, &model) == TA2005_ENGINE_EVALUATED);
+    expect_model(model, LFJ8_H03_MODEL_INHIBITED, 0xff, 0xff, 0xff);
+    assert(fixture.feed.fa62 == 0u && fixture.feed.f9b8 == 87u);
+    assert(fixture.receiver.last_generation == 0u && fixture.clock_reads == before_reset);
+    assert(fixture.slots[0] == 0x41u && fixture.slots[1] == 0x41u);
+
+    memset(fixture.slots, 0, sizeof(fixture.slots));
+    fixture.owner.admitted_generation = 0u;
+    fixture.owner.grant = 1u;
+    assert(lfj8_h03_engine_feed_target_task2(&target, &context, false,
+                &fixture.feed, &model) == TA2005_ENGINE_EVALUATED);
+    expect_model(model, LFJ8_H03_MODEL_INHIBITED, 0xff, 0xff, 0xff);
+    next_release(&fixture, 3u, payload);
+    assert(lfj8_h03_engine_feed_target_task2(&target, &context, false,
+                &fixture.feed, &model) == TA2005_ENGINE_EVALUATED);
+    expect_model(model, LFJ8_H03_MODEL_EVALUATE, 0x21, 0x32, 0x43);
+    assert(fixture.feed.fa62 == 9600u && fixture.feed.f9b8 == 137u);
+
+    /* Losing time also revokes RX when no coherent Task 2 context is ready. */
+    fixture.tml0_ready = false;
+    const unsigned before_clock_loss = fixture.clock_reads;
+    assert(!lfj8_h03_engine_feed_target_task2(&target, NULL, false, &fixture.feed, &model));
+    expect_model(model, LFJ8_H03_MODEL_NOT_EVALUATED, 0xff, 0xff, 0xff);
+    assert(!fixture.feed.coherent && fixture.receiver.discontinuity);
+    assert(fixture.receiver.phase == LFJ8_H03_RX_WAIT_FOR_OEM);
+    assert(fixture.clock_reads == before_clock_loss && fixture.lock_depth == 0u);
+    assert(fixture.dtc.history[2] == RPM_BIT && fixture.dtc.current[2] == 0u);
+}
+
 int main(void)
 {
     check_timeout_and_history();
@@ -375,8 +470,10 @@ int main(void)
     check_outage_between_releases();
     check_shared_model_snapshot();
     check_generation_change();
+    check_target_owner_and_tml0();
     puts("H03 qualified engine feed and Chery clear/fault/recovery passed");
     puts("H03 shared model snapshot: common RX poll, wrap, expiry, inhibit and recovery passed");
     puts("H03 engine RX: generation rollover, stale slot rejection and reattachment passed");
+    puts("H03 engine target: CAN owner admission, shared clock, inter-release poll and revocation passed");
     return 0;
 }

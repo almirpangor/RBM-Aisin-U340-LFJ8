@@ -2,6 +2,7 @@
 #define RBM_LFJ8_H03_ENGINE_FEED_H
 
 #include "chery_dtc.h"
+#include "lfj8_h03_can_owner.h"
 #include "lfj8_h03_engine_rx.h"
 #include "ta2005_engine_qualifier.h"
 
@@ -50,5 +51,34 @@ unsigned lfj8_h03_engine_feed_task2_with_model(Lfj8H03EngineRx *rx,
     Ta2005EngineQualifier *qualifier, CheryDtcState *dtc, const Lfj8RegisterIo *io,
     uint32_t now_us, uint8_t slots_owned, const Ta2005EngineQualificationContext *context,
     bool inhibit_history, RbmU340eQualifiedEngineFeed *feed, Lfj8H03EngineModelSample *model);
+
+typedef struct {
+    Lfj8H03EngineRx *rx;
+    Ta2005EngineQualifier *qualifier;
+    CheryDtcState *dtc;
+    const Lfj8H03CanOwner *can_owner;
+    const Lfj8RegisterIo *io;
+    int (*now_us)(uint32_t *now_us);
+} Lfj8H03EngineFeedTarget;
+
+/* Startup binds the existing storage to h03_can_owner, lfj8_h03_mmio and
+ * rbm_h03_atf_now_us. Run with the application gate closed. The application
+ * owns initialization of CAN and shared DTC state. A CAN-only setup/recovery
+ * does not rerun this initializer or clear diagnostic history. */
+int lfj8_h03_engine_feed_target_init(const Lfj8H03EngineFeedTarget *target,
+                                     uint16_t max_age_ticks, uint16_t max_poll_gap_us);
+
+/* Single application foreground owner. Poll between Task 2 releases when
+ * required by max_poll_gap_us. A qualified time, matching admitted CAN
+ * generation and live owner grant are checked under the H03 interrupt lock.
+ * The receive driver separately checks ownership and hardware of slots 11/12. */
+void lfj8_h03_engine_feed_target_poll(const Lfj8H03EngineFeedTarget *target);
+
+/* Called once per eligible Task 2 release, after CAN owner service. Pass
+ * the current cycle input's engine field as feed. This is input qualification
+ * only. Recheck application and CAN admission before issuing outputs. */
+unsigned lfj8_h03_engine_feed_target_task2(const Lfj8H03EngineFeedTarget *target,
+    const Ta2005EngineQualificationContext *context, bool inhibit_history,
+    RbmU340eQualifiedEngineFeed *feed, Lfj8H03EngineModelSample *model);
 
 #endif
