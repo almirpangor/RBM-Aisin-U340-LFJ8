@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 136,
+  "sequence": 137,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -125,12 +125,12 @@
         "targets/lfj8/check_h03_service_isolation.py",
         "verification/project-audit/h03-service-ram-spans.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "a16c78536102430583d910e97b8385d3",
       "claimed_at": "2026-11-20T16:20:52+00:00",
-      "updated_at": "2026-11-20T16:24:42+00:00",
-      "note": "На прежней карте ни один из кандидатов не входил в исключённое монитором окно. Обновил ветку до 952658b и повторяю проверки по 2380 байтам и обновлённым связям.",
-      "result": null
+      "updated_at": "2026-11-20T16:27:39+00:00",
+      "note": "Передаю интегратору. 35 сценариев допуска, все 2380 байт актуальных кандидатов покрыты разрешёнными интервалами; процедуры записи не запускались. STORAGE, M32R, NATIVE и Python PASS. Отчёт h03-service-ram-spans.md. Изоляция прямых/отложенных сервисных записей, запуск и владение RAM открыты.",
+      "result": "e4ac4b09967f7edf86cf2c1911218ba34e260b24"
     },
     "DTC-04": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -1541,9 +1541,17 @@
       "action": "review",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "at": "2026-11-20T16:27:16+00:00"
+    },
+    {
+      "operation_id": "163d0fc4144d42f19eae7b04f4317c07",
+      "task": "H03-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "a16c78536102430583d910e97b8385d3",
+      "at": "2026-11-20T16:27:39+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:27:16+00:00",
+  "updated_at": "2026-11-20T16:27:39+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
