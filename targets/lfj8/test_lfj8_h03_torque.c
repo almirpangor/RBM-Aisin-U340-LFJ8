@@ -223,6 +223,53 @@ static void test_admission(void)
     assert(link.phase == LFJ8_TORQUE_FAILED && can.submitted == 1); /* Do not cancel a foreign pulse. */
 }
 
+static void test_profile_revocation(const Lfj8TorqueCalibration *replacement, bool start_pending)
+{
+    Lfj8H03Torque link;
+    CanFixture can = {0};
+    FactoryHydraulics gp = initial_gp();
+    Lfj8TorqueCalibration equivalent = bench_profile;
+    equivalent.down[0] = bench_profile.up[1]; /* A different pair does not affect this shift. */
+    const uint32_t start = 1000u;
+    const uint32_t revoked_at = start + 20000u;
+
+    lfj8_h03_torque_init(&link);
+    assert(status(&link, start - 1u, 0, 0, 0, 0, 0, 0));
+    tick(&link, &gp, start - 1u, &bench_profile, &can);
+    request_donor_upshift(&gp);
+    tick(&link, &gp, start, &bench_profile, &can);
+    assert(can.submitted == 1 && can.frame[1] == 1);
+    if (!start_pending) {
+        lfj8_h03_torque_tx_done(&link, true, start);
+        assert(status(&link, start + 2000u, 1, 2, 7, 1, 32, 0));
+        tick(&link, &gp, start + 3000u, &equivalent, &can);
+        assert(lfj8_h03_torque_applied(&link, start + 3000u));
+    }
+
+    tick(&link, &gp, revoked_at, replacement, &can);
+    assert(!lfj8_h03_torque_applied(&link, revoked_at));
+    assert(link.phase == LFJ8_TORQUE_RELEASING && link.failed);
+    if (start_pending) {
+        assert(can.submitted == 1); /* The accepted START still owns the transmitter. */
+        lfj8_h03_torque_tx_done(&link, true, revoked_at);
+        assert(status(&link, revoked_at, 1, 2, 7, 1, 32, 0));
+        assert(!lfj8_h03_torque_applied(&link, revoked_at));
+        tick(&link, &gp, revoked_at, &bench_profile, &can);
+    }
+
+    const uint8_t cancel[] = {0xa4, 0, 2, 0, 0, 1, 0};
+    assert(can.submitted == 2 && !memcmp(can.frame, cancel, sizeof cancel));
+    lfj8_h03_torque_tx_done(&link, true, revoked_at + 1u);
+    assert(status(&link, revoked_at + 1000u, 1, 0, 7, 2, 0, 8));
+    assert(link.phase == LFJ8_TORQUE_FAILED);
+
+    /* Restoring the profile cannot start another pulse for the same demand. */
+    const uint32_t later = start + 600000u;
+    assert(status(&link, later, 1, 0, 7, 2, 0, 8));
+    tick(&link, &gp, later, &bench_profile, &can);
+    assert(can.submitted == 2);
+}
+
 static int bosch_fixture(void)
 {
     Lfj8H03Torque link;
@@ -274,6 +321,19 @@ int main(int argc, char **argv)
     test_full_dialogue();
     test_loss();
     test_admission();
+    const Lfj8TorqueCalibration disabled = {0};
+    Lfj8TorqueCalibration changed = bench_profile;
+    test_profile_revocation(&disabled, true);
+    test_profile_revocation(&disabled, false);
+    changed.up[1].reduction_q8 = 16;
+    test_profile_revocation(&changed, false);
+    changed = bench_profile;
+    changed.up[1].duration = 10;
+    test_profile_revocation(&changed, false);
+    changed = bench_profile;
+    changed.up[1].levels |= 1u << 4;
+    test_profile_revocation(&changed, false);
+    test_profile_revocation(NULL, false);
     puts("H03 shift torque provenance, protocol and release passed.");
     return 0;
 }

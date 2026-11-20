@@ -104,6 +104,33 @@ class ControlsTests(unittest.TestCase):
         self.assertIsNone(conflicting.shift)
         self.assertEqual(conflicting.mode, DriveMode.AUTO)
 
+    def test_opposite_shift_conflicts_while_the_first_button_is_held(self) -> None:
+        for first, opposite, requested in (
+            (Buttons(up=True), Buttons(down=True), ShiftRequest.DOWN),
+            (Buttons(down=True), Buttons(up=True), ShiftRequest.UP),
+        ):
+            with self.subTest(first=first):
+                controls = DriverControls(starting_mode=DriveMode.TIPTRONIC, debounce_ms=5)
+                controls.sample(0, Buttons())
+                controls.sample(1, first)
+                self.assertIsNotNone(controls.sample(6, first).shift)
+
+                both = Buttons(up=True, down=True)
+                self.assertFalse(controls.sample(7, both).simultaneous_shift_inputs)
+                for now in (12, 13):
+                    conflict = controls.sample(now, both)
+                    self.assertTrue(conflict.simultaneous_shift_inputs)
+                    self.assertIsNone(conflict.shift)
+
+                self.assertTrue(controls.sample(14, opposite).simultaneous_shift_inputs)
+                released = controls.sample(19, opposite)
+                self.assertFalse(released.simultaneous_shift_inputs)
+                self.assertIsNone(released.shift)
+                controls.sample(20, Buttons())
+                controls.sample(25, Buttons())
+                controls.sample(26, opposite)
+                self.assertEqual(controls.sample(31, opposite).shift, requested)
+
     def test_time_cannot_run_backwards(self) -> None:
         controls = DriverControls(starting_mode=DriveMode.AUTO, debounce_ms=0)
         controls.sample(10, Buttons())
