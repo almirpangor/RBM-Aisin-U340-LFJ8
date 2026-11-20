@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 626,
+  "sequence": 627,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -418,8 +418,8 @@
       "stage": "in_progress",
       "claim_id": "8824637391444f7588fd41404c923798",
       "claimed_at": "2026-11-20T20:42:57+00:00",
-      "updated_at": "2026-11-20T20:42:57+00:00",
-      "note": "Включил b48c663. Проверяю границы времени живого S51 и отсутствие привязки в передатчике. Защищаю 0x1AE от некорректного окна импульсов до сужения. Шкала, CAN13 и физическая калибровка прежние.",
+      "updated_at": "2026-11-20T20:47:16+00:00",
+      "note": "Регрессия подтверждена на b48c663. Исправленный мост прошёл PC и сборку M32R, модель владельца CAN прошла. Запущены общие проверки и компоновка.",
       "result": null,
       "based_on_reviews": [
         "d9e48d584c644fbf9f3cde053b8b8c41"
@@ -6251,9 +6251,37 @@
           "15e6e783e4d74a5b9c000d3658becff0"
         ]
       }
+    },
+    {
+      "operation_id": "ba4d3f28410d44a889eb3c95df6cd227",
+      "task": "VSS-01",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "heartbeat",
+      "claim_id": "8824637391444f7588fd41404c923798",
+      "at": "2026-11-20T20:47:16+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex VSS-01 — допуск времени и окна S51 для 0x1AE",
+        "branch": "codex/vss01-tml0-timing-admission-32e6ac79",
+        "files": [
+          "targets/lfj8/host_check.c",
+          "targets/lfj8/lfj8_chery_tx.c",
+          "targets/lfj8/lfj8_chery_tx.h",
+          "verification/project-audit/vss01-tml0-timing-admission.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "8824637391444f7588fd41404c923798",
+        "claimed_at": "2026-11-20T20:42:57+00:00",
+        "updated_at": "2026-11-20T20:47:16+00:00",
+        "note": "Регрессия подтверждена на b48c663. Исправленный мост прошёл PC и сборку M32R, модель владельца CAN прошла. Запущены общие проверки и компоновка.",
+        "result": null,
+        "based_on_reviews": [
+          "d9e48d584c644fbf9f3cde053b8b8c41"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:44:17+00:00",
+  "updated_at": "2026-11-20T20:47:16+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
