@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 721,
+  "sequence": 722,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -204,12 +204,12 @@
         "targets/lfj8/lfj8_h03_dtc_target.h",
         "verification/project-audit/dtc03-atf-clock-admission.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "3f58920fee114fad9045abc0e99a8a9b",
       "claimed_at": "2026-11-20T21:58:07+00:00",
-      "updated_at": "2026-11-20T22:01:26+00:00",
-      "note": "Подключил rbm_h03_atf_now_us к приёму и публикации P0710. M32R прошёл 20 OEM и 20 целевых сценариев; проверяю сборку и совместимость с main.",
-      "result": null,
+      "updated_at": "2026-11-20T22:06:50+00:00",
+      "note": "P0710 использует квалифицированный TML0 в захвате AN1 и CAN foreground; потеря времени отбрасывает снимок до перепривязки. M32R 20+20, 18 BasicCAN, PC 41 шаг и 179 тестов. Ошибка проверки S01 воспроизводится на main, прогон с добавленным корнем прошёл. Для общей композиции нужны целевой профиль ATF и стенд.",
+      "result": "98192034cc9888b95800f8f3b916a744172cc4ea",
       "based_on_reviews": []
     },
     "TOY-02": {
@@ -9066,9 +9066,36 @@
         "result": "f32c6159ef0a28848bafdf5cb1bd64cfdf80a03e",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "772c173047be4e42bc59eabaa23c3a9c",
+      "task": "DTC-03",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "3f58920fee114fad9045abc0e99a8a9b",
+      "at": "2026-11-20T22:06:50+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-03 — допуск времени P0710",
+        "branch": "codex/dtc03-atf-clock-admission-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_atf_fault.py",
+          "targets/lfj8/h03_atf_fault_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_dtc_target.c",
+          "targets/lfj8/lfj8_h03_dtc_target.h",
+          "verification/project-audit/dtc03-atf-clock-admission.md"
+        ],
+        "stage": "review",
+        "claim_id": "3f58920fee114fad9045abc0e99a8a9b",
+        "claimed_at": "2026-11-20T21:58:07+00:00",
+        "updated_at": "2026-11-20T22:06:50+00:00",
+        "note": "P0710 использует квалифицированный TML0 в захвате AN1 и CAN foreground; потеря времени отбрасывает снимок до перепривязки. M32R 20+20, 18 BasicCAN, PC 41 шаг и 179 тестов. Ошибка проверки S01 воспроизводится на main, прогон с добавленным корнем прошёл. Для общей композиции нужны целевой профиль ATF и стенд.",
+        "result": "98192034cc9888b95800f8f3b916a744172cc4ea",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:06:17+00:00",
+  "updated_at": "2026-11-20T22:06:50+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -10800,6 +10827,27 @@
       "based_on_reviews": [],
       "task": "H03-05",
       "submitted_at": "2026-11-20T22:06:17+00:00"
+    },
+    "3f58920fee114fad9045abc0e99a8a9b": {
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex DTC-03 — допуск времени P0710",
+      "branch": "codex/dtc03-atf-clock-admission-7bd19ea4",
+      "files": [
+        "targets/lfj8/check_h03_atf_fault.py",
+        "targets/lfj8/h03_atf_fault_hook_fixture.c",
+        "targets/lfj8/lfj8_h03_dtc_target.c",
+        "targets/lfj8/lfj8_h03_dtc_target.h",
+        "verification/project-audit/dtc03-atf-clock-admission.md"
+      ],
+      "stage": "review",
+      "claim_id": "3f58920fee114fad9045abc0e99a8a9b",
+      "claimed_at": "2026-11-20T21:58:07+00:00",
+      "updated_at": "2026-11-20T22:06:50+00:00",
+      "note": "P0710 использует квалифицированный TML0 в захвате AN1 и CAN foreground; потеря времени отбрасывает снимок до перепривязки. M32R 20+20, 18 BasicCAN, PC 41 шаг и 179 тестов. Ошибка проверки S01 воспроизводится на main, прогон с добавленным корнем прошёл. Для общей композиции нужны целевой профиль ATF и стенд.",
+      "result": "98192034cc9888b95800f8f3b916a744172cc4ea",
+      "based_on_reviews": [],
+      "task": "DTC-03",
+      "submitted_at": "2026-11-20T22:06:50+00:00"
     }
   }
 }
