@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 216,
+  "sequence": 217,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -50,12 +50,12 @@
         "verification/project-audit/dtc02-native-rx-hook.md",
         "verification/project-audit/dtc02-preclear-capture.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:43:59+00:00",
-      "note": "Реализована единая выборка RX14/15 с порядком по CAN timestamp. Семь сценариев на ПК и M32R прошли, включая сеанс 10 86 перед 17 FF 00, оборот, переполнение, потерю и BusOff. Повторяю общие проверки.",
-      "result": null
+      "updated_at": "2026-11-20T16:47:15+00:00",
+      "note": "Парный выбор RX14/15 по общей CAN-метке: ранний кадр первым, при равенстве RX15. Сеанс 10 86 перед 17 FF 00 через CAN13 и семь групп ПК/M32R PASS. ПК 35/71, M32R link 17, OEM 15 пар. Очередь 172 байта. Доказательства verification/project-audit/dtc02-basiccan-order.md. Штатная привязка, полный стек и стенд открыты.",
+      "result": "de7fc1060b4cb1ff1918a544932424b93a1d6b7d"
     },
     "CAN-03": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -2276,9 +2276,17 @@
       "action": "review",
       "claim_id": "69a90e88e1b54af298f0f4e5760e308f",
       "at": "2026-11-20T16:47:07+00:00"
+    },
+    {
+      "operation_id": "6e7a6d30e0e0454d88010827f5c655eb",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:47:15+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:47:07+00:00",
+  "updated_at": "2026-11-20T16:47:15+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
