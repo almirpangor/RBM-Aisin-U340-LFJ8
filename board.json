@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 15,
+  "sequence": 16,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -96,6 +96,21 @@
       "claimed_at": "2026-11-20T15:50:42+00:00",
       "updated_at": "2026-11-20T15:50:42+00:00",
       "note": "Добавляю проверку комплекта из двух целевых BIN и сверяю доступность сборок.",
+      "result": null
+    },
+    "H03-03": {
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex — foreground H03",
+      "branch": "codex/h03-03-foreground-01a1f99f",
+      "files": [
+        "docs/lfj8-h03-control-cycle.md",
+        "verification/e4m3-can-9e1c/h03-foreground.json"
+      ],
+      "stage": "in_progress",
+      "claim_id": "ef041474d8994309836820d6cd886071",
+      "claimed_at": "2026-11-20T15:51:48+00:00",
+      "updated_at": "2026-11-20T15:51:48+00:00",
+      "note": "Воспроизвожу штатный foreground и документирую границу интеграции.",
       "result": null
     }
   },
@@ -219,9 +234,17 @@
       "action": "claim",
       "claim_id": "38bcfd017d9a4719a6054450645d79ab",
       "at": "2026-11-20T15:50:42+00:00"
+    },
+    {
+      "operation_id": "ddc7a7030a15427289f5475a895d281b",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "ef041474d8994309836820d6cd886071",
+      "at": "2026-11-20T15:51:48+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:50:42+00:00",
+  "updated_at": "2026-11-20T15:51:48+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
