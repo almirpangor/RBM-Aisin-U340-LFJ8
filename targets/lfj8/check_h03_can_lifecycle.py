@@ -54,11 +54,11 @@ def check(base, compiler):
         version = run(compiler, "--version").decode().splitlines()[0]
         simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")
         results = []
-        for path, site, tail_end, initial, status, expected in (
-            ("startup", 0x00B7D0, 0x00B800, 0, 0, 6),
-            ("recovery_in_reset", 0x00B878, 0x00B8CC, 3, 0x0100, 4),
-            ("recovery_reset_released", 0x00B878, 0x00B8CC, 3, 0, 7),
-            ("recovery_bus_off_in_shadow", 0x00B878, 0x00B8CC, 3, 0x4000, 7),
+        for path, site, tail_end, initial, status, expected, mask, slot13 in (
+            ("startup", 0x00B7D0, 0x00B800, 0, 0, 6, 0x8007, 0),
+            ("recovery_in_reset", 0x00B878, 0x00B8CC, 3, 0x0100, 4, 0x8003, 0x80),
+            ("recovery_reset_released", 0x00B878, 0x00B8CC, 3, 0, 7, 0x8003, 0x40),
+            ("recovery_bus_off_in_shadow", 0x00B878, 0x00B8CC, 3, 0x4000, 7, 0x8003, 0x81),
         ):
             original_call = rom[site:site + 4]
             target = site + 4 * int.from_bytes(original_call[1:], "big", signed=True)
@@ -81,11 +81,12 @@ def check(base, compiler):
                 for wrapped in (0, 1):
                     run(compiler, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,test.ld",
                         f"-DTEST_STATE={initial}", f"-DTEST_STATUS={status}",
+                        f"-DTEST_MASK={mask}", f"-DTEST_SLOT13={slot13}",
                         f"-DRUN_TAIL={tail}", f"-DWRAPPED={wrapped}", "fixture.S", "-o", "sim.elf")
                     stdout = run(simulator, "--memory-size", "16M", "sim.elf")
-                    if len(stdout) != 248:
+                    if len(stdout) != 280:
                         raise ValueError(f"Incomplete snapshot for {path}: {len(stdout)} bytes")
-                    variants.append(struct.unpack(">31I", bytes.fromhex(stdout.decode("ascii"))))
+                    variants.append(struct.unpack(">35I", bytes.fromhex(stdout.decode("ascii"))))
                 stock, wrapped = variants
                 if stock[:24] != wrapped[:24]:
                     raise ValueError(f"Wrapper changed OEM state in {path}, tail={tail}")
@@ -96,16 +97,25 @@ def check(base, compiler):
                 if stock[17:24] != (8 if tail else 9, status, expected if tail else initial,
                                     0x40, 0, 0, 0x809F9C):
                     raise ValueError(f"Unexpected OEM controller values in {path}: {stock[17:24]}")
-                if stock[24:] != (0,) * 7 or wrapped[24:] != (1, 9, status, initial, 0, 0, TEST_SP - 16):
+                if stock[24:31] != (0,) * 7 or wrapped[24:31] != (1, 9, status, initial, 0, 0, TEST_SP - 16):
                     raise ValueError(f"Unexpected observation of the post-BAF4 point in {path}")
+                if stock[31:33] != wrapped[31:33]:
+                    raise ValueError(f"Wrapper changed OEM slot 13 state in {path}, tail={tail}")
+                if stock[33:] != (0, 0) or wrapped[33:] != (mask, 0):
+                    raise ValueError(f"Unexpected mask/control at the observer in {path}: {wrapped[33:]}")
+                if stock[31:33] != (mask, 0):
+                    raise ValueError(f"Unexpected mask/control after OEM in {path}: {stock[31:33]}")
             results.append({
                 "path": path,
                 "call": f"0x{site:06X}",
                 "return": f"0x{site + 4:06X}",
                 "call_bytes": original_call.hex().upper(),
+                "before_oem": {"can0slimk": mask, "slot13_msc": slot13},
                 "at_observer": {"can0cnt": 9, "can0stat": status, "oem_state": initial,
-                                "slot11_msc": 0, "slot12_msc": 0},
-                "after_oem_tail": {"can0cnt": 8, "can0stat": status, "oem_state": expected},
+                                "slot11_msc": 0, "slot12_msc": 0,
+                                "can0slimk": mask, "slot13_msc": 0},
+                "after_oem_tail": {"can0cnt": 8, "can0stat": status, "oem_state": expected,
+                                   "can0slimk": mask, "slot13_msc": 0},
             })
     return {
         "base": identity,
@@ -116,7 +126,7 @@ def check(base, compiler):
             for name, _, start, end in ROM_FRAGMENTS
         },
         "executed_cases": 4 * len(results),
-        "compared_state": ["R0-R15", "CR0", "CAN0 CNT/STAT in RAM", "three slot control bytes",
+        "compared_state": ["R0-R15", "CR0", "CAN0 CNT/STAT in RAM", "slots 10-13 control bytes", "CAN0SLIMK",
                            "OEM saved-PSW pointer"],
         "observer_own_stack_bytes": 12,
         "implemented_peripheral_behavior": "none; CAN0 register addresses are RAM shadows",
