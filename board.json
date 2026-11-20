@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 502,
+  "sequence": 503,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -361,6 +361,7 @@
       "label": "Codex DTC-01 — срок C0 в foreground H03",
       "branch": "codex/dtc01-h03-session-foreground-7bd19ea4",
       "files": [
+        "targets/lfj8/lfj8_h03_dtc_can.c",
         "targets/lfj8/lfj8_h03_dtc_can.h",
         "targets/lfj8/lfj8_h03_dtc_foreground.c",
         "targets/lfj8/lfj8_h03_dtc_foreground.h",
@@ -372,8 +373,8 @@
       "stage": "in_progress",
       "claim_id": "f6547625e0dd48c180162a7963424191",
       "claimed_at": "2026-11-20T19:38:10+00:00",
-      "updated_at": "2026-11-20T19:38:10+00:00",
-      "note": "Подключаю событие C0 к штатному CAN foreground через уже предусмотренные тики T6. На истечении отзываю TX13 и очищаю ожидающий RX под блокировкой. Проверяю обычный путь через владельца CAN и цель M32R, без аппаратных констант.",
+      "updated_at": "2026-11-20T19:38:45+00:00",
+      "note": "Резервирую также реализацию адаптера DTC CAN. Состояние фазы T6 и закрытие сеанса остаются в том же объекте, что и управление TX13.",
       "result": null
     },
     "VSS-01": {
@@ -4575,9 +4576,17 @@
       "action": "claim",
       "claim_id": "ad997bd677c542c682cec961d4619193",
       "at": "2026-11-20T19:38:33+00:00"
+    },
+    {
+      "operation_id": "0d28edb8c6684effa227a54409a52d0f",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "f6547625e0dd48c180162a7963424191",
+      "at": "2026-11-20T19:38:45+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:38:33+00:00",
+  "updated_at": "2026-11-20T19:38:45+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
