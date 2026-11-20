@@ -89,6 +89,9 @@ fail:
     ldi r1,#1
 finish:
     ldi r0,#1
+    .p2align 2
+    .global fixture_exit
+fixture_exit:
     trap #0
 """
 LAYOUT = """ENTRY(_start)
@@ -100,7 +103,39 @@ SECTIONS {
   .text 0x60000 : { *(.text .text.*) *(.rodata .rodata.*) }
   .data 0x100000 : { *(.data .data.*) }
   .bss : { *(.bss .bss.*) }
+  h03_phase_wait_ticks = fixture_ticks;
+  ASSERT(h03_phase_wait_ticks % 4 == 0, "The wait clock needs word alignment")
+  ASSERT(h03_phase_wait_interval_ticks > 0 && h03_phase_wait_interval_ticks <= 0xffffff,
+         "Invalid wait interval")
 }
+"""
+
+
+POLL_INTERVAL = 2
+TICK_DRIVER = """
+set confirm off
+target sim --memory-size 16M
+load
+set $samples = 0
+break *rbm_h03_phase_wait_tick_sample
+commands
+  silent
+  set $samples = $samples + 1
+  if $samples > 32
+    printf "TICK DRIVER LIMIT\\n"
+    quit
+  end
+  if $samples % 2 == 0
+    set variable fixture_ticks = fixture_ticks + 1
+  end
+  if $release_early && $samples == 2
+    set *(unsigned char*)0x804ade = 1
+  end
+  continue
+end
+tbreak *fixture_exit
+run
+printf "RESULT %d %d\\n", $r1, $samples
 """
 
 
@@ -118,31 +153,42 @@ def check(base, compiler):
         (work / "fixture.S").write_text(FIXTURE, encoding="ascii")
         (work / "fixture.ld").write_text(LAYOUT, encoding="ascii")
         (work / "clear.dat").write_bytes(wait_code[CLEAR - WAIT:])
-        simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")
+        (work / "tick-driver.gdb").write_text(TICK_DRIVER, encoding="ascii")
+        debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
         results = []
         sources = [HERE / name for name in (
             "h03_phase_wait_fixture.c", "lfj8_h03_phase_clock.c", "lfj8_h03_takeover.c",
         )]
-        for scenario, name, calls in ((0, "ready", 1), (1, "delayed", 3), (2, "stalled", 5)):
+        for scenario, name, calls, samples in (
+            (0, "ready", 1, 0), (1, "delayed_across_wrap", 3, 8),
+            (2, "stalled", 6, 20), (3, "flag_before_next_poll", 2, 2),
+        ):
             for carry in (0, 1):
                 subprocess.run(
-                    [compiler, "-m32r", "-Wa,-EB", "-mmodel=medium", "-msdata=none", "-std=c99", "-Os", "-Wall", "-Wextra", "-Werror",
+                    [compiler, "-m32r", "-Wa,-EB", "-mmodel=medium", "-msdata=none", "-std=c99", "-Os", "-g",
+                     "-Wall", "-Wextra", "-Werror",
                      "-ffunction-sections", "-fdata-sections", "-nostdlib", "-Wl,--gc-sections,-T,fixture.ld",
                      "-I", CONTROLLER / "include", "-I", CONTROLLER / "vendor" / "toyota" / "include",
                      f"-DSCENARIO={scenario}", f"-DCARRY={carry}",
+                     f"-Wl,--defsym,h03_phase_wait_interval_ticks={POLL_INTERVAL}",
                      "fixture.S", "hook.S", *sources, "-lc", "-lgcc", "-o", "fixture.elf"],
                     cwd=work, check=True, capture_output=True, timeout=15,
                 )
-                try:
-                    subprocess.run([simulator, "--memory-size", "16M", "fixture.elf"],
-                                   cwd=work, check=True, capture_output=True, timeout=15)
-                except subprocess.CalledProcessError as error:
-                    raise ValueError(f"Wait fixture assertions failed: {name}, carry={carry}") from error
+                output = subprocess.run(
+                    [debugger, "--batch", "-nx", "-ex", f"set $release_early = {int(scenario == 3)}",
+                     "-x", "tick-driver.gdb", "fixture.elf"],
+                    cwd=work, check=True, capture_output=True, timeout=15,
+                ).stdout
+                if f"RESULT 0 {samples}".encode("ascii") not in output.splitlines():
+                    raise ValueError(f"Wait fixture failed ({name}, carry={carry}): "
+                                     + output[-1200:].decode(errors="replace"))
                 results.append({"scenario": name, "initial_carry": carry, "callback_calls": calls,
+                                "clock_samples_while_waiting": samples,
                                 "stock_flag_cleared": True, "phase_consumed": scenario != 2,
                                 "command_revoked": scenario == 2})
     return {"base": identity, "wait": f"0x{WAIT:06X}", "stock_clear": f"0x{CLEAR:06X}",
             "native_continuation": f"0x{CONTINUE:06X}", "cases": results,
+            "test_poll_interval_ticks": POLL_INTERVAL, "extra_persistent_ram_bytes": 0,
             "scope": "Real C phase clock and takeover check; synthetic clock, OEM flag and inhibit.",
             "hardware_executed": False, "flashable_image": None}
 

@@ -1,6 +1,8 @@
 /* Candidate for the foreground wait at H03 008150. The platform callback
  * checks deadlines without consuming the phase. It must return with IRQ
- * configuration and PSW control bits intact. */
+ * configuration and PSW control bits intact. The linker supplies an aligned
+ * running 32-bit clock address and an interval in [1, 0xffffff] ticks.
+ * The callback uses the M32R C ABI, including preservation of r8. */
     .text
     .p2align 2
     .global rbm_h03_phase_wait_hook
@@ -14,7 +16,29 @@ rbm_h03_phase_wait_hook:
     push r0
     mvfaclo r0
     push r0
+.Lcheck:
+    ld24 r4,#h03_phase_wait_ticks
+    ld r8,@r4
     bl rbm_h03_phase_wait_callback
+    ld24 r4,#0x804ade
+    ldub r0,@r4
+    bnez r0,.Lready
+
+.Lwait:
+    ldub r0,@r4
+    bnez r0,.Lcheck
+    ld24 r4,#h03_phase_wait_ticks
+    .global rbm_h03_phase_wait_tick_sample
+rbm_h03_phase_wait_tick_sample:
+    ld r0,@r4
+    sub r0,r8
+    ld24 r1,#h03_phase_wait_interval_ticks
+    cmpu r0,r1
+    bnc .Lcheck
+    ld24 r4,#0x804ade
+    bra .Lwait
+
+.Lready:
     pop r0
     mvtaclo r0
     pop r0
@@ -28,6 +52,4 @@ rbm_h03_phase_wait_hook:
     .endr
 
     ld24 r4,#0x804ade
-    ldub r0,@r4
-    beqz r0,rbm_h03_phase_wait_hook
     bra h03_stock_phase_clear

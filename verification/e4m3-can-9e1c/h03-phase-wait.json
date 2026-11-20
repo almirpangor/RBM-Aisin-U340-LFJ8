@@ -12,6 +12,7 @@
       "scenario": "ready",
       "initial_carry": 0,
       "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -20,22 +21,25 @@
       "scenario": "ready",
       "initial_carry": 1,
       "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
     },
     {
-      "scenario": "delayed",
+      "scenario": "delayed_across_wrap",
       "initial_carry": 0,
       "callback_calls": 3,
+      "clock_samples_while_waiting": 8,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
     },
     {
-      "scenario": "delayed",
+      "scenario": "delayed_across_wrap",
       "initial_carry": 1,
       "callback_calls": 3,
+      "clock_samples_while_waiting": 8,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -43,7 +47,8 @@
     {
       "scenario": "stalled",
       "initial_carry": 0,
-      "callback_calls": 5,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
       "stock_flag_cleared": true,
       "phase_consumed": false,
       "command_revoked": true
@@ -51,12 +56,33 @@
     {
       "scenario": "stalled",
       "initial_carry": 1,
-      "callback_calls": 5,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
       "stock_flag_cleared": true,
       "phase_consumed": false,
       "command_revoked": true
+    },
+    {
+      "scenario": "flag_before_next_poll",
+      "initial_carry": 0,
+      "callback_calls": 2,
+      "clock_samples_while_waiting": 2,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "flag_before_next_poll",
+      "initial_carry": 1,
+      "callback_calls": 2,
+      "clock_samples_while_waiting": 2,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
     }
   ],
+  "test_poll_interval_ticks": 2,
+  "extra_persistent_ram_bytes": 0,
   "scope": "Real C phase clock and takeover check; synthetic clock, OEM flag and inhibit.",
   "hardware_executed": false,
   "flashable_image": null
