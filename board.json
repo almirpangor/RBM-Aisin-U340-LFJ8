@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 429,
+  "sequence": 430,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -416,12 +416,12 @@
         "verification/project-audit/2026-11-20-h03-can-revoke-bindings.json",
         "verification/project-audit/h03-05-can-revoke-bindings.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "8618b77e068c469baa54217bf3b2f9f2",
       "claimed_at": "2026-11-20T18:47:57+00:00",
-      "updated_at": "2026-11-20T18:53:05+00:00",
-      "note": "Отзыв CAN и штатный запрет прошли 8 прямых и 12 сценариев холодного запуска и восстановления в M32R. Привязки RAM убрали шесть неопределённых символов из варианта CAN-03. Готовлю проверенную сводку компоновки и результат для объединения.",
-      "result": null
+      "updated_at": "2026-11-20T18:54:35+00:00",
+      "note": "Результат опубликован поверх CAN-03 и REL-02. Отзыв CAN, запрет выходов и девять привязок полей RAM подтверждены в M32R. В компоновке остались rbm_h03_application_binding и rbm_h03_sensor_config. В отчёте есть результаты и условия для итоговой линковки, PCM Flash и стенда.",
+      "result": "df043312dba7646d04e59b21a984bc411da20029"
     },
     "MODE-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -4000,9 +4000,17 @@
       "action": "review",
       "claim_id": "1589bd1e4830453f8a2572f3c6b98ff0",
       "at": "2026-11-20T18:54:16+00:00"
+    },
+    {
+      "operation_id": "35b6651fbc624685b4fa056b0ffbfa9a",
+      "task": "H03-05",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "8618b77e068c469baa54217bf3b2f9f2",
+      "at": "2026-11-20T18:54:35+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:54:16+00:00",
+  "updated_at": "2026-11-20T18:54:35+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
