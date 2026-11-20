@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 288,
+  "sequence": 289,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -232,11 +232,11 @@
         "tools/build_pc_checks.py",
         "verification/project-audit/toy02-cycle-load-gate.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "1377d30e649940088e8dccd1a6fae0cf",
       "claimed_at": "2026-11-20T16:46:49+00:00",
-      "updated_at": "2026-11-20T16:52:23+00:00",
-      "note": "Квалифицированный вход цикла публикует нагрузку до расписания и учитывает старейшую метку; отказ отзывает результат. ПК 37 шагов/71 тест, M32R целевой сценарий +17 компонентов, SIGNALS PASS. Второе окно +168 байт; прежняя точка 720 байт наблюдаемого стека. Интегратору: отчёт verification/project-audit/toy02-cycle-load-gate.md. Источник/шкалы Bosch, бюджет давности и foreground остаются открыты.",
+      "updated_at": "2026-11-20T17:40:25+00:00",
+      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
       "result": "3acdebe7db08758da32805ec04bd77ff9e3ba329"
     },
     "CAN-01": {
@@ -2874,9 +2874,17 @@
       "action": "complete",
       "claim_id": "d048f56f20764374915133ea2b7bbcde",
       "at": "2026-11-20T17:40:03+00:00"
+    },
+    {
+      "operation_id": "b7b9c129e8a74cc99263933564ede7a5",
+      "task": "TOY-02",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "1377d30e649940088e8dccd1a6fae0cf",
+      "at": "2026-11-20T17:40:25+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:40:03+00:00",
+  "updated_at": "2026-11-20T17:40:25+00:00",
   "main_commit": "320b72e41aa4a85815f2db8942f88f7050abb3f0",
   "catalog": [
     {
