@@ -5,7 +5,15 @@
 #include "lfj8_h03_outputs.h"
 #include "lfj8_h03_phase_clock.h"
 
-enum { LFJ8_H03_ALL_SPARE_PWM_ISOLATED = 0x0f };
+enum {
+    LFJ8_H03_PWM_A_ISOLATED = 1u << 0,
+    LFJ8_H03_PWM_B_ISOLATED = 1u << 1,
+    LFJ8_H03_PWM_C_ISOLATED = 1u << 2,
+    LFJ8_H03_PRESSURE_B_ISOLATED = 1u << 3,
+    LFJ8_H03_TIO9_ISOLATED = 1u << 4,
+    LFJ8_H03_ALL_SPARE_PWM_ISOLATED = LFJ8_H03_PWM_A_ISOLATED | LFJ8_H03_PWM_B_ISOLATED |
+        LFJ8_H03_PWM_C_ISOLATED | LFJ8_H03_PRESSURE_B_ISOLATED | LFJ8_H03_TIO9_ISOLATED
+};
 
 typedef struct {
     const Lfj8RegisterIo *io;
@@ -44,7 +52,9 @@ typedef struct {
  * With phase_clock set, clock_ticks uses the phase publication timebase;
  * the I/O lock must also exclude that publisher. A command may advance only
  * after the current phase has been taken and while it is fresh.
- * isolated_pwm_mask is the hardware qualification for unused A/B/C/PC-B. */
+ * Set each isolated_pwm_mask bit after confirming isolation in the target
+ * wiring. The OEM apply callback can drive TIO9/P97 independently of the
+ * A/B/C/Pressure B commands and common inhibit. */
 int lfj8_h03_takeover_init(Lfj8H03Takeover *state, const Lfj8H03TakeoverOps *ops,
                           uint32_t max_age_ticks);
 

@@ -165,6 +165,23 @@ int main(void)
     assert(!lfj8_h03_takeover_init(&state, &ops, 8u));
     assert(!lfj8_h03_takeover_apply(&state, 0u));
     assert(!fixture.inhibits);
+    /* The old mask qualifies A/B/C/Pressure B, leaving TIO9 unconfirmed. */
+    ops.isolated_pwm_mask = 0x0fu;
+    assert(!lfj8_h03_takeover_init(&state, &ops, 8u));
+    assert(!lfj8_h03_takeover_prepare_plan(&state, NULL, 0u, 0u));
+    assert(!lfj8_h03_takeover_apply(&state, 0u));
+    assert(!fixture.applies && !fixture.inhibits);
+    static const uint8_t isolation_bits[] = {
+        LFJ8_H03_PWM_A_ISOLATED, LFJ8_H03_PWM_B_ISOLATED, LFJ8_H03_PWM_C_ISOLATED,
+        LFJ8_H03_PRESSURE_B_ISOLATED, LFJ8_H03_TIO9_ISOLATED,
+    };
+    for (size_t i = 0; i < sizeof(isolation_bits) / sizeof(isolation_bits[0]); ++i) {
+        ops.isolated_pwm_mask = LFJ8_H03_ALL_SPARE_PWM_ISOLATED & (uint8_t)~isolation_bits[i];
+        assert(!lfj8_h03_takeover_init(&state, &ops, 8u));
+        assert(!state.ops && !state.pending);
+    }
+    ops.isolated_pwm_mask = LFJ8_H03_ALL_SPARE_PWM_ISOLATED | 0x80u;
+    assert(!lfj8_h03_takeover_init(&state, &ops, 8u));
     ops.isolated_pwm_mask = LFJ8_H03_ALL_SPARE_PWM_ISOLATED;
     ops.inhibit = NULL;
     assert(!lfj8_h03_takeover_init(&state, &ops, 8u));
