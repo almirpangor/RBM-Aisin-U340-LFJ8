@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 162,
+  "sequence": 163,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -404,12 +404,12 @@
         "targets/lfj8/lfj8_h03_takeover.h",
         "targets/lfj8/test_lfj8_h03_takeover.c"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "claimed_at": "2026-11-20T16:20:38+00:00",
-      "updated_at": "2026-11-20T16:31:43+00:00",
-      "note": "Убрана вложенная блокировка P0745. M32R: 68→52 Б дополнительного стека и 70→47 шагов маскирования с тестовой реакцией; контекст, 20 условий и штатные фазы PASS. Целевой обработчик, измерения IRQ и силовое отключение открыты.",
-      "result": "1beb6de6170e6bd47aa040f08f4c46cd63ad1236"
+      "updated_at": "2026-11-20T16:33:30+00:00",
+      "note": "Расширяю отзыв команды на отдельные электрические флаги D/E/F и проверяю штатное выставление/очистку каждого в M32R.",
+      "result": null
     },
     "MODE-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -1787,9 +1787,17 @@
       "action": "resume",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "at": "2026-11-20T16:33:25+00:00"
+    },
+    {
+      "operation_id": "e5391820c9c34932878fa59236ffeb34",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "resume",
+      "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
+      "at": "2026-11-20T16:33:30+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:33:25+00:00",
+  "updated_at": "2026-11-20T16:33:30+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
