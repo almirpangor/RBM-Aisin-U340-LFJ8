@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T21:27:48+00:00**. Изменение № **683**.
+Обновлено UTC: **2026-11-20T21:33:26+00:00**. Изменение № **684**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -10,7 +10,7 @@
 Нужен tools/task_coordination.py из актуальной main: старые клиенты не записывают формат доски 2.
 Давняя отметка не освобождается автоматически. Возобновившийся чат обязан проверить свой claim_id.
 
-Каталог задач взят из main 55b9a240338ef1cf58da6218e8634450373b9f92.
+Каталог задач взят из main da6b13b337727866a654d7250caa62231889ade5.
 
 | Задача | Ход работы | Текущий / предыдущий чат | Ветка | Обновление UTC | Что делает / результат |
 | --- | --- | --- | --- | --- | --- |
@@ -19,7 +19,7 @@
 | TOY-02 — Подтверждённая нагрузка двигателя для Toyota | Свободна для продолжения | Предыдущий: Codex TOY-02 — нативный режим нагрузки \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/toy02-bosch-load-mode-source-01a1f9c7 | 2026-11-20T21:14:43+00:00 | Предыдущая порция принята. Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit aee80b834830ebf84a5120862b9bd999864a616c |
 | TOY-03 — Независимые разрешающие сигналы диапазона | Свободна для продолжения | Предыдущий: Codex TOY-03 — допуск независимого P/N \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy03-independent-pn-mwp5rm2ofhaxjfi9dss | 2026-11-20T21:14:43+00:00 | Предыдущая порция принята. Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 3f2596f31930203fe9cd7918e9b62f81ea82699c |
 | TOY-04 — Полная последовательность переключений | Свободна для продолжения | Предыдущий: Codex TOY-04 — ручная заявка в цикле \[01a1fa79-892d-7ca3-bb8a-44698892c53e\] | codex/toy04-manual-cycle-892d | 2026-11-20T21:14:43+00:00 | Предыдущая порция принята. Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit c7b0568cde39ddc27e71432e5028db9c9a351e16 |
-| TOY-05 — Обучение и сохранение адаптаций | Выполняется | Codex integration — исходное состояние Toyota \[codex-integration-01a1f76d-20261120\] | codex/integration-01a1f76d-20261120 | 2026-11-20T21:27:48+00:00 | Перенесён S01 cold fallback; добавляю удержание функции в общей компоновке и результаты проверок. |
+| TOY-05 — Обучение и сохранение адаптаций | Свободна для продолжения; порция на проверке | Предыдущий: Codex integration — исходное состояние Toyota \[codex-integration-01a1f76d-20261120\] | codex/integration-01a1f76d-20261120 | 2026-11-20T21:33:26+00:00 | Сдана холодная проекция S01: 258 сравнений 828 байт, ПК/M32R, 6 размещённых групп и 172 теста PASS. Полная композиция 101460 байт, те же 10 unresolved; два рабочих BIN не выпущены. / commit da6b13b337727866a654d7250caa62231889ade5 |
 | TOY-06 — Блокировка гидротрансформатора SLU | Свободна для продолжения | Предыдущий: Codex TOY-06 — штатные выходы H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/toy06-native-lockup-output-01a1f9a2 | 2026-11-20T21:14:43+00:00 | Предыдущая порция принята. Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 4baf99ccd587811223aa05bc44460053dbade903 |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Ожидает данных / решения | Codex CAN-01 — запуск и foreground двигателя H03 \[01a1fa76-b015-7640-a0ba-433b36dcf55f\] | codex/can01-h03-engine-owner-b0157640 | 2026-11-20T20:42:33+00:00 | Локально сохранено подключение CAN-01 к startup/foreground и Task 2, 62 запуска M32R. Для целевой активации нужны rbm_h03_application_binding, rbm_h03_sensor_config, подтверждённые контекст и метки Task 2, пределы возраста CAN и опроса. Ветка и код этой порции не опубликованы. |
 | CAN-02 — Общий диспетчер CAN13 | Свободна для продолжения | Предыдущий: Codex CAN-02 — проверка слота перед отменой TX13 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can02-slot-identity-1121-c7e4 | 2026-11-20T21:14:43+00:00 | Предыдущая порция принята. Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit b6dccd657c7208aef79ac9008a1091677fccff16 |
@@ -56,8 +56,7 @@
 
 | Задача | Автор | Коммит | Claim ID для приёмки | Результат |
 | --- | --- | --- | --- | --- |
-
-Очередь проверки пуста.
+| TOY-05 | Codex integration — исходное состояние Toyota | [da6b13b33772](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/da6b13b337727866a654d7250caa62231889ade5) | 8ca6fc0e24e444f18f58aef003611472 | Сдана холодная проекция S01: 258 сравнений 828 байт, ПК/M32R, 6 размещённых групп и 172 теста PASS. Полная композиция 101460 байт, те же 10 unresolved; два рабочих BIN не выпущены. |
 
 ## Что осталось доделать
 
@@ -68,28 +67,28 @@
 
 | Задача | Сейчас | Следующий шаг | Кому удобно продолжить |
 | --- | --- | --- | --- |
-| [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#h03-03) | Свободна для продолжения | Определение rbm_h03_application_binding уже есть и связано с CAN-адаптером. Остались реальные rbm_h03_target_takeover_ops, startup_gear, startup_gp, engine, ram_owned, clock_ready, initialize, take_toyota и service_phase; согласованный профиль и rbm_h03_sensor_config. Их испытательные поставщики не являются целевой программой. | Чат запуска H03 |
-| [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#can-03) | Свободна для продолжения | Установить все переходы в итоговый образ, связать единственный CAN owner, RAM, очереди и время с приложением; проверить восстановление и окна передачи. | Чат CAN |
-| [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#h03-05) | Свободна для продолжения | Подтвердить силовую карту U340E, полярности, ток–давление SLT, физический канал SLU и реакцию выходов на отказ. | Чат силовых выходов |
-| [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#vss-02) | Свободна для продолжения | Определить rbm_h03_sensor_config по частотам, числу фронтов, рабочему диапазону, возрасту ATF и окну чтения; подтвердить механические параметры скорости. | Чат датчиков |
-| [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#toy-04) | Свободна для продолжения | Связать оставшиеся стадии и входы, провести ручные заявки через гидравлику; проверить R, 2→3, 3→4, понижения и защитные переходы целым целевым циклом. | Чат переключений Toyota |
-| [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#mode-02) | Свободна для продолжения | Подтвердить физическую карту/OD, вызвать захват из H03-03 и проверить селектор и кнопки до фактической выдачи команды. | Чат селектора и кнопок |
-| [DTC-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#dtc-02) | Свободна для продолжения | Установить нижние переходы и единственный DTC target/IRQ binding, связать время и foreground; завершить RAM/Virtual Flash и итоговый диапазон записи. | Чат диагностики |
-| [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#dtc-04) | Свободна для продолжения | Выделить независимые стираемые блоки, реализовать физический драйвер и политику износа, подключить восстановление/очистку к штатному запуску. | Чат постоянной памяти |
-| [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#h03-04) | Свободна для продолжения | Установить окончательные переходы, данные и все недостающие поставщики; включить остальные ASM и сервисную политику в один состав. Подтвердить владение Flash/RAM, полный стек и поведение DMA/SBI/IRQ во всём времени работы. FF и частичное размещение не разрешают выпуск. | Основной чат — общая сборка |
-| [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#toy-02) | Свободна для продолжения | Определить источник и шкалы GP−9046/−8288/−8330 и флаги режимов, включая переходные режимы; подключить квалификацию и отказы. | Основной чат — нагрузка Bosch |
-| [REL-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#rel-01) | Свободна для продолжения | Общий целевой линк останавливается на 10 неопределённых поставщиках: 9 rbm_h03_target_\* и rbm_h03_sensor_config. Требуются реальные входы/выходы, профиль, NVM и итоговая установка всех переходов. После этого собрать и проверить TCM BIN; не переименовывать модель или исходный H03. | Основной чат — выпуск |
+| [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#h03-03) | Свободна для продолжения | Определение rbm_h03_application_binding уже есть и связано с CAN-адаптером. Остались реальные rbm_h03_target_takeover_ops, startup_gear, startup_gp, engine, ram_owned, clock_ready, initialize, take_toyota и service_phase; согласованный профиль и rbm_h03_sensor_config. Их испытательные поставщики не являются целевой программой. Для холодной ветви использовать rbm_u340e_runtime_prepare_s01_cold после квалификации исходного состояния и до restore_adaptation. | Чат запуска H03 |
+| [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#can-03) | Свободна для продолжения | Установить все переходы в итоговый образ, связать единственный CAN owner, RAM, очереди и время с приложением; проверить восстановление и окна передачи. | Чат CAN |
+| [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#h03-05) | Свободна для продолжения | Подтвердить силовую карту U340E, полярности, ток–давление SLT, физический канал SLU и реакцию выходов на отказ. | Чат силовых выходов |
+| [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#vss-02) | Свободна для продолжения | Определить rbm_h03_sensor_config по частотам, числу фронтов, рабочему диапазону, возрасту ATF и окну чтения; подтвердить механические параметры скорости. | Чат датчиков |
+| [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#toy-04) | Свободна для продолжения | Связать оставшиеся стадии и входы, провести ручные заявки через гидравлику; проверить R, 2→3, 3→4, понижения и защитные переходы целым целевым циклом. | Чат переключений Toyota |
+| [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#mode-02) | Свободна для продолжения | Подтвердить физическую карту/OD, вызвать захват из H03-03 и проверить селектор и кнопки до фактической выдачи команды. | Чат селектора и кнопок |
+| [DTC-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#dtc-02) | Свободна для продолжения | Установить нижние переходы и единственный DTC target/IRQ binding, связать время и foreground; завершить RAM/Virtual Flash и итоговый диапазон записи. | Чат диагностики |
+| [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#dtc-04) | Свободна для продолжения | Выделить независимые стираемые блоки, реализовать физический драйвер и политику износа, подключить восстановление/очистку к штатному запуску. | Чат постоянной памяти |
+| [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#h03-04) | Свободна для продолжения | Установить окончательные переходы, данные и все недостающие поставщики; включить остальные ASM и сервисную политику в один состав. Подтвердить владение Flash/RAM, полный стек и поведение DMA/SBI/IRQ во всём времени работы. FF и частичное размещение не разрешают выпуск. | Основной чат — общая сборка |
+| [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#toy-02) | Свободна для продолжения | Определить источник и шкалы GP−9046/−8288/−8330 и флаги режимов, включая переходные режимы; подключить квалификацию и отказы. | Основной чат — нагрузка Bosch |
+| [REL-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#rel-01) | Свободна для продолжения | Общий целевой линк останавливается на 10 неопределённых поставщиках: 9 rbm_h03_target_\* и rbm_h03_sensor_config. Требуются реальные входы/выходы, профиль, NVM и итоговая установка всех переходов. После этого собрать и проверить TCM BIN; не переименовывать модель или исходный H03. | Основной чат — выпуск |
 
 ### Сделано и остаток по каждой незакрытой задаче
 
 <details>
 <summary>H03-03 — Единое расписание и запуск приложения H03: Свободна для продолжения</summary>
 
-**Сделано.** Объединённый результат 21.11.2026: Определён rbm_h03_application_binding, 7 ссылок RAM разрешены в M32R, профиль обязателен. Отдельный ELF прошёл холодный/тёплый старт и foreground; штатная регрессия 56 сценариев/80 IRQ. Восемь поставщиков платформы и измеренные параметры открыты. Отчёт h03-03-native-binding.md.
+**Сделано.** Объединённый результат 21.11.2026: Определён rbm_h03_application_binding, 7 ссылок RAM разрешены в M32R, профиль обязателен. Отдельный ELF прошёл холодный/тёплый старт и foreground; штатная регрессия 56 сценариев/80 IRQ. Восемь поставщиков платформы и измеренные параметры открыты. Отчёт h03-03-native-binding.md. Подготовлена проверенная холодная проекция Toyota; она пока не задаёт все startup GP и не включена автоматически.
 
-**Осталось доделать.** Определение rbm_h03_application_binding уже есть и связано с CAN-адаптером. Остались реальные rbm_h03_target_takeover_ops, startup_gear, startup_gp, engine, ram_owned, clock_ready, initialize, take_toyota и service_phase; согласованный профиль и rbm_h03_sensor_config. Их испытательные поставщики не являются целевой программой.
+**Осталось доделать.** Определение rbm_h03_application_binding уже есть и связано с CAN-адаптером. Остались реальные rbm_h03_target_takeover_ops, startup_gear, startup_gp, engine, ram_owned, clock_ready, initialize, take_toyota и service_phase; согласованный профиль и rbm_h03_sensor_config. Их испытательные поставщики не являются целевой программой. Для холодной ветви использовать rbm_u340e_runtime_prepare_s01_cold после квалификации исходного состояния и до restore_adaptation.
 
-**Следующий шаг.** Определение rbm_h03_application_binding уже есть и связано с CAN-адаптером. Остались реальные rbm_h03_target_takeover_ops, startup_gear, startup_gp, engine, ram_owned, clock_ready, initialize, take_toyota и service_phase; согласованный профиль и rbm_h03_sensor_config. Их испытательные поставщики не являются целевой программой.
+**Следующий шаг.** Определение rbm_h03_application_binding уже есть и связано с CAN-адаптером. Остались реальные rbm_h03_target_takeover_ops, startup_gear, startup_gp, engine, ram_owned, clock_ready, initialize, take_toyota и service_phase; согласованный профиль и rbm_h03_sensor_config. Их испытательные поставщики не являются целевой программой. Для холодной ветви использовать rbm_u340e_runtime_prepare_s01_cold после квалификации исходного состояния и до restore_adaptation.
 
 **Рекомендуемый чат.** Чат запуска H03 — 01a1f99f-5cb5-70e0-afd0-60e6b41a5d51.
 
@@ -97,7 +96,7 @@
 
 **Критерий приёмки.** Полный цикл вызывается автономно, пропуск обнаруживается и без фазы выдачи, тестовые callbacks заменены подтверждёнными целевыми.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#h03-03)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#h03-03)
 
 </details>
 
@@ -116,7 +115,7 @@
 
 **Критерий приёмки.** Штатная ветвь не перезаписывает CAN13, старые кадры не принимаются после сброса, сохранена диагностика и отмена.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#can-03)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#can-03)
 
 </details>
 
@@ -135,7 +134,7 @@
 
 **Критерий приёмки.** Измеренные таблицы в допустимой области питания/ATF, реакция каждого выхода и гидравлики на отказ, отсутствие старой команды после восстановления.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#h03-05)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#h03-05)
 
 </details>
 
@@ -154,7 +153,7 @@
 
 **Критерий приёмки.** Скорость совпадает с эталоном в согласованном диапазоне, потеря импульсов отличается от остановки.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#vss-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#vss-02)
 
 </details>
 
@@ -173,7 +172,7 @@
 
 **Критерий приёмки.** Матрица режимов с ожидаемыми результатами S01 и сквозными трассами. Отдельный тест момента не закрывает всё переключение 2→3.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#toy-04)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#toy-04)
 
 </details>
 
@@ -192,7 +191,7 @@
 
 **Критерий приёмки.** Реальные нажатия проходят до исполнения запроса в полном цикле, дребезг/обрыв не создают повторных команд.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#mode-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#mode-02)
 
 </details>
 
@@ -211,7 +210,7 @@
 
 **Критерий приёмки.** Прогон оригинального пути RX с потерей/перезаписью и ложными кадрами. Учтена граница приложения 0x008000.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#dtc-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#dtc-02)
 
 </details>
 
@@ -230,14 +229,14 @@
 
 **Критерий приёмки.** Перезапуск и прерванная запись не восстанавливают очищенную или повреждённую историю.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#dtc-04)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#dtc-04)
 
 </details>
 
 <details>
 <summary>H03-04 — Память, стек и сервисные пути: Свободна для продолжения</summary>
 
-**Сделано.** Полный объединённый срез: ядро 84470 байт, прежний prefix не проходит; padding-модель исполнила 6 групп. Известные native CAN/датчики/BasicCAN/привязка занимают 101026 байт при явно тестовом профиле; 10 поставщиков не определены. RAM 2728+4 байта. Размещённая сервисная защита: 27+28+512 проверок.
+**Сделано.** После холодной проекции S01: ядро 84904 байта, padding-модель заново прошла 6 групп; известная native-композиция 101460 байт с явно тестовым профилем. Увеличение 434 байта, RAM прежняя 2728+4. Все 10 платформенных определений остаются. Сервисные 27+28+512 проверки — прежний срез.
 
 **Осталось доделать.** Установить окончательные переходы, данные и все недостающие поставщики; включить остальные ASM и сервисную политику в один состав. Подтвердить владение Flash/RAM, полный стек и поведение DMA/SBI/IRQ во всём времени работы. FF и частичное размещение не разрешают выпуск.
 
@@ -247,7 +246,7 @@
 
 **Критерий приёмки.** Карта сборки и анализ всех владельцев, подтверждённый запас стека и измерения. Свободное окно в ELF само по себе не разрешает запись.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#h03-04)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#h03-04)
 
 </details>
 
@@ -264,7 +263,7 @@
 
 **Критерий приёмки.** Трасса происхождения каждого операнда, сравнение с S01 и отдельные переходные режимы. Одного TPS и кадров RPM/ОЖ недостаточно.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#toy-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#toy-02)
 
 </details>
 
@@ -281,7 +280,7 @@
 
 **Критерий приёмки.** Оба образа соответствуют выбранным основам и закрытому объёму первого файла, связаны с исходниками и фактическими результатами проверки.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#rel-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#rel-01)
 
 </details>
 
@@ -296,7 +295,7 @@
 
 **Критерий приёмки.** Результат ограничен перечисленными полями и сценариями приёма.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#can-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#can-01)
 
 </details>
 
@@ -311,7 +310,7 @@
 
 **Критерий приёмки.** Программные тесты не заменяют измерение окон приёма 0x5E9.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#can-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#can-02)
 
 </details>
 
@@ -326,7 +325,7 @@
 
 **Критерий приёмки.** Протокол 0x5E8/0x5E9 является RB. Его успешный тест не означает полного штатного Chery CAN.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#can-04)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#can-04)
 
 </details>
 
@@ -341,7 +340,7 @@
 
 **Критерий приёмки.** Для каждого требуемого поля есть источник, единицы, период, недостоверность и проверенный потребитель. Замена штатного протокола отдельным RB не считается закрытием §3.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#can-05)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#can-05)
 
 </details>
 
@@ -356,7 +355,7 @@
 
 **Критерий приёмки.** Поддержан конкретный профиль CAN C0. Остальные FC/сервисы и K-Line не объявлены реализованными.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#dtc-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#dtc-01)
 
 </details>
 
@@ -371,7 +370,7 @@
 
 **Критерий приёмки.** Код соответствует фактическому отказу и узлу, статусы подтверждены. Отсутствующий прямой аналог явно обозначен.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#dtc-03)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#dtc-03)
 
 </details>
 
@@ -386,7 +385,7 @@
 
 **Критерий приёмки.** Это образ OFFLINE_ONLY, сохранение всех функций двигателя на машине не подтверждено.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#ecu-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#ecu-01)
 
 </details>
 
@@ -401,7 +400,7 @@
 
 **Критерий приёмки.** Протокол с идентифицированными BIN и измеренным результатом. Исторический стенд STM32 не переносит автоматически приёмку на LFJ8.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#ecu-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#ecu-02)
 
 </details>
 
@@ -416,7 +415,7 @@
 
 **Критерий приёмки.** Компоненты не подменяют окончательную установку обработчиков в BIN.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#h03-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#h03-02)
 
 </details>
 
@@ -431,7 +430,7 @@
 
 **Критерий приёмки.** Компонентный requested_gear не равен выполненному гидравлическому переключению.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#mode-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#mode-01)
 
 </details>
 
@@ -446,7 +445,7 @@
 
 **Критерий приёмки.** Политика согласована с донорской логикой и подтверждена матрицей режимов. Тестовые defaults не выдаются за решение владельца.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#mode-03)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#mode-03)
 
 </details>
 
@@ -461,7 +460,7 @@
 
 **Критерий приёмки.** Журналы содержат версии BIN, условия, измерения, допуски и результат. Программные тесты учитываются отдельно.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#rel-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#rel-02)
 
 </details>
 
@@ -476,7 +475,7 @@
 
 **Критерий приёмки.** Программный результат относится к проверенным функциям, а не ко всем режимам АКПП.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#toy-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#toy-01)
 
 </details>
 
@@ -491,22 +490,22 @@
 
 **Критерий приёмки.** Для каждого бита известны источник, шкала времени и реакция на отказ. Проверка P/N не проверяет сама себя.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#toy-03)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#toy-03)
 
 </details>
 
 <details>
-<summary>TOY-05 — Обучение и сохранение адаптаций: Выполняется</summary>
+<summary>TOY-05 — Обучение и сохранение адаптаций: Свободна для продолжения; порция на проверке</summary>
 
-**Сделано.** Объединённый результат 21.11.2026: Восстановление S01/UFL1 подключено к штатному старту H03 до допуска фаз. ПК 41/120, S01/R3 288, M32R 56 запусков (18 новых), 22 native, 18+8 компонентных, 6 размещённых. Отчёт toy05-h03-boot-restore.md. Физический NVM, штатный binding, запись и долговечный сброс ещё открыты.
+**Сделано.** Объединённый результат 21.11.2026: Восстановление S01/UFL1 подключено к штатному старту H03 до допуска фаз. ПК 41/120, S01/R3 288, M32R 56 запусков (18 новых), 22 native, 18+8 компонентных, 6 размещённых. Отчёт toy05-h03-boot-restore.md. Физический NVM, штатный binding, запись и долговечный сброс ещё открыты. Добавлена холодная проекция S01 в общий runtime: 258 сравнений 828 байт с R3, ПК/M32R и размещённый runtime прошли. Она изменяет 143 байта, сохраняет 685 и не заменяет полный начальный снимок.
 
-**Осталось доделать.** Назначить NVM, подключить холодную базу и восстановление к запуску H03, сохранение адаптаций полного цикла и долговечный сброс.
+**Осталось доделать.** Задать остальные исходные GP/входы и условия холодной ветви; включить prepare_s01_cold до восстановления адаптаций. Назначить NVM, связать сохранение полного цикла и долговечный сброс с аппаратным запуском.
 
-**Сейчас выполняет.** Codex integration — исходное состояние Toyota — codex-integration-01a1f76d-20261120.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Проверены пределы коррекции, повторный пуск, повреждённая запись и сброс адаптаций.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#toy-05)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#toy-05)
 
 </details>
 
@@ -521,7 +520,7 @@
 
 **Критерий приёмки.** Трасса от квалифицированных входов до канала H03, проверка скольжения, удержания и снятия по отказу.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#toy-06)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#toy-06)
 
 </details>
 
@@ -536,7 +535,7 @@
 
 **Критерий приёмки.** Округление 4,545 не используется как расчётный коэффициент.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/55b9a240338ef1cf58da6218e8634450373b9f92/docs/project-map.md#vss-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/da6b13b337727866a654d7250caa62231889ade5/docs/project-map.md#vss-01)
 
 </details>
 
@@ -553,28 +552,11 @@
 - targets/lfj8/lfj8_h03_application.h
 - verification/project-audit/can01-h03-app-lifecycle.md
 
-### TOY-05
-
-Чат: Codex integration — исходное состояние Toyota. Claim ID: 8ca6fc0e24e444f18f58aef003611472.
-
-- README.md
-- controller/include/rbm_u340e_runtime.h
-- controller/src/rbm_u340e_runtime.c
-- controller/tests/test_runtime.c
-- data/project-tasks.json
-- docs/lfj8-h03-memory-layout.md
-- docs/project-map.md
-- docs/working-set.md
-- targets/lfj8/check_toyota_cold_init.py
-- tools/check_h03_image_layout.py
-- verification/project-audit/startup-integration-20261121/
-- verification/project-audit/toy05-s01-cold-state.json
-- verification/project-audit/toy05-s01-cold-state.md
-
 ## Последние события
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T21:33:26+00:00 | TOY-05 | review | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T21:27:48+00:00 | TOY-05 | heartbeat | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T21:23:42+00:00 | TOY-05 | claim | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T21:14:43+00:00 | ORG-01 | complete | codex-integration-01a1f76d-20261120 |
@@ -604,4 +586,3 @@
 | 2026-11-20T21:14:43+00:00 | TOY-06 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T21:14:43+00:00 | CAN-02 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T21:14:43+00:00 | TOY-04 | complete | 01a1fa79-892d-7ca3-bb8a-44698892c53e |
-| 2026-11-20T21:14:43+00:00 | MODE-01 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
