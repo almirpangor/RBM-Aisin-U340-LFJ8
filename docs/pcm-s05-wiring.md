@@ -21,7 +21,7 @@
 | `1BF` | Коммутируемое питание дроссельного узла от контакта реле Drive-by-wire | Розовый провод. При выключенном зажигании через 90 с меньше 1 В, а при включённом B+ |
 | `1AM` / `1AI` | CAN-H / CAN-L | Красный / синий по листу `0140-1i`. PCM, отдельный TCM, ABS/DSC, приборная панель и диагностика включены в сеть Mazda |
 
-[D923-1A-22C Ver. 25, PCM Inspection [L8, LF, L3]](https://mazdamanuals.com/Mazda/md6%200605%201107/D923-1A-22C_Ver25/esicont/srvc/html/id0140a5802500.html), [Mazda D923-1A-22C, схема без иммобилайзера, рисунки D6E102AT3004 и D6E102AT3005](https://mazdamanuals.com/Mazda/md6%200605%201107/D923-1A-22C_Ver25/esicont/srvc/html/id0140a5100400.html), [Mazda 5661-1E-05G, листы 0140-1a и 0140-1i, печатные стр. 64 и 80](https://manuale.clubmazda.ro/6mps/mazda_6_2006_wiring_workshop_manual.pdf)
+[D923-1A-22C Ver. 25, PCM Inspection [L8, LF, L3]](https://mazdamanuals.com/Mazda/md6%200605%201107/D923-1A-22C_Ver25/esicont/srvc/html/id0140a5802500.html) · [Mazda D923-1A-22C, схема без иммобилайзера](https://mazdamanuals.com/Mazda/md6%200605%201107/D923-1A-22C_Ver25/esicont/srvc/html/id0140a5100400.html) · [Питание PCM, 0140-1a](https://manuale.clubmazda.ro/6/mazda_6_2006_wiring_workshop_manual.pdf#page=39) · [CAN PCM, 0140-1i](https://manuale.clubmazda.ro/6/mazda_6_2006_wiring_workshop_manual.pdf#page=55)
 
 ## Входы для исследования на S05
 
@@ -36,7 +36,11 @@
 
 Clarion на японской конфигурации показывает зелёный сигнал скорости для навигации в нижней правой полости второго 27P-разъёма и отдельную точку подключения в промежуточном разъёме. Из этого источника известна точка съёма сигнала. Направление, уровни, полярность, пригодность в качестве входа VSS и привязка к выводам `2M/2N` остаются открытыми. Для P/R/N/D/L, Tiptronic и Overdrive контакты S05 под эти функции ещё не назначены. [Mazda D923-1A-22C, таблица напряжений](https://mazdamanuals.com/Mazda/md6%200605%201107/D923-1A-22C_Ver25/esicont/srvc/html/id0140a5802500.html), [Mazda 5661-1E-05G, 0140-1c/e/g и 0517-1a/c](https://manuale.clubmazda.ro/6mps/mazda_6_2006_wiring_workshop_manual.pdf), [Clarion MA-68](https://www.clarion.com/jp/ja/files/speed/mazda/mazda_68C.pdf)
 
+Для японских GGEP/GGES с LF-VE от июня 2005 года справочник PIVOT указывает два разъёма по 60 мест и рисунок MA-6Ba. Четыре разъёма 30P / 27P / 30P / 30P по PIVOT относятся к более раннему LF-DE. Это уточняет применимость рисунка Clarion с четырьмя колодками. Полную электрическую распиновку позднего японского PCM показывает заводская схема конкретного исполнения. [PIVOT, таблица применяемости](https://pivotjp.com/download/pdf/wiring/e-nenpi-signal.pdf#page=8) · [Рисунок MA-6Ba](https://pivotjp.com/download/pdf/wiring/e-nenpi-signal.pdf#page=9)
+
 ## Штатные низкосторонние моторные выходы
+
+Полярность ниже относится к конкретным нагрузкам моторного PCM. Отдельный Mazda TCM FS5A-EL на заводской схеме 2WD коммутирует плюс на соленоиды A–F и соленоид давления B. [Схема TCM и назначение контактов](lfj8-wiring-sources.md)
 
 | Контакт | Нагрузка и режим Mazda | Место в исследовании U340E |
 | --- | --- | --- |
