@@ -133,7 +133,7 @@ class DriverControls:
         if mode_pressed:
             self.mode = self.mode.toggled()
 
-        simultaneous_shift_inputs = (up_pressed and down_pressed) or (
+        simultaneous_shift_inputs = bool(self._up_button.stable and self._down_button.stable) or (
             mode_pressed and (up_pressed or down_pressed)
         )
         shift = None

@@ -158,7 +158,9 @@ int rbm_u340e_step(RbmU340eController *controller, const RbmU340eInput *input,
 
     output->mode = controller->mode;
     output->overdrive_enabled = controller->overdrive_enabled;
-    output->conflicting_buttons = shift_buttons == SHIFT_BUTTON_MASK ||
+    /* The second shift edge conflicts even if the first button was held. */
+    output->conflicting_buttons =
+        (input->buttons_valid && (input->stable_buttons & SHIFT_BUTTON_MASK) == SHIFT_BUTTON_MASK) ||
         (shift_buttons && (rising & RBM_U340E_BUTTON_MODE));
     output->relay_mask = relay_commands(input->selector);
     output->requested_gear = propose_gear(controller, input, rising, output);
