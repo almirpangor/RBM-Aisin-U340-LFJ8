@@ -26,7 +26,7 @@ typedef struct {
     uint8_t flag_fd18_9;
     int16_t atf_c;
     uint8_t atf_valid;
-    uint8_t stopped;
+    uint8_t stopped; /* Exactly 1 for independently confirmed standstill at this poll. */
 } Lfj8CheryTxInputs;
 
 void lfj8_chery_tx_init(Lfj8CheryTx *tx, uint32_t now_us, uint32_t period_1ae_us,

@@ -133,11 +133,16 @@ static Lfj8CaptureSnapshot raw_capture_at(volatile Lfj8RawCapture *capture,
 
 static Lfj8CaptureSnapshot raw_capture_snapshot(volatile Lfj8RawCapture *capture,
                                                 const Lfj8RegisterIo *io, uint32_t timer_address,
-                                                uint32_t timeout_ticks)
+                                                uint32_t timeout_ticks, uint8_t standstill_confirmed)
 {
     const uint32_t saved_state = io->enter(io->context);
-    const Lfj8CaptureSnapshot snapshot =
+    Lfj8CaptureSnapshot snapshot =
         raw_capture_at(capture, io->read32(io->context, timer_address), timeout_ticks);
+    /* A fresh first edge has no speed interval yet, but excludes standstill. */
+    if (standstill_confirmed == 1u && capture->primed == 0u &&
+        timeout_ticks != 0u && timeout_ticks < UINT32_C(0x80000000)) {
+        snapshot.state = LFJ8_VSS_STOPPED;
+    }
     io->leave(io->context, saved_state);
     return snapshot;
 }
@@ -146,7 +151,14 @@ Lfj8CaptureSnapshot lfj8_raw_vss_snapshot(volatile Lfj8RawVss *vss,
                                          const Lfj8RegisterIo *io,
                                          uint32_t timeout_ticks)
 {
-    return raw_capture_snapshot(vss, io, LFJ8_VSS_TIMER_NOW, timeout_ticks);
+    return raw_capture_snapshot(vss, io, LFJ8_VSS_TIMER_NOW, timeout_ticks, 0u);
+}
+
+Lfj8CaptureSnapshot lfj8_raw_vss_snapshot_with_standstill(
+    volatile Lfj8RawVss *vss, const Lfj8RegisterIo *io, uint32_t timeout_ticks,
+    uint8_t standstill_confirmed)
+{
+    return raw_capture_snapshot(vss, io, LFJ8_VSS_TIMER_NOW, timeout_ticks, standstill_confirmed);
 }
 
 void lfj8_9e1b_raw_vss_init(volatile Lfj8RawVss *vss)
@@ -196,7 +208,7 @@ void lfj8_9e1c_raw_nt_after_capture_store(volatile Lfj8RawCapture *nt,
 Lfj8CaptureSnapshot lfj8_9e1c_raw_nt_snapshot(volatile Lfj8RawCapture *nt,
                                             const Lfj8RegisterIo *io, uint32_t timeout_ticks)
 {
-    return raw_capture_snapshot(nt, io, LFJ8_9E1C_NT_TIMER_NOW, timeout_ticks);
+    return raw_capture_snapshot(nt, io, LFJ8_9E1C_NT_TIMER_NOW, timeout_ticks, 0u);
 }
 
 int lfj8_h03_capture_pair(volatile Lfj8RawVss *vss, volatile Lfj8RawCapture *nt,

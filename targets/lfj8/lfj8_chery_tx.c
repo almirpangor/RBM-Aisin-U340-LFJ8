@@ -40,16 +40,10 @@ Lfj8CanResult lfj8_chery_tx_poll_status(Lfj8CheryTx *tx, const Lfj8RegisterIo *i
 
     if (selected == LFJ8_DUE_1AE) {
         const Lfj8CaptureSnapshot sample =
-            lfj8_raw_vss_snapshot(vss, io, cal->vss_timeout_ticks);
-        uint8_t state = sample.state;
-        uint16_t raw;
-
-        if (state == LFJ8_VSS_UNAVAILABLE && inputs->stopped != 0u) {
-            state = LFJ8_VSS_STOPPED;
-        }
-        raw = lfj8_vss_raw_1ae(sample.interval_ticks, (uint8_t)sample.pulse_window,
-                              cal->tick_hz, cal->wheel_um, cal->wheel_num,
-                              cal->wheel_den, state);
+            lfj8_raw_vss_snapshot_with_standstill(vss, io, cal->vss_timeout_ticks, inputs->stopped);
+        const uint16_t raw = lfj8_vss_raw_1ae(sample.interval_ticks, (uint8_t)sample.pulse_window,
+                                              cal->tick_hz, cal->wheel_um, cal->wheel_num,
+                                              cal->wheel_den, sample.state);
         next_counter = lfj8_pack_1ae_with_counter(payload, &inputs->status_1ae, raw,
                                                  tx->counter_f8e4);
         id = LFJ8_CAN_1AE;
