@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 462,
+  "sequence": 463,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -487,12 +487,12 @@
         "targets/bosch/verify_e4m3_torque_rpm.py",
         "verification/project-audit/ecu02-rb-lease-timeout.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "af75614181e6438cbed6652ba8147606",
       "claimed_at": "2026-11-20T19:04:27+00:00",
-      "updated_at": "2026-11-20T19:06:30+00:00",
-      "note": "Девять сценариев без REFRESH на закреплённом образе прошли, включая переходы T4. Повтор исторической трассы и диалог H03/Bosch прошли. Завершаю верификацию и отчёт.",
-      "result": null
+      "updated_at": "2026-11-20T19:07:53+00:00",
+      "note": "Проверка потери REFRESH прошла на точном Bosch: три ветви при трёх режимах счёта T4, три точки приёма относительно срока, нулевой статус с CRC. Обычный профиль, 3256 CRC и 26 исторических команд, C-клиент и сквозной TORQUE прошли. Отчёт verification/project-audit/ecu02-rb-lease-timeout.md. Требуются измерения на LFJ8/E4M3.",
+      "result": "2b25504819fbf1873f038101e6e56c62320be144"
     },
     "H03-01": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -4256,9 +4256,17 @@
       "action": "review",
       "claim_id": "f086342106b64dd7b09e8960948904da",
       "at": "2026-11-20T19:07:18+00:00"
+    },
+    {
+      "operation_id": "01a1ddf9207d40248e7eb278bda03b67",
+      "task": "ECU-02",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "af75614181e6438cbed6652ba8147606",
+      "at": "2026-11-20T19:07:53+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:07:18+00:00",
+  "updated_at": "2026-11-20T19:07:53+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
