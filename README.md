@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:41:02+00:00**. Изменение № **194**.
+Обновлено UTC: **2026-11-20T16:41:21+00:00**. Изменение № **195**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -37,7 +37,7 @@
 | MODE-01 — Логика шести положений и кнопок | Работа завершена | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:31:25+00:00 | Reviewed shift-button conflict fix integrated in b2ca79d with PC/M32R evidence in integration-2. Released this reservation; hardware input and hydraulic execution remain open. / commit ed33ea93653f7bcbc2c6f13736fe1424335085e6 |
 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | На проверке | Codex MODE-02 — публикация ADC H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode02-h03-selector-01a1f9c7 | 2026-11-20T16:37:36+00:00 | Передаю интегратору привязку публикации AN2 к штатной записи H03: 4 пары и 3 отрицательные проверки M32R, ПК 35 шагов/71 тест, M32R link и 17 компонентов PASS. Отчёт verification/project-audit/mode02-h03-selector-adc.md. При приёмке внести 3 новых файла в общий аудит и выполнить complete после публикации main. Штатный callback, часы/стек, кнопки и стенд остаются открыты. / commit f92fde84f590460d713dee020ee5ddc6ccd089e4 |
 | MODE-03 — Окончательная политика режимов | На проверке | Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T16:27:03+00:00 | Штатная матрица ПК: 128 конфигураций запуска и 501 760 сценариев заявок PASS. Все 35 шагов ПК прошли; донорский тест S03 повторён отдельно с проверенным входом. Интегратору: учесть новые файлы и отчёт verification/project-audit/mode03-policy-matrix.md в аудите. Политика выпуска и подключение к циклу H03 открыты. / commit dd4fdbc2862093359df9329d7e6e9ab211d13940 |
-| SRC-01 — Реестр происхождения и контроль исходников | Свободна | — | — | — | — |
+| SRC-01 — Реестр происхождения и контроль исходников | Выполняется | Codex SRC-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/src01-donor-pins-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:41:21+00:00 | Проверка закреплённых коммитов R1–R4 из локальных Git объектов без переключения checkout. Сохраню совместимость SOURCES и раздельные проверки образов. |
 | AUD-01 — Программный аудит истории E4M3 | Свободна | — | — | — | — |
 | DTC-01 — Прикладной сеанс и статусы Chery | Работа завершена | Codex DTC-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/dtc01-1120-c7e4 | 2026-11-20T16:30:54+00:00 | Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте. / commit 79d853bcd09a13b733907eccc3e1ea6dfe642db7 |
 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Выполняется | Codex — штатный RX BasicCAN H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T16:40:57+00:00 | Два ожидающих слота RX14/15: единая выборка без записи CAN0, порядок по меткам CAN до FIFO. Проверю переполнение, оборот таймера, ложные входы и двухкадровый сеанс через CAN13. |
@@ -193,6 +193,14 @@
 - controller/tests/test_mode_policy.c
 - verification/project-audit/mode03-policy-matrix.md
 
+### SRC-01
+
+Чат: Codex SRC-01. Claim ID: abd55696a19e48a1aaf3a4b0e23f7414.
+
+- tests/test_verify_sources.py
+- tools/verify_sources.py
+- verification/project-audit/src01-donor-pins.md
+
 ### TOY-01
 
 Чат: Codex TOY-01 — карта переносов GP. Claim ID: 4b00bd7fdda2433d8439e95c7b0b1454.
@@ -231,6 +239,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:41:21+00:00 | SRC-01 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:41:02+00:00 | DTC-03 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T16:40:57+00:00 | DTC-02 | resume | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T16:40:44+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
@@ -260,4 +269,3 @@
 | 2026-11-20T16:34:19+00:00 | TOY-04 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:34:04+00:00 | CAN-05 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:33:58+00:00 | VSS-02 | resume | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T16:33:47+00:00 | MODE-02 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
