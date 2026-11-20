@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 325,
+  "sequence": 326,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -474,12 +474,12 @@
         "targets/lfj8/test_lfj8_h03_sensor_feed.c",
         "verification/project-audit/vss02-common-sensor.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "da83556f0097488ba39c6ee642e4a002",
       "claimed_at": "2026-11-20T18:01:39+00:00",
-      "updated_at": "2026-11-20T18:03:37+00:00",
-      "note": "Общий снимок и тест на ПК готовы: wrap, потеря и остановка, отказ ATF, несогласованный захват, смена эпохи. Идут M32R и проверка штатной компоновки.",
-      "result": null
+      "updated_at": "2026-11-20T18:05:38+00:00",
+      "note": "Поставщик S51/S83/ATF в одной эпохе TML0. ПК и отдельный M32R PASS: потеря, остановка, первый фронт, wrap, reset, ATF. База H03 18 компонентов, INTEGRATION3 5 PASS. Отчёт verification/project-audit/vss02-common-sensor.md. Вызовы и размещение H03-02 открыты.",
+      "result": "5cfe81106f0401ebbd4cabb2fce1b8d00929aead"
     },
     "TOY-01": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -3176,9 +3176,17 @@
       "action": "heartbeat",
       "claim_id": "dcf0c14e62c842e1a210b316e85b93fa",
       "at": "2026-11-20T18:05:28+00:00"
+    },
+    {
+      "operation_id": "97c1c4a30a514cc383aa524de6c5e3f2",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "da83556f0097488ba39c6ee642e4a002",
+      "at": "2026-11-20T18:05:38+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:05:28+00:00",
+  "updated_at": "2026-11-20T18:05:38+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
