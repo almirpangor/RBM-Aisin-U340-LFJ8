@@ -32,6 +32,7 @@ const Lfj8H03ApplicationBinding rbm_h03_application_binding = {
     .startup_range = RBM_H03_PROFILE_STARTUP_RANGE,
     .toyota_max_period_ticks = RBM_H03_PROFILE_TOYOTA_MAX_PERIOD_TICKS,
     .startup_request_1120 = RBM_H03_PROFILE_STARTUP_REQUEST_1120,
+    .engine = &rbm_h03_target_engine,
     .ram_owned = rbm_h03_target_ram_owned,
     .clock_ready = rbm_h03_target_clock_ready,
     .initialize = initialize_target,

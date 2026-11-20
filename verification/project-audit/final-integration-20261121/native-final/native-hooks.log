@@ -1,0 +1,305 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "phase_program_with_takeover": {
+    "cases": [
+      "fresh_across_clock_wrap",
+      "expired_at_commit",
+      "pressure_fault_after_prepare",
+      "final_byte_changed_after_prepare",
+      "external_authority_lost",
+      "repeat_commit",
+      "startup_cutout",
+      "stock_combined_entry",
+      "p3_changed_after_prepare",
+      "missing_pressure_calibration",
+      "unrepresentable_real_edge_order",
+      "service_monitor_open_after_prepare",
+      "service_monitor_closed_copy_pending",
+      "flash_overlay_after_prepare",
+      "toyota_main_to_original_outputs"
+    ],
+    "fixture_state_outside_h03_ram": true,
+    "toyota_main_to_original_outputs_executed": true,
+    "observed_stack_bytes": {
+      "fresh_across_clock_wrap": 640,
+      "expired_at_commit": 640,
+      "pressure_fault_after_prepare": 640,
+      "final_byte_changed_after_prepare": 640,
+      "external_authority_lost": 644,
+      "repeat_commit": 648,
+      "startup_cutout": 40,
+      "stock_combined_entry": 636,
+      "p3_changed_after_prepare": 644,
+      "missing_pressure_calibration": 648,
+      "unrepresentable_real_edge_order": 648,
+      "service_monitor_open_after_prepare": 640,
+      "service_monitor_closed_copy_pending": 640,
+      "flash_overlay_after_prepare": 640,
+      "toyota_main_to_original_outputs": 872
+    },
+    "verified_rom_start": "0x020000",
+    "exact_image_composition": {
+      "fresh_across_clock_wrap": {
+        "sha256": "d4eac10509ea501293a69b5dd7dac99e46539b61d19379c1372fac2cf5f3a461",
+        "payload_bytes": 9068,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "expired_at_commit": {
+        "sha256": "344a3b093711247c4c0877904987afd924e973d1150af73b49f7a4c364bf55f7",
+        "payload_bytes": 9040,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "pressure_fault_after_prepare": {
+        "sha256": "d3b9cb31be449aab8777ac2b45f1f20e6b298bfccb5fb225ded842ffd2066600",
+        "payload_bytes": 9036,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "final_byte_changed_after_prepare": {
+        "sha256": "48c4c628e677a32888a113287203d20d4190ab28ca9c415ca87af9a3697ff2d7",
+        "payload_bytes": 9040,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "external_authority_lost": {
+        "sha256": "98b42314fde8c7c0f3b849af97d774214b0e5f614ae730785c9461c02beb485b",
+        "payload_bytes": 9036,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "repeat_commit": {
+        "sha256": "cbdb7bb55c7cd2d2ebaa8c17e1e80f9f9bbf2d9ee166a39d06081aed1a5fe56d",
+        "payload_bytes": 9168,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "startup_cutout": {
+        "sha256": "ab0b49c2d0bb5bf49dc8f7420721cde42bb01db137d6b128f3bda1ecf88144df",
+        "payload_bytes": 8872,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "stock_combined_entry": {
+        "sha256": "62e26863553491e5dd17bea0074924843865600fe0f07e263a78b82e1da890b2",
+        "payload_bytes": 8888,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "p3_changed_after_prepare": {
+        "sha256": "17bd8d7cccbd0bdea52d9ff02f92856cb677c902913059f7a7afdc17f6351108",
+        "payload_bytes": 9036,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "missing_pressure_calibration": {
+        "sha256": "3682bbfc844d5dab53cc976ac0cf3abea6fc55b43c91d0201ee7e174835ec002",
+        "payload_bytes": 8892,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "unrepresentable_real_edge_order": {
+        "sha256": "8f390138bee1525cbe11e603e0c67e8ed4efa5909ebf8253ab22c8ba47ac204d",
+        "payload_bytes": 8920,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "service_monitor_open_after_prepare": {
+        "sha256": "bee4f699d0f4340dfbb3ffa50c7472aa58471107afad86aad72a9af74c83c5b5",
+        "payload_bytes": 9036,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "service_monitor_closed_copy_pending": {
+        "sha256": "e74eb88272499951621023ff741d914cd8119fee0ddcc44f237d61ba08ece8b9",
+        "payload_bytes": 9048,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "flash_overlay_after_prepare": {
+        "sha256": "56d86f2f85fe8808be36748789dce5611f4cf424517daffafab5d8da41f78630",
+        "payload_bytes": 9036,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "toyota_main_to_original_outputs": {
+        "sha256": "bd7b99f0c3fba7bccb7e937515a4e8bd298554ee7d40b27d4e23cf3dd8650b12",
+        "payload_bytes": 54276,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      }
+    },
+    "untouched_original_bytes_verified": true,
+    "hardware_rom_emitted": false,
+    "toyota_output_algorithms_executed": true,
+    "toyota_fixture_raw_slt": 5120,
+    "toyota_expected_compare": 652,
+    "slt_calibration": "synthetic fixture points",
+    "physical_inhibit_tested": false,
+    "stock_entries": [
+      "0x046804",
+      "0x04682C",
+      "0x036EA4"
+    ],
+    "address_space": "GNU M32R test ELF with registers backed by simulator memory"
+  },
+  "cases": [
+    {
+      "variant": "stock",
+      "hook": "strategy",
+      "decision": 0,
+      "dispatch": "0x06FED4",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "stock",
+      "hook": "commit",
+      "decision": 0,
+      "dispatch": "0x046900",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "takeover",
+      "hook": "strategy",
+      "decision": -1,
+      "dispatch": "0x036F34",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "takeover",
+      "hook": "strategy",
+      "decision": 0,
+      "dispatch": "0x036F34",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "takeover",
+      "hook": "strategy",
+      "decision": 1,
+      "dispatch": "0x0717B8",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "takeover",
+      "hook": "strategy",
+      "decision": 2,
+      "dispatch": "0x036F34",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "takeover",
+      "hook": "commit",
+      "decision": -1,
+      "dispatch": "0x07C110",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "takeover",
+      "hook": "commit",
+      "decision": 0,
+      "dispatch": "0x07C110",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "takeover",
+      "hook": "commit",
+      "decision": 1,
+      "dispatch": "0x046900",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "takeover",
+      "hook": "commit",
+      "decision": 2,
+      "dispatch": "0x07C110",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "legacy_bench",
+      "hook": "strategy",
+      "decision": 0,
+      "dispatch": "0x06FED4",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "legacy_bench",
+      "hook": "strategy",
+      "decision": 1,
+      "dispatch": "0x0717B8",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "legacy_bench",
+      "hook": "strategy",
+      "decision": 2,
+      "dispatch": "0x036F34",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "legacy_bench",
+      "hook": "commit",
+      "decision": 0,
+      "dispatch": "0x046900",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "legacy_bench",
+      "hook": "commit",
+      "decision": 1,
+      "dispatch": "0x046900",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "legacy_bench",
+      "hook": "commit",
+      "decision": 2,
+      "dispatch": "0x07C110",
+      "return": "0x07C110"
+    }
+  ],
+  "wrapper_frame_bytes": 72,
+  "psw_preserved_in_non_debugger_probes_with_carry": [
+    0,
+    1
+  ],
+  "acc_low_observed": true,
+  "acc_high_save_restore_present": true,
+  "acc_high_nonzero_verified": false,
+  "real_hardware_executed": false,
+  "interrupt_stack_verified": false
+}

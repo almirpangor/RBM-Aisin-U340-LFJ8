@@ -186,6 +186,11 @@ def sensor_placement(rom, elf, provisional=None):
 
 
 def build(args):
+    application_profile = getattr(args, "application_profile", None)
+    if application_profile is not None:
+        application_profile = Path(application_profile).resolve()
+        if not args.with_bindings or not application_profile.is_file():
+            raise ValueError("Application profile requires --with-bindings and an existing header")
     identity=legacy.identify_h03(args.base)
     rom=args.base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
@@ -231,6 +236,8 @@ def build(args):
     modules += [LFJ8/name for name in ("lfj8_range_control.c","lfj8_h03_outputs.c","lfj8_h03_takeover.c",
                                       *legacy.CAN_EXTENSION_FILES,"lfj8_h03_slu.c","lfj8_h03_dtc_foreground.c")]
     bindings=[LFJ8/name for name in BINDING_MODULES if (LFJ8/name).is_file()] if args.with_bindings else []
+    if application_profile is not None:
+        bindings.append(LFJ8 / "lfj8_h03_application_binding.c")
     if args.with_bindings:
         bindings.extend(LFJ8/name for name in SENSOR_ASSEMBLY)
     if with_dtc_rx:
@@ -246,6 +253,11 @@ def build(args):
             "bindings_not_present":[name for name in BINDING_MODULES if not (LFJ8/name).is_file()],
             "raw_reference_patterns":raw_reference_patterns(rom,flash_windows),
             "hardware_verified":False,"target_ownership_verified":False,"flashable_image":None}
+    report["application_profile"] = ({"path": str(application_profile),
+        "sha256": digest(application_profile), "hardware_qualified_by_this_tool": False}
+        if application_profile is not None else None)
+    report["profiled_bindings_omitted"] = ([] if application_profile is not None else
+        ["lfj8_h03_application_binding.c: requires an explicit application profile"])
     if args.with_bindings:
         path = Path(sensor_hooks.__file__).resolve()
         report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
@@ -271,7 +283,10 @@ def build(args):
             name=source.with_suffix(".o").name
             if name in objects or source.name.startswith("test_") or "fixture" in source.name:
                 raise ValueError("Ambiguous or test-only input module")
-            run(args.gcc,*flags,*module_flags,*(x for p in includes for x in ("-I",p)),
+            profile_flags = (["-I", application_profile.parent,
+                '-DRBM_H03_APPLICATION_PROFILE="' + application_profile.name + '"']
+                if source.name == "lfj8_h03_application_binding.c" else [])
+            run(args.gcc,*flags,*module_flags,*profile_flags,*(x for p in includes for x in ("-I",p)),
                 "-c",source,"-o",name)
             objects.append(name)
             if source in bindings:
@@ -391,16 +406,18 @@ def main():
     parser.add_argument("--profile",choices=PROFILES,default="two-window")
     parser.add_argument("--memory-model",choices=("medium","small"),default="medium")
     parser.add_argument("--with-bindings",action="store_true")
+    parser.add_argument("--application-profile",type=Path,
+                        help="Include the actual application binding with an explicit profile header; never qualifies hardware")
     parser.add_argument("--with-dtc-rx", action="store_true",
                         help="Place the protected BasicCAN RX graph in the lower H03 sector")
     parser.add_argument("--cpu-test",action="store_true")
     parser.add_argument("--storage-report",type=Path)
     args=parser.parse_args()
     args.out=args.out.resolve()
-    for name in ("base","gcc","controller","bridge","storage_report"):
+    for name in ("base","gcc","controller","bridge","storage_report","application_profile"):
         if getattr(args,name) is not None:
             setattr(args,name,getattr(args,name).resolve())
-    inputs=[getattr(args,name) for name in ("base","gcc","controller","bridge","storage_report") if getattr(args,name) is not None]
+    inputs=[getattr(args,name) for name in ("base","gcc","controller","bridge","storage_report","application_profile") if getattr(args,name) is not None]
     # Invalidate the previous result before any new attempt, including failure.
     try:
         invalidate_outputs(args.out,inputs)

@@ -27,12 +27,12 @@ def check(compiler, controller):
 
         def run(command, *, checked=True):
             return subprocess.run([str(item) for item in command], cwd=work, check=checked,
-                                  capture_output=True, text=True, timeout=60)
+                                  capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60)
 
         flags = [compiler, *TARGET, "-Os", "-std=c11", "-Wall", "-Wextra", "-Werror",
                  "-Wno-missing-braces", "-Wno-missing-field-initializers",
                  "-ffunction-sections", "-fdata-sections", "-I", ROOT / "controller/include",
-                 "-I", ROOT / "controller/vendor/toyota/include"]
+                 "-I", ROOT / "controller/vendor/toyota/include", "-I", ROOT / "diagnostics"]
         refused = run([*flags, "-c", source, "-o", "binding-without-profile.o"], checked=False)
         if refused.returncode == 0 or "Define RBM_H03_APPLICATION_PROFILE" not in refused.stderr:
             raise ValueError("The native binding did not explicitly reject an absent profile")
@@ -47,9 +47,12 @@ def check(compiler, controller):
             "lfj8_h03_takeover.c", "lfj8_h03_cycle.c", "lfj8_h03_torque.c",
             "lfj8_h03_sensor_target.c", "lfj8_h03_sensor_feed.c", "lfj8_selector_adc.c",
             "lfj8_donor_io.c", "lfj8_bridge.c", "lfj8_h03_atf.c", "lfj8_h03_atf_tml0.c",
+            "lfj8_h03_engine_feed.c", "lfj8_h03_engine_rx.c",
+            "ta2005_chery_inputs.c", "ta2005_engine_qualifier.c",
         )
         run([*flags, "-I", work, '-DRBM_H03_APPLICATION_PROFILE="fixture-profile.h"',
-             "-nostartfiles", crt, source, *(HERE / name for name in sources), shim, controller,
+             "-nostartfiles", crt, source, *(HERE / name for name in sources),
+             ROOT / "diagnostics/chery_dtc.c", shim, controller,
              "-Wl,--gc-sections,-e,_start,--start-group", "-lc", "-lgloss", "-lgcc", "-Wl,--end-group",
              "-o", "binding.elf"])
         simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")

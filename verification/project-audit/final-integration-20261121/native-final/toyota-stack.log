@@ -1,0 +1,90 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "status": "PASS_SIMULATOR_ONLY",
+  "controller_sha256": "02b737d55791b9b311498e9869bbb6f3288ac6767f131f714c355e25f14574a1",
+  "fixture_source_sha256": {
+    "test_runtime.c": "da2e25a714912b436e5099627e43bb8fd4b0b55b560650596c3150f3b59dd31b",
+    "h03_toyota_stack_fixture.c": "c01090c31ecfb4c91c96c808f14ad6692674a934840c1ad7bb48371393a5c130",
+    "h03_toyota_stack_fixture.S": "0bf3ffc55a13c5d2418917b7ec740ddb95934c9e3ecf3b2d9735158defdbc236",
+    "test_lfj8_h03_cycle.c": "cd8fd558c45db4cbdd6476d8359f8d21472e8f73da504489b7b5c243956b200f",
+    "lfj8_h03_cycle.c": "dc785a651402ebe7ed233ee64a0b28e9ae24b450c528227ce3d82de4532a232d",
+    "lfj8_h03_torque.c": "da6c29f633dda0caee546539e63ddba33f5cb494b63fca213cfecf1a098e3eb5",
+    "lfj8_h03_slu.c": "0940d24a4e4a630a3714fe4173f6cf7ccdadcaebd84164dffee7e82f3a06d209",
+    "lfj8_h03_takeover.c": "8251ba3213abb1fe9b87812b96d020e8d4ae548ba94d2f62b456a4fe3184bb64",
+    "lfj8_h03_phase_clock.c": "1f4857f90fa639dfdcec7ddffd0ce5f3605b1aa1777a91a4215ca9a72720fc2b",
+    "lfj8_h03_outputs.c": "45200559d4f02754f4c7f04cdc6e06c5065040160a7a3cf7e5751b0b77710a68",
+    "lfj8_h03_cycle.h": "431a0951e0541c6025d16c13ec013144e3944dbe4b70b10007e9bbac13773e25",
+    "lfj8_h03_torque.h": "5720630805a1edc7200be2169486a9d7548647d259561eabb1b202497453e8a4",
+    "lfj8_h03_takeover.h": "67cc69deb8ab3a6e80cb25cc7dd7b4b9bbd246a13caa4bf0089675cdd39f18a8",
+    "lfj8_h03_slu.h": "35c0eb6a31a39dfb29281b654f0d179bc804241053aee2f818d442e2670ef6d4",
+    "lfj8_h03_phase_clock.h": "867996025e23d3205eec569019c8d7e4347f0a3b19b522b6b54bd154a1bfd96c",
+    "lfj8_h03_outputs.h": "d5a894cfed0922172a9920c9cc35da16d2fc844dffadd8e8be1479ee682313bf",
+    "lfj8_donor_io.h": "ecc83673fe1cb3bea6d5043850e207879dbaa8fc475fa8cc16cfa7fac48f436b"
+  },
+  "observed": {
+    "factory_hydraulics_control_main": {
+      "calls": 270,
+      "high_water_bytes_written": 1220
+    },
+    "rbm_u340e_runtime_main_range": {
+      "calls": 270,
+      "high_water_bytes_written": 120
+    },
+    "rbm_u340e_runtime_gears_outputs": {
+      "calls": 274,
+      "high_water_bytes_written": 604
+    },
+    "rbm_u340e_range_fast": {
+      "calls": 1068,
+      "high_water_bytes_written": 0
+    },
+    "rbm_u340e_runtime_main_range_complete": {
+      "calls": 268,
+      "high_water_bytes_written": 52
+    },
+    "rbm_u340e_hydraulics_control_main_workspace": {
+      "calls": 272,
+      "high_water_bytes_written": 660
+    },
+    "lfj8_h03_cycle_tick": {
+      "calls": 28199,
+      "high_water_bytes_written": 736
+    }
+  },
+  "simulator_probe_stack_bytes": 4096,
+  "guard_bytes_each": 32,
+  "returned_with_both_stack_pointers_restored": true,
+  "bytewise_hydraulic_gp_equivalence_cases": 270,
+  "workspace": {
+    "gear_bytes": 360,
+    "transaction_bytes": 561,
+    "union_bytes": 564,
+    "stack_bytes_saved_observed": 560,
+    "late_torque_failure_left_active_gp_unchanged": true
+  },
+  "cycle_abi_bytes": {
+    "persistent_state": 32,
+    "workspace": 564,
+    "input": 24,
+    "result": 28
+  },
+  "existing_system_stack_hypothesis": {
+    "window_bytes": 2044,
+    "observed_main_high_water_bytes": 1220,
+    "oem_frames_and_hook_bytes": 108,
+    "independent_irq_and_sbi_model_bytes": 824,
+    "subtotal_before_adapter_bytes": 2152,
+    "margin_before_adapter_bytes": -108,
+    "workspace_subtotal_before_adapter_bytes": 1592,
+    "workspace_margin_before_adapter_bytes": 452,
+    "full_simulated_cycle_subtotal_before_adapter_bytes": 1668,
+    "full_simulated_cycle_margin_before_adapter_bytes": 376
+  },
+  "full_irq_model_executed": false,
+  "target_stack_budget_verified": false,
+  "target_ram_ownership_verified": false
+}

@@ -35,6 +35,25 @@ static volatile Lfj8H03PhaseClock phase_clock;
 static int owned, clock_ready;
 static unsigned initialize_calls, inhibit_calls, stock_updates, take_calls, service_calls;
 static const Lfj8H03SensorSnapshot *phase_sensors;
+static Lfj8H03EngineRx engine_rx;
+static Ta2005EngineQualifier engine_qualifier;
+static CheryDtcState engine_dtc;
+static Lfj8H03CanOwner engine_owner;
+
+static int engine_context(void *context, const Lfj8H03SensorSnapshot *sensors,
+    Ta2005EngineQualificationContext *engine, bool *history, uint32_t *oldest)
+{
+    (void)context; (void)sensors; (void)engine; (void)history; (void)oldest;
+    /* This fixture holds Toyota WAIT; a qualification step here is a bug. */
+    assert(0);
+    return 0;
+}
+
+const Lfj8H03ApplicationEngine rbm_h03_target_engine = {
+    .target = {.rx = &engine_rx, .qualifier = &engine_qualifier, .dtc = &engine_dtc,
+               .can_owner = &engine_owner, .io = &lfj8_h03_mmio, .now_us = rbm_h03_atf_now_us},
+    .max_age_ticks = 20u, .max_poll_gap_us = 32u, .context_for_task2 = engine_context,
+};
 
 void rbm_h03_application_foreground_hook(void);
 
@@ -131,6 +150,7 @@ int main(void)
     assert(binding->runtime == &rbm_h03_runtime_state && binding->workspace == &rbm_h03_cycle_workspace);
     assert(binding->main == &rbm_h03_main_result && binding->input == &rbm_h03_cycle_input);
     assert(binding->takeover_ops == &rbm_h03_target_takeover_ops);
+    assert(binding->engine == &rbm_h03_target_engine);
 
     rbm_h03_application_cold_gate();
     rbm_h03_phase_startup_callback();
@@ -151,6 +171,7 @@ int main(void)
     rbm_h03_phase_startup_callback();
     assert(rbm_h03_application.running && rbm_h03_runtime_state.initialized && initialize_calls == 1u);
     assert(rbm_h03_takeover_state.ops == &rbm_h03_target_takeover_ops && rbm_h03_tml0_1mhz_qualified);
+    assert(engine_rx.generation_source == &engine_owner.setup_generation);
 
     for (unsigned attempt = 0; attempt < 2; ++attempt) {
         MMIO32(0x8003e0) += 8u;

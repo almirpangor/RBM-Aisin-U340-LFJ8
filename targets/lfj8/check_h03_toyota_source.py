@@ -20,7 +20,8 @@ def simulate(compiler, bridge):
         return result.stdout.decode(errors="replace").strip()
 
     crt = run(compiler, *TARGET, "-print-file-name=crt0.o")
-    includes = (ROOT / "controller/include", ROOT / "controller/vendor/toyota/include")
+    includes = (ROOT / "controller/include", ROOT / "controller/vendor/toyota/include",
+                ROOT / "diagnostics")
     with TemporaryDirectory(prefix="rbm-h03-toyota-release-") as directory:
         work = Path(directory)
         shim = work / "crt.c"

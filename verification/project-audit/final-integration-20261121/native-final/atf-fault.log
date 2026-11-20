@@ -1,0 +1,71 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "native_call": "0x0725b0",
+  "native_monitor": "0x0753a4",
+  "lower_limit_v_exclusive": 0.05859399959445,
+  "upper_limit_v_exclusive": 4.667969226837158,
+  "inclusive_10bit_counts": [
+    13,
+    956
+  ],
+  "native_dtc_record_addresses": {
+    "P0712": "0x031510",
+    "P0713": "0x031524"
+  },
+  "stock_countdown_values": {
+    "direction": 150000,
+    "override": 1000,
+    "recovery": 2000
+  },
+  "simulated_scenarios": [
+    "high_at_limit_still_pending_after_29_calls",
+    "high_at_limit_active_on_call_30",
+    "high_remains_active_during_low_countdown",
+    "opposite_direction_can_latch_without_clearing_first",
+    "both_still_active_after_three_good_steps",
+    "fourth_good_step_clears_both_and_confirms_recovery",
+    "one_good_step_resets_unqualified_low_countdown",
+    "low_at_limit_active_on_call_30",
+    "disabled_gate_reloads_high_countdown",
+    "first_alternate_gate_admits_high_monitor",
+    "second_alternate_gate_admits_low_monitor",
+    "override_holds_stock_short_countdown",
+    "first_step_after_override_remains_pending",
+    "second_step_after_override_latches_high",
+    "service_clear_leaves_unqualified_directional_flag",
+    "old_direction_can_reappear_when_opposite_fault_qualifies",
+    "fresh_recovery_clears_stale_direction",
+    "unsupported_flag_value_and_missing_io",
+    "aggregate_without_direction_is_unknown",
+    "fault_with_recovery_flag_is_inconsistent"
+  ],
+  "diagnostic_foreground": {
+    "fixture_hook_vma": "0x10001c",
+    "replaced_word": "fe02369b",
+    "wrapper_bytes": 86,
+    "native_continuation_context_unchanged": true,
+    "scenarios": [
+      "cold_gate_preserves_oem_monitor_without_publishing",
+      "target_startup_and_chery_can_session",
+      "startup_does_not_replay_unbound_result",
+      "pending_oem_debounce_does_not_raise_p0710",
+      "expired_sample_at_exclusive_age_boundary",
+      "fresh_sample_across_clock_wrap_produces_0x74_on_can",
+      "both_native_directions_share_one_p0710_slot",
+      "qualified_oem_recovery_produces_0x54_on_can",
+      "can_service_14_clears_current_and_history",
+      "drops_samples_pending_monitor_clear",
+      "history_inhibit_keeps_only_current",
+      "unknown_oem_status_supersedes_unconsumed_recovery",
+      "clock_rearm_requires_fresh_enable",
+      "clock_rearm_discards_unconsumed_recovery"
+    ]
+  },
+  "hardware_executed": false,
+  "target_image_emitted": false
+}

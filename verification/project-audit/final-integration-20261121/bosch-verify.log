@@ -1,0 +1,26 @@
+{
+  "status": "PASS_OFFLINE_ONLY",
+  "sha256": "bd0afefa40dfd1ea82e647ea5af7e64e2f652c27ccc5c3b91a986224fd77ec79",
+  "profile": {
+    "cruise": false,
+    "override": false
+  },
+  "native_mode_guard_cases": 56,
+  "native_encoder_cases": 65536,
+  "qualification_wire_cases": 64,
+  "changed_input_wire_cases": 6,
+  "if1_delay_cases": 3,
+  "checksum_records": 51,
+  "wire_vectors": [
+    {
+      "can_id": "0x0fa",
+      "payload_hex": "12c05f7400230000"
+    },
+    {
+      "can_id": "0x278",
+      "payload_hex": "b4ffffffffffffff",
+      "coolant_celsius": 87
+    }
+  ],
+  "hardware_tested": false
+}

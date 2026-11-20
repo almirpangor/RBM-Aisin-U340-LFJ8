@@ -1,0 +1,61 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "m32r": "H03 Toyota release: native TML0, fixed deadlines, faults and rollover PASS",
+  "native_counter": "TML0CT 0x8003E0",
+  "release_state_bytes": 16,
+  "allocated_release_state_bytes": 0,
+  "aggregate_placement": {
+    "protected_two_windows": {
+      "status": "FAIL_BINDINGS",
+      "profile": "two-window",
+      "capacity_bytes": 81636,
+      "retained_roots": 193,
+      "retained_sections": 562,
+      "known_flash_bytes": 101226,
+      "known_static_ram_bytes": 4,
+      "nominal_flash_margin_before_alignment_and_missing_material": -19590,
+      "missing_symbols": [
+        "rbm_h03_application_binding",
+        "rbm_h03_sensor_config"
+      ],
+      "known_sections_fit": false
+    },
+    "protected_padding": {
+      "status": "FAIL_BINDINGS",
+      "profile": "padding-candidate",
+      "capacity_bytes": 102356,
+      "retained_roots": 193,
+      "retained_sections": 562,
+      "known_flash_bytes": 101226,
+      "known_static_ram_bytes": 4,
+      "nominal_flash_margin_before_alignment_and_missing_material": 1130,
+      "missing_symbols": [
+        "rbm_h03_application_binding",
+        "rbm_h03_sensor_config"
+      ],
+      "known_sections_fit": true
+    },
+    "baseline_with_revoke_and_aliases_only": {
+      "status": "FAIL_BINDINGS",
+      "profile": "padding-candidate",
+      "capacity_bytes": 102356,
+      "retained_roots": 181,
+      "retained_sections": 538,
+      "known_flash_bytes": 97110,
+      "known_static_ram_bytes": 4,
+      "nominal_flash_margin_before_alignment_and_missing_material": 5246,
+      "missing_symbols": [
+        "rbm_h03_application_binding",
+        "rbm_h03_sensor_config"
+      ],
+      "known_sections_fit": true
+    }
+  },
+  "physical_toyota_period_verified": false,
+  "hardware_tested": false,
+  "flashable_image": null
+}

@@ -1,0 +1,354 @@
+{
+  "status": "PASS_OFFLINE_ONLY",
+  "base_sha256": "e25a1c97492ae556b1a52043e6ae85b88d2da86c03a78ef01dc2151c8a0a4a2a",
+  "bosch_sha256": "bd0afefa40dfd1ea82e647ea5af7e64e2f652c27ccc5c3b91a986224fd77ec79",
+  "checksum_records": 51,
+  "model_bus": "RB 0x5E8/0x5E9",
+  "fixture_reduction_q8": 32,
+  "fixture_duration_ms": 200,
+  "admission": [
+    {
+      "rpm_q4": 4799,
+      "accepted": false,
+      "reason": 6
+    },
+    {
+      "rpm_q4": 4800,
+      "accepted": true,
+      "reason": 0
+    },
+    {
+      "rpm_q4": 26000,
+      "accepted": true,
+      "reason": 0
+    },
+    {
+      "rpm_q4": 26001,
+      "accepted": false,
+      "reason": 6
+    }
+  ],
+  "loss_and_recovery": [
+    {
+      "rpm_q4": 4799,
+      "first_native_path": "hook_air",
+      "word_after_loss": 20000,
+      "zero_status_frames": 1,
+      "old_token_rejected_after_rpm_recovery": true,
+      "next_token_accepted": true
+    },
+    {
+      "rpm_q4": 4799,
+      "first_native_path": "hook_fast",
+      "word_after_loss": 20000,
+      "zero_status_frames": 1,
+      "old_token_rejected_after_rpm_recovery": true,
+      "next_token_accepted": true
+    },
+    {
+      "rpm_q4": 4799,
+      "first_native_path": "hook_load",
+      "word_after_loss": 20000,
+      "zero_status_frames": 1,
+      "old_token_rejected_after_rpm_recovery": true,
+      "next_token_accepted": true
+    },
+    {
+      "rpm_q4": 26001,
+      "first_native_path": "hook_air",
+      "word_after_loss": 20000,
+      "zero_status_frames": 1,
+      "old_token_rejected_after_rpm_recovery": true,
+      "next_token_accepted": true
+    },
+    {
+      "rpm_q4": 26001,
+      "first_native_path": "hook_fast",
+      "word_after_loss": 20000,
+      "zero_status_frames": 1,
+      "old_token_rejected_after_rpm_recovery": true,
+      "next_token_accepted": true
+    },
+    {
+      "rpm_q4": 26001,
+      "first_native_path": "hook_load",
+      "word_after_loss": 20000,
+      "zero_status_frames": 1,
+      "old_token_rejected_after_rpm_recovery": true,
+      "next_token_accepted": true
+    }
+  ],
+  "refresh_lease_t4_ticks": 3906,
+  "refresh_cutoff": [
+    {
+      "ticks_from_deadline": -1,
+      "accepted": true,
+      "reason": 0
+    },
+    {
+      "ticks_from_deadline": 0,
+      "accepted": false,
+      "reason": 5
+    },
+    {
+      "ticks_from_deadline": 128,
+      "accepted": false,
+      "reason": 5
+    }
+  ],
+  "loss_of_refresh": [
+    {
+      "first_native_path": "hook_air",
+      "refresh_t4": 42808,
+      "deadline_t4": 46714,
+      "observations": [
+        {
+          "ticks_from_deadline": -1,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 0,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 128,
+          "request_word": 17578
+        },
+        {
+          "ticks_from_deadline": 4095,
+          "request_word": 19921
+        },
+        {
+          "ticks_from_deadline": 4096,
+          "request_word": 20000
+        }
+      ],
+      "zero_status_frames": 1
+    },
+    {
+      "first_native_path": "hook_fast",
+      "refresh_t4": 42808,
+      "deadline_t4": 46714,
+      "observations": [
+        {
+          "ticks_from_deadline": -1,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 0,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 128,
+          "request_word": 17578
+        },
+        {
+          "ticks_from_deadline": 4095,
+          "request_word": 19921
+        },
+        {
+          "ticks_from_deadline": 4096,
+          "request_word": 20000
+        }
+      ],
+      "zero_status_frames": 1
+    },
+    {
+      "first_native_path": "hook_load",
+      "refresh_t4": 42808,
+      "deadline_t4": 46714,
+      "observations": [
+        {
+          "ticks_from_deadline": -1,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 0,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 128,
+          "request_word": 17578
+        },
+        {
+          "ticks_from_deadline": 4095,
+          "request_word": 19921
+        },
+        {
+          "ticks_from_deadline": 4096,
+          "request_word": 20000
+        }
+      ],
+      "zero_status_frames": 1
+    },
+    {
+      "first_native_path": "hook_air",
+      "refresh_t4": 62244,
+      "deadline_t4": 66150,
+      "observations": [
+        {
+          "ticks_from_deadline": -1,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 0,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 128,
+          "request_word": 17578
+        },
+        {
+          "ticks_from_deadline": 4095,
+          "request_word": 19921
+        },
+        {
+          "ticks_from_deadline": 4096,
+          "request_word": 20000
+        }
+      ],
+      "zero_status_frames": 1
+    },
+    {
+      "first_native_path": "hook_fast",
+      "refresh_t4": 62244,
+      "deadline_t4": 66150,
+      "observations": [
+        {
+          "ticks_from_deadline": -1,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 0,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 128,
+          "request_word": 17578
+        },
+        {
+          "ticks_from_deadline": 4095,
+          "request_word": 19921
+        },
+        {
+          "ticks_from_deadline": 4096,
+          "request_word": 20000
+        }
+      ],
+      "zero_status_frames": 1
+    },
+    {
+      "first_native_path": "hook_load",
+      "refresh_t4": 62244,
+      "deadline_t4": 66150,
+      "observations": [
+        {
+          "ticks_from_deadline": -1,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 0,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 128,
+          "request_word": 17578
+        },
+        {
+          "ticks_from_deadline": 4095,
+          "request_word": 19921
+        },
+        {
+          "ticks_from_deadline": 4096,
+          "request_word": 20000
+        }
+      ],
+      "zero_status_frames": 1
+    },
+    {
+      "first_native_path": "hook_air",
+      "refresh_t4": 4294964004,
+      "deadline_t4": 614,
+      "observations": [
+        {
+          "ticks_from_deadline": -1,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 0,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 128,
+          "request_word": 17578
+        },
+        {
+          "ticks_from_deadline": 4095,
+          "request_word": 19921
+        },
+        {
+          "ticks_from_deadline": 4096,
+          "request_word": 20000
+        }
+      ],
+      "zero_status_frames": 1
+    },
+    {
+      "first_native_path": "hook_fast",
+      "refresh_t4": 4294964004,
+      "deadline_t4": 614,
+      "observations": [
+        {
+          "ticks_from_deadline": -1,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 0,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 128,
+          "request_word": 17578
+        },
+        {
+          "ticks_from_deadline": 4095,
+          "request_word": 19921
+        },
+        {
+          "ticks_from_deadline": 4096,
+          "request_word": 20000
+        }
+      ],
+      "zero_status_frames": 1
+    },
+    {
+      "first_native_path": "hook_load",
+      "refresh_t4": 4294964004,
+      "deadline_t4": 614,
+      "observations": [
+        {
+          "ticks_from_deadline": -1,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 0,
+          "request_word": 17500
+        },
+        {
+          "ticks_from_deadline": 128,
+          "request_word": 17578
+        },
+        {
+          "ticks_from_deadline": 4095,
+          "request_word": 19921
+        },
+        {
+          "ticks_from_deadline": 4096,
+          "request_word": 20000
+        }
+      ],
+      "zero_status_frames": 1
+    }
+  ],
+  "current_pair_hardware_tested": false
+}

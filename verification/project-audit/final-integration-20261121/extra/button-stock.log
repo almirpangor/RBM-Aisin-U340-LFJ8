@@ -1,0 +1,64 @@
+{
+  "status": "PASS_OFFLINE_ONLY",
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "range_profile_013874": 2,
+  "fallback_selector_01652a": 1,
+  "native_fragments": {
+    "access_p1": {
+      "start": "0x00c99c",
+      "end_exclusive": "0x00ca00",
+      "sha256": "fa93c4f004d4b90ef8ca10e8e351c25ceabe48dfc1439eba4d0c20db0f6fdfa0"
+    },
+    "range_profile": {
+      "start": "0x013874",
+      "end_exclusive": "0x013878",
+      "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece"
+    },
+    "range_fallback": {
+      "start": "0x016528",
+      "end_exclusive": "0x01652c",
+      "sha256": "f9c64d67a9369994282afea1e655b617dc6eb7e8021114b570aa82a6310eb2df"
+    },
+    "stock_p1_profile": {
+      "start": "0x03ac2c",
+      "end_exclusive": "0x03ac6c",
+      "sha256": "775c0c740f7e5637895ec31f145a33b0e29745f4fdf8299d74632345c97522e4"
+    },
+    "stock_p1_dispatch": {
+      "start": "0x03aca4",
+      "end_exclusive": "0x03acb0",
+      "sha256": "868c0ed5c197199991c9afb79d5aaaf9cbe15b436ff9271770ffb200be71fcc7"
+    },
+    "stock_p1_project": {
+      "start": "0x03ad18",
+      "end_exclusive": "0x03ad38",
+      "sha256": "ee6926079201b4327803cdc7535437846f16fc9fca358083630b35bceb1a668e"
+    },
+    "stock_p1_fallback": {
+      "start": "0x03ad60",
+      "end_exclusive": "0x03ad70",
+      "sha256": "1a313e6e75679adc4e0ad5f8e6661fa3428d72957a57227341e6ac41a295b889"
+    },
+    "stock_p1_clear": {
+      "start": "0x03aec0",
+      "end_exclusive": "0x03aee8",
+      "sha256": "c1633eb27164d04ea07d4fc6a2770408597e6fc4068d2837cf20862daf96bea2"
+    },
+    "stock_p1": {
+      "start": "0x040180",
+      "end_exclusive": "0x040210",
+      "sha256": "1f8dbee2a1f61241aedad680a8f03e9fb81f215d4beb0f88233184bb40992144"
+    }
+  },
+  "pc_test": "H03 button capture: 512 source combinations, invalid wiring and debounce handoff PASS",
+  "m32r_tests": [
+    "H03 button capture: 512 source combinations, invalid wiring and debounce handoff PASS",
+    "H03 stock P1DATA: 256 raw bytes, five flags, stock selector and both projections PASS"
+  ],
+  "equipment_tested": false,
+  "flashable_image": null
+}

@@ -18,7 +18,8 @@ def check(base, gcc):
             raise ValueError(f"Unexpected H03 capture store for {channel}")
     tool = gcc.with_name
     crt = run(gcc, *TARGET, "-print-file-name=crt0.o")
-    includes = (ROOT / "controller/include", ROOT / "controller/vendor/toyota/include")
+    includes = (ROOT / "controller/include", ROOT / "controller/vendor/toyota/include",
+                ROOT / "diagnostics")
     with TemporaryDirectory(prefix="rbm-h03-input-lifecycle-") as directory:
         work = Path(directory)
         shim = work / "sim_crt.c"

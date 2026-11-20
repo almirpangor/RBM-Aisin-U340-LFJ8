@@ -1,0 +1,169 @@
+{
+  "status": "PASS_OFFLINE_ONLY",
+  "hardware_tested": false,
+  "matched_input_profile": null,
+  "wide": {
+    "sha256": "d7b63c3b0e1cfc7433a4c268a9b9e241861f643618e0fef991bfb27cefb6b2ad",
+    "checksum_records": 51,
+    "receiver_bytes": 856,
+    "captures": [
+      {
+        "if1_delay": 0,
+        "lower": 101,
+        "completion": 103,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 0,
+        "lower": 65535,
+        "completion": 65537,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 0,
+        "lower": 4294967295,
+        "completion": 1,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 1,
+        "lower": 101,
+        "completion": 103,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 1,
+        "lower": 65535,
+        "completion": 65537,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 1,
+        "lower": 4294967295,
+        "completion": 1,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 3,
+        "lower": 101,
+        "completion": 105,
+        "age_upper_bound": 4
+      },
+      {
+        "if1_delay": 3,
+        "lower": 65535,
+        "completion": 65539,
+        "age_upper_bound": 4
+      },
+      {
+        "if1_delay": 3,
+        "lower": 4294967295,
+        "completion": 3,
+        "age_upper_bound": 4
+      }
+    ],
+    "rejections": [
+      "unarmed",
+      "dlc",
+      "msglst",
+      "checksum",
+      "clock_stopped",
+      "overflow_pending",
+      "torn_high_word",
+      "half_range",
+      "backward",
+      "late_bus_off",
+      "late_init"
+    ],
+    "back_to_back_requires_new_empty_poll": true,
+    "speed_expiry_service_calls": 32,
+    "idle_clock_recovery_requires_new_empty_poll": true,
+    "recovery": [
+      "bus_off",
+      "can_init",
+      "busy_timeout"
+    ]
+  },
+  "compact": {
+    "sha256": "2adc63878d90589d3779144a096aee4f868ddd96e13330362a56c8536590569f",
+    "checksum_records": 51,
+    "receiver_bytes": 804,
+    "captures": [
+      {
+        "if1_delay": 0,
+        "lower": 101,
+        "completion": 103,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 0,
+        "lower": 65535,
+        "completion": 65537,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 0,
+        "lower": 4294967295,
+        "completion": 1,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 1,
+        "lower": 101,
+        "completion": 103,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 1,
+        "lower": 65535,
+        "completion": 65537,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 1,
+        "lower": 4294967295,
+        "completion": 1,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 3,
+        "lower": 101,
+        "completion": 105,
+        "age_upper_bound": 4
+      },
+      {
+        "if1_delay": 3,
+        "lower": 65535,
+        "completion": 65539,
+        "age_upper_bound": 4
+      },
+      {
+        "if1_delay": 3,
+        "lower": 4294967295,
+        "completion": 3,
+        "age_upper_bound": 4
+      }
+    ],
+    "rejections": [
+      "unarmed",
+      "dlc",
+      "msglst",
+      "checksum",
+      "clock_stopped",
+      "overflow_pending",
+      "torn_high_word",
+      "half_range",
+      "backward",
+      "late_bus_off",
+      "late_init"
+    ],
+    "back_to_back_requires_new_empty_poll": true,
+    "speed_expiry_service_calls": 32,
+    "idle_clock_recovery_requires_new_empty_poll": true,
+    "recovery": [
+      "bus_off",
+      "can_init",
+      "busy_timeout"
+    ]
+  }
+}

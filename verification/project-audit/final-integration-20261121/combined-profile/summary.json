@@ -1,0 +1,80 @@
+{
+  "scope": "Known objects with real binding and explicit simulator timing only",
+  "cases": {
+    "main_baseline": {
+      "status": "FAIL_BINDINGS",
+      "flash_payload_bytes": 96910,
+      "new_static_ram_bytes": 4,
+      "unresolved_symbols": [
+        "rbm_h03_sensor_config",
+        "rbm_h03_target_clock_ready",
+        "rbm_h03_target_engine",
+        "rbm_h03_target_initialize",
+        "rbm_h03_target_ram_owned",
+        "rbm_h03_target_service_phase",
+        "rbm_h03_target_startup_gear",
+        "rbm_h03_target_startup_gp",
+        "rbm_h03_target_take_toyota",
+        "rbm_h03_target_takeover_ops"
+      ],
+      "known_sections_candidate_plan": {
+        "sections": 539,
+        "capacity_bytes": 110548,
+        "payload_bytes": 96910,
+        "ownership_verified": false,
+        "unresolved_material_counted": false
+      }
+    },
+    "protected_two_windows": {
+      "status": "FAIL_BINDINGS",
+      "flash_payload_bytes": 101026,
+      "new_static_ram_bytes": 4,
+      "unresolved_symbols": [
+        "rbm_h03_sensor_config",
+        "rbm_h03_target_clock_ready",
+        "rbm_h03_target_engine",
+        "rbm_h03_target_initialize",
+        "rbm_h03_target_ram_owned",
+        "rbm_h03_target_service_phase",
+        "rbm_h03_target_startup_gear",
+        "rbm_h03_target_startup_gp",
+        "rbm_h03_target_take_toyota",
+        "rbm_h03_target_takeover_ops"
+      ],
+      "known_sections_candidate_plan": {
+        "unplaced_section": ".text.rbm_u340e_runtime_main_coolant",
+        "unplaced_bytes": 120,
+        "payload_bytes": 97634,
+        "capacity_bytes": 81636,
+        "placed_sections": 230,
+        "accepted_layout": false
+      }
+    },
+    "protected_padding": {
+      "status": "FAIL_BINDINGS",
+      "flash_payload_bytes": 101026,
+      "new_static_ram_bytes": 4,
+      "unresolved_symbols": [
+        "rbm_h03_sensor_config",
+        "rbm_h03_target_clock_ready",
+        "rbm_h03_target_engine",
+        "rbm_h03_target_initialize",
+        "rbm_h03_target_ram_owned",
+        "rbm_h03_target_service_phase",
+        "rbm_h03_target_startup_gear",
+        "rbm_h03_target_startup_gp",
+        "rbm_h03_target_take_toyota",
+        "rbm_h03_target_takeover_ops"
+      ],
+      "known_sections_candidate_plan": {
+        "sections": 563,
+        "capacity_bytes": 110548,
+        "payload_bytes": 101026,
+        "ownership_verified": false,
+        "unresolved_material_counted": false
+      }
+    }
+  },
+  "hardware_verified": false,
+  "flashable_image": null
+}

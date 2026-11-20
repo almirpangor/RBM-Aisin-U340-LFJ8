@@ -128,7 +128,8 @@ def build_embedded(compiler, work, architecture, sh_cpu, use_9e1c_base=False):
     includes = ["-I", "."]
     if architecture == "m32r" and use_9e1c_base:
         includes.extend(("-I", PROJECT / "controller/include",
-                         "-I", PROJECT / "controller/vendor/toyota/include"))
+                         "-I", PROJECT / "controller/vendor/toyota/include",
+                         "-I", PROJECT / "diagnostics"))
     objects = []
     for source in sources:
         obj = work / f"{architecture}-{Path(source).stem}.o"
@@ -193,7 +194,9 @@ def main():
                "ta2005_chery_inputs.h"]
     if args.base_9e1c:
         sources.extend(("lfj8_h03_toyota_source.c", "lfj8_h03_toyota_source.h",
-                        "lfj8_h03_application.h", "lfj8_h03_cycle.h"))
+                        "lfj8_h03_application.h", "lfj8_h03_cycle.h",
+                        "lfj8_h03_engine_feed.h", "lfj8_h03_can_owner.h",
+                        "ta2005_engine_qualifier.h", "../../diagnostics/chery_dtc.h"))
     manifest = {"sources": {name: summary(ROOT / name) for name in sources}, "artifacts": {}}
     if args.sh_cc:
         s05_files = [*S05_ADAPTER, "../pcm-s05/native/s05_chery.h"]

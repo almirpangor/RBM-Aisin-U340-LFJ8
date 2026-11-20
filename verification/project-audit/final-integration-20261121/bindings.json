@@ -1,0 +1,271 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "aliases": {
+    "rbm_h03_application": [
+      "0x806EF4",
+      "0x806EFC"
+    ],
+    "rbm_h03_atf_state": [
+      "0x806F00",
+      "0x806F14"
+    ],
+    "rbm_h03_selector_adc_state": [
+      "0x806F14",
+      "0x806F20"
+    ],
+    "rbm_h03_sensor_state": [
+      "0x806ED4",
+      "0x806EF4"
+    ],
+    "rbm_h03_tml0_1mhz_qualified": [
+      "0x806EFC",
+      "0x806EFD"
+    ],
+    "rbm_h03_takeover_state": [
+      "0x806EA0",
+      "0x806EB8"
+    ],
+    "h03_can_owner": [
+      "0x808F40",
+      "0x808F4C"
+    ],
+    "rbm_h03_main_result": [
+      "0x809044",
+      "0x809060"
+    ],
+    "rbm_h03_fast_output": [
+      "0x809060",
+      "0x809070"
+    ],
+    "fixture_shared_target": [
+      "0x808F6C",
+      "0x809044"
+    ],
+    "fixture_shared_broker": [
+      "0x808E78",
+      "0x808F40"
+    ],
+    "fixture_shared_dtc": [
+      "0x808F4C",
+      "0x808F6A"
+    ]
+  },
+  "aliases_allocate_new_ram": false,
+  "hardware_ram_ownership_verified": false,
+  "fixture": {
+    "direct_cases": [
+      {
+        "case": "active",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": true
+      },
+      {
+        "case": "denied_ram",
+        "software_grant_withdrawn": false,
+        "inhibit_mmio_verified": false
+      },
+      {
+        "case": "cold",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": false
+      },
+      {
+        "case": "stale_takeover_ops",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": false
+      },
+      {
+        "case": "service_mode",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": false
+      },
+      {
+        "case": "programming_gate",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": false
+      },
+      {
+        "case": "virtual_flash",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": false
+      },
+      {
+        "case": "repeat",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": true
+      }
+    ],
+    "native_entry_cases": {
+      "original_early_receive": "0x0012B4",
+      "cases": [
+        {
+          "case": "reset_to_app_safe",
+          "stop": "0x008100",
+          "qualified_receive_releases": 2,
+          "revoke_calls": 0,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 0,
+          "can13_grant": 0
+        },
+        {
+          "case": "reset_bad_marker",
+          "stop": "0x0047D8",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 0,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 1
+        },
+        {
+          "case": "reset_active_virtual_flash",
+          "stop": "0x0047D8",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 0,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 1
+        },
+        {
+          "case": "reset_timeout",
+          "stop": "0x0047D8",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 0,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 1
+        },
+        {
+          "case": "reset_filter_write_lost",
+          "stop": "0x0047D8",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 0,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 1
+        },
+        {
+          "case": "reset_copy_cancel_lost",
+          "stop": "0x0047D8",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 0,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 1
+        },
+        {
+          "case": "stock_start_permit",
+          "stop": "0x00B7FC",
+          "qualified_receive_releases": 2,
+          "revoke_calls": 1,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 43,
+          "can13_grant": 0
+        },
+        {
+          "case": "stock_start_keeps_reset_on_fault",
+          "stop": "0x00B7FC",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 1,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 0
+        },
+        {
+          "case": "recovery_before_and_after_permit",
+          "stop": "0x00B884",
+          "qualified_receive_releases": 2,
+          "revoke_calls": 2,
+          "lower_setup_stayed_parked": true,
+          "setup_generation": 43,
+          "can13_grant": 0
+        },
+        {
+          "case": "recovery_prepare_timeout",
+          "stop": "0x00B890",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 1,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 0
+        },
+        {
+          "case": "recovery_rearm_rejects_wrong_mask",
+          "stop": "0x00B890",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 2,
+          "lower_setup_stayed_parked": true,
+          "setup_generation": 42,
+          "can13_grant": 0
+        },
+        {
+          "case": "bus_off_recovery",
+          "stop": "0x00B884",
+          "qualified_receive_releases": 2,
+          "revoke_calls": 2,
+          "lower_setup_stayed_parked": true,
+          "setup_generation": 43,
+          "can13_grant": 0
+        }
+      ]
+    },
+    "cold_owner_initialized_while_both_can_parked": true,
+    "first_native_setup_generation": 1,
+    "cold_ram_denial_keeps_rx_parked": true,
+    "native_permit_preserves_unowned_generation": true,
+    "shared_irq_and_foreground_checks": 7,
+    "used_actual_inhibit_implementation": true,
+    "physical_output_verified": false
+  },
+  "flashable_image": null,
+  "aggregate_placement": {
+    "protected_two_windows": {
+      "status": "FAIL_BINDINGS",
+      "profile": "two-window",
+      "capacity_bytes": 81636,
+      "retained_roots": 191,
+      "retained_sections": 560,
+      "known_flash_bytes": 100602,
+      "known_static_ram_bytes": 4,
+      "nominal_flash_margin_before_alignment_and_missing_material": -18966,
+      "missing_symbols": [
+        "rbm_h03_application_binding",
+        "rbm_h03_sensor_config"
+      ],
+      "known_sections_fit": false
+    },
+    "protected_padding": {
+      "status": "FAIL_BINDINGS",
+      "profile": "padding-candidate",
+      "capacity_bytes": 102356,
+      "retained_roots": 191,
+      "retained_sections": 560,
+      "known_flash_bytes": 100602,
+      "known_static_ram_bytes": 4,
+      "nominal_flash_margin_before_alignment_and_missing_material": 1754,
+      "missing_symbols": [
+        "rbm_h03_application_binding",
+        "rbm_h03_sensor_config"
+      ],
+      "known_sections_fit": true
+    },
+    "baseline_with_revoke_and_aliases_only": {
+      "status": "FAIL_BINDINGS",
+      "profile": "padding-candidate",
+      "capacity_bytes": 102356,
+      "retained_roots": 179,
+      "retained_sections": 536,
+      "known_flash_bytes": 96486,
+      "known_static_ram_bytes": 4,
+      "nominal_flash_margin_before_alignment_and_missing_material": 5870,
+      "missing_symbols": [
+        "rbm_h03_application_binding",
+        "rbm_h03_sensor_config"
+      ],
+      "known_sections_fit": true
+    }
+  }
+}

@@ -19,6 +19,9 @@ extern Lfj8H03CycleInput rbm_h03_cycle_input;
 extern const Lfj8H03TakeoverOps rbm_h03_target_takeover_ops;
 extern FactoryGearState rbm_h03_target_startup_gear;
 extern FactoryHydraulics rbm_h03_target_startup_gp;
+/* The U340E target always consumes the configured engine CAN source.
+ * It must share the single CAN owner, DTC state and application clock. */
+extern const Lfj8H03ApplicationEngine rbm_h03_target_engine;
 
 int rbm_h03_target_ram_owned(void *context);
 int rbm_h03_target_clock_ready(void *context);
