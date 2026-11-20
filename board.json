@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 699,
+  "sequence": 700,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -245,15 +245,16 @@
         "targets/lfj8/lfj8_h03_application.h",
         "targets/lfj8/lfj8_h03_engine_feed.c",
         "targets/lfj8/lfj8_h03_engine_feed.h",
-        "targets/lfj8/ta2005_engine_qualifier.h",
+        "targets/lfj8/lfj8_h03_engine_rx.c",
+        "targets/lfj8/lfj8_h03_engine_rx.h",
         "targets/lfj8/test_lfj8_h03_engine_feed.c",
         "verification/project-audit/can01-h03-operand-age.md"
       ],
       "stage": "in_progress",
       "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
       "claimed_at": "2026-11-20T21:52:45+00:00",
-      "updated_at": "2026-11-20T21:53:54+00:00",
-      "note": "Резервирую хранение метки удержанного RPM рядом с уже существующим квалификатором. Изменение затрагивает только потребитель двигателя и его вызов Task 2.",
+      "updated_at": "2026-11-20T21:55:03+00:00",
+      "note": "Храню метку удержанного RPM в существующем RX того же поколения; обновляю резерв файлов приёмника. Общий переносимый квалификатор остаётся без изменений.",
       "result": null,
       "based_on_reviews": []
     },
@@ -8477,9 +8478,40 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "b8c26e5dcfe946988a6a806430104820",
+      "task": "CAN-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
+      "at": "2026-11-20T21:55:03+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex CAN-01 — возраст операндов двигателя на Task 2",
+        "branch": "codex/can01-target-engine-1121-c7e4",
+        "files": [
+          "targets/lfj8/h03_phase_boot_fixture.c",
+          "targets/lfj8/lfj8_h03_application.c",
+          "targets/lfj8/lfj8_h03_application.h",
+          "targets/lfj8/lfj8_h03_engine_feed.c",
+          "targets/lfj8/lfj8_h03_engine_feed.h",
+          "targets/lfj8/lfj8_h03_engine_rx.c",
+          "targets/lfj8/lfj8_h03_engine_rx.h",
+          "targets/lfj8/test_lfj8_h03_engine_feed.c",
+          "verification/project-audit/can01-h03-operand-age.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
+        "claimed_at": "2026-11-20T21:52:45+00:00",
+        "updated_at": "2026-11-20T21:55:03+00:00",
+        "note": "Храню метку удержанного RPM в существующем RX того же поколения; обновляю резерв файлов приёмника. Общий переносимый квалификатор остаётся без изменений.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:54:45+00:00",
+  "updated_at": "2026-11-20T21:55:03+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
