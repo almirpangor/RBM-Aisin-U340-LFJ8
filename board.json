@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 225,
+  "sequence": 226,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -330,12 +330,12 @@
         "targets/lfj8/test_lfj8_h03_cycle.c",
         "verification/project-audit/toy04-loaded-gears.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "5e4502867edb4625887df3f56fafb8b0",
       "claimed_at": "2026-11-20T16:45:43+00:00",
-      "updated_at": "2026-11-20T16:48:04+00:00",
-      "note": "ПК-фикстура прошла пороги S01 для двух ненулевых нагрузок 5120/12800, публикацию GP перед событием и S1/S2. Запущены полные PC, M32R и NATIVE.",
-      "result": null
+      "updated_at": "2026-11-20T16:50:12+00:00",
+      "note": "Передаю интегратору. 24 точки D при двух синтетических нагрузках, пороги из S01, GP из квалифицированного снимка, логические S1/S2 и потеря события PASS. PC 35 шагов/71 тест, M32R 17 компонентов, NATIVE 16+15. Отчёт toy04-loaded-gears.md. Физическая нагрузка, R, ручное управление и гидравлика открыты.",
+      "result": "08b06eb14f7ccb6f46b3589f7f0131e143d529d8"
     },
     "CAN-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -2351,9 +2351,17 @@
       "action": "resume",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "at": "2026-11-20T16:49:33+00:00"
+    },
+    {
+      "operation_id": "078139da4dff45408395301b43befac0",
+      "task": "TOY-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "5e4502867edb4625887df3f56fafb8b0",
+      "at": "2026-11-20T16:50:12+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:49:33+00:00",
+  "updated_at": "2026-11-20T16:50:12+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
