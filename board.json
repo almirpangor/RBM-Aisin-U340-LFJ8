@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 163,
+  "sequence": 164,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -353,11 +353,11 @@
         "targets/lfj8/lfj8_h03_slu.h",
         "verification/project-audit/toy06-slu-command.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "8e012ef2677942af9da51dd6b630b99f",
       "claimed_at": "2026-11-20T16:15:26+00:00",
-      "updated_at": "2026-11-20T16:19:43+00:00",
-      "note": "Расчёт команды 055C5E совпал с R3 на 65 536 словах и 2560 случаях выбора; 3 отказных теста PASS. Отдельный M32R ELF32 REL, 372 байта, без неразрешённых символов. Интегратору: учесть компонент и отчёт verification/project-audit/toy06-slu-command.md в общем аудите, затем complete после принятия. Снимок SECONDARY, физический канал и стенд открыты.",
+      "updated_at": "2026-11-20T16:33:34+00:00",
+      "note": "Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте.",
       "result": "db9896a28e87f0b956d9a14409c41910d1d335e7"
     },
     "DTC-01": {
@@ -1795,9 +1795,17 @@
       "action": "resume",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "at": "2026-11-20T16:33:30+00:00"
+    },
+    {
+      "operation_id": "491d894ad8fb4540b6eb24035b3e8942",
+      "task": "TOY-06",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "8e012ef2677942af9da51dd6b630b99f",
+      "at": "2026-11-20T16:33:34+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:33:30+00:00",
+  "updated_at": "2026-11-20T16:33:34+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
