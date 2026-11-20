@@ -466,6 +466,12 @@ Lfj8CanResult lfj8_h03_can0_diag_submit(const Lfj8RegisterIo *io, const uint8_t 
     return result;
 }
 
+static int slot13_id_matches(const Lfj8RegisterIo *io, uint16_t expected_id)
+{
+    return io->read8(io->context, LFJ8_CAN0_SLOT13_SID0) == (expected_id >> 6) &&
+           io->read8(io->context, LFJ8_CAN0_SLOT13_SID1) == (expected_id & 0x3fu);
+}
+
 static Lfj8CanTxStatus slot13_status(const Lfj8RegisterIo *io, uint16_t expected_id,
                                     uint8_t cancel, uint16_t *finished_at)
 {
@@ -481,16 +487,27 @@ static Lfj8CanTxStatus slot13_status(const Lfj8RegisterIo *io, uint16_t expected
         return LFJ8_CAN_TX_UNAVAILABLE;
     }
     if ((control & (CAN_SLOT_TRFIN | CAN_SLOT_TRSTAT)) == CAN_SLOT_TRFIN) {
-        if (io->read8(io->context, LFJ8_CAN0_SLOT13_SID0) != (expected_id >> 6) ||
-            io->read8(io->context, LFJ8_CAN0_SLOT13_SID1) != (expected_id & 0x3fu)) {
+        if (!slot13_id_matches(io, expected_id)) {
             return LFJ8_CAN_TX_UNAVAILABLE;
         }
         *finished_at = io->read16(io->context, LFJ8_CAN0_SLOT13_TIMESTAMP);
         return h03_can0_operational(io) ? LFJ8_CAN_TX_FINISHED : LFJ8_CAN_TX_UNAVAILABLE;
     }
-    if (cancel && (control & CAN_SLOT_TR) != 0u && h03_can0_operational(io)) {
-        /* A frame already on the wire can finish. Do not reuse this slot
-         * until a later poll observes idle or completion. */
+    if (cancel && (control & CAN_SLOT_TR) != 0u) {
+        if ((control & CAN_SLOT_TRSTAT) == 0u) {
+            const int matches = slot13_id_matches(io, expected_id);
+            if (io->read8(io->context, LFJ8_CAN0_SLOT13_CNT) != control) {
+                return LFJ8_CAN_TX_PENDING;
+            }
+            if (!matches) {
+                return LFJ8_CAN_TX_UNAVAILABLE;
+            }
+        }
+        if (!h03_can0_operational(io)) {
+            return LFJ8_CAN_TX_UNAVAILABLE;
+        }
+        /* An active TX still relies on the caller's proven lease. Avoid
+         * reading its message RAM. Wait for idle or completion after abort. */
         io->write8(io->context, LFJ8_CAN0_SLOT13_CNT, CAN_SLOT_ABORT_TX);
     }
     return LFJ8_CAN_TX_PENDING;
@@ -524,10 +541,18 @@ static Lfj8CanResult torque_slot_available(const Lfj8RegisterIo *io)
     return LFJ8_CAN_READY;
 }
 
-static int torque_listener_id(const Lfj8RegisterIo *io)
+static Lfj8CanResult torque_listener_ready(const Lfj8RegisterIo *io, uint8_t control)
 {
-    return io->read8(io->context, LFJ8_CAN0_SLOT13_SID0) == (LFJ8_CAN_TORQUE_STATUS >> 6) &&
-           io->read8(io->context, LFJ8_CAN0_SLOT13_SID1) == (LFJ8_CAN_TORQUE_STATUS & 0x3fu);
+    if ((control & CAN_SLOT_TRSTAT) != 0u) {
+        return LFJ8_CAN_SLOT_BUSY;
+    }
+    const int matches = slot13_id_matches(io, LFJ8_CAN_TORQUE_STATUS);
+    /* A reception can start while the CPU reads the ID. An unstable
+     * snapshot cannot distinguish a busy listener from a different ID. */
+    if (io->read8(io->context, LFJ8_CAN0_SLOT13_CNT) != control) {
+        return LFJ8_CAN_SLOT_BUSY;
+    }
+    return matches ? LFJ8_CAN_READY : LFJ8_CAN_SLOT_NOT_OWNED;
 }
 
 static Lfj8CanResult pause_torque_listener(const Lfj8RegisterIo *io)
@@ -539,6 +564,10 @@ static Lfj8CanResult pause_torque_listener(const Lfj8RegisterIo *io)
     if ((control & (uint8_t)~(CAN_SLOT_RR | CAN_SLOT_TRFIN | CAN_SLOT_ML)) != 0u ||
         (control & CAN_SLOT_RR) == 0u) {
         return LFJ8_CAN_SLOT_BUSY;
+    }
+    const Lfj8CanResult listener = torque_listener_ready(io, control);
+    if (listener != LFJ8_CAN_READY) {
+        return listener;
     }
     /* RR can start receiving asynchronously. Stop the leased listener
      * and verify idle before another sender touches the message storage. */
@@ -554,7 +583,7 @@ static Lfj8CanResult listen_for_torque_status(const Lfj8RegisterIo *io)
     }
     const uint8_t control = io->read8(io->context, LFJ8_CAN0_SLOT13_CNT);
     if ((control & CAN_SLOT_RR) != 0u) {
-        return (control & CAN_SLOT_TRSTAT) != 0u ? LFJ8_CAN_SLOT_BUSY : LFJ8_CAN_READY;
+        return torque_listener_ready(io, control);
     }
     if (control != 0u && control != CAN_SLOT_TRFIN && control != (CAN_SLOT_TR | CAN_SLOT_TRFIN)) {
         return LFJ8_CAN_SLOT_BUSY;
@@ -566,7 +595,7 @@ static Lfj8CanResult listen_for_torque_status(const Lfj8RegisterIo *io)
     io->write8(io->context, LFJ8_CAN0_SLOT13_SID0, (uint8_t)(LFJ8_CAN_TORQUE_STATUS >> 6));
     io->write8(io->context, LFJ8_CAN0_SLOT13_SID1, (uint8_t)(LFJ8_CAN_TORQUE_STATUS & 0x3fu));
     io->write8(io->context, LFJ8_CAN0_SLOT13_DLC, 8u);
-    if (!h03_can0_operational(io) || !torque_listener_id(io)) {
+    if (!h03_can0_operational(io) || !slot13_id_matches(io, LFJ8_CAN_TORQUE_STATUS)) {
         return LFJ8_CAN_CONTROLLER_UNAVAILABLE;
     }
     io->write8(io->context, LFJ8_CAN0_SLOT13_CNT, CAN_SLOT_RR);
