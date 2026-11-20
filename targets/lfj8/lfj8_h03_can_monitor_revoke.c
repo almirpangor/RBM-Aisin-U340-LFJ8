@@ -22,8 +22,7 @@ void rbm_h03_can_monitor_revoke_locked(void)
         return;
     }
 
-    /* Do not advance or consume the epoch here. The native setup permits
-     * and CAN owner are responsible for announcing and admitting a new one. */
+    /* A failed setup must leave this generation revoked. */
     h03_can_owner.grant = 0u;
     app->main->valid = 0u;
     rbm_h03_fast_output.valid = 0u;
@@ -42,4 +41,13 @@ void rbm_h03_can_monitor_revoke_locked(void)
         return;
     }
     lfj8_h03_takeover_revoke_locked(takeover);
+}
+
+void rbm_h03_can_monitor_publish_setup_locked(void)
+{
+    const Lfj8H03ApplicationBinding *const app = &rbm_h03_application_binding;
+    const Lfj8RegisterIo *const io = app->takeover_ops->io;
+    if (app->ram_owned(io->context) == 1 && h03_can_owner.initialized && h03_can_owner.grant == 0u) {
+        ++h03_can_owner.setup_generation;
+    }
 }
