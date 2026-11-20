@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 531,
+  "sequence": 532,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -393,12 +393,12 @@
         "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
         "verification/project-audit/dtc01-h03-session-foreground.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "f6547625e0dd48c180162a7963424191",
       "claimed_at": "2026-11-20T19:38:10+00:00",
-      "updated_at": "2026-11-20T19:47:53+00:00",
-      "note": "Таймер, граница IRQ и TX drain проходят M32R. 21 из 22 нативных групп прошла с первого раза; phase-boot повторяется отдельно после таймаута компилятора. Итоговый линк ждёт application_binding/sensor_config.",
-      "result": null
+      "updated_at": "2026-11-20T19:51:50+00:00",
+      "note": "Штатный CAN foreground H03 обслуживает девять фаз C0, закрывает сеанс, удаляет ожидающий RX и отсекает старые IRQ, TX13 освобождается через abort/drain. ПК 41/120, M32R foreground и 22 нативные группы (phase-boot отдельным повтором), 18 BasicCAN сравнений. +12 Б RAM. Остались подтверждённый источник T6 в application_binding, sensor_config и сканер на стенде. Отчёт dtc01-h03-session-foreground.md.",
+      "result": "c9d57c1fb0a038b06a5acff8aafffa639d3b0726"
     },
     "VSS-01": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -4836,9 +4836,17 @@
       "action": "claim",
       "claim_id": "65f87fefa9434dd69e6efd740fa10b71",
       "at": "2026-11-20T19:51:21+00:00"
+    },
+    {
+      "operation_id": "1a57757a3fea4805a2c058620c7ddce9",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "f6547625e0dd48c180162a7963424191",
+      "at": "2026-11-20T19:51:50+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:51:21+00:00",
+  "updated_at": "2026-11-20T19:51:50+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
