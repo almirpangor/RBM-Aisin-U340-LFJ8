@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 760,
+  "sequence": 761,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -424,8 +424,8 @@
       "stage": "in_progress",
       "claim_id": "0c1450c04da64b0da07d705e9b9d38bb",
       "claimed_at": "2026-11-20T23:08:15+00:00",
-      "updated_at": "2026-11-20T23:08:15+00:00",
-      "note": "Сбрасываю ожидающий RX и закрываю диагностический foreground при утрате пары времени CAN/TML0 или допуска TX13. Проверю сброс сеанса и восстановление только с новым запросом.",
+      "updated_at": "2026-11-20T23:10:50+00:00",
+      "note": "Сброс полного backlog подключён к отказу CAN13. Регрессия на старом коде воспроизведена, тесты PC/M32R и резидентный BasicCAN прошли. Проверяю соседние сданные изменения.",
       "result": null,
       "based_on_reviews": []
     },
@@ -10243,9 +10243,35 @@
           "eb973761003948398f33f495758fde06"
         ]
       }
+    },
+    {
+      "operation_id": "b9b242a17a6c4f7c937c733db0755241",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "0c1450c04da64b0da07d705e9b9d38bb",
+      "at": "2026-11-20T23:10:50+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-01 — отзыв при потере времени",
+        "branch": "codex/dtc01-foreground-clock-loss-7bd19ea4",
+        "files": [
+          "targets/lfj8/lfj8_h03_dtc_foreground.c",
+          "targets/lfj8/lfj8_h03_dtc_foreground.h",
+          "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
+          "verification/project-audit/dtc01-foreground-clock-loss.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "0c1450c04da64b0da07d705e9b9d38bb",
+        "claimed_at": "2026-11-20T23:08:15+00:00",
+        "updated_at": "2026-11-20T23:10:50+00:00",
+        "note": "Сброс полного backlog подключён к отказу CAN13. Регрессия на старом коде воспроизведена, тесты PC/M32R и резидентный BasicCAN прошли. Проверяю соседние сданные изменения.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T23:10:30+00:00",
+  "updated_at": "2026-11-20T23:10:50+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
