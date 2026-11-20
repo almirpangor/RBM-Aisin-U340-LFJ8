@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 754,
+  "sequence": 755,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -404,25 +404,21 @@
     },
     "DTC-01": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
-      "label": "Codex DTC-01 — источник T6 от TML0",
-      "branch": "codex/dtc01-t6-clock-source-7bd19ea4",
+      "label": "Codex DTC-01 — отзыв при потере времени",
+      "branch": "codex/dtc01-foreground-clock-loss-7bd19ea4",
       "files": [
-        "targets/lfj8/check_h03_dtc_basiccan.py",
-        "targets/lfj8/h03_dtc_rx_hook_fixture.c",
-        "targets/lfj8/lfj8_h03_dtc_native.c",
-        "targets/lfj8/lfj8_h03_dtc_native.h",
-        "verification/project-audit/dtc01-h03-t6-clock-source.md"
+        "targets/lfj8/lfj8_h03_dtc_foreground.c",
+        "targets/lfj8/lfj8_h03_dtc_foreground.h",
+        "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
+        "verification/project-audit/dtc01-foreground-clock-loss.md"
       ],
-      "stage": "done",
-      "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
-      "claimed_at": "2026-11-20T20:30:38+00:00",
-      "updated_at": "2026-11-20T21:14:43+00:00",
-      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
-      "result": "d3c7cd228e7e7e1b3ecac3986fa828d57712a7f8",
-      "based_on_reviews": [
-        "0580560d4a0e442cb07862988bd40b0f",
-        "f6547625e0dd48c180162a7963424191"
-      ]
+      "stage": "in_progress",
+      "claim_id": "0c1450c04da64b0da07d705e9b9d38bb",
+      "claimed_at": "2026-11-20T23:08:15+00:00",
+      "updated_at": "2026-11-20T23:08:15+00:00",
+      "note": "Сбрасываю ожидающий RX и закрываю диагностический foreground при утрате пары времени CAN/TML0 или допуска TX13. Проверю сброс сеанса и восстановление только с новым запросом.",
+      "result": null,
+      "based_on_reviews": []
     },
     "VSS-01": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -10059,9 +10055,35 @@
           "96f93fae25924717a50bf354ff863f44"
         ]
       }
+    },
+    {
+      "operation_id": "b5d3864728bf4184a66293de7da5ed78",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "0c1450c04da64b0da07d705e9b9d38bb",
+      "at": "2026-11-20T23:08:15+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-01 — отзыв при потере времени",
+        "branch": "codex/dtc01-foreground-clock-loss-7bd19ea4",
+        "files": [
+          "targets/lfj8/lfj8_h03_dtc_foreground.c",
+          "targets/lfj8/lfj8_h03_dtc_foreground.h",
+          "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
+          "verification/project-audit/dtc01-foreground-clock-loss.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "0c1450c04da64b0da07d705e9b9d38bb",
+        "claimed_at": "2026-11-20T23:08:15+00:00",
+        "updated_at": "2026-11-20T23:08:15+00:00",
+        "note": "Сбрасываю ожидающий RX и закрываю диагностический foreground при утрате пары времени CAN/TML0 или допуска TX13. Проверю сброс сеанса и восстановление только с новым запросом.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T23:06:45+00:00",
+  "updated_at": "2026-11-20T23:08:15+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
