@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 390,
+  "sequence": 391,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -384,12 +384,12 @@
         "targets/lfj8/test_lfj8_h03_dtc_can.c",
         "verification/project-audit/dtc01-c0-session-timer.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "69ac904b985641cea43c72eba859a273",
       "claimed_at": "2026-11-20T18:25:00+00:00",
-      "updated_at": "2026-11-20T18:32:28+00:00",
-      "note": "Исходный C167 подтвердил reload 9, фазы задачи 12 и возврат 9F/11 с сохранением истории. Реализованы таймер и безопасный отзыв TX13. ПК 37/102, M32R 18, совместный прогон с DTC-02/CAN-03 PASS. Готовлю публикацию.",
-      "result": null
+      "updated_at": "2026-11-20T18:35:59+00:00",
+      "note": "S03 подтвердил F9F1=9, 256 фаз селектора и сброс до 9F/11 с сохранением истории. Реализованы шаг сеанса и отзыв TX13 по обычным правилам. На f366131 прошли ПК 37/113, M32R 18 и 18 сравнений DTC-02/CAN-03. Открыта привязка события H03 с очисткой ожидающего RX. Отчёт dtc01-c0-session-timer.md.",
+      "result": "03ce2592b323a3605e8003fdca16eaf7747e746a"
     },
     "VSS-01": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -3689,9 +3689,17 @@
       "action": "heartbeat",
       "claim_id": "001fe3e513b645ef9370cb6af6d76bc2",
       "at": "2026-11-20T18:35:52+00:00"
+    },
+    {
+      "operation_id": "02695dcf5d244e6394a75daa769a3dc0",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "69ac904b985641cea43c72eba859a273",
+      "at": "2026-11-20T18:35:59+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:35:52+00:00",
+  "updated_at": "2026-11-20T18:35:59+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
