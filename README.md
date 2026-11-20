@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T19:26:16+00:00**. Изменение № **479**.
+Обновлено UTC: **2026-11-20T19:26:32+00:00**. Изменение № **480**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -18,7 +18,7 @@
 | TOY-04 — Полная последовательность переключений | На проверке | Codex — размер планировщика выходов H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/toy04-output-flash-01a1f9a2 | 2026-11-20T18:27:21+00:00 | Планировщик выходов освобождает 108 байт. Общий small с CAN-02/H03-04/H03-05: 117 точек, запас 228/140, ноль релокаций. Пройдены 18 компонентных и 15 штатных сценариев M32R. На ПК совпали 888888 последовательностей и 65536 сочетаний блокировок. Планировщик и доказательства готовы к объединению. / commit c2eee31f06230b7d060d88bb051721a1cdf30445 |
 | TOY-05 — Обучение и сохранение адаптаций | На проверке | Codex — исходный снимок адаптаций S01 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy05-startup-baseline-32e6ac79 | 2026-11-20T18:35:22+00:00 | 34 байта холодного fallback подтверждены по ROM S01 и закреплённому V850-отчёту R3. Новый снимок доступен контроллеру. ПК 37 шагов/113 тестов, R3 288 сравнений, M32R 18+6 программных и 17 штатных групп, размещение 119 корней. Отчёт verification/project-audit/toy05-s01-baseline.md. Носитель, штатный запуск и долговечный сброс на блоке открыты. Передаю интегратору. / commit a806502d631248ae4a1c49396f05034c18d600dd |
 | TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — границы стадий SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-stage-boundaries-fea1b366 | 2026-11-20T18:48:09+00:00 | Передаю на объединение. 05DA44 очищает входное смещение, 05B6DE ведёт GP−4829.2 с каноническими счётчиками FAST. R3 1280+38400, PC 37/113, M32R 18+17+6, 6 сценариев по адресам PASS. ELF +236 Б, запас prefix 680 Б. Отчёт verification/project-audit/toy06-slu-stage-boundaries.md. Полный снимок и физический SLU открыты. / commit 021ca3fe3c7c4ee657cb7ebb59a1a4b855c2b6bd |
-| CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Чат CAN — поколение RPM/ОЖ H03 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-engine-rx-generation-1120-c7e4 | 2026-11-20T18:27:55+00:00 | RX11/12 detects native CAN generation changes in its ordinary poll and revokes RPM, ECT and model fields until reattachment. PC 37/102, M32R 18 components +17 native, Bosch PASS_OFFLINE_ONLY. RAM +8 B, code +76 B in bound sizing model. Integration call after init: lfj8_h03_engine_rx_bind_generation(rx, &amp;h03_can_owner.setup_generation). Evidence verification/project-audit/can01-engine-rx-generation.md. Target startup and hardware open. / commit c14dbfda51b20fe58b904f8d220e3d35e63ff5dd |
+| CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Свободна для продолжения | Предыдущий: Чат CAN — поколение RPM/ОЖ H03 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-engine-rx-generation-1120-c7e4 | 2026-11-20T19:26:32+00:00 | Предыдущая порция принята. Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт. / commit c14dbfda51b20fe58b904f8d220e3d35e63ff5dd |
 | CAN-02 — Общий диспетчер CAN13 | На проверке | Codex CAN-02 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-02-torque-submit-fea1b366 | 2026-11-20T19:00:23+00:00 | Адаптер отзывает владение CAN13 и подтверждение момента в том же опросе при ошибке отправки, SLOT_BUSY допускает повтор. ПК 37 шагов и 113 тестов, M32R 18 компонентов, native 17 и components 6, prefix-candidate PASS. Доказательства verification/project-audit/can02-torque-submit.md. Аппаратные окна и владение требуют проверки. / commit 9ad7feedbace41a44cccab0f2ead94b1d5a7425f |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Свободна для продолжения | Предыдущий: Codex CAN-03 monitor admission \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can03-h03-monitor-startup-01a1f99f | 2026-11-20T19:15:26+00:00 | Интегратор принял опубликованный 89d0ed8 в общее дерево 2b7be4b. Передаю только исправление верификатора для пути проекта с кириллицей основному чату; исходный результат сохранён. / commit 89d0ed83d5e9c84a2834a95fb1bf01a8e67aae59 |
 | CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 — срок подтверждения момента \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-progress-deadline-fea1b366 | 2026-11-20T18:40:13+00:00 | Передаю на объединение. Статус в срок захвата ≥60 мс и на конце импульса не подтверждает момент. 6 границ + срок импульса, ПК 37 шагов/113 тестов, M32R 18 компонентов и 17 штатных групп. Два ST10 OFFLINE_ONLY: раньше 3 REFRESH, теперь CANCEL в 460 мс, ноль при 510. Prefix ELF +48 Б, запас 868. Отчёт verification/project-audit/can04-progress-deadline.md. Реальные метки и калибровка открыты. / commit 07fc25af65515ddd77b680b37423ddbce80f4d55 |
@@ -273,13 +273,13 @@
 </details>
 
 <details>
-<summary>CAN-01 — Форматы CAN и квалификация RPM/ОЖ: На проверке</summary>
+<summary>CAN-01 — Форматы CAN и квалификация RPM/ОЖ: Свободна для продолжения</summary>
 
 **Сделано.** Приём RPM/ОЖ отзывает данные при изменении поколения CAN и требует повторного подключения. Регрессии прошли; RAM выросла на восемь байт.
 
 **Осталось доделать.** В штатном запуске связать engine_rx с setup_generation владельца CAN, общими часами и остальными входами.
 
-**Сейчас выполняет.** Чат CAN — поколение RPM/ОЖ H03 — codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Результат ограничен перечисленными полями и сценариями приёма.
 
@@ -530,16 +530,6 @@
 
 ## Зарезервированные файлы
 
-### CAN-01
-
-Чат: Чат CAN — поколение RPM/ОЖ H03. Claim ID: 013d85ef472c4e43bd8a34e924942ec2.
-
-- targets/lfj8/lfj8_h03_engine_feed.h
-- targets/lfj8/lfj8_h03_engine_rx.c
-- targets/lfj8/lfj8_h03_engine_rx.h
-- targets/lfj8/test_lfj8_h03_engine_feed.c
-- verification/project-audit/can01-engine-rx-generation.md
-
 ### CAN-02
 
 Чат: Codex CAN-02. Claim ID: a9db7d810e7b460fb52e5042ad8e2450.
@@ -683,6 +673,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T19:26:32+00:00 | CAN-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T19:26:16+00:00 | MODE-03 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T19:25:58+00:00 | H03-05 | complete | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T19:25:41+00:00 | VSS-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
@@ -712,4 +703,3 @@
 | 2026-11-20T19:02:35+00:00 | MODE-01 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T19:02:12+00:00 | REL-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T19:01:49+00:00 | VSS-02 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
-| 2026-11-20T19:01:29+00:00 | ECU-01 | claim | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
