@@ -12,6 +12,9 @@ void lfj8_selector_adc_init(volatile Lfj8SelectorAdc *adc)
 
 static void publish_locked(volatile Lfj8SelectorAdc *adc, uint16_t raw, uint32_t captured_us)
 {
+    if (adc->pending_event == LFJ8_SELECTOR_ADC_CLOCK_LOST) {
+        return;
+    }
     adc->pending_us = captured_us;
     if (adc->pending_event != LFJ8_SELECTOR_ADC_NONE) {
         adc->pending_raw = UINT16_MAX;
@@ -30,6 +33,15 @@ void lfj8_selector_adc_publish(volatile Lfj8SelectorAdc *adc,
 {
     const uint32_t saved_state = io->enter(io->context);
     publish_locked(adc, raw, captured_us);
+    io->leave(io->context, saved_state);
+}
+
+void lfj8_selector_adc_clock_lost(volatile Lfj8SelectorAdc *adc, const Lfj8RegisterIo *io)
+{
+    const uint32_t saved_state = io->enter(io->context);
+    adc->pending_us = 0;
+    adc->pending_raw = UINT16_MAX;
+    adc->pending_event = LFJ8_SELECTOR_ADC_CLOCK_LOST;
     io->leave(io->context, saved_state);
 }
 

@@ -63,9 +63,14 @@ int lfj8_range_control_init(Lfj8RangeControl *control, const RbmU340ePolicy *pol
     return 1;
 }
 
-static void update_selector(Lfj8RangeControl *control, Lfj8SelectorAdcReading reading,
-                            uint32_t now_us)
+void lfj8_range_control_sample_selector(Lfj8RangeControl *control, Lfj8SelectorAdcReading reading,
+                                        uint32_t now_us)
 {
+    if (reading.event == LFJ8_SELECTOR_ADC_CLOCK_LOST) {
+        control->sampled = 0;
+        control->selector = rbm_u340e_selector_sample(&control->filter, UINT16_MAX);
+        return;
+    }
     if (control->sampled && now_us - control->last_sample_us >= control->max_age_us) {
         control->sampled = 0;
         control->selector = rbm_u340e_selector_sample(&control->filter, UINT16_MAX);
@@ -96,7 +101,12 @@ int lfj8_range_control_step(Lfj8RangeControl *control, Lfj8SelectorAdcReading re
         *output = (RbmU340eOutput){0};
         return 0;
     }
-    update_selector(control, reading, now_us);
+    lfj8_range_control_sample_selector(control, reading, now_us);
+    if (reading.event == LFJ8_SELECTOR_ADC_CLOCK_LOST) {
+        control->controller.buttons_seen = 0;
+        *output = (RbmU340eOutput){0};
+        return 0;
+    }
     RbmU340eInput snapshot = *input;
     snapshot.selector = control->selector;
     return rbm_u340e_step(&control->controller, &snapshot, output);
@@ -117,6 +127,12 @@ static void disarm_buttons(Lfj8ButtonFilter *filter)
     filter->candidate_valid = 0;
     filter->armed = 0;
     filter->stable = 0;
+}
+
+void lfj8_range_control_disarm_buttons(Lfj8RangeControl *control, Lfj8ButtonFilter *filter)
+{
+    disarm_buttons(filter);
+    control->controller.buttons_seen = 0;
 }
 
 static void update_buttons(Lfj8ButtonFilter *filter, const Lfj8ButtonReading *reading,
