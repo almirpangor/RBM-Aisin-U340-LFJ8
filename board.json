@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 342,
+  "sequence": 343,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -45,8 +45,8 @@
       "stage": "in_progress",
       "claim_id": "7b194ec723ee434f9d361bebb30ba41a",
       "claimed_at": "2026-11-20T18:05:17+00:00",
-      "updated_at": "2026-11-20T18:05:17+00:00",
-      "note": "Заменяю тестовые RX callbacks целевой обвязкой для очереди, пары часов и CAN-поколения. Провожу запрос от штатного IRQ H03 через общий CAN13 foreground до ответа. Использую явные входы H03-03/CAN-03 в своей ветке.",
+      "updated_at": "2026-11-20T18:13:23+00:00",
+      "note": "Совместный прогон с CAN-03 720bb64 подтверждён: 18 нативных сценариев, RX 0x732 → TX 0x722, два сравнения обхода. ПК 37/102, M32R 18 и компонентный переход поколения. Готовлю результат к review.",
       "result": null
     },
     "CAN-03": {
@@ -3311,9 +3311,17 @@
       "action": "review",
       "claim_id": "dde35120f1f04f6b9be6619a41ccbc33",
       "at": "2026-11-20T18:13:12+00:00"
+    },
+    {
+      "operation_id": "d5e973cb0c7a4e9980a84c75ac15ba9b",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "7b194ec723ee434f9d361bebb30ba41a",
+      "at": "2026-11-20T18:13:23+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:13:12+00:00",
+  "updated_at": "2026-11-20T18:13:23+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
