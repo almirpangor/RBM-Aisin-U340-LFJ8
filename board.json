@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 178,
+  "sequence": 179,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -253,12 +253,12 @@
         "targets/lfj8/h03_selector_adc_hook.S",
         "verification/project-audit/mode02-h03-selector-adc.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "e02562d3b21f423d914c1c00a9c88077",
       "claimed_at": "2026-11-20T16:28:17+00:00",
-      "updated_at": "2026-11-20T16:33:47+00:00",
-      "note": "Четыре пары штатный H03/адаптер на M32R прошли: сохранение контекста, публикация AN2, переполнение. Штатные ПК и M32R прогоны завершены; сохраняю доказательства для передачи.",
-      "result": null
+      "updated_at": "2026-11-20T16:37:36+00:00",
+      "note": "Передаю интегратору привязку публикации AN2 к штатной записи H03: 4 пары и 3 отрицательные проверки M32R, ПК 35 шагов/71 тест, M32R link и 17 компонентов PASS. Отчёт verification/project-audit/mode02-h03-selector-adc.md. При приёмке внести 3 новых файла в общий аудит и выполнить complete после публикации main. Штатный callback, часы/стек, кнопки и стенд остаются открыты.",
+      "result": "f92fde84f590460d713dee020ee5ddc6ccd089e4"
     },
     "TOY-05": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -1913,9 +1913,17 @@
       "action": "review",
       "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
       "at": "2026-11-20T16:37:13+00:00"
+    },
+    {
+      "operation_id": "f5ee1c074dae4d9eb81ed8e8628dda1c",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "review",
+      "claim_id": "e02562d3b21f423d914c1c00a9c88077",
+      "at": "2026-11-20T16:37:36+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:37:13+00:00",
+  "updated_at": "2026-11-20T16:37:36+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
