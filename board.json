@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 638,
+  "sequence": 681,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -24,11 +24,11 @@
         "verification/project-audit/2026-11-21-final-integration.json",
         "verification/project-audit/final-integration-20261121/"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "4c455b84d1db43c0a19c00f91baec753",
       "claimed_at": "2026-11-20T21:01:34+00:00",
-      "updated_at": "2026-11-20T21:13:50+00:00",
-      "note": "Все 42 опубликованные порции и локальный CAN-01 объединены в main. 41/172 ПК, 22 native, 18+8 M32R, 6 размещённых групп. Исправлены include и обязательный engine binding. Рабочего TCM BIN нет: FAIL_BINDINGS, 10 поставщиков; остатки обновлены.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "55b9a240338ef1cf58da6218e8634450373b9f92",
       "based_on_reviews": [
         "15e6e783e4d74a5b9c000d3658becff0",
@@ -48,11 +48,11 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/dtc02-resident-rx-integrated-placement.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
       "claimed_at": "2026-11-20T20:34:46+00:00",
-      "updated_at": "2026-11-20T20:44:17+00:00",
-      "note": "Нижний BasicCAN включён в общий расчёт размещения: 3224 байта, обе ветви и проверенная RAM-привязка владельца. 18 сравнений IRQ, 11+18 проверок M32R и 6 по адресам прошли. Расширенная сборка с RAM-алиасами оставляет FAIL_BINDINGS по application_binding и sensor_config. T6/native_ready и стенд открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "5e6c7a8818290bddebfa97bb55d199570f4127ca",
       "based_on_reviews": [
         "0580560d4a0e442cb07862988bd40b0f",
@@ -71,11 +71,11 @@
         "targets/lfj8/lfj8_h03_can_target.h",
         "verification/project-audit/can03-dtc-shared-owner.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "ffff885e4aa646d3b41c030b6eda77cb",
       "claimed_at": "2026-11-20T20:43:58+00:00",
-      "updated_at": "2026-11-20T20:52:18+00:00",
-      "note": "Холодный путь снимает старый IRQ target, нативный foreground использует тот же h03_can_owner, IRQ-очередь и TML0. 0x732→0x722, потеря квалификации, 18 сравнений BasicCAN, ПК 41/129 и все 22 native PASS. Нужны конечная привязка H03-03, T6 DTC-01 и размещение DTC-02. Отчёт verification/project-audit/can03-dtc-shared-owner.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "3b2e4d6ab163cf7f384ba94447f5fe6fb92950db",
       "based_on_reviews": [
         "ad997bd677c542c682cec961d4619193",
@@ -93,11 +93,11 @@
         "targets/lfj8/test_lfj8_h03_range_pn.c",
         "verification/project-audit/toy03-independent-pn-qualifier.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "5d801751d9964d70bb7719d4db03f597",
       "claimed_at": "2026-11-20T20:09:46+00:00",
-      "updated_at": "2026-11-20T20:15:31+00:00",
-      "note": "Допуск независимого P/N проверяет AN2, поколения, давность и рассогласование; в снимок идёт старейшая метка. M32R: 1024 AN2, 12 сочетаний P/N, проверки отказа, 5 ADC-сравнений и 8 компонентных групп PASS. Жгут и foreground открыты. Отчёт toy03-independent-pn-qualifier.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "3f2596f31930203fe9cd7918e9b62f81ea82699c"
     },
     "REL-01": {
@@ -109,11 +109,11 @@
         "tools/package_workset.py",
         "verification/project-audit/rel01-firmware-identity.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "fe39fa893cbe4843b42a5e9a0f82f3ed",
       "claimed_at": "2026-11-20T19:56:50+00:00",
-      "updated_at": "2026-11-20T20:02:20+00:00",
-      "note": "Проверка идентификаторов и хешей исходников подключена в --firmware-pair. Пройдены 41 этап ПК (123 unittest), проверка исходников и шесть отказов CLI с настоящим Git-архивом. Границы в verification/project-audit/rel01-firmware-identity.md. Выпуск BIN остаётся открытым.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "de7df4ab3da2c30240e0a8d3635f206787236d94"
     },
     "H03-03": {
@@ -127,11 +127,11 @@
         "targets/lfj8/lfj8_h03_application_binding.h",
         "verification/project-audit/h03-03-native-binding.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "77e3f918a51449ab982b5ad578a53b85",
       "claimed_at": "2026-11-20T20:33:34+00:00",
-      "updated_at": "2026-11-20T20:41:45+00:00",
-      "note": "Определён rbm_h03_application_binding, 7 ссылок RAM разрешены в M32R, профиль обязателен. Отдельный ELF прошёл холодный/тёплый старт и foreground; штатная регрессия 56 сценариев/80 IRQ. Восемь поставщиков платформы и измеренные параметры открыты. Отчёт h03-03-native-binding.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "e31b2572704388e3bfc90a5fdbb83c1b6812d909",
       "based_on_reviews": [
         "c7107b9bc8974c67b7113c75529f935c"
@@ -150,11 +150,11 @@
         "tests/test_h03_service_placement.py",
         "verification/project-audit/h03-04-service-placement.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
       "claimed_at": "2026-11-20T19:45:11+00:00",
-      "updated_at": "2026-11-20T19:55:21+00:00",
-      "note": "В двухоконный адресный ELF включены четыре обёртки защиты и выключение Virtual Flash. Точные байты прошли 27 сценариев записи, 28 закрытия и 512 проверок Virtual Flash. Для приёмки нужны установка ниже 0x8000, окончательная карта RAM/Flash/IRQ и оборудование. Отчёт verification/project-audit/h03-04-service-placement.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "423ff76125dcbd1587fecdfedcf51577023b18f9"
     },
     "DTC-04": {
@@ -167,11 +167,11 @@
         "targets/lfj8/test_lfj8_h03_nvm.c",
         "verification/project-audit/dtc04-retired-slot-retry.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "3118c56ba79c42ab952bbd17df49ca78",
       "claimed_at": "2026-11-20T19:54:35+00:00",
-      "updated_at": "2026-11-20T20:01:40+00:00",
-      "note": "Исправлен возврат старой истории при утрате пустой записи и первом прерванном стирании: старый слот исключён до новой публикации, поколение проверяется CRC. ПК/M32R 8 сочетаний, 16 срывов стирания, 3 отказа без записи; ПК 41/120; адресная модель 94958 Б. Драйвер/выделение блоков/стенд открыты. Отчёт dtc04-retired-slot-retry.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "7f0c51ee5e1f7a3070eb774e57a8baf4b6b870af"
     },
     "H03-02": {
@@ -186,11 +186,11 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/h03-02-sensor-placement.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "15e6e783e4d74a5b9c000d3658becff0",
       "claimed_at": "2026-11-20T19:37:59+00:00",
-      "updated_at": "2026-11-20T19:49:29+00:00",
-      "note": "9 нативных S51/S83/ATF врезок в общей компоновке, 7 OEM-продолжений подтверждены ELF. 41 этап ПК, 21 native + phase-boot отдельно (38/80), 6 размещённых сценариев. 95402 байта с CAN и RAM-псевдонимами; FAIL_BINDINGS: application_binding и sensor_config. Отчёт h03-02-sensor-placement.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "e27adef36dc49933acdd8062446e3c4fe798f77a"
     },
     "CAN-05": {
@@ -203,11 +203,11 @@
         "targets/bosch/verify_rx_timestamp.py",
         "verification/project-audit/can05-st10-bound-t4.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "4be301294ddc41508ac41d1b94c6b14a",
       "claimed_at": "2026-11-20T19:39:22+00:00",
-      "updated_at": "2026-11-20T19:56:55+00:00",
-      "note": "Реальный профиль Bosch включает чтение T4 до пустого опроса 0x1AE, проверку после IF1 и отзыв скорости. Два варианта ST10/C_CAN прошли 26 групп каждый и 51 запись целостности. Проверены RB, 12 прежних сборок, 41 этап ПК и 120 тестов с отдельным повтором S03. Открыты RAM и публикация поколения, потребитель момента, измеренный lease_ticks и ECU-02. Отчёт can05-st10-bound-t4.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "f3bb5000ebfdaaa30a33665bac1eab06ddb9165c"
     },
     "DTC-03": {
@@ -223,11 +223,11 @@
         "targets/lfj8/lfj8_h03_dtc_target.h",
         "verification/project-audit/dtc03-h03-p0710-foreground.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "6ce2dadd9393441586bcbbbeb50614e0",
       "claimed_at": "2026-11-20T19:41:53+00:00",
-      "updated_at": "2026-11-20T19:55:44+00:00",
-      "note": "Порция P0710: OEM AN1 через DTC target и Chery CAN. Прошли 20+14 сценариев M32R, сравнение регистров, 6920 проверок S03, DTC foreground ПК/M32R, повтор CAN Bosch и проверка RAM. Нужны финальное размещение, конфигурация срока и истории, полный запуск и сканер. Остальные DTC и оба выпуска остаются открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "4ee5305412f0e5b1aa708e43cd9ee2e1fde0777c"
     },
     "TOY-02": {
@@ -238,11 +238,11 @@
         "targets/bosch/audit_toyota_load_producers.py",
         "verification/project-audit/toy02-bosch-load-mode-source.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "e313f0457b4d468897a8179d3615ce3e",
       "claimed_at": "2026-11-20T20:07:45+00:00",
-      "updated_at": "2026-11-20T20:14:56+00:00",
-      "note": "Прослежены штатный счётчик 9224 и обновление A88B.0 до ветвей F8D6. Совпали 10 окон S04/REV8, прошли 64 комбинации и две последовательности на исходных инструкциях. Повторены проверки CAN и отсутствие парных GP-снимков. Условия и ограничения описаны в verification/project-audit/toy02-bosch-load-mode-source.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "aee80b834830ebf84a5120862b9bd999864a616c"
     },
     "CAN-01": {
@@ -282,11 +282,11 @@
         "targets/lfj8/test_lfj8_h03_input_binding.c",
         "verification/project-audit/mode02-h03-sample-lifecycle.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "7b928a7629294ca3950e08c3c64055a4",
       "claimed_at": "2026-11-20T20:33:07+00:00",
-      "updated_at": "2026-11-20T20:48:58+00:00",
-      "note": "Native AN2/P1DATA уважает допуск RAM. Приём на фазе H03 отделён от заявки Toyota, прежний вызов сохранён. Прошли 41 этап ПК/129 тестов, 8 сравнений AN2, 8 компонентных групп, остальные нативные с повтором phase-boot и 6 размещённых. Foreground занят CAN-01; открыты его привязка, карта/OD и ручная цель. Отчёт mode02-h03-sample-lifecycle.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "5c5175c0742daa4139cb02ae8076309d80c9447b",
       "based_on_reviews": [
         "81b1f36f00b14bd49f57ba12c0f60bd1",
@@ -304,11 +304,11 @@
         "targets/lfj8/lfj8_h03_application.h",
         "verification/project-audit/toy05-h03-boot-restore.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "5fcdd962167d41129b445b4ea70a2c80",
       "claimed_at": "2026-11-20T19:37:42+00:00",
-      "updated_at": "2026-11-20T19:53:03+00:00",
-      "note": "Восстановление S01/UFL1 подключено к штатному старту H03 до допуска фаз. ПК 41/120, S01/R3 288, M32R 56 запусков (18 новых), 22 native, 18+8 компонентных, 6 размещённых. Отчёт toy05-h03-boot-restore.md. Физический NVM, штатный binding, запись и долговечный сброс ещё открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "4311060a5ac2a4cdfdb2df42b5c5855db3878f69"
     },
     "CAN-04": {
@@ -322,11 +322,11 @@
         "targets/lfj8/test_lfj8_h03_torque_can.c",
         "verification/project-audit/can04-pending-tx-revoke.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "c4e3a3e369f14884b8a200b72aacab5e",
       "claimed_at": "2026-11-20T19:52:46+00:00",
-      "updated_at": "2026-11-20T19:57:54+00:00",
-      "note": "CAN13 отзывает ожидающий RB START/REFRESH на текущем опросе при потере допуска или истечении метки; CANCEL и подтверждение TRFIN сохраняются. Регрессия ПК, 18 групп M32R, 6 проверок размещения и оба диалога Bosch прошли. Физический профиль остаётся открытым. Отчёт: verification/project-audit/can04-pending-tx-revoke.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "6ed9a9e2480dc356725b3f1d47f683bef6625171"
     },
     "MODE-01": {
@@ -339,11 +339,11 @@
         "tests/u340_integration_host.c",
         "verification/project-audit/mode01-selector-fault.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "81b1f36f00b14bd49f57ba12c0f60bd1",
       "claimed_at": "2026-11-20T20:03:40+00:00",
-      "updated_at": "2026-11-20T20:06:44+00:00",
-      "note": "INVALID/OVERRUN сразу отзывают диапазон независимо от метки. 10 сценариев ПК/M32R, input-binding, 18+8 компонентных и 6 размещённых сценариев PASS. +20 байт Flash. Полный линк FAIL_BINDINGS. Отчёт mode01-selector-fault.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "8974a4a5002fd1786eb02ad8d7c19a829c47ad6f"
     },
     "TOY-04": {
@@ -359,11 +359,11 @@
         "targets/lfj8/test_lfj8_h03_cycle.c",
         "verification/project-audit/toy04-manual-cycle.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "b9fb1580e7e9432789190f01cd0a1f06",
       "claimed_at": "2026-11-20T19:46:52+00:00",
-      "updated_at": "2026-11-20T19:59:40+00:00",
-      "note": "Ручная цель подключена в MAIN перед защитами Toyota и проходит выдержки, S1/S2 и гидравлику. 41 этап ПК, 120 тестов с отдельной проверкой S03, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Отчёт verification/project-audit/toy04-manual-cycle.md. Открыты источник и срок удержания цели MODE-02/03, целевая привязка H03-03 и аппаратная приёмка; выпуск пары BIN открыт.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "c7b0568cde39ddc27e71432e5028db9c9a351e16"
     },
     "CAN-02": {
@@ -375,11 +375,11 @@
         "targets/lfj8/test_lfj8_h03_can13.c",
         "verification/project-audit/can02-slot13-identity.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "7180472509b343958005e9c8aeaadc9c",
       "claimed_at": "2026-11-20T19:51:10+00:00",
-      "updated_at": "2026-11-20T20:00:46+00:00",
-      "note": "Подтверждены 41 шаг ПК и 120 тестов, 11 интеграционных и 18 компонентных M32R, 18 сравнений BasicCAN на main и с DTC-02 ed5fd71. Проверен запрет отмены чужого ожидающего TX13 и чужого RX. Измерение физических окон открыто.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "b6dccd657c7208aef79ac9008a1091677fccff16"
     },
     "TOY-06": {
@@ -390,11 +390,11 @@
         "targets/lfj8/check_h03_slu_output_paths.py",
         "verification/project-audit/toy06-h03-slu-output-paths.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "25f1a0e7da1d41bba388e0e989f02e36",
       "claimed_at": "2026-11-20T20:00:31+00:00",
-      "updated_at": "2026-11-20T20:04:23+00:00",
-      "note": "18 штатных сценариев M32R: Shift E/P31 (Mazda TCC 1H) отключается при общем inhibit и P0773, а TIO9/P97 сохраняет PWM. Проверены штатные входы ATF/питания и пороги TIO9. Повторены 6 сценариев арбитра и 59 мониторов. Для Toyota SLU открыты физический канал, отдельное отключение, калибровка и полный снимок. Отчёт toy06-h03-slu-output-paths.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "4baf99ccd587811223aa05bc44460053dbade903"
     },
     "DTC-01": {
@@ -408,11 +408,11 @@
         "targets/lfj8/lfj8_h03_dtc_native.h",
         "verification/project-audit/dtc01-h03-t6-clock-source.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
       "claimed_at": "2026-11-20T20:30:38+00:00",
-      "updated_at": "2026-11-20T20:48:45+00:00",
-      "note": "Включены сданные DTC-01 и DTC-02. Квалифицированный TML0 даёт дробные тики T6 в нативном CAN foreground. 9 фаз C0, два переполнения, 6 отказов настройки, потеря/явный старт, 18 BasicCAN и 3 обхода M32R; ПК 41/129. Период, фазовая база, RAM и подключение в application_binding открыты. Отчёт dtc01-h03-t6-clock-source.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "d3c7cd228e7e7e1b3ecac3986fa828d57712a7f8",
       "based_on_reviews": [
         "0580560d4a0e442cb07862988bd40b0f",
@@ -429,11 +429,11 @@
         "targets/lfj8/lfj8_chery_tx.h",
         "verification/project-audit/vss01-tml0-timing-admission.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "8824637391444f7588fd41404c923798",
       "claimed_at": "2026-11-20T20:42:57+00:00",
-      "updated_at": "2026-11-20T20:51:29+00:00",
-      "note": "0x1AE отбрасывает тайм-аут вне полуоборота TML0 и окно до сужения. PC 41 шаг, 129 тестов Python; M32R, CAN13 и двусторонний Bosch PASS. Отчёт vss01-tml0-timing-admission.md. Целевые привязки, параметры авто и реальная шина открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "1bcfe06eb116940db1921a70130629bacb17da3a",
       "based_on_reviews": [
         "d9e48d584c644fbf9f3cde053b8b8c41"
@@ -448,11 +448,11 @@
         "targets/lfj8/test_lfj8_h03_takeover.c",
         "verification/project-audit/h03-05-tio9-isolation.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "9e9946679e73436c9432ab4a2497f2e5",
       "claimed_at": "2026-11-20T20:33:12+00:00",
-      "updated_at": "2026-11-20T20:49:07+00:00",
-      "note": "Отдельный бит физической изоляции TIO9/P97 обязателен до допуска H03. Старая маска и каждый отсутствующий бит отклоняются, полный допуск проходит. На ПК 41 этап/134 теста, на M32R 22 штатные+8 дополнительных+6 размещённых групп, отдельная проверка допуска и 18 E/TIO9 + 59 мониторов. Модуль 1764 байта до и после. Предыдущие review сохранены, физическая изоляция и окончательный binding открыты. Отчёт h03-05-tio9-isolation.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "0db23bea3e1df3a345b46a46f711e9a7896ed485",
       "based_on_reviews": [
         "1f0ef50b040d4c8ca2e5a05fd7501d40"
@@ -468,11 +468,11 @@
         "controller/tests/test_mode_policy.c",
         "verification/project-audit/mode03-policy-init-gate.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "1813d3172cb84949a9013f2851da5863",
       "claimed_at": "2026-11-20T20:30:13+00:00",
-      "updated_at": "2026-11-20T20:36:42+00:00",
-      "note": "На актуальной main с 64dd049 общий контроллер отвергает заявки до принятия профиля и после отказа init. ПК 41/129, матрица и привязка H03 на ПК/M32R, M32R 18+8 и 6 проверок размещения. Карта RAM совпала. Отчёт mode03-policy-init-gate.md. Политика выпуска и стенд открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "d77a559150a3c586ca50caa4aa64488b4f02ce22",
       "based_on_reviews": [
         "881583aa76814d4da3f768699f01ca29"
@@ -487,11 +487,11 @@
         "tests/test_bosch_compact_branches.py",
         "verification/project-audit/ecu01-st10-external-branch.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "976c5a059ccb4336b70933d8338d8217",
       "claimed_at": "2026-11-20T20:03:49+00:00",
-      "updated_at": "2026-11-20T20:09:08+00:00",
-      "note": "Компоновщик сохраняет внешний JMPA и соседнюю секцию, локальные цели проверяются. ПК 41/126, 12 путей ST10, 4 компактных профиля побайтно, CAN-05 f3bb500 профиль побайтно и verify_rx_timestamp PASS. Архив 3256 CRC и 26 команд. Отчёт verification/project-audit/ecu01-st10-external-branch.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "d7c0edc021c5caf7f4c03723847a6dcdd6583a81"
     },
     "VSS-02": {
@@ -503,11 +503,11 @@
         "tests/test_h03_sensor_config.py",
         "verification/project-audit/vss02-h03-sensor-config-source.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "625fae5569f34ec79ee0206423a3fa01",
       "claimed_at": "2026-11-20T19:56:16+00:00",
-      "updated_at": "2026-11-20T20:01:05+00:00",
-      "note": "Генератор rbm_h03_sensor_config проверяет пределы, наблюдения и оба таймера; 16 тестов ПК, нативный S51/S83/ATF и ABI M32R прошли. Расширенная компоновка с синтетикой оставляет только application_binding. Реальные замеры открыты. Отчёт vss02-h03-sensor-config-source.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "3ffed063500c6347896338731573da0bd14a1eeb"
     },
     "TOY-01": {
@@ -523,11 +523,11 @@
         "verification/project-audit/2026-11-21-toy01-h03-release-clock.json",
         "verification/project-audit/toy01-h03-release-clock.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "65f87fefa9434dd69e6efd740fa10b71",
       "claimed_at": "2026-11-20T19:51:21+00:00",
-      "updated_at": "2026-11-20T19:57:34+00:00",
-      "note": "Нативный независимый источник Toyota от TML0 включён в H03-мост и проверен через take_toyota, включая пропуск первого события и wrap. 18 стандартных M32R и компоновка прошли в своём объёме. Известные 95394 байта; период, владелец RAM и окончательные привязки остаются открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "c53aaf01d85f38f3fded16ae2c75ef52009f5bd9"
     },
     "ECU-02": {
@@ -540,11 +540,11 @@
         "targets/bosch/test_chery_torque_rx.c",
         "verification/project-audit/ecu02-torque-permit-boundary.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "911be787c7444bcf9186a8d6c9f55e1b",
       "claimed_at": "2026-11-20T20:04:50+00:00",
-      "updated_at": "2026-11-20T20:08:42+00:00",
-      "note": "Приёмник C отклоняет 0x1AE с меткой на границе снятия допуска и раньше. Подтверждено для прямого/отложенного RX, очереди и переполнения T4. ПК 41/120, 65536 пар, старый Bosch ST10 с 51 записью, три диалога H03 и 26 архивных запросов. Машинная привязка CAN-05 и стенд открыты. Отчёт ecu02-torque-permit-boundary.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "85b2e9320cf8f6e4a3729915ed3ebbd0fc00a732"
     },
     "H03-01": {
@@ -556,11 +556,11 @@
         "tools/check_h03_readback.py",
         "verification/project-audit/h03-01-readback.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "afe9090e65ce4d9caf011f47cdcfe67a",
       "claimed_at": "2026-11-20T20:13:14+00:00",
-      "updated_at": "2026-11-20T20:16:35+00:00",
-      "note": "Сверка локальных чтений LFJ8-18-9E1C выдаёт полный MATCH только после сравнения всех 524288 байт, считает пропуски и пересекающиеся расхождения. Пять новых тестов, два теста идентификации и SOURCES прошли. На срезах точного H03 проверены полный, частичный и конфликтующий readback. Отчёт h03-01-readback.md. Физическое считывание и выпуск открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "57bf9ee7cfa47b68da922524f729a284a69f54b4"
     },
     "SRC-01": {
@@ -571,11 +571,11 @@
         "tests/test_verify_sources.py",
         "verification/project-audit/src01-pinned-input-tests.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "31b87bf2ede54a3fa81c666e3bdd72ab",
       "claimed_at": "2026-11-20T20:07:11+00:00",
-      "updated_at": "2026-11-20T20:07:56+00:00",
-      "note": "Опубликованы только тесты происхождения и отчёт. Повторно прошли пять тестов проверки исходников и два теста определения H03. Результат для проверки интегратором.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "30a37a9f5672164bb8326dcc76d9581dc83c01db"
     },
     "AUD-01": {
@@ -608,11 +608,11 @@
         "verification/project-audit/2026-11-21-h03-dma-admission.json",
         "verification/project-audit/rel02-h03-dma-admission.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "856a2771e4554202bb2db5c8d2c3f93d",
       "claimed_at": "2026-11-20T20:32:09+00:00",
-      "updated_at": "2026-11-20T20:43:17+00:00",
-      "note": "Нативная проверка десяти DMA-каналов в холодном допуске RAM H03. M32R: 97142 байта, 5214 номинальный остаток. Адресный ELF H03-04: 27 писателей, 28 закрытий сеанса и 512 Virtual Flash. Остаются привязка приложения и датчиков, доказательство последующего владения DMA/SBI/IRQ, запись нижней Flash через PCM Flash; это порция REL-02.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "8ce841939a365433161c7e1fe5c51f9c0ca3a27b",
       "based_on_reviews": [
         "3fd1870717ff4cc684af517ec9f56903"
@@ -6668,9 +6668,1267 @@
           "c7107b9bc8974c67b7113c75529f935c"
         ]
       }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-0580560d4a0e442cb07862988bd40b0f",
+      "task": "DTC-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "0580560d4a0e442cb07862988bd40b0f",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex DTC-02 — штатный RX и владелец CAN H03",
+        "branch": "codex/can03-target-binding-1121-c7e4",
+        "files": [
+          "targets/lfj8/check_h03_dtc_basiccan.py",
+          "targets/lfj8/h03_dtc_rx_hook_fixture.c",
+          "targets/lfj8/h03_dtc_rx_resident.ld",
+          "targets/lfj8/lfj8_h03_dtc_native.c",
+          "targets/lfj8/lfj8_h03_dtc_native.h",
+          "verification/project-audit/dtc02-h03-native-owner.md"
+        ],
+        "stage": "done",
+        "claim_id": "0580560d4a0e442cb07862988bd40b0f",
+        "claimed_at": "2026-11-20T19:40:29+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "ed5fd7118b1f4296a952a5811a9364d682e6b7a9",
+        "task": "DTC-02",
+        "submitted_at": "2026-11-20T19:48:02+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-ad997bd677c542c682cec961d4619193",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "ad997bd677c542c682cec961d4619193",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — поколение штатного запуска CAN",
+        "branch": "codex/can03-guarded-generation-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/check_h03_can_monitor_startup.py",
+          "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+          "targets/lfj8/lfj8_h03_can_monitor_startup.c",
+          "targets/lfj8/lfj8_h03_can_monitor_startup.h",
+          "verification/project-audit/can03-guarded-generation.md"
+        ],
+        "stage": "done",
+        "claim_id": "ad997bd677c542c682cec961d4619193",
+        "claimed_at": "2026-11-20T19:38:33+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "1876a8c6ca973baec3a804d034aa7495e7105458",
+        "task": "CAN-03",
+        "submitted_at": "2026-11-20T19:52:21+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-5d801751d9964d70bb7719d4db03f597",
+      "task": "TOY-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "5d801751d9964d70bb7719d4db03f597",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex TOY-03 — допуск независимого P/N",
+        "branch": "codex/toy03-independent-pn-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/check_h03_range_pnp.py",
+          "targets/lfj8/lfj8_h03_range_pn.c",
+          "targets/lfj8/lfj8_h03_range_pn.h",
+          "targets/lfj8/test_lfj8_h03_range_pn.c",
+          "verification/project-audit/toy03-independent-pn-qualifier.md"
+        ],
+        "stage": "done",
+        "claim_id": "5d801751d9964d70bb7719d4db03f597",
+        "claimed_at": "2026-11-20T20:09:46+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "3f2596f31930203fe9cd7918e9b62f81ea82699c",
+        "task": "TOY-03",
+        "submitted_at": "2026-11-20T20:15:31+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-fe39fa893cbe4843b42a5e9a0f82f3ed",
+      "task": "REL-01",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "complete",
+      "claim_id": "fe39fa893cbe4843b42a5e9a0f82f3ed",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex REL-01 — идентификация BIN",
+        "branch": "codex/rel01-donor-firmware-guard-01a1f9c7",
+        "files": [
+          "tests/test_package_workset.py",
+          "tools/package_workset.py",
+          "verification/project-audit/rel01-firmware-identity.md"
+        ],
+        "stage": "done",
+        "claim_id": "fe39fa893cbe4843b42a5e9a0f82f3ed",
+        "claimed_at": "2026-11-20T19:56:50+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "de7df4ab3da2c30240e0a8d3635f206787236d94",
+        "task": "REL-01",
+        "submitted_at": "2026-11-20T20:02:20+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-c7107b9bc8974c67b7113c75529f935c",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "c7107b9bc8974c67b7113c75529f935c",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex H03-03 native input lifecycle",
+        "branch": "codex/h03-target-startup-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_input_lifecycle.py",
+          "targets/lfj8/h03_atf_hook_fixture.c",
+          "targets/lfj8/h03_sensor_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_atf_target.c",
+          "targets/lfj8/lfj8_h03_input_lifecycle.h",
+          "targets/lfj8/lfj8_h03_sensor_target.c",
+          "verification/project-audit/2026-11-21-h03-native-input-lifecycle.json",
+          "verification/project-audit/h03-03-native-input-lifecycle.md"
+        ],
+        "stage": "done",
+        "claim_id": "c7107b9bc8974c67b7113c75529f935c",
+        "claimed_at": "2026-11-20T19:39:33+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "5c7511783f687d73f60d7633d7acfc7389412d76",
+        "task": "H03-03",
+        "submitted_at": "2026-11-20T19:48:44+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-ebbc89327d9e4b49b347e3a90c5e208e",
+      "task": "H03-04",
+      "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "action": "complete",
+      "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+        "label": "Codex H03-04 — компоновка сервисной защиты",
+        "branch": "codex/h03-04-service-placement-01a1fa79",
+        "files": [
+          "targets/lfj8/check_h03_link.py",
+          "targets/lfj8/check_h03_service_guard.py",
+          "targets/lfj8/check_h03_service_writes.py",
+          "targets/lfj8/check_h03_vflash_lockout.py",
+          "targets/lfj8/lfj8_h03_service_placement.py",
+          "tests/test_h03_service_placement.py",
+          "verification/project-audit/h03-04-service-placement.md"
+        ],
+        "stage": "done",
+        "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
+        "claimed_at": "2026-11-20T19:45:11+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "423ff76125dcbd1587fecdfedcf51577023b18f9",
+        "task": "H03-04",
+        "submitted_at": "2026-11-20T19:55:21+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-3118c56ba79c42ab952bbd17df49ca78",
+      "task": "DTC-04",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "complete",
+      "claim_id": "3118c56ba79c42ab952bbd17df49ca78",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-04 — повтор записи после утраты журнала",
+        "branch": "codex/dtc04-retired-slot-retry-7bd19ea4",
+        "files": [
+          "targets/lfj8/lfj8_h03_nvm.c",
+          "targets/lfj8/lfj8_h03_nvm.h",
+          "targets/lfj8/test_lfj8_h03_nvm.c",
+          "verification/project-audit/dtc04-retired-slot-retry.md"
+        ],
+        "stage": "done",
+        "claim_id": "3118c56ba79c42ab952bbd17df49ca78",
+        "claimed_at": "2026-11-20T19:54:35+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "7f0c51ee5e1f7a3070eb774e57a8baf4b6b870af",
+        "task": "DTC-04",
+        "submitted_at": "2026-11-20T20:01:40+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-15e6e783e4d74a5b9c000d3658becff0",
+      "task": "H03-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "15e6e783e4d74a5b9c000d3658becff0",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex H03-02 — нативные врезки датчиков в общей компоновке",
+        "branch": "codex/h03-02-sensor-placement-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/check_h03_atf_native.py",
+          "targets/lfj8/check_h03_sensor_native.py",
+          "targets/lfj8/lfj8_h03_sensor_hooks.py",
+          "tests/test_h03_sensor_hooks.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-02-sensor-placement.md"
+        ],
+        "stage": "done",
+        "claim_id": "15e6e783e4d74a5b9c000d3658becff0",
+        "claimed_at": "2026-11-20T19:37:59+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "e27adef36dc49933acdd8062446e3c4fe798f77a",
+        "task": "H03-02",
+        "submitted_at": "2026-11-20T19:49:29+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-4be301294ddc41508ac41d1b94c6b14a",
+      "task": "CAN-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "complete",
+      "claim_id": "4be301294ddc41508ac41d1b94c6b14a",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "label": "Codex CAN-05 — время приёма ST10",
+        "branch": "codex/can05-st10-bound-t4-01a1f9a2",
+        "files": [
+          "targets/bosch/build.py",
+          "targets/bosch/rx_timestamp.py",
+          "targets/bosch/verify_rx_timestamp.py",
+          "verification/project-audit/can05-st10-bound-t4.md"
+        ],
+        "stage": "done",
+        "claim_id": "4be301294ddc41508ac41d1b94c6b14a",
+        "claimed_at": "2026-11-20T19:39:22+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "f3bb5000ebfdaaa30a33665bac1eab06ddb9165c",
+        "task": "CAN-05",
+        "submitted_at": "2026-11-20T19:56:55+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-6ce2dadd9393441586bcbbbeb50614e0",
+      "task": "DTC-03",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "complete",
+      "claim_id": "6ce2dadd9393441586bcbbbeb50614e0",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "label": "Codex DTC-03: ATF H03 и P0710",
+        "branch": "codex/dtc03-h03-p0710-922b7b11",
+        "files": [
+          "targets/lfj8/check_h03_atf_fault.py",
+          "targets/lfj8/h03_atf_fault_hook.S",
+          "targets/lfj8/h03_atf_fault_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_atf_fault_hook.py",
+          "targets/lfj8/lfj8_h03_dtc_target.c",
+          "targets/lfj8/lfj8_h03_dtc_target.h",
+          "verification/project-audit/dtc03-h03-p0710-foreground.md"
+        ],
+        "stage": "done",
+        "claim_id": "6ce2dadd9393441586bcbbbeb50614e0",
+        "claimed_at": "2026-11-20T19:41:53+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "4ee5305412f0e5b1aa708e43cd9ee2e1fde0777c",
+        "task": "DTC-03",
+        "submitted_at": "2026-11-20T19:55:44+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-e313f0457b4d468897a8179d3615ce3e",
+      "task": "TOY-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "complete",
+      "claim_id": "e313f0457b4d468897a8179d3615ce3e",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex TOY-02 — нативный режим нагрузки",
+        "branch": "codex/toy02-bosch-load-mode-source-01a1f9c7",
+        "files": [
+          "targets/bosch/audit_toyota_load_producers.py",
+          "verification/project-audit/toy02-bosch-load-mode-source.md"
+        ],
+        "stage": "done",
+        "claim_id": "e313f0457b4d468897a8179d3615ce3e",
+        "claimed_at": "2026-11-20T20:07:45+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "aee80b834830ebf84a5120862b9bd999864a616c",
+        "task": "TOY-02",
+        "submitted_at": "2026-11-20T20:14:56+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-6293ebe446574c9ab1fce23fa806e922",
+      "task": "CAN-01",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "complete",
+      "claim_id": "6293ebe446574c9ab1fce23fa806e922",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex CAN-01 — целевой источник RPM и ОЖ",
+        "branch": "codex/can01-h03-engine-owner-b0157640",
+        "files": [
+          "targets/lfj8/lfj8_h03_engine_feed.c",
+          "targets/lfj8/lfj8_h03_engine_feed.h",
+          "targets/lfj8/test_lfj8_h03_engine_feed.c",
+          "verification/project-audit/can01-h03-engine-owner.md"
+        ],
+        "stage": "done",
+        "claim_id": "6293ebe446574c9ab1fce23fa806e922",
+        "claimed_at": "2026-11-20T19:39:57+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "d2733790c28ebe1c1fb2bbdd32c4ca64d70ba9ed",
+        "task": "CAN-01",
+        "submitted_at": "2026-11-20T19:49:51+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-cd210c0631df4fefa66ec640bb83c6ad",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "complete",
+      "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex MODE-02 — штатный общий захват AN2/P1DATA",
+        "branch": "codex/mode02-foreground-input-01a1f9c7",
+        "files": [
+          "targets/lfj8/check_h03_input_binding.py",
+          "targets/lfj8/check_h03_selector_adc.py",
+          "targets/lfj8/lfj8_h03_button_capture.c",
+          "targets/lfj8/lfj8_h03_button_capture.h",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/lfj8_h03_input_binding.h",
+          "targets/lfj8/lfj8_h03_input_target.c",
+          "targets/lfj8/lfj8_selector_adc.c",
+          "targets/lfj8/lfj8_selector_adc.h",
+          "targets/lfj8/test_lfj8_h03_button_capture.c",
+          "targets/lfj8/test_lfj8_h03_input_binding.c",
+          "verification/project-audit/mode02-native-an2-p1.md"
+        ],
+        "stage": "done",
+        "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
+        "claimed_at": "2026-11-20T19:39:27+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "17a65270968bf01097cab53482f094188c0b4aef",
+        "task": "MODE-02",
+        "submitted_at": "2026-11-20T19:50:46+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-5fcdd962167d41129b445b4ea70a2c80",
+      "task": "TOY-05",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "5fcdd962167d41129b445b4ea70a2c80",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex TOY-05 — восстановление адаптаций на запуске H03",
+        "branch": "codex/toy05-h03-boot-restore-32e6ac79",
+        "files": [
+          "targets/lfj8/check_h03_phase_boot.py",
+          "targets/lfj8/h03_phase_boot_fixture.c",
+          "targets/lfj8/lfj8_h03_application.c",
+          "targets/lfj8/lfj8_h03_application.h",
+          "verification/project-audit/toy05-h03-boot-restore.md"
+        ],
+        "stage": "done",
+        "claim_id": "5fcdd962167d41129b445b4ea70a2c80",
+        "claimed_at": "2026-11-20T19:37:42+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "4311060a5ac2a4cdfdb2df42b5c5855db3878f69",
+        "task": "TOY-05",
+        "submitted_at": "2026-11-20T19:53:03+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-c4e3a3e369f14884b8a200b72aacab5e",
+      "task": "CAN-04",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "complete",
+      "claim_id": "c4e3a3e369f14884b8a200b72aacab5e",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex CAN-04 — отмена ожидающего START/REFRESH",
+        "branch": "codex/can04-pending-tx-revoke-b0157640",
+        "files": [
+          "targets/lfj8/lfj8_h03_torque.c",
+          "targets/lfj8/lfj8_h03_torque.h",
+          "targets/lfj8/lfj8_h03_torque_can.c",
+          "targets/lfj8/test_lfj8_h03_torque_can.c",
+          "verification/project-audit/can04-pending-tx-revoke.md"
+        ],
+        "stage": "done",
+        "claim_id": "c4e3a3e369f14884b8a200b72aacab5e",
+        "claimed_at": "2026-11-20T19:52:46+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "6ed9a9e2480dc356725b3f1d47f683bef6625171",
+        "task": "CAN-04",
+        "submitted_at": "2026-11-20T19:57:54+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-81b1f36f00b14bd49f57ba12c0f60bd1",
+      "task": "MODE-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "81b1f36f00b14bd49f57ba12c0f60bd1",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex MODE-01 — отзыв диапазона при отказе ADC",
+        "branch": "codex/mode01-selector-fault-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/lfj8_range_control.c",
+          "targets/lfj8/lfj8_range_control.h",
+          "tests/u340_integration_host.c",
+          "verification/project-audit/mode01-selector-fault.md"
+        ],
+        "stage": "done",
+        "claim_id": "81b1f36f00b14bd49f57ba12c0f60bd1",
+        "claimed_at": "2026-11-20T20:03:40+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "8974a4a5002fd1786eb02ad8d7c19a829c47ad6f",
+        "task": "MODE-01",
+        "submitted_at": "2026-11-20T20:06:44+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-b9fb1580e7e9432789190f01cd0a1f06",
+      "task": "TOY-04",
+      "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+      "action": "complete",
+      "claim_id": "b9fb1580e7e9432789190f01cd0a1f06",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+        "label": "Codex TOY-04 — ручная заявка в цикле",
+        "branch": "codex/toy04-manual-cycle-892d",
+        "files": [
+          "controller/build.py",
+          "controller/include/rbm_u340e_runtime.h",
+          "controller/src/rbm_u340e_runtime.c",
+          "targets/lfj8/lfj8_h03_cycle.c",
+          "targets/lfj8/lfj8_h03_cycle.h",
+          "targets/lfj8/test_lfj8_h03_cycle.c",
+          "verification/project-audit/toy04-manual-cycle.md"
+        ],
+        "stage": "done",
+        "claim_id": "b9fb1580e7e9432789190f01cd0a1f06",
+        "claimed_at": "2026-11-20T19:46:52+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "c7b0568cde39ddc27e71432e5028db9c9a351e16",
+        "task": "TOY-04",
+        "submitted_at": "2026-11-20T19:59:40+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-7180472509b343958005e9c8aeaadc9c",
+      "task": "CAN-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "7180472509b343958005e9c8aeaadc9c",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex CAN-02 — проверка слота перед отменой TX13",
+        "branch": "codex/can02-slot-identity-1121-c7e4",
+        "files": [
+          "targets/lfj8/lfj8_donor_io.c",
+          "targets/lfj8/test_lfj8_h03_can13.c",
+          "verification/project-audit/can02-slot13-identity.md"
+        ],
+        "stage": "done",
+        "claim_id": "7180472509b343958005e9c8aeaadc9c",
+        "claimed_at": "2026-11-20T19:51:10+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "b6dccd657c7208aef79ac9008a1091677fccff16",
+        "task": "CAN-02",
+        "submitted_at": "2026-11-20T20:00:46+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-25f1a0e7da1d41bba388e0e989f02e36",
+      "task": "TOY-06",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "complete",
+      "claim_id": "25f1a0e7da1d41bba388e0e989f02e36",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "label": "Codex TOY-06 — штатные выходы H03",
+        "branch": "codex/toy06-native-lockup-output-01a1f9a2",
+        "files": [
+          "targets/lfj8/check_h03_slu_output_paths.py",
+          "verification/project-audit/toy06-h03-slu-output-paths.md"
+        ],
+        "stage": "done",
+        "claim_id": "25f1a0e7da1d41bba388e0e989f02e36",
+        "claimed_at": "2026-11-20T20:00:31+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "4baf99ccd587811223aa05bc44460053dbade903",
+        "task": "TOY-06",
+        "submitted_at": "2026-11-20T20:04:23+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-f6547625e0dd48c180162a7963424191",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "complete",
+      "claim_id": "f6547625e0dd48c180162a7963424191",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-01 — срок C0 в foreground H03",
+        "branch": "codex/dtc01-h03-session-foreground-7bd19ea4",
+        "files": [
+          "targets/lfj8/lfj8_h03_dtc_can.c",
+          "targets/lfj8/lfj8_h03_dtc_can.h",
+          "targets/lfj8/lfj8_h03_dtc_foreground.c",
+          "targets/lfj8/lfj8_h03_dtc_foreground.h",
+          "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
+          "targets/lfj8/lfj8_h03_dtc_rx_queue.h",
+          "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
+          "verification/project-audit/dtc01-h03-session-foreground.md"
+        ],
+        "stage": "done",
+        "claim_id": "f6547625e0dd48c180162a7963424191",
+        "claimed_at": "2026-11-20T19:38:10+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "c9d57c1fb0a038b06a5acff8aafffa639d3b0726",
+        "task": "DTC-01",
+        "submitted_at": "2026-11-20T19:51:50+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-d9e48d584c644fbf9f3cde053b8b8c41",
+      "task": "VSS-01",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex VSS-01 — единый захват S51 для 0x1AE",
+        "branch": "codex/vss01-foreground-capture-fea1b366",
+        "files": [
+          "targets/lfj8/host_check.c",
+          "targets/lfj8/lfj8_chery_tx.c",
+          "targets/lfj8/lfj8_chery_tx.h",
+          "targets/lfj8/lfj8_h03_can13.c",
+          "targets/lfj8/lfj8_h03_can13.h",
+          "targets/lfj8/test_lfj8_h03_can_owner.c",
+          "verification/project-audit/vss01-foreground-capture.md"
+        ],
+        "stage": "done",
+        "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
+        "claimed_at": "2026-11-20T19:55:14+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "b48c663b97c1c4d125a4e86396a09f9be979d803",
+        "task": "VSS-01",
+        "submitted_at": "2026-11-20T20:02:07+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-1f0ef50b040d4c8ca2e5a05fd7501d40",
+      "task": "H03-05",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "1f0ef50b040d4c8ca2e5a05fd7501d40",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex H03-05 — сохранение отзыва во время подготовки",
+        "branch": "codex/h03-05-latched-revoke-during-prepare-32e6ac79",
+        "files": [
+          "targets/lfj8/lfj8_h03_takeover.c",
+          "targets/lfj8/lfj8_h03_takeover.h",
+          "targets/lfj8/test_lfj8_h03_takeover.c",
+          "verification/project-audit/h03-05-latch-revoke.md"
+        ],
+        "stage": "done",
+        "claim_id": "1f0ef50b040d4c8ca2e5a05fd7501d40",
+        "claimed_at": "2026-11-20T19:57:18+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "8e866f469975c07bf741fe3f1c00317ba6c21fcf",
+        "task": "H03-05",
+        "submitted_at": "2026-11-20T20:02:38+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-881583aa76814d4da3f768699f01ca29",
+      "task": "MODE-03",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "881583aa76814d4da3f768699f01ca29",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex MODE-03 — переход режима с удержанной кнопкой передачи",
+        "branch": "codex/mode03-hold-transition-1121-c7e4",
+        "files": [
+          "controller/src/rbm_u340e.c",
+          "controller/tests/test_mode_policy.c",
+          "verification/project-audit/mode03-held-shift-at-mode-edge.md"
+        ],
+        "stage": "done",
+        "claim_id": "881583aa76814d4da3f768699f01ca29",
+        "claimed_at": "2026-11-20T20:07:21+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "64dd049791651db334bbf279bf51880dfeaba93a",
+        "task": "MODE-03",
+        "submitted_at": "2026-11-20T20:12:38+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-976c5a059ccb4336b70933d8338d8217",
+      "task": "ECU-01",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "976c5a059ccb4336b70933d8338d8217",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex ECU-01 — внешние переходы ST10",
+        "branch": "codex/ecu01-st10-external-branch-fea1b366",
+        "files": [
+          "targets/bosch/compact_branches.py",
+          "tests/test_bosch_compact_branches.py",
+          "verification/project-audit/ecu01-st10-external-branch.md"
+        ],
+        "stage": "done",
+        "claim_id": "976c5a059ccb4336b70933d8338d8217",
+        "claimed_at": "2026-11-20T20:03:49+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "d7c0edc021c5caf7f4c03723847a6dcdd6583a81",
+        "task": "ECU-01",
+        "submitted_at": "2026-11-20T20:09:08+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-625fae5569f34ec79ee0206423a3fa01",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "625fae5569f34ec79ee0206423a3fa01",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex VSS-02 — целевая конфигурация из измерений",
+        "branch": "codex/vss02-sensor-config-source-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/check_h03_sensor_config.py",
+          "tests/test_h03_sensor_config.py",
+          "verification/project-audit/vss02-h03-sensor-config-source.md"
+        ],
+        "stage": "done",
+        "claim_id": "625fae5569f34ec79ee0206423a3fa01",
+        "claimed_at": "2026-11-20T19:56:16+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "3ffed063500c6347896338731573da0bd14a1eeb",
+        "task": "VSS-02",
+        "submitted_at": "2026-11-20T20:01:05+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-65f87fefa9434dd69e6efd740fa10b71",
+      "task": "TOY-01",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "65f87fefa9434dd69e6efd740fa10b71",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex TOY-01 H03 independent release clock",
+        "branch": "codex/toy01-h03-release-clock-01a1f99f",
+        "files": [
+          "targets/lfj8/build.py",
+          "targets/lfj8/check_h03_toyota_source.py",
+          "targets/lfj8/lfj8_h03_toyota_source.c",
+          "targets/lfj8/lfj8_h03_toyota_source.h",
+          "targets/lfj8/test_lfj8_h03_toyota_source.c",
+          "verification/project-audit/2026-11-21-toy01-h03-release-clock.json",
+          "verification/project-audit/toy01-h03-release-clock.md"
+        ],
+        "stage": "done",
+        "claim_id": "65f87fefa9434dd69e6efd740fa10b71",
+        "claimed_at": "2026-11-20T19:51:21+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "c53aaf01d85f38f3fded16ae2c75ef52009f5bd9",
+        "task": "TOY-01",
+        "submitted_at": "2026-11-20T19:57:34+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-911be787c7444bcf9186a8d6c9f55e1b",
+      "task": "ECU-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "complete",
+      "claim_id": "911be787c7444bcf9186a8d6c9f55e1b",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex ECU-02 — граница допуска момента Bosch",
+        "branch": "codex/ecu02-torque-permit-boundary-7bd19ea4",
+        "files": [
+          "targets/bosch/chery_torque_rx.c",
+          "targets/bosch/chery_torque_rx.h",
+          "targets/bosch/test_chery_torque_rx.c",
+          "verification/project-audit/ecu02-torque-permit-boundary.md"
+        ],
+        "stage": "done",
+        "claim_id": "911be787c7444bcf9186a8d6c9f55e1b",
+        "claimed_at": "2026-11-20T20:04:50+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "85b2e9320cf8f6e4a3729915ed3ebbd0fc00a732",
+        "task": "ECU-02",
+        "submitted_at": "2026-11-20T20:08:42+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-afe9090e65ce4d9caf011f47cdcfe67a",
+      "task": "H03-01",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "complete",
+      "claim_id": "afe9090e65ce4d9caf011f47cdcfe67a",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "label": "Codex H03-01 — сверка прочитанного образа",
+        "branch": "codex/h03-01-readback-01a1f9a2",
+        "files": [
+          "tests/test_h03_readback.py",
+          "tools/check_h03_readback.py",
+          "verification/project-audit/h03-01-readback.md"
+        ],
+        "stage": "done",
+        "claim_id": "afe9090e65ce4d9caf011f47cdcfe67a",
+        "claimed_at": "2026-11-20T20:13:14+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "57bf9ee7cfa47b68da922524f729a284a69f54b4",
+        "task": "H03-01",
+        "submitted_at": "2026-11-20T20:16:35+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-31b87bf2ede54a3fa81c666e3bdd72ab",
+      "task": "SRC-01",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "complete",
+      "claim_id": "31b87bf2ede54a3fa81c666e3bdd72ab",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "label": "Codex SRC-01 — регрессия происхождения исходников",
+        "branch": "codex/src01-pinned-input-tests-922b7b11",
+        "files": [
+          "tests/test_verify_sources.py",
+          "verification/project-audit/src01-pinned-input-tests.md"
+        ],
+        "stage": "done",
+        "claim_id": "31b87bf2ede54a3fa81c666e3bdd72ab",
+        "claimed_at": "2026-11-20T20:07:11+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "30a37a9f5672164bb8326dcc76d9581dc83c01db",
+        "task": "SRC-01",
+        "submitted_at": "2026-11-20T20:07:56+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-d06e51f28ad0459dbc4d456c75b56bb4",
+      "task": "AUD-01",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "complete",
+      "claim_id": "d06e51f28ad0459dbc4d456c75b56bb4",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "label": "Codex AUD-01 — офлайн-сверка диапазонов Bosch",
+        "branch": "codex/aud01-e4m3-diff-check-922b7b11",
+        "files": [
+          "tools/check_e4m3_diff.py",
+          "verification/project-audit/aud01-e4m3-diff-check.md"
+        ],
+        "stage": "done",
+        "claim_id": "d06e51f28ad0459dbc4d456c75b56bb4",
+        "claimed_at": "2026-11-20T20:17:54+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "e340c619c4cd9677fbe56bde39535b888d8e9328",
+        "task": "AUD-01",
+        "submitted_at": "2026-11-20T20:18:13+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-3fd1870717ff4cc684af517ec9f56903",
+      "task": "REL-02",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "3fd1870717ff4cc684af517ec9f56903",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex REL-02 H03 native RAM owner",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_owner.h",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "verification/project-audit/2026-11-21-h03-ram-owner.json",
+          "verification/project-audit/2026-11-21-h03-stack-admission.json",
+          "verification/project-audit/rel02-h03-ram-owner.md",
+          "verification/project-audit/rel02-h03-stack-admission.md"
+        ],
+        "stage": "done",
+        "claim_id": "3fd1870717ff4cc684af517ec9f56903",
+        "claimed_at": "2026-11-20T20:00:42+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "8af2346d908aab149ccf6c18a025e6f5880b8b35",
+        "task": "REL-02",
+        "submitted_at": "2026-11-20T20:20:04+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-1813d3172cb84949a9013f2851da5863",
+      "task": "MODE-03",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "1813d3172cb84949a9013f2851da5863",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex MODE-03 — допуск только после инициализации политики",
+        "branch": "codex/mode03-policy-init-admission-32e6ac79",
+        "files": [
+          "controller/include/rbm_u340e.h",
+          "controller/src/rbm_u340e.c",
+          "controller/tests/test_mode_policy.c",
+          "verification/project-audit/mode03-policy-init-gate.md"
+        ],
+        "stage": "done",
+        "claim_id": "1813d3172cb84949a9013f2851da5863",
+        "claimed_at": "2026-11-20T20:30:13+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "d77a559150a3c586ca50caa4aa64488b4f02ce22",
+        "based_on_reviews": [
+          "881583aa76814d4da3f768699f01ca29"
+        ],
+        "task": "MODE-03",
+        "submitted_at": "2026-11-20T20:36:42+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-82bdf686d3f54f4bbcb9ef729cd7b104",
+      "task": "AUD-01",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "complete",
+      "claim_id": "82bdf686d3f54f4bbcb9ef729cd7b104",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "label": "Codex AUD-01 — полнота исторической сверки",
+        "branch": "codex/aud01-e4m3-diff-check-922b7b11",
+        "files": [
+          "tests/test_e4m3_diff.py",
+          "tools/check_e4m3_diff.py",
+          "verification/project-audit/aud01-e4m3-diff-coverage.md"
+        ],
+        "stage": "done",
+        "claim_id": "82bdf686d3f54f4bbcb9ef729cd7b104",
+        "claimed_at": "2026-11-20T20:37:34+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "dc0f687f5f77aab70cdd0a8cb95f0d1d0f3c854f",
+        "based_on_reviews": [
+          "d06e51f28ad0459dbc4d456c75b56bb4"
+        ],
+        "task": "AUD-01",
+        "submitted_at": "2026-11-20T20:38:04+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-ef6ec9b39ec54c5fab41e021568c094f",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — холодный сброс владельца CAN",
+        "branch": "codex/can03-cold-owner-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/check_h03_can_monitor_startup.py",
+          "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+          "targets/lfj8/lfj8_h03_can_monitor_startup.c",
+          "targets/lfj8/lfj8_h03_can_monitor_startup.h",
+          "verification/project-audit/can03-cold-owner.md"
+        ],
+        "stage": "done",
+        "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
+        "claimed_at": "2026-11-20T20:30:28+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "4948b51c57475444dea954ef79f44835ab0899df",
+        "based_on_reviews": [
+          "ad997bd677c542c682cec961d4619193"
+        ],
+        "task": "CAN-03",
+        "submitted_at": "2026-11-20T20:38:24+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-77e3f918a51449ab982b5ad578a53b85",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "77e3f918a51449ab982b5ad578a53b85",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex H03-03 — нативная привязка приложения",
+        "branch": "codex/h03-03-application-binding-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/check_h03_application_binding.py",
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_application_binding.h",
+          "verification/project-audit/h03-03-native-binding.md"
+        ],
+        "stage": "done",
+        "claim_id": "77e3f918a51449ab982b5ad578a53b85",
+        "claimed_at": "2026-11-20T20:33:34+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "e31b2572704388e3bfc90a5fdbb83c1b6812d909",
+        "based_on_reviews": [
+          "c7107b9bc8974c67b7113c75529f935c"
+        ],
+        "task": "H03-03",
+        "submitted_at": "2026-11-20T20:41:45+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-856a2771e4554202bb2db5c8d2c3f93d",
+      "task": "REL-02",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "856a2771e4554202bb2db5c8d2c3f93d",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex REL-02 H03 DMA admission",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_owner.h",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "verification/project-audit/2026-11-21-h03-dma-admission.json",
+          "verification/project-audit/rel02-h03-dma-admission.md"
+        ],
+        "stage": "done",
+        "claim_id": "856a2771e4554202bb2db5c8d2c3f93d",
+        "claimed_at": "2026-11-20T20:32:09+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "8ce841939a365433161c7e1fe5c51f9c0ca3a27b",
+        "based_on_reviews": [
+          "3fd1870717ff4cc684af517ec9f56903"
+        ],
+        "task": "REL-02",
+        "submitted_at": "2026-11-20T20:43:17+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-ae0aa09617874ca8bcc10362dcb84b80",
+      "task": "DTC-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex DTC-02 — нижние переходы в общей компоновке H03",
+        "branch": "codex/can03-live-native-ready-1121-c7e4",
+        "files": [
+          "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+          "tests/test_h03_dtc_rx_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/dtc02-resident-rx-integrated-placement.md"
+        ],
+        "stage": "done",
+        "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
+        "claimed_at": "2026-11-20T20:34:46+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "5e6c7a8818290bddebfa97bb55d199570f4127ca",
+        "based_on_reviews": [
+          "0580560d4a0e442cb07862988bd40b0f",
+          "15e6e783e4d74a5b9c000d3658becff0"
+        ],
+        "task": "DTC-02",
+        "submitted_at": "2026-11-20T20:44:17+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-01d2b08f6a1f402898b40a2c6f302cfe",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "complete",
+      "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-01 — источник T6 от TML0",
+        "branch": "codex/dtc01-t6-clock-source-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_dtc_basiccan.py",
+          "targets/lfj8/h03_dtc_rx_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_dtc_native.c",
+          "targets/lfj8/lfj8_h03_dtc_native.h",
+          "verification/project-audit/dtc01-h03-t6-clock-source.md"
+        ],
+        "stage": "done",
+        "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
+        "claimed_at": "2026-11-20T20:30:38+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "d3c7cd228e7e7e1b3ecac3986fa828d57712a7f8",
+        "based_on_reviews": [
+          "0580560d4a0e442cb07862988bd40b0f",
+          "f6547625e0dd48c180162a7963424191"
+        ],
+        "task": "DTC-01",
+        "submitted_at": "2026-11-20T20:48:45+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-7b928a7629294ca3950e08c3c64055a4",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "complete",
+      "claim_id": "7b928a7629294ca3950e08c3c64055a4",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex MODE-02 — приём снимка AN2/P1DATA по фазе",
+        "branch": "codex/mode02-phase-sample-lifecycle-01a1f9c7",
+        "files": [
+          "targets/lfj8/check_h03_selector_adc.py",
+          "targets/lfj8/h03_selector_adc_fixture.c",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/lfj8_h03_input_binding.h",
+          "targets/lfj8/lfj8_h03_input_target.c",
+          "targets/lfj8/lfj8_range_control.c",
+          "targets/lfj8/lfj8_range_control.h",
+          "targets/lfj8/test_lfj8_h03_input_binding.c",
+          "verification/project-audit/mode02-h03-sample-lifecycle.md"
+        ],
+        "stage": "done",
+        "claim_id": "7b928a7629294ca3950e08c3c64055a4",
+        "claimed_at": "2026-11-20T20:33:07+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "5c5175c0742daa4139cb02ae8076309d80c9447b",
+        "based_on_reviews": [
+          "81b1f36f00b14bd49f57ba12c0f60bd1",
+          "cd210c0631df4fefa66ec640bb83c6ad"
+        ],
+        "task": "MODE-02",
+        "submitted_at": "2026-11-20T20:48:58+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-9e9946679e73436c9432ab4a2497f2e5",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "complete",
+      "claim_id": "9e9946679e73436c9432ab4a2497f2e5",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "label": "Codex H03-05 — допуск изоляции TIO9",
+        "branch": "codex/h03-05-tio9-isolation-01a1f9a2",
+        "files": [
+          "targets/lfj8/lfj8_h03_takeover.h",
+          "targets/lfj8/test_lfj8_h03_takeover.c",
+          "verification/project-audit/h03-05-tio9-isolation.md"
+        ],
+        "stage": "done",
+        "claim_id": "9e9946679e73436c9432ab4a2497f2e5",
+        "claimed_at": "2026-11-20T20:33:12+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "0db23bea3e1df3a345b46a46f711e9a7896ed485",
+        "based_on_reviews": [
+          "1f0ef50b040d4c8ca2e5a05fd7501d40"
+        ],
+        "task": "H03-05",
+        "submitted_at": "2026-11-20T20:49:07+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-8824637391444f7588fd41404c923798",
+      "task": "VSS-01",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "8824637391444f7588fd41404c923798",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex VSS-01 — допуск времени и окна S51 для 0x1AE",
+        "branch": "codex/vss01-tml0-timing-admission-32e6ac79",
+        "files": [
+          "targets/lfj8/host_check.c",
+          "targets/lfj8/lfj8_chery_tx.c",
+          "targets/lfj8/lfj8_chery_tx.h",
+          "verification/project-audit/vss01-tml0-timing-admission.md"
+        ],
+        "stage": "done",
+        "claim_id": "8824637391444f7588fd41404c923798",
+        "claimed_at": "2026-11-20T20:42:57+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "1bcfe06eb116940db1921a70130629bacb17da3a",
+        "based_on_reviews": [
+          "d9e48d584c644fbf9f3cde053b8b8c41"
+        ],
+        "task": "VSS-01",
+        "submitted_at": "2026-11-20T20:51:29+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-ffff885e4aa646d3b41c030b6eda77cb",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "ffff885e4aa646d3b41c030b6eda77cb",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — общая привязка DTC и CAN13",
+        "branch": "codex/can03-dtc-shared-owner-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+          "targets/lfj8/lfj8_h03_can_owner.h",
+          "targets/lfj8/lfj8_h03_can_target.c",
+          "targets/lfj8/lfj8_h03_can_target.h",
+          "verification/project-audit/can03-dtc-shared-owner.md"
+        ],
+        "stage": "done",
+        "claim_id": "ffff885e4aa646d3b41c030b6eda77cb",
+        "claimed_at": "2026-11-20T20:43:58+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "3b2e4d6ab163cf7f384ba94447f5fe6fb92950db",
+        "based_on_reviews": [
+          "ad997bd677c542c682cec961d4619193",
+          "ef6ec9b39ec54c5fab41e021568c094f"
+        ],
+        "task": "CAN-03",
+        "submitted_at": "2026-11-20T20:52:18+00:00"
+      }
+    },
+    {
+      "operation_id": "integration-55b9a24-complete-4c455b84d1db43c0a19c00f91baec753",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "complete",
+      "claim_id": "4c455b84d1db43c0a19c00f91baec753",
+      "at": "2026-11-20T21:14:43+00:00",
+      "record": {
+        "owner": "codex-integration-01a1f76d-20261120",
+        "label": "Основной чат — общая сборка всех результатов",
+        "branch": "codex/integration-01a1f76d-20261120",
+        "files": [
+          "README.md",
+          "data/project-tasks.json",
+          "docs/lfj8-h03-memory-layout.md",
+          "docs/project-map.md",
+          "docs/working-set.md",
+          "targets/lfj8/build.py",
+          "targets/lfj8/check_h03_application_binding.py",
+          "targets/lfj8/check_h03_input_lifecycle.py",
+          "targets/lfj8/check_h03_toyota_source.py",
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_application_binding.h",
+          "tools/check_h03_image_layout.py",
+          "tools/check_integrated_h03.py",
+          "verification/project-audit/2026-11-21-final-integration.json",
+          "verification/project-audit/final-integration-20261121/"
+        ],
+        "stage": "done",
+        "claim_id": "4c455b84d1db43c0a19c00f91baec753",
+        "claimed_at": "2026-11-20T21:01:34+00:00",
+        "updated_at": "2026-11-20T21:14:43+00:00",
+        "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
+        "result": "55b9a240338ef1cf58da6218e8634450373b9f92",
+        "based_on_reviews": [
+          "15e6e783e4d74a5b9c000d3658becff0",
+          "65f87fefa9434dd69e6efd740fa10b71",
+          "77e3f918a51449ab982b5ad578a53b85",
+          "ae0aa09617874ca8bcc10362dcb84b80",
+          "c7107b9bc8974c67b7113c75529f935c"
+        ],
+        "task": "ORG-01",
+        "submitted_at": "2026-11-20T21:13:50+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:13:50+00:00",
+  "updated_at": "2026-11-20T21:14:43+00:00",
   "main_commit": "55b9a240338ef1cf58da6218e8634450373b9f92",
   "catalog": [
     {
@@ -7022,11 +8280,11 @@
         "targets/lfj8/lfj8_h03_dtc_native.h",
         "verification/project-audit/dtc02-h03-native-owner.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "0580560d4a0e442cb07862988bd40b0f",
       "claimed_at": "2026-11-20T19:40:29+00:00",
-      "updated_at": "2026-11-20T19:48:02+00:00",
-      "note": "Проверенный коммит: нижний IRQ H03 и foreground CAN13 используют h03_can_owner и TML0. 18 сравнений M32R, отказы часов, тёплая перепривязка, новое поколение и запись 0x722 прошли. В отчёте указаны вызовы для rbm_h03_application_binding, требуемые T6/native_ready, RAM и итоговая компоновка. Готовность BIN открыта.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "ed5fd7118b1f4296a952a5811a9364d682e6b7a9",
       "task": "DTC-02",
       "submitted_at": "2026-11-20T19:48:02+00:00"
@@ -7043,11 +8301,11 @@
         "targets/lfj8/lfj8_h03_can_monitor_startup.h",
         "verification/project-audit/can03-guarded-generation.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "ad997bd677c542c682cec961d4619193",
       "claimed_at": "2026-11-20T19:38:33+00:00",
-      "updated_at": "2026-11-20T19:52:21+00:00",
-      "note": "Подключена публикация setup_generation после разрешений 0x00B7F8/0x00B880. Допуск выдаёт foreground после очистки. ПК 41/120, M32R 18+8 компонентов, 21 нативная группа и повтор phase-boot 38; прямые и ROM-проверки CAN PASS. Расширенная сборка 94850 Б, FAIL_BINDINGS по application_binding и sensor_config. Доказательства verification/project-audit/can03-guarded-generation.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "1876a8c6ca973baec3a804d034aa7495e7105458",
       "task": "CAN-03",
       "submitted_at": "2026-11-20T19:52:21+00:00"
@@ -7063,11 +8321,11 @@
         "targets/lfj8/test_lfj8_h03_range_pn.c",
         "verification/project-audit/toy03-independent-pn-qualifier.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "5d801751d9964d70bb7719d4db03f597",
       "claimed_at": "2026-11-20T20:09:46+00:00",
-      "updated_at": "2026-11-20T20:15:31+00:00",
-      "note": "Допуск независимого P/N проверяет AN2, поколения, давность и рассогласование; в снимок идёт старейшая метка. M32R: 1024 AN2, 12 сочетаний P/N, проверки отказа, 5 ADC-сравнений и 8 компонентных групп PASS. Жгут и foreground открыты. Отчёт toy03-independent-pn-qualifier.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "3f2596f31930203fe9cd7918e9b62f81ea82699c",
       "task": "TOY-03",
       "submitted_at": "2026-11-20T20:15:31+00:00"
@@ -7081,11 +8339,11 @@
         "tools/package_workset.py",
         "verification/project-audit/rel01-firmware-identity.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "fe39fa893cbe4843b42a5e9a0f82f3ed",
       "claimed_at": "2026-11-20T19:56:50+00:00",
-      "updated_at": "2026-11-20T20:02:20+00:00",
-      "note": "Проверка идентификаторов и хешей исходников подключена в --firmware-pair. Пройдены 41 этап ПК (123 unittest), проверка исходников и шесть отказов CLI с настоящим Git-архивом. Границы в verification/project-audit/rel01-firmware-identity.md. Выпуск BIN остаётся открытым.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "de7df4ab3da2c30240e0a8d3635f206787236d94",
       "task": "REL-01",
       "submitted_at": "2026-11-20T20:02:20+00:00"
@@ -7104,11 +8362,11 @@
         "verification/project-audit/2026-11-21-h03-native-input-lifecycle.json",
         "verification/project-audit/h03-03-native-input-lifecycle.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "c7107b9bc8974c67b7113c75529f935c",
       "claimed_at": "2026-11-20T19:39:33+00:00",
-      "updated_at": "2026-11-20T19:48:44+00:00",
-      "note": "Целевые S51/S83 и ATF используют штатный допуск приложения до обращения к RAM. 22 нативные группы с отдельным повтором 38 сценариев запуска, 8 дополнительных групп и компоновка проверены. 94830 байт, две привязки открыты. Готовых BIN нет.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "5c7511783f687d73f60d7633d7acfc7389412d76",
       "task": "H03-03",
       "submitted_at": "2026-11-20T19:48:44+00:00"
@@ -7126,11 +8384,11 @@
         "tests/test_h03_service_placement.py",
         "verification/project-audit/h03-04-service-placement.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
       "claimed_at": "2026-11-20T19:45:11+00:00",
-      "updated_at": "2026-11-20T19:55:21+00:00",
-      "note": "В двухоконный адресный ELF включены четыре обёртки защиты и выключение Virtual Flash. Точные байты прошли 27 сценариев записи, 28 закрытия и 512 проверок Virtual Flash. Для приёмки нужны установка ниже 0x8000, окончательная карта RAM/Flash/IRQ и оборудование. Отчёт verification/project-audit/h03-04-service-placement.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "423ff76125dcbd1587fecdfedcf51577023b18f9",
       "task": "H03-04",
       "submitted_at": "2026-11-20T19:55:21+00:00"
@@ -7145,11 +8403,11 @@
         "targets/lfj8/test_lfj8_h03_nvm.c",
         "verification/project-audit/dtc04-retired-slot-retry.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "3118c56ba79c42ab952bbd17df49ca78",
       "claimed_at": "2026-11-20T19:54:35+00:00",
-      "updated_at": "2026-11-20T20:01:40+00:00",
-      "note": "Исправлен возврат старой истории при утрате пустой записи и первом прерванном стирании: старый слот исключён до новой публикации, поколение проверяется CRC. ПК/M32R 8 сочетаний, 16 срывов стирания, 3 отказа без записи; ПК 41/120; адресная модель 94958 Б. Драйвер/выделение блоков/стенд открыты. Отчёт dtc04-retired-slot-retry.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "7f0c51ee5e1f7a3070eb774e57a8baf4b6b870af",
       "task": "DTC-04",
       "submitted_at": "2026-11-20T20:01:40+00:00"
@@ -7166,11 +8424,11 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/h03-02-sensor-placement.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "15e6e783e4d74a5b9c000d3658becff0",
       "claimed_at": "2026-11-20T19:37:59+00:00",
-      "updated_at": "2026-11-20T19:49:29+00:00",
-      "note": "9 нативных S51/S83/ATF врезок в общей компоновке, 7 OEM-продолжений подтверждены ELF. 41 этап ПК, 21 native + phase-boot отдельно (38/80), 6 размещённых сценариев. 95402 байта с CAN и RAM-псевдонимами; FAIL_BINDINGS: application_binding и sensor_config. Отчёт h03-02-sensor-placement.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "e27adef36dc49933acdd8062446e3c4fe798f77a",
       "task": "H03-02",
       "submitted_at": "2026-11-20T19:49:29+00:00"
@@ -7185,11 +8443,11 @@
         "targets/bosch/verify_rx_timestamp.py",
         "verification/project-audit/can05-st10-bound-t4.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "4be301294ddc41508ac41d1b94c6b14a",
       "claimed_at": "2026-11-20T19:39:22+00:00",
-      "updated_at": "2026-11-20T19:56:55+00:00",
-      "note": "Реальный профиль Bosch включает чтение T4 до пустого опроса 0x1AE, проверку после IF1 и отзыв скорости. Два варианта ST10/C_CAN прошли 26 групп каждый и 51 запись целостности. Проверены RB, 12 прежних сборок, 41 этап ПК и 120 тестов с отдельным повтором S03. Открыты RAM и публикация поколения, потребитель момента, измеренный lease_ticks и ECU-02. Отчёт can05-st10-bound-t4.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "f3bb5000ebfdaaa30a33665bac1eab06ddb9165c",
       "task": "CAN-05",
       "submitted_at": "2026-11-20T19:56:55+00:00"
@@ -7207,11 +8465,11 @@
         "targets/lfj8/lfj8_h03_dtc_target.h",
         "verification/project-audit/dtc03-h03-p0710-foreground.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "6ce2dadd9393441586bcbbbeb50614e0",
       "claimed_at": "2026-11-20T19:41:53+00:00",
-      "updated_at": "2026-11-20T19:55:44+00:00",
-      "note": "Порция P0710: OEM AN1 через DTC target и Chery CAN. Прошли 20+14 сценариев M32R, сравнение регистров, 6920 проверок S03, DTC foreground ПК/M32R, повтор CAN Bosch и проверка RAM. Нужны финальное размещение, конфигурация срока и истории, полный запуск и сканер. Остальные DTC и оба выпуска остаются открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "4ee5305412f0e5b1aa708e43cd9ee2e1fde0777c",
       "task": "DTC-03",
       "submitted_at": "2026-11-20T19:55:44+00:00"
@@ -7224,11 +8482,11 @@
         "targets/bosch/audit_toyota_load_producers.py",
         "verification/project-audit/toy02-bosch-load-mode-source.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "e313f0457b4d468897a8179d3615ce3e",
       "claimed_at": "2026-11-20T20:07:45+00:00",
-      "updated_at": "2026-11-20T20:14:56+00:00",
-      "note": "Прослежены штатный счётчик 9224 и обновление A88B.0 до ветвей F8D6. Совпали 10 окон S04/REV8, прошли 64 комбинации и две последовательности на исходных инструкциях. Повторены проверки CAN и отсутствие парных GP-снимков. Условия и ограничения описаны в verification/project-audit/toy02-bosch-load-mode-source.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "aee80b834830ebf84a5120862b9bd999864a616c",
       "task": "TOY-02",
       "submitted_at": "2026-11-20T20:14:56+00:00"
@@ -7243,11 +8501,11 @@
         "targets/lfj8/test_lfj8_h03_engine_feed.c",
         "verification/project-audit/can01-h03-engine-owner.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "6293ebe446574c9ab1fce23fa806e922",
       "claimed_at": "2026-11-20T19:39:57+00:00",
-      "updated_at": "2026-11-20T19:49:51+00:00",
-      "note": "CAN-01: поколение CAN0, общий допуск TML0 и Task 2 связаны в целевом адаптере. PC, 18 групп M32R, 16 CAN и 11 ATF проверок. Вызовы из rbm_h03_application_binding и измерения интервалов остаются. Отчёт: verification/project-audit/can01-h03-engine-owner.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "d2733790c28ebe1c1fb2bbdd32c4ca64d70ba9ed",
       "task": "CAN-01",
       "submitted_at": "2026-11-20T19:49:51+00:00"
@@ -7270,11 +8528,11 @@
         "targets/lfj8/test_lfj8_h03_input_binding.c",
         "verification/project-audit/mode02-native-an2-p1.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
       "claimed_at": "2026-11-20T19:39:27+00:00",
-      "updated_at": "2026-11-20T19:50:46+00:00",
-      "note": "Штатный callback AN2 захватывает P1DATA с общей меткой; готовый потребитель применяет явно заданную карту. Шесть пар H03, 41 шаг ПК/120 тестов, 22 нативные группы M32R прошли. RAM 2692; известный Flash 95070. Остаются rbm_h03_application_binding, rbm_h03_sensor_config, измеренная карта/OD и выдача через гидравлику. Отчёт verification/project-audit/mode02-native-an2-p1.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "17a65270968bf01097cab53482f094188c0b4aef",
       "task": "MODE-02",
       "submitted_at": "2026-11-20T19:50:46+00:00"
@@ -7290,11 +8548,11 @@
         "targets/lfj8/lfj8_h03_application.h",
         "verification/project-audit/toy05-h03-boot-restore.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "5fcdd962167d41129b445b4ea70a2c80",
       "claimed_at": "2026-11-20T19:37:42+00:00",
-      "updated_at": "2026-11-20T19:53:03+00:00",
-      "note": "Восстановление S01/UFL1 подключено к штатному старту H03 до допуска фаз. ПК 41/120, S01/R3 288, M32R 56 запусков (18 новых), 22 native, 18+8 компонентных, 6 размещённых. Отчёт toy05-h03-boot-restore.md. Физический NVM, штатный binding, запись и долговечный сброс ещё открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "4311060a5ac2a4cdfdb2df42b5c5855db3878f69",
       "task": "TOY-05",
       "submitted_at": "2026-11-20T19:53:03+00:00"
@@ -7310,11 +8568,11 @@
         "targets/lfj8/test_lfj8_h03_torque_can.c",
         "verification/project-audit/can04-pending-tx-revoke.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "c4e3a3e369f14884b8a200b72aacab5e",
       "claimed_at": "2026-11-20T19:52:46+00:00",
-      "updated_at": "2026-11-20T19:57:54+00:00",
-      "note": "CAN13 отзывает ожидающий RB START/REFRESH на текущем опросе при потере допуска или истечении метки; CANCEL и подтверждение TRFIN сохраняются. Регрессия ПК, 18 групп M32R, 6 проверок размещения и оба диалога Bosch прошли. Физический профиль остаётся открытым. Отчёт: verification/project-audit/can04-pending-tx-revoke.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "6ed9a9e2480dc356725b3f1d47f683bef6625171",
       "task": "CAN-04",
       "submitted_at": "2026-11-20T19:57:54+00:00"
@@ -7329,11 +8587,11 @@
         "tests/u340_integration_host.c",
         "verification/project-audit/mode01-selector-fault.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "81b1f36f00b14bd49f57ba12c0f60bd1",
       "claimed_at": "2026-11-20T20:03:40+00:00",
-      "updated_at": "2026-11-20T20:06:44+00:00",
-      "note": "INVALID/OVERRUN сразу отзывают диапазон независимо от метки. 10 сценариев ПК/M32R, input-binding, 18+8 компонентных и 6 размещённых сценариев PASS. +20 байт Flash. Полный линк FAIL_BINDINGS. Отчёт mode01-selector-fault.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "8974a4a5002fd1786eb02ad8d7c19a829c47ad6f",
       "task": "MODE-01",
       "submitted_at": "2026-11-20T20:06:44+00:00"
@@ -7351,11 +8609,11 @@
         "targets/lfj8/test_lfj8_h03_cycle.c",
         "verification/project-audit/toy04-manual-cycle.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "b9fb1580e7e9432789190f01cd0a1f06",
       "claimed_at": "2026-11-20T19:46:52+00:00",
-      "updated_at": "2026-11-20T19:59:40+00:00",
-      "note": "Ручная цель подключена в MAIN перед защитами Toyota и проходит выдержки, S1/S2 и гидравлику. 41 этап ПК, 120 тестов с отдельной проверкой S03, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Отчёт verification/project-audit/toy04-manual-cycle.md. Открыты источник и срок удержания цели MODE-02/03, целевая привязка H03-03 и аппаратная приёмка; выпуск пары BIN открыт.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "c7b0568cde39ddc27e71432e5028db9c9a351e16",
       "task": "TOY-04",
       "submitted_at": "2026-11-20T19:59:40+00:00"
@@ -7369,11 +8627,11 @@
         "targets/lfj8/test_lfj8_h03_can13.c",
         "verification/project-audit/can02-slot13-identity.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "7180472509b343958005e9c8aeaadc9c",
       "claimed_at": "2026-11-20T19:51:10+00:00",
-      "updated_at": "2026-11-20T20:00:46+00:00",
-      "note": "Подтверждены 41 шаг ПК и 120 тестов, 11 интеграционных и 18 компонентных M32R, 18 сравнений BasicCAN на main и с DTC-02 ed5fd71. Проверен запрет отмены чужого ожидающего TX13 и чужого RX. Измерение физических окон открыто.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "b6dccd657c7208aef79ac9008a1091677fccff16",
       "task": "CAN-02",
       "submitted_at": "2026-11-20T20:00:46+00:00"
@@ -7386,11 +8644,11 @@
         "targets/lfj8/check_h03_slu_output_paths.py",
         "verification/project-audit/toy06-h03-slu-output-paths.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "25f1a0e7da1d41bba388e0e989f02e36",
       "claimed_at": "2026-11-20T20:00:31+00:00",
-      "updated_at": "2026-11-20T20:04:23+00:00",
-      "note": "18 штатных сценариев M32R: Shift E/P31 (Mazda TCC 1H) отключается при общем inhibit и P0773, а TIO9/P97 сохраняет PWM. Проверены штатные входы ATF/питания и пороги TIO9. Повторены 6 сценариев арбитра и 59 мониторов. Для Toyota SLU открыты физический канал, отдельное отключение, калибровка и полный снимок. Отчёт toy06-h03-slu-output-paths.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "4baf99ccd587811223aa05bc44460053dbade903",
       "task": "TOY-06",
       "submitted_at": "2026-11-20T20:04:23+00:00"
@@ -7409,11 +8667,11 @@
         "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
         "verification/project-audit/dtc01-h03-session-foreground.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "f6547625e0dd48c180162a7963424191",
       "claimed_at": "2026-11-20T19:38:10+00:00",
-      "updated_at": "2026-11-20T19:51:50+00:00",
-      "note": "Штатный CAN foreground H03 обслуживает девять фаз C0, закрывает сеанс, удаляет ожидающий RX и отсекает старые IRQ, TX13 освобождается через abort/drain. ПК 41/120, M32R foreground и 22 нативные группы (phase-boot отдельным повтором), 18 BasicCAN сравнений. +12 Б RAM. Остались подтверждённый источник T6 в application_binding, sensor_config и сканер на стенде. Отчёт dtc01-h03-session-foreground.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "c9d57c1fb0a038b06a5acff8aafffa639d3b0726",
       "task": "DTC-01",
       "submitted_at": "2026-11-20T19:51:50+00:00"
@@ -7431,11 +8689,11 @@
         "targets/lfj8/test_lfj8_h03_can_owner.c",
         "verification/project-audit/vss01-foreground-capture.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
       "claimed_at": "2026-11-20T19:55:14+00:00",
-      "updated_at": "2026-11-20T20:02:07+00:00",
-      "note": "Снимок S51 подключён к 0x1AE через владельца и брокер CAN13. Проверены TTL, будущие метки, независимая остановка. ПК 41/120, M32R 18+8 и адресная модель PASS; +100 Б Flash и +8 Б рабочей RAM. Расширенная модель FAIL_BINDINGS по application_binding и sensor_config. Отчёт verification/project-audit/vss01-foreground-capture.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "b48c663b97c1c4d125a4e86396a09f9be979d803",
       "task": "VSS-01",
       "submitted_at": "2026-11-20T20:02:07+00:00"
@@ -7450,11 +8708,11 @@
         "targets/lfj8/test_lfj8_h03_takeover.c",
         "verification/project-audit/h03-05-latch-revoke.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "1f0ef50b040d4c8ca2e5a05fd7501d40",
       "claimed_at": "2026-11-20T19:57:18+00:00",
-      "updated_at": "2026-11-20T20:02:38+00:00",
-      "note": "Краткий отзыв внутри арбитрации больше не восстанавливает старую команду в prepare/apply. ПК 41/120, строгий M32R и целевой регрессионный сценарий, 59 сценариев отказов, 16 нативных обёрток, CAN 8+12 и 6 проверок размещения прошли. Отчёт h03-05-latch-revoke.md. Силовая карта, калибровка и стенд открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "8e866f469975c07bf741fe3f1c00317ba6c21fcf",
       "task": "H03-05",
       "submitted_at": "2026-11-20T20:02:38+00:00"
@@ -7468,11 +8726,11 @@
         "controller/tests/test_mode_policy.c",
         "verification/project-audit/mode03-held-shift-at-mode-edge.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "881583aa76814d4da3f768699f01ca29",
       "claimed_at": "2026-11-20T20:07:21+00:00",
-      "updated_at": "2026-11-20T20:12:38+00:00",
-      "note": "Общий rbm_u340e_step подавляет заявки на фронте M при удерживаемых +/−. Регрессия воспроизведена на main; пройдены 256 переходов, 41 шаг ПК/120 тестов, 11+18 M32R, 6 размещённых проверок и штатная привязка входов на ПК/M32R. Стенд и профиль выпуска открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "64dd049791651db334bbf279bf51880dfeaba93a",
       "task": "MODE-03",
       "submitted_at": "2026-11-20T20:12:38+00:00"
@@ -7486,11 +8744,11 @@
         "tests/test_bosch_compact_branches.py",
         "verification/project-audit/ecu01-st10-external-branch.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "976c5a059ccb4336b70933d8338d8217",
       "claimed_at": "2026-11-20T20:03:49+00:00",
-      "updated_at": "2026-11-20T20:09:08+00:00",
-      "note": "Компоновщик сохраняет внешний JMPA и соседнюю секцию, локальные цели проверяются. ПК 41/126, 12 путей ST10, 4 компактных профиля побайтно, CAN-05 f3bb500 профиль побайтно и verify_rx_timestamp PASS. Архив 3256 CRC и 26 команд. Отчёт verification/project-audit/ecu01-st10-external-branch.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "d7c0edc021c5caf7f4c03723847a6dcdd6583a81",
       "task": "ECU-01",
       "submitted_at": "2026-11-20T20:09:08+00:00"
@@ -7504,11 +8762,11 @@
         "tests/test_h03_sensor_config.py",
         "verification/project-audit/vss02-h03-sensor-config-source.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "625fae5569f34ec79ee0206423a3fa01",
       "claimed_at": "2026-11-20T19:56:16+00:00",
-      "updated_at": "2026-11-20T20:01:05+00:00",
-      "note": "Генератор rbm_h03_sensor_config проверяет пределы, наблюдения и оба таймера; 16 тестов ПК, нативный S51/S83/ATF и ABI M32R прошли. Расширенная компоновка с синтетикой оставляет только application_binding. Реальные замеры открыты. Отчёт vss02-h03-sensor-config-source.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "3ffed063500c6347896338731573da0bd14a1eeb",
       "task": "VSS-02",
       "submitted_at": "2026-11-20T20:01:05+00:00"
@@ -7526,11 +8784,11 @@
         "verification/project-audit/2026-11-21-toy01-h03-release-clock.json",
         "verification/project-audit/toy01-h03-release-clock.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "65f87fefa9434dd69e6efd740fa10b71",
       "claimed_at": "2026-11-20T19:51:21+00:00",
-      "updated_at": "2026-11-20T19:57:34+00:00",
-      "note": "Нативный независимый источник Toyota от TML0 включён в H03-мост и проверен через take_toyota, включая пропуск первого события и wrap. 18 стандартных M32R и компоновка прошли в своём объёме. Известные 95394 байта; период, владелец RAM и окончательные привязки остаются открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "c53aaf01d85f38f3fded16ae2c75ef52009f5bd9",
       "task": "TOY-01",
       "submitted_at": "2026-11-20T19:57:34+00:00"
@@ -7545,11 +8803,11 @@
         "targets/bosch/test_chery_torque_rx.c",
         "verification/project-audit/ecu02-torque-permit-boundary.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "911be787c7444bcf9186a8d6c9f55e1b",
       "claimed_at": "2026-11-20T20:04:50+00:00",
-      "updated_at": "2026-11-20T20:08:42+00:00",
-      "note": "Приёмник C отклоняет 0x1AE с меткой на границе снятия допуска и раньше. Подтверждено для прямого/отложенного RX, очереди и переполнения T4. ПК 41/120, 65536 пар, старый Bosch ST10 с 51 записью, три диалога H03 и 26 архивных запросов. Машинная привязка CAN-05 и стенд открыты. Отчёт ecu02-torque-permit-boundary.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "85b2e9320cf8f6e4a3729915ed3ebbd0fc00a732",
       "task": "ECU-02",
       "submitted_at": "2026-11-20T20:08:42+00:00"
@@ -7563,11 +8821,11 @@
         "tools/check_h03_readback.py",
         "verification/project-audit/h03-01-readback.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "afe9090e65ce4d9caf011f47cdcfe67a",
       "claimed_at": "2026-11-20T20:13:14+00:00",
-      "updated_at": "2026-11-20T20:16:35+00:00",
-      "note": "Сверка локальных чтений LFJ8-18-9E1C выдаёт полный MATCH только после сравнения всех 524288 байт, считает пропуски и пересекающиеся расхождения. Пять новых тестов, два теста идентификации и SOURCES прошли. На срезах точного H03 проверены полный, частичный и конфликтующий readback. Отчёт h03-01-readback.md. Физическое считывание и выпуск открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "57bf9ee7cfa47b68da922524f729a284a69f54b4",
       "task": "H03-01",
       "submitted_at": "2026-11-20T20:16:35+00:00"
@@ -7580,11 +8838,11 @@
         "tests/test_verify_sources.py",
         "verification/project-audit/src01-pinned-input-tests.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "31b87bf2ede54a3fa81c666e3bdd72ab",
       "claimed_at": "2026-11-20T20:07:11+00:00",
-      "updated_at": "2026-11-20T20:07:56+00:00",
-      "note": "Опубликованы только тесты происхождения и отчёт. Повторно прошли пять тестов проверки исходников и два теста определения H03. Результат для проверки интегратором.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "30a37a9f5672164bb8326dcc76d9581dc83c01db",
       "task": "SRC-01",
       "submitted_at": "2026-11-20T20:07:56+00:00"
@@ -7597,11 +8855,11 @@
         "tools/check_e4m3_diff.py",
         "verification/project-audit/aud01-e4m3-diff-check.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "d06e51f28ad0459dbc4d456c75b56bb4",
       "claimed_at": "2026-11-20T20:17:54+00:00",
-      "updated_at": "2026-11-20T20:18:13+00:00",
-      "note": "Офлайн-сверка повторно прошла: 8 закреплённых файлов, 3 группы копий и все 1057 диапазонов. Опубликованы только скрипт сравнения и отчёт. Результат для проверки интегратором.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "e340c619c4cd9677fbe56bde39535b888d8e9328",
       "task": "AUD-01",
       "submitted_at": "2026-11-20T20:18:13+00:00"
@@ -7620,11 +8878,11 @@
         "verification/project-audit/rel02-h03-ram-owner.md",
         "verification/project-audit/rel02-h03-stack-admission.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "3fd1870717ff4cc684af517ec9f56903",
       "claimed_at": "2026-11-20T20:00:42+00:00",
-      "updated_at": "2026-11-20T20:20:04+00:00",
-      "note": "Нативный ram_owned проверяет живые SPI и курсор PSW. В точной ветви SBI наблюдались 40+4 байта; DMA0/1 подтверждён на штатной инициализации. Отбор штатной записи повторно показывает границу 0x8000. Совместный состав 96658 байт, окончательные привязки и аппаратная приёмка открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "8af2346d908aab149ccf6c18a025e6f5880b8b35",
       "task": "REL-02",
       "submitted_at": "2026-11-20T20:20:04+00:00"
@@ -7663,11 +8921,11 @@
         "controller/tests/test_mode_policy.c",
         "verification/project-audit/mode03-policy-init-gate.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "1813d3172cb84949a9013f2851da5863",
       "claimed_at": "2026-11-20T20:30:13+00:00",
-      "updated_at": "2026-11-20T20:36:42+00:00",
-      "note": "На актуальной main с 64dd049 общий контроллер отвергает заявки до принятия профиля и после отказа init. ПК 41/129, матрица и привязка H03 на ПК/M32R, M32R 18+8 и 6 проверок размещения. Карта RAM совпала. Отчёт mode03-policy-init-gate.md. Политика выпуска и стенд открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "d77a559150a3c586ca50caa4aa64488b4f02ce22",
       "based_on_reviews": [
         "881583aa76814d4da3f768699f01ca29"
@@ -7684,11 +8942,11 @@
         "tools/check_e4m3_diff.py",
         "verification/project-audit/aud01-e4m3-diff-coverage.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "82bdf686d3f54f4bbcb9ef729cd7b104",
       "claimed_at": "2026-11-20T20:37:34+00:00",
-      "updated_at": "2026-11-20T20:38:04+00:00",
-      "note": "Вторая порция AUD-01: неполный архив отклоняется. Повторно прошли шесть тестов и сверка 8 файлов, 3 групп и 1057 диапазонов. Основана на отдельной порции e340c61.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "dc0f687f5f77aab70cdd0a8cb95f0d1d0f3c854f",
       "based_on_reviews": [
         "d06e51f28ad0459dbc4d456c75b56bb4"
@@ -7708,11 +8966,11 @@
         "targets/lfj8/lfj8_h03_can_monitor_startup.h",
         "verification/project-audit/can03-cold-owner.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
       "claimed_at": "2026-11-20T20:30:28+00:00",
-      "updated_at": "2026-11-20T20:38:24+00:00",
-      "note": "Холодный путь 008084 сбрасывает CAN owner только при доказанном владении RAM, пока CAN0/CAN1 в сбросе. Первое штатное разрешение публикует поколение 1; отказ RAM ведёт в 0047D8. ПК 41/129, нативная модель 22 группы PASS. Расширенная модель 94954 байта, остаются application_binding и sensor_config. Отчёт verification/project-audit/can03-cold-owner.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "4948b51c57475444dea954ef79f44835ab0899df",
       "based_on_reviews": [
         "ad997bd677c542c682cec961d4619193"
@@ -7731,11 +8989,11 @@
         "targets/lfj8/lfj8_h03_application_binding.h",
         "verification/project-audit/h03-03-native-binding.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "77e3f918a51449ab982b5ad578a53b85",
       "claimed_at": "2026-11-20T20:33:34+00:00",
-      "updated_at": "2026-11-20T20:41:45+00:00",
-      "note": "Определён rbm_h03_application_binding, 7 ссылок RAM разрешены в M32R, профиль обязателен. Отдельный ELF прошёл холодный/тёплый старт и foreground; штатная регрессия 56 сценариев/80 IRQ. Восемь поставщиков платформы и измеренные параметры открыты. Отчёт h03-03-native-binding.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "e31b2572704388e3bfc90a5fdbb83c1b6812d909",
       "based_on_reviews": [
         "c7107b9bc8974c67b7113c75529f935c"
@@ -7755,11 +9013,11 @@
         "verification/project-audit/2026-11-21-h03-dma-admission.json",
         "verification/project-audit/rel02-h03-dma-admission.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "856a2771e4554202bb2db5c8d2c3f93d",
       "claimed_at": "2026-11-20T20:32:09+00:00",
-      "updated_at": "2026-11-20T20:43:17+00:00",
-      "note": "Нативная проверка десяти DMA-каналов в холодном допуске RAM H03. M32R: 97142 байта, 5214 номинальный остаток. Адресный ELF H03-04: 27 писателей, 28 закрытий сеанса и 512 Virtual Flash. Остаются привязка приложения и датчиков, доказательство последующего владения DMA/SBI/IRQ, запись нижней Flash через PCM Flash; это порция REL-02.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "8ce841939a365433161c7e1fe5c51f9c0ca3a27b",
       "based_on_reviews": [
         "3fd1870717ff4cc684af517ec9f56903"
@@ -7777,11 +9035,11 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/dtc02-resident-rx-integrated-placement.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
       "claimed_at": "2026-11-20T20:34:46+00:00",
-      "updated_at": "2026-11-20T20:44:17+00:00",
-      "note": "Нижний BasicCAN включён в общий расчёт размещения: 3224 байта, обе ветви и проверенная RAM-привязка владельца. 18 сравнений IRQ, 11+18 проверок M32R и 6 по адресам прошли. Расширенная сборка с RAM-алиасами оставляет FAIL_BINDINGS по application_binding и sensor_config. T6/native_ready и стенд открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "5e6c7a8818290bddebfa97bb55d199570f4127ca",
       "based_on_reviews": [
         "0580560d4a0e442cb07862988bd40b0f",
@@ -7801,11 +9059,11 @@
         "targets/lfj8/lfj8_h03_dtc_native.h",
         "verification/project-audit/dtc01-h03-t6-clock-source.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
       "claimed_at": "2026-11-20T20:30:38+00:00",
-      "updated_at": "2026-11-20T20:48:45+00:00",
-      "note": "Включены сданные DTC-01 и DTC-02. Квалифицированный TML0 даёт дробные тики T6 в нативном CAN foreground. 9 фаз C0, два переполнения, 6 отказов настройки, потеря/явный старт, 18 BasicCAN и 3 обхода M32R; ПК 41/129. Период, фазовая база, RAM и подключение в application_binding открыты. Отчёт dtc01-h03-t6-clock-source.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "d3c7cd228e7e7e1b3ecac3986fa828d57712a7f8",
       "based_on_reviews": [
         "0580560d4a0e442cb07862988bd40b0f",
@@ -7829,11 +9087,11 @@
         "targets/lfj8/test_lfj8_h03_input_binding.c",
         "verification/project-audit/mode02-h03-sample-lifecycle.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "7b928a7629294ca3950e08c3c64055a4",
       "claimed_at": "2026-11-20T20:33:07+00:00",
-      "updated_at": "2026-11-20T20:48:58+00:00",
-      "note": "Native AN2/P1DATA уважает допуск RAM. Приём на фазе H03 отделён от заявки Toyota, прежний вызов сохранён. Прошли 41 этап ПК/129 тестов, 8 сравнений AN2, 8 компонентных групп, остальные нативные с повтором phase-boot и 6 размещённых. Foreground занят CAN-01; открыты его привязка, карта/OD и ручная цель. Отчёт mode02-h03-sample-lifecycle.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "5c5175c0742daa4139cb02ae8076309d80c9447b",
       "based_on_reviews": [
         "81b1f36f00b14bd49f57ba12c0f60bd1",
@@ -7851,11 +9109,11 @@
         "targets/lfj8/test_lfj8_h03_takeover.c",
         "verification/project-audit/h03-05-tio9-isolation.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "9e9946679e73436c9432ab4a2497f2e5",
       "claimed_at": "2026-11-20T20:33:12+00:00",
-      "updated_at": "2026-11-20T20:49:07+00:00",
-      "note": "Отдельный бит физической изоляции TIO9/P97 обязателен до допуска H03. Старая маска и каждый отсутствующий бит отклоняются, полный допуск проходит. На ПК 41 этап/134 теста, на M32R 22 штатные+8 дополнительных+6 размещённых групп, отдельная проверка допуска и 18 E/TIO9 + 59 мониторов. Модуль 1764 байта до и после. Предыдущие review сохранены, физическая изоляция и окончательный binding открыты. Отчёт h03-05-tio9-isolation.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "0db23bea3e1df3a345b46a46f711e9a7896ed485",
       "based_on_reviews": [
         "1f0ef50b040d4c8ca2e5a05fd7501d40"
@@ -7873,11 +9131,11 @@
         "targets/lfj8/lfj8_chery_tx.h",
         "verification/project-audit/vss01-tml0-timing-admission.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "8824637391444f7588fd41404c923798",
       "claimed_at": "2026-11-20T20:42:57+00:00",
-      "updated_at": "2026-11-20T20:51:29+00:00",
-      "note": "0x1AE отбрасывает тайм-аут вне полуоборота TML0 и окно до сужения. PC 41 шаг, 129 тестов Python; M32R, CAN13 и двусторонний Bosch PASS. Отчёт vss01-tml0-timing-admission.md. Целевые привязки, параметры авто и реальная шина открыты.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "1bcfe06eb116940db1921a70130629bacb17da3a",
       "based_on_reviews": [
         "d9e48d584c644fbf9f3cde053b8b8c41"
@@ -7897,11 +9155,11 @@
         "targets/lfj8/lfj8_h03_can_target.h",
         "verification/project-audit/can03-dtc-shared-owner.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "ffff885e4aa646d3b41c030b6eda77cb",
       "claimed_at": "2026-11-20T20:43:58+00:00",
-      "updated_at": "2026-11-20T20:52:18+00:00",
-      "note": "Холодный путь снимает старый IRQ target, нативный foreground использует тот же h03_can_owner, IRQ-очередь и TML0. 0x732→0x722, потеря квалификации, 18 сравнений BasicCAN, ПК 41/129 и все 22 native PASS. Нужны конечная привязка H03-03, T6 DTC-01 и размещение DTC-02. Отчёт verification/project-audit/can03-dtc-shared-owner.md.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "3b2e4d6ab163cf7f384ba94447f5fe6fb92950db",
       "based_on_reviews": [
         "ad997bd677c542c682cec961d4619193",
@@ -7932,11 +9190,11 @@
         "verification/project-audit/2026-11-21-final-integration.json",
         "verification/project-audit/final-integration-20261121/"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "4c455b84d1db43c0a19c00f91baec753",
       "claimed_at": "2026-11-20T21:01:34+00:00",
-      "updated_at": "2026-11-20T21:13:50+00:00",
-      "note": "Все 42 опубликованные порции и локальный CAN-01 объединены в main. 41/172 ПК, 22 native, 18+8 M32R, 6 размещённых групп. Исправлены include и обязательный engine binding. Рабочего TCM BIN нет: FAIL_BINDINGS, 10 поставщиков; остатки обновлены.",
+      "updated_at": "2026-11-20T21:14:43+00:00",
+      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
       "result": "55b9a240338ef1cf58da6218e8634450373b9f92",
       "based_on_reviews": [
         "15e6e783e4d74a5b9c000d3658becff0",
