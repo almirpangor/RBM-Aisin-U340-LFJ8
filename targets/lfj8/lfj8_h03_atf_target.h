@@ -12,10 +12,15 @@ extern volatile Lfj8H03Atf rbm_h03_atf_state;
  * requires restarting the application with the hooks quiescent. */
 int rbm_h03_atf_now_us(uint32_t *now_us);
 
-/* Only the application clock owner sets this when the native TML0 provider
- * is linked. Start at zero, qualify the physical 1 MHz rate and continuity,
- * and revoke before any known clock or counter reinitialization. */
+/* Only the application clock owner may set the native qualification. Start
+ * at zero, qualify both physical 1 MHz clocks and revoke before any known
+ * counter reinitialization. The native time provider can also revoke it. */
 extern volatile uint8_t rbm_h03_tml0_1mhz_qualified;
+
+/* Native clock checks shared by ATF and the capture target, under the H03
+ * interrupt lock. An observed mismatch latches readiness off until rebase. */
+int lfj8_h03_sensor_clock_registers_match(void);
+int lfj8_h03_sensor_clock_ready_locked(void);
 
 /* Entry points from h03_atf_hooks.S, with maskable interrupts excluded. */
 void rbm_h03_atf_adc_callback(void);

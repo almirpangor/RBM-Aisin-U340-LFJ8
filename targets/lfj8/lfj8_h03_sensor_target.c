@@ -2,18 +2,6 @@
 #include "lfj8_h03_atf_target.h"
 #include "lfj8_h03_mmio.h"
 
-#define H03_PRS1 UINT32_C(0x800203)
-#define H03_TML0CR UINT32_C(0x8003EB)
-#define H03_TML1CR UINT32_C(0x800FEB)
-
-static int clock_registers_match(void)
-{
-    const Lfj8RegisterIo *io = &lfj8_h03_mmio;
-    return io->read8(io->context, H03_PRS1) == 9u &&
-           io->read8(io->context, H03_TML0CR) == 0x01u &&
-           io->read8(io->context, H03_TML1CR) == 0x31u;
-}
-
 static void revoke_locked(void)
 {
     rbm_h03_tml0_1mhz_qualified = 0u;
@@ -26,10 +14,14 @@ static void revoke_locked(void)
 
 static uint8_t clock_ready_locked(void)
 {
-    if (rbm_h03_tml0_1mhz_qualified == 1u && !clock_registers_match()) {
+    if (lfj8_h03_sensor_clock_ready_locked()) {
+        return 1u;
+    }
+    /* ATF may have revoked the shared qualification before this call. */
+    if (rbm_h03_sensor_state.feed.epoch_seen) {
         revoke_locked();
     }
-    return rbm_h03_tml0_1mhz_qualified;
+    return 0u;
 }
 
 int rbm_h03_sensor_clock_rebase(uint8_t physical_1mhz)
@@ -37,7 +29,7 @@ int rbm_h03_sensor_clock_rebase(uint8_t physical_1mhz)
     const Lfj8RegisterIo *io = &lfj8_h03_mmio;
     const uint32_t saved = io->enter(io->context);
     revoke_locked();
-    const int qualified = physical_1mhz == 1u && clock_registers_match();
+    const int qualified = physical_1mhz == 1u && lfj8_h03_sensor_clock_registers_match();
     rbm_h03_sensor_state.feed.epoch_seen = (uint8_t)qualified;
     rbm_h03_tml0_1mhz_qualified = (uint8_t)qualified;
     io->leave(io->context, saved);
