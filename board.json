@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 561,
+  "sequence": 562,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -91,12 +91,12 @@
         "tools/package_workset.py",
         "verification/project-audit/rel01-firmware-identity.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "fe39fa893cbe4843b42a5e9a0f82f3ed",
       "claimed_at": "2026-11-20T19:56:50+00:00",
-      "updated_at": "2026-11-20T19:58:27+00:00",
-      "note": "Тесты воспроизвели приём исходников и полноразмерных BIN с повреждённой идентификацией. Проверки подключены в --firmware-pair, сверяю на локальных H03/S04 и ранее проверенном OFFLINE_ONLY.",
-      "result": null
+      "updated_at": "2026-11-20T20:02:20+00:00",
+      "note": "Проверка идентификаторов и хешей исходников подключена в --firmware-pair. Пройдены 41 этап ПК (123 unittest), проверка исходников и шесть отказов CLI с настоящим Git-архивом. Границы в verification/project-audit/rel01-firmware-identity.md. Выпуск BIN остаётся открытым.",
+      "result": "de7df4ab3da2c30240e0a8d3635f206787236d94"
     },
     "H03-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -5073,9 +5073,17 @@
       "action": "review",
       "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
       "at": "2026-11-20T20:02:07+00:00"
+    },
+    {
+      "operation_id": "f1fefee97df24e03a302e2f488ebdb2d",
+      "task": "REL-01",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "review",
+      "claim_id": "fe39fa893cbe4843b42a5e9a0f82f3ed",
+      "at": "2026-11-20T20:02:20+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:02:07+00:00",
+  "updated_at": "2026-11-20T20:02:20+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
