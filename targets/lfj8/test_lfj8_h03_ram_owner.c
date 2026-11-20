@@ -1,4 +1,5 @@
 #include "lfj8_h03_mmio.h"
+#include "lfj8_h03_application_binding.h"
 #include "lfj8_h03_ram_owner.h"
 #include "lfj8_h03_storage.h"
 
@@ -30,6 +31,7 @@ static RbmU340eRuntime runtime;
 static unsigned inhibit_count;
 static unsigned rebase_count;
 static int platform_owned;
+static int use_target_owner = 1;
 static uint32_t entry_spi = 0x809efcu;
 
 void fixture_cold_gate(uint32_t spi);
@@ -45,17 +47,26 @@ __asm__(
     "push r3\n"
     "push r2\n"
     "push lr\n"
-    "bl.l rbm_h03_application_cold_gate\n"
+    "bl.l rbm_h03_application_cold_hook\n"
     "pop lr\n"
     "pop r2\n"
     "pop r3\n"
     "mvtc r3,cr2\n"
     "mvtc r2,psw\n"
     "jmp lr\n"
+    ".p2align 2\n"
+    ".global h03_stock_application_after_entry\n"
+    "h03_stock_application_after_entry:\n"
+    "addi sp,#4\n"
+    "pop lr\n"
+    "jmp lr\n"
 );
 
 static const uint32_t sites[] = {0x2924u, 0x294cu, 0x2d1cu, 0x2e9cu, 0x3568u};
 static const uint32_t original[] = {ROM_DIRECT, ROM_SPAN, ROM_COPY, ROM_CLOSE, ROM_VIRTUAL};
+static const uint32_t sbi_sites[] = {0x10u, 0x3e5cu, 0x3e60u, 0x3f7cu, 0x3fc0u, 0x3fc4u};
+static const uint32_t sbi_words[] = {ROM_SBI_VECTOR, ROM_SBI_MASK_READ, ROM_SBI_PSW_SAVE,
+                                   ROM_SBI_SAVE_CALL, ROM_SBI_LAST_STORE, ROM_SBI_STOP};
 
 static int irq_enabled(void)
 {
@@ -70,9 +81,20 @@ static int boot_ready(void *platform)
     return platform_owned;
 }
 
+int rbm_h03_boot_writers_owned(void *context)
+{
+    assert(!irq_enabled() && context == NULL);
+    return platform_owned;
+}
+
+static int ram_owned(void *context)
+{
+    return use_target_owner ? rbm_h03_target_ram_owned(context) : lfj8_h03_ram_owned(context);
+}
+
 static void inhibit(void *platform)
 {
-    assert(!irq_enabled() && platform == &OWNER);
+    assert(!irq_enabled() && platform == application_io.context);
     inhibit_count++;
 }
 
@@ -86,7 +108,7 @@ int rbm_h03_sensor_clock_rebase(uint8_t physical_1mhz)
 static const Lfj8H03TakeoverOps ops = {.io = &application_io, .inhibit = inhibit};
 const Lfj8H03ApplicationBinding rbm_h03_application_binding = {
     .takeover_ops = &ops, .takeover = &takeover, .main = &result, .runtime = &runtime,
-    .ram_owned = lfj8_h03_ram_owned,
+    .ram_owned = ram_owned,
 };
 
 static void require_cold_gate(int accepted)
@@ -218,6 +240,9 @@ int main(void)
     application_io.context = &OWNER;
     platform_owned = 1;
     fixture_map();
+    for (unsigned i = 0; i < sizeof sbi_sites / sizeof sbi_sites[0]; ++i) {
+        WORD(sbi_sites[i]) = sbi_words[i];
+    }
     for (unsigned i = 0; i < sizeof sites / sizeof sites[0]; ++i) {
         WORD(sites[i]) = original[i];
     }
@@ -232,6 +257,13 @@ int main(void)
     };
     for (unsigned i = 0; i < sizeof sites / sizeof sites[0]; ++i) {
         WORD(sites[i]) = patched[i];
+    }
+    require_cold_gate(1);
+
+    for (unsigned i = 0; i < sizeof sbi_sites / sizeof sbi_sites[0]; ++i) {
+        WORD(sbi_sites[i]) ^= 1u;
+        require_cold_gate(0);
+        WORD(sbi_sites[i]) = sbi_words[i];
     }
     require_cold_gate(1);
 
@@ -290,6 +322,18 @@ int main(void)
     POLICY.count = LFJ8_H03_SERVICE_RANGES + 1u;
     require_cold_gate(0);
     fixture_map();
+    platform_owned = 0;
+    require_cold_gate(0);
+    platform_owned = 1;
+    require_cold_gate(1);
+
+    /* The wrapper uses the Flash descriptor, independently of the I/O context. */
+    application_io.context = (void *)(uintptr_t)CONTROL_ADDRESS;
+    require_cold_gate(1);
+    application_io.context = &OWNER;
+
+    /* The low-level interface still rejects malformed caller-supplied maps. */
+    use_target_owner = 0;
     OWNER.control.end -= 4u;
     require_cold_gate(0);
     fixture_map();
@@ -334,7 +378,8 @@ int main(void)
     require_cold_gate(0);
     fixture_map();
     require_cold_gate(1);
+    use_target_owner = 1;
     verify_dma();
-    puts("H03 RAM owner: cold gate, native service words, live stacks and DMA PASS");
+    puts("H03 RAM owner: target binding, cold hook, service words, live stacks and DMA PASS");
     return 0;
 }

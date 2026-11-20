@@ -108,7 +108,33 @@ def calibration_evidence(profile, base_sha256):
     return {"evidence_id": evidence_id.strip(), "limits": config, "observed_maxima": maxima}
 
 
+def check_inputs(base, clock_reference=None, calibration_profile=None):
+    if calibration_profile is not None and clock_reference is None:
+        raise ValueError("Calibration profile requires a paired clock reference")
+    report = stock_evidence(base)
+    reference = None
+    if clock_reference is not None:
+        clock_data = clock_reference.read_bytes()
+        reference = paired_clock_evidence(json.loads(clock_data.decode("utf-8-sig")))
+        if calibration_profile is not None:
+            report["clock_reference_sha256"] = sha256(clock_data).hexdigest()
+    report["clock_reference"] = reference
+    report["status"] = ("PASS_STOCK_ONLY" if reference is None else
+                        "PASS_RECORDED_CLOCKS" if reference["passed"] else "FAIL_RECORDED_CLOCKS")
+    if calibration_profile is not None:
+        profile_data = calibration_profile.read_bytes()
+        profile = calibration_evidence(json.loads(profile_data.decode("utf-8-sig")), report["base"]["sha256"])
+        report["calibration_profile"] = {**profile, "sha256": sha256(profile_data).hexdigest()}
+        report["hardware_verified"] = False
+        if reference["passed"]:
+            report["production_sensor_config"] = profile["limits"]
+            report["status"] = "PASS_CONFIG_INPUTS"
+    return report
+
+
 def config_source(report):
+    if report["status"] != "PASS_CONFIG_INPUTS":
+        raise ValueError("Sensor binding requires accepted clock and calibration inputs")
     fields = report["production_sensor_config"]
     profile_hash = report["calibration_profile"]["sha256"]
     clock_hash = report["clock_reference_sha256"]
@@ -119,6 +145,8 @@ def config_source(report):
         f" * Profile SHA-256: {profile_hash}",
         f" * Clocks SHA-256:  {clock_hash}",
         " */",
+        '#include "lfj8_h03_application_binding.h"',
+        '#include "lfj8_h03_atf_target.h"',
         '#include "lfj8_h03_sensor_target.h"',
         "",
         "const Lfj8H03SensorFeedConfig rbm_h03_sensor_config = {",
@@ -126,7 +154,20 @@ def config_source(report):
     for field, value in fields.items():
         width = 16 if field == "max_read_span_ticks" else 32
         lines.append(f"    .{field} = UINT{width}_C({value}),")
-    return "\n".join([*lines, "};", ""])
+    lines.extend([
+        "};",
+        "",
+        "/* Startup checks this before opening an epoch. Foreground separately",
+        " * requires the live qualification and phase age. Reuse the native",
+        " * register check without changing either timer or its epoch. */",
+        "int rbm_h03_target_clock_ready(void *context)",
+        "{",
+        "    (void)context;",
+        "    return lfj8_h03_sensor_clock_registers_match();",
+        "}",
+        "",
+    ])
+    return "\n".join(lines)
 
 
 def main():
@@ -136,7 +177,7 @@ def main():
     parser.add_argument("--calibration-profile", type=Path,
                         help="explicit H03 limits and bench observation maxima")
     parser.add_argument("--emit-config", action="store_true",
-                        help="write the qualified C definition to stdout")
+                        help="write the qualified sensor config and clock callback to stdout")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
     if args.calibration_profile and not args.clock_reference:
@@ -149,31 +190,14 @@ def main():
             (args.out.exists() and path.exists() and args.out.samefile(path)) for path in inputs):
         parser.error("Use a separate JSON report")
     try:
-        report = stock_evidence(args.base)
-        reference = None
-        if args.clock_reference:
-            clock_data = args.clock_reference.read_bytes()
-            reference = paired_clock_evidence(json.loads(clock_data.decode("utf-8-sig")))
-            if args.calibration_profile:
-                report["clock_reference_sha256"] = sha256(clock_data).hexdigest()
-        report["clock_reference"] = reference
-        report["status"] = ("PASS_STOCK_ONLY" if reference is None else
-                            "PASS_RECORDED_CLOCKS" if reference["passed"] else "FAIL_RECORDED_CLOCKS")
-        if args.calibration_profile:
-            profile_data = args.calibration_profile.read_bytes()
-            profile = calibration_evidence(json.loads(profile_data.decode("utf-8-sig")), report["base"]["sha256"])
-            report["calibration_profile"] = {**profile, "sha256": sha256(profile_data).hexdigest()}
-            report["hardware_verified"] = False
-            if reference["passed"]:
-                report["production_sensor_config"] = profile["limits"]
-                report["status"] = "PASS_CONFIG_INPUTS"
+        report = check_inputs(args.base, args.clock_reference, args.calibration_profile)
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         if args.emit_config and report["status"] == "PASS_CONFIG_INPUTS":
             sys.stdout.write(config_source(report))
     except (OSError, KeyError, ValueError) as error:
         parser.exit(2, f"{error}\n")
-    return int(reference is not None and not reference["passed"])
+    return int(report["status"] == "FAIL_RECORDED_CLOCKS")
 
 
 if __name__ == "__main__":

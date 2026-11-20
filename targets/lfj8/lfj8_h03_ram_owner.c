@@ -44,6 +44,18 @@ static uint32_t read_word(uint32_t address)
     return lfj8_h03_mmio.read32(lfj8_h03_mmio.context, address);
 }
 
+static int stock_sbi_words_match(void)
+{
+    /* These words pin the stock vector, the PSW save and the terminal
+     * fail-stop path on which the SBI frame sizes below depend. */
+    return read_word(0x000010u) == UINT32_C(0xFF000FD0) &&
+           read_word(0x003E5Cu) == UINT32_C(0x10A321C0) &&
+           read_word(0x003E60u) == UINT32_C(0x24712140) &&
+           read_word(0x003F7Cu) == UINT32_C(0xFEFFFFB5) &&
+           read_word(0x003FC0u) == UINT32_C(0x2300F000) &&
+           read_word(0x003FC4u) == UINT32_C(0x7F002EEF);
+}
+
 static int has_stack_room(Lfj8H03ServiceRange bounds, uint32_t current,
                           uint32_t top, uint32_t reserve)
 {
@@ -245,6 +257,7 @@ int lfj8_h03_ram_owned(void *context)
     const Lfj8H03RamOwner *const owner = context;
     if (!in_application_flash((uintptr_t)owner, sizeof *owner) ||
         !owner->boot_and_other_writers_owned || !plain_flash() || !live_stacks_ready(owner) ||
+        !stock_sbi_words_match() ||
         owner->boot_and_other_writers_owned(owner->platform) != 1) {
         return 0;
     }
