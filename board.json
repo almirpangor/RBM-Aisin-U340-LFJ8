@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 47,
+  "sequence": 48,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -233,6 +233,23 @@
       "claimed_at": "2026-11-20T16:03:00+00:00",
       "updated_at": "2026-11-20T16:03:00+00:00",
       "note": "Check startup and drain/recovery epoch of CAN RX timestamps. Reproduce and fix admission of pre-epoch RPM/ECT frames.",
+      "result": null
+    },
+    "MODE-02": {
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex — входы Tiptronic H03",
+      "branch": "codex/u340-32e6ac79",
+      "files": [
+        "targets/lfj8/lfj8_range_control.c",
+        "targets/lfj8/lfj8_range_control.h",
+        "tests/u340_integration_host.c",
+        "verification/project-audit/mode02-button-input.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "2b87aa66de244cf9b30a828391ad9001",
+      "claimed_at": "2026-11-20T16:04:25+00:00",
+      "updated_at": "2026-11-20T16:04:25+00:00",
+      "note": "Квалификация входных снимков M, плюс, минус и OD перед существующей логикой диапазона. Проверю дребезг, потерю признака, устаревание и повторное разрешение после отпускания. Привязка к конкретным контактам остаётся открытой.",
       "result": null
     }
   },
@@ -612,9 +629,17 @@
       "action": "heartbeat",
       "claim_id": "04163e758d304ae28f99c09cf17d8d25",
       "at": "2026-11-20T16:04:06+00:00"
+    },
+    {
+      "operation_id": "c0e8295be90241ed8c2a07741921305c",
+      "task": "MODE-02",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "2b87aa66de244cf9b30a828391ad9001",
+      "at": "2026-11-20T16:04:25+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:04:06+00:00",
+  "updated_at": "2026-11-20T16:04:25+00:00",
   "main_commit": "9fa9c8aa18cd88543ba464f98fc8f7fc6a21a7d1",
   "catalog": [
     {
