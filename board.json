@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 363,
+  "sequence": 364,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -279,20 +279,21 @@
     },
     "TOY-05": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex — восстановление адаптаций Toyota",
-      "branch": "codex/toy05-safe-restore-32e6ac79",
+      "label": "Codex — исходный снимок адаптаций S01",
+      "branch": "codex/toy05-startup-baseline-32e6ac79",
       "files": [
         "controller/include/rbm_u340e_runtime.h",
         "controller/src/rbm_u340e_runtime.c",
         "controller/tests/test_controller.c",
-        "verification/project-audit/toy05-recovery-policy.md"
+        "targets/lfj8/check_toyota_adaptation_baseline.py",
+        "verification/project-audit/toy05-s01-baseline.md"
       ],
-      "stage": "done",
-      "claim_id": "5e8a320b9b764646ac4a68af00a061dd",
-      "claimed_at": "2026-11-20T16:53:04+00:00",
-      "updated_at": "2026-11-20T17:42:29+00:00",
-      "note": "袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md.",
-      "result": "8d6a6f1f62d70c827531f672c98d309e708df595"
+      "stage": "in_progress",
+      "claim_id": "94acefd328f147ea988bf6d03a41c5f7",
+      "claimed_at": "2026-11-20T18:25:22+00:00",
+      "updated_at": "2026-11-20T18:25:22+00:00",
+      "note": "Определяю снимок коррекций по исходному V850 Toyota S01 при холодной инициализации и сбросе. Отдельно проверяю поля, оставляемые донором, и привязку к запуску runtime без назначения NVM.",
+      "result": null
     },
     "CAN-04": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -3481,9 +3482,17 @@
       "action": "claim",
       "claim_id": "69ac904b985641cea43c72eba859a273",
       "at": "2026-11-20T18:25:00+00:00"
+    },
+    {
+      "operation_id": "a594a9581a2d4584b5d220d9bc8feb9b",
+      "task": "TOY-05",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "94acefd328f147ea988bf6d03a41c5f7",
+      "at": "2026-11-20T18:25:22+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:25:00+00:00",
+  "updated_at": "2026-11-20T18:25:22+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
