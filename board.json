@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 88,
+  "sequence": 89,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -317,8 +317,8 @@
       "stage": "in_progress",
       "claim_id": "66ff2c9c89284dcaba9ce91746f4bde4",
       "claimed_at": "2026-11-20T16:12:39+00:00",
-      "updated_at": "2026-11-20T16:12:39+00:00",
-      "note": "Проверяю 2→3, 3→4 и обратные переходы в существующем цикле FAST/SECONDARY/MAIN. Фиксирую донорские состояния и отсутствующие звенья отдельно от аппаратной реализации.",
+      "updated_at": "2026-11-20T16:15:18+00:00",
+      "note": "Из S01 сверены пороги для нулевой нагрузки. На ПК подтверждены 2→3, 3→4 и понижения, запрет 4-й при низкой ОЖ и отзыв при потере события; запущены полные PC, M32R и NATIVE.",
       "result": null
     },
     "CAN-02": {
@@ -1042,9 +1042,17 @@
       "action": "heartbeat",
       "claim_id": "c53be951e4c44833aea3f77adecbd92b",
       "at": "2026-11-20T16:15:07+00:00"
+    },
+    {
+      "operation_id": "855ee845d45b4c3fbff528388e8e06ae",
+      "task": "TOY-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "heartbeat",
+      "claim_id": "66ff2c9c89284dcaba9ce91746f4bde4",
+      "at": "2026-11-20T16:15:18+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:15:07+00:00",
+  "updated_at": "2026-11-20T16:15:18+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
