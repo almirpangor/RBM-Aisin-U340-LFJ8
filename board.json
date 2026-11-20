@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 571,
+  "sequence": 572,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -317,12 +317,12 @@
         "tests/u340_integration_host.c",
         "verification/project-audit/mode01-selector-fault.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "81b1f36f00b14bd49f57ba12c0f60bd1",
       "claimed_at": "2026-11-20T20:03:40+00:00",
-      "updated_at": "2026-11-20T20:05:25+00:00",
-      "note": "Подтвердил дефект на исходном коде. После исправления проходят 10 сценариев отзыва и восстановления на ПК; M32R input-binding PASS, общий линк и проверки памяти идут.",
-      "result": null
+      "updated_at": "2026-11-20T20:06:44+00:00",
+      "note": "INVALID/OVERRUN сразу отзывают диапазон независимо от метки. 10 сценариев ПК/M32R, input-binding, 18+8 компонентных и 6 размещённых сценариев PASS. +20 байт Flash. Полный линк FAIL_BINDINGS. Отчёт mode01-selector-fault.md.",
+      "result": "8974a4a5002fd1786eb02ad8d7c19a829c47ad6f"
     },
     "TOY-04": {
       "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
@@ -5155,9 +5155,17 @@
       "action": "heartbeat",
       "claim_id": "976c5a059ccb4336b70933d8338d8217",
       "at": "2026-11-20T20:05:49+00:00"
+    },
+    {
+      "operation_id": "412ad700900b4acaae166802e3994c9c",
+      "task": "MODE-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "81b1f36f00b14bd49f57ba12c0f60bd1",
+      "at": "2026-11-20T20:06:44+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:05:49+00:00",
+  "updated_at": "2026-11-20T20:06:44+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
