@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 250,
+  "sequence": 251,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -558,12 +558,12 @@
         "tools/check_bench_can_trace.py",
         "verification/project-audit/rel02-can-trace.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "9df078bb4f93459f8e1b8d34220dd825",
       "claimed_at": "2026-11-20T16:54:37+00:00",
-      "updated_at": "2026-11-20T16:59:29+00:00",
-      "note": "Разборщик и 6 целевых тестов готовы. Архив R1: 25 261 запись, 4 перехода минуты; отсутствие периодических ID даёт ожидаемый отказ. Завершаю регрессию и доказательства.",
-      "result": null
+      "updated_at": "2026-11-20T17:00:17+00:00",
+      "note": "Программная подготовка REL-02: офлайн-разбор TRC и проверка периодических ID по заданным допускам. Python 77/77; R1 25261 запись, четыре перехода, ожидаемый отказ по отсутствующим ID. Доказательства verification/project-audit/rel02-can-trace.md. Общий аудит обновляет интегратор. Для приёмки нужны измерения новой пары H03/E4M3.",
+      "result": "2ebae711ad169cf22528a0a7297d8d3b210d4e0a"
     }
   },
   "events": [
@@ -2566,9 +2566,17 @@
       "action": "resume",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "at": "2026-11-20T17:00:11+00:00"
+    },
+    {
+      "operation_id": "e63d1f893e3a41b294417abb17d19f2e",
+      "task": "REL-02",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "9df078bb4f93459f8e1b8d34220dd825",
+      "at": "2026-11-20T17:00:17+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:00:11+00:00",
+  "updated_at": "2026-11-20T17:00:17+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
