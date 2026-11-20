@@ -221,12 +221,90 @@ static void check_button_recovery(void)
     assert(!capture_range_buttons(&control, &filter, 115, down).requested_gear);
 }
 
+static void reject_range_inputs(const Lfj8H03RangeInputs *inputs, const Lfj8H03RangeAgeLimits *limits,
+                                uint32_t generation, uint32_t now_us)
+{
+    Lfj8H03RangeSnapshot snapshot = {.oldest_us = 42, .range_5722 = 15, .inhibit_5250 = 4};
+    assert(!lfj8_h03_range_snapshot(inputs, limits, generation, now_us, &snapshot));
+    assert(snapshot.oldest_us == 0 && snapshot.range_5722 == 0 && snapshot.inhibit_5250 == 0);
+}
+
+static void check_independent_range_inputs(void)
+{
+    const uint32_t now_us = 2;
+    const uint32_t generation = 0; /* First generation after rollover. */
+    const Lfj8H03RangeAgeLimits limits = {.range_5722_us = {3, 4, 5, 6}, .inhibit_5250_2_us = 9};
+    Lfj8H03RangeInputs inputs = {
+        .inhibit_5250_2 = {.captured_us = now_us - 8u, .generation = generation, .valid = 1},
+    };
+    for (unsigned bit = 0; bit < 4u; ++bit) {
+        inputs.range_5722[bit] = (Lfj8H03RangeBit){
+            .captured_us = now_us - 2u - bit, .generation = generation, .valid = 1,
+        };
+    }
+
+    Lfj8H03RangeSnapshot snapshot;
+    for (unsigned mask = 0; mask < 32u; ++mask) {
+        for (unsigned bit = 0; bit < 4u; ++bit) {
+            inputs.range_5722[bit].asserted = (uint8_t)((mask >> bit) & 1u);
+        }
+        inputs.inhibit_5250_2.asserted = (uint8_t)(mask >> 4);
+        assert(lfj8_h03_range_snapshot(&inputs, &limits, generation, now_us, &snapshot));
+        assert(snapshot.range_5722 == (mask & 15u) && snapshot.inhibit_5250 == ((mask >> 4) << 2));
+        assert(snapshot.oldest_us == inputs.inhibit_5250_2.captured_us);
+    }
+
+    const Lfj8H03RangeInputs valid = inputs;
+    for (unsigned bit = 0; bit < 4u; ++bit) {
+        inputs = valid;
+        inputs.range_5722[bit].valid = 0;
+        reject_range_inputs(&inputs, &limits, generation, now_us);
+        inputs = valid;
+        inputs.range_5722[bit].generation = UINT32_MAX;
+        reject_range_inputs(&inputs, &limits, generation, now_us);
+        inputs = valid;
+        inputs.range_5722[bit].captured_us = now_us - limits.range_5722_us[bit];
+        reject_range_inputs(&inputs, &limits, generation, now_us);
+    }
+    inputs = valid;
+    inputs.inhibit_5250_2.generation = UINT32_MAX;
+    reject_range_inputs(&inputs, &limits, generation, now_us);
+    inputs = valid;
+    inputs.inhibit_5250_2.captured_us = now_us - limits.inhibit_5250_2_us;
+    reject_range_inputs(&inputs, &limits, generation, now_us);
+    inputs = valid;
+    inputs.inhibit_5250_2.valid = 2;
+    reject_range_inputs(&inputs, &limits, generation, now_us);
+
+    inputs = valid;
+    inputs.range_5722[0].captured_us = now_us + 1u;
+    reject_range_inputs(&inputs, &limits, generation, now_us);
+    inputs = valid;
+    inputs.range_5722[0].asserted = 2;
+    reject_range_inputs(&inputs, &limits, generation, now_us);
+    Lfj8H03RangeAgeLimits bad_limits = limits;
+    bad_limits.range_5722_us[1] = 0;
+    reject_range_inputs(&valid, &bad_limits, generation, now_us);
+    bad_limits = limits;
+    bad_limits.inhibit_5250_2_us = UINT32_C(0x80000000);
+    reject_range_inputs(&valid, &bad_limits, generation, now_us);
+    reject_range_inputs(NULL, &limits, generation, now_us);
+    reject_range_inputs(&valid, NULL, generation, now_us);
+    assert(!lfj8_h03_range_snapshot(&valid, &limits, generation, now_us, NULL));
+
+    inputs = valid;
+    inputs.inhibit_5250_2.captured_us = now_us;
+    assert(lfj8_h03_range_snapshot(&inputs, &limits, generation, now_us, &snapshot));
+    assert(snapshot.oldest_us == inputs.range_5722[3].captured_us);
+}
+
 int main(int argc, char **argv)
 {
     verify_lfj8_selector_adc();
     check_selector_clock();
     check_button_debounce();
     check_button_recovery();
+    check_independent_range_inputs();
     assert(argc == 1 || argc == 3);
     uint8_t rpm_frame[8] = {0x12, 0xc0, 0xff, 0xff, 0x00, 0xff, 0x00, 0x00};
     uint8_t coolant_frame[8] = {0xb4, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
