@@ -70,6 +70,7 @@ def build(compiler: str, destination: Path) -> None:
     sources = [*(CONTROLLER / path for path in CONTROLLER_SOURCES),
                *(p for p in vendor_files if p.suffix == ".c")]
     test_sources = [CONTROLLER / path for path in CONTROLLER_TESTS]
+    policy_test = CONTROLLER / "tests/test_mode_policy.c"
     flags = [
         "-std=c11", "-O2", "-Wall", "-Wextra", "-Werror",
         "-I", str(CONTROLLER / "include"),
@@ -99,7 +100,11 @@ def build(compiler: str, destination: Path) -> None:
              *map(str, test_sources), "-o", str(stage / executable)],
             check=True,
         )
-        tests = subprocess.check_output([str(stage / executable)], text=True).strip()
+        policy_executable = stage / ("mode_policy_test" + Path(executable).suffix)
+        subprocess.run([*driver, *flags, *source_args, str(policy_test), "-o", str(policy_executable)],
+                       check=True)
+        tests = "\n".join(subprocess.check_output([str(program)], text=True).strip()
+                          for program in (stage / executable, policy_executable))
         print(tests)
 
         manifest = {
@@ -115,6 +120,7 @@ def build(compiler: str, destination: Path) -> None:
                     *sorted((CONTROLLER / "include").glob("*.h")),
                     *(p for p in vendor_files if p.suffix == ".h"),
                     *test_sources,
+                    policy_test,
                     Path(__file__).resolve(),
                     CONTROLLER / "hydraulic_port.py",
                 )
