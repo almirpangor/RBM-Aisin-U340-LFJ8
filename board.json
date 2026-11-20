@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 766,
+  "sequence": 767,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -458,6 +458,7 @@
       "branch": "codex/h03-05-tio9-revoke-01a1fa79",
       "files": [
         "targets/lfj8/check_h03_slt_fault.py",
+        "targets/lfj8/check_h03_target_outputs.py",
         "targets/lfj8/h03_target_outputs_fixture.c",
         "targets/lfj8/lfj8_h03_output_inhibit.c",
         "targets/lfj8/lfj8_h03_output_inhibit.h",
@@ -466,8 +467,8 @@
       "stage": "in_progress",
       "claim_id": "fae2c834e65a428fb92e2fd73fc941d8",
       "claimed_at": "2026-11-20T23:10:09+00:00",
-      "updated_at": "2026-11-20T23:10:09+00:00",
-      "note": "Связываю проверяемое цифровое снятие TIO9/P97 и очистку прежней команды с существующим inhibit. Проверяю фазу 2 и отказ по нативной трассе. Условия физического допуска SLU и маску изоляции не заменяю.",
+      "updated_at": "2026-11-20T23:13:35+00:00",
+      "note": "Новый нативный запрет и проверка порядка регистров прошли. Уточняю тест штатной фазы 2 с реальным производителем TIO9 до commit.",
       "result": null,
       "based_on_reviews": [
         "0e34802387f0414bb09f64f92e3dbdae",
@@ -10446,9 +10447,40 @@
           "da533c7a58aa441b9ba639bc0ad0992e"
         ]
       }
+    },
+    {
+      "operation_id": "2e7ace34323d43d0860b86764c751f3a",
+      "task": "H03-05",
+      "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "action": "heartbeat",
+      "claim_id": "fae2c834e65a428fb92e2fd73fc941d8",
+      "at": "2026-11-20T23:13:35+00:00",
+      "record": {
+        "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+        "label": "Codex H03-05 — снятие TIO9 в нативном отзыве",
+        "branch": "codex/h03-05-tio9-revoke-01a1fa79",
+        "files": [
+          "targets/lfj8/check_h03_slt_fault.py",
+          "targets/lfj8/check_h03_target_outputs.py",
+          "targets/lfj8/h03_target_outputs_fixture.c",
+          "targets/lfj8/lfj8_h03_output_inhibit.c",
+          "targets/lfj8/lfj8_h03_output_inhibit.h",
+          "verification/project-audit/h03-05-tio9-inhibit.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "fae2c834e65a428fb92e2fd73fc941d8",
+        "claimed_at": "2026-11-20T23:10:09+00:00",
+        "updated_at": "2026-11-20T23:13:35+00:00",
+        "note": "Новый нативный запрет и проверка порядка регистров прошли. Уточняю тест штатной фазы 2 с реальным производителем TIO9 до commit.",
+        "result": null,
+        "based_on_reviews": [
+          "0e34802387f0414bb09f64f92e3dbdae",
+          "77033e38e60445f2addf6c2c8e536996"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T23:12:45+00:00",
+  "updated_at": "2026-11-20T23:13:35+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
