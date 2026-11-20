@@ -1,9 +1,10 @@
 /* Simulator providers for the H03 ATF callback ABI. */
-#include "lfj8_h03_atf.h"
+#include "lfj8_h03_atf_target.h"
 
-static Lfj8H03Atf atf;
+volatile Lfj8H03Atf rbm_h03_atf_state;
 volatile uint32_t atf_fixture_adc_us = 100;
 volatile uint32_t atf_fixture_publish_us = 102;
+volatile uint32_t atf_fixture_clock_fail;
 volatile uint32_t atf_fixture_irq_enabled;
 volatile uint32_t atf_fixture_acquisitions;
 volatile uint32_t atf_fixture_reads;
@@ -13,66 +14,69 @@ volatile int atf_fixture_valid;
 volatile uint32_t atf_fixture_sample_us;
 volatile uint16_t atf_fixture_q8;
 
-static uint32_t check_irq_disabled(void *unused)
+static uint32_t clock_stage;
+static uint32_t clock_us;
+
+static uint32_t read_psw(void)
 {
-    (void)unused;
     uint32_t psw;
     __asm__ volatile ("mvfc %0,psw" : "=r"(psw) : : "memory");
-    atf_fixture_irq_enabled |= psw & 0x40u;
     return psw;
 }
 
-static void leave(void *unused, uint32_t saved)
+int rbm_h03_atf_now_us(uint32_t *now_us)
 {
-    (void)saved;
-    (void)check_irq_disabled(unused);
+    atf_fixture_irq_enabled |= read_psw() & 0x40u;
+    if (atf_fixture_clock_fail & clock_stage) {
+        return 0;
+    }
+    *now_us = clock_us;
+    return 1;
 }
 
-static uint8_t byte(void *unused, uint32_t address)
+void __real_rbm_h03_atf_adc_callback(void);
+int __real_rbm_h03_atf_source_callback(uint16_t raw, uint32_t *acquired_us);
+void __real_rbm_h03_atf_publish_callback(uint32_t site, const uint32_t *acquired_us);
+
+void __wrap_rbm_h03_atf_adc_callback(void)
 {
-    (void)unused;
-    return *(volatile const uint8_t *)(uintptr_t)address;
+    clock_stage = 1u;
+    clock_us = atf_fixture_adc_us;
+    __real_rbm_h03_atf_adc_callback();
+    atf_fixture_acquisitions += rbm_h03_atf_state.adc_seen;
 }
 
-static uint16_t halfword(void *unused, uint32_t address)
+int __wrap_rbm_h03_atf_source_callback(uint16_t raw, uint32_t *acquired_us)
 {
-    (void)unused;
-    return *(volatile const uint16_t *)(uintptr_t)address;
-}
-
-static uint32_t word(void *unused, uint32_t address)
-{
-    (void)unused;
-    return *(volatile const uint32_t *)(uintptr_t)address;
-}
-
-static const Lfj8RegisterIo io = {
-    .read8 = byte, .read16 = halfword, .read32 = word,
-    .enter = check_irq_disabled, .leave = leave,
-};
-
-void rbm_h03_atf_adc_callback(void)
-{
-    (void)check_irq_disabled(0);
-    atf_fixture_acquisitions += lfj8_h03_atf_after_adc_store(&atf, &io, atf_fixture_adc_us);
-}
-
-int rbm_h03_atf_source_callback(uint16_t raw, uint32_t *acquired_us)
-{
-    (void)check_irq_disabled(0);
+    atf_fixture_irq_enabled |= read_psw() & 0x40u;
     ++atf_fixture_reads;
-    return lfj8_h03_atf_capture_source(&atf, raw, acquired_us);
+    return __real_rbm_h03_atf_source_callback(raw, acquired_us);
 }
 
-void rbm_h03_atf_publish_callback(uint32_t site, const uint32_t *acquired_us)
+void __wrap_rbm_h03_atf_publish_callback(uint32_t site, const uint32_t *acquired_us)
 {
-    (void)check_irq_disabled(0);
+    clock_stage = 2u;
+    clock_us = atf_fixture_publish_us;
     atf_fixture_site = site;
     atf_fixture_source = acquired_us ? *acquired_us : UINT32_MAX;
-    if (lfj8_h03_atf_after_store(&atf, &io, site, acquired_us, atf_fixture_publish_us)) {
-        Lfj8H03AtfSample sample;
-        atf_fixture_valid = lfj8_h03_atf_snapshot(&atf, &io, atf_fixture_publish_us, 20u, &sample);
-        atf_fixture_q8 = sample.toyota_gp_m7184;
-        atf_fixture_sample_us = sample.acquired_us;
+    __real_rbm_h03_atf_publish_callback(site, acquired_us);
+}
+
+void atf_fixture_observe(void)
+{
+    clock_stage = 4u;
+    clock_us = atf_fixture_publish_us;
+    Lfj8H03AtfSample sample = {.acquired_us = UINT32_MAX, .toyota_gp_m7184 = UINT16_MAX};
+    atf_fixture_valid = lfj8_h03_atf_target_snapshot(20u, &sample);
+    atf_fixture_q8 = sample.toyota_gp_m7184;
+    atf_fixture_sample_us = sample.acquired_us;
+    if (!(read_psw() & 0x40u)) {
+        atf_fixture_irq_enabled |= 1u; /* Snapshot failed to restore foreground IE. */
+    }
+    if (atf_fixture_clock_fail & 4u) {
+        atf_fixture_clock_fail = 0;
+        if (lfj8_h03_atf_target_snapshot(20u, &sample)) {
+            atf_fixture_irq_enabled |= 2u; /* Old reading reappeared after clock recovery. */
+        }
     }
 }

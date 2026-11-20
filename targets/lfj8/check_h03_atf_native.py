@@ -38,7 +38,8 @@ def run(*command, directory):
     return result.stdout
 
 
-def emulate(directory, debugger, patches, mode, fault, phase, divider, rom_override=None):
+def emulate(directory, debugger, patches, mode, fault, phase, divider, rom_override=None,
+            clock_fail=0):
     commands = [
         "set confirm off", "target sim --memory-size 16M", "load",
         "tbreak *_start", "run",
@@ -47,6 +48,7 @@ def emulate(directory, debugger, patches, mode, fault, phase, divider, rom_overr
         f"set {{unsigned char}}0x8063e7 = {fault}",
         f"set {{unsigned short}}0x80621a = {phase}",
         f"set {{unsigned short}}0x806234 = {divider}",
+        f"set atf_fixture_clock_fail = {clock_fail}",
     ]
     commands.extend(f"set {{unsigned int}}{site:#x} = {branch:#x}" for site, branch in patches.items())
     if rom_override is not None:
@@ -72,6 +74,7 @@ def emulate(directory, debugger, patches, mode, fault, phase, divider, rom_overr
         f'printf "VALUES %08x %08x\\n", *(unsigned int*){VOLTS:#x}, '
         f'*(unsigned int*){TEMPERATURE:#x}',
         f'printf "REGS {register_format}\\n", {register_args}',
+        "tbreak *fixture_observed", "continue",
         f'printf "ATF {"%08x " * len(FIXTURE_FIELDS)}\\n", '
         + ", ".join(f"atf_fixture_{field}" for field in FIXTURE_FIELDS),
     ))
@@ -135,6 +138,12 @@ def check(base, gcc):
          (0x03B130, 0x03B1A4), measured_voltage),
         ("new AN1 with identical bits", (0, 0, 0, 0),
          (0x03B138, 0x03B1A4), measured_voltage),
+        ("clock absent at ADC", (0, 0, 0, 0, None, 1),
+         (0x03B138, 0x03B1A4), measured_voltage),
+        ("clock lost at publication", (0, 0, 0, 0, None, 2),
+         (0x03B138, 0x03B1A4), measured_voltage),
+        ("clock lost at foreground read", (0, 0, 0, 0, None, 4),
+         (0x03B138, 0x03B1A4), measured_voltage),
     )
     with TemporaryDirectory(prefix="rbm-h03-atf-") as temp:
         directory = Path(temp)
@@ -142,11 +151,12 @@ def check(base, gcc):
         here = Path(__file__).resolve().parent
         (directory / "stock.S").write_text(
             '.section .oem,"ax"\n.incbin "h03.bin"\n'
-            '.section .text,"ax"\n.global _start, fixture_done, fixture_replace_adc\n'
+            '.section .text,"ax"\n.global _start, fixture_done, fixture_observed, fixture_replace_adc\n'
             '_start:\n  ld24 sp,#0x9ffffc\n  ldi r0,#0x41\n  mvtc r0,psw\n'
             '  ld24 r0,#0x12345\n  mvtachi r0\n  ld24 r0,#0x234567\n  mvtaclo r0\n'
             '  bl acquire\n  ld24 r4,#0x03b110\n  jl r4\n'
-            'fixture_done:\n  nop\n  .p2align 2\n'
+            'fixture_done:\n  setpsw #0x40\n  bl atf_fixture_observe\n'
+            'fixture_observed:\n  nop\n  .p2align 2\n'
             'acquire:\n  push lr\n  ldi r0,#315\n  ld24 r5,#0x804bc4\n  bra h03_atf_adc_store\n'
             '  .p2align 2\nfixture_replace_adc:\n  push lr\n  push r0\n  push r5\n'
             '  ld24 r5,#atf_fixture_adc_us\n  ldi r0,#101\n  st r0,@r5\n'
@@ -154,8 +164,8 @@ def check(base, gcc):
             encoding="ascii",
         )
         (directory / "stock.ld").write_text(
-            "ENTRY(_start)\nSECTIONS { .oem 0 : { *(.oem) } "
-            ".text 0x100000 : { *(.text*) *(.rodata*) } }\n"
+            "ENTRY(_start)\nSECTIONS { .oem 0 : { KEEP(*(.oem)) } "
+            ".text 0x100000 : { KEEP(*(.text.rbm_h03_atf_hooks)) *(.text*) *(.rodata*) } }\n"
             "h03_atf_after_begin = 0x03b114; h03_atf_adc_store = 0x040178;\n"
             "h03_atf_after_adc = 0x04017c; h03_atf_after_read = 0x03b13c;\n"
             "h03_atf_resume_done = 0x03b21c; h03_atf_after_end = 0x03b220;\n"
@@ -163,8 +173,11 @@ def check(base, gcc):
         )
         run(gcc, "-m32r", "-Wa,-EB", "-mmodel=medium", "-msdata=none",
             "-Os", "-g", "-Wall", "-Wextra", "-Werror", "-ffreestanding", "-fno-builtin",
-            "-nostdlib", "-Wl,-T,stock.ld", "stock.S", here / "h03_atf_hooks.S",
-            here / "h03_atf_hook_fixture.c", here / "lfj8_h03_atf.c",
+            "-ffunction-sections", "-fdata-sections", "-nostdlib",
+            "-Wl,-T,stock.ld,--gc-sections", "-Wl,--wrap=rbm_h03_atf_adc_callback",
+            "-Wl,--wrap=rbm_h03_atf_source_callback", "-Wl,--wrap=rbm_h03_atf_publish_callback",
+            "stock.S", here / "h03_atf_hooks.S", here / "h03_atf_hook_fixture.c",
+            here / "lfj8_h03_atf_target.c", here / "lfj8_h03_atf.c", here / "lfj8_h03_mmio.c",
             "-o", "stock.elf", directory=directory)
         patches, replacement = branch_patches(rom, directory, gcc)
         temperatures = {}
@@ -190,9 +203,10 @@ def check(base, gcc):
             temperatures[label] = temperature
             site = expected[-1] if label != "skipped" else 0
             measured = label in ("direct", "filtered")
-            source = 100 if measured or replaced else (0xFFFFFFFF if site else 0)
+            source_read = measured or replaced or label in ("clock lost at publication", "clock lost at foreground read")
+            source = 100 if source_read else (0xFFFFFFFF if site else 0)
             q8 = {"direct": 25600, "filtered": 16640}.get(label, 0)
-            acquisitions = 2 if replaced else 1
+            acquisitions = 2 if replaced else int(label != "clock absent at ADC")
             if fixture != (0, acquisitions, reads, site, source, int(measured), 100 if measured else 0, q8):
                 raise ValueError(f"{label}: unexpected adapter outcome (IRQ, ADC, read, publication): {fixture!r}")
             print(f"{label}: {' -> '.join(f'{site:06x}' for site in trace)}, {temperature:08x}")
