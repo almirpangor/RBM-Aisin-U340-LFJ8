@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 160,
+  "sequence": 161,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -267,11 +267,11 @@
         "controller/tests/test_controller.c",
         "verification/project-audit/toy05-adaptation-store.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "2bd31f54ff254c59802d402cf6dabb9b",
       "claimed_at": "2026-11-20T16:08:20+00:00",
-      "updated_at": "2026-11-20T16:12:31+00:00",
-      "note": "96 прерываний и 768 битовых повреждений проверены на ПК и M32R. PC 33 шага/65 тестов и H03 link PASS. Зафиксирован возврат прежних коррекций при повреждении уже записанного сброса. NVM и политика сброса H03 открыты. Отчёт verification/project-audit/toy05-adaptation-store.md.",
+      "updated_at": "2026-11-20T16:33:11+00:00",
+      "note": "Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте.",
       "result": "dbc1762ffa86d37e2901b3a62f60b57a71763c24"
     },
     "CAN-04": {
@@ -1768,9 +1768,17 @@
       "action": "heartbeat",
       "claim_id": "c8de734571c443c3b11766566ad20891",
       "at": "2026-11-20T16:32:33+00:00"
+    },
+    {
+      "operation_id": "3c4b8c5bc1d94553a404a1fa3799b1ef",
+      "task": "TOY-05",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "2bd31f54ff254c59802d402cf6dabb9b",
+      "at": "2026-11-20T16:33:11+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:32:33+00:00",
+  "updated_at": "2026-11-20T16:33:11+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {

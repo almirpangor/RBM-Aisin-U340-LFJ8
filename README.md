@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:32:33+00:00**. Изменение № **160**.
+Обновлено UTC: **2026-11-20T16:33:11+00:00**. Изменение № **161**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -16,7 +16,7 @@
 | TOY-02 — Подтверждённая нагрузка двигателя для Toyota | Работа завершена | Codex TOY-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy02-load-feed-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:27:59+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit ff7f42b48d58831a8d7a396711042fc45685acd3 |
 | TOY-03 — Независимые разрешающие сигналы диапазона | Работа завершена | Codex TOY-03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/toy-03-range-01a1f9a2 | 2026-11-20T16:22:02+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit dfc774eee013ba78c6679d3128f493f238f43000 |
 | TOY-04 — Полная последовательность переключений | На проверке | Codex — цикл переключений Toyota \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy04-cycle-32e6ac79 | 2026-11-20T16:19:02+00:00 | Передаю интегратору. 12 точек D в двух профилях ОЖ: 2→3, 3→4, понижения, холодный запрет 4-й и потеря события до выдачи — PASS. ПК 33 шага/65 тестов, M32R 17 компонентов, NATIVE 16+15. Отчёт toy04-upper-gears.md содержит хеш для общего аудита. Под нагрузкой, в R и на оборудовании не проверено. / commit 439188ac7049314db5c94d261f8e9570092d514b |
-| TOY-05 — Обучение и сохранение адаптаций | На проверке | Codex TOY-05 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy05-adaptation-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:12:31+00:00 | 96 прерываний и 768 битовых повреждений проверены на ПК и M32R. PC 33 шага/65 тестов и H03 link PASS. Зафиксирован возврат прежних коррекций при повреждении уже записанного сброса. NVM и политика сброса H03 открыты. Отчёт verification/project-audit/toy05-adaptation-store.md. / commit dbc1762ffa86d37e2901b3a62f60b57a71763c24 |
+| TOY-05 — Обучение и сохранение адаптаций | Работа завершена | Codex TOY-05 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy05-adaptation-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:33:11+00:00 | Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте. / commit dbc1762ffa86d37e2901b3a62f60b57a71763c24 |
 | TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — команда SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-fea1b366 | 2026-11-20T16:19:43+00:00 | Расчёт команды 055C5E совпал с R3 на 65 536 словах и 2560 случаях выбора; 3 отказных теста PASS. Отдельный M32R ELF32 REL, 372 байта, без неразрешённых символов. Интегратору: учесть компонент и отчёт verification/project-audit/toy06-slu-command.md в общем аудите, затем complete после принятия. Снимок SECONDARY, физический канал и стенд открыты. / commit db9896a28e87f0b956d9a14409c41910d1d335e7 |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Работа завершена | Codex CAN-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-1120-c7e4 | 2026-11-20T16:26:06+00:00 | Reviewed RX epoch work integrated by 952658b and recorded in the shared audit. This closes the reservation; stock CAN startup and hardware verification remain open. / commit ca268743dfe173f93121d6b9148e0951932cfc9d |
 | CAN-02 — Общий диспетчер CAN13 | На проверке | Codex CAN-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/can02-telemetry-timeout-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:16:53+00:00 | Просроченная телеметрия отзывает подтверждение момента до освобождения CAN13. Регрессия воспроизведена, затем PC 33 шага/65 тестов и H03 link/17 компонентов PASS. Окна 0x5E9 и время отмены остаются в CAN-03. Отчёт verification/project-audit/can02-loan-timeout.md. / commit b48b4e50878c8173a40d65134213fbb8fdc37aa1 |
@@ -183,13 +183,6 @@
 - targets/lfj8/test_lfj8_h03_cycle.c
 - verification/project-audit/toy04-upper-gears.md
 
-### TOY-05
-
-Чат: Codex TOY-05. Claim ID: 2bd31f54ff254c59802d402cf6dabb9b.
-
-- controller/tests/test_controller.c
-- verification/project-audit/toy05-adaptation-store.md
-
 ### TOY-06
 
 Чат: Codex TOY-06 — команда SLU. Claim ID: 8e012ef2677942af9da51dd6b630b99f.
@@ -219,6 +212,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:33:11+00:00 | TOY-05 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:32:33+00:00 | ECU-02 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:32:20+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T16:32:06+00:00 | VSS-02 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -248,4 +242,3 @@
 | 2026-11-20T16:26:43+00:00 | DTC-02 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T16:26:30+00:00 | CAN-05 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:26:21+00:00 | VSS-02 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T16:26:06+00:00 | CAN-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
