@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 138,
+  "sequence": 139,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -239,21 +239,21 @@
       "result": "ca268743dfe173f93121d6b9148e0951932cfc9d"
     },
     "MODE-02": {
-      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex — входы Tiptronic H03",
-      "branch": "codex/u340-32e6ac79",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "label": "Codex MODE-02 — публикация ADC H03",
+      "branch": "codex/mode02-h03-selector-01a1f9c7",
       "files": [
-        "targets/lfj8/lfj8_range_control.c",
-        "targets/lfj8/lfj8_range_control.h",
-        "tests/u340_integration_host.c",
-        "verification/project-audit/mode02-button-input.md"
+        "targets/lfj8/check_h03_selector_adc.py",
+        "targets/lfj8/h03_selector_adc_fixture.c",
+        "targets/lfj8/h03_selector_adc_hook.S",
+        "verification/project-audit/mode02-h03-selector-adc.md"
       ],
-      "stage": "done",
-      "claim_id": "2b87aa66de244cf9b30a828391ad9001",
-      "claimed_at": "2026-11-20T16:04:25+00:00",
-      "updated_at": "2026-11-20T16:25:17+00:00",
-      "note": "Порция MODE-02 принята в опубликованную main 952658b. Программный фильтр и отчёт включены, резерв освобождаю. Физические входы и привязка к циклу H03 остаются за рамками принятой порции.",
-      "result": "53c5f27e40f4ed48fd5873d002a0ab315f448bcf"
+      "stage": "in_progress",
+      "claim_id": "e02562d3b21f423d914c1c00a9c88077",
+      "claimed_at": "2026-11-20T16:28:17+00:00",
+      "updated_at": "2026-11-20T16:28:17+00:00",
+      "note": "Подключаю публикацию отсчёта селектора к проверенному пути ADC0 AN2 H03. Отдельная проверка штатных инструкций и M32R; без назначения физических кнопок.",
+      "result": null
     },
     "TOY-05": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -1557,9 +1557,17 @@
       "action": "complete",
       "claim_id": "04163e758d304ae28f99c09cf17d8d25",
       "at": "2026-11-20T16:27:59+00:00"
+    },
+    {
+      "operation_id": "38e2abc85c244a76a8c728ec563c2106",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "e02562d3b21f423d914c1c00a9c88077",
+      "at": "2026-11-20T16:28:17+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:27:59+00:00",
+  "updated_at": "2026-11-20T16:28:17+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {

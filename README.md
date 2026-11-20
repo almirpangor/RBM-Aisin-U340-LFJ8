@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:27:59+00:00**. Изменение № **138**.
+Обновлено UTC: **2026-11-20T16:28:17+00:00**. Изменение № **139**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -35,7 +35,7 @@
 | VSS-02 — Кинематика и параметры реальной скорости | Выполняется | Codex VSS-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss02-measurement-check-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:26:21+00:00 | Офлайн-проверка реализована; 7 тестов прошли, включая различение остановки, потери сигнала и превышения допуска. Идут полный PC и M32R. |
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
 | MODE-01 — Логика шести положений и кнопок | На проверке | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:14:42+00:00 | Staggered Tiptronic plus/minus overlap now blocks manual requests. Original C/Python regressions reproduced. PC 33 steps/66 tests plus dedicated C regression PASS; M32R build, 17 components and dedicated regression PASS. Evidence verification/project-audit/mode01-shift-conflict.md. Integrator to record the audit; physical input and hydraulic execution remain open. / commit ed33ea93653f7bcbc2c6f13736fe1424335085e6 |
-| MODE-02 — Подключение селектора, Tiptronic и Overdrive | Работа завершена | Codex — входы Tiptronic H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/u340-32e6ac79 | 2026-11-20T16:25:17+00:00 | Порция MODE-02 принята в опубликованную main 952658b. Программный фильтр и отчёт включены, резерв освобождаю. Физические входы и привязка к циклу H03 остаются за рамками принятой порции. / commit 53c5f27e40f4ed48fd5873d002a0ab315f448bcf |
+| MODE-02 — Подключение селектора, Tiptronic и Overdrive | Выполняется | Codex MODE-02 — публикация ADC H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode02-h03-selector-01a1f9c7 | 2026-11-20T16:28:17+00:00 | Подключаю публикацию отсчёта селектора к проверенному пути ADC0 AN2 H03. Отдельная проверка штатных инструкций и M32R; без назначения физических кнопок. |
 | MODE-03 — Окончательная политика режимов | На проверке | Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T16:27:03+00:00 | Штатная матрица ПК: 128 конфигураций запуска и 501 760 сценариев заявок PASS. Все 35 шагов ПК прошли; донорский тест S03 повторён отдельно с проверенным входом. Интегратору: учесть новые файлы и отчёт verification/project-audit/mode03-policy-matrix.md в аудите. Политика выпуска и подключение к циклу H03 открыты. / commit dd4fdbc2862093359df9329d7e6e9ab211d13940 |
 | SRC-01 — Реестр происхождения и контроль исходников | Свободна | — | — | — | — |
 | AUD-01 — Программный аудит истории E4M3 | Свободна | — | — | — | — |
@@ -159,6 +159,15 @@
 - tests/test_u340.py
 - verification/project-audit/mode01-shift-conflict.md
 
+### MODE-02
+
+Чат: Codex MODE-02 — публикация ADC H03. Claim ID: e02562d3b21f423d914c1c00a9c88077.
+
+- targets/lfj8/check_h03_selector_adc.py
+- targets/lfj8/h03_selector_adc_fixture.c
+- targets/lfj8/h03_selector_adc_hook.S
+- verification/project-audit/mode02-h03-selector-adc.md
+
 ### MODE-03
 
 Чат: Codex MODE-03 — матрица режимов. Claim ID: b0a3618e8676435c94101b0abb236b6a.
@@ -229,6 +238,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:28:17+00:00 | MODE-02 | claim | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T16:27:59+00:00 | TOY-02 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:27:39+00:00 | H03-04 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:27:16+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
@@ -258,4 +268,3 @@
 | 2026-11-20T16:21:49+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T16:21:43+00:00 | MODE-03 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:21:14+00:00 | ORG-01 | review | codex-integration-01a1f76d-20261120 |
-| 2026-11-20T16:20:52+00:00 | H03-04 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
