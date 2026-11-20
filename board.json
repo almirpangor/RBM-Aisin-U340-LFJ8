@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 81,
+  "sequence": 82,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -167,12 +167,12 @@
         "targets/lfj8/lfj8_h03_atf_target.h",
         "targets/lfj8/test_lfj8_h03_atf.c"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "claimed_at": "2026-11-20T15:54:09+00:00",
-      "updated_at": "2026-11-20T16:12:16+00:00",
-      "note": "Измеряю глубину записи стека отдельно для AN1, расчёта OEM и чтения снимка.",
-      "result": "c0d00d60ef355e660eb97d98d33c10e7c1117242"
+      "updated_at": "2026-11-20T16:13:20+00:00",
+      "note": "Замерены записи стека M32R: AN1 4/88 Б, температура 56/116 Б, потребитель 72 Б. Все 10 пар на двух шаблонах PASS; SP и охранная граница целы. Часы, реальный SPI и вложенные IRQ остаются.",
+      "result": "65bb6912691ab0040ad1e0683dd62045a6e42926"
     },
     "CAN-05": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -971,9 +971,17 @@
       "action": "review",
       "claim_id": "9575e38186c74fb9bb027e3985074fd3",
       "at": "2026-11-20T16:13:07+00:00"
+    },
+    {
+      "operation_id": "f2af70b47e6c4dd1a1b45e6d23f2519c",
+      "task": "H03-02",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "11e70992d32245529e20626f4b9bd867",
+      "at": "2026-11-20T16:13:20+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:13:07+00:00",
+  "updated_at": "2026-11-20T16:13:20+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
