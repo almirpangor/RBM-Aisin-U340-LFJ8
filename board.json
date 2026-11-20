@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 530,
+  "sequence": 531,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -488,19 +488,24 @@
       "result": "cfaf1a812dcf26def7ed188b05b7dccdd75f4c8c"
     },
     "TOY-01": {
-      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
-      "label": "Codex TOY-01 — размер дескрипторов GP",
-      "branch": "codex/toy-01-gp-descriptor-size-fea1b366",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex TOY-01 H03 independent release clock",
+      "branch": "codex/toy01-h03-release-clock-01a1f99f",
       "files": [
-        "controller/hydraulic_port.py",
-        "verification/project-audit/toy01-gp-descriptor-size.md"
+        "targets/lfj8/build.py",
+        "targets/lfj8/check_h03_toyota_source.py",
+        "targets/lfj8/lfj8_h03_toyota_source.c",
+        "targets/lfj8/lfj8_h03_toyota_source.h",
+        "targets/lfj8/test_lfj8_h03_toyota_source.c",
+        "verification/project-audit/2026-11-21-toy01-h03-release-clock.json",
+        "verification/project-audit/toy01-h03-release-clock.md"
       ],
-      "stage": "done",
-      "claim_id": "a36532debaa64238a1ee2b84f37624a1",
-      "claimed_at": "2026-11-20T18:26:38+00:00",
-      "updated_at": "2026-11-20T19:27:40+00:00",
-      "note": "Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены.",
-      "result": "fc649df5f2dbbcc02da30583b47bf9a8b543c5f0"
+      "stage": "in_progress",
+      "claim_id": "65f87fefa9434dd69e6efd740fa10b71",
+      "claimed_at": "2026-11-20T19:51:21+00:00",
+      "updated_at": "2026-11-20T19:51:21+00:00",
+      "note": "Нативный источник событий Toyota для H03-03: штатный TML0, независимые сроки, обнаружение пропуска, интерфейс take_toyota, сборка M32R без подстановки периода.",
+      "result": null
     },
     "ECU-02": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -4823,9 +4828,17 @@
       "action": "claim",
       "claim_id": "7180472509b343958005e9c8aeaadc9c",
       "at": "2026-11-20T19:51:10+00:00"
+    },
+    {
+      "operation_id": "1e224b3756b748d2bc93944131aa3efe",
+      "task": "TOY-01",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "65f87fefa9434dd69e6efd740fa10b71",
+      "at": "2026-11-20T19:51:21+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:51:10+00:00",
+  "updated_at": "2026-11-20T19:51:21+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
