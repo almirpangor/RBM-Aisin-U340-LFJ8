@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 488,
+  "sequence": 489,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -298,11 +298,11 @@
         "tests/u340_integration_host.c",
         "verification/project-audit/mode01-button-source-loss.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "f086342106b64dd7b09e8960948904da",
       "claimed_at": "2026-11-20T19:02:35+00:00",
-      "updated_at": "2026-11-20T19:07:18+00:00",
-      "note": "Отказ сбрасывает допуск кнопок независимо от пригодности метки. 15 сценариев ПК/M32R и восстановление после отпускания, ПК 37/113, группы M32R 18+11+6+17, 6 проверок размещённого кода. Запас 904 Б. Отчёт mode01-button-source-loss.md. Физический вход, вызов H03 и стенд открыты.",
+      "updated_at": "2026-11-20T19:29:06+00:00",
+      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
       "result": "0ac06d144f842aadd1a31c3bc5f2a4c3c18c30df"
     },
     "TOY-04": {
@@ -4464,9 +4464,17 @@
       "action": "complete",
       "claim_id": "001fe3e513b645ef9370cb6af6d76bc2",
       "at": "2026-11-20T19:28:47+00:00"
+    },
+    {
+      "operation_id": "4445fd17e2dc45dfb7fb9e1bbc454bfa",
+      "task": "MODE-01",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "f086342106b64dd7b09e8960948904da",
+      "at": "2026-11-20T19:29:06+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:28:47+00:00",
+  "updated_at": "2026-11-20T19:29:06+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
