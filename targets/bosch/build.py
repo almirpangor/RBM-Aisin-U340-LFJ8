@@ -220,9 +220,12 @@ def revised_wrapper(diag, labels):
     return namespace["assemble"](torque=True)
 
 
-def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fields=False):
+def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fields=False,
+          ordinary_model_field=False):
     if digest(s04) != S04_SHA:
         raise ValueError("S04 SHA-256 does not match the pinned E4M3 image")
+    if ordinary_model_field and not model_fields:
+        raise ValueError("The ordinary model field requires the Chery model transmitter")
     sys.path.insert(0, str(engine / "tools"))
     import build_can_diag as diag
     import build_e4
@@ -244,7 +247,8 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fie
             span = slice(diag.offset(start), diag.offset(end))
             if s04[span] != base[span]:
                 raise ValueError(f"E4M3 native producer differs from REV8 at {start:#x}")
-        tx_part, tx_code = assemble(diag, torque, model_fields=model_fields)
+        tx_part, tx_code = assemble(diag, torque, model_fields=model_fields,
+                                   ordinary_model_field=ordinary_model_field)
         if compact:
             tx_code = compact_local_branches(tx_part, tx_code)
     speed, speed_code = assemble_speed(diag, torque, tx_part)
@@ -310,6 +314,9 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fie
         from tx import COOLANT, RPM
         if model_fields:
             manifest["chery_model_payload_bytes"] = [2, 5]
+        if ordinary_model_field:
+            manifest["chery_model_payload_bytes"] = [2, 3, 5]
+            manifest["chery_model_field_3_profile"] = {"cruise": False, "override": False}
         manifest["diagnostic_signals_tx"] = [
             {"can_id": hex(x.identifier), "object": x.object_number, "period_t4_ticks": x.period}
             for x in (RPM, COOLANT)
@@ -332,11 +339,15 @@ def main():
     parser.add_argument("--with-engine-signals-tx", action="store_true")
     parser.add_argument("--with-model-fields", action="store_true",
                         help="Also transmit the two Chery engine model differences in 0x0FA")
+    parser.add_argument("--with-ordinary-model-field", action="store_true",
+                        help="Transmit 0x0FA byte 3 for the explicit no-cruise, no-override profile")
     parser.add_argument("--compact", action="store_true", help="Shorten local RX/TX branches")
     args = parser.parse_args()
+    if args.with_ordinary_model_field and not args.with_model_fields:
+        parser.error("--with-ordinary-model-field requires --with-model-fields")
     image, manifest, wrapper, speed = build(
         args.engine.resolve(), args.s04.read_bytes(), with_engine_signals_tx=args.with_engine_signals_tx,
-        compact=args.compact, model_fields=args.with_model_fields,
+        compact=args.compact, model_fields=args.with_model_fields, ordinary_model_field=args.with_ordinary_model_field,
     )
     try:
         args.outdir.mkdir(parents=True)
@@ -345,6 +356,8 @@ def main():
     filename = TX_OUTPUT if args.with_engine_signals_tx else OUTPUT
     if args.with_model_fields:
         filename = "E4M3_CHERY_MODEL_FIELDS_OFFLINE_ONLY.bin"
+    if args.with_ordinary_model_field:
+        filename = "E4M3_CHERY_ORDINARY_MODEL_NO_CRUISE_OFFLINE_ONLY.bin"
     if args.compact:
         filename = filename.replace("_OFFLINE_ONLY", "_COMPACT_OFFLINE_ONLY")
     (args.outdir / filename).write_bytes(image)

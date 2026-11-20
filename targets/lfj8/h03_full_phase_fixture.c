@@ -3,6 +3,7 @@
 #include "h03_native_hooks.h"
 #include "lfj8_h03_mmio.h"
 #include "lfj8_h03_takeover.h"
+#include "lfj8_h03_cycle.h"
 
 #define RAM8(addr) (*(volatile uint8_t *)(uintptr_t)(addr))
 #define RAM16(addr) (*(volatile uint16_t *)(uintptr_t)(addr))
@@ -24,6 +25,7 @@ enum {
     SCENARIO_MONITOR_OPEN,
     SCENARIO_MONITOR_PENDING_COPY,
     SCENARIO_FLASH_OVERLAY,
+    SCENARIO_DONOR_MAIN_TO_OUTPUT,
 };
 
 enum {
@@ -50,6 +52,8 @@ static unsigned arbiter_calls, apply_calls, inhibit_calls, strategy_callbacks, c
 static int prepared, applied;
 static Lfj8H03OutputResult plan_status;
 static uint16_t toyota_compare;
+static Lfj8H03MainResult main_result;
+static Lfj8H03FastOutput fast_result;
 static const FactoryDriverState drivers[3] = {
     {.state_5302 = 1}, {.state_5302 = 1}, {.state_5302 = 1},
 };
@@ -62,6 +66,10 @@ static const RbmU340eHydraulicInput donor = {
 static const Lfj8H03SltPoint points[] = {{400, 800}, {652, 500}, {4000, 200}};
 static const Lfj8H03SltCalibration calibration = {
     points, sizeof points / sizeof points[0], 500, 800, 11000, 14500,
+};
+static const Lfj8H03SltPoint lifecycle_points[] = {{400, 500}, {4000, 500}};
+static const Lfj8H03SltCalibration lifecycle_fixture_calibration = {
+    lifecycle_points, sizeof lifecycle_points / sizeof lifecycle_points[0], 500, 800, 11000, 14500,
 };
 
 static void write_word(void *context, uint32_t address, uint32_t value)
@@ -106,11 +114,20 @@ static void inhibit(void *context)
 int rbm_h03_strategy_callback(void)
 {
     ++strategy_callbacks;
+    const Lfj8H03OemOutputState oem = {.current = 1};
+    const Lfj8H03OperatingPoint operating = {720, 13200};
+    if (H03_PHASE_SCENARIO == SCENARIO_DONOR_MAIN_TO_OUTPUT) {
+        const Lfj8H03ActuatorCalibration fixture = {
+            .binding = {LFJ8_H03_SHIFT_D, LFJ8_H03_SHIFT_E, LFJ8_H03_SHIFT_F},
+            .slt = &lifecycle_fixture_calibration,
+        };
+        prepared = lfj8_h03_cycle_prepare_outputs(&takeover, &main_result, &fast_result,
+                                                   &fixture, &oem, operating, 1u);
+        return RBM_H03_HOOK_HANDLED;
+    }
     RbmU340eOutputState driver_state;
     RbmU340eHydraulicOutput request;
     Lfj8H03OutputPlan plan;
-    const Lfj8H03OemOutputState oem = {.current = 1};
-    const Lfj8H03OperatingPoint operating = {720, 13200};
     const Lfj8H03OutputBinding binding = H03_PHASE_SCENARIO == SCENARIO_WRONG_ORDER ?
         (Lfj8H03OutputBinding){LFJ8_H03_SHIFT_E, LFJ8_H03_SHIFT_D, LFJ8_H03_SHIFT_F} :
         (Lfj8H03OutputBinding){LFJ8_H03_SHIFT_D, LFJ8_H03_SHIFT_E, LFJ8_H03_SHIFT_F};
@@ -135,6 +152,62 @@ int rbm_h03_commit_callback(void)
     ++commit_callbacks;
     applied = lfj8_h03_takeover_apply(&takeover, 1u);
     return RBM_H03_HOOK_HANDLED;
+}
+
+static int donor_main_fixture(void)
+{
+    static RbmU340eRuntime runtime;
+    static Lfj8H03CycleWorkspace workspace;
+    static FactoryHydraulics startup_gp;
+    static const FactoryGearState gear = {
+        .driver5302 = {1, 1}, .u7184 = 20000u, .u7164 = 26000u, .u7186 = 3072u,
+        .periods = {65535, 65535, 65535, 65535, 65535, 65535},
+    };
+    const RbmU340eRangeState range = {0};
+    Lfj8H03Cycle cycle;
+    Lfj8H03CycleInput input = {
+        .engine = {.fa62 = 9600, .f9b8 = 137, .coherent = 1},
+        .command_at = command_at, .selector = RBM_U340E_SELECTOR_N,
+        .range_5722 = 5u, .qualified = 1u,
+    };
+    CHECK(factory_hydraulics_set(&startup_gp, -7184, 2u, gear.u7184) &&
+          factory_hydraulics_set(&startup_gp, -7164, 2u, gear.u7164) &&
+          factory_hydraulics_set(&startup_gp, -7186, 2u, gear.u7186) &&
+          rbm_u340e_runtime_init(&runtime, &gear, &startup_gp) &&
+          lfj8_h03_cycle_init(&cycle, &range, 0u), 30);
+    unsigned main_calls = 0;
+    while (input.event < 42u && main_calls < 3u) {
+        ++input.event;
+        const Lfj8H03CycleResult status =
+            lfj8_h03_cycle_tick(&cycle, &runtime, &input, &workspace, &main_result);
+        CHECK(status != LFJ8_H03_CYCLE_FAULT, 31);
+        if (status == LFJ8_H03_CYCLE_MAIN && ++main_calls == 2u) {
+            input.selector = RBM_U340E_SELECTOR_D;
+            input.range_5722 = 1u;
+        }
+    }
+    CHECK(main_calls == 3u && main_result.gear_4848 == 1u && main_result.shift.count == 2u &&
+          main_result.shift.writes[0].value == 1u && main_result.shift.writes[1].value == 0u, 32);
+    FactorySLTInputs slt_input;
+    FactoryPressureCorrection pressure = {0};
+    FactorySTOutputState st = {0};
+    FactoryDriverBatch batch;
+    FactoryDriverState driver = {.state_5302 = 1u};
+    CHECK(lfj8_h03_cycle_slt_inputs(&runtime.gp, &slt_input) &&
+          factory_slt_correction_step(&pressure, &slt_input, &fast_result.slt) &&
+          factory_st_output(&st, 1, &batch) && batch.count == 1u &&
+          factory_driver_dispatch(&driver, batch.commands[0].mode, batch.commands[0].channel,
+                                  &fast_result.st), 33);
+    fast_result.command_at = command_at;
+    fast_result.valid = 1u;
+    h03_stock_phase3();
+    CHECK(prepared && arbiter_calls == 1u && strategy_callbacks == 1u && !inhibit_calls &&
+          RAM8(0x8063D7) == 1u && RAM8(0x8063DA) == 0u && RAM8(0x8063DD) == 0u, 34);
+    RAM32(TML0CT) = command_at + 5000u;
+    h03_stock_phase2();
+    CHECK(applied && apply_calls == 1u && commit_callbacks == 1u && !inhibit_calls &&
+          RAM8(P3DATA) == 0x93u && RAM16(TIO4RL0) == 2499u && RAM16(TIO4RL1) == 499u, 35);
+    return 0;
 }
 
 int h03_phase_fixture(void)
@@ -162,6 +235,9 @@ int h03_phase_fixture(void)
 
     const int invalid_prepare = scenario == SCENARIO_NO_CALIBRATION || scenario == SCENARIO_WRONG_ORDER;
     CHECK(lfj8_h03_takeover_init(&takeover, &operations, SAMPLE_AGE), 10);
+    if (scenario == SCENARIO_DONOR_MAIN_TO_OUTPUT) {
+        return donor_main_fixture();
+    }
 
     if (scenario == SCENARIO_COMBINED_ENTRY) {
         h03_stock_combined();

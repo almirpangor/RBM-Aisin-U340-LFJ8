@@ -9,7 +9,7 @@ import shutil
 import subprocess
 from tempfile import TemporaryDirectory
 
-from check_h03_link import FLASH_END, FLASH_START, identify_h03
+from check_h03_link import FLASH_END, FLASH_START, elf_info, identify_h03
 
 
 HERE = Path(__file__).resolve().parent
@@ -147,7 +147,7 @@ def inspect_phase_image(run, work, compiler, rom, image):
     }
 
 
-def check_full_phases(run, work, compiler, simulator, gdb, flags, rom):
+def check_full_phases(run, work, compiler, simulator, gdb, flags, rom, controller_object):
     sources = (
         "h03_full_phase_fixture.c", "lfj8_h03_takeover.c", "lfj8_h03_outputs.c",
         "lfj8_h03_mmio.c",
@@ -179,16 +179,23 @@ def check_full_phases(run, work, compiler, simulator, gdb, flags, rom):
         "service_monitor_closed_copy_pending": "SCENARIO_MONITOR_PENDING_COPY",
         "flash_overlay_after_prepare": "SCENARIO_FLASH_OVERLAY",
     }
+    if controller_object is not None:
+        shutil.copyfile(controller_object, work / "donor-controller.o")
+        for source in ("lfj8_h03_cycle.c", "lfj8_h03_torque.c"):
+            shutil.copyfile(HERE / source, work / source)
+        cases["toyota_main_to_original_outputs"] = "SCENARIO_DONOR_MAIN_TO_OUTPUT"
     (work / "full-phase.ld").write_text(FULL_PHASE_LAYOUT, encoding="ascii")
     (work / "oem-prefix.dat").write_bytes(rom[:FLASH_START])
     (work / "oem-before-tail.dat").write_bytes(rom[FLASH_END:STRATEGY_SITE])
     stack_used = {}
     images = {}
     for label, scenario in cases.items():
+        controller_sources = ("lfj8_h03_cycle.c", "lfj8_h03_torque.c", "donor-controller.o") if (
+            scenario == "SCENARIO_DONOR_MAIN_TO_OUTPUT") else ("rbm_u340e.c", *donor_sources)
         run(compiler, *flags, "-std=c11", "-Icontroller", "-Itoyota", "-ffixed-r13", "-DH03_FULL_PHASE_FIXTURE",
             "-Wno-missing-braces", "-Wno-missing-field-initializers",
             f"-DH03_PHASE_SCENARIO={scenario}", "-Wl,-T,full-phase.ld", "h03_native_hooks.S",
-            "h03_native_hooks_fixture.S", *sources, "rbm_u340e.c", *donor_sources,
+            "h03_native_hooks_fixture.S", *sources, *controller_sources,
             "-ffunction-sections",
             "-fdata-sections", "-Wl,--gc-sections,--undefined=rbm_h03_strategy_hook",
             "-Wl,--undefined=rbm_h03_commit_hook", "-Wl,--start-group", "-lc", "-lgcc",
@@ -221,6 +228,7 @@ def check_full_phases(run, work, compiler, simulator, gdb, flags, rom):
                             if stack[offset:offset + 4] != pattern), len(stack))
         stack_used[label] = len(stack) - first_write
     return {"cases": list(cases), "fixture_state_outside_h03_ram": True,
+            "toyota_main_to_original_outputs_executed": controller_object is not None,
             "observed_stack_bytes": stack_used,
             "verified_rom_start": f"{FLASH_START:#08x}",
             "exact_image_composition": images,
@@ -235,7 +243,13 @@ def check_full_phases(run, work, compiler, simulator, gdb, flags, rom):
             "address_space": "GNU M32R test ELF with registers backed by simulator memory"}
 
 
-def check(base, compiler):
+def check(base, compiler, controller_object=None):
+    if controller_object is not None:
+        manifest = json.loads((controller_object.parent / "manifest.json").read_text(encoding="utf-8"))
+        actual = elf_info(controller_object, 1)[0]["sha256"]
+        if (manifest["architecture"] != "m32r" or
+                manifest["sha256"].get(controller_object.name) != actual):
+            raise ValueError("The Toyota controller object does not match its M32R build manifest")
     identity = identify_h03(base)
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
@@ -329,7 +343,7 @@ def check(base, compiler):
                     cases.append({"variant": variant, "hook": name, "decision": decision,
                                   "dispatch": f"0x{destination:06X}", "return": f"0x{site + 4:06X}"})
 
-        phase_program = check_full_phases(run, work, compiler, simulator, gdb, flags, rom)
+        phase_program = check_full_phases(run, work, compiler, simulator, gdb, flags, rom, controller_object)
 
     return {
         "base": identity,
@@ -350,12 +364,14 @@ def main():
     parser.add_argument("--base", required=True, type=Path)
     parser.add_argument("--gcc", required=True, type=Path)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--controller", type=Path, help="include the MAIN-to-original-output scenario")
     args = parser.parse_args()
     try:
-        if args.out and (args.out.resolve() == args.base.resolve() or
-                         (args.out.exists() and args.out.samefile(args.base))):
-            raise ValueError("The report and the H03 base must use different files")
-        report = json.dumps(check(args.base, args.gcc.resolve()), indent=2) + "\n"
+        inputs = [args.base] if args.controller is None else [args.base, args.controller]
+        if args.out and any(args.out.resolve() == path.resolve() or
+                            (args.out.exists() and args.out.samefile(path)) for path in inputs):
+            raise ValueError("The report and inputs must use different files")
+        report = json.dumps(check(args.base, args.gcc.resolve(), args.controller), indent=2) + "\n"
         if args.out:
             args.out.parent.mkdir(parents=True, exist_ok=True)
             args.out.write_text(report, encoding="utf-8")

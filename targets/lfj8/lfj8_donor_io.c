@@ -18,6 +18,7 @@
 #define LFJ8_CAN0_EXTID UINT32_C(0x801004)
 #define LFJ8_CAN0_TSTMP UINT32_C(0x801008)
 #define LFJ8_CAN0_EXTID_IDE13 UINT16_C(0x0004)
+#define LFJ8_CAN0_SLIMK_TX13 UINT16_C(0x0004)
 #define LFJ8_CAN0_SLIMK UINT32_C(0x801010)
 #define LFJ8_CAN0_GMSKS0 UINT32_C(0x801028)
 #define LFJ8_CAN0_GMSKS1 UINT32_C(0x801029)
@@ -32,6 +33,8 @@
 #define LFJ8_CAN0_SLOT13_DATA UINT32_C(0x8011D6)
 #define LFJ8_CAN0_SLOT13_TIMESTAMP UINT32_C(0x8011DE)
 #define LFJ8_CAN_DIAG_REPLY UINT16_C(0x722)
+#define LFJ8_CAN_TORQUE_REQUEST UINT16_C(0x5E8)
+#define LFJ8_CAN_TORQUE_STATUS UINT16_C(0x5E9)
 
 enum {
     CAN_CNT_TSR = 0x0400,
@@ -440,7 +443,8 @@ Lfj8CanResult lfj8_h03_can0_diag_submit(const Lfj8RegisterIo *io, const uint8_t 
     return result;
 }
 
-static Lfj8CanTxStatus diag_status(const Lfj8RegisterIo *io, uint8_t cancel, uint16_t *finished_at)
+static Lfj8CanTxStatus slot13_status(const Lfj8RegisterIo *io, uint16_t expected_id,
+                                    uint8_t cancel, uint16_t *finished_at)
 {
     if (!h03_can0_operational(io) ||
         (io->read16(io->context, LFJ8_CAN0_EXTID) & LFJ8_CAN0_EXTID_IDE13) != 0u) {
@@ -454,10 +458,8 @@ static Lfj8CanTxStatus diag_status(const Lfj8RegisterIo *io, uint8_t cancel, uin
         return LFJ8_CAN_TX_UNAVAILABLE;
     }
     if ((control & (CAN_SLOT_TRFIN | CAN_SLOT_TRSTAT)) == CAN_SLOT_TRFIN) {
-        /* Slot bytes are stable in idle. Check that the owner has not
-         * replaced our reply behind the outstanding transport token. */
-        if (io->read8(io->context, LFJ8_CAN0_SLOT13_SID0) != (LFJ8_CAN_DIAG_REPLY >> 6) ||
-            io->read8(io->context, LFJ8_CAN0_SLOT13_SID1) != (LFJ8_CAN_DIAG_REPLY & 0x3fu)) {
+        if (io->read8(io->context, LFJ8_CAN0_SLOT13_SID0) != (expected_id >> 6) ||
+            io->read8(io->context, LFJ8_CAN0_SLOT13_SID1) != (expected_id & 0x3fu)) {
             return LFJ8_CAN_TX_UNAVAILABLE;
         }
         *finished_at = io->read16(io->context, LFJ8_CAN0_SLOT13_TIMESTAMP);
@@ -475,7 +477,153 @@ Lfj8CanTxStatus lfj8_h03_can0_diag_status(const Lfj8RegisterIo *io, uint8_t canc
                                        uint16_t *finished_at)
 {
     const uint32_t saved_state = io->enter(io->context);
-    const Lfj8CanTxStatus result = diag_status(io, cancel, finished_at);
+    const Lfj8CanTxStatus result = slot13_status(io, LFJ8_CAN_DIAG_REPLY, cancel, finished_at);
+    io->leave(io->context, saved_state);
+    return result;
+}
+
+static int h03_can0_tx13_polling(const Lfj8RegisterIo *io)
+{
+    return (io->read16(io->context, LFJ8_CAN0_SLIMK) & LFJ8_CAN0_SLIMK_TX13) == 0u;
+}
+
+static Lfj8CanResult torque_slot_available(const Lfj8RegisterIo *io)
+{
+    if (!h03_can0_tx13_polling(io)) {
+        return LFJ8_CAN_SLOT_NOT_OWNED;
+    }
+    if (!h03_can0_operational(io)) {
+        return LFJ8_CAN_CONTROLLER_UNAVAILABLE;
+    }
+    if ((io->read16(io->context, LFJ8_CAN0_EXTID) & LFJ8_CAN0_EXTID_IDE13) != 0u) {
+        return LFJ8_CAN_SLOT_NOT_STANDARD;
+    }
+    return LFJ8_CAN_READY;
+}
+
+static int torque_listener_id(const Lfj8RegisterIo *io)
+{
+    return io->read8(io->context, LFJ8_CAN0_SLOT13_SID0) == (LFJ8_CAN_TORQUE_STATUS >> 6) &&
+           io->read8(io->context, LFJ8_CAN0_SLOT13_SID1) == (LFJ8_CAN_TORQUE_STATUS & 0x3fu);
+}
+
+static Lfj8CanResult pause_torque_listener(const Lfj8RegisterIo *io)
+{
+    const uint8_t control = io->read8(io->context, LFJ8_CAN0_SLOT13_CNT);
+    if (control == 0u || control == CAN_SLOT_TRFIN || control == (CAN_SLOT_TR | CAN_SLOT_TRFIN)) {
+        return LFJ8_CAN_READY;
+    }
+    if ((control & (uint8_t)~(CAN_SLOT_RR | CAN_SLOT_TRFIN | CAN_SLOT_ML)) != 0u ||
+        (control & CAN_SLOT_RR) == 0u) {
+        return LFJ8_CAN_SLOT_BUSY;
+    }
+    /* RR can start receiving asynchronously. Stop the leased listener
+     * and verify idle before another sender touches the message storage. */
+    io->write8(io->context, LFJ8_CAN0_SLOT13_CNT, 0u);
+    return io->read8(io->context, LFJ8_CAN0_SLOT13_CNT) == 0u ? LFJ8_CAN_READY : LFJ8_CAN_SLOT_BUSY;
+}
+
+static Lfj8CanResult listen_for_torque_status(const Lfj8RegisterIo *io)
+{
+    if (io->read8(io->context, LFJ8_CAN0_GMSKS0) != 0x1fu ||
+        io->read8(io->context, LFJ8_CAN0_GMSKS1) != 0x3fu) {
+        return LFJ8_CAN_SLOT_NOT_OWNED;
+    }
+    const uint8_t control = io->read8(io->context, LFJ8_CAN0_SLOT13_CNT);
+    if ((control & CAN_SLOT_RR) != 0u) {
+        return (control & CAN_SLOT_TRSTAT) != 0u ? LFJ8_CAN_SLOT_BUSY : LFJ8_CAN_READY;
+    }
+    if (control != 0u && control != CAN_SLOT_TRFIN && control != (CAN_SLOT_TR | CAN_SLOT_TRFIN)) {
+        return LFJ8_CAN_SLOT_BUSY;
+    }
+    io->write8(io->context, LFJ8_CAN0_SLOT13_CNT, 0u);
+    if (io->read8(io->context, LFJ8_CAN0_SLOT13_CNT) != 0u) {
+        return LFJ8_CAN_SLOT_BUSY;
+    }
+    io->write8(io->context, LFJ8_CAN0_SLOT13_SID0, (uint8_t)(LFJ8_CAN_TORQUE_STATUS >> 6));
+    io->write8(io->context, LFJ8_CAN0_SLOT13_SID1, (uint8_t)(LFJ8_CAN_TORQUE_STATUS & 0x3fu));
+    io->write8(io->context, LFJ8_CAN0_SLOT13_DLC, 8u);
+    if (!h03_can0_operational(io) || !torque_listener_id(io)) {
+        return LFJ8_CAN_CONTROLLER_UNAVAILABLE;
+    }
+    io->write8(io->context, LFJ8_CAN0_SLOT13_CNT, CAN_SLOT_RR);
+    return (io->read8(io->context, LFJ8_CAN0_SLOT13_CNT) & CAN_SLOT_RR) != 0u ?
+        LFJ8_CAN_READY : LFJ8_CAN_CONTROLLER_UNAVAILABLE;
+}
+
+Lfj8CanResult lfj8_h03_can0_torque_listen(const Lfj8RegisterIo *io, uint8_t tx13_owned)
+{
+    if (tx13_owned != 1u) {
+        return LFJ8_CAN_SLOT_NOT_OWNED;
+    }
+    const uint32_t saved_state = io->enter(io->context);
+    Lfj8CanResult result = torque_slot_available(io);
+    if (result == LFJ8_CAN_READY) {
+        result = listen_for_torque_status(io);
+    }
+    io->leave(io->context, saved_state);
+    return result;
+}
+
+Lfj8CanRxResult lfj8_h03_can0_torque_receive(const Lfj8RegisterIo *io, uint8_t tx13_owned,
+                                           Lfj8CanData8 *frame)
+{
+    if (tx13_owned != 1u) {
+        return LFJ8_CAN_RX_WRONG_SLOT;
+    }
+    const uint32_t saved_state = io->enter(io->context);
+    Lfj8CanRxResult result = LFJ8_CAN_RX_UNAVAILABLE;
+    if (torque_slot_available(io) == LFJ8_CAN_READY) {
+        result = receive8(io, 13u, frame);
+        if (result == LFJ8_CAN_RX_RECEIVED && frame->id != LFJ8_CAN_TORQUE_STATUS) {
+            result = LFJ8_CAN_RX_WRONG_SLOT;
+        }
+    }
+    io->leave(io->context, saved_state);
+    return result;
+}
+
+Lfj8CanResult lfj8_h03_can0_torque_yield(const Lfj8RegisterIo *io, uint8_t tx13_owned)
+{
+    if (tx13_owned != 1u) {
+        return LFJ8_CAN_SLOT_NOT_OWNED;
+    }
+    const uint32_t saved_state = io->enter(io->context);
+    Lfj8CanResult result = torque_slot_available(io);
+    if (result == LFJ8_CAN_READY) {
+        result = pause_torque_listener(io);
+    }
+    io->leave(io->context, saved_state);
+    return result;
+}
+
+Lfj8CanResult lfj8_h03_can0_torque_submit(const Lfj8RegisterIo *io, uint8_t tx13_owned,
+                                       const uint8_t payload[8])
+{
+    if (tx13_owned != 1u) {
+        return LFJ8_CAN_SLOT_NOT_OWNED;
+    }
+    const uint32_t saved_state = io->enter(io->context);
+    Lfj8CanResult result = torque_slot_available(io);
+    if (result == LFJ8_CAN_READY) {
+        result = pause_torque_listener(io);
+        if (result == LFJ8_CAN_READY) {
+            result = write_if_idle(io, LFJ8_CAN_TORQUE_REQUEST, payload);
+        }
+    }
+    io->leave(io->context, saved_state);
+    return result;
+}
+
+Lfj8CanTxStatus lfj8_h03_can0_torque_status(const Lfj8RegisterIo *io, uint8_t tx13_owned,
+                                         uint8_t cancel, uint16_t *finished_at)
+{
+    if (tx13_owned != 1u) {
+        return LFJ8_CAN_TX_UNAVAILABLE;
+    }
+    const uint32_t saved_state = io->enter(io->context);
+    const Lfj8CanTxStatus result = h03_can0_tx13_polling(io) ?
+        slot13_status(io, LFJ8_CAN_TORQUE_REQUEST, cancel, finished_at) : LFJ8_CAN_TX_UNAVAILABLE;
     io->leave(io->context, saved_state);
     return result;
 }

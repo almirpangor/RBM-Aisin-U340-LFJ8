@@ -68,6 +68,15 @@ int rbm_u340e_runtime_main_coolant(RbmU340eRuntime *runtime,
 int rbm_u340e_runtime_main_engine_speed(RbmU340eRuntime *runtime,
                                       const RbmU340eMainEngineInputs *prepared);
 
+/* Toyota SECONDARY 054220 -> 05518C. Call once for each executed
+ * SECONDARY before MAIN consumes the result. request_1120 is the persistent
+ * donor byte, initialized by the caller, and must be disjoint from runtime.
+ * Populate GP-8270, -8272, -8306, -8298, -8302, -8310, -7186 and -5299 from
+ * coherent donor-domain inputs. inhibit_5250 supplies the shared GP-5250
+ * byte also consumed by MAIN. A refusal leaves request_1120 unchanged. */
+int rbm_u340e_runtime_secondary_load_qualify(const RbmU340eRuntime *runtime,
+                                             uint8_t inhibit_5250, uint8_t *request_1120);
+
 typedef struct {
     uint8_t count_1112;
     uint8_t count_1113;

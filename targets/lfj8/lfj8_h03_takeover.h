@@ -55,6 +55,11 @@ int lfj8_h03_takeover_init(Lfj8H03Takeover *state, const Lfj8H03TakeoverOps *ops
 int lfj8_h03_takeover_prepare(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *plan,
                              uint8_t shift_mask, uint32_t generation, uint32_t command_at);
 
+/* Use the actual locked P3 levels and the plan to calculate the full mask.
+ * The caller supplies the intact ordered writes from both donor tasks. */
+int lfj8_h03_takeover_prepare_plan(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *plan,
+                                  uint32_t generation, uint32_t command_at);
+
 /* Consume a matching generation once if the initial P3 command is still the
  * same. A rejection invokes inhibit. The caller
  * of either phase must skip the original OEM call after this function. */

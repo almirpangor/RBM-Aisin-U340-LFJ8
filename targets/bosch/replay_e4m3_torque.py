@@ -63,6 +63,12 @@ def replay(repo, image):
     if rebuilt != image:
         rebuilt, manifest, _, _ = build(engine, base, model_fields=True, compact=True)
     if rebuilt != image:
+        for ordinary_compact in (True, False):
+            rebuilt, manifest, _, _ = build(engine, base, model_fields=True, compact=ordinary_compact,
+                                            ordinary_model_field=True)
+            if rebuilt == image:
+                break
+    if rebuilt != image:
         raise ValueError("Image differs from the exact RX/TX build")
     from audit_machine import Machine, seed
     import test_torque as q

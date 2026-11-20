@@ -346,6 +346,84 @@ int rbm_u340e_runtime_main_engine_speed(RbmU340eRuntime *runtime,
     return factory_hydraulics_set(&runtime->gp, -7186, 2u, speed);
 }
 
+static uint8_t qualify_load_bit(uint8_t request, unsigned pending_mask, int32_t load,
+                                int32_t release_threshold, int force_low)
+{
+    const unsigned previous = request & pending_mask;
+    unsigned pending = previous;
+    if (force_low || load < 80) {
+        pending = pending_mask;
+    } else if (load >= release_threshold) {
+        pending = 0;
+    }
+
+    /* The published bit changes only on the second matching sample. */
+    if (pending == previous) {
+        const unsigned published_mask = pending_mask << 1;
+        return (uint8_t)((request & ~published_mask) | (pending << 1));
+    }
+    return (uint8_t)((request & ~pending_mask) | pending);
+}
+
+int rbm_u340e_runtime_secondary_load_qualify(const RbmU340eRuntime *runtime,
+                                             uint8_t inhibit_5250, uint8_t *request_1120)
+{
+    if (!runtime || runtime->initialized != 1u || !request_1120 ||
+        overlaps(runtime, sizeof *runtime, request_1120, sizeof *request_1120)) {
+        return 0;
+    }
+    uint32_t rpm, fallback;
+    const FactoryHydraulics *gp = &runtime->gp;
+    if (!factory_hydraulics_get(gp, -7186, 2u, &rpm) ||
+        !factory_hydraulics_get(gp, -5299, 1u, &fallback)) {
+        return 0;
+    }
+
+    int32_t primary = 786;
+    int32_t limited = 786;
+    if (!(fallback & 2u)) {
+        /* 054CA6 and 054C2C clamp signed load operands. Apply floors
+         * before ceilings, including if the donor limits cross. */
+        enum { PRIMARY, LIMITED, COMMON_FLOOR, FLOOR, CEILING1, CEILING2 };
+        static const int16_t gp_fields[] = {-8270, -8272, -8306, -8298, -8302, -8310};
+        int32_t value[sizeof gp_fields / sizeof gp_fields[0]];
+        for (size_t i = 0; i < sizeof gp_fields / sizeof gp_fields[0]; ++i) {
+            uint32_t word;
+            if (!factory_hydraulics_get(gp, gp_fields[i], 2u, &word)) {
+                return 0;
+            }
+            value[i] = word < 32768u ? (int32_t)word : (int32_t)word - 65536;
+        }
+        primary = value[PRIMARY] < value[COMMON_FLOOR] ? value[COMMON_FLOOR] : value[PRIMARY];
+        limited = value[LIMITED] < value[COMMON_FLOOR] ? value[COMMON_FLOOR] : value[LIMITED];
+        if (limited < value[FLOOR]) {
+            limited = value[FLOOR];
+        }
+        if (limited > value[CEILING1]) {
+            limited = value[CEILING1];
+        }
+        if (limited > value[CEILING2]) {
+            limited = value[CEILING2];
+        }
+        if (primary < 0) {
+            primary = 0;
+        }
+        if (limited < 0) {
+            limited = 0;
+        }
+    }
+
+    /* S01 ROM 000D64. Interpolation returns Q8; 05518C shifts by four. */
+    static const uint8_t threshold[] = {3, 40, 50, 60, 4, 11, 22};
+    const int32_t release_threshold = (factory_interp1((uint16_t)rpm, threshold) >> 4) + 80;
+    uint8_t request = *request_1120;
+    request = qualify_load_bit(request, 0x04u, limited, release_threshold, 0);
+    request = qualify_load_bit(request, 0x01u, primary, release_threshold, 0);
+    request = qualify_load_bit(request, 0x10u, primary, release_threshold, inhibit_5250 & 4u);
+    *request_1120 = request;
+    return 1;
+}
+
 static uint8_t project_range(uint8_t selector)
 {
     static const uint8_t masks[] = {0, 0x01, 0x02, 0x04, 0x08, 0x40, 0x80};

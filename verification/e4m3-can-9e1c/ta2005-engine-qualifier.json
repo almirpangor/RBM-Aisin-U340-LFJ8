@@ -1,0 +1,31 @@
+{
+  "status": "PASS_OFFLINE_ONLY",
+  "physical_hardware_tested": false,
+  "inputs": {
+    "s03": "6f0433dc44871ed00e73f2766b0b37dce39b19c600f2b8248fb626554b0cfa79",
+    "c167_executor": "7de99b47c8c077cc70f38239d4cdd5162b6faee0760f1b6bb93e46c58f7a6ae3",
+    "r3_commit": "7585de6945b4b6b3ef381c6062070a5f417cf588"
+  },
+  "single_snapshot_checks": 9217,
+  "continuous_steps": 1566,
+  "rpm_dtc_events": 382,
+  "coolant_dtc_events": 63,
+  "oem_machine_instructions_covered": 161,
+  "executed_targets": [
+    "windows-x86-64",
+    "m32r-simulator"
+  ],
+  "persistent_bytes": 6,
+  "thresholds_in_eligible_task2_calls": {
+    "rpm_fault": 102,
+    "coolant_fault": 202,
+    "recovery": 252
+  },
+  "scope": "RPM/ECT state, publication, fault events and receiver age handling. Hardware clocks, DTC history and physical output admission are external.",
+  "source_sha256": {
+    "ta2005_engine_qualifier.c": "494cd84060b9ce6a394f982963bd0ee9bb3e656ce1fc81bcdb91d045210b3752",
+    "ta2005_engine_qualifier.h": "fab179e498a8f980e27e8335794b07863ed1cf86db4bda69f7933010fcb6b913",
+    "test_ta2005_engine_qualifier.c": "0d75662369992c690489402854b571ecd427746bb9b793834e745d72f8c1a24c",
+    "check_ta2005_engine_qualifier.py": "18687040c8530a1b5bdc20d8ed42f1941271ef98057943fa18a9e019eb9f9143"
+  }
+}

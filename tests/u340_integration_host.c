@@ -8,6 +8,7 @@
 #include "panel_pulse.h"
 #include "rbm_u340e.h"
 #include "ta2005_chery_inputs.h"
+#include "ta2005_engine_qualifier.h"
 
 void verify_lfj8_selector_adc(void);
 
@@ -116,7 +117,18 @@ int main(int argc, char **argv)
            engine_inputs.model.f914 == rpm_frame[5]);
     CheryDtcState dtc;
     CheryModelMonitor model;
-    const CheryModelContext model_context = {0};
+    Ta2005EngineQualifier engine_qualifier;
+    RbmU340eQualifiedEngineFeed feed;
+    const Ta2005EngineQualificationContext context = {
+        .fallback_fa7b = UINT8_MAX, .coolant_can_enabled = 1, .coherent = 1,
+    };
+    ta2005_engine_qualifier_init(&engine_qualifier);
+    assert(ta2005_engine_qualifier_task2(&engine_qualifier, &engine_inputs, &context, &feed)
+           == TA2005_ENGINE_EVALUATED);
+    assert(feed.coherent == 1 && feed.fa62 == 9600 && feed.f9b8 == 137);
+    const CheryModelContext model_context = {
+        .engine_speed_fa62 = feed.fa62, .engine_flags_e026 = feed.e026,
+    };
     chery_dtc_init(&dtc);
     chery_model_monitor_init(&model);
     chery_model_monitor_task2(&model, &dtc, &engine_inputs, &model_context);

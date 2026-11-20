@@ -128,6 +128,27 @@ __attribute__((noinline)) static void transfer(FactoryHydraulics *s, void *objec
         "for(unsigned k=0;k<m->bytes;++k) ((uint8_t*)&value)[m->member+k]=s->data[m->pos+k];",
         "read_member(s, &value, m);",
     )
+    source += """
+/* The LFJ8 caller can reuse its expired gear snapshot for the atomic GP
+ * transaction. The original one-argument API remains available. */
+int rbm_u340e_hydraulics_control_main_workspace(FactoryHydraulics *state, FactoryHydraulics *workspace)
+{
+    if (!state || !workspace) {
+        return 0;
+    }
+    const uintptr_t s = (uintptr_t)state;
+    const uintptr_t w = (uintptr_t)workspace;
+    if ((s < w ? w - s : s - w) < sizeof(*state)) {
+        return 0;
+    }
+    *workspace = *state;
+    if (!main_step(workspace) || !torque_step(workspace)) {
+        return 0;
+    }
+    *state = *workspace;
+    return 1;
+}
+"""
     source += test_source(rows)
     port = destination / "factory_hydraulics_port.c"
     port.write_text(source, encoding="utf-8", newline="\n")

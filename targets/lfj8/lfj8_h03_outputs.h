@@ -91,4 +91,7 @@ Lfj8H03OutputResult lfj8_h03_plan_outputs(const RbmU340eHydraulicOutput *request
  * Each edge must be representable by one H03 pass in D/E/F order. */
 int lfj8_h03_output_plan_matches(const Lfj8H03OutputPlan *plan, uint8_t before, uint8_t after);
 
+/* Resolve the complete D/E/F target from the live mask and ordered writes. */
+int lfj8_h03_output_plan_resolve(const Lfj8H03OutputPlan *plan, uint8_t before, uint8_t *after);
+
 #endif

@@ -100,6 +100,32 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
             str(library), *runtime_link, "-o", str(torque_check),
         ])
         run("Запрос, подтверждение и снятие снижения момента", [str(torque_check)])
+        torque_io_check = controller_dir / f"lfj8_h03_torque_can_test{suffix}"
+        run("Сборка адаптера CAN0 для момента", [
+            *driver, *common_flags, "-pedantic", "-I", "controller/vendor/toyota/include",
+            "targets/lfj8/lfj8_bridge.c", "targets/lfj8/lfj8_donor_io.c",
+            "targets/lfj8/lfj8_h03_torque.c", "targets/lfj8/lfj8_h03_torque_can.c",
+            "targets/lfj8/test_lfj8_h03_torque_can.c", str(library), *runtime_link,
+            "-o", str(torque_io_check),
+        ])
+        run("Передача запроса и приём статуса момента в CAN0", [str(torque_io_check)])
+        engine_check = output / f"ta2005_engine_qualifier_test{suffix}"
+        run("Сборка квалификации оборотов и температуры TA2005", [
+            *driver, *common_flags, "-pedantic", "-I", "controller/include",
+            "-I", "controller/vendor/toyota/include", "targets/lfj8/ta2005_chery_inputs.c",
+            "targets/lfj8/ta2005_engine_qualifier.c", "targets/lfj8/test_ta2005_engine_qualifier.c",
+            "-o", str(engine_check),
+        ])
+        run("Отказ и восстановление оборотов и температуры", [str(engine_check)])
+        cycle_check = controller_dir / f"lfj8_h03_cycle_test{suffix}"
+        run("Сборка цикла Toyota с адаптером H03", [
+            *driver, *common_flags, "-pedantic", "-I", "controller/include",
+            "-I", "controller/vendor/toyota/include", "targets/lfj8/lfj8_h03_cycle.c",
+            "targets/lfj8/lfj8_h03_torque.c", "targets/lfj8/lfj8_h03_takeover.c",
+            "targets/lfj8/lfj8_h03_outputs.c", "targets/lfj8/test_lfj8_h03_cycle.c",
+            str(library), *runtime_link, "-o", str(cycle_check),
+        ])
+        run("Цикл включения D, переключение и потеря события", [str(cycle_check)])
         run("Тесты модели", [*python, "-m", "unittest", "discover", "-s", "tests", "-v"])
         integrated = [*python, "-m", "model.run_integrated", "--cc", resolved]
         if bosch is not None:

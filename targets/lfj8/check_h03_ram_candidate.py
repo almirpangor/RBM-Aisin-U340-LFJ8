@@ -16,6 +16,8 @@ SPI = 0x809EFC
 FP = 0x808000
 FILL = 0xA5
 WINDOW = (0x806B40, 0x807000)
+# 564 bytes of caller-owned M32R gear/GP union after the reset clear.
+WORKSPACE_WINDOW = (0x808E40, 0x809074)
 FIXTURE_RETURN = 0x001010
 CAPTURE_DMA_SFR = (0x800410, 0x800426)
 CAPTURE_DMA_CONFIG = {
@@ -41,10 +43,10 @@ def hex_address(address):
     return f"0x{address:06X}"
 
 
-def fixed_reference_candidates(rom):
+def fixed_reference_candidates(rom, window=WINDOW):
     """Scan aligned instruction encodings and aligned literal words."""
     hits = defaultdict(list)
-    lower, upper = WINDOW
+    lower, upper = window
     for offset in range(0, len(rom) - 3, 4):
         word = int.from_bytes(rom[offset:offset + 4], "big")
         opcode = word >> 16
@@ -167,6 +169,7 @@ def simulator_checks(rom, compiler):
                     (work / "before.dat").read_bytes() != before or after != expected):
                 raise ValueError(f"Unexpected CPU or RAM snapshot in {name}")
             lower, upper = (address - RAM_START for address in WINDOW)
+            work_lo, work_hi = (address - RAM_START for address in WORKSPACE_WINDOW)
             if dma_case:
                 dma_registers = bytearray([FILL]) * (dma_end - dma_start)
                 for address, data in CAPTURE_DMA_CONFIG.items():
@@ -181,6 +184,7 @@ def simulator_checks(rom, compiler):
                 "ram_bytes_compared": len(after),
                 "changed_bytes": sum(a != b for a, b in zip(before, after)),
                 "candidate_unchanged": before[lower:upper] == after[lower:upper],
+                "workspace_candidate_unchanged": before[work_lo:work_hi] == after[work_lo:work_hi],
                 **({"capture_dma_sfr_values_verified": True} if dma_case else {}),
             })
     return reports
@@ -202,6 +206,12 @@ def main():
             "candidate_bytes": WINDOW[1] - WINDOW[0],
             "range_end_exclusive": True,
             "fixed_reference_candidates": fixed_reference_candidates(rom),
+            "workspace_candidate": {
+                "window": list(map(hex_address, WORKSPACE_WINDOW)),
+                "bytes": WORKSPACE_WINDOW[1] - WORKSPACE_WINDOW[0],
+                "fixed_reference_candidates": fixed_reference_candidates(rom, WORKSPACE_WINDOW),
+                "exclusive_ownership_verified": False,
+            },
             "simulated_initializers": simulator_checks(rom, args.gcc.resolve()),
             "indirect_service_writer_rom": ["0x00DBBC", "0x00DC10"],
             "writer_dispatch_disabled_in_this_rom": {

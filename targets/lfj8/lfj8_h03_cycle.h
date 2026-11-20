@@ -1,0 +1,97 @@
+#ifndef RBM_LFJ8_H03_CYCLE_H
+#define RBM_LFJ8_H03_CYCLE_H
+
+#include "lfj8_h03_torque.h"
+#include "lfj8_h03_takeover.h"
+#include "rbm_u340e_runtime.h"
+#include "rbm_u340e_scheduler.h"
+
+typedef struct {
+    RbmU340eScheduler scheduler;
+    RbmU340eRangeState range;
+    uint32_t last_event;
+    uint8_t request_1120;
+    uint8_t have_event;
+    uint8_t faulted;
+} Lfj8H03Cycle;
+
+/* MAIN finishes using the typed gear view before hydraulic processing.
+ * They share one caller-owned buffer rather than growing the IRQ stack. */
+typedef union {
+    FactoryGearState gear;
+    FactoryHydraulics hydraulics;
+} Lfj8H03CycleWorkspace;
+
+typedef struct {
+    RbmU340eQualifiedEngineFeed engine;
+    uint32_t command_at; /* Oldest sample across the qualified operands. */
+    uint32_t event;      /* Consecutive delivered Toyota IRQ events, modulo 2^32. */
+    uint8_t selector;
+    uint8_t range_5722;
+    uint8_t inhibit_5250;
+    uint8_t qualified;   /* Includes the canonical GP, not only engine and range. */
+} Lfj8H03CycleInput;
+
+typedef struct {
+    FactoryGearWrites shift;
+    Lfj8TorqueDemand torque;
+    uint32_t command_at;
+    uint8_t gear_4852; /* Donor command index 0..3, distinct from gear observation. */
+    uint8_t gear_4848;
+    uint8_t valid;
+} Lfj8H03MainResult;
+
+typedef struct {
+    FactorySLTResult slt;
+    FactoryDriverWrite st;
+    uint32_t command_at;
+    uint8_t valid;
+} Lfj8H03FastOutput;
+
+typedef struct {
+    Lfj8H03OutputBinding binding;
+    const Lfj8H03SltCalibration *slt;
+} Lfj8H03ActuatorCalibration;
+
+typedef enum {
+    LFJ8_H03_CYCLE_FAULT,
+    LFJ8_H03_CYCLE_NO_MAIN,
+    LFJ8_H03_CYCLE_MAIN,
+} Lfj8H03CycleResult;
+
+/* Initialize after donor startup. The caller owns the initial GP and
+ * selector startup values. No startup pressures or gear inputs are assumed. */
+int lfj8_h03_cycle_init(Lfj8H03Cycle *cycle, const RbmU340eRangeState *range,
+                         uint8_t initial_request_1120);
+
+/* Serialized software path for the recovered FAST, SECONDARY and MAIN
+ * fragments. Upstream qualification and the remaining donor stages own the
+ * other GP and gear-only producers. The returned writes are logical S1/S2;
+ * ST, SLT, shifts with external interlocks and plant authority are separate.
+ *
+ * Invoke only on a delivered timer event, at the verified Toyota cadence.
+ * An exact repeated event is ignored. A gap or invalid/incomplete sample
+ * stops publication until reseeded. On fault discard runtime and workspace
+ * before reuse because an admitted stage may have partially modified them.
+ * All objects are disjoint, and result is valid only for CYCLE_MAIN. */
+Lfj8H03CycleResult lfj8_h03_cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
+                                      const Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work,
+                                      Lfj8H03MainResult *result);
+
+/* Read the SLT operands already published by MAIN. Use them at donor FAST
+ * 05AF96/055BF4 with the separately qualified correction state. */
+int lfj8_h03_cycle_slt_inputs(const FactoryHydraulics *gp, FactorySLTInputs *out);
+
+/* From phase 3, join MAIN's S1/S2 with FAST's SLT and optional ST write.
+ * The foreground owner supplies a coherent pair in donor write order, with
+ * times in the takeover clock. Both records must have passed their stages.
+ * The older sample determines expiry. Invalid input invokes the same
+ * failure response as an unsuccessful generation. The actual D/E/F level
+ * transition is derived from P3 under the takeover lock. */
+int lfj8_h03_cycle_prepare_outputs(Lfj8H03Takeover *takeover, const Lfj8H03MainResult *main,
+                                     const Lfj8H03FastOutput *fast,
+                                     const Lfj8H03ActuatorCalibration *calibration,
+                                     const Lfj8H03OemOutputState *oem, Lfj8H03OperatingPoint operating,
+                                     uint32_t generation);
+
+#endif

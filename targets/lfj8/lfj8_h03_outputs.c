@@ -109,9 +109,9 @@ static uint32_t amps_binary32(uint16_t milliamps)
     return (exponent << 23) | (mantissa & UINT32_C(0x7fffff));
 }
 
-int lfj8_h03_output_plan_matches(const Lfj8H03OutputPlan *plan, uint8_t before, uint8_t after)
+int lfj8_h03_output_plan_resolve(const Lfj8H03OutputPlan *plan, uint8_t before, uint8_t *after)
 {
-    if (!plan || before > 7u || after > 7u ||
+    if (!plan || !after || before > 7u ||
         plan->pressure_mailbox != UINT32_C(0x80508C) ||
         plan->pressure_request_ma > LFJ8_H03_LPS_MAX_MA ||
         plan->pressure_binary32 != amps_binary32(plan->pressure_request_ma) ||
@@ -121,6 +121,7 @@ int lfj8_h03_output_plan_matches(const Lfj8H03OutputPlan *plan, uint8_t before, 
     }
     size_t previous_transition = 0;
     uint8_t levels = before;
+    uint8_t changed = 0;
     for (size_t i = 0; i < plan->discrete_count; ++i) {
         const Lfj8H03DiscreteCommand command = plan->discrete[i];
         size_t channel = 0;
@@ -135,13 +136,21 @@ int lfj8_h03_output_plan_matches(const Lfj8H03OutputPlan *plan, uint8_t before, 
         if ((levels & bit) == (command.on ? bit : 0u)) {
             continue;
         }
-        if (channel < previous_transition || (after & bit) != (command.on ? bit : 0u)) {
+        if (channel < previous_transition || (changed & bit) != 0u) {
             return 0;
         }
+        changed |= (uint8_t)bit;
         levels ^= (uint8_t)bit;
         previous_transition = channel;
     }
-    return levels == after;
+    *after = levels;
+    return 1;
+}
+
+int lfj8_h03_output_plan_matches(const Lfj8H03OutputPlan *plan, uint8_t before, uint8_t after)
+{
+    uint8_t resolved;
+    return lfj8_h03_output_plan_resolve(plan, before, &resolved) && resolved == after;
 }
 
 Lfj8H03OutputResult lfj8_h03_plan_outputs(const RbmU340eHydraulicOutput *request,

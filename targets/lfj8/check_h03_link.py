@@ -35,6 +35,7 @@ H03_ROOTS = (
     "rbm_u340e_runtime_init", "rbm_u340e_runtime_snapshot_gears", "rbm_u340e_runtime_gears_outputs",
     "rbm_u340e_runtime_prepare_engine", "rbm_u340e_runtime_main_coolant",
     "rbm_u340e_runtime_main_engine_speed",
+    "rbm_u340e_runtime_secondary_load_qualify",
     "rbm_u340e_range_fast", "rbm_u340e_runtime_main_range",
     "rbm_u340e_runtime_main_range_complete",
     "rbm_u340e_schedule_finish_init", "rbm_u340e_schedule_timer_irq",
@@ -58,11 +59,16 @@ DTC_ROOTS = (
     "chery_dtc_link_receive", "chery_dtc_link_confirm_tx",
     "chery_model_monitor_init", "chery_model_monitor_task2",
 )
-CAN_EXTENSION_FILES = ("lfj8_h03_torque.c", "lfj8_h03_dtc_can.c")
+CAN_EXTENSION_FILES = ("lfj8_h03_torque.c", "lfj8_h03_dtc_can.c",
+                       "lfj8_h03_torque_can.c", "ta2005_engine_qualifier.c", "lfj8_h03_cycle.c")
 CAN_EXTENSION_ROOTS = (
     "lfj8_h03_torque_demand", "lfj8_h03_torque_init", "lfj8_h03_torque_poll",
     "lfj8_h03_torque_tx_done", "lfj8_h03_torque_receive", "lfj8_h03_torque_applied",
     "lfj8_h03_dtc_can_decode_basic", "lfj8_h03_dtc_can_init", "lfj8_h03_dtc_can_poll",
+    "lfj8_h03_torque_can_init", "lfj8_h03_torque_can_poll",
+    "ta2005_engine_qualifier_init", "ta2005_engine_qualifier_task2",
+    "lfj8_h03_cycle_init", "lfj8_h03_cycle_tick", "lfj8_h03_cycle_slt_inputs",
+    "lfj8_h03_cycle_prepare_outputs",
 )
 S01_LINK_TABLES = (
     ("learning_001C3C", 800, "8276650f90e31262d21eca82fd06ce04c9ed0456b74c9456cebf2b11b0b9fd5b"),
@@ -150,6 +156,9 @@ def check_split_layout(stage, compiler, run, base, primary_objects, extension_ob
 SECTIONS {{
   .can_extension {TAIL_START:#x} : {{
     {extension_input}
+    *(.text.lfj8_h03_can0_torque_* .text.pause_torque_listener .text.torque_slot_available)
+    *(.text.lfj8_h03_can0_diag_* .text.slot13_status)
+    *(.text.rbm_u340e_runtime_secondary_load_qualify .text.rbm_u340e_hydraulics_control_main_workspace)
   }}
   .text {FLASH_START:#x} : {{ *(.text .text.*) }}
   .rodata : {{ *(.rodata .rodata.*) }}
@@ -209,8 +218,9 @@ def stage_test(stage, engine_payloads):
     diagnostics = ROOT / "diagnostics"
     dtc_inputs = [*(diagnostics / name for name in DTC_FILES), *diagnostics.glob("*.h"),
                   diagnostics / "test_chery_dtc_link.c"]
-    can_extension = [HERE / name for name in (*CAN_EXTENSION_FILES,
-                    "test_lfj8_h03_torque.c", "test_lfj8_h03_dtc_can.c")]
+    can_extension = [HERE / name for name in (*CAN_EXTENSION_FILES, "test_lfj8_h03_torque.c",
+                    "test_lfj8_h03_dtc_can.c", "test_lfj8_h03_torque_can.c",
+                    "test_ta2005_engine_qualifier.c", "test_lfj8_h03_cycle.c")]
     for item in (*sources, *headers, *dtc_inputs, *can_extension, HERE / "host_check.c", HERE / "test_lfj8_h03_atf.c",
                  HERE / "test_lfj8_h03_mmio.c", HERE / "test_lfj8_gear_observer.c",
                  HERE / "lfj8_h03_outputs.c", HERE / "test_lfj8_h03_outputs.c",
@@ -378,7 +388,8 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
         run(compiler, *TARGET, *flags, "-Dmain=integration_test", "-c", integration,
             "-o", "integration.o")
         run(compiler, *TARGET, *flags, "-nostartfiles", crt, selector_test, panel, "sim_crt.c",
-            "integration.o", "combined.o", *dtc_objects, "-Wl,-e,_start", "-Wl,--start-group", "-lc", "-lgloss", "-lgcc",
+            "integration.o", "combined.o", *dtc_objects, "ta2005_engine_qualifier.o",
+            "-Wl,-e,_start", "-Wl,--start-group", "-lc", "-lgloss", "-lgcc",
             "-Wl,--end-group", "-o", "sim.elf")
         result = json.loads(run(simulator, "sim.elf"))
         if (result.get("selector_adc_events"), result.get("selector_timeout")) != ("PASS", "PASS"):
@@ -401,6 +412,11 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
             ("chery_dtc", "test_chery_dtc_link.c", ("compact-with-dtc.o",)),
             ("h03_torque_can", "test_lfj8_h03_torque.c", ("combined.o", "lfj8_h03_torque.o")),
             ("h03_dtc_can_io", "test_lfj8_h03_dtc_can.c", ("combined.o", *dtc_objects, "lfj8_h03_dtc_can.o")),
+            ("h03_torque_can_io", "test_lfj8_h03_torque_can.c",
+             ("combined.o", "lfj8_h03_torque.o", "lfj8_h03_torque_can.o")),
+            ("h03_engine_qualifier", "test_ta2005_engine_qualifier.c", ("combined.o", "ta2005_engine_qualifier.o")),
+            ("h03_cycle", "test_lfj8_h03_cycle.c",
+             ("combined.o", "takeover.o", "lfj8_h03_torque.o", "lfj8_h03_cycle.o")),
         ]
         for name, source, object_files in component_tests:
             elf = f"{name}.elf"

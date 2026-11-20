@@ -214,6 +214,44 @@ static void check_engine_main_publications(void)
     assert(gp_value(&runtime.gp, -7164, 2u) == 0u);
 }
 
+static void check_secondary_load_publication(void)
+{
+    RbmU340eRuntime runtime = {0};
+    FactoryHydraulics gp = {0};
+    const FactoryGearState gear = {0};
+    uint8_t request = 0xc0u;
+    assert(!rbm_u340e_runtime_secondary_load_qualify(&runtime, 0, &request));
+    assert(request == 0xc0u);
+    assert(rbm_u340e_runtime_init(&runtime, &gear, &gp));
+    assert(!rbm_u340e_runtime_secondary_load_qualify(&runtime, 0, runtime.gp.data));
+
+    assert(factory_hydraulics_set(&runtime.gp, -8310, 2u, 32767u));
+    assert(factory_hydraulics_set(&runtime.gp, -8302, 2u, 32767u));
+    assert(factory_hydraulics_set(&runtime.gp, -8270, 2u, 79u));
+    assert(factory_hydraulics_set(&runtime.gp, -8272, 2u, 80u));
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 0, &request) && request == 0xd1u);
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 0, &request) && request == 0xf3u);
+
+    assert(factory_hydraulics_set(&runtime.gp, -8270, 2u, 143u));
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 0, &request) && request == 0xf3u);
+    assert(factory_hydraulics_set(&runtime.gp, -8270, 2u, 144u));
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 0, &request) && request == 0xe2u);
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 0, &request) && request == 0xc0u);
+
+    assert(factory_hydraulics_set(&runtime.gp, -8272, 2u, 1000u));
+    assert(factory_hydraulics_set(&runtime.gp, -8302, 2u, 65535u)); /* Signed ceiling -1. */
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 4, &request) && request == 0xd4u);
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 4, &request) && request == 0xfcu);
+
+    assert(factory_hydraulics_set(&runtime.gp, -5299, 1u, 2u)); /* Native fallback to 786. */
+    const RbmU340eRuntime prepared = runtime;
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 4, &request) && request == 0xf8u);
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 4, &request) && request == 0xf0u);
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 0, &request) && request == 0xe0u);
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 0, &request) && request == 0xc0u);
+    assert(memcmp(&runtime, &prepared, sizeof runtime) == 0);
+}
+
 static RbmU340eRelease publish_tick(RbmU340eScheduler *schedule)
 {
     assert(rbm_u340e_schedule_timer_irq(schedule) == RBM_U340E_IRQ_PRODUCER);
@@ -224,7 +262,7 @@ static RbmU340eRelease publish_tick(RbmU340eScheduler *schedule)
 }
 
 static void release_range_main(RbmU340eScheduler *schedule, RbmU340eRuntime *runtime,
-                               RbmU340eRangeState *range, const RbmU340eRangeInputs *input)
+                               RbmU340eRangeState *range, RbmU340eRangeInputs *input)
 {
     RbmU340eRelease release;
     do {
@@ -237,6 +275,8 @@ static void release_range_main(RbmU340eScheduler *schedule, RbmU340eRuntime *run
             assert(rbm_u340e_schedule_fast_done(schedule));
         } else if (release == RBM_U340E_RELEASE_SECONDARY) {
             assert(rbm_u340e_schedule_secondary_claim(schedule));
+            assert(rbm_u340e_runtime_secondary_load_qualify(runtime, input->inhibit_5250,
+                                                            &input->request_1120));
             if (rbm_u340e_schedule_secondary_done(schedule) == RBM_U340E_SECONDARY_RUN_MAIN) {
                 return;
             }
@@ -246,7 +286,7 @@ static void release_range_main(RbmU340eScheduler *schedule, RbmU340eRuntime *run
 }
 
 static void check_range_main(RbmU340eScheduler *schedule, RbmU340eRuntime *runtime,
-                             RbmU340eRangeState *range, const RbmU340eRangeInputs *input,
+                             RbmU340eRangeState *range, RbmU340eRangeInputs *input,
                              FactoryGearState *work, FactoryGearWrites *writes)
 {
     release_range_main(schedule, runtime, range, input);
@@ -277,10 +317,13 @@ static void check_standstill_drive(uint16_t neutral_adc, uint8_t neutral_selecto
     FactoryGearState work;
     FactoryGearWrites writes;
     RbmU340eSelectorInput adc = {0};
-    RbmU340eRangeInputs input = {.range_5722 = 5, .request_1120 = 2};
+    RbmU340eRangeInputs input = {.range_5722 = 5};
     assert(factory_hydraulics_set(&gp, -7184, 2, start.u7184));
     assert(factory_hydraulics_set(&gp, -7164, 2, start.u7164));
     assert(factory_hydraulics_set(&gp, -7186, 2, start.u7186));
+    assert(factory_hydraulics_set(&gp, -8310, 2, 32767u));
+    assert(factory_hydraulics_set(&gp, -8302, 2, 32767u));
+    assert(factory_hydraulics_set(&gp, -8272, 2, 512u));
     assert(rbm_u340e_runtime_init(&runtime, &start, &gp));
     rbm_u340e_schedule_finish_init(&schedule);
 
@@ -289,6 +332,7 @@ static void check_standstill_drive(uint16_t neutral_adc, uint8_t neutral_selecto
     }
     assert(input.selector == neutral_selector);
     check_range_main(&schedule, &runtime, &range, &input, &work, &writes);
+    assert(input.request_1120 == 0x11u);
     assert(gp_value(&runtime.gp, -4844, 1) & 1u);
     assert(!(gp_value(&runtime.gp, -4830, 1) & 1u));
 
@@ -298,6 +342,7 @@ static void check_standstill_drive(uint16_t neutral_adc, uint8_t neutral_selecto
     assert(input.selector == RBM_U340E_SELECTOR_D);
     input.range_5722 = 1;
     check_range_main(&schedule, &runtime, &range, &input, &work, &writes);
+    assert(input.request_1120 == 0x33u);
     assert(!(gp_value(&runtime.gp, -4844, 1) & 1u));
     assert(gp_value(&runtime.gp, -4830, 1) & 1u);
     assert(gp_value(&runtime.gp, -7134, 2) > 0);
@@ -476,6 +521,7 @@ void rbm_test_runtime(void)
     check_workspace_overlap();
     check_live_stages();
     check_engine_main_publications();
+    check_secondary_load_publication();
     check_standstill_drive(925, RBM_U340E_SELECTOR_P);
     check_standstill_drive(670, RBM_U340E_SELECTOR_N);
     check_schedule_nominal();
@@ -484,6 +530,7 @@ void rbm_test_runtime(void)
 #ifndef RBM_TEST_QUIET
     puts("Toyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.");
     puts("Toyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.");
+    puts("Toyota 05518C: SECONDARY load qualifiers, hysteresis, clamp, fallback and MAIN handoff passed.");
     puts("Toyota S01 range: P/N to warm low-load D, standstill fill, S1/S2 and first upshift passed.");
     puts("Toyota scheduler: event release, FAST phase latch, busy drop and rollover passed.");
 #endif

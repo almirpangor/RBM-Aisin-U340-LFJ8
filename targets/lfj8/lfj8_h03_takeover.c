@@ -109,8 +109,8 @@ int lfj8_h03_takeover_init(Lfj8H03Takeover *state, const Lfj8H03TakeoverOps *ops
     return 1;
 }
 
-int lfj8_h03_takeover_prepare(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *plan,
-                             uint8_t shift_mask, uint32_t generation, uint32_t command_at)
+static int prepare(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *plan,
+                   const uint8_t *expected_mask, uint32_t generation, uint32_t command_at)
 {
     if (!state || !state->ops) {
         return 0;
@@ -130,7 +130,9 @@ int lfj8_h03_takeover_prepare(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *p
         state->command_at = command_at;
         if (consecutive && !missed_apply && qualified(state)) {
             const uint8_t before = read_shift_levels(io);
-            if (lfj8_h03_output_plan_matches(plan, before, shift_mask)) {
+            uint8_t shift_mask;
+            if (lfj8_h03_output_plan_resolve(plan, before, &shift_mask) &&
+                (!expected_mask || *expected_mask == shift_mask)) {
                 state->shift_before = before;
                 state->shift_mask = shift_mask;
                 state->pressure_word = plan->pressure_binary32;
@@ -147,6 +149,18 @@ int lfj8_h03_takeover_prepare(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *p
     }
     io->leave(context, saved);
     return accepted;
+}
+
+int lfj8_h03_takeover_prepare(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *plan,
+                             uint8_t shift_mask, uint32_t generation, uint32_t command_at)
+{
+    return prepare(state, plan, &shift_mask, generation, command_at);
+}
+
+int lfj8_h03_takeover_prepare_plan(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *plan,
+                                  uint32_t generation, uint32_t command_at)
+{
+    return prepare(state, plan, NULL, generation, command_at);
 }
 
 int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation)

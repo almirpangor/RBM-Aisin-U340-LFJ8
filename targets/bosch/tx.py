@@ -91,7 +91,61 @@ def pack_model_fields(a):
     a.label("model_packed")
 
 
-def assemble(diag, torque, *, model_fields=False):
+def pack_ordinary_model_field(a):
+    # Explicit application profile with no cruise contribution and no override.
+    # 8FAC is homologous to S02 91C2. B286/B288 are the corresponding events.
+    # 98E6 and FD7C.4 are the request and auxiliary state consumed together
+    # at GW 05A078..05A0CE. 8FAE < FFFF guarantees that the corresponding
+    # S02 91C4 input clears its mode latch in the 0C1ED4 task.
+    inputs = ((10, 0xF0FAC), (11, 0xF3286), (12, 0xF3288),
+              (13, 0xF18E6), (14, 0xFD7C), (15, 0xF0FAE))
+    a.ld(4, 0xEF1E)
+    a.cmp(4, 0xFFFF)
+    a.branch(2, "ordinary_model_done")
+    for reg, address in inputs:
+        a.physical(reg, address)
+    a.cmp(13, 0)
+    a.branch(3, "ordinary_model_done")
+    a.rr(4, 14)
+    a.andi(4, 0x10)
+    a.branch(3, "ordinary_model_done")
+    a.cmp(15, 0xFFFF)
+    a.branch(2, "ordinary_model_done")
+    a.rr(4, 11)
+    a.andi(4, 1)
+    a.branch(2, "ordinary_model_encode")
+    a.rr(4, 12)
+    a.andi(4, 1)
+    a.branch(3, "ordinary_model_done")
+    a.label("ordinary_model_encode")
+
+    # For x = 256*hi + lo, floor(x/257) is hi minus one if lo < hi.
+    # The ordinary Chery branch caps the code at 253.
+    a.rr(7, 10)
+    a.shift(7, 8)
+    a.rr(4, 10)
+    a.andi(4, 255)
+    a.cmpreg(4, 7)
+    a.branch(9, "ordinary_model_cap")
+    a.subi(7, 1)
+    a.label("ordinary_model_cap")
+    a.cmp(7, 253)
+    a.branch(15, "ordinary_model_recheck")
+    a.imm(7, 253)
+    a.label("ordinary_model_recheck")
+    for reg, address in inputs:
+        a.physical(4, address)
+        a.cmpreg(4, reg)
+        a.branch(3, "ordinary_model_done")
+    a.shift(7, 8, left=True)
+    a.ld(4, 0xEF20)
+    a.andi(4, 255)
+    a.either(4, 7)
+    a.st(0xEF20, 4)
+    a.label("ordinary_model_done")
+
+
+def assemble(diag, torque, *, model_fields=False, ordinary_model_field=False):
     a = diag.Asm(ORIGIN, LIMIT)
 
     a.label("configure")
@@ -181,6 +235,9 @@ def assemble(diag, torque, *, model_fields=False):
     a.st(0xEF1E, 4)
     if model_fields:
         pack_model_fields(a)
+        if ordinary_model_field:
+            a.label("ordinary_model_field")
+            pack_ordinary_model_field(a)
     else:
         a.set(0xEF20, 0xFFFF)
         a.set(0xEF22, 0xFF00)

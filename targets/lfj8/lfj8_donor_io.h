@@ -44,6 +44,7 @@ typedef enum {
     LFJ8_CAN_SLOT_NOT_STANDARD,
     LFJ8_CAN_WRONG_FRAME,
     LFJ8_CAN_SLOT_NOT_OWNED,
+    LFJ8_CAN_READY,
 } Lfj8CanResult;
 
 typedef struct {
@@ -125,6 +126,18 @@ Lfj8CanResult lfj8_h03_can0_diag_submit(const Lfj8RegisterIo *io, const uint8_t 
  * the Renesas abort command. Check again until the slot is inactive. */
 Lfj8CanTxStatus lfj8_h03_can0_diag_status(const Lfj8RegisterIo *io, uint8_t cancel,
                                        uint16_t *finished_at);
+
+/* Torque coordination time-shares full-CAN slot 13. These operations
+ * require the owner's exclusive lease and a masked slot 13 interrupt.
+ * Established owners must also exclude the OEM polled writer. */
+Lfj8CanResult lfj8_h03_can0_torque_listen(const Lfj8RegisterIo *io, uint8_t tx13_owned);
+Lfj8CanRxResult lfj8_h03_can0_torque_receive(const Lfj8RegisterIo *io, uint8_t tx13_owned,
+                                           Lfj8CanData8 *frame);
+Lfj8CanResult lfj8_h03_can0_torque_yield(const Lfj8RegisterIo *io, uint8_t tx13_owned);
+Lfj8CanResult lfj8_h03_can0_torque_submit(const Lfj8RegisterIo *io, uint8_t tx13_owned,
+                                       const uint8_t payload[8]);
+Lfj8CanTxStatus lfj8_h03_can0_torque_status(const Lfj8RegisterIo *io, uint8_t tx13_owned,
+                                         uint8_t cancel, uint16_t *finished_at);
 
 /* Poll a caller-owned 32176 FullCAN slot (0..13) configured to receive standard data frames.
  * The hardware timestamp stays in the CAN counter's 16-bit clock domain.
