@@ -29,11 +29,16 @@ static void clear_seed(RbmU340eRuntime *runtime)
 
 static void next_main(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
                       Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work,
-                      Lfj8H03MainResult *result)
+                      Lfj8H03MainResult *result, const RbmU340eQualifiedLoadFeed *load)
 {
     for (unsigned i = 0; i < 17u; ++i) {
         ++input->event;
         input->command_at += 1000u; /* Fixture time; not a hardware period. */
+        if (load) {
+            RbmU340eQualifiedLoadFeed sample = *load;
+            sample.sampled_at = input->command_at;
+            assert(rbm_u340e_runtime_publish_load(runtime, &sample, input->command_at, 0u));
+        }
         const Lfj8H03CycleResult status = lfj8_h03_cycle_tick(cycle, runtime, input, work, result);
         if (status == LFJ8_H03_CYCLE_MAIN) {
             assert(result->valid == 1u && result->command_at == input->command_at);
@@ -80,24 +85,24 @@ static void test_range(uint8_t initial_selector, uint8_t forward_selector,
     };
     clear_seed(&runtime);
     assert(lfj8_h03_cycle_init(&cycle, &range, 0u));
-    next_main(&cycle, &runtime, &input, &work, &result);
+    next_main(&cycle, &runtime, &input, &work, &result, NULL);
     assert(read_gp(&runtime, -4844, 1u) & 1u);
     assert(read_gp(&runtime, -7186, 2u) == 3072u);
     assert(read_gp(&runtime, -7164, 2u) == 32480u);
     assert((cycle.request_1120 & 3u) == 1u);
-    next_main(&cycle, &runtime, &input, &work, &result);
+    next_main(&cycle, &runtime, &input, &work, &result, NULL);
     assert((cycle.request_1120 & 3u) == 3u && input.event < 20u);
 
     input.range_5722 = 1u;
     input.selector = forward_selector;
-    next_main(&cycle, &runtime, &input, &work, &result);
+    next_main(&cycle, &runtime, &input, &work, &result, NULL);
     assert((read_gp(&runtime, -7252, 1u) & 6u) == expected_range_flags);
     assert((read_gp(&runtime, -4845, 1u) & 6u) == expected_range_flags);
     assert(read_gp(&runtime, -4830, 1u) & 1u);
     assert(read_gp(&runtime, -7134, 2u) > 0u);
     check_shift(&result, 1u, forward_selector == RBM_U340E_SELECTOR_L);
     for (unsigned i = 0; result.gear_4848 != 0u && i < 255u; ++i) {
-        next_main(&cycle, &runtime, &input, &work, &result);
+        next_main(&cycle, &runtime, &input, &work, &result, NULL);
     }
     assert(result.gear_4852 == 0u && result.gear_4848 == 0u);
     check_shift(&result, 1u, 1u);
@@ -106,7 +111,7 @@ static void test_range(uint8_t initial_selector, uint8_t forward_selector,
     assert(factory_hydraulics_set(&runtime.gp, -4549, 1u, 22u));
     assert(factory_hydraulics_set(&runtime.gp, -7154, 2u, 6400u));
     for (unsigned i = 0; i < 255u; ++i) {
-        next_main(&cycle, &runtime, &input, &work, &result);
+        next_main(&cycle, &runtime, &input, &work, &result, NULL);
         if (expected_gear == 0u) {
             assert(result.gear_4852 == 0u && result.gear_4848 == 0u);
         } else if (result.gear_4848 == expected_gear) {
@@ -119,60 +124,78 @@ static void test_range(uint8_t initial_selector, uint8_t forward_selector,
     check_event_gap(&cycle, &runtime, input, &work);
 }
 
-static void test_speed_map(uint8_t coolant, bool cold)
+typedef struct {
+    int16_t load_operand;
+    uint16_t expected_load;
+    uint8_t thresholds[6]; /* S01 rows 0..2 up and 3..5 down, in ROM order. */
+} SpeedMapProfile;
+
+static void test_speed_map(uint8_t coolant, bool cold, const SpeedMapProfile *profile)
 {
-    /* At zero load the S01 bank at 0x1078 requests up at 20/34/64 and
-     * down below 48/20/18. The stimulus uses Toyota raw units only. */
+    /* Check just below and exactly at each S01 threshold. The stimulus
+     * uses donor speed and load codes, with gear numbers here starting at 1. */
     static const struct {
-        uint8_t speed;
+        uint8_t threshold_row;
+        bool below_threshold;
         uint8_t gear[2];
         uint8_t shift_main[2]; /* 1-based MAIN call, zero if no shift. */
     } steps[] = {
-        {19, {1, 1}, { 0,  0}}, {20, {2, 2}, {10, 10}},
-        {33, {2, 2}, { 0,  0}}, {34, {3, 3}, {10, 10}},
-        {63, {3, 3}, { 0,  0}}, {64, {4, 3}, {20,  0}},
-        {48, {4, 3}, { 0,  0}}, {47, {3, 3}, { 1,  0}},
-        {20, {3, 3}, { 0,  0}}, {19, {2, 2}, { 1,  1}},
-        {18, {2, 2}, { 0,  0}}, {17, {1, 1}, { 1,  1}},
+        {0, true,  {1, 1}, { 0,  0}}, {0, false, {2, 2}, {10, 10}},
+        {1, true,  {2, 2}, { 0,  0}}, {1, false, {3, 3}, {10, 10}},
+        {2, true,  {3, 3}, { 0,  0}}, {2, false, {4, 3}, {20,  0}},
+        {5, false, {4, 3}, { 0,  0}}, {5, true,  {3, 3}, { 1,  0}},
+        {4, false, {3, 3}, { 0,  0}}, {4, true,  {2, 2}, { 1,  1}},
+        {3, false, {2, 2}, { 0,  0}}, {3, true,  {1, 1}, { 1,  1}},
     };
     RbmU340eRuntime runtime = {0};
     Lfj8H03Cycle cycle;
     Lfj8H03CycleWorkspace work;
     Lfj8H03MainResult result;
     const RbmU340eRangeState range = {0};
+    const int16_t operand = profile->load_operand;
+    const RbmU340eQualifiedLoadFeed load = {
+        .gp_8270 = operand, .gp_8272 = operand, .gp_8302 = operand,
+        .gp_8310 = operand, .gp_9044 = operand, .coherent = 1u,
+    };
+    const RbmU340eQualifiedLoadFeed *feed = operand != 0 ? &load : NULL;
     Lfj8H03CycleInput input = {
         .engine = {.fa62 = 9600, .f9b8 = coolant, .coherent = 1},
         .selector = RBM_U340E_SELECTOR_N, .range_5722 = 5u, .qualified = 1u,
     };
     clear_seed(&runtime);
     assert(lfj8_h03_cycle_init(&cycle, &range, 0u));
-    next_main(&cycle, &runtime, &input, &work, &result);
-    next_main(&cycle, &runtime, &input, &work, &result);
+    next_main(&cycle, &runtime, &input, &work, &result, NULL);
+    next_main(&cycle, &runtime, &input, &work, &result, NULL);
     input.selector = RBM_U340E_SELECTOR_D;
     input.range_5722 = 1u;
     assert(factory_hydraulics_set(&runtime.gp, -7154, 2u, 6400u));
     for (unsigned call = 0; call < 130u; ++call) {
-        next_main(&cycle, &runtime, &input, &work, &result);
+        next_main(&cycle, &runtime, &input, &work, &result, NULL);
     }
     assert(result.gear_4852 == 0u && result.gear_4848 == 0u);
 
     unsigned previous = 1u;
     for (size_t i = 0; i < sizeof steps / sizeof steps[0]; ++i) {
-        const unsigned speed = steps[i].speed;
+        const unsigned speed = profile->thresholds[steps[i].threshold_row] - steps[i].below_threshold;
         const unsigned target = steps[i].gear[cold];
         const unsigned transition = steps[i].shift_main[cold];
         assert(factory_hydraulics_set(&runtime.gp, -4548, 1u, speed));
         assert(factory_hydraulics_set(&runtime.gp, -4549, 1u, speed));
         for (unsigned call = 1; call <= 24u; ++call) {
-            next_main(&cycle, &runtime, &input, &work, &result);
+            next_main(&cycle, &runtime, &input, &work, &result, feed);
             const unsigned gear = call < transition ? previous : target;
-            assert(read_gp(&runtime, -7202, 2u) == 0u);
+            assert(read_gp(&runtime, -7202, 2u) == profile->expected_load);
+            assert(read_gp(&runtime, -7200, 2u) == profile->expected_load);
+            assert(read_gp(&runtime, -7198, 2u) == profile->expected_load);
+            if (operand != 0 && call >= 2u) {
+                assert((cycle.request_1120 & 0x0fu) == 0u);
+            }
             assert(!(read_gp(&runtime, -4846, 1u) & 32u));
             assert(read_gp(&runtime, -4854, 1u) == target - 1u);
             assert(result.gear_4852 == gear - 1u && result.gear_4848 == gear - 1u);
             assert(!!(read_gp(&runtime, -4838, 1u) & 2u) == (call == transition));
             check_shift(&result, gear <= 2u, gear == 1u || gear == 4u);
-            if (speed == 64u && call == 1u) {
+            if (steps[i].threshold_row == 2u && !steps[i].below_threshold && call == 1u) {
                 assert(!!(read_gp(&runtime, -4835, 1u) & 32u) == cold);
                 if (!cold) {
                     /* Branch from a pending 3->4, then continue the good trace. */
@@ -193,8 +216,15 @@ int main(void)
     test_range(RBM_U340E_SELECTOR_N, RBM_U340E_SELECTOR_2, 2u, 1u);
     test_range(RBM_U340E_SELECTOR_N, RBM_U340E_SELECTOR_L, 4u, 0u);
     puts("H03 Toyota cycle: P/N to D, 1->2, ranges 2/L, rollover and lost event passed.");
-    test_speed_map(137u, false);
-    test_speed_map(100u, true);
+    /* Thresholds decoded from the pinned S01 bank at ROM 0x1078. */
+    const SpeedMapProfile unloaded = {0, 0, {20, 34, 64, 18, 20, 48}};
+    const SpeedMapProfile load_20 = {2202, 5120, {37, 69, 99, 18, 27, 56}};
+    const SpeedMapProfile load_50 = {5505, 12800, {62, 114, 159, 32, 64, 103}};
+    test_speed_map(137u, false, &unloaded);
+    test_speed_map(100u, true, &unloaded);
     puts("H03 Toyota cycle: two 12-point D traces, S1/S2, cold fourth-gear inhibit and pending-shift loss passed.");
+    test_speed_map(137u, false, &load_20);
+    test_speed_map(137u, false, &load_50);
+    puts("H03 Toyota cycle: two loaded D maps, qualified GP feed, six shift thresholds and S1/S2 passed.");
     return 0;
 }
