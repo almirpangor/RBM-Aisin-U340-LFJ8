@@ -1,4 +1,5 @@
 /* Simulator state only. The clock and OEM phase flag are driven by the test. */
+#include "lfj8_h03_mmio.h"
 #include "lfj8_h03_takeover.h"
 
 enum {
@@ -10,60 +11,58 @@ enum {
     RELEASE_AGE = 8,
     LAST_VALID_AGE = 12,
     POLL_INTERVAL = 2,
-    LOCK_TOKEN = 0x37,
+    PSW_INTERRUPT_ENABLE = 0x40,
 };
 
 static volatile uint8_t *const oem_flag = (volatile uint8_t *)0x804ade;
 static volatile Lfj8H03PhaseClock phase;
-/* Drive the simulated free-running counter independently of the callback. */
-volatile uint32_t fixture_ticks;
+/* The simulator drives the RAM shadow at the real H03 clock address. */
+static volatile uint32_t *const timer_shadow = (volatile uint32_t *)0x8003e0;
 static const uint32_t origin = SCENARIO == DELAYED ? UINT32_MAX - 5u : 100u;
 static uint32_t last_check;
 static unsigned expected_checks;
 static unsigned checks;
 static unsigned inhibits;
-static int locked;
 static int invalid;
 
-static uint32_t enter(void *context)
+static int interrupts_enabled(void)
 {
-    (void)context;
-    invalid |= locked;
-    locked = 1;
-    return LOCK_TOKEN;
+    uint32_t psw;
+    __asm__ volatile ("mvfc %0,psw" : "=r"(psw) : : "memory");
+    return (psw & PSW_INTERRUPT_ENABLE) != 0;
 }
 
-static void leave(void *context, uint32_t saved)
+/* Debugger breakpoints in the simulator can enter with IE clear. Set the
+ * fixture's starting state before calling the real critical section. */
+static void enable_fixture_interrupts(void)
 {
-    (void)context;
-    invalid |= !locked || saved != LOCK_TOKEN;
-    locked = 0;
+    uint32_t psw;
+    __asm__ volatile ("mvfc %0,psw\n\tor3 %0,%0,#0x40\n\tmvtc %0,psw"
+                      : "=&r"(psw) : : "memory", "cc");
 }
 
 static uint32_t ticks(void *context)
 {
-    (void)context;
-    invalid |= !locked;
-    return fixture_ticks;
+    invalid |= interrupts_enabled();
+    return lfj8_h03_tml0ct_m32r(context);
 }
 
 static void inhibit(void *context)
 {
     (void)context;
-    invalid |= !locked;
+    invalid |= interrupts_enabled();
     ++inhibits;
 }
 
-static const Lfj8RegisterIo io = {.enter = enter, .leave = leave};
 static const Lfj8H03TakeoverOps ops = {
-    .io = &io, .clock_ticks = ticks, .inhibit = inhibit, .phase_clock = &phase,
+    .io = &lfj8_h03_mmio, .clock_ticks = ticks, .inhibit = inhibit, .phase_clock = &phase,
 };
 /* Begin with a staged command. Its prepare/apply path has separate tests. */
 static Lfj8H03Takeover state = {.ops = &ops, .pending = 1};
 
 static void publish(void)
 {
-    lfj8_h03_phase_clock_release(&phase, fixture_ticks);
+    lfj8_h03_phase_clock_release(&phase, lfj8_h03_tml0ct_m32r(0));
     *oem_flag = 1;
 }
 
@@ -73,17 +72,17 @@ int fixture_init(void)
         return 0;
     }
     if (SCENARIO == READY) {
-        fixture_ticks = origin + RELEASE_AGE;
+        *timer_shadow = origin + RELEASE_AGE;
         expected_checks = 1;
         publish();
     } else if (SCENARIO == STALLED) {
-        fixture_ticks = origin + 6u;
+        *timer_shadow = origin + 6u;
         expected_checks = 6;
     } else if (SCENARIO == EARLY_FLAG) {
-        fixture_ticks = origin + EARLY_RELEASE_AGE - 1u;
+        *timer_shadow = origin + EARLY_RELEASE_AGE - 1u;
         expected_checks = 2;
     } else {
-        fixture_ticks = origin + 4u;
+        *timer_shadow = origin + 4u;
         expected_checks = 3;
     }
     return 1;
@@ -91,7 +90,11 @@ int fixture_init(void)
 
 int fixture_poll(void)
 {
-    const uint32_t now = fixture_ticks;
+    enable_fixture_interrupts();
+    if (!interrupts_enabled()) {
+        return 0;
+    }
+    const uint32_t now = lfj8_h03_tml0ct_m32r(0);
     const uint32_t age = now - origin;
     const int early_flag = SCENARIO == EARLY_FLAG && *oem_flag;
     if (checks && now - last_check != (early_flag ? 1u : POLL_INTERVAL)) {
@@ -111,7 +114,7 @@ int fixture_poll(void)
     }
 
     const Lfj8H03PhaseResult result = lfj8_h03_takeover_check_phase(&state);
-    if (invalid || locked || phase.consumed != 0) {
+    if (invalid || !interrupts_enabled() || phase.consumed != 0) {
         return 0;
     }
     if (SCENARIO == STALLED && age > LAST_VALID_AGE) {
@@ -124,7 +127,8 @@ int fixture_poll(void)
 
 int fixture_finish(void)
 {
-    if (*oem_flag || invalid || locked || checks != expected_checks) {
+    enable_fixture_interrupts();
+    if (*oem_flag || invalid || !interrupts_enabled() || checks != expected_checks) {
         return 0;
     }
     if (SCENARIO == STALLED) {
@@ -136,5 +140,5 @@ int fixture_finish(void)
     Lfj8H03PhaseEvent event;
     return lfj8_h03_takeover_take_phase(&state, &event) == LFJ8_H03_PHASE_EVENT &&
         event.sequence == 1 && event.released_at == origin + release_age &&
-        !invalid && !locked && !inhibits;
+        !invalid && interrupts_enabled() && !inhibits;
 }

@@ -224,7 +224,7 @@ SECTIONS {
   .text 0x60000 : { *(.text .text.*) *(.rodata .rodata.*) }
   .data 0x100000 : { *(.data .data.*) }
   .bss : { *(.bss .bss.*) }
-  h03_phase_wait_ticks = fixture_ticks;
+  h03_phase_wait_ticks = 0x8003e0;
   ASSERT(h03_phase_wait_ticks % 4 == 0, "The wait clock needs word alignment")
   ASSERT(h03_phase_wait_interval_ticks > 0 && h03_phase_wait_interval_ticks <= 0xffffff,
          "Invalid wait interval")
@@ -263,7 +263,7 @@ commands
     quit
   end
   if $samples % 2 == 0
-    set variable fixture_ticks = fixture_ticks + 1
+    set *(unsigned int*)0x8003e0 = *(unsigned int*)0x8003e0 + 1
   end
   if $release_early && $samples == 2
     set *(unsigned char*)0x804ade = 1
@@ -372,6 +372,7 @@ def check(base, compiler):
         results = []
         sources = [HERE / name for name in (
             "h03_phase_wait_fixture.c", "lfj8_h03_phase_clock.c", "lfj8_h03_takeover.c",
+            "lfj8_h03_mmio.c",
         )]
         for scenario, name, calls, samples, nested, top8_status in (
             (0, "ready", 1, 0, False, None), (1, "delayed_across_wrap", 3, 8, False, None),
@@ -459,7 +460,9 @@ def check(base, compiler):
                                         "compare": 1249, "next_state": 1},
                 "scope": "Synthetic outer handler; original TOP8/9 idle and pending state-0 paths.",
             },
-            "scope": "Real C phase clock and takeover check; synthetic clock, OEM flag and inhibit.",
+            "platform_io": {"clock_address": "0x8003E0", "clock_read_bits": 32,
+                            "checks_interrupt_mask_and_restore": True},
+            "scope": "Target MMIO, phase clock and takeover code; RAM-backed clock, flag and inhibit.",
             "hardware_executed": False, "flashable_image": None}
 
 

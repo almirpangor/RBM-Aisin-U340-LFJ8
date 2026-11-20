@@ -51,9 +51,14 @@ const Lfj8RegisterIo lfj8_h03_mmio = {
     .leave = leave,
 };
 
+uint32_t lfj8_h03_tml0ct_m32r(void *context)
+{
+    return read_word(context, H03_TML0CT);
+}
+
 unsigned lfj8_h03_engine_rx_m32r(Lfj8H03EngineRx *rx, uint8_t slots_owned,
                                 Ta2005CherySnapshot *snapshot)
 {
-    return lfj8_h03_engine_rx_poll(rx, &lfj8_h03_mmio, read_word(0, H03_TML0CT),
+    return lfj8_h03_engine_rx_poll(rx, &lfj8_h03_mmio, lfj8_h03_tml0ct_m32r(0),
                                    slots_owned, snapshot);
 }

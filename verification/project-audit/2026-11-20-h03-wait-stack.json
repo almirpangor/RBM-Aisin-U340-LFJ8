@@ -108,7 +108,7 @@
     "targets/lfj8/check_h03_native_hooks.py": "3c13c6a4e76f309c531cde4e2b1f360157fcf869561f723fbcf8eafd6b03048b",
     "targets/lfj8/check_h03_phase_clock.py": "e4b4a05011409a180028de66c49405cdc5f356fed13fd4befbe1a3a1209582c4",
     "targets/lfj8/check_h03_phase_hook.py": "224a0c5b5c6241f399e06723656c6d0d1585064d03cd3b341914e1c0091bc1bf",
-    "targets/lfj8/check_h03_phase_wait.py": "4b976ac384837716cdca7075c980d45f2baf2f63128f2eb92a0aebe07dedbabf",
+    "targets/lfj8/check_h03_phase_wait.py": "241241c956208e1f389de480139ee4549302b1f98d2b7e4c2abac2618eedf8bb",
     "targets/lfj8/check_h03_ram_candidate.py": "2eb1795f9fa4b8859824db5ec31d9103da2d0d617819210d6b947228dc083e27",
     "targets/lfj8/check_h03_ram_init.py": "cb5626028192dbeeecde41ac730255daddec80f8f602a7af377a385521d75fba",
     "targets/lfj8/check_h03_secondary_load.py": "38df986a3002132837d89107de73b8d671b12f23b8c07c3f5fa63a79457dd54d",
@@ -161,8 +161,8 @@
     "targets/lfj8/lfj8_h03_engine_feed.h": "54ab11cc6b3ffb02a75fec457143bf7c4c30ee52ada659d9270cafe2e27167de",
     "targets/lfj8/lfj8_h03_engine_rx.c": "1f2e081d54ce439ce6e7363d795435ba1bc10861dc154ce30383c3b4520ca8d8",
     "targets/lfj8/lfj8_h03_engine_rx.h": "ffe8e857958981352082aa5d135a5c802fc190874bb21d1048c88d27c266855b",
-    "targets/lfj8/lfj8_h03_mmio.c": "a50d448255bad6a37fd661b5a4f3d1f94b7c8f7b0cbd9d031c9ff5d46a12e1f7",
-    "targets/lfj8/lfj8_h03_mmio.h": "e58bbf12ad250d127cfcf014088d17ecfaf3facefcf37a1aa1da5b28ac98c133",
+    "targets/lfj8/lfj8_h03_mmio.c": "6235b00e1b14c1f42efdcf75e9c0a1f785e02ae710d0d1eb9c10998281627a55",
+    "targets/lfj8/lfj8_h03_mmio.h": "5d2cbf1f88c5d9c33b63eff6db0afdca2797b26920529aacc8d7672e78b7ee33",
     "targets/lfj8/lfj8_h03_outputs.c": "251783c76b96872d4d932c8742bc06a0e40d6bc0cd99a07c86e374d11e45a280",
     "targets/lfj8/lfj8_h03_outputs.h": "d5a894cfed0922172a9920c9cc35da16d2fc844dffadd8e8be1479ee682313bf",
     "targets/lfj8/lfj8_h03_phase_clock.c": "1f4857f90fa639dfdcec7ddffd0ce5f3605b1aa1777a91a4215ca9a72720fc2b",
@@ -225,7 +225,7 @@
     "tools/verify_chery_ecm_schedule.py": "e0f51f17be438fd4f8f9d55f0e85f6b2272b89ce335d7db1c3e3f06ccba1f411",
     "tools/verify_mazda_pcm_can.py": "9c8b96ed226e0619b8ab3b564644312d9bcc43a9da09e7a4e197e5baf2700da4",
     "tools/verify_sources.py": "405a4f27d83b7d6ce9f8fbd5ba6eb27ff0532053a54c16c9533e72a6d2abfb3c",
-    "targets/lfj8/h03_phase_wait_fixture.c": "e135f9527bfdc531b11ad085a88c6be5560ac6f54b1a282aef9ad8d5678e15d6"
+    "targets/lfj8/h03_phase_wait_fixture.c": "19984aa23892e8627b30cfea4134c3b0178deacb571012d3b2aef4bf7ef45891"
   },
   "evidence_sha256": {
     ".github/workflows/project-checks.yml": "6c98ced782463fe13630ee073ca17481468a42acdc14b78d40f498dc6048a767",
@@ -236,7 +236,7 @@
     "verification/e4m3-can-9e1c/h03-native-phases.json": "abc24d7f01dbd56c21b3dd1390075a78fc0e3fa5ac46829d9badd7df8ae4d226",
     "verification/e4m3-can-9e1c/h03-phase-clock.json": "974963a324c111edffacdcf2bc532dab3020771ea55dc491a4c51500b2f2e921",
     "verification/e4m3-can-9e1c/h03-phase-hook.json": "154ceceb3a95fbf4b48a526ac71b38d5a9a4e05794f7b0c84634b7619db943ac",
-    "verification/e4m3-can-9e1c/h03-phase-wait.json": "961b560364b98a29342826b5d5230ba9f3cd6502dfd14b3a0f719b77d8e4f1e1",
+    "verification/e4m3-can-9e1c/h03-phase-wait.json": "53d347d9562902a78a3366792e37500c8d49480e33c0f7e5e5461738fe2c4fe6",
     "verification/e4m3-can-9e1c/h03-storage.json": "7766f2370f4d01ac8e47a3e744168d04a14733fd1a1d474596d40549c4b12f64",
     "verification/e4m3-can-9e1c/h03-torque-dialogue.json": "398148cf9f5910d8ce4d1c2bb3149e1d49ea056557d2ce0b453a7e242ec08ee9",
     "verification/e4m3-can-9e1c/ordinary-model/h03-link.json": "6f30d3b170be567da29bf6305de62cec0c0873ad905370dcd8163176e2cdaedb",
@@ -333,5 +333,24 @@
       "scope": "Synthetic outer handler; original TOP8/9 idle and pending state-0 paths."
     },
     "limits": "Only the inner handler is original. TRAP entry timing, timer MMIO, the outer handler and hardware inhibit remain simulated."
+  },
+  "phase_wait_mmio_followup": {
+    "changed_code_and_tests": [
+      "targets/lfj8/check_h03_phase_wait.py",
+      "targets/lfj8/h03_phase_wait_fixture.c",
+      "targets/lfj8/lfj8_h03_mmio.c",
+      "targets/lfj8/lfj8_h03_mmio.h"
+    ],
+    "repeated_checks": [
+      "14 M32R scenarios with target TML0CT read and target PSW enter/leave",
+      "Controller and bridge clean rebuild, split-address link and Bosch trace replay",
+      "17 M32R component checks, including the target MMIO test",
+      "Negative controls detect missing interrupt masking and missing PSW restore"
+    ],
+    "mmio_test": "H03 M32R MMIO width, byte order and nested PSW restore passed.",
+    "clock_reader_instruction": "One 32-bit LD from 0x8003E0",
+    "no_irq_written_depth_bytes": 124,
+    "top8_written_depth_bytes": 184,
+    "limits": "The timer and inhibit are simulated. No timing or actuator behavior has been verified on hardware."
   }
 }
