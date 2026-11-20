@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 623,
+  "sequence": 624,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -565,20 +565,19 @@
     },
     "AUD-01": {
       "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
-      "label": "Codex AUD-01 — полнота исторической сверки",
+      "label": "Codex AUD-01 — проверка архивного пакета R4",
       "branch": "codex/aud01-e4m3-diff-check-922b7b11",
       "files": [
-        "tests/test_e4m3_diff.py",
-        "tools/check_e4m3_diff.py",
-        "verification/project-audit/aud01-e4m3-diff-coverage.md"
+        "verification/project-audit/aud01-r4-package-regression.md"
       ],
-      "stage": "review",
-      "claim_id": "82bdf686d3f54f4bbcb9ef729cd7b104",
-      "claimed_at": "2026-11-20T20:37:34+00:00",
-      "updated_at": "2026-11-20T20:38:04+00:00",
-      "note": "Вторая порция AUD-01: неполный архив отклоняется. Повторно прошли шесть тестов и сверка 8 файлов, 3 групп и 1057 диапазонов. Основана на отдельной порции e340c61.",
-      "result": "dc0f687f5f77aab70cdd0a8cb95f0d1d0f3c854f",
+      "stage": "in_progress",
+      "claim_id": "e13ff3dbbe324919ab03db0d85cc41d0",
+      "claimed_at": "2026-11-20T20:43:44+00:00",
+      "updated_at": "2026-11-20T20:43:44+00:00",
+      "note": "Новый независимый прогон на ПК: изолированный git archive закреплённого R4, хеши пакета, побайтовая пересборка архивного E4M3 и модельные проверки. Сохраняю только локальный отчёт. Обе прежние порции входят в ветку.",
+      "result": null,
       "based_on_reviews": [
+        "82bdf686d3f54f4bbcb9ef729cd7b104",
         "d06e51f28ad0459dbc4d456c75b56bb4"
       ]
     },
@@ -6165,9 +6164,35 @@
           "3fd1870717ff4cc684af517ec9f56903"
         ]
       }
+    },
+    {
+      "operation_id": "fe365284957b467a9a6fd45f20689634",
+      "task": "AUD-01",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "claim",
+      "claim_id": "e13ff3dbbe324919ab03db0d85cc41d0",
+      "at": "2026-11-20T20:43:44+00:00",
+      "record": {
+        "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "label": "Codex AUD-01 — проверка архивного пакета R4",
+        "branch": "codex/aud01-e4m3-diff-check-922b7b11",
+        "files": [
+          "verification/project-audit/aud01-r4-package-regression.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "e13ff3dbbe324919ab03db0d85cc41d0",
+        "claimed_at": "2026-11-20T20:43:44+00:00",
+        "updated_at": "2026-11-20T20:43:44+00:00",
+        "note": "Новый независимый прогон на ПК: изолированный git archive закреплённого R4, хеши пакета, побайтовая пересборка архивного E4M3 и модельные проверки. Сохраняю только локальный отчёт. Обе прежние порции входят в ветку.",
+        "result": null,
+        "based_on_reviews": [
+          "82bdf686d3f54f4bbcb9ef729cd7b104",
+          "d06e51f28ad0459dbc4d456c75b56bb4"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:43:17+00:00",
+  "updated_at": "2026-11-20T20:43:44+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
