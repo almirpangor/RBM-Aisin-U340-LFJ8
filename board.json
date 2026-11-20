@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 206,
+  "sequence": 207,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -404,19 +404,21 @@
       "label": "Codex — штатное отключение SLT",
       "branch": "codex/h03-05-p0745-01a1f9a2",
       "files": [
+        "docs/lfj8-h03-flash.md",
         "docs/lfj8-slt-calibration.md",
+        "targets/lfj8/check_h03_flash_policy.py",
         "targets/lfj8/check_h03_slt_fault.py",
         "targets/lfj8/h03_slt_fault_hook.S",
         "targets/lfj8/lfj8_h03_takeover.c",
         "targets/lfj8/lfj8_h03_takeover.h",
         "targets/lfj8/test_lfj8_h03_takeover.c"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "claimed_at": "2026-11-20T16:20:38+00:00",
-      "updated_at": "2026-11-20T16:41:39+00:00",
-      "note": "46 условий в обеих сборках M32R PASS. Прямой вход 0403C0 в режиме 0 достигает всех четырёх защёлок с Virtual Flash и остатками сервиса; режим 4 пропускает. Раскладка защиты до перехода и аппаратное наложение Flash открыты. Общий аудит требует обновления.",
-      "result": "27629378bdc1faad599744c66d3ec86eb8bbc3ee"
+      "updated_at": "2026-11-20T16:44:55+00:00",
+      "note": "Добавляю проверку целевого ELF против страниц Virtual Flash, выбираемых штатным H03. Тестирую все страницы только в симуляторе.",
+      "result": null
     },
     "MODE-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -2178,9 +2180,17 @@
       "action": "review",
       "claim_id": "a8e9ff099358496bacacf60bfcc8aa84",
       "at": "2026-11-20T16:44:18+00:00"
+    },
+    {
+      "operation_id": "34bc9d970f714c30aabf0b250e1d078b",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "resume",
+      "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
+      "at": "2026-11-20T16:44:55+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:44:18+00:00",
+  "updated_at": "2026-11-20T16:44:55+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
