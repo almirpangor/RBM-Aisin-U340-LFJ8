@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 105,
+  "sequence": 106,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -355,12 +355,12 @@
         "targets/lfj8/lfj8_h03_slu.h",
         "verification/project-audit/toy06-slu-command.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "8e012ef2677942af9da51dd6b630b99f",
       "claimed_at": "2026-11-20T16:15:26+00:00",
-      "updated_at": "2026-11-20T16:18:08+00:00",
-      "note": "Перенос расчёта 055C5E совпал с R3 на 65 536 словах и 2560 комбинациях флагов/границ. Проверяю сборку M32R и сохраняю границы интеграции H03.",
-      "result": null
+      "updated_at": "2026-11-20T16:19:43+00:00",
+      "note": "Расчёт команды 055C5E совпал с R3 на 65 536 словах и 2560 случаях выбора; 3 отказных теста PASS. Отдельный M32R ELF32 REL, 372 байта, без неразрешённых символов. Интегратору: учесть компонент и отчёт verification/project-audit/toy06-slu-command.md в общем аудите, затем complete после принятия. Снимок SECONDARY, физический канал и стенд открыты.",
+      "result": "db9896a28e87f0b956d9a14409c41910d1d335e7"
     },
     "DTC-01": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -1235,9 +1235,17 @@
       "action": "review",
       "claim_id": "8ca0999c579843d5a6c858b0ba44f0b2",
       "at": "2026-11-20T16:19:32+00:00"
+    },
+    {
+      "operation_id": "21e78a174ca04fa58bb866f959510bc1",
+      "task": "TOY-06",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "8e012ef2677942af9da51dd6b630b99f",
+      "at": "2026-11-20T16:19:43+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:19:32+00:00",
+  "updated_at": "2026-11-20T16:19:43+00:00",
   "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {
