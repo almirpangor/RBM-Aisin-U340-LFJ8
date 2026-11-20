@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 284,
+  "sequence": 285,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -153,11 +153,11 @@
         "diagnostics/test_chery_dtc_link.c",
         "verification/project-audit/dtc04-durable-clear.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "08c2265b7b3d431fb60bc73ce5c54109",
       "claimed_at": "2026-11-20T16:38:27+00:00",
-      "updated_at": "2026-11-20T16:43:22+00:00",
-      "note": "Передаю интегратору. При настроенном backend 54 FF 00 выдаётся только после подтверждения пустого журнала. При отказе сохраняется RAM, TX не ставится. 30 прерываний и повтор PASS, PC 35 шагов/71 тест, M32R журнал и 17 компонентов PASS. Отчёт dtc04-durable-clear.md. Носитель и подключение H03 открыты.",
+      "updated_at": "2026-11-20T17:39:02+00:00",
+      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
       "result": "acd7d12c2e65cbb521331b175365aa2ae8ffc343"
     },
     "H03-02": {
@@ -2842,9 +2842,17 @@
       "action": "complete",
       "claim_id": "a16c78536102430583d910e97b8385d3",
       "at": "2026-11-20T17:38:42+00:00"
+    },
+    {
+      "operation_id": "b7c5672f66fd43a594faa1db58766752",
+      "task": "DTC-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "08c2265b7b3d431fb60bc73ce5c54109",
+      "at": "2026-11-20T17:39:02+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:38:42+00:00",
+  "updated_at": "2026-11-20T17:39:02+00:00",
   "main_commit": "320b72e41aa4a85815f2db8942f88f7050abb3f0",
   "catalog": [
     {
