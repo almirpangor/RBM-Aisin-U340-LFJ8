@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 272,
+  "sequence": 273,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -354,8 +354,8 @@
       "stage": "review",
       "claim_id": "90cda8d0e88e47969f50d8225f329437",
       "claimed_at": "2026-11-20T16:59:25+00:00",
-      "updated_at": "2026-11-20T17:04:19+00:00",
-      "note": "Revoke TX13 lease and torque confirmation in the same poll on a telemetry submission fault. BusOff regression, all 35 PC steps with 71 unit tests, and 17 M32R components PASS. Evidence verification/project-audit/can02-telemetry-submit.md. Native owner and hardware timing open.",
+      "updated_at": "2026-11-20T17:10:59+00:00",
+      "note": "На main b2ca79d проверены совместно точные коммиты CAN-01…05, затем добавлены DTC-02 f38da53 и H03-03 7888441. Без конфликтов. В обоих вариантах ПК 35 шагов/71 тест, M32R 17 компонентов. CAN0 16 сценариев, 0x1AE 65536 пар, Bosch PASS_OFFLINE_ONLY. В расширенной комбинации 18 сравнений BasicCAN и 22 сценария ожидания H03, запас ROM модели 1176/1272 байта. Отзыв TX13 при BusOff из текущего review принят моделью. Рабочая привязка IRQ, RAM, Virtual Flash и стенд открыты.",
       "result": "a45c2f67a80a5f7e0d939816cfb12551fd6edd96"
     },
     "TOY-06": {
@@ -2749,9 +2749,17 @@
       "action": "review",
       "claim_id": "a8e9ff099358496bacacf60bfcc8aa84",
       "at": "2026-11-20T17:09:39+00:00"
+    },
+    {
+      "operation_id": "79365465c4f945d0946d359ef00b9b04",
+      "task": "CAN-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "90cda8d0e88e47969f50d8225f329437",
+      "at": "2026-11-20T17:10:59+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:09:39+00:00",
+  "updated_at": "2026-11-20T17:10:59+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {

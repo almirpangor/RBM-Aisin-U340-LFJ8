@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:09:39+00:00**. Изменение № **272**.
+Обновлено UTC: **2026-11-20T17:10:59+00:00**. Изменение № **273**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -19,7 +19,7 @@
 | TOY-05 — Обучение и сохранение адаптаций | На проверке | Codex — восстановление адаптаций Toyota \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy05-safe-restore-32e6ac79 | 2026-11-20T16:57:40+00:00 | Восстановление после повреждения записи сброса адаптаций проверено на ПК и M32R. Отчёт verification/project-audit/toy05-recovery-policy.md. Запуск H03 и страницы NVM открыты. Снимок аудита и реестр передаю интегратору. / commit 8d6a6f1f62d70c827531f672c98d309e708df595 |
 | TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — давление SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-pressure-fea1b366 | 2026-11-20T17:09:39+00:00 | 05DC5E → 05DCE8 → 055C5E: R3 2520 сочетаний, 5 шагов, 6 отказов PASS. ПК 35/71, M32R 20 сценариев и 3 отказа PASS. Прежняя раскладка переполняется; модель с переносом часов фаз: 336/300 Б, 17 компонентов PASS. Отчёт verification/project-audit/toy06-slu-pressure.md. Планировщик, реальная компоновка и SLU открыты. / commit ff3f49cf2fe324d9ee4fe253cd621f496af7459f |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Codex CAN-01 FullCAN coherence \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-rx-coherence-1120-c7e4 | 2026-11-20T16:57:02+00:00 | Revalidate FullCAN RR and EXTID after the copy. Reproduced RR-loss bug. All 35 PC checks including 71 unit tests, 17 M32R components and Bosch PASS_OFFLINE_ONLY. Evidence verification/project-audit/can01-rx-coherence.md. OEM binding and hardware open. / commit 6820992a15300275c3dd9c98398151e661a42925 |
-| CAN-02 — Общий диспетчер CAN13 | На проверке | Codex CAN-02 telemetry submission \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can02-telemetry-submit-1120-c7e4 | 2026-11-20T17:04:19+00:00 | Revoke TX13 lease and torque confirmation in the same poll on a telemetry submission fault. BusOff regression, all 35 PC steps with 71 unit tests, and 17 M32R components PASS. Evidence verification/project-audit/can02-telemetry-submit.md. Native owner and hardware timing open. / commit a45c2f67a80a5f7e0d939816cfb12551fd6edd96 |
+| CAN-02 — Общий диспетчер CAN13 | На проверке | Codex CAN-02 telemetry submission \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can02-telemetry-submit-1120-c7e4 | 2026-11-20T17:10:59+00:00 | На main b2ca79d проверены совместно точные коммиты CAN-01…05, затем добавлены DTC-02 f38da53 и H03-03 7888441. Без конфликтов. В обоих вариантах ПК 35 шагов/71 тест, M32R 17 компонентов. CAN0 16 сценариев, 0x1AE 65536 пар, Bosch PASS_OFFLINE_ONLY. В расширенной комбинации 18 сравнений BasicCAN и 22 сценария ожидания H03, запас ROM модели 1176/1272 байта. Отзыв TX13 при BusOff из текущего review принят моделью. Рабочая привязка IRQ, RAM, Virtual Flash и стенд открыты. / commit a45c2f67a80a5f7e0d939816cfb12551fd6edd96 |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex CAN-03 reset generation \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can03-epoch-1120-c7e4 | 2026-11-20T16:39:51+00:00 | Native H03 setup hook revokes TX13 grant before OEM and advances generation on return. PASS 16 lifecycle, 12 TX gate, 17 M32R components. BasicCAN flags persist in RAM shadow. See verification/project-audit/can03-native-epoch.md; target RAM, RX drain and bench remain open. / commit 6fc5a51975cd6bbbdf5bc4985d5d61b811435b6b |
 | CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 TX loss \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can04-tx-loss-1120-c7e4 | 2026-11-20T16:45:25+00:00 | Wrong-ID TX13 completion and BusOff now revoke RB torque confirmation and block reuse until a fresh generation. 35 PC steps/71 tests, 17 M32R component runs, Bosch normal and lost-status dialogues PASS_OFFLINE_ONLY. See verification/project-audit/can04-tx-lease-loss.md. / commit e02095c6b8d294dacd71db21ea36f970019d0790 |
 | CAN-05 — Полнота штатного обмена Chery | На проверке | Codex CAN-05 RX age \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can05-rx-age-1120-c7e4 | 2026-11-20T16:34:04+00:00 | Capture-time expiry and ordering for queued 1AE operands. Targeted receiver and all 65536 round-trip vectors PASS, 35 PC steps / 70 tests with S03 rerun, existing ST10 image PASS_OFFLINE_ONLY. Evidence verification/project-audit/can05-rx-age.md. Native capture and calibration remain open. / commit 82947a42cfb33ef5350af1ce98e39055ba6a1508 |
@@ -347,6 +347,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:10:59+00:00 | CAN-02 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T17:09:39+00:00 | TOY-06 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:08:40+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T17:07:56+00:00 | TOY-06 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -376,4 +377,3 @@
 | 2026-11-20T16:57:40+00:00 | TOY-05 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:57:10+00:00 | TOY-05 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:57:02+00:00 | CAN-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
-| 2026-11-20T16:56:57+00:00 | REL-02 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
