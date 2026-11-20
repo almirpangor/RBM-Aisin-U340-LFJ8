@@ -1,4 +1,4 @@
-"""Run the H03 application entry and candidate phase startup hook in M32R."""
+"""Run the H03 reset, application owner and native foreground hooks in M32R."""
 
 import argparse
 from hashlib import sha256
@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import sys
 from tempfile import TemporaryDirectory
 
 from check_h03_link import TARGET, identify_h03
@@ -19,9 +20,12 @@ FRAGMENTS = (
     ("header_marker", 0x008000, 0x008002),
     ("trailer_marker", 0x07FFFE, 0x080000),
     ("handoff", 0x008084, 0x008088),
-    ("startup", 0x008100, 0x00814C),
+    ("cold_entry", 0x008100, 0x008104),
+    ("startup", 0x008104, 0x00814C),
     ("startup_call", 0x00814C, 0x008150),
     ("first_wait", 0x008150, 0x008160),
+    ("input_call", 0x00816C, 0x008170),
+    ("stock_inputs", 0x040324, 0x04039C),
     ("stock_timer", 0x00A82C, 0x00A868),
     ("release_helper", 0x00A06C, 0x00A0B0),
     ("stock_release", 0x040468, 0x0404C4),
@@ -29,7 +33,12 @@ FRAGMENTS = (
 # Other initialization routines are not exercised by this fixture. The CAN
 # initialization stub is special: it advances TML0CT and leaves a stock flag.
 STUBS = (0x00B704, 0x0404C4, 0x04054C, 0x04050C, 0x0089EC,
-         0x034000, 0x046774, 0x008FFC, 0x004784, 0x034004)
+         0x034000, 0x046774, 0x008FFC, 0x004784, 0x034004,
+         0x00A0CC, 0x00BED8, 0x00D108, 0x04039C, 0x0403C0)
+CASES = ("stock", "owned", "invalid_period", "unowned", "bad_header", "bad_trailer",
+         "partial", "stopped_h03", "duplicate", "toyota_gap", "restart", "stopped_toyota",
+         "bad_clock", "no_provider", "coalesced", "overtaken")
+CLOSED_AT_START = {"invalid_period", "unowned", "partial", "bad_clock", "no_provider"}
 FIXTURE = r"""
     .section .entry,"ax"
     .global _start
@@ -43,7 +52,7 @@ _start:
     ldi r0,#0x40
     mvtc r0,psw
     ld24 r0,#0x8003e0
-    seth r1,#0x1234
+    seth r1,#0xffff
     or3 r1,r1,#0xfffc
     st r1,@r0
     ld24 r0,#0x80481c
@@ -74,6 +83,12 @@ reset_dispatch:
 
     .section .handoff,"ax"
     .incbin "handoff.dat"
+    .section .cold_entry,"ax"
+#if BOOT_CASE == 0
+    .incbin "cold_entry.dat"
+#else
+    bra.l rbm_h03_application_cold_hook
+#endif
     .section .startup,"ax"
     .incbin "startup.dat"
     .section .startup_call,"ax"
@@ -83,9 +98,32 @@ reset_dispatch:
     bl.l rbm_h03_phase_startup_hook
 #endif
     .section .first_wait,"ax"
+wait_site:
+#if BOOT_CASE == 0
     .incbin "first_wait.dat"
+#else
+    bra.l rbm_h03_phase_wait_hook
+    .incbin "first_wait.dat",4,12
+#endif
     .section .after_wait,"ax"
     bra.l fixture_after_wait
+
+    .section .input_call,"ax"
+input_site:
+#if BOOT_CASE == 0
+    .incbin "input_call.dat"
+#else
+    bl.l rbm_h03_application_foreground_hook
+#endif
+    jmp r9 || nop
+
+    .section .stock_inputs,"ax"
+    .incbin "stock_inputs.dat"
+
+    .section .mock_adc,"ax"
+    ld24 r2,#0x56ff
+    sth r2,@r0
+    jmp lr
 
     .section .stock_timer,"ax"
     .incbin "stock_timer.dat"
@@ -130,10 +168,39 @@ fixture_publish_first_phase:
     jmp lr
 
     .p2align 2
-    .global rbm_h03_phase_startup_callback
-rbm_h03_phase_startup_callback:
+    .macro drive site
     push lr
-    bl fixture_start_native_phase
+    push r9
+    ld24 r9,#.Ldrive_return\@
+    bra.l \site
+    .p2align 2
+.Ldrive_return\@:
+    pop r9
+    pop lr
+    jmp lr
+    .endm
+
+    .global fixture_run_foreground
+fixture_run_foreground:
+    drive input_site
+
+    .global fixture_run_wait
+fixture_run_wait:
+    ld24 r0,#fixture_again
+    ldi r1,#1
+    stb r1,@r0
+    drive wait_site
+
+    .section .bss.fixture_again,"aw",@nobits
+fixture_again:
+    .space 1
+    .text
+    .p2align 2
+
+    .global __wrap_rbm_h03_phase_startup_callback
+__wrap_rbm_h03_phase_startup_callback:
+    push lr
+    bl __real_rbm_h03_phase_startup_callback
     ldi r0,#0
     mvtaclo r0
     mvtachi r0
@@ -158,6 +225,9 @@ rbm_h03_phase_startup_callback:
 fixture_after_wait:
     push r0
     push r1
+    ld24 r0,#fixture_again
+    ldub r1,@r0
+    bnez r1,.Lresume_fixture_wait
     ld24 r0,#boot_context
     .set offset,8
     .irp reg,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,lr
@@ -179,6 +249,13 @@ fixture_after_wait:
     pop r1
     pop r0
     bl fixture_complete
+    bra fixture_done
+.Lresume_fixture_wait:
+    ldi r1,#0
+    stb r1,@r0
+    pop r1
+    pop r0
+    jmp r9
     .p2align 2
     .global fixture_done
 fixture_done:
@@ -191,10 +268,14 @@ SECTIONS = (
     ("recovery_stop", 0x47D8),
     ("header_marker", 0x8000),
     ("handoff", 0x8084),
-    ("startup", 0x8100),
+    ("cold_entry", 0x8100),
+    ("startup", 0x8104),
     ("startup_call", 0x814C),
     ("first_wait", 0x8150),
     ("after_wait", 0x8160),
+    ("input_call", 0x816C),
+    ("mock_adc", 0x9FF4),
+    ("stock_inputs", 0x40324),
     ("stock_timer", 0xA82C),
     ("release_helper", 0xA06C),
     ("release_site", 0x40424),
@@ -204,24 +285,32 @@ SECTIONS = (
 )
 
 
-def check(base, compiler):
+def check(base, compiler, controller=None):
     identity = identify_h03(base)
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
         raise ValueError("H03 changed while preparing the startup fixture")
     if rom[0x814C:0x8150] != bytes.fromhex("FE0009BB"):
         raise ValueError("The final H03 startup call is not the expected stock A838 call")
+    if rom[0x8100:0x8104] != bytes.fromhex("2E7F4FFC"):
+        raise ValueError("The H03 application prologue differs from stock")
+    if rom[0x816C:0x8170] != bytes.fromhex("FE00E06E"):
+        raise ValueError("The H03 foreground input call differs from stock")
     if rom[0x40424:0x40428] != bytes.fromhex("7E11F000"):
         raise ValueError("The H03 phase publication call differs from stock")
-
 
     with TemporaryDirectory(prefix="rbm-h03-native-startup-") as directory:
         work = Path(directory)
 
-        def run(*args):
+        def run(*args, timeout=15):
             return subprocess.run(
-                [str(arg) for arg in args], cwd=work, check=True, capture_output=True, timeout=15,
+                [str(arg) for arg in args], cwd=work, check=True, capture_output=True, timeout=timeout,
             ).stdout
+
+        if controller is None:
+            run(sys.executable, "-B", CONTROLLER / "build_target.py", "m32r",
+                "--cc", compiler, "--out", work / "controller", timeout=120)
+            controller = work / "controller/rbm_u340e_m32r_be.o"
 
         fragments = {}
         for name, start, end in FRAGMENTS:
@@ -249,6 +338,11 @@ def check(base, compiler):
             f"ENTRY(_start)\nSECTIONS {{\n{layout}\n"
             "  .bss : { *(.bss .bss.*) }\n  h03_stock_startup_record = 0xa838;\n"
             "  h03_stock_phase_release = 0x40468;\n"
+            "  h03_stock_application_after_entry = 0x8104;\n"
+            "  h03_stock_foreground_inputs = 0x40324;\n"
+            "  h03_stock_phase_clear = 0x815c;\n"
+            "  h03_phase_wait_ticks = 0x8003e0;\n"
+            "  h03_phase_wait_interval_ticks = 2;\n"
             '  ASSERT(SIZEOF(.startup_call) == 4, "Startup hook must fit one word")\n}\n',
             encoding="ascii",
         )
@@ -258,23 +352,28 @@ def check(base, compiler):
             "set confirm off\ntarget sim --memory-size 16M\nload\ntbreak *fixture_done\nrun\n"
             f'printf "CONTEXT {"%08x " * 19}\\n", {context}\n'
             'printf "RESULT %d %x %x %x %x\\n", $r0, *(unsigned int*)0x814c, '
-            '*(unsigned short*)0x80481a, *(unsigned short*)0x80481c, *(unsigned char*)0x804ade\n',
+            '*(unsigned short*)0x80481a, *(unsigned short*)0x80481c, *(unsigned char*)0x804ade\n'
+            'printf "OWNER %d %d %d %d %d %d\\n", rbm_h03_application.running, cold_inhibit, '
+            'initialize_calls, inhibit_calls, phase_calls, main_calls\n',
             encoding="ascii",
         )
         sources = [HERE / name for name in (
-            "h03_phase_startup_hook.S", "h03_phase_release_hook.S", "h03_phase_boot_fixture.c", "lfj8_h03_phase_startup.c",
-            "lfj8_h03_phase_clock.c", "lfj8_h03_mmio.c", "lfj8_h03_takeover.c",
+            "h03_application_hooks.S", "h03_phase_startup_hook.S", "h03_phase_wait_hook.S",
+            "h03_phase_release_hook.S", "h03_phase_boot_fixture.c", "lfj8_h03_application.c",
+            "lfj8_h03_phase_startup.c", "lfj8_h03_phase_clock.c", "lfj8_h03_mmio.c",
+            "lfj8_h03_takeover.c", "lfj8_h03_cycle.c", "lfj8_h03_torque.c",
         )]
         cases = []
         for initial_max in (2, 11):
             stock = None
-            for number, name in enumerate(("stock", "owned", "invalid_period", "unowned",
-                                           "bad_header", "bad_trailer")):
+            for number, name in enumerate(CASES):
                 run(compiler, *TARGET, "-Os", "-g", "-Wall", "-Wextra", "-Werror", "-std=c99",
-                    "-ffunction-sections", "-fdata-sections", "-nostdlib", "-Wl,--gc-sections,-T,boot.ld",
+                    "-Wno-missing-braces", "-Wno-missing-field-initializers",
+                    "-ffunction-sections", "-fdata-sections", "-nostdlib",
+                    "-Wl,--gc-sections,-T,boot.ld,--wrap=rbm_h03_phase_startup_callback",
                     "-I", CONTROLLER / "include", "-I", CONTROLLER / "vendor" / "toyota" / "include",
                     f"-DBOOT_CASE={number}", f"-DINITIAL_MAX={initial_max}", "boot.S", *sources,
-                    "-lc", "-lgcc", "-o", "boot.elf")
+                    controller, "-lc", "-lgcc", "-o", "boot.elf")
                 output = run(debugger, "--batch", "-nx", "-x", "boot.gdb", "boot.elf").replace(b"\r", b"")
                 if name in ("bad_header", "bad_trailer"):
                     recovery = re.search(rb"^RESULT 0 [0-9a-f]+ 0 ([0-9a-f]+) 0$", output, re.M)
@@ -284,10 +383,10 @@ def check(base, compiler):
                     cases.append({"path": name, "initial_oem_max": initial_max,
                                   "recovery_entry_reached": True, "startup_armed": False})
                     continue
-                result = re.search(rb"^RESULT 0 ([0-9a-f]+) 7 ([0-9a-f]+) ([01])$", output, re.M)
+                result = re.search(rb"^RESULT 0 ([0-9a-f]+) 7 ([0-9a-f]+) 0$", output, re.M)
+                owner = re.search(rb"^OWNER ((?:[0-9]+ ){5}[0-9]+)$", output, re.M)
                 snapshot = re.search(rb"^CONTEXT ((?:[0-9a-f]{8} ){19})$", output, re.M)
-                if (not result or not snapshot or int(result[2], 16) != max(initial_max, 7)
-                        or int(result[3]) != (name == "owned")):
+                if not result or not owner or not snapshot or int(result[2], 16) != max(initial_max, 7):
                     raise ValueError(f"H03 startup failed ({name}, initial max={initial_max}): "
                                      + output[-1200:].decode(errors="replace"))
                 registers = tuple(int(word, 16) for word in snapshot[1].split())
@@ -297,17 +396,25 @@ def check(base, compiler):
                     stock = registers
                 if stock != registers:
                     raise ValueError(f"The startup hook changed the OEM context ({name})")
+                running, cold, init, inhibit, phases, main = map(int, owner[1].split())
                 cases.append({"path": name, "initial_oem_max": initial_max,
                               "startup_call": result[1].decode(), "oem_elapsed_ticks": 7,
                               "oem_max_after": max(initial_max, 7), "stock_flag_cleared": True,
-                              "startup_armed": name == "owned", "first_project_event": name == "owned",
-                              "oem_flag_at_end": int(result[3]), "oem_context_matches_stock": True})
+                              "startup_armed": name not in CLOSED_AT_START and name != "stock",
+                              "application_running_at_end": bool(running) if cold else None,
+                              "cold_inhibit": cold, "initializer_calls": init, "inhibit_calls": inhibit,
+                              "phase_calls": phases, "main_calls": main,
+                              "oem_context_matches_stock": True})
 
     return {"base": identity, "fragments": fragments, "cases": cases,
             "reset_dispatch": "0x003DC8", "handoff": "0x008084", "recovery_entry": "0x0047D8",
             "hook_site": "0x00814C", "stock_continuation": "0x008150",
             "stubbed_oem_entries": [f"0x{address:06X}" for address in (*STUBS, 0xB75C)],
-            "first_project_event": "OEM phase release and timestamp hook after the first stock wait",
+            "cold_gate_site": "0x008100", "foreground_call": "0x00816C",
+            "first_project_event": "OEM phase release -> bounded wait -> stock inputs -> application owner",
+            "toyota_source": "Independent simulated release, every other H03 publication in the steady case",
+            "clock": "Simulated TML0CT, wraps across the reset-time OEM sample",
+            "limits": "No real RAM placement, IRQ schedule, inhibit driver or input/task calibration",
             "callback_clobbers_for_test": ["R0-R7", "C", "ACC"],
             "context_checked": "R0-R15, CR0 and observable ACC at 0x008160",
             "hardware_executed": False, "flashable_image": None}
@@ -318,11 +425,12 @@ def main():
     parser.add_argument("--base", required=True, type=Path)
     parser.add_argument("--gcc", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
+    parser.add_argument("--controller", type=Path, help="Reuse a built M32R controller object")
     args = parser.parse_args()
     if args.out.suffix.lower() != ".json" or args.out.resolve() == args.base.resolve():
         parser.error("--out must be a separate JSON report")
     try:
-        result = check(args.base, args.gcc.resolve())
+        result = check(args.base, args.gcc.resolve(), args.controller.resolve() if args.controller else None)
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     except subprocess.CalledProcessError as error:
