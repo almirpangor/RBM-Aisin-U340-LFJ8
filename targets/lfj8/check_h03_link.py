@@ -64,7 +64,7 @@ CAN_EXTENSION_FILES = ("lfj8_h03_torque.c", "lfj8_h03_dtc_can.c", "lfj8_h03_dtc_
                        "lfj8_h03_torque_can.c", "ta2005_engine_qualifier.c", "lfj8_h03_cycle.c",
                        "lfj8_h03_phase_clock.c", "lfj8_h03_phase_startup.c",
                        "lfj8_h03_engine_feed.c", "lfj8_h03_can13.c",
-                       "lfj8_h03_atf_feed.c")
+                       "lfj8_h03_atf_feed.c", "lfj8_h03_slu.c")
 CAN_EXTENSION_ROOTS = (
     "lfj8_h03_torque_demand", "lfj8_h03_torque_init", "lfj8_h03_torque_poll",
     "lfj8_h03_torque_tx_done", "lfj8_h03_torque_receive", "lfj8_h03_torque_applied",
@@ -434,7 +434,7 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
             ("h03_engine_qualifier", "test_ta2005_engine_qualifier.c", ("combined.o", "ta2005_engine_qualifier.o")),
             ("h03_cycle", "test_lfj8_h03_cycle.c",
              ("combined.o", "takeover.o", "lfj8_h03_phase_clock.o", "lfj8_h03_torque.o",
-              "lfj8_h03_cycle.o")),
+              "lfj8_h03_cycle.o", "lfj8_h03_slu.o")),
             ("h03_phase_clock", "test_lfj8_h03_phase_clock.c", ("lfj8_h03_phase_clock.o",)),
             ("h03_engine_feed", "test_lfj8_h03_engine_feed.c",
              ("combined.o", "chery_dtc.o", "ta2005_engine_qualifier.o", "lfj8_h03_engine_feed.o")),

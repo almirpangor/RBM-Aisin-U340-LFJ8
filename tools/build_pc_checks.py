@@ -159,7 +159,7 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
         cycle_driver = [
             *driver, *common_flags, "-pedantic", "-I", "controller/include",
             "-I", "controller/vendor/toyota/include", "targets/lfj8/lfj8_h03_cycle.c",
-            "targets/lfj8/lfj8_h03_torque.c", "targets/lfj8/lfj8_h03_takeover.c",
+            "targets/lfj8/lfj8_h03_torque.c", "targets/lfj8/lfj8_h03_takeover.c", "targets/lfj8/lfj8_h03_slu.c",
             "targets/lfj8/lfj8_h03_phase_clock.c", "targets/lfj8/lfj8_h03_outputs.c",
         ]
         run("Сборка цикла Toyota с адаптером H03", [

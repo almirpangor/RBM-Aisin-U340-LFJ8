@@ -44,10 +44,10 @@ def check(base, compiler, controller):
         inputs = (ROOT / "controller/tests/test_runtime.c",
                   HERE / "h03_toyota_stack_fixture.c", HERE / "h03_toyota_stack_fixture.S")
         cycle_sources = tuple(HERE / f"{name}.c" for name in
-                              ("test_lfj8_h03_cycle", "lfj8_h03_cycle", "lfj8_h03_torque",
+                              ("test_lfj8_h03_cycle", "lfj8_h03_cycle", "lfj8_h03_torque", "lfj8_h03_slu",
                                "lfj8_h03_takeover", "lfj8_h03_phase_clock", "lfj8_h03_outputs"))
         cycle_headers = tuple(HERE / f"{name}.h" for name in
-                              ("lfj8_h03_cycle", "lfj8_h03_torque", "lfj8_h03_takeover",
+                              ("lfj8_h03_cycle", "lfj8_h03_torque", "lfj8_h03_takeover", "lfj8_h03_slu",
                                "lfj8_h03_phase_clock", "lfj8_h03_outputs", "lfj8_donor_io"))
         for source in (*inputs, *cycle_sources, *cycle_headers, controller):
             shutil.copyfile(source, stage / source.name)
