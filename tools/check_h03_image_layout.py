@@ -15,6 +15,7 @@ import check_h03_link as legacy
 from lfj8_h03_layout import (PROFILES,Window,PlacementError,read_elf,alloc_sections,
                             validate_windows,pack,linker_script,verify_linked,
                             symbol_bytes,raw_reference_patterns)
+import lfj8_h03_sensor_hooks as sensor_hooks
 
 EXTRA_ROOTS=(
     "rbm_u340e_step",
@@ -37,6 +38,7 @@ BINDING_MODULES=(
     "lfj8_h03_atf_target.c","lfj8_h03_atf_tml0.c",
     "lfj8_h03_service_guard.c", "lfj8_h03_button_capture.c",
 )
+SENSOR_ASSEMBLY = ("h03_sensor_hooks.S", "h03_atf_hooks.S")
 
 
 def save(path,data):
@@ -156,9 +158,39 @@ def execute_placed_code(args, elf, stage, run, flags):
                 "reason":"Uses the standalone donor torque wrapper omitted from production; the production workspace cycle calls torque_step. Run the standard component suite separately."}]}
 
 
+def sensor_placement(rom, elf, provisional=None):
+    symbols = elf["symbols"]
+    addresses = {}
+    if provisional is not None:
+        by_section = {entry["section"]: entry["address"] for entry in provisional}
+        for _, hook, _ in sensor_hooks.SENSOR_HOOKS:
+            symbol = symbols.get(hook)
+            if symbol is None or not 0 < symbol["section"] < len(elf["sections"]):
+                raise ValueError("Missing retained H03 sensor hook: "+hook)
+            section = elf["sections"][symbol["section"]]
+            if (not section["flags"] & 4 or symbol["address"] >= section["size"]
+                    or section["name"] not in by_section):
+                raise ValueError("Sensor hook is outside the provisional executable sections: "+hook)
+            addresses[hook] = by_section[section["name"]] + symbol["address"]
+    else:
+        for name, address in sensor_hooks.STOCK_SYMBOLS.items():
+            symbol = symbols.get(name)
+            if symbol is None or symbol["section"] != 0xFFF1 or symbol["address"] != address:
+                raise ValueError("H03 sensor continuation is not the pinned OEM address: "+name)
+        addresses = {hook: symbols[hook]["address"] for _, hook, _ in sensor_hooks.SENSOR_HOOKS
+                     if hook in symbols}
+    return {"status": "PROVISIONAL_UNLINKED" if provisional is not None else "LINKED_ADDRESS_MODEL",
+            "installed": False, "continuations": sensor_hooks.STOCK_SYMBOLS,
+            "patches": sensor_hooks.patch_plan(rom, addresses)}
+
+
 def build(args):
     identity=legacy.identify_h03(args.base)
     rom=args.base.read_bytes()
+    if sha256(rom).hexdigest() != identity["sha256"]:
+        raise ValueError("H03 changed after identification")
+    if args.with_bindings:
+        sensor_hooks.validate_stock(rom)
     windows=PROFILES[args.profile]
     validate_windows(windows,rom)
     controller_manifest=json.loads((args.controller.parent/"manifest.json").read_text(encoding="utf-8"))
@@ -189,6 +221,8 @@ def build(args):
     modules += [LFJ8/name for name in ("lfj8_range_control.c","lfj8_h03_outputs.c","lfj8_h03_takeover.c",
                                       *legacy.CAN_EXTENSION_FILES,"lfj8_h03_slu.c","lfj8_h03_dtc_foreground.c")]
     bindings=[LFJ8/name for name in BINDING_MODULES if (LFJ8/name).is_file()] if args.with_bindings else []
+    if args.with_bindings:
+        bindings.extend(LFJ8/name for name in SENSOR_ASSEMBLY)
     modules=list(dict.fromkeys([*modules,*bindings]))
     roots=set((*legacy.H03_ROOTS,*legacy.DTC_ROOTS,*legacy.CAN_EXTENSION_ROOTS,*EXTRA_ROOTS))
     report={"base":identity,"profile":args.profile,"compiler_memory_model":args.memory_model,
@@ -198,6 +232,9 @@ def build(args):
             "bindings_not_present":[name for name in BINDING_MODULES if not (LFJ8/name).is_file()],
             "raw_reference_patterns":raw_reference_patterns(rom,windows),
             "hardware_verified":False,"target_ownership_verified":False,"flashable_image":None}
+    if args.with_bindings:
+        path = Path(sensor_hooks.__file__).resolve()
+        report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
     with TemporaryDirectory(prefix="rbm-h03-placement-") as folder:
         stage=Path(folder)
         def run(*items):
@@ -230,7 +267,12 @@ def build(args):
         run(args.gcc,*flags,"-fno-use-linker-plugin","-r","-nostdlib","-Wl,--gc-sections",
             *options,*objects,*legacy.LIBRARIES,"-o","retained.o")
         retained=read_elf(stage/"retained.o",1)
-        unresolved=[name for name,symbol in retained["symbols"].items() if symbol["section"]==0]
+        stock_symbols = sensor_hooks.STOCK_SYMBOLS if args.with_bindings else {}
+        for name in stock_symbols:
+            if retained["symbols"].get(name, {}).get("section") != 0:
+                raise ValueError("Unexpected definition or missing reference for H03 sensor continuation: "+name)
+        unresolved=[name for name,symbol in retained["symbols"].items()
+                    if symbol["section"]==0 and name not in stock_symbols]
         sections=alloc_sections(retained)
         flash=[s for s in sections if not s["flags"]&1]
         ram=[s for s in sections if s["flags"]&1]
@@ -244,6 +286,8 @@ def build(args):
                     "capacity_bytes":sum(w.end-w.start for w in windows),
                     "payload_bytes":sum(p["bytes"] for p in provisional),
                     "ownership_verified":False,"unresolved_material_counted":False}
+                if stock_symbols:
+                    report["sensor_redirects"] = sensor_placement(rom, retained, provisional)
             except PlacementError as error:
                 report["known_sections_candidate_plan"]=error.report
             report.update(status="FAIL_BINDINGS",accepted_layout=False,
@@ -263,11 +307,14 @@ def build(args):
             report.update(status="FAIL_PLACEMENT",failure=error.report,accepted_layout=False)
             save(args.out/"layout.json",report)
             raise
-        (stage/"placement.ld").write_text(linker_script(placement),encoding="ascii")
+        pinned = "".join(f"{name} = {address:#x};\n" for name, address in stock_symbols.items())
+        (stage/"placement.ld").write_text(pinned+linker_script(placement),encoding="ascii")
         run(args.gcc,*flags,"-fno-use-linker-plugin","-nostdlib","-Wl,-T,placement.ld",
             "retained.o","-o","layout.elf")
         linked=read_elf(stage/"layout.elf",2)
         verify_linked(linked,placement,roots)
+        if stock_symbols:
+            report["sensor_redirects"] = sensor_placement(rom, linked)
         tables={}
         for name,size,expected in legacy.S01_LINK_TABLES:
             content=symbol_bytes(linked,name)

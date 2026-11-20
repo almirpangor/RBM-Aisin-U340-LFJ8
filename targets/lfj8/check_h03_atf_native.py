@@ -9,18 +9,10 @@ import subprocess
 from tempfile import TemporaryDirectory
 
 from check_h03_link import identify_h03
+from lfj8_h03_sensor_hooks import ATF_HOOKS as HOOKS, STOCK_SYMBOLS, branch_patch
 
 
 SITES = (0x03B130, 0x03B138, 0x03B178, 0x03B1A4, 0x03B1B0, 0x03B218)
-HOOKS = (
-    (0x03B110, "begin", "2e7f287f"),
-    (0x040178, "adc", "20252eef"),
-    (0x03B138, "read", "20b4f000"),
-    (0x03B178, "fault", "20467f29"),
-    (0x03B1A4, "direct", "20447f1e"),
-    (0x03B218, "filtered", "2044f000"),
-    (0x03B21C, "end", "28ef2eef"),
-)
 TML0_EVIDENCE = (
     (0x009E78, "e4800202602720046109440121044078"),  # PRS1 = 9 at initialization
     (0x009F18, "e180020320916209b00200022201f000"),  # restore PRS1 if changed
@@ -141,13 +133,6 @@ def measure(directory, debugger, variant, inputs):
     return first, adapter, tuple(max(left, right) for left, right in zip(written, second_written))
 
 
-def branch_patch(rom, site, target, stock_word, opcode):
-    offset = target - site
-    if rom[site:site + 4] != bytes.fromhex(stock_word) or offset % 4 or not -(1 << 25) <= offset < 1 << 25:
-        raise ValueError(f"The OEM word or branch displacement at {site:#x} is unexpected")
-    return opcode | (offset // 4 & 0xFFFFFF)
-
-
 def branch_patches(rom, directory, gcc):
     nm = gcc.with_name(f"m32r-elf-nm{gcc.suffix}")
     symbols = {name: int(address, 16) for address, name in
@@ -210,10 +195,10 @@ def check(base, gcc):
         (directory / "stock.ld").write_text(
             "ENTRY(_start)\nSECTIONS { .oem 0 : { KEEP(*(.oem)) } "
             ".text 0x100000 : { KEEP(*(.text.rbm_h03_atf_hooks)) *(.text*) *(.rodata*) } }\n"
-            "h03_atf_after_begin = 0x03b114; h03_atf_adc_store = 0x040178;\n"
-            "h03_atf_after_adc = 0x04017c; h03_atf_after_read = 0x03b13c;\n"
-            "h03_atf_resume_done = 0x03b21c; h03_atf_after_end = 0x03b220;\n"
-            "h03_atf_oem_convert = 0x00f260;\n", encoding="ascii",
+            + "".join(f"{name} = {address:#x};\n" for name, address in STOCK_SYMBOLS.items()
+                      if name.startswith("h03_atf_"))
+            + "h03_atf_adc_store = 0x040178; h03_atf_oem_convert = 0x00f260;\n",
+            encoding="ascii",
         )
         run(gcc, "-m32r", "-Wa,-EB", "-mmodel=medium", "-msdata=none",
             "-Os", "-g", "-Wall", "-Wextra", "-Werror", "-ffreestanding", "-fno-builtin",

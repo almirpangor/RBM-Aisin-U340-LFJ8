@@ -6,11 +6,11 @@ from pathlib import Path
 import subprocess
 
 from check_h03_link import identify_h03
+from lfj8_h03_sensor_hooks import CAPTURE_HOOKS as SITES, STOCK_SYMBOLS, branch_patch
 
 
 HERE = Path(__file__).resolve().parent
 TARGET = ("-m32r", "-mmodel=medium", "-msdata=none", "-Wa,-EB")
-SITES = ((0xAA0C, "s51", "2244f000"), (0xAA70, "s83", "2045f000"))
 SOURCES = (
     "lfj8_bridge.c", "lfj8_donor_io.c", "lfj8_h03_mmio.c",
     "lfj8_h03_atf.c", "lfj8_h03_atf_target.c", "lfj8_h03_atf_tml0.c",
@@ -53,7 +53,7 @@ def check(base, gcc, output):
                    for row in run(nm, "--defined-only", elf).splitlines() if len(row.split()) == 3}
         for address, name, stock in SITES:
             if (symbols[f"fixture_{name}_site"], symbols[f"h03_sensor_after_{name}"]) != (
-                address, address + 4,
+                address, STOCK_SYMBOLS[f"h03_sensor_after_{name}"],
             ):
                 raise ValueError(f"{variant} {name} store or resume address differs")
             bundle = output / f"{variant}-{name}.dat"
@@ -62,8 +62,9 @@ def check(base, gcc, output):
             if variant == "stock" and word.hex() != stock:
                 raise ValueError(f"{name} stock fixture does not match the H03 instruction")
             if variant == "hooked":
-                displacement = int.from_bytes(word[1:], "big", signed=True) * 4
-                if word[0] != 0xFF or address + displacement != symbols[f"rbm_h03_{name}_capture_hook"]:
+                expected = branch_patch(rom, address, symbols[f"rbm_h03_{name}_capture_hook"],
+                                        stock, 0xFF000000)
+                if word != expected.to_bytes(4, "big"):
                     raise ValueError(f"{name} long branch does not reach the hook")
         result = run(sim, "--memory-size=16M", elf)
         if "PASS" not in result:
