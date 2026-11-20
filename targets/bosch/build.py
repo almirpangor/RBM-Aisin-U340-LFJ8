@@ -58,13 +58,17 @@ def section_offsets(image_size, offset, sections, torque_span):
     return offsets
 
 
-def assemble_speed(diag, torque, transmitter=None):
+def assemble_speed(diag, torque, transmitter=None, *, rx_timestamp=False):
+    import rx_timestamp as timestamp
+
     a = diag.Asm(SPEED_ORIGIN, SPEED_LIMIT)
     arbitration = 0x8000 | (CAN_ID << 2)
 
     a.label("reset")
     for address in (AGE, PHASE, DEFER, BUSY):
         a.zero(address)
+    if rx_timestamp:
+        a.zero(timestamp.BOUND_HIGH)
     if transmitter:
         from tx import COOLANT_LAST, DEFER as TX_DEFER, PREFER_COOLANT, RPM_LAST
         for address in (RPM_LAST, COOLANT_LAST, TX_DEFER, PREFER_COOLANT):
@@ -109,6 +113,8 @@ def assemble_speed(diag, torque, transmitter=None):
     a.zero(SPEED)
     a.label("age_done")
     a.ld(4, PHASE)
+    if rx_timestamp:
+        a.andi(4, timestamp.WAITING)
     a.cmp(4, 0)
     a.branch(3, "complete")
     a.ld(4, DEFER)
@@ -129,11 +135,14 @@ def assemble_speed(diag, torque, transmitter=None):
         a.andi(4, mask)
         a.cmp(4, 0)
         a.branch(3, "free")
-    a.ld(4, 0xEF90)
-    a.andi(4, 1 << (OBJECT - 1))
-    a.cmp(4, 0)
-    a.branch(2, "free")
-    a.set(PHASE, 1)
+    if rx_timestamp:
+        timestamp.poll(a, PHASE, AGE, SPEED, OBJECT)
+    else:
+        a.ld(4, 0xEF90)
+        a.andi(4, 1 << (OBJECT - 1))
+        a.cmp(4, 0)
+        a.branch(2, "free")
+        a.set(PHASE, 1)
     a.set(0xEF12, 0x37)
     a.set(0xEF10, OBJECT)
     a.branch(0, "owned")
@@ -143,15 +152,21 @@ def assemble_speed(diag, torque, transmitter=None):
     a.andi(4, 0x8000)
     a.cmp(4, 0)
     a.branch(2, "received")
-    a.ld(4, BUSY)
+    busy_state = PHASE if rx_timestamp else BUSY
+    a.ld(4, busy_state)
     a.addi(4, 1)
-    a.st(BUSY, 4)
+    a.st(busy_state, 4)
+    if rx_timestamp:
+        a.andi(4, timestamp.BUSY_MASK)
     a.cmp(4, 50)
     a.branch(8, "owned")
     a.set(0xEF00, 0x61)  # Existing wrapper re-enters its bus recovery state.
     a.branch(0, "owned")
     a.label("received")
-    a.zero(BUSY)
+    if rx_timestamp:
+        a.ld(8, PHASE)
+    else:
+        a.zero(BUSY)
     a.zero(PHASE)
     a.set(DEFER, 2)  # Give existing torque and diagnostics their service opportunities.
     a.ld(4, 0xEF1A)
@@ -178,7 +193,9 @@ def assemble_speed(diag, torque, transmitter=None):
     a.imm(6, 255)
     a.sub(6, 5)
     a.cmpreg(4, 6)
-    a.branch(3, "owned")
+    a.branch(3, "invalid_speed" if rx_timestamp else "owned")
+    if rx_timestamp:
+        timestamp.check_bound(a)
 
     a.ld(4, 0xEF24)
     a.swap(4)
@@ -207,11 +224,11 @@ def assemble_speed(diag, torque, transmitter=None):
     a.branch(0, "owned")
 
     a.label("invalid_speed")
-    a.zero(AGE)
-    a.extp(0x3C)
-    a.zero(SPEED)
+    timestamp.clear_speed(a, AGE, SPEED)
     a.branch(0, "owned")
     a.label("restore_object")
+    if rx_timestamp:
+        timestamp.clear_speed(a, AGE, SPEED)
     a.zero(0xEF18)
     a.set(0xEF1A, arbitration)
     a.set(0xEF1C, 0x1088)
@@ -255,7 +272,7 @@ def revised_wrapper(diag, labels):
 
 
 def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fields=False,
-          ordinary_model_field=False):
+          ordinary_model_field=False, rx_timestamp=False):
     if digest(s04) != S04_SHA:
         raise ValueError("S04 SHA-256 does not match the pinned E4M3 image")
     if ordinary_model_field and not model_fields:
@@ -285,7 +302,12 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fie
                                    ordinary_model_field=ordinary_model_field)
         if compact:
             tx_code = compact_local_branches(tx_part, tx_code)
-    speed, speed_code = assemble_speed(diag, torque, tx_part)
+    if rx_timestamp:
+        import rx_timestamp as timestamp
+
+        if timestamp.BOUND_LOW != BUSY or timestamp.BOUND_HIGH + 2 != torque.RAM_END:
+            raise ValueError("E4M3 timestamp words are outside the reserved receive state")
+    speed, speed_code = assemble_speed(diag, torque, tx_part, rx_timestamp=rx_timestamp)
     if compact:
         speed_code = compact_local_branches(speed, speed_code)
     wrapper, wrapper_code = revised_wrapper(diag, speed.labels)
@@ -345,6 +367,13 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fie
         "panel_output_implemented": False,
         "speed_receiver_symbols": {name: hex(address) for name, address in speed.labels.items()},
     }
+    if rx_timestamp:
+        manifest["rx_timestamp"] = {
+            "timebase": "native_t4",
+            "bound_low": hex(timestamp.BOUND_LOW),
+            "bound_high": hex(timestamp.BOUND_HIGH),
+            "requires_empty_poll": True,
+        }
     if tx_part:
         from tx import COOLANT, RPM
         if model_fields:
@@ -377,12 +406,15 @@ def main():
     parser.add_argument("--with-ordinary-model-field", action="store_true",
                         help="Transmit 0x0FA byte 3 for the explicit no-cruise, no-override profile")
     parser.add_argument("--compact", action="store_true", help="Shorten local RX/TX branches")
+    parser.add_argument("--with-rx-timestamp", action="store_true",
+                        help="Require an ordered native T4 observation around the 0x1AE transfer")
     args = parser.parse_args()
     if args.with_ordinary_model_field and not args.with_model_fields:
         parser.error("--with-ordinary-model-field requires --with-model-fields")
     image, manifest, wrapper, speed = build(
         args.engine.resolve(), args.s04.read_bytes(), with_engine_signals_tx=args.with_engine_signals_tx,
         compact=args.compact, model_fields=args.with_model_fields, ordinary_model_field=args.with_ordinary_model_field,
+        rx_timestamp=args.with_rx_timestamp,
     )
     try:
         args.outdir.mkdir(parents=True)
@@ -393,6 +425,8 @@ def main():
         filename = "E4M3_CHERY_MODEL_FIELDS_OFFLINE_ONLY.bin"
     if args.with_ordinary_model_field:
         filename = "E4M3_CHERY_ORDINARY_MODEL_NO_CRUISE_OFFLINE_ONLY.bin"
+    if args.with_rx_timestamp:
+        filename = filename.replace("_OFFLINE_ONLY", "_RX_TIMESTAMP_OFFLINE_ONLY")
     if args.compact:
         filename = filename.replace("_OFFLINE_ONLY", "_COMPACT_OFFLINE_ONLY")
     (args.outdir / filename).write_bytes(image)
