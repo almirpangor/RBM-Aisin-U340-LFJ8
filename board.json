@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 686,
+  "sequence": 687,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -246,11 +246,11 @@
         "targets/lfj8/lfj8_h03_application.h",
         "verification/project-audit/can01-h03-app-lifecycle.md"
       ],
-      "stage": "blocked",
+      "stage": "released",
       "claim_id": "4cb1fd3d23724b58bd2c94a052794a65",
       "claimed_at": "2026-11-20T20:31:55+00:00",
-      "updated_at": "2026-11-20T20:42:33+00:00",
-      "note": "Локально сохранено подключение CAN-01 к startup/foreground и Task 2, 62 запуска M32R. Для целевой активации нужны rbm_h03_application_binding, rbm_h03_sensor_config, подтверждённые контекст и метки Task 2, пределы возраста CAN и опроса. Ветка и код этой порции не опубликованы.",
+      "updated_at": "2026-11-20T21:38:01+00:00",
+      "note": "Интегратор освобождает резерв по поручению владельца обновить очередь. Чат 10 idle/completed; рабочая копия чистая, HEAD 84b4433 уже включён в опубликованную main da6b13b. Незавершённых локальных изменений нет. Продолжение CAN-01 свободно; это не закрытие CAN по ТЗ.",
       "result": null,
       "based_on_reviews": [
         "5fcdd962167d41129b445b4ea70a2c80",
@@ -8098,9 +8098,39 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "76f0e7f1387f486495b94ed3dd7b3e91",
+      "task": "CAN-01",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "release",
+      "claim_id": "4cb1fd3d23724b58bd2c94a052794a65",
+      "at": "2026-11-20T21:38:01+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex CAN-01 — запуск и foreground двигателя H03",
+        "branch": "codex/can01-h03-engine-owner-b0157640",
+        "files": [
+          "targets/lfj8/check_h03_phase_boot.py",
+          "targets/lfj8/h03_phase_boot_fixture.c",
+          "targets/lfj8/lfj8_h03_application.c",
+          "targets/lfj8/lfj8_h03_application.h",
+          "verification/project-audit/can01-h03-app-lifecycle.md"
+        ],
+        "stage": "released",
+        "claim_id": "4cb1fd3d23724b58bd2c94a052794a65",
+        "claimed_at": "2026-11-20T20:31:55+00:00",
+        "updated_at": "2026-11-20T21:38:01+00:00",
+        "note": "Интегратор освобождает резерв по поручению владельца обновить очередь. Чат 10 idle/completed; рабочая копия чистая, HEAD 84b4433 уже включён в опубликованную main da6b13b. Незавершённых локальных изменений нет. Продолжение CAN-01 свободно; это не закрытие CAN по ТЗ.",
+        "result": null,
+        "based_on_reviews": [
+          "5fcdd962167d41129b445b4ea70a2c80",
+          "6293ebe446574c9ab1fce23fa806e922"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:37:42+00:00",
+  "updated_at": "2026-11-20T21:38:01+00:00",
   "main_commit": "da6b13b337727866a654d7250caa62231889ade5",
   "catalog": [
     {
