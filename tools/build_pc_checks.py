@@ -63,6 +63,13 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
                                                "targets/panel/test_panel_pulse.c",
                                                "-o", str(panel_check)])
         run("Частота, коррекция и хранение калибровки панели", [str(panel_check)])
+        panel_gpio_check = output / f"bosch_panel_gpio_test{suffix}"
+        run("Сборка планировщика вывода Bosch для панели", [
+            *driver, *common_flags, "-pedantic", "-I", "targets/panel",
+            "targets/panel/panel_pulse.c", "targets/bosch/panel_gpio.c",
+            "targets/bosch/test_panel_gpio.c", "-o", str(panel_gpio_check),
+        ])
+        run("Фронты панели и приоритет штатного выхода Bosch", [str(panel_gpio_check)])
         run("Тесты модели", [*python, "-m", "unittest", "discover", "-s", "tests", "-v"])
         integrated = [*python, "-m", "model.run_integrated", "--cc", resolved]
         if bosch is not None:

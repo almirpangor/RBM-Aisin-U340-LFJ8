@@ -17,6 +17,8 @@ PROJECT = ROOT.parents[1]
 CORE = ["lfj8_bridge.c", "ta2005_chery_inputs.c"]
 S05_ADAPTER = ["../pcm-s05/native/s05_chery.c"]
 DONOR_ADAPTER = ["lfj8_donor_io.c", "lfj8_chery_tx.c", "lfj8_selector_adc.c"]
+H03_ATF = "lfj8_h03_atf.c"
+H03_ATF_TEST = "test_lfj8_h03_atf.c"
 WARNINGS = ["-Wall", "-Wextra", "-Werror", "-Wconversion", "-Wsign-conversion"]
 FREESTANDING = [
     "-Os", "-std=c99", "-ffreestanding", "-fno-builtin", "-fno-common",
@@ -75,7 +77,16 @@ def build_host(zig, work):
             "host_check.c", *CORE, *DONOR_ADAPTER)
     result = command(output)
     print(result)
-    return output, {"compiler": f"Zig {command(zig, 'version')}", "host_test": result}
+    atf_test = work / "lfj8_h03_atf_check.exe"
+    command(zig, "cc", "-std=c11", "-O2", *WARNINGS, "-o", atf_test,
+            H03_ATF_TEST, H03_ATF, "lfj8_bridge.c")
+    atf_result = command(atf_test)
+    print(atf_result)
+    return output, {
+        "compiler": f"Zig {command(zig, 'version')}",
+        "host_test": result,
+        "h03_atf_test": atf_result,
+    }
 
 
 def build_embedded(compiler, work, architecture, sh_cpu, use_9e1c_base=False):
@@ -84,6 +95,8 @@ def build_embedded(compiler, work, architecture, sh_cpu, use_9e1c_base=False):
         if not triple.startswith("m32r"):
             raise ValueError(f"Expected M32R compiler. Detected {triple}")
         sources = CORE + DONOR_ADAPTER
+        if use_9e1c_base:
+            sources.append(H03_ATF)
         target_flags = ["-m32r", "-mmodel=medium", "-msdata=none"]
         assembler_flags = ["-Wa,-EB"]
         output_name = "lfj8_9e1c_m32r.o" if use_9e1c_base else "lfj8_m32r.o"
@@ -154,7 +167,7 @@ def main():
     if args.base_9e1c and not args.m32r_cc:
         parser.error("--base-9e1c requires --m32r-cc")
 
-    sources = [*CORE, *DONOR_ADAPTER, "host_check.c", "build.py",
+    sources = [*CORE, *DONOR_ADAPTER, H03_ATF, H03_ATF_TEST, "lfj8_h03_atf.h", "host_check.c", "build.py",
                "lfj8_bridge.h", "lfj8_donor_io.h", "lfj8_chery_tx.h", "lfj8_selector_adc.h",
                "ta2005_chery_inputs.h"]
     manifest = {"sources": {name: summary(ROOT / name) for name in sources}, "artifacts": {}}

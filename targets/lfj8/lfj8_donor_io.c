@@ -15,8 +15,14 @@
 #define LFJ8_CAN0_MODE UINT32_C(0x801018)
 #define LFJ8_CAN0_CNT UINT32_C(0x801000)
 #define LFJ8_CAN0_STAT UINT32_C(0x801002)
-#define LFJ8_CAN0_FFS UINT32_C(0x80101C)
-#define LFJ8_CAN0_FFS_IDE13 UINT32_C(0x00040000)
+#define LFJ8_CAN0_EXTID UINT32_C(0x801004)
+#define LFJ8_CAN0_EXTID_IDE13 UINT16_C(0x0004)
+#define LFJ8_CAN0_SLIMK UINT32_C(0x801010)
+#define LFJ8_CAN0_GMSKS0 UINT32_C(0x801028)
+#define LFJ8_CAN0_GMSKS1 UINT32_C(0x801029)
+#define LFJ8_CAN0_ENGINE_SLOT_BITS UINT16_C(0x0018)
+#define LFJ8_CAN0_SLOT_CNT UINT32_C(0x801050)
+#define LFJ8_CAN0_SLOT_DATA UINT32_C(0x801100)
 #define LFJ8_CAN0_SLOT13_CNT UINT32_C(0x80105D)
 #define LFJ8_CAN0_SLOT13_SID0 UINT32_C(0x8011D0)
 #define LFJ8_CAN0_SLOT13_SID1 UINT32_C(0x8011D1)
@@ -31,7 +37,11 @@ enum {
     CAN_STAT_LBS = 0x0200,
     CAN_STAT_CRS = 0x0100,
     CAN_SLOT_TR = 0x80,
+    CAN_SLOT_RR = 0x40,
+    CAN_SLOT_ML = 0x04,
+    CAN_SLOT_TRSTAT = 0x02,
     CAN_SLOT_TRFIN = 0x01,
+    CAN_SLOT_CLEAR_RX = 0x4e,
 };
 
 static Lfj8CaptureSnapshot capture_snapshot(const Lfj8RegisterIo *io,
@@ -171,12 +181,130 @@ Lfj8CaptureSnapshot lfj8_9e1c_raw_nt_snapshot(volatile Lfj8RawCapture *nt,
 
 static uint8_t can0_available(const Lfj8RegisterIo *io)
 {
-    /* BasicCAN affects only slots 30/31 (Renesas §§13.2.2–13.2.3). */
+    /* On the 32176, BasicCAN is confined to slots 14 and 15. */
     return (io->read16(io->context, LFJ8_CAN0_CNT) &
             (CAN_CNT_FRST | CAN_CNT_LBM | CAN_CNT_RST)) == 0u &&
            (io->read16(io->context, LFJ8_CAN0_STAT) &
             (CAN_STAT_BOS | CAN_STAT_LBS | CAN_STAT_CRS)) == 0u &&
            (io->read8(io->context, LFJ8_CAN0_MODE) & 3u) == 0u;
+}
+
+static Lfj8CanRxResult receive8(const Lfj8RegisterIo *io, uint8_t slot, Lfj8CanData8 *frame)
+{
+    if (!can0_available(io)) {
+        return LFJ8_CAN_RX_UNAVAILABLE;
+    }
+    const uint32_t control_address = LFJ8_CAN0_SLOT_CNT + slot;
+    const uint8_t allowed = CAN_SLOT_RR | CAN_SLOT_TRFIN | CAN_SLOT_TRSTAT | CAN_SLOT_ML;
+    const uint8_t control = io->read8(io->context, control_address);
+    if ((control & CAN_SLOT_RR) == 0u || (control & (uint8_t)~allowed) != 0u ||
+        (io->read16(io->context, LFJ8_CAN0_EXTID) & (UINT16_C(0x8000) >> slot)) != 0u) {
+        return LFJ8_CAN_RX_WRONG_SLOT;
+    }
+    if ((control & CAN_SLOT_TRSTAT) != 0u) {
+        return LFJ8_CAN_RX_RETRY;
+    }
+    if ((control & CAN_SLOT_ML) != 0u) {
+        io->write8(io->context, control_address, CAN_SLOT_RR);
+        return LFJ8_CAN_RX_LOST;
+    }
+    if ((control & CAN_SLOT_TRFIN) == 0u) {
+        return LFJ8_CAN_RX_IDLE;
+    }
+
+    /* Renesas §13.6.3: keep receive armed and clear TRFIN before the copy. */
+    io->write8(io->context, control_address, CAN_SLOT_CLEAR_RX);
+    const uint32_t address = LFJ8_CAN0_SLOT_DATA + (uint32_t)slot * 16u;
+    const uint8_t length = io->read8(io->context, address + 5u) & 0x0fu;
+    Lfj8CanData8 pending;
+    pending.id = 0u;
+    pending.timestamp = 0u;
+    if (length == 8u) {
+        const uint32_t upper = io->read8(io->context, address) & 0x1fu;
+        pending.id = (uint16_t)((upper << 6) | (io->read8(io->context, address + 1u) & 0x3fu));
+        for (uint32_t index = 0; index < 8u; ++index) {
+            pending.payload[index] = io->read8(io->context, address + 6u + index);
+        }
+        pending.timestamp = io->read16(io->context, address + 14u);
+    }
+    const uint8_t after = io->read8(io->context, control_address);
+    if (!can0_available(io)) {
+        return LFJ8_CAN_RX_UNAVAILABLE;
+    }
+    if ((after & CAN_SLOT_ML) != 0u) {
+        return LFJ8_CAN_RX_LOST;
+    }
+    if ((after & (CAN_SLOT_TRFIN | CAN_SLOT_TRSTAT)) != 0u) {
+        return LFJ8_CAN_RX_RETRY;
+    }
+    if (length != 8u) {
+        return LFJ8_CAN_RX_BAD_LENGTH;
+    }
+    frame->id = pending.id;
+    frame->timestamp = pending.timestamp;
+    for (uint32_t index = 0; index < 8u; ++index) {
+        frame->payload[index] = pending.payload[index];
+    }
+    return LFJ8_CAN_RX_RECEIVED;
+}
+
+Lfj8CanRxResult lfj8_can0_receive8(const Lfj8RegisterIo *io, uint8_t slot, uint8_t slot_owned,
+                                 Lfj8CanData8 *frame)
+{
+    frame->id = 0u;
+    frame->timestamp = 0u;
+    for (uint32_t index = 0; index < 8u; ++index) {
+        frame->payload[index] = 0u;
+    }
+    if (slot_owned != 1u || slot >= 14u) {
+        return LFJ8_CAN_RX_WRONG_SLOT;
+    }
+    const uint32_t saved_state = io->enter(io->context);
+    const Lfj8CanRxResult result = receive8(io, slot, frame);
+    io->leave(io->context, saved_state);
+    return result;
+}
+
+int lfj8_h03_can0_arm_engine_rx(const Lfj8RegisterIo *io, uint8_t slots_owned)
+{
+    if (slots_owned != 1u) {
+        return 0;
+    }
+    const uint32_t rpm_control = LFJ8_CAN0_SLOT_CNT + LFJ8_H03_CAN0_RPM_SLOT;
+    const uint32_t coolant_control = LFJ8_CAN0_SLOT_CNT + LFJ8_H03_CAN0_COOLANT_SLOT;
+    const uint32_t saved_state = io->enter(io->context);
+    int armed = 0;
+    if (can0_available(io) &&
+        (io->read16(io->context, LFJ8_CAN0_EXTID) & LFJ8_CAN0_ENGINE_SLOT_BITS) == 0u &&
+        (io->read16(io->context, LFJ8_CAN0_SLIMK) & LFJ8_CAN0_ENGINE_SLOT_BITS) == 0u &&
+        io->read8(io->context, LFJ8_CAN0_GMSKS0) == 0x1fu &&
+        io->read8(io->context, LFJ8_CAN0_GMSKS1) == 0x3fu &&
+        io->read8(io->context, rpm_control) == 0u &&
+        io->read8(io->context, coolant_control) == 0u) {
+        const uint32_t rpm_data = LFJ8_CAN0_SLOT_DATA + LFJ8_H03_CAN0_RPM_SLOT * 16u;
+        const uint32_t coolant_data = LFJ8_CAN0_SLOT_DATA + LFJ8_H03_CAN0_COOLANT_SLOT * 16u;
+        io->write8(io->context, rpm_data, 0x03u);
+        io->write8(io->context, rpm_data + 1u, 0x3au);
+        io->write8(io->context, coolant_data, 0x09u);
+        io->write8(io->context, coolant_data + 1u, 0x38u);
+        if (can0_available(io) &&
+            io->read8(io->context, rpm_data) == 0x03u &&
+            io->read8(io->context, rpm_data + 1u) == 0x3au &&
+            io->read8(io->context, coolant_data) == 0x09u &&
+            io->read8(io->context, coolant_data + 1u) == 0x38u) {
+            io->write8(io->context, rpm_control, CAN_SLOT_RR);
+            io->write8(io->context, coolant_control, CAN_SLOT_RR);
+            armed = (io->read8(io->context, rpm_control) & CAN_SLOT_RR) != 0u &&
+                    (io->read8(io->context, coolant_control) & CAN_SLOT_RR) != 0u &&
+                    can0_available(io);
+            if (!armed) {
+                io->write8(io->context, rpm_control, 0u);
+                io->write8(io->context, coolant_control, 0u);
+            }
+        }
+    }
+    io->leave(io->context, saved_state);
+    return armed;
 }
 
 static Lfj8CanResult write_if_idle(const Lfj8RegisterIo *io, uint16_t id,
@@ -188,7 +316,7 @@ static Lfj8CanResult write_if_idle(const Lfj8RegisterIo *io, uint16_t id,
     if (!can0_available(io)) {
         return LFJ8_CAN_CONTROLLER_UNAVAILABLE;
     }
-    if ((io->read32(io->context, LFJ8_CAN0_FFS) & LFJ8_CAN0_FFS_IDE13) != 0u) {
+    if ((io->read16(io->context, LFJ8_CAN0_EXTID) & LFJ8_CAN0_EXTID_IDE13) != 0u) {
         return LFJ8_CAN_SLOT_NOT_STANDARD;
     }
 

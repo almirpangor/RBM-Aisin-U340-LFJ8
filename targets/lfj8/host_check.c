@@ -12,7 +12,6 @@
 typedef struct {
     uint32_t freshness;
     uint32_t interval;
-    uint32_t formats;
     uint32_t capture_timer;
     uint32_t captured_ticks;
     uint32_t nt_timer;
@@ -21,11 +20,23 @@ typedef struct {
     uint16_t pulse_count;
     uint16_t can_control;
     uint16_t can_status;
+    uint16_t formats;
+    uint16_t slot_interrupts;
+    uint16_t rx_timestamp;
     uint8_t slot_control;
     uint8_t can_mode;
     uint8_t last_sid[2];
     uint8_t last_dlc;
     uint8_t last_data[8];
+    uint8_t rx_control;
+    uint8_t rx_after;
+    uint8_t rx_sid[2];
+    uint8_t rx_dlc;
+    uint8_t rx_data[8];
+    uint8_t mask_sid[2];
+    uint8_t coolant_control;
+    uint8_t coolant_sid[2];
+    uint8_t coolant_arm_fails;
     unsigned lock_count;
     unsigned lock_depth;
     unsigned writes;
@@ -53,8 +64,22 @@ static uint8_t read8(void *context, uint32_t address)
 {
     Fixture *f = context;
     assert(f->lock_depth == 1u);
-    assert(address == 0x80105Du || address == 0x801018u);
-    return address == 0x80105Du ? f->slot_control : f->can_mode;
+    switch (address) {
+    case 0x80105Du: return f->slot_control;
+    case 0x801018u: return f->can_mode;
+    case 0x801028u:
+    case 0x801029u: return f->mask_sid[address - 0x801028u];
+    case 0x80105Bu: return f->rx_control;
+    case 0x80105Cu: return f->coolant_control;
+    case 0x8011C0u:
+    case 0x8011C1u: return f->coolant_sid[address - 0x8011C0u];
+    case 0x8011B0u:
+    case 0x8011B1u: return f->rx_sid[address - 0x8011B0u];
+    case 0x8011B5u: return f->rx_dlc;
+    default:
+        assert(address >= 0x8011B6u && address <= 0x8011BDu);
+        return f->rx_data[address - 0x8011B6u];
+    }
 }
 
 static uint16_t read16(void *context, uint32_t address)
@@ -64,6 +89,9 @@ static uint16_t read16(void *context, uint32_t address)
     switch (address) {
     case 0x801000u: return f->can_control;
     case 0x801002u: return f->can_status;
+    case 0x801004u: return f->formats;
+    case 0x801010u: return f->slot_interrupts;
+    case 0x8011BEu: return f->rx_timestamp;
     case 0x8061C4u:
         assert(f->use_9e1c_vss_map == 0u);
         return f->edge_count;
@@ -81,7 +109,6 @@ static uint32_t read32(void *context, uint32_t address)
     Fixture *f = context;
     assert(f->lock_depth == 1u);
     switch (address) {
-    case 0x80101Cu: return f->formats;
     case 0x8003E0u: return f->capture_timer;
     case 0x800FE0u: return f->nt_timer;
     case 0x8048BCu: return f->nt_captured_ticks;
@@ -105,6 +132,22 @@ static void write8(void *context, uint32_t address, uint8_t value)
     assert(f->lock_depth == 1u);
     ++f->writes;
     switch (address) {
+    case 0x80105Bu:
+        assert(value == 0x4eu || value == 0x40u || value == 0u);
+        f->rx_control = value == 0x4eu ? (uint8_t)(f->rx_after | (f->rx_control & 4u)) : value;
+        break;
+    case 0x80105Cu:
+        assert(value == 0x40u || value == 0u);
+        f->coolant_control = f->coolant_arm_fails ? 0u : value;
+        break;
+    case 0x8011B0u:
+    case 0x8011B1u:
+        f->rx_sid[address - 0x8011B0u] = value;
+        break;
+    case 0x8011C0u:
+    case 0x8011C1u:
+        f->coolant_sid[address - 0x8011C0u] = value;
+        break;
     case 0x80105Du:
         assert(value == 0u || value == 0x80u);
         f->slot_control = value == 0u && f->slot_clear_fails != 0u ? 2u : value;
@@ -124,6 +167,107 @@ static void write8(void *context, uint32_t address, uint8_t value)
         f->last_data[address - 0x8011D6u] = value;
         break;
     }
+}
+
+static void test_can_receive_assignment(void)
+{
+    Fixture f = {.mask_sid = {0x1fu, 0x3fu}};
+    const Lfj8RegisterIo io = {&f, read8, read16, read32, write8, lock, unlock};
+    assert(!lfj8_h03_can0_arm_engine_rx(&io, 0u));
+    f.slot_interrupts = 0x0008u;
+    assert(!lfj8_h03_can0_arm_engine_rx(&io, 1u));
+    f.slot_interrupts = 0;
+    f.coolant_control = 0x40u;
+    assert(!lfj8_h03_can0_arm_engine_rx(&io, 1u));
+    f.coolant_control = 0;
+    f.formats = 0x0010u;
+    assert(!lfj8_h03_can0_arm_engine_rx(&io, 1u));
+    f.formats = 0;
+    f.mask_sid[1] = 0x3eu;
+    assert(!lfj8_h03_can0_arm_engine_rx(&io, 1u));
+    f.mask_sid[1] = 0x3fu;
+    assert(f.writes == 0u);
+
+    f.coolant_arm_fails = 1u;
+    assert(!lfj8_h03_can0_arm_engine_rx(&io, 1u));
+    assert(f.rx_control == 0u && f.coolant_control == 0u);
+    f.coolant_arm_fails = 0u;
+    assert(lfj8_h03_can0_arm_engine_rx(&io, 1u));
+    assert(f.rx_control == 0x40u && f.coolant_control == 0x40u);
+    assert(f.rx_sid[0] == 0x03u && f.rx_sid[1] == 0x3au);
+    assert(f.coolant_sid[0] == 0x09u && f.coolant_sid[1] == 0x38u);
+    assert(!lfj8_h03_can0_arm_engine_rx(&io, 1u));
+    assert(f.writes == 14u && f.lock_depth == 0u);
+}
+
+static void test_can_receive(void)
+{
+    Fixture f = {
+        .rx_timestamp = 0xFFFEu,
+        .rx_control = 0x41u,
+        .rx_after = 0x40u,
+        .rx_sid = {0x03u, 0x3Au},
+        .rx_dlc = 8u,
+        .rx_data = {0x12u, 0xC0u, 0xFFu, 0xFFu, 0x00u, 0xFFu, 0x00u, 0x00u},
+    };
+    const Lfj8RegisterIo io = {&f, read8, read16, read32, write8, lock, unlock};
+    Lfj8CanData8 frame;
+    assert(lfj8_can0_receive8(&io, 14u, 1u, &frame) == LFJ8_CAN_RX_WRONG_SLOT);
+    assert(lfj8_can0_receive8(&io, 11u, 0u, &frame) == LFJ8_CAN_RX_WRONG_SLOT);
+    assert(f.lock_count == 0u && f.writes == 0u);
+    f.formats = 0x0010u;
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_WRONG_SLOT);
+    f.formats = 0;
+    f.can_status = 0x4000u;
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_UNAVAILABLE);
+    f.can_status = 0;
+    assert(f.writes == 0u);
+
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_RECEIVED);
+    assert(frame.id == 0x0FAu && frame.timestamp == 0xFFFEu);
+    assert(memcmp(frame.payload, f.rx_data, sizeof(frame.payload)) == 0);
+    Ta2005CheryInputs engine;
+    Ta2005CherySnapshot snapshot;
+    uint32_t now = frame.timestamp;
+    ta2005_chery_inputs_reset(&engine);
+    assert(ta2005_chery_inputs_receive(&engine, frame.id, 8u, frame.payload, &now) ==
+           TA2005_CHERY_SPEED);
+    assert(ta2005_chery_inputs_snapshot(&engine, &now, 100u, &snapshot) == TA2005_CHERY_SPEED);
+    assert(snapshot.speed_fad8 == 9600u);
+
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_IDLE);
+    assert(f.writes == 1u);
+    f.rx_control = 0x43u;
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_RETRY);
+    assert(f.writes == 1u);
+    f.rx_control = 0x41u;
+    f.rx_after = 0x41u;
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_RETRY);
+    assert(frame.id == 0u && frame.timestamp == 0u);
+    f.rx_after = 0x40u;
+    f.rx_dlc = 7u;
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_BAD_LENGTH);
+    f.rx_control = 0x45u;
+    f.rx_dlc = 8u;
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_LOST);
+    assert(frame.id == 0u && frame.timestamp == 0u && f.writes == 4u && f.lock_depth == 0u);
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_IDLE);
+    f.rx_control = 0x41u;
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_RECEIVED);
+
+    f.rx_control = 0x41u;
+    f.rx_sid[0] = 0x09u;
+    f.rx_sid[1] = 0x38u;
+    f.rx_data[0] = 0xB4u;
+    f.rx_timestamp = 0u;
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_RECEIVED);
+    assert(frame.id == 0x278u && frame.timestamp == 0u);
+    now = 0x10000u;
+    assert(ta2005_chery_inputs_receive(&engine, frame.id, 8u, frame.payload, &now) ==
+           TA2005_CHERY_COOLANT);
+    assert(ta2005_chery_inputs_snapshot(&engine, &now, 100u, &snapshot) ==
+           (TA2005_CHERY_SPEED | TA2005_CHERY_COOLANT));
+    assert(snapshot.coolant_f9e9 == 137u);
 }
 
 static void test_speed(void)
@@ -215,7 +359,7 @@ static void test_donor_io(void)
     f.can_status = 0x4000u;
     assert(lfj8_can0_slot13_submit(&io, 1u, LFJ8_CAN_1AE, payload) == LFJ8_CAN_CONTROLLER_UNAVAILABLE);
     f.can_status = 0u;
-    f.formats = 0x40000u;
+    f.formats = 0x0004u;
     assert(lfj8_can0_slot13_submit(&io, 1u, LFJ8_CAN_1AE, payload) == LFJ8_CAN_SLOT_NOT_STANDARD);
     f.formats = 0u;
     f.can_mode = 2u;
@@ -451,11 +595,13 @@ int main(void)
     test_packers();
     test_schedule();
     test_donor_io();
+    test_can_receive_assignment();
+    test_can_receive();
     test_raw_capture();
     test_9e1c_capture();
     test_9e1c_nt_capture();
     test_pipeline();
     test_engine_receive();
-    puts("LFJ8 host: S51, S83, Chery TX, RPM/ECT RX, relays, schedule and CAN0 passed");
+    puts("LFJ8 host: S51, S83, Chery TX, CAN0 RX/TX, RPM/ECT, relays and schedule passed");
     return 0;
 }

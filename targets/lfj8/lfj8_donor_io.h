@@ -36,6 +36,22 @@ typedef enum {
     LFJ8_CAN_SLOT_NOT_OWNED,
 } Lfj8CanResult;
 
+typedef struct {
+    uint16_t id;
+    uint16_t timestamp;
+    uint8_t payload[8];
+} Lfj8CanData8;
+
+typedef enum {
+    LFJ8_CAN_RX_RECEIVED,
+    LFJ8_CAN_RX_IDLE,
+    LFJ8_CAN_RX_RETRY,
+    LFJ8_CAN_RX_LOST,
+    LFJ8_CAN_RX_BAD_LENGTH,
+    LFJ8_CAN_RX_UNAVAILABLE,
+    LFJ8_CAN_RX_WRONG_SLOT,
+} Lfj8CanRxResult;
+
 /* Call with the 9E1B address map bound and producer interrupts maskable. */
 Lfj8CaptureSnapshot lfj8_9e1b_capture_snapshot(const Lfj8RegisterIo *io);
 /* OEM interval, pulse window and freshness from the selected 9E1C software. */
@@ -77,5 +93,20 @@ Lfj8CaptureSnapshot lfj8_9e1c_raw_nt_snapshot(volatile Lfj8RawCapture *nt,
 /* Submission only. The owner checks completion separately. */
 Lfj8CanResult lfj8_can0_slot13_submit(const Lfj8RegisterIo *io, uint8_t slot13_owned,
                                      uint16_t id, const uint8_t payload[8]);
+
+/* Poll a caller-owned 32176 FullCAN slot (0..13) configured to receive standard data frames.
+ * The hardware timestamp stays in the CAN counter's 16-bit clock domain.
+ * A lost message or a receive during the copy invalidates the copy. */
+Lfj8CanRxResult lfj8_can0_receive8(const Lfj8RegisterIo *io, uint8_t slot, uint8_t slot_owned,
+                                 Lfj8CanData8 *frame);
+
+enum {
+    LFJ8_H03_CAN0_RPM_SLOT = 11,
+    LFJ8_H03_CAN0_COOLANT_SLOT = 12,
+};
+
+/* Run after stock CAN initialization or reinitialization in approved H03,
+ * with exclusive polling ownership of both confirmed idle slots. */
+int lfj8_h03_can0_arm_engine_rx(const Lfj8RegisterIo *io, uint8_t slots_owned);
 
 #endif

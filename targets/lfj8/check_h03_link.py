@@ -76,7 +76,7 @@ def stage_test(stage):
         ROOT / "targets/panel/panel_pulse.c",
     ]
     headers = [*HERE.glob("*.h"), ROOT / "targets/panel/panel_pulse.h"]
-    for item in (*sources, *headers):
+    for item in (*sources, *headers, HERE / "host_check.c", HERE / "test_lfj8_h03_atf.c"):
         shutil.copyfile(item, stage / item.name)
     (stage / "sim_crt.c").write_text(
         "int integration_test(int argc, char **argv);\n"
@@ -164,6 +164,16 @@ ASSERT(ADDR(.rodata) + SIZEOF(.rodata) <= {FLASH_END:#x}, "Address-model ROM ove
         if (result.get("selector_adc_events"), result.get("selector_timeout")) != ("PASS", "PASS"):
             raise ValueError("The M32R integration check did not report a passing result")
         report["emulated_integration"] = result
+        (stage / "component_crt.c").write_text(
+            "void __init(void) {}\nvoid __fini(void) {}\n", encoding="ascii",
+        )
+        report["emulated_components"] = {}
+        for name, source in (("lfj8_io", "host_check.c"), ("h03_atf", "test_lfj8_h03_atf.c")):
+            elf = f"{name}.elf"
+            run(compiler, *TARGET, *flags, "-nostartfiles", crt, source, "component_crt.c",
+                "bridge.o", "-Wl,-e,_start", "-Wl,--start-group", "-lc", "-lgloss", "-lgcc",
+                "-Wl,--end-group", "-o", elf)
+            report["emulated_components"][name] = run(simulator, elf)
         if simulator_output is not None:
             simulator_output.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(stage / "sim.elf", simulator_output)
