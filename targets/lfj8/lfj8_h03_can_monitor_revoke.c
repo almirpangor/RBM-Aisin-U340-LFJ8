@@ -9,6 +9,16 @@
 /* Link to the existing fast_output field of the communication storage. */
 extern Lfj8H03FastOutput rbm_h03_fast_output;
 
+int rbm_h03_can_monitor_cold_owner_init_locked(void)
+{
+    const Lfj8H03ApplicationBinding *const app = &rbm_h03_application_binding;
+    if (!app->ram_owned || app->ram_owned(app->takeover_ops->io->context) != 1) {
+        return 0;
+    }
+    lfj8_h03_can_owner_init(&h03_can_owner);
+    return 1;
+}
+
 void rbm_h03_can_monitor_revoke_locked(void)
 {
     const Lfj8H03ApplicationBinding *const app = &rbm_h03_application_binding;

@@ -186,6 +186,14 @@ static const Lfj8RegisterIo simulated_io = {
 };
 
 const Lfj8H03MonitorIo rbm_h03_can_monitor_io = {&simulated_io, write16, write32};
+"""
+
+OWNER_STUBS = r"""
+int rbm_h03_can_monitor_cold_owner_init_locked(void)
+{
+    require_lock();
+    return 1;
+}
 
 void rbm_h03_can_monitor_revoke_locked(void)
 {
@@ -198,6 +206,7 @@ void rbm_h03_can_monitor_publish_setup_locked(void)
     require_lock();
 }
 """
+BACKEND += OWNER_STUBS
 
 
 def native_words():
@@ -327,7 +336,10 @@ def observations(run, work, compiler, can_owner=None):
         if owner_fields:
             if len(result) == 2 and result[0][-2:] != (42, 0):
                 raise ValueError(f"{name}: parked setup published a generation or left an active grant")
-            if last[-2:] != (42 + int(bool(success and revoke)), int(not revoke)):
+            expected_owner = (0, 0) if name == "reset_to_app_safe" else (
+                42 + int(bool(success and revoke)), int(not revoke),
+            )
+            if last[-2:] != expected_owner:
                 raise ValueError(f"{name}: wrong CAN owner generation/grant after permit: {last[-2:]}")
             row.update(setup_generation=last[-2], can13_grant=last[-1])
         rows.append(row)

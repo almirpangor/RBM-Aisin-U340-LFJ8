@@ -8,6 +8,10 @@
  * protection and CAN generation are confirmed. */
 extern const Lfj8H03MonitorIo rbm_h03_can_monitor_io;
 
+/* Cold entry only, with interrupts masked and both controllers in reset.
+ * Return 1 after initializing the shared owner, or 0 if its RAM is unowned. */
+int rbm_h03_can_monitor_cold_owner_init_locked(void);
+
 /* Runtime-only, called with interrupts masked before any reconfiguration.
  * Withdraw the shared CAN generation's grant and invoke the confirmed
  * output inhibit. Never called by the cold entry before RAM ownership. */
