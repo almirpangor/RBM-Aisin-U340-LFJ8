@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 500,
+  "sequence": 501,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -353,24 +353,23 @@
     },
     "DTC-01": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
-      "label": "Codex — DTC-01, срок диагностического сеанса C0",
-      "branch": "codex/dtc01-session-timer-7bd19ea4",
+      "label": "Codex DTC-01 — срок C0 в foreground H03",
+      "branch": "codex/dtc01-h03-session-foreground-7bd19ea4",
       "files": [
-        "diagnostics/chery_dtc_link.c",
-        "diagnostics/chery_dtc_link.h",
-        "diagnostics/test_chery_dtc_link.c",
-        "diagnostics/verify_c0_session_timer.py",
-        "targets/lfj8/lfj8_h03_dtc_can.c",
         "targets/lfj8/lfj8_h03_dtc_can.h",
-        "targets/lfj8/test_lfj8_h03_dtc_can.c",
-        "verification/project-audit/dtc01-c0-session-timer.md"
+        "targets/lfj8/lfj8_h03_dtc_foreground.c",
+        "targets/lfj8/lfj8_h03_dtc_foreground.h",
+        "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
+        "targets/lfj8/lfj8_h03_dtc_rx_queue.h",
+        "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
+        "verification/project-audit/dtc01-h03-session-foreground.md"
       ],
-      "stage": "done",
-      "claim_id": "69ac904b985641cea43c72eba859a273",
-      "claimed_at": "2026-11-20T18:25:00+00:00",
-      "updated_at": "2026-11-20T19:30:28+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "03ce2592b323a3605e8003fdca16eaf7747e746a"
+      "stage": "in_progress",
+      "claim_id": "f6547625e0dd48c180162a7963424191",
+      "claimed_at": "2026-11-20T19:38:10+00:00",
+      "updated_at": "2026-11-20T19:38:10+00:00",
+      "note": "Подключаю событие C0 к штатному CAN foreground через уже предусмотренные тики T6. На истечении отзываю TX13 и очищаю ожидающий RX под блокировкой. Проверяю обычный путь через владельца CAN и цель M32R, без аппаратных констант.",
+      "result": null
     },
     "VSS-01": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -4555,9 +4554,17 @@
       "action": "claim",
       "claim_id": "15e6e783e4d74a5b9c000d3658becff0",
       "at": "2026-11-20T19:37:59+00:00"
+    },
+    {
+      "operation_id": "f1f84850d601423a883e51972de754ed",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "f6547625e0dd48c180162a7963424191",
+      "at": "2026-11-20T19:38:10+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:37:59+00:00",
+  "updated_at": "2026-11-20T19:38:10+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
