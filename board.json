@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 604,
+  "sequence": 605,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -451,8 +451,8 @@
       "stage": "in_progress",
       "claim_id": "1813d3172cb84949a9013f2851da5863",
       "claimed_at": "2026-11-20T20:30:13+00:00",
-      "updated_at": "2026-11-20T20:30:13+00:00",
-      "note": "Продолжаю с 64dd049 и актуального main. Проверяю запуск общего контроллера до принятия политики и после отказа init. Введу явный допуск без назначения настроек выпуска.",
+      "updated_at": "2026-11-20T20:32:35+00:00",
+      "note": "На базе main+64dd049 тест подтвердил запуск без принятой политики. Добавил явный допуск и его отзыв после неуспешной инициализации. Проверяю матрицу режимов, M32R, карту RAM и существующую привязку H03.",
       "result": null,
       "based_on_reviews": [
         "881583aa76814d4da3f768699f01ca29"
@@ -5605,9 +5605,37 @@
           "3fd1870717ff4cc684af517ec9f56903"
         ]
       }
+    },
+    {
+      "operation_id": "9da2d8b2b0234b859e8266a96bc75e8f",
+      "task": "MODE-03",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "heartbeat",
+      "claim_id": "1813d3172cb84949a9013f2851da5863",
+      "at": "2026-11-20T20:32:35+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex MODE-03 — допуск только после инициализации политики",
+        "branch": "codex/mode03-policy-init-admission-32e6ac79",
+        "files": [
+          "controller/include/rbm_u340e.h",
+          "controller/src/rbm_u340e.c",
+          "controller/tests/test_mode_policy.c",
+          "verification/project-audit/mode03-policy-init-gate.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "1813d3172cb84949a9013f2851da5863",
+        "claimed_at": "2026-11-20T20:30:13+00:00",
+        "updated_at": "2026-11-20T20:32:35+00:00",
+        "note": "На базе main+64dd049 тест подтвердил запуск без принятой политики. Добавил явный допуск и его отзыв после неуспешной инициализации. Проверяю матрицу режимов, M32R, карту RAM и существующую привязку H03.",
+        "result": null,
+        "based_on_reviews": [
+          "881583aa76814d4da3f768699f01ca29"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:32:09+00:00",
+  "updated_at": "2026-11-20T20:32:35+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
