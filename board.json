@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 142,
+  "sequence": 143,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -446,12 +446,12 @@
         "tools/check_vss_measurements.py",
         "verification/project-audit/vss02-measurement-check.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
       "claimed_at": "2026-11-20T16:24:53+00:00",
-      "updated_at": "2026-11-20T16:26:21+00:00",
-      "note": "Офлайн-проверка реализована; 7 тестов прошли, включая различение остановки, потери сигнала и превышения допуска. Идут полный PC и M32R.",
-      "result": null
+      "updated_at": "2026-11-20T16:28:50+00:00",
+      "note": "Добавлена офлайн-проверка измерений S51/0x1AE с независимым эталоном, контрольным байтом, остановкой и потерей импульсов. 8 новых тестов, PC 35 шагов, M32R 17 компонентов PASS. Реальные измерения открыты. Отчёт verification/project-audit/vss02-measurement-check.md.",
+      "result": "bd4285ae245c6125acee70acf5b9265b9c4df145"
     },
     "TOY-01": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -1605,9 +1605,17 @@
       "action": "resume",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "at": "2026-11-20T16:28:46+00:00"
+    },
+    {
+      "operation_id": "db54c04dd7d240268f215b156df9bd03",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
+      "at": "2026-11-20T16:28:50+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:28:46+00:00",
+  "updated_at": "2026-11-20T16:28:50+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
