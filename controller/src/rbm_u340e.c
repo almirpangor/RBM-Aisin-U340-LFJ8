@@ -151,7 +151,7 @@ int rbm_u340e_step(RbmU340eController *controller, const RbmU340eInput *input,
     }
 
     const uint8_t rising = button_edges(controller, input);
-    const uint8_t shift_buttons = rising & SHIFT_BUTTON_MASK;
+    const uint8_t held_shift_buttons = input->stable_buttons & SHIFT_BUTTON_MASK;
     if (rising & RBM_U340E_BUTTON_MODE) {
         controller->mode ^= 1u;
     }
@@ -162,10 +162,11 @@ int rbm_u340e_step(RbmU340eController *controller, const RbmU340eInput *input,
 
     output->mode = controller->mode;
     output->overdrive_enabled = controller->overdrive_enabled;
-    /* The second shift edge conflicts even if the first button was held. */
-    output->conflicting_buttons =
-        (input->buttons_valid && (input->stable_buttons & SHIFT_BUTTON_MASK) == SHIFT_BUTTON_MASK) ||
-        (shift_buttons && (rising & RBM_U340E_BUTTON_MODE));
+    /* A mode edge conflicts with either held shift button, even when
+     * pressing that button and changing mode took separate samples. */
+    output->conflicting_buttons = input->buttons_valid &&
+        (held_shift_buttons == SHIFT_BUTTON_MASK ||
+         (held_shift_buttons && (rising & RBM_U340E_BUTTON_MODE)));
     output->relay_mask = relay_commands(input->selector);
     if (!output->conflicting_buttons) {
         output->requested_gear = propose_gear(controller, input, rising, output);
