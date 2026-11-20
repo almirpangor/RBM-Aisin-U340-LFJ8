@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 320,
+  "sequence": 321,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -433,8 +433,8 @@
       "stage": "in_progress",
       "claim_id": "8ca3ba1785c84f3189ca9a9ecbb4b228",
       "claimed_at": "2026-11-20T18:01:03+00:00",
-      "updated_at": "2026-11-20T18:01:03+00:00",
-      "note": "Связываю отзыв допуска с подтверждёнными штатными путями D/E/F и Pressure A. Проверю маски и порядок MMIO, отказ, CAN, остановку фаз и сервисный переход на M32R.",
+      "updated_at": "2026-11-20T18:03:50+00:00",
+      "note": "Реализован целевой callback inhibit. Прогоны защёлок, потери CAN, таймаута и сервисной передачи прошли; подтверждён порядок девяти изменений регистров. Проверяю связанные сценарии и оформляю передачу.",
       "result": null
     },
     "MODE-03": {
@@ -3141,9 +3141,17 @@
       "action": "heartbeat",
       "claim_id": "da83556f0097488ba39c6ee642e4a002",
       "at": "2026-11-20T18:03:37+00:00"
+    },
+    {
+      "operation_id": "80728f4fb1624d769b7b8a8d4f8c7380",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "heartbeat",
+      "claim_id": "8ca3ba1785c84f3189ca9a9ecbb4b228",
+      "at": "2026-11-20T18:03:50+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:03:37+00:00",
+  "updated_at": "2026-11-20T18:03:50+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
