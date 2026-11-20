@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 573,
+  "sequence": 574,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -545,11 +545,11 @@
         "tests/test_verify_sources.py",
         "verification/project-audit/src01-pinned-input-tests.md"
       ],
-      "stage": "released",
-      "claim_id": "9459ef396a854e778a241074b8d5aa57",
-      "claimed_at": "2026-11-20T20:01:50+00:00",
-      "updated_at": "2026-11-20T20:03:31+00:00",
-      "note": "Независимая порция тестов на ПК закончена. Пять проверок происхождения и две проверки H03 прошли. Код и отчёт сохранены в локальном коммите; ветка остаётся локальной. Резерв освобождён.",
+      "stage": "in_progress",
+      "claim_id": "31b87bf2ede54a3fa81c666e3bdd72ab",
+      "claimed_at": "2026-11-20T20:07:11+00:00",
+      "updated_at": "2026-11-20T20:07:11+00:00",
+      "note": "Повторный резерв для публикации согласованного коммита 30a37a9 и передачи на проверку. Пять тестов проверки источников и два теста определения H03.",
       "result": null
     },
     "AUD-01": {
@@ -5171,9 +5171,17 @@
       "action": "heartbeat",
       "claim_id": "911be787c7444bcf9186a8d6c9f55e1b",
       "at": "2026-11-20T20:07:02+00:00"
+    },
+    {
+      "operation_id": "6c8ddc04451d4ad79d31dd2cfb6766e4",
+      "task": "SRC-01",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "claim",
+      "claim_id": "31b87bf2ede54a3fa81c666e3bdd72ab",
+      "at": "2026-11-20T20:07:11+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:07:02+00:00",
+  "updated_at": "2026-11-20T20:07:11+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {

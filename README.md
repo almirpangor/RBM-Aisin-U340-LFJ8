@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T20:07:02+00:00**. Изменение № **573**.
+Обновлено UTC: **2026-11-20T20:07:11+00:00**. Изменение № **574**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -37,7 +37,7 @@
 | MODE-01 — Логика шести положений и кнопок | На проверке | Codex MODE-01 — отзыв диапазона при отказе ADC \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/mode01-selector-fault-mwp5rm2ofhaxjfi9dss | 2026-11-20T20:06:44+00:00 | INVALID/OVERRUN сразу отзывают диапазон независимо от метки. 10 сценариев ПК/M32R, input-binding, 18+8 компонентных и 6 размещённых сценариев PASS. +20 байт Flash. Полный линк FAIL_BINDINGS. Отчёт mode01-selector-fault.md. / commit 8974a4a5002fd1786eb02ad8d7c19a829c47ad6f |
 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | На проверке | Codex MODE-02 — штатный общий захват AN2/P1DATA \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode02-foreground-input-01a1f9c7 | 2026-11-20T19:50:46+00:00 | Штатный callback AN2 захватывает P1DATA с общей меткой; готовый потребитель применяет явно заданную карту. Шесть пар H03, 41 шаг ПК/120 тестов, 22 нативные группы M32R прошли. RAM 2692; известный Flash 95070. Остаются rbm_h03_application_binding, rbm_h03_sensor_config, измеренная карта/OD и выдача через гидравлику. Отчёт verification/project-audit/mode02-native-an2-p1.md. / commit 17a65270968bf01097cab53482f094188c0b4aef |
 | MODE-03 — Окончательная политика режимов | Свободна для продолжения | Предыдущий: Codex MODE-03 — единое подавление конфликтующих заявок \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/mode03-unified-conflict-32e6ac79 | 2026-11-20T19:26:16+00:00 | Предыдущая порция принята. Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены. / commit 671a63edbaf189ff048edd0d5f5e22e94ea0c440 |
-| SRC-01 — Реестр происхождения и контроль исходников | Закрыта по текущему объёму | Предыдущий: Codex SRC-01 — регрессия происхождения исходников \[01a1fa76-922b-7b11-a2f2-346a15d1dc95\] | codex/src01-pinned-input-tests-922b7b11 | 2026-11-20T20:03:31+00:00 | Независимая порция тестов на ПК закончена. Пять проверок происхождения и две проверки H03 прошли. Код и отчёт сохранены в локальном коммите; ветка остаётся локальной. Резерв освобождён. |
+| SRC-01 — Реестр происхождения и контроль исходников | Выполняется | Codex SRC-01 — регрессия происхождения исходников \[01a1fa76-922b-7b11-a2f2-346a15d1dc95\] | codex/src01-pinned-input-tests-922b7b11 | 2026-11-20T20:07:11+00:00 | Повторный резерв для публикации согласованного коммита 30a37a9 и передачи на проверку. Пять тестов проверки источников и два теста определения H03. |
 | AUD-01 — Программный аудит истории E4M3 | Закрыта по текущему объёму | Предыдущий: Codex AUD-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/aud01-pinned-replay-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:48:17+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 6748075bd8cda69a0b6c2b9d6e2a471a00463434 |
 | DTC-01 — Прикладной сеанс и статусы Chery | На проверке | Codex DTC-01 — срок C0 в foreground H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc01-h03-session-foreground-7bd19ea4 | 2026-11-20T19:51:50+00:00 | Штатный CAN foreground H03 обслуживает девять фаз C0, закрывает сеанс, удаляет ожидающий RX и отсекает старые IRQ, TX13 освобождается через abort/drain. ПК 41/120, M32R foreground и 22 нативные группы (phase-boot отдельным повтором), 18 BasicCAN сравнений. +12 Б RAM. Остались подтверждённый источник T6 в application_binding, sensor_config и сканер на стенде. Отчёт dtc01-h03-session-foreground.md. / commit c9d57c1fb0a038b06a5acff8aafffa639d3b0726 |
 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | На проверке | Codex DTC-02 — штатный RX и владелец CAN H03 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can03-target-binding-1121-c7e4 | 2026-11-20T19:48:02+00:00 | Проверенный коммит: нижний IRQ H03 и foreground CAN13 используют h03_can_owner и TML0. 18 сравнений M32R, отказы часов, тёплая перепривязка, новое поколение и запись 0x722 прошли. В отчёте указаны вызовы для rbm_h03_application_binding, требуемые T6/native_ready, RAM и итоговая компоновка. Готовность BIN открыта. / commit ed5fd7118b1f4296a952a5811a9364d682e6b7a9 |
@@ -729,6 +729,13 @@
 - verification/project-audit/2026-11-21-h03-ram-owner.json
 - verification/project-audit/rel02-h03-ram-owner.md
 
+### SRC-01
+
+Чат: Codex SRC-01 — регрессия происхождения исходников. Claim ID: 31b87bf2ede54a3fa81c666e3bdd72ab.
+
+- tests/test_verify_sources.py
+- verification/project-audit/src01-pinned-input-tests.md
+
 ### TOY-01
 
 Чат: Codex TOY-01 H03 independent release clock. Claim ID: 65f87fefa9434dd69e6efd740fa10b71.
@@ -794,6 +801,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T20:07:11+00:00 | SRC-01 | claim | 01a1fa76-922b-7b11-a2f2-346a15d1dc95 |
 | 2026-11-20T20:07:02+00:00 | ECU-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T20:06:44+00:00 | MODE-01 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T20:05:49+00:00 | ECU-01 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -823,4 +831,3 @@
 | 2026-11-20T19:57:34+00:00 | TOY-01 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T19:57:26+00:00 | DTC-04 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T19:57:18+00:00 | H03-05 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
-| 2026-11-20T19:57:09+00:00 | CAN-02 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
