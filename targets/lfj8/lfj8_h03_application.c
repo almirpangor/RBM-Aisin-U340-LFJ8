@@ -176,8 +176,8 @@ static int prepare_engine(const Lfj8H03ApplicationEngine *engine,
         const uint32_t input_age = now - input->command_at;
         if (engine_age < SERIAL_HALF_RANGE && input_age < SERIAL_HALF_RANGE) {
             const unsigned events = lfj8_h03_engine_feed_target_task2(&engine->target,
-                &qualified, inhibit_history, &input->engine, NULL);
-            if (engine_age > input_age) {
+                &qualified, inhibit_history, &input->engine, NULL, &oldest_us);
+            if ((events & TA2005_ENGINE_EVALUATED) && now - oldest_us > input_age) {
                 input->command_at = oldest_us;
             }
             ready = (events & TA2005_ENGINE_EVALUATED) != 0u;

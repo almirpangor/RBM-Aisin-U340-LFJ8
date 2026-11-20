@@ -15,6 +15,7 @@ static void reset_rx(Lfj8H03EngineRx *rx)
     rx->time_ticks = 0u;
     rx->clock_running = 0u;
     rx->discontinuity = 1u;
+    rx->rpm_stamp_valid = 0u;
 }
 
 int lfj8_h03_engine_rx_init(Lfj8H03EngineRx *rx, uint16_t max_age_ticks,
