@@ -94,7 +94,8 @@ Lfj8H03TorqueCanSlot lfj8_h03_torque_can_poll(
 
     if (adapter->request.pending) {
         const bool cancel = !continuous ||
-            now_us - adapter->request.submitted_at >= adapter->max_poll_gap_us;
+            now_us - adapter->request.submitted_at >= adapter->max_poll_gap_us ||
+            lfj8_h03_torque_should_abort_tx(&adapter->request, input, cal, now_us);
         const Lfj8CanTxStatus status =
             lfj8_h03_can0_torque_status(io, 1u, cancel, &adapter->completed_tick);
         if (status == LFJ8_CAN_TX_UNAVAILABLE) {
