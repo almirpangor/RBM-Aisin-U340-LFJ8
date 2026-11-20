@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 45,
+  "sequence": 46,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -94,26 +94,18 @@
       "label": "Codex — foreground H03",
       "branch": "codex/h03-03-foreground-01a1f99f",
       "files": [
-        "data/project-tasks.json",
         "docs/lfj8-h03-control-cycle.md",
         "targets/lfj8/check_h03_phase_wait.py",
         "targets/lfj8/h03_phase_wait_fixture.c",
-        "targets/lfj8/h03_phase_wait_hook.S",
-        "targets/lfj8/lfj8_h03_phase_clock.c",
-        "targets/lfj8/lfj8_h03_phase_clock.h",
-        "targets/lfj8/lfj8_h03_takeover.c",
-        "targets/lfj8/lfj8_h03_takeover.h",
-        "targets/lfj8/test_lfj8_h03_takeover.c",
-        "verification/e4m3-can-9e1c/h03-foreground.json",
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-phase-wait.json"
       ],
-      "stage": "done",
-      "claim_id": "ef041474d8994309836820d6cd886071",
-      "claimed_at": "2026-11-20T15:51:48+00:00",
-      "updated_at": "2026-11-20T16:02:15+00:00",
-      "note": "Основной интегратор принял порцию в main. Повторены project_status, 4 сценария wait и 17 компонентов M32R с replay Bosch. Нативный callback, запуск и аппаратный inhibit остаются открыты.",
-      "result": "9fa9c8aa18cd88543ba464f98fc8f7fc6a21a7d1"
+      "stage": "in_progress",
+      "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
+      "claimed_at": "2026-11-20T16:04:02+00:00",
+      "updated_at": "2026-11-20T16:04:02+00:00",
+      "note": "Отдельный результат поверх принятого 9fa9c8a: обёртка 008150 и реальный контроль фазы вместе в M32R.",
+      "result": null
     },
     "H03-04": {
       "owner": "codex-h03-04-01a1f76d-20261120",
@@ -604,9 +596,17 @@
       "action": "heartbeat",
       "claim_id": "83b9428ce0f2463f92341fea12156d66",
       "at": "2026-11-20T16:03:20+00:00"
+    },
+    {
+      "operation_id": "a551b879c22e46939fd7e409a6a5b64d",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
+      "at": "2026-11-20T16:04:02+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:03:20+00:00",
+  "updated_at": "2026-11-20T16:04:02+00:00",
   "main_commit": "9fa9c8aa18cd88543ba464f98fc8f7fc6a21a7d1",
   "catalog": [
     {
