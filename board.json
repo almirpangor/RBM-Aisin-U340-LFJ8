@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 461,
+  "sequence": 462,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -298,12 +298,12 @@
         "tests/u340_integration_host.c",
         "verification/project-audit/mode01-button-source-loss.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "f086342106b64dd7b09e8960948904da",
       "claimed_at": "2026-11-20T19:02:35+00:00",
-      "updated_at": "2026-11-20T19:04:12+00:00",
-      "note": "Воспроизведена лишняя заявка 3 после явного отказа кнопок с повторной меткой. Исправлен сброс допуска без продвижения метки при плохом времени. Запущены ПК/M32R и проверки компоновки.",
-      "result": null
+      "updated_at": "2026-11-20T19:07:18+00:00",
+      "note": "Отказ сбрасывает допуск кнопок независимо от пригодности метки. 15 сценариев ПК/M32R и восстановление после отпускания, ПК 37/113, группы M32R 18+11+6+17, 6 проверок размещённого кода. Запас 904 Б. Отчёт mode01-button-source-loss.md. Физический вход, вызов H03 и стенд открыты.",
+      "result": "0ac06d144f842aadd1a31c3bc5f2a4c3c18c30df"
     },
     "TOY-04": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -4248,9 +4248,17 @@
       "action": "review",
       "claim_id": "4f246c72de0f49dc90a87bed827a9df1",
       "at": "2026-11-20T19:06:42+00:00"
+    },
+    {
+      "operation_id": "d1daa11055d145edad70f320f09bf015",
+      "task": "MODE-01",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "f086342106b64dd7b09e8960948904da",
+      "at": "2026-11-20T19:07:18+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:06:42+00:00",
+  "updated_at": "2026-11-20T19:07:18+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
