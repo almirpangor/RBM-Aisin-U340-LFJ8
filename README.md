@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:32:39+00:00**. Изменение № **380**.
+Обновлено UTC: **2026-11-20T18:32:59+00:00**. Изменение № **381**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -43,7 +43,7 @@
 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Свободна для продолжения | Предыдущий: Codex — DTC-02, целевой приём и foreground \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T18:31:43+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit 0a71a1ca6b8f84e246248eb6378166dddb9eeed3 |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | На проверке | Codex DTC-03 — квалификация P0710 TA2005 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-ta2005-p0710-01a1f9c7 | 2026-11-20T18:25:56+00:00 | Передаю переносимый P0710: 6920 сравнений с S03, отдельные тесты ПК/M32R, общая регрессия ПК и комплекты H03 M32R прошли. Результат в verification/project-audit/dtc03-ta2005-p0710.md. Подключение к H03 ждёт подтверждённых диапазонов датчика, опоры и периода вызова. Аппаратная проверка открыта. / commit 69ccd6c59ad096fd2e1de078955cef8ae6ee1081 |
 | DTC-04 — Хранение DTC после выключения питания | На проверке | Codex — геометрия NVM и backend DTC H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-h03-nvm-32e6ac79 | 2026-11-20T18:16:11+00:00 | Передаю интегратору геометрию 13 блоков H03, полусловный backend журнала и восстановление перед запуском. ПК 37 шагов и 102 теста, M32R 45 прерываний записи, 33 стирания и 256 битовых отказов, INTEGRATION3 native и components PASS. Expanded повторил дефицит 448 байт. Носитель, физический драйвер и штатный вызов открыты. Отчёт verification/project-audit/dtc04-h03-nvm.md. / commit e54b8051439965f4274969e46af534d4d98284db |
-| REL-01 — Два целевых BIN и воспроизводимый комплект | На проверке | Codex REL-01 H03 service preflight \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/rel01-h03-service-preflight-01a1f99f | 2026-11-20T18:20:19+00:00 | PASS 36 exact-ROM store cases and 512 overlay lockout cases. All 2532 RAM bytes pass stock admission; direct and deferred stores still write each block with the overlay disabled. Closing the session leaves a 257-byte copy in flight. Use measured RAM endpoints 806F78/809034/8093EC for integration; PCM Flash coverage below 008000 is unconfirmed. / commit 8a99dcb1a1ea1031e71c54c9281ff83651e7491d |
+| REL-01 — Два целевых BIN и воспроизводимый комплект | Свободна для продолжения | Предыдущий: Codex REL-01 H03 service preflight \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/rel01-h03-service-preflight-01a1f99f | 2026-11-20T18:32:59+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit 8a99dcb1a1ea1031e71c54c9281ff83651e7491d |
 | REL-02 — Приёмка новой связки на оборудовании | На проверке | Codex REL-02 H03 application-only isolation \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/rel02-h03-application-isolation-01a1f99f | 2026-11-20T18:31:28+00:00 | PASS 41 exact-H03 CPU probes. Upper-only candidate filters out 602 on both BasicCAN controllers, cancels both pending operations and disables Virtual Flash. OEM CAN setup restores broad masks. Warm reset leaves bank 08 active and a valid marker can still bypass entry. Requires cold access and retention by the CAN owner before a bench image. / commit c8d6d0d7b4852e8cbcf0919ea09d4883e1d608ae |
 
 ## Что осталось доделать
@@ -65,7 +65,7 @@
 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f36613136fffce586a2736c1ea043794784c5c6f/docs/project-map.md#dtc-04) | На проверке | Назначить носитель и два стираемых блока либо иной обоснованный backend, реализовать физический драйвер и подключить восстановление при старте. | Чат постоянной памяти |
 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f36613136fffce586a2736c1ea043794784c5c6f/docs/project-map.md#h03-04) | На проверке | Закрыть прямые и уже принятые отложенные сервисные записи в проектную RAM, установить политику Virtual Flash; пересчитать окончательную карту и полный стек. | Основной чат — общая сборка |
 | [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f36613136fffce586a2736c1ea043794784c5c6f/docs/project-map.md#toy-02) | Выполняется | Установить источники и шкалы нагрузки Bosch, довести их до квалифицированного GP Toyota и повторить сквозной обмен. | Основной чат — нагрузка Bosch |
-| [REL-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f36613136fffce586a2736c1ea043794784c5c6f/docs/project-map.md#rel-01) | На проверке | После закрытия обязательных привязок собрать два целевых BIN, проверить запуск, целостность и отсутствие тестовых функций. | Основной чат — выпуск |
+| [REL-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f36613136fffce586a2736c1ea043794784c5c6f/docs/project-map.md#rel-01) | Свободна для продолжения | После закрытия обязательных привязок собрать два целевых BIN, проверить запуск, целостность и отсутствие тестовых функций. | Основной чат — выпуск |
 
 ### Сделано и остаток по каждой незакрытой задаче
 
@@ -256,7 +256,7 @@
 </details>
 
 <details>
-<summary>REL-01 — Два целевых BIN и воспроизводимый комплект: На проверке</summary>
+<summary>REL-01 — Два целевых BIN и воспроизводимый комплект: Свободна для продолжения</summary>
 
 **Сделано.** Ещё 13 порций объединены и проверены. Адресная модель общего кода проходит; полный набор привязок отклонён из-за семи определений. Сервисные записи достигают новой RAM. TCM BIN отсутствует, Bosch остаётся OFFLINE_ONLY.
 
@@ -264,7 +264,7 @@
 
 **Следующий шаг.** После закрытия обязательных привязок собрать два целевых BIN, проверить запуск, целостность и отсутствие тестовых функций.
 
-**Сейчас выполняет.** Codex REL-01 H03 service preflight — codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Оба образа соответствуют выбранным основам и закрытому объёму первого файла, связаны с исходниками и фактическими результатами проверки.
 
@@ -665,14 +665,6 @@
 - verification/project-audit/2026-11-20-memory-layout.json
 - verification/project-audit/memory-layout/
 
-### REL-01
-
-Чат: Codex REL-01 H03 service preflight. Claim ID: 728ac0bbf9a84b04bfdc5f0fce5a6b1b.
-
-- targets/lfj8/check_h03_service_writes.py
-- verification/project-audit/2026-11-20-h03-service-writes.json
-- verification/project-audit/rel01-h03-service-preflight.md
-
 ### REL-02
 
 Чат: Codex REL-02 H03 application-only isolation. Claim ID: e050fbd1bb5d4d14a3f58aac59b8cf86.
@@ -742,6 +734,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:32:59+00:00 | REL-01 | complete | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:32:39+00:00 | ORG-01 | review | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T18:32:28+00:00 | DTC-01 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T18:32:03+00:00 | CAN-03 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
@@ -771,4 +764,3 @@
 | 2026-11-20T18:18:41+00:00 | DTC-02 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T18:18:32+00:00 | REL-01 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:18:10+00:00 | DTC-03 | claim | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
-| 2026-11-20T18:16:32+00:00 | CAN-05 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |

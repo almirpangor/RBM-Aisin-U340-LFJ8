@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 380,
+  "sequence": 381,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -101,11 +101,11 @@
         "verification/project-audit/2026-11-20-h03-service-writes.json",
         "verification/project-audit/rel01-h03-service-preflight.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "728ac0bbf9a84b04bfdc5f0fce5a6b1b",
       "claimed_at": "2026-11-20T18:14:59+00:00",
-      "updated_at": "2026-11-20T18:20:19+00:00",
-      "note": "PASS 36 exact-ROM store cases and 512 overlay lockout cases. All 2532 RAM bytes pass stock admission; direct and deferred stores still write each block with the overlay disabled. Closing the session leaves a 257-byte copy in flight. Use measured RAM endpoints 806F78/809034/8093EC for integration; PCM Flash coverage below 008000 is unconfirmed.",
+      "updated_at": "2026-11-20T18:32:59+00:00",
+      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
       "result": "8a99dcb1a1ea1031e71c54c9281ff83651e7491d"
     },
     "H03-03": {
@@ -3617,9 +3617,17 @@
       "action": "review",
       "claim_id": "7247550aeb1e414987b6eb6a1a7b27bd",
       "at": "2026-11-20T18:32:39+00:00"
+    },
+    {
+      "operation_id": "7581afefa16e41eca93b0084c469134f",
+      "task": "REL-01",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "728ac0bbf9a84b04bfdc5f0fce5a6b1b",
+      "at": "2026-11-20T18:32:59+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:32:39+00:00",
+  "updated_at": "2026-11-20T18:32:59+00:00",
   "main_commit": "f36613136fffce586a2736c1ea043794784c5c6f",
   "catalog": [
     {
