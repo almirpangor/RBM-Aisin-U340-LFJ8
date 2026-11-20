@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 209,
+  "sequence": 210,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -206,6 +206,7 @@
       "label": "Codex DTC-03 — монитор цепи ATF H03",
       "branch": "codex/dtc03-atf-monitor-01a1f9c7",
       "files": [
+        "targets/lfj8/build.py",
         "targets/lfj8/check_h03_atf_fault.py",
         "targets/lfj8/lfj8_h03_atf_fault.c",
         "targets/lfj8/lfj8_h03_atf_fault.h",
@@ -214,8 +215,8 @@
       "stage": "in_progress",
       "claim_id": "d048f56f20764374915133ea2b7bbcde",
       "claimed_at": "2026-11-20T16:39:32+00:00",
-      "updated_at": "2026-11-20T16:44:10+00:00",
-      "note": "20 проверок M32R прошли на точном H03. Найдено: сервисный сброс оставляет направленную защёлку, она может снова проявиться при противоположном отказе. Адаптер требует согласованных признаков; готовлю отчёт и передачу.",
+      "updated_at": "2026-11-20T16:45:21+00:00",
+      "note": "20 проверок пройдены. Включаю адаптер в штатную сборку H03 и её манифест. Общий реестр остаётся у интегратора.",
       "result": null
     },
     "TOY-02": {
@@ -2220,9 +2221,17 @@
       "action": "claim",
       "claim_id": "69a90e88e1b54af298f0f4e5760e308f",
       "at": "2026-11-20T16:45:11+00:00"
+    },
+    {
+      "operation_id": "607ef467ebe542079074803fba65aa9e",
+      "task": "DTC-03",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "heartbeat",
+      "claim_id": "d048f56f20764374915133ea2b7bbcde",
+      "at": "2026-11-20T16:45:21+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:45:11+00:00",
+  "updated_at": "2026-11-20T16:45:21+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
