@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 129,
+  "sequence": 130,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -110,11 +110,11 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "claimed_at": "2026-11-20T16:18:01+00:00",
-      "updated_at": "2026-11-20T16:24:18+00:00",
-      "note": "10 сценариев M32R. В двух новых исполнен оригинальный диспетчер с двумя кадрами по 48 байт; глубина 164 байта, SP/R0/R5/C восстановлены, отзыв прошёл. Контроль пропуска вложенного входа и project_status PASS. Тела IRQ, приоритеты и аппаратный inhibit открыты.",
+      "updated_at": "2026-11-20T16:25:55+00:00",
+      "note": "Добавляю штатный TOP8/9 на внутреннем уровне IRQ и измеряю его отдельную запись PSW.",
       "result": "b45c1bfc040fb6d47d9756a81fb0163a588f2510"
     },
     "H03-04": {
@@ -1485,9 +1485,17 @@
       "action": "complete",
       "claim_id": "b8f5993a9046405492ff005c31e01675",
       "at": "2026-11-20T16:25:38+00:00"
+    },
+    {
+      "operation_id": "74f1a6c64a39418ca1f6d8219b020f08",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "resume",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "at": "2026-11-20T16:25:55+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:25:38+00:00",
+  "updated_at": "2026-11-20T16:25:55+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
