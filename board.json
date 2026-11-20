@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 89,
+  "sequence": 90,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -335,6 +335,23 @@
       "claimed_at": "2026-11-20T16:13:59+00:00",
       "updated_at": "2026-11-20T16:15:07+00:00",
       "note": "Регрессия воспроизведена до исправления: подтверждение оставалось активным после истечения срока. Внесён отзыв с ожиданием освобождения слота; идут ПК и M32R.",
+      "result": null
+    },
+    "TOY-06": {
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex TOY-06 — команда SLU",
+      "branch": "codex/toy-06-slu-fea1b366",
+      "files": [
+        "targets/lfj8/check_toyota_slu.py",
+        "targets/lfj8/lfj8_h03_slu.c",
+        "targets/lfj8/lfj8_h03_slu.h",
+        "verification/project-audit/toy06-slu-command.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "8e012ef2677942af9da51dd6b630b99f",
+      "claimed_at": "2026-11-20T16:15:26+00:00",
+      "updated_at": "2026-11-20T16:15:26+00:00",
+      "note": "Отслеживаю донорский расчёт команды SLU до границы драйвера. Реализую и проверю вычислительный слой без назначения физического выхода H03.",
       "result": null
     }
   },
@@ -1050,9 +1067,17 @@
       "action": "heartbeat",
       "claim_id": "66ff2c9c89284dcaba9ce91746f4bde4",
       "at": "2026-11-20T16:15:18+00:00"
+    },
+    {
+      "operation_id": "4b5a3f2f34494ffca76eee7aed4e3a8d",
+      "task": "TOY-06",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "8e012ef2677942af9da51dd6b630b99f",
+      "at": "2026-11-20T16:15:26+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:15:18+00:00",
+  "updated_at": "2026-11-20T16:15:26+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {

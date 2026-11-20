@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:15:18+00:00**. Изменение № **89**.
+Обновлено UTC: **2026-11-20T16:15:26+00:00**. Изменение № **90**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -17,7 +17,7 @@
 | TOY-03 — Независимые разрешающие сигналы диапазона | На проверке | Codex TOY-03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/toy-03-range-01a1f9a2 | 2026-11-20T15:48:28+00:00 | Карта битов Toyota, проверка вариантов проводки Mazda и сценарии стенда опубликованы. Проверка реестра и git diff --check PASS. Физические источники целевого жгута пока не подтверждены. / commit dfc774eee013ba78c6679d3128f493f238f43000 |
 | TOY-04 — Полная последовательность переключений | Выполняется | Codex — цикл переключений Toyota \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy04-cycle-32e6ac79 | 2026-11-20T16:15:18+00:00 | Из S01 сверены пороги для нулевой нагрузки. На ПК подтверждены 2→3, 3→4 и понижения, запрет 4-й при низкой ОЖ и отзыв при потере события; запущены полные PC, M32R и NATIVE. |
 | TOY-05 — Обучение и сохранение адаптаций | На проверке | Codex TOY-05 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy05-adaptation-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:12:31+00:00 | 96 прерываний и 768 битовых повреждений проверены на ПК и M32R. PC 33 шага/65 тестов и H03 link PASS. Зафиксирован возврат прежних коррекций при повреждении уже записанного сброса. NVM и политика сброса H03 открыты. Отчёт verification/project-audit/toy05-adaptation-store.md. / commit dbc1762ffa86d37e2901b3a62f60b57a71763c24 |
-| TOY-06 — Блокировка гидротрансформатора SLU | Свободна | — | — | — | — |
+| TOY-06 — Блокировка гидротрансформатора SLU | Выполняется | Codex TOY-06 — команда SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-fea1b366 | 2026-11-20T16:15:26+00:00 | Отслеживаю донорский расчёт команды SLU до границы драйвера. Реализую и проверю вычислительный слой без назначения физического выхода H03. |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Codex CAN-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-1120-c7e4 | 2026-11-20T16:10:06+00:00 | CAN RX epoch guard; reproduced old startup and drain race, fixed regressions on host and M32R. PC 33 steps/59 tests, M32R 17 components and Bosch OFFLINE_ONLY PASS. Evidence verification/project-audit/can01-rx-epoch.md. Integrator to update the shared audit; OEM startup and hardware timing remain open. / commit ca268743dfe173f93121d6b9148e0951932cfc9d |
 | CAN-02 — Общий диспетчер CAN13 | Выполняется | Codex CAN-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/can02-telemetry-timeout-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:15:07+00:00 | Регрессия воспроизведена до исправления: подтверждение оставалось активным после истечения срока. Внесён отзыв с ожиданием освобождения слота; идут ПК и M32R. |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex — CAN0 H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can-03-h03-01a1f99f | 2026-11-20T15:50:27+00:00 | Сведено с main 264f249. 16 прогонов lifecycle, 12 TX gate и project_status --check PASS. Протокол CANHacker добавлен. Штатная привязка и аппаратная приёмка открыты. / commit 507ba30e1a3e68c727b137ef209d1a45333591ad |
@@ -213,10 +213,20 @@
 - controller/tests/test_controller.c
 - verification/project-audit/toy05-adaptation-store.md
 
+### TOY-06
+
+Чат: Codex TOY-06 — команда SLU. Claim ID: 8e012ef2677942af9da51dd6b630b99f.
+
+- targets/lfj8/check_toyota_slu.py
+- targets/lfj8/lfj8_h03_slu.c
+- targets/lfj8/lfj8_h03_slu.h
+- verification/project-audit/toy06-slu-command.md
+
 ## Последние события
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:15:26+00:00 | TOY-06 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:15:18+00:00 | TOY-04 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:15:07+00:00 | CAN-02 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:14:42+00:00 | MODE-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
@@ -246,4 +256,3 @@
 | 2026-11-20T16:08:24+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:08:20+00:00 | TOY-05 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:07:46+00:00 | CAN-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
-| 2026-11-20T16:07:21+00:00 | H03-04 | complete | codex-h03-04-01a1f76d-20261120 |
