@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 140,
+  "sequence": 141,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -451,6 +451,21 @@
       "claimed_at": "2026-11-20T16:24:53+00:00",
       "updated_at": "2026-11-20T16:26:21+00:00",
       "note": "Офлайн-проверка реализована; 7 тестов прошли, включая различение остановки, потери сигнала и превышения допуска. Идут полный PC и M32R.",
+      "result": null
+    },
+    "TOY-01": {
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex TOY-01 — карта переносов GP",
+      "branch": "codex/toy-01-gp-transfer-fea1b366",
+      "files": [
+        "controller/hydraulic_port.py",
+        "verification/project-audit/toy01-gp-transfer-size.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "4b00bd7fdda2433d8439e95c7b0b1454",
+      "claimed_at": "2026-11-20T16:28:35+00:00",
+      "updated_at": "2026-11-20T16:28:35+00:00",
+      "note": "Сокращаю Flash переносимой карты GP Toyota: кодирую порядок байтов в свободных битах смещения, сохраняю проверку всех полей на ПК и M32R и сравниваю компоновку.",
       "result": null
     }
   },
@@ -1574,9 +1589,17 @@
       "action": "claim",
       "claim_id": "8bc1c70042a844479c03009561a5e586",
       "at": "2026-11-20T16:28:26+00:00"
+    },
+    {
+      "operation_id": "63f44802de0240cf9db8c82d8a4f63f4",
+      "task": "TOY-01",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "4b00bd7fdda2433d8439e95c7b0b1454",
+      "at": "2026-11-20T16:28:35+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:28:26+00:00",
+  "updated_at": "2026-11-20T16:28:35+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
