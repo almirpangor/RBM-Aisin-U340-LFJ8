@@ -10,11 +10,12 @@ import subprocess
 from tempfile import TemporaryDirectory
 
 from check_h03_link import identify_h03
+from lfj8_h03_atf_fault_hook import CALL_SITE, HOOK_SYMBOL, MONITOR, MONITOR_SYMBOL, call_replacement
+from lfj8_h03_layout import read_elf
 
 
 HERE = Path(__file__).resolve().parent
-MONITOR = 0x0753A4
-CALL_SITE = 0x0725B0
+ROOT = HERE.parents[1]
 ATF_LIMITS = (0x0165DC, 0x0165D8)
 DTC_RECORDS = {0x0712: 0x031510, 0x0713: 0x031524}
 
@@ -40,6 +41,34 @@ SECTIONS {
   .bss : { *(.bss*) *(COMMON) }
 }
 """
+
+FOREGROUND_ENTRY = """
+    .section .text.fixture_native_atf_turn,"ax",@progbits
+    .global fixture_native_atf_turn
+fixture_native_atf_turn:
+    push lr
+    push r8
+    ldi r8,#0
+    bra h03_oem_atf_call_site
+"""
+
+FOREGROUND_SCENARIOS = (
+    "cold_gate_preserves_oem_monitor_without_publishing",
+    "target_startup_and_chery_can_session",
+    "startup_does_not_replay_unbound_result",
+    "pending_oem_debounce_does_not_raise_p0710",
+    "expired_sample_at_exclusive_age_boundary",
+    "fresh_sample_across_clock_wrap_produces_0x74_on_can",
+    "both_native_directions_share_one_p0710_slot",
+    "qualified_oem_recovery_produces_0x54_on_can",
+    "can_service_14_clears_current_and_history",
+    "drops_samples_pending_monitor_clear",
+    "history_inhibit_keeps_only_current",
+    "unknown_oem_status_supersedes_unconsumed_recovery",
+    "clock_rearm_requires_fresh_enable",
+    "clock_rearm_discards_unconsumed_recovery",
+)
+
 
 FIXTURE = r"""
 #include "lfj8_h03_atf_fault.h"
@@ -273,6 +302,77 @@ SCENARIOS = (
 )
 
 
+def resume_context(run, work, gcc):
+    debounce_call = 60  # 30 unbound calls, then the first qualified call.
+    registers = [f"$r{i}" for i in range(13)] + ["$fp", "$lr", "$sp", "$psw", "$accl", "$acch"]
+    commands = (
+        "set confirm off", "target sim --memory-size 16M", "load",
+        f"break *{CALL_SITE + 4:#x}", f"ignore 1 {debounce_call - 1}", "run",
+        'printf "ATF_RESUME ' + "%08x " * len(registers) + r'\n", ' + ", ".join(registers),
+    )
+    (work / "resume.gdb").write_text("\n".join(commands) + "\n", encoding="ascii")
+    debugger = gcc.with_name(f"m32r-elf-gdb{gcc.suffix}")
+    output = run(debugger, "-nx", "-batch", "foreground.elf", "-x", "resume.gdb")
+    context = next((line.split()[1:] for line in output.splitlines()
+                    if line.startswith(b"ATF_RESUME ")), [])
+    if len(context) != len(registers):
+        raise ValueError("Could not measure context at the OEM ATF continuation")
+    return tuple(int(value, 16) for value in context)
+
+
+def check_foreground(run, work, gcc, rom):
+    sources = (
+        "h03_atf_fault_hook.S", "h03_atf_fault_hook_fixture.c", "lfj8_h03_atf_fault.c",
+        "lfj8_h03_dtc_target.c", "lfj8_h03_dtc_foreground.c", "lfj8_h03_dtc_rx_queue.c",
+        "lfj8_h03_dtc_can.c", "lfj8_h03_can_owner.c", "lfj8_h03_can13.c", "lfj8_h03_mmio.c",
+        "lfj8_h03_torque.c", "lfj8_h03_torque_can.c", "lfj8_chery_tx.c", "lfj8_donor_io.c",
+        "lfj8_bridge.c",
+    )
+    diagnostics = ("chery_dtc.c", "chery_dtc_link.c", "chery_dtc_can.c")
+    for directory, names in ((HERE, sources), (ROOT / "diagnostics", diagnostics),
+                             (ROOT / "controller/include", ()),
+                             (ROOT / "controller/vendor/toyota/include", ())):
+        for path in (*directory.glob("*.h"), *(directory / name for name in names)):
+            copyfile(path, work / path.name)
+    (work / "foreground.S").write_text(START + FOREGROUND_ENTRY, encoding="ascii")
+    (work / "foreground.ld").write_text(
+        LAYOUT + f"\n{MONITOR_SYMBOL} = {MONITOR:#x};\nh03_oem_atf_call_site = {CALL_SITE:#x};\n",
+        encoding="ascii")
+    link = (gcc, "-m32r", "-Wa,-EB", "-Os", "-mmodel=medium", "-msdata=none",
+            "-ffreestanding", "-ffunction-sections", "-fdata-sections", "-nostdlib",
+            "-std=c11", "-Wall", "-Wextra", "-Werror", "-Wno-missing-braces",
+            "-Wno-missing-field-initializers", "-I.",
+            f"-Wl,--gc-sections,-u,{HOOK_SYMBOL},-T,foreground.ld", "foreground.S",
+            *sources, *diagnostics, "-lc", "-lgcc", "-o", "foreground.elf")
+    run(*link)
+    stock_context = resume_context(run, work, gcc)
+    elf = read_elf(work / "foreground.elf", 2)
+    hook_address = elf["symbols"][HOOK_SYMBOL]["address"]
+    replacement = call_replacement(rom, hook_address)
+    patched = rom[:CALL_SITE] + replacement + rom[CALL_SITE + 4:]
+    (work / "h03.bin").write_bytes(patched)
+    run(*link)
+    linked = read_elf(work / "foreground.elf", 2)
+    if (linked["symbols"][HOOK_SYMBOL]["address"] != hook_address or
+            next(section["data"] for section in linked["sections"]
+                 if section["name"] == ".stock") != patched):
+        raise ValueError("The OEM call patch and linked hook do not match")
+    if resume_context(run, work, gcc) != stock_context:
+        raise ValueError("The ATF hook changed the OEM continuation context")
+    simulator = gcc.with_name(f"m32r-elf-run{gcc.suffix}")
+    try:
+        run(simulator, "--memory-size", "16M", "foreground.elf")
+    except subprocess.CalledProcessError as error:
+        if 0 < error.returncode <= len(FOREGROUND_SCENARIOS):
+            raise ValueError(
+                f"Unexpected ATF foreground result: {FOREGROUND_SCENARIOS[error.returncode - 1]}") from error
+        raise
+    return {"fixture_hook_vma": f"{hook_address:#x}", "replaced_word": replacement.hex(),
+            "wrapper_bytes": linked["symbols"][HOOK_SYMBOL]["size"],
+            "native_continuation_context_unchanged": True,
+            "scenarios": list(FOREGROUND_SCENARIOS)}
+
+
 def check(base, gcc):
     identity = identify_h03(base)
     rom = base.read_bytes()
@@ -314,6 +414,8 @@ def check(base, gcc):
                 raise ValueError(f"Unexpected ATF result: {SCENARIOS[error.returncode - 1]}") from error
             raise
 
+        foreground = check_foreground(run, work, gcc, rom)
+
     return {
         "base": identity, "compiler": version,
         "native_call": f"{CALL_SITE:#08x}", "native_monitor": f"{MONITOR:#08x}",
@@ -323,6 +425,7 @@ def check(base, gcc):
                                         for code, address in DTC_RECORDS.items()},
         "stock_countdown_values": {"direction": 150000, "override": 1000, "recovery": 2000},
         "simulated_scenarios": list(SCENARIOS),
+        "diagnostic_foreground": foreground,
         "hardware_executed": False, "target_image_emitted": False,
     }
 
