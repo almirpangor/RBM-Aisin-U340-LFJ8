@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 360,
+  "sequence": 361,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -236,19 +236,21 @@
     },
     "CAN-01": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Codex CAN-01 FullCAN coherence",
-      "branch": "codex/can01-rx-coherence-1120-c7e4",
+      "label": "Чат CAN — поколение RPM/ОЖ H03",
+      "branch": "codex/can01-engine-rx-generation-1120-c7e4",
       "files": [
-        "targets/lfj8/host_check.c",
-        "targets/lfj8/lfj8_donor_io.c",
-        "verification/project-audit/can01-rx-coherence.md"
+        "targets/lfj8/lfj8_h03_engine_feed.h",
+        "targets/lfj8/lfj8_h03_engine_rx.c",
+        "targets/lfj8/lfj8_h03_engine_rx.h",
+        "targets/lfj8/test_lfj8_h03_engine_feed.c",
+        "verification/project-audit/can01-engine-rx-generation.md"
       ],
-      "stage": "done",
-      "claim_id": "f0173bc6291a4dd2b8fc72ad0de8fffc",
-      "claimed_at": "2026-11-20T16:52:48+00:00",
-      "updated_at": "2026-11-20T17:40:45+00:00",
-      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
-      "result": "6820992a15300275c3dd9c98398151e661a42925"
+      "stage": "in_progress",
+      "claim_id": "013d85ef472c4e43bd8a34e924942ec2",
+      "claimed_at": "2026-11-20T18:23:33+00:00",
+      "updated_at": "2026-11-20T18:23:33+00:00",
+      "note": "Подключить опциональное слово поколения CAN к существующему опросу RX11/RX12. Проверить отзыв RPM/ОЖ и модельных полей при скрытой смене поколения даже с непрерывной меткой. Зарезервированные CAN-03/H03-03/IRQ не затрагиваются.",
+      "result": null
     },
     "MODE-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -3454,9 +3456,17 @@
       "action": "claim",
       "claim_id": "e050fbd1bb5d4d14a3f58aac59b8cf86",
       "at": "2026-11-20T18:22:47+00:00"
+    },
+    {
+      "operation_id": "5d71a8af7d8a40c39e82047d8b350d7c",
+      "task": "CAN-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "claim",
+      "claim_id": "013d85ef472c4e43bd8a34e924942ec2",
+      "at": "2026-11-20T18:23:33+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:22:47+00:00",
+  "updated_at": "2026-11-20T18:23:33+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
