@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 480,
+  "sequence": 481,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -441,11 +441,11 @@
         "tests/test_bosch_build_integrity.py",
         "verification/project-audit/ecu01-bosch-section-layout.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "a9fcda79bfd24244872059ac08ee0efd",
       "claimed_at": "2026-11-20T19:01:29+00:00",
-      "updated_at": "2026-11-20T19:05:48+00:00",
-      "note": "Сборщик Bosch отклоняет перекрытие секций, выход из непрерывного Flash и запись поверх кода момента или таблицы целостности. Реальная сборка отвергла тестовую коллизию. Все 8 профилей совпали побайтно, 51 запись на каждом, ST10 PASS_OFFLINE_ONLY, ПК 37 шагов и 117 тестов. Отчёт ecu01-bosch-section-layout.md. Окончательный профиль ждёт CAN-05/ECU-02 и выпуска REL-01.",
+      "updated_at": "2026-11-20T19:26:49+00:00",
+      "note": "Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены.",
       "result": "7fa849a631f1ba25e4fb7680008a7c2aca57399a"
     },
     "VSS-02": {
@@ -4400,9 +4400,17 @@
       "action": "complete",
       "claim_id": "013d85ef472c4e43bd8a34e924942ec2",
       "at": "2026-11-20T19:26:32+00:00"
+    },
+    {
+      "operation_id": "73c89fd79fd84c4da48b1dd5d34abe26",
+      "task": "ECU-01",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "complete",
+      "claim_id": "a9fcda79bfd24244872059ac08ee0efd",
+      "at": "2026-11-20T19:26:49+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:26:32+00:00",
+  "updated_at": "2026-11-20T19:26:49+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
