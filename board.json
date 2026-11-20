@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 720,
+  "sequence": 721,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -432,12 +432,12 @@
         "targets/lfj8/lfj8_h03_application_binding.c",
         "verification/project-audit/h03-05-target-outputs.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "77033e38e60445f2addf6c2c8e536996",
       "claimed_at": "2026-11-20T21:56:12+00:00",
-      "updated_at": "2026-11-20T21:56:12+00:00",
-      "note": "Продолжаю принятую 0db23be. Подключаю штатные арбитраж, выдачу и отзыв к профилируемой привязке приложения. Общая компоновка вне резерва.",
-      "result": null,
+      "updated_at": "2026-11-20T22:06:17+00:00",
+      "note": "Нативный rbm_h03_target_takeover_ops подключён к явному профилю приложения H03. Маленькая и средняя M32R-модели на точном H03, 22 native/8 components/6 размещённых групп и 41 этап ПК прошли. В общей модели снята одна неопределённая ссылка, +116 байт Flash и 0 байт статической RAM. Остались рабочий профиль, владельцы/переходы и стендовая проверка D/E/F, SLT и SLU/TIO9. Старый check_h03_link падает и на f64eff7 из-за cold S01, размещённый runtime проходит.",
+      "result": "f32c6159ef0a28848bafdf5cb1bd64cfdf80a03e",
       "based_on_reviews": []
     },
     "MODE-03": {
@@ -9040,9 +9040,35 @@
         "result": "9f269055aa9a2da430f2602e004408a038725c6b",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "60c6bc7d0e9641bd9831fc5e207a4b45",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "77033e38e60445f2addf6c2c8e536996",
+      "at": "2026-11-20T22:06:17+00:00",
+      "record": {
+        "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "label": "Codex H03-05 native target output binding",
+        "branch": "codex/h03-05-native-target-ops-01a1f9a2",
+        "files": [
+          "targets/lfj8/check_h03_target_outputs.py",
+          "targets/lfj8/h03_target_outputs_fixture.c",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "verification/project-audit/h03-05-target-outputs.md"
+        ],
+        "stage": "review",
+        "claim_id": "77033e38e60445f2addf6c2c8e536996",
+        "claimed_at": "2026-11-20T21:56:12+00:00",
+        "updated_at": "2026-11-20T22:06:17+00:00",
+        "note": "Нативный rbm_h03_target_takeover_ops подключён к явному профилю приложения H03. Маленькая и средняя M32R-модели на точном H03, 22 native/8 components/6 размещённых групп и 41 этап ПК прошли. В общей модели снята одна неопределённая ссылка, +116 байт Flash и 0 байт статической RAM. Остались рабочий профиль, владельцы/переходы и стендовая проверка D/E/F, SLT и SLU/TIO9. Старый check_h03_link падает и на f64eff7 из-за cold S01, размещённый runtime проходит.",
+        "result": "f32c6159ef0a28848bafdf5cb1bd64cfdf80a03e",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:05:47+00:00",
+  "updated_at": "2026-11-20T22:06:17+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -10754,6 +10780,26 @@
       "based_on_reviews": [],
       "task": "TOY-05",
       "submitted_at": "2026-11-20T22:05:47+00:00"
+    },
+    "77033e38e60445f2addf6c2c8e536996": {
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "label": "Codex H03-05 native target output binding",
+      "branch": "codex/h03-05-native-target-ops-01a1f9a2",
+      "files": [
+        "targets/lfj8/check_h03_target_outputs.py",
+        "targets/lfj8/h03_target_outputs_fixture.c",
+        "targets/lfj8/lfj8_h03_application_binding.c",
+        "verification/project-audit/h03-05-target-outputs.md"
+      ],
+      "stage": "review",
+      "claim_id": "77033e38e60445f2addf6c2c8e536996",
+      "claimed_at": "2026-11-20T21:56:12+00:00",
+      "updated_at": "2026-11-20T22:06:17+00:00",
+      "note": "Нативный rbm_h03_target_takeover_ops подключён к явному профилю приложения H03. Маленькая и средняя M32R-модели на точном H03, 22 native/8 components/6 размещённых групп и 41 этап ПК прошли. В общей модели снята одна неопределённая ссылка, +116 байт Flash и 0 байт статической RAM. Остались рабочий профиль, владельцы/переходы и стендовая проверка D/E/F, SLT и SLU/TIO9. Старый check_h03_link падает и на f64eff7 из-за cold S01, размещённый runtime проходит.",
+      "result": "f32c6159ef0a28848bafdf5cb1bd64cfdf80a03e",
+      "based_on_reviews": [],
+      "task": "H03-05",
+      "submitted_at": "2026-11-20T22:06:17+00:00"
     }
   }
 }
