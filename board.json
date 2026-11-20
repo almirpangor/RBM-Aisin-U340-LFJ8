@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 387,
+  "sequence": 388,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -260,11 +260,11 @@
         "targets/lfj8/test_lfj8_h03_input_binding.c",
         "verification/project-audit/mode02-h03-input-binding.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "9a8289b65d604e5dabe669d1c94e2dba",
       "claimed_at": "2026-11-20T18:05:58+00:00",
-      "updated_at": "2026-11-20T18:13:29+00:00",
-      "note": "Передаю интегратору целевой callback AN2 и общую заявку с независимыми GP−5722/GP−5250.2. ПК 37 шагов/102 теста, M32R 18 компонентов и 5 пар штатного AN2, отдельный тест заявки ПК/M32R PASS. Отчёт verification/project-audit/mode02-h03-input-binding.md. H03-03 привязывает RAM/часы/foreground, TOY-04 проводит принятую заявку в гидравлику. Физические карты, размещение и стенд открыты; при приёмке обновить общий аудит.",
+      "updated_at": "2026-11-20T18:35:31+00:00",
+      "note": "Порция принята интегратором в опубликованную main f366131, с общей сверкой памяти и M32R. В карточке остаётся подключение к штатному foreground и физические входы.",
       "result": "22c4173bba0ed640a64841cffb037620dbea8060"
     },
     "TOY-05": {
@@ -3667,9 +3667,17 @@
       "action": "review",
       "claim_id": "94acefd328f147ea988bf6d03a41c5f7",
       "at": "2026-11-20T18:35:22+00:00"
+    },
+    {
+      "operation_id": "23d1624b97c1407a98fc5b8f1a547d9e",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "complete",
+      "claim_id": "9a8289b65d604e5dabe669d1c94e2dba",
+      "at": "2026-11-20T18:35:31+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:35:22+00:00",
+  "updated_at": "2026-11-20T18:35:31+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
