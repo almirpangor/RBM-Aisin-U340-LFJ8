@@ -3,6 +3,7 @@
 import argparse
 from hashlib import sha256
 import json
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -62,6 +63,9 @@ rbm_h03_phase_wait_callback:
 #else
     cmpu r1,r0
 #endif
+    .p2align 2
+    .global fixture_callback_return
+fixture_callback_return:
     jmp lr
 
 check_return:
@@ -118,7 +122,15 @@ SECTIONS {
 
 
 POLL_INTERVAL = 2
-TICK_DRIVER = """
+STACK_TOP = 0x9FFFFC
+WAIT_BYTES = 8
+CALLBACK_ENTRY_BYTES = 64
+PROBE_BYTES = 256
+GUARD_BYTES = 16
+MARKERS = (0xA53C7ED2, 0x5AC3812D)
+CALLBACK_SP = STACK_TOP - CALLBACK_ENTRY_BYTES
+PROBE_START = CALLBACK_SP - PROBE_BYTES
+TICK_DRIVER = f"""
 set confirm off
 target sim --memory-size 16M
 load
@@ -127,7 +139,7 @@ set $callbacks = 0
 break *rbm_h03_phase_wait_tick_sample
 commands
   silent
-  if $sp != 0x9ffff4
+  if $sp != {STACK_TOP - WAIT_BYTES:#x}
     printf "UNEXPECTED WAIT SP %x\\n", $sp
     quit
   end
@@ -147,11 +159,30 @@ end
 break *rbm_h03_phase_wait_callback
 commands
   silent
-  if $sp != 0x9fffbc
+  if $sp != {CALLBACK_SP:#x}
     printf "UNEXPECTED CALLBACK SP %x\\n", $sp
     quit
   end
   set $callbacks = $callbacks + 1
+  restore stack-marker.bin binary {PROBE_START:#x}
+  continue
+end
+break *fixture_callback_return
+commands
+  silent
+  if $sp != {CALLBACK_SP:#x}
+    printf "UNEXPECTED CALLBACK RETURN SP %x\\n", $sp
+    quit
+  end
+  set $cursor = {PROBE_START:#x}
+  while $cursor < {CALLBACK_SP:#x} && *(unsigned int*)$cursor == $marker
+    set $cursor = $cursor + 4
+  end
+  if $cursor < {PROBE_START + GUARD_BYTES:#x}
+    printf "CALLBACK STACK GUARD CHANGED %x\\n", $cursor
+    quit
+  end
+  printf "CALLBACK STACK %d %d\\n", $callbacks, {STACK_TOP:#x} - $cursor
   continue
 end
 tbreak *fixture_exit
@@ -176,6 +207,9 @@ def check(base, compiler):
         (work / "clear.dat").write_bytes(wait_code[CLEAR - WAIT:])
         (work / "tick-driver.gdb").write_text(TICK_DRIVER, encoding="ascii")
         debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
+        compiler_version = subprocess.run(
+            [compiler, "--version"], check=True, capture_output=True, timeout=15,
+        ).stdout.decode(errors="replace").splitlines()[0]
         results = []
         sources = [HERE / name for name in (
             "h03_phase_wait_fixture.c", "lfj8_h03_phase_clock.c", "lfj8_h03_takeover.c",
@@ -184,7 +218,10 @@ def check(base, compiler):
             (0, "ready", 1, 0), (1, "delayed_across_wrap", 3, 8),
             (2, "stalled", 6, 20), (3, "flag_before_next_poll", 2, 2),
         ):
-            for carry in (0, 1):
+            for carry, marker in enumerate(MARKERS):
+                (work / "stack-marker.bin").write_bytes(
+                    marker.to_bytes(4, "big") * (PROBE_BYTES // 4)
+                )
                 subprocess.run(
                     [compiler, "-m32r", "-Wa,-EB", "-mmodel=medium", "-msdata=none", "-std=c99", "-Os", "-g",
                      "-Wall", "-Wextra", "-Werror",
@@ -197,20 +234,36 @@ def check(base, compiler):
                 )
                 output = subprocess.run(
                     [debugger, "--batch", "-nx", "-ex", f"set $release_early = {int(scenario == 3)}",
+                     "-ex", f"set $marker = (unsigned int){marker:#x}",
                      "-x", "tick-driver.gdb", "fixture.elf"],
                     cwd=work, check=True, capture_output=True, timeout=15,
                 ).stdout
                 if f"RESULT 0 {samples} {calls}".encode("ascii") not in output.splitlines():
                     raise ValueError(f"Wait fixture failed ({name}, carry={carry}): "
                                      + output[-1200:].decode(errors="replace"))
+                trace = re.findall(rb"^CALLBACK STACK (\d+) (\d+)", output, re.M)
+                if [int(number) for number, _ in trace] != list(range(1, calls + 1)):
+                    raise ValueError(f"Incomplete callback stack trace ({name}, carry={carry})")
+                depths = [int(depth) for _, depth in trace]
+                if any(depth <= CALLBACK_ENTRY_BYTES for depth in depths):
+                    raise ValueError(f"Callback left no stack trace ({name}, carry={carry})")
                 results.append({"scenario": name, "initial_carry": carry, "callback_calls": calls,
                                 "clock_samples_while_waiting": samples,
+                                "callback_stack_written_bytes": depths,
                                 "stock_flag_cleared": True, "phase_consumed": scenario != 2,
                                 "command_revoked": scenario == 2})
-    return {"base": identity, "wait": f"0x{WAIT:06X}", "stock_clear": f"0x{CLEAR:06X}",
+    return {"base": identity, "compiler": compiler_version, "wait": f"0x{WAIT:06X}", "stock_clear": f"0x{CLEAR:06X}",
             "native_continuation": f"0x{CONTINUE:06X}", "cases": results,
             "test_poll_interval_ticks": POLL_INTERVAL, "extra_persistent_ram_bytes": 0,
-            "wrapper_stack_bytes": {"waiting": 8, "at_callback_entry": 64},
+            "wrapper_stack_bytes": {"waiting": WAIT_BYTES, "at_callback_entry": CALLBACK_ENTRY_BYTES},
+            "callback_stack_probe": {
+                "kind": "deepest overwritten aligned word below initial wrapper SP",
+                "marked_below_callback_entry_bytes": PROBE_BYTES, "guard_bytes": GUARD_BYTES,
+                "maximum_written_depth_bytes": max(
+                    max(case["callback_stack_written_bytes"]) for case in results
+                ),
+                "interrupts_injected": False,
+            },
             "scope": "Real C phase clock and takeover check; synthetic clock, OEM flag and inhibit.",
             "hardware_executed": False, "flashable_image": None}
 

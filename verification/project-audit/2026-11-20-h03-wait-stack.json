@@ -108,7 +108,7 @@
     "targets/lfj8/check_h03_native_hooks.py": "3c13c6a4e76f309c531cde4e2b1f360157fcf869561f723fbcf8eafd6b03048b",
     "targets/lfj8/check_h03_phase_clock.py": "e4b4a05011409a180028de66c49405cdc5f356fed13fd4befbe1a3a1209582c4",
     "targets/lfj8/check_h03_phase_hook.py": "224a0c5b5c6241f399e06723656c6d0d1585064d03cd3b341914e1c0091bc1bf",
-    "targets/lfj8/check_h03_phase_wait.py": "835046a2cf52c4f374eae0e316e59ad114d67184a254995503badc2180ff2512",
+    "targets/lfj8/check_h03_phase_wait.py": "4358eb2dce206b0524131d1b297bcd6df6c8cc85a40ace6a5b4b8ae335296d22",
     "targets/lfj8/check_h03_ram_candidate.py": "2eb1795f9fa4b8859824db5ec31d9103da2d0d617819210d6b947228dc083e27",
     "targets/lfj8/check_h03_ram_init.py": "cb5626028192dbeeecde41ac730255daddec80f8f602a7af377a385521d75fba",
     "targets/lfj8/check_h03_secondary_load.py": "38df986a3002132837d89107de73b8d671b12f23b8c07c3f5fa63a79457dd54d",
@@ -236,7 +236,7 @@
     "verification/e4m3-can-9e1c/h03-native-phases.json": "abc24d7f01dbd56c21b3dd1390075a78fc0e3fa5ac46829d9badd7df8ae4d226",
     "verification/e4m3-can-9e1c/h03-phase-clock.json": "974963a324c111edffacdcf2bc532dab3020771ea55dc491a4c51500b2f2e921",
     "verification/e4m3-can-9e1c/h03-phase-hook.json": "154ceceb3a95fbf4b48a526ac71b38d5a9a4e05794f7b0c84634b7619db943ac",
-    "verification/e4m3-can-9e1c/h03-phase-wait.json": "aa00cf935fddaf8c8ece399fe3adac8d61225e1b9bda5df5a2a3e7598ab632d9",
+    "verification/e4m3-can-9e1c/h03-phase-wait.json": "8ee3cacaf1b50818eb0b66a5a7d93f4d25f66f120884d89c217845af5927feb0",
     "verification/e4m3-can-9e1c/h03-storage.json": "7766f2370f4d01ac8e47a3e744168d04a14733fd1a1d474596d40549c4b12f64",
     "verification/e4m3-can-9e1c/h03-torque-dialogue.json": "398148cf9f5910d8ce4d1c2bb3149e1d49ea056557d2ce0b453a7e242ec08ee9",
     "verification/e4m3-can-9e1c/ordinary-model/h03-link.json": "6f30d3b170be567da29bf6305de62cec0c0873ad905370dcd8163176e2cdaedb",
@@ -261,7 +261,7 @@
     "verification/project-audit/2026-11-20-h03-storage.json": "47a0b6177b05ea93bd9d4b656edcb032baa0ba82442fa12aed978e5f58a9662e"
   },
   "previous_audit": "verification/project-audit/2026-11-20-h03-storage.json",
-  "scope": "H03 phase wait hook timing gate, stack footprint and simulator fault response",
+  "scope": "H03 phase wait hook timing gate, wrapper and test callback stack, simulator fault response",
   "changed_code": [
     "targets/lfj8/check_h03_phase_wait.py",
     "targets/lfj8/h03_phase_wait_fixture.c",
@@ -272,8 +272,11 @@
     "Initial and delayed phase, counter wrap, early flag, stopped publisher, late publication",
     "Stock foreground and phase release simulator regressions",
     "65 Python unit tests on the merged H03-03 and H03-04 tree",
-    "Temporary negative control: an extra stack word is detected at the wait clock sample"
+    "Temporary negative control: an extra stack word is detected at the wait clock sample",
+    "Eight M32R scenarios with a refilled 256-byte callback stack marker and a 16-byte lower guard",
+    "24 callback returns: 112 bytes in normal scenarios and 120 bytes in the stalled scenario, inclusive of wrapper",
+    "Temporary negative control: a store inside the simulated callback guard is rejected"
   ],
   "inherited_checks": "H03-04 storage and wider simulator coverage are inherited from the preceding snapshot.",
-  "limits": "Only the wrapper frame was measured. Hardware clock, callback stack and nested interrupts are outside this fixture."
+  "limits": "Callback measurement is based on written words, includes synthetic inhibit and excludes nested IRQ."
 }
