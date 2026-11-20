@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 25,
+  "sequence": 26,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -111,12 +111,12 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-phase-wait.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "claimed_at": "2026-11-20T15:51:48+00:00",
-      "updated_at": "2026-11-20T15:54:48+00:00",
-      "note": "Проверяю вызов контроля фазы при нулевом штатном флаге, отдельно от рабочего BIN.",
-      "result": "ae5d3e4b0e61c04041145d85d269d18cc7925eef"
+      "updated_at": "2026-11-20T15:56:16+00:00",
+      "note": "Кандидат точки 008150 вызывает проверку без флага OEM. Четыре сценария M32R и project_status --check PASS. Целевой callback, RAM и нагрузка IRQ требуют интеграции.",
+      "result": "2584dd654ded6cfaae0d0ab65520eb443bcb8445"
     },
     "H03-04": {
       "owner": "codex-h03-04-01a1f76d-20261120",
@@ -373,9 +373,17 @@
       "action": "review",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T15:55:29+00:00"
+    },
+    {
+      "operation_id": "9c70c1fe3daa4dc6b8890eff7dc294de",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "ef041474d8994309836820d6cd886071",
+      "at": "2026-11-20T15:56:16+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:55:29+00:00",
+  "updated_at": "2026-11-20T15:56:16+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
