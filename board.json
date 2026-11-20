@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 739,
+  "sequence": 740,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -162,12 +162,12 @@
         "targets/lfj8/lfj8_h03_nvm_native.h",
         "verification/project-audit/dtc04-h03-native-array-read.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "eb973761003948398f33f495758fde06",
       "claimed_at": "2026-11-20T22:37:29+00:00",
-      "updated_at": "2026-11-20T22:40:48+00:00",
-      "note": "Нативный читатель подключён к восстановлению журнала. Прошли модель отказов на ПК/M32R и чтение через настоящий MMIO из памяти симулятора; повторяю проверки CAN и совместимость.",
-      "result": null,
+      "updated_at": "2026-11-20T22:44:18+00:00",
+      "note": "Читатель внутренней Flash связан с восстановлением журнала DTC через нативный MMIO, с отказом в E/W и Virtual Flash. Модели ПК/M32R, 22 native, 41 шаг ПК и 179 тестов прошли. Не назначены два эксклюзивных блока, запись и подключение общего запуска.",
+      "result": "0ea8154b495bc10e565ecac034f19babadf3585f",
       "based_on_reviews": [
         "e72d13fcb2254ca89fd0736136b11462"
       ]
@@ -9607,9 +9607,38 @@
           "cda1c6bb3edf45bd993ee765cf29e055"
         ]
       }
+    },
+    {
+      "operation_id": "4321f4f7c31044df9ea07f899a66b30f",
+      "task": "DTC-04",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "eb973761003948398f33f495758fde06",
+      "at": "2026-11-20T22:44:18+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-04 — чтение массива H03",
+        "branch": "codex/dtc04-native-array-read-7bd19ea4-v2",
+        "files": [
+          "targets/lfj8/check_h03_nvm.py",
+          "targets/lfj8/h03_nvm_native_fixture.c",
+          "targets/lfj8/lfj8_h03_nvm_native.c",
+          "targets/lfj8/lfj8_h03_nvm_native.h",
+          "verification/project-audit/dtc04-h03-native-array-read.md"
+        ],
+        "stage": "review",
+        "claim_id": "eb973761003948398f33f495758fde06",
+        "claimed_at": "2026-11-20T22:37:29+00:00",
+        "updated_at": "2026-11-20T22:44:18+00:00",
+        "note": "Читатель внутренней Flash связан с восстановлением журнала DTC через нативный MMIO, с отказом в E/W и Virtual Flash. Модели ПК/M32R, 22 native, 41 шаг ПК и 179 тестов прошли. Не назначены два эксклюзивных блока, запись и подключение общего запуска.",
+        "result": "0ea8154b495bc10e565ecac034f19babadf3585f",
+        "based_on_reviews": [
+          "e72d13fcb2254ca89fd0736136b11462"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:44:07+00:00",
+  "updated_at": "2026-11-20T22:44:18+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -11383,6 +11412,29 @@
       "based_on_reviews": [],
       "task": "CAN-03",
       "submitted_at": "2026-11-20T22:08:56+00:00"
+    },
+    "eb973761003948398f33f495758fde06": {
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex DTC-04 — чтение массива H03",
+      "branch": "codex/dtc04-native-array-read-7bd19ea4-v2",
+      "files": [
+        "targets/lfj8/check_h03_nvm.py",
+        "targets/lfj8/h03_nvm_native_fixture.c",
+        "targets/lfj8/lfj8_h03_nvm_native.c",
+        "targets/lfj8/lfj8_h03_nvm_native.h",
+        "verification/project-audit/dtc04-h03-native-array-read.md"
+      ],
+      "stage": "review",
+      "claim_id": "eb973761003948398f33f495758fde06",
+      "claimed_at": "2026-11-20T22:37:29+00:00",
+      "updated_at": "2026-11-20T22:44:18+00:00",
+      "note": "Читатель внутренней Flash связан с восстановлением журнала DTC через нативный MMIO, с отказом в E/W и Virtual Flash. Модели ПК/M32R, 22 native, 41 шаг ПК и 179 тестов прошли. Не назначены два эксклюзивных блока, запись и подключение общего запуска.",
+      "result": "0ea8154b495bc10e565ecac034f19babadf3585f",
+      "based_on_reviews": [
+        "e72d13fcb2254ca89fd0736136b11462"
+      ],
+      "task": "DTC-04",
+      "submitted_at": "2026-11-20T22:44:18+00:00"
     }
   }
 }
