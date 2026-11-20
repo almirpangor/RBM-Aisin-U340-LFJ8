@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 695,
+  "sequence": 696,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -51,26 +51,22 @@
     },
     "CAN-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
-      "label": "Codex CAN-03 — общая привязка DTC и CAN13",
-      "branch": "codex/can03-dtc-shared-owner-fea1b366",
+      "label": "Codex CAN-03 target service",
+      "branch": "codex/can03-target-service-fea1b366",
       "files": [
         "targets/lfj8/check_h03_can_monitor_revoke.py",
-        "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
-        "targets/lfj8/lfj8_h03_can_owner.h",
-        "targets/lfj8/lfj8_h03_can_target.c",
-        "targets/lfj8/lfj8_h03_can_target.h",
-        "verification/project-audit/can03-dtc-shared-owner.md"
+        "targets/lfj8/lfj8_h03_storage.h",
+        "targets/lfj8/lfj8_h03_target_service.c",
+        "targets/lfj8/lfj8_h03_target_service.h",
+        "verification/project-audit/can03-target-service-phase.md"
       ],
-      "stage": "done",
-      "claim_id": "ffff885e4aa646d3b41c030b6eda77cb",
-      "claimed_at": "2026-11-20T20:43:58+00:00",
-      "updated_at": "2026-11-20T21:14:43+00:00",
-      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
-      "result": "3b2e4d6ab163cf7f384ba94447f5fe6fb92950db",
-      "based_on_reviews": [
-        "ad997bd677c542c682cec961d4619193",
-        "ef6ec9b39ec54c5fab41e021568c094f"
-      ]
+      "stage": "in_progress",
+      "claim_id": "1b7a53b2c91c49d481c892507323d9d9",
+      "claimed_at": "2026-11-20T21:53:30+00:00",
+      "updated_at": "2026-11-20T21:53:30+00:00",
+      "note": "Целевая сервисная фаза CAN/TX13 и общий TML0/T6; раздельно от зарезервированной общей компоновки VSS-02",
+      "result": null,
+      "based_on_reviews": []
     },
     "TOY-03": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -8370,9 +8366,36 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "39514d1044884627a084465e45373c6e",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "1b7a53b2c91c49d481c892507323d9d9",
+      "at": "2026-11-20T21:53:30+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 target service",
+        "branch": "codex/can03-target-service-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_storage.h",
+          "targets/lfj8/lfj8_h03_target_service.c",
+          "targets/lfj8/lfj8_h03_target_service.h",
+          "verification/project-audit/can03-target-service-phase.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "1b7a53b2c91c49d481c892507323d9d9",
+        "claimed_at": "2026-11-20T21:53:30+00:00",
+        "updated_at": "2026-11-20T21:53:30+00:00",
+        "note": "Целевая сервисная фаза CAN/TX13 и общий TML0/T6; раздельно от зарезервированной общей компоновки VSS-02",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:53:17+00:00",
+  "updated_at": "2026-11-20T21:53:30+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
