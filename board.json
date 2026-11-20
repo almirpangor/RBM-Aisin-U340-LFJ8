@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 536,
+  "sequence": 537,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -401,23 +401,23 @@
       "result": "c9d57c1fb0a038b06a5acff8aafffa639d3b0726"
     },
     "VSS-01": {
-      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Чат CAN — остановка и первый фронт S51",
-      "branch": "codex/vss01-standstill-guard-1120-c7e4",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex VSS-01 — единый захват S51 для 0x1AE",
+      "branch": "codex/vss01-foreground-capture-fea1b366",
       "files": [
         "targets/lfj8/host_check.c",
         "targets/lfj8/lfj8_chery_tx.c",
         "targets/lfj8/lfj8_chery_tx.h",
-        "targets/lfj8/lfj8_donor_io.c",
-        "targets/lfj8/lfj8_donor_io.h",
-        "verification/project-audit/vss01-standstill-guard.md"
+        "targets/lfj8/lfj8_h03_can13.c",
+        "targets/lfj8/lfj8_h03_can13.h",
+        "verification/project-audit/vss01-foreground-capture.md"
       ],
-      "stage": "done",
-      "claim_id": "f685f2c55ce644bd9790da0a174088e9",
-      "claimed_at": "2026-11-20T18:39:04+00:00",
-      "updated_at": "2026-11-20T19:25:41+00:00",
-      "note": "Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены.",
-      "result": "79fc4e071100a977eda10a412a23ac682d5be672"
+      "stage": "in_progress",
+      "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
+      "claimed_at": "2026-11-20T19:55:14+00:00",
+      "updated_at": "2026-11-20T19:55:14+00:00",
+      "note": "Подключить согласованный foreground-захват S51 к передатчику и брокеру CAN13. Проверить срок снимка, возраст фронта и потерю данных.",
+      "result": null
     },
     "H03-05": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -4876,9 +4876,17 @@
       "action": "claim",
       "claim_id": "3118c56ba79c42ab952bbd17df49ca78",
       "at": "2026-11-20T19:54:35+00:00"
+    },
+    {
+      "operation_id": "ef73a2618f1a48e0a7d38090abd3db40",
+      "task": "VSS-01",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
+      "at": "2026-11-20T19:55:14+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:54:35+00:00",
+  "updated_at": "2026-11-20T19:55:14+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
