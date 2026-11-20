@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 146,
+  "sequence": 147,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -113,12 +113,12 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "claimed_at": "2026-11-20T16:18:01+00:00",
-      "updated_at": "2026-11-20T16:25:55+00:00",
-      "note": "Добавляю штатный TOP8/9 на внутреннем уровне IRQ и измеряю его отдельную запись PSW.",
-      "result": "b45c1bfc040fb6d47d9756a81fb0163a588f2510"
+      "updated_at": "2026-11-20T16:29:36+00:00",
+      "note": "14 M32R и 65 Python-тестов PASS. TOP8/9 на внутреннем уровне: idle и pending state 0, 184 байта SPI и 4 байта стека PSW. Контроль пропуска OEM тела и реестр ветки PASS. При объединении требуется обновить активный снимок интегратора; реальные приоритеты и аппаратный inhibit открыты.",
+      "result": "92ee061ae1ea515652fcb04dc2ea5448a6150363"
     },
     "H03-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -1640,9 +1640,17 @@
       "action": "review",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "at": "2026-11-20T16:29:27+00:00"
+    },
+    {
+      "operation_id": "27ea14a7c8bc4c5fb330fa7723ac288f",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "at": "2026-11-20T16:29:36+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:29:27+00:00",
+  "updated_at": "2026-11-20T16:29:36+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
