@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 110,
+  "sequence": 111,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -396,6 +396,22 @@
       "claimed_at": "2026-11-20T16:20:38+00:00",
       "updated_at": "2026-11-20T16:20:38+00:00",
       "note": "Исполняю цепь P0745 → арбитраж → применение Pressure A в M32R, проверяю сохранение старого PWM до применения.",
+      "result": null
+    },
+    "MODE-03": {
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex MODE-03 — матрица режимов",
+      "branch": "codex/mode-03-policy-fea1b366",
+      "files": [
+        "controller/build.py",
+        "controller/tests/test_mode_policy.c",
+        "verification/project-audit/mode03-policy-matrix.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "b0a3618e8676435c94101b0abb236b6a",
+      "claimed_at": "2026-11-20T16:21:43+00:00",
+      "updated_at": "2026-11-20T16:21:43+00:00",
+      "note": "Проверяю программную матрицу параметров Auto, Tiptronic и Overdrive, запреты положения/подтверждения передачи и поведение при повторной инициализации. Эксплуатационные значения остаются открытыми.",
       "result": null
     }
   },
@@ -1279,10 +1295,18 @@
       "action": "review",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "at": "2026-11-20T16:21:14+00:00"
+    },
+    {
+      "operation_id": "4c4234119e18403096ee25fe7100cb09",
+      "task": "MODE-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "b0a3618e8676435c94101b0abb236b6a",
+      "at": "2026-11-20T16:21:43+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:21:14+00:00",
-  "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
+  "updated_at": "2026-11-20T16:21:43+00:00",
+  "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
       "id": "ORG-01",
