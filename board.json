@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 492,
+  "sequence": 493,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -370,11 +370,11 @@
         "targets/lfj8/test_lfj8_h03_dtc_can.c",
         "verification/project-audit/dtc01-c0-session-timer.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "69ac904b985641cea43c72eba859a273",
       "claimed_at": "2026-11-20T18:25:00+00:00",
-      "updated_at": "2026-11-20T18:35:59+00:00",
-      "note": "S03 подтвердил F9F1=9, 256 фаз селектора и сброс до 9F/11 с сохранением истории. Реализованы шаг сеанса и отзыв TX13 по обычным правилам. На f366131 прошли ПК 37/113, M32R 18 и 18 сравнений DTC-02/CAN-03. Открыта привязка события H03 с очисткой ожидающего RX. Отчёт dtc01-c0-session-timer.md.",
+      "updated_at": "2026-11-20T19:30:28+00:00",
+      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
       "result": "03ce2592b323a3605e8003fdca16eaf7747e746a"
     },
     "VSS-01": {
@@ -4496,9 +4496,17 @@
       "action": "complete",
       "claim_id": "f9f139056ba24b4a88ede7ceaeb63df1",
       "at": "2026-11-20T19:30:06+00:00"
+    },
+    {
+      "operation_id": "a39c3c61243f494cbc5921afd8d24f3e",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "complete",
+      "claim_id": "69ac904b985641cea43c72eba859a273",
+      "at": "2026-11-20T19:30:28+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:30:06+00:00",
+  "updated_at": "2026-11-20T19:30:28+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
