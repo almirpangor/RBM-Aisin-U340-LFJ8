@@ -42,6 +42,9 @@ BINDING_MODULES=(
     "lfj8_h03_service_guard.c", "lfj8_h03_button_capture.c",
 )
 SENSOR_ASSEMBLY = ("h03_sensor_hooks.S", "h03_atf_hooks.S")
+PROFILED_BINDINGS = ("lfj8_h03_application_binding.c", "lfj8_h03_target_platform.c")
+TOYOTA_RELEASE_FIELD = "control/toyota_release"
+TOYOTA_RELEASE_SYMBOL = "rbm_h03_toyota_release_state"
 
 
 def save(path,data):
@@ -63,9 +66,7 @@ def invalidate_outputs(output,inputs):
             path.unlink()
 
 
-def storage_space(path):
-    if path is None:
-        return ()
+def read_storage_report(path):
     report=json.loads(path.read_text(encoding="utf-8"))
     if report.get("artifact_kind") != "M32R_ABI_storage_address_model":
         raise ValueError("Expected the typed H03 storage report")
@@ -83,9 +84,15 @@ def storage_space(path):
     from check_h03_storage import address_plan
     if address_plan(report["fields"]) != report["blocks"]:
         raise ValueError("RAM inventory block geometry was altered")
+    return report
+
+
+def storage_space(path):
+    if path is None:
+        return ()
     # Reserve the complete existing inventory, then place new native globals
     # only in remaining candidate space. This is not a startup implementation.
-    blocks=report["blocks"]
+    blocks=read_storage_report(path)["blocks"]
     windows=tuple(Window(name,start,end) for name,start,end in (
         ("primary_ram_extra",blocks["control"]["end_exclusive"],0x807000),
         ("secondary_ram_extra",blocks["workspace"]["end_exclusive"],0x809600)) if start<end)
@@ -93,6 +100,25 @@ def storage_space(path):
     if blocks["communication"]["end_exclusive"]>blocks["workspace"]["address"]:
         raise ValueError("Overlapping prior storage inventory")
     return windows
+
+
+def toyota_release_range(storage):
+    field = storage["fields"].get(TOYOTA_RELEASE_FIELD)
+    if field is None:
+        return None
+    control = storage["blocks"]["control"]
+    start = control["address"] + field["offset"]
+    end = start + field["bytes"]
+    if (field["bytes"] != 16 or field["alignment"] != 4 or start % 4 or
+            not control["address"] <= start < end <= control["end_exclusive"]):
+        raise ValueError("Invalid M32R Toyota release RAM field")
+    for name, other in storage["fields"].items():
+        if name != TOYOTA_RELEASE_FIELD and name.startswith("control/"):
+            other_start = control["address"] + other["offset"]
+            if start < other_start + other["bytes"] and other_start < end:
+                raise ValueError("Toyota release RAM overlaps " + name)
+    return {"field": TOYOTA_RELEASE_FIELD, "symbol": TOYOTA_RELEASE_SYMBOL, "address": start,
+            "end_exclusive": end, "bytes": field["bytes"], "alignment": field["alignment"]}
 
 
 def execute_placed_code(args, elf, stage, run, flags):
@@ -189,10 +215,14 @@ def sensor_placement(rom, elf, provisional=None):
 
 def build(args):
     application_profile = getattr(args, "application_profile", None)
+    release_ram = None
     if application_profile is not None:
         application_profile = Path(application_profile).resolve()
         if not args.with_bindings or not application_profile.is_file():
             raise ValueError("Application profile requires --with-bindings and an existing header")
+        if args.storage_report is None:
+            raise ValueError("Application profile requires a typed --storage-report")
+        release_ram = toyota_release_range(read_storage_report(args.storage_report))
     clock_reference = getattr(args, "sensor_clock_reference", None)
     calibration_profile = getattr(args, "sensor_calibration_profile", None)
     sensor_report = None
@@ -249,7 +279,7 @@ def build(args):
                                       *legacy.CAN_EXTENSION_FILES,"lfj8_h03_slu.c","lfj8_h03_dtc_foreground.c")]
     bindings=[LFJ8/name for name in BINDING_MODULES if (LFJ8/name).is_file()] if args.with_bindings else []
     if application_profile is not None:
-        bindings.append(LFJ8 / "lfj8_h03_application_binding.c")
+        bindings.extend(LFJ8 / name for name in PROFILED_BINDINGS)
     if args.with_bindings:
         bindings.extend(LFJ8/name for name in SENSOR_ASSEMBLY)
     if with_dtc_rx:
@@ -274,7 +304,9 @@ def build(args):
         "sha256": digest(application_profile), "hardware_qualified_by_this_tool": False}
         if application_profile is not None else None)
     report["profiled_bindings_omitted"] = ([] if application_profile is not None else
-        ["lfj8_h03_application_binding.c: requires an explicit application profile"])
+        [f"{name}: requires an explicit application profile" for name in PROFILED_BINDINGS])
+    if application_profile is not None:
+        report["target_platform"] = {"release_ram": release_ram, "storage_report_sha256": digest(args.storage_report)}
     if args.with_bindings:
         path = Path(sensor_hooks.__file__).resolve()
         report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
@@ -308,7 +340,7 @@ def build(args):
                 raise ValueError("Ambiguous or test-only input module")
             profile_flags = (["-I", application_profile.parent,
                 '-DRBM_H03_APPLICATION_PROFILE="' + application_profile.name + '"']
-                if source.name == "lfj8_h03_application_binding.c" else [])
+                if source.name in PROFILED_BINDINGS else [])
             run(args.gcc,*flags,*module_flags,*profile_flags,*(x for p in includes for x in ("-I",p)),
                 "-c",source,"-o",name)
             objects.append(name)
@@ -327,6 +359,14 @@ def build(args):
             if retained["symbols"].get(name, {}).get("section") != 0:
                 raise ValueError("Unexpected definition or missing reference for H03 sensor continuation: "+name)
         native_bindings = dict(stock_symbols)
+        platform_flash = set()
+        if application_profile is not None:
+            if retained["symbols"].get(TOYOTA_RELEASE_SYMBOL, {}).get("section") != 0:
+                raise ValueError("The H03 Toyota platform must reference the single typed release RAM alias")
+            if release_ram is not None:
+                native_bindings[TOYOTA_RELEASE_SYMBOL] = release_ram["address"]
+            platform = read_elf(stage / "lfj8_h03_target_platform.o", 1)
+            platform_flash = {section["name"] for section in alloc_sections(platform) if not section["flags"] & 1}
         if with_dtc_rx:
             for name in dtc_rx.STOCK_SYMBOLS:
                 if retained["symbols"].get(name, {}).get("section") != 0:
@@ -354,6 +394,9 @@ def build(args):
         if unresolved:
             try:
                 provisional=place_flash()
+                if platform_flash:
+                    report["target_platform"]["flash_placements"] = [
+                        item for item in provisional if item["section"] in platform_flash]
                 report["known_sections_candidate_plan"]={"sections":len(provisional),
                     "capacity_bytes":sum(w.end-w.start for w in flash_windows),
                     "payload_bytes":sum(p["bytes"] for p in provisional),
@@ -388,6 +431,12 @@ def build(args):
             "retained.o","-o","layout.elf")
         linked=read_elf(stage/"layout.elf",2)
         verify_linked(linked,placement,roots)
+        if release_ram is not None:
+            release = linked["symbols"].get(TOYOTA_RELEASE_SYMBOL, {})
+            if (release.get("section"), release.get("address")) != (0xFFF1, release_ram["address"]):
+                raise ValueError("Linked Toyota release RAM differs from the typed storage plan")
+            report["target_platform"]["flash_placements"] = [
+                item for item in placement if item["section"] in platform_flash]
         if stock_symbols:
             report["sensor_redirects"] = sensor_placement(rom, linked)
         if with_dtc_rx:
@@ -430,7 +479,7 @@ def main():
     parser.add_argument("--memory-model",choices=("medium","small"),default="medium")
     parser.add_argument("--with-bindings",action="store_true")
     parser.add_argument("--application-profile",type=Path,
-                        help="Include the actual application binding with an explicit profile header; never qualifies hardware")
+                        help="Include the application binding and platform with an explicit header and --storage-report")
     parser.add_argument("--sensor-clock-reference", type=Path,
                         help="Paired TML0/TML1 observations against an independent time reference")
     parser.add_argument("--sensor-calibration-profile", type=Path,
