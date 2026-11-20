@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 579,
+  "sequence": 580,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -509,12 +509,12 @@
         "targets/bosch/test_chery_torque_rx.c",
         "verification/project-audit/ecu02-torque-permit-boundary.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "911be787c7444bcf9186a8d6c9f55e1b",
       "claimed_at": "2026-11-20T20:04:50+00:00",
-      "updated_at": "2026-11-20T20:07:02+00:00",
-      "note": "Отказы на границе подтверждены обычным и двумя граничными значениями T4, в том числе при переполнении. Тест C с R3, 65536 пар и Bosch ST10 RB прошли. Завершаю общий прогон и историческую трассу.",
-      "result": null
+      "updated_at": "2026-11-20T20:08:42+00:00",
+      "note": "Приёмник C отклоняет 0x1AE с меткой на границе снятия допуска и раньше. Подтверждено для прямого/отложенного RX, очереди и переполнения T4. ПК 41/120, 65536 пар, старый Bosch ST10 с 51 записью, три диалога H03 и 26 архивных запросов. Машинная привязка CAN-05 и стенд открыты. Отчёт ecu02-torque-permit-boundary.md.",
+      "result": "85b2e9320cf8f6e4a3729915ed3ebbd0fc00a732"
     },
     "H03-01": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -5214,9 +5214,17 @@
       "action": "heartbeat",
       "claim_id": "881583aa76814d4da3f768699f01ca29",
       "at": "2026-11-20T20:08:35+00:00"
+    },
+    {
+      "operation_id": "3c8faf50bf044b3db76e1a92602b8841",
+      "task": "ECU-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "911be787c7444bcf9186a8d6c9f55e1b",
+      "at": "2026-11-20T20:08:42+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:08:35+00:00",
+  "updated_at": "2026-11-20T20:08:42+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
