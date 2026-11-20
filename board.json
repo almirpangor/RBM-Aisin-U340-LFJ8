@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 233,
+  "sequence": 234,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -249,20 +249,19 @@
     },
     "CAN-01": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Codex CAN-01",
-      "branch": "codex/can01-1120-c7e4",
+      "label": "Codex CAN-01 FullCAN coherence",
+      "branch": "codex/can01-rx-coherence-1120-c7e4",
       "files": [
         "targets/lfj8/host_check.c",
-        "targets/lfj8/lfj8_h03_engine_rx.c",
-        "targets/lfj8/lfj8_h03_engine_rx.h",
-        "verification/project-audit/can01-rx-epoch.md"
+        "targets/lfj8/lfj8_donor_io.c",
+        "verification/project-audit/can01-rx-coherence.md"
       ],
-      "stage": "done",
-      "claim_id": "8af57ad2c27440c6822dea2579b051d2",
-      "claimed_at": "2026-11-20T16:03:00+00:00",
-      "updated_at": "2026-11-20T16:26:06+00:00",
-      "note": "Reviewed RX epoch work integrated by 952658b and recorded in the shared audit. This closes the reservation; stock CAN startup and hardware verification remain open.",
-      "result": "ca268743dfe173f93121d6b9148e0951932cfc9d"
+      "stage": "in_progress",
+      "claim_id": "f0173bc6291a4dd2b8fc72ad0de8fffc",
+      "claimed_at": "2026-11-20T16:52:48+00:00",
+      "updated_at": "2026-11-20T16:52:48+00:00",
+      "note": "Revalidate FullCAN receive-mode control and frame format after the volatile copy before publishing RPM/ECT or RB status. Exercise invalidation during the copy on host and M32R.",
+      "result": null
     },
     "MODE-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -2423,9 +2422,17 @@
       "action": "review",
       "claim_id": "1377d30e649940088e8dccd1a6fae0cf",
       "at": "2026-11-20T16:52:23+00:00"
+    },
+    {
+      "operation_id": "bbc7703de9774f229f4cc6807acc1ed7",
+      "task": "CAN-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "claim",
+      "claim_id": "f0173bc6291a4dd2b8fc72ad0de8fffc",
+      "at": "2026-11-20T16:52:48+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:52:23+00:00",
+  "updated_at": "2026-11-20T16:52:48+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {

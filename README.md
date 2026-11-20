@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:52:23+00:00**. Изменение № **233**.
+Обновлено UTC: **2026-11-20T16:52:48+00:00**. Изменение № **234**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -18,7 +18,7 @@
 | TOY-04 — Полная последовательность переключений | На проверке | Codex — переключения Toyota под нагрузкой \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy04-loaded-map-32e6ac79 | 2026-11-20T16:50:12+00:00 | Передаю интегратору. 24 точки D при двух синтетических нагрузках, пороги из S01, GP из квалифицированного снимка, логические S1/S2 и потеря события PASS. PC 35 шагов/71 тест, M32R 17 компонентов, NATIVE 16+15. Отчёт toy04-loaded-gears.md. Физическая нагрузка, R, ручное управление и гидравлика открыты. / commit 08b06eb14f7ccb6f46b3589f7f0131e143d529d8 |
 | TOY-05 — Обучение и сохранение адаптаций | Работа завершена | Codex TOY-05 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy05-adaptation-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:33:11+00:00 | Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте. / commit dbc1762ffa86d37e2901b3a62f60b57a71763c24 |
 | TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — давление SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-pressure-fea1b366 | 2026-11-20T16:44:18+00:00 | 05DCE8 → 055C5E: 15 760 сочетаний совпали с R3, общие 35 шагов ПК/71 тест PASS. M32R: 11 случаев/2 отказа и 17 компонентных прогонов PASS. Расширенная модель: +356 байт во втором окне, запас 324. Интегратору: отчёт verification/project-audit/toy06-slu-pressure.md для общего аудита. 05DC5E, снимок SECONDARY и физический канал открыты. / commit 583cf4a14897616018a6e08ee84dfa5c627b84b9 |
-| CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Работа завершена | Codex CAN-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-1120-c7e4 | 2026-11-20T16:26:06+00:00 | Reviewed RX epoch work integrated by 952658b and recorded in the shared audit. This closes the reservation; stock CAN startup and hardware verification remain open. / commit ca268743dfe173f93121d6b9148e0951932cfc9d |
+| CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Выполняется | Codex CAN-01 FullCAN coherence \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-rx-coherence-1120-c7e4 | 2026-11-20T16:52:48+00:00 | Revalidate FullCAN receive-mode control and frame format after the volatile copy before publishing RPM/ECT or RB status. Exercise invalidation during the copy on host and M32R. |
 | CAN-02 — Общий диспетчер CAN13 | Работа завершена | Codex CAN-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/can02-telemetry-timeout-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:34:59+00:00 | Принято в опубликованную main b2ca79d после независимых и общих проверок. Аудит integration-2 содержит результаты и ограничения. Технические остатки ТЗ остаются открытыми. / commit b48b4e50878c8173a40d65134213fbb8fdc37aa1 |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex CAN-03 reset generation \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can03-epoch-1120-c7e4 | 2026-11-20T16:39:51+00:00 | Native H03 setup hook revokes TX13 grant before OEM and advances generation on return. PASS 16 lifecycle, 12 TX gate, 17 M32R components. BasicCAN flags persist in RAM shadow. See verification/project-audit/can03-native-epoch.md; target RAM, RX drain and bench remain open. / commit 6fc5a51975cd6bbbdf5bc4985d5d61b811435b6b |
 | CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 TX loss \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can04-tx-loss-1120-c7e4 | 2026-11-20T16:45:25+00:00 | Wrong-ID TX13 completion and BusOff now revoke RB torque confirmation and block reuse until a fresh generation. 35 PC steps/71 tests, 17 M32R component runs, Bosch normal and lost-status dialogues PASS_OFFLINE_ONLY. See verification/project-audit/can04-tx-lease-loss.md. / commit e02095c6b8d294dacd71db21ea36f970019d0790 |
@@ -54,6 +54,14 @@
 
 - targets/bosch/replay_e4m3_torque.py
 - verification/project-audit/aud01-pinned-replay.md
+
+### CAN-01
+
+Чат: Codex CAN-01 FullCAN coherence. Claim ID: f0173bc6291a4dd2b8fc72ad0de8fffc.
+
+- targets/lfj8/host_check.c
+- targets/lfj8/lfj8_donor_io.c
+- verification/project-audit/can01-rx-coherence.md
 
 ### CAN-03
 
@@ -299,6 +307,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:52:48+00:00 | CAN-01 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:52:23+00:00 | TOY-02 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:51:27+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:51:21+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
@@ -328,4 +337,3 @@
 | 2026-11-20T16:44:55+00:00 | H03-05 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:44:18+00:00 | TOY-06 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:44:10+00:00 | DTC-03 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
-| 2026-11-20T16:43:59+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
