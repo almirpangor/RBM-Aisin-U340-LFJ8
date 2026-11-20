@@ -1,30 +1,31 @@
 {
   "schema_version": 1,
-  "sequence": 311,
+  "sequence": 312,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
-      "label": "Основной чат — общая сборка 31 результата",
+      "label": "Основной чат — продолжения в общем списке",
       "branch": "codex/integration-01a1f76d-20261120",
       "files": [
+        "AGENTS.md",
         "README.md",
-        "controller/build_target.py",
-        "controller/size_port.py",
         "data/project-tasks.json",
         "docs/integration-next-tasks.md",
+        "docs/multi-chat.md",
         "docs/project-map.md",
-        "docs/working-set.md",
-        "targets/lfj8/lfj8_h03_storage.h",
-        "tools/check_integrated_h03.py",
-        "verification/project-audit/2026-11-20-integration-3.json",
-        "verification/project-audit/integration-3/"
+        "tests/test_project_status.py",
+        "tests/test_task_coordination.py",
+        "tools/project_status.py",
+        "tools/task_coordination.py",
+        "verification/project-audit/2026-11-20-task-board-continuations.json",
+        "verification/project-audit/task-board-continuations/"
       ],
-      "stage": "done",
-      "claim_id": "d5108ac7030f46e2afe22bca1a1ee468",
-      "claimed_at": "2026-11-20T17:16:57+00:00",
-      "updated_at": "2026-11-20T17:49:25+00:00",
-      "note": "Интеграционная порция опубликована в main 48e51c8, CI и актуальность доказательств прошли. Общий выпуск остаётся открытым; 8 конкретных заданий и остаток основного чата сохранены.",
-      "result": "48e51c80bac085fe67f60e1b399328879916dd28"
+      "stage": "in_progress",
+      "claim_id": "d172b8b15e634c75ade19c907f4a8594",
+      "claimed_at": "2026-11-20T17:52:56+00:00",
+      "updated_at": "2026-11-20T17:52:56+00:00",
+      "note": "Добавляю сделанное, остаток, следующий шаг и доступность продолжения в существующие карточки и task-board. Готовность прошивки не изменяю.",
+      "result": null
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -3058,9 +3059,17 @@
       "action": "complete",
       "claim_id": "d5108ac7030f46e2afe22bca1a1ee468",
       "at": "2026-11-20T17:49:25+00:00"
+    },
+    {
+      "operation_id": "436f5f8641f44aa2a44693919340bd30",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "d172b8b15e634c75ade19c907f4a8594",
+      "at": "2026-11-20T17:52:56+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:49:25+00:00",
+  "updated_at": "2026-11-20T17:52:56+00:00",
   "main_commit": "48e51c80bac085fe67f60e1b399328879916dd28",
   "catalog": [
     {
