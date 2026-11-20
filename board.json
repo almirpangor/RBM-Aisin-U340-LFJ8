@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 221,
+  "sequence": 222,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -100,8 +100,8 @@
       "stage": "in_progress",
       "claim_id": "76adb69439704129b7ae37eeace39df2",
       "claimed_at": "2026-11-20T16:47:37+00:00",
-      "updated_at": "2026-11-20T16:47:37+00:00",
-      "note": "Prevent packaging a renamed known OFFLINE_ONLY BIN by checking content against archived files and verification manifests of the pinned source commit. Preserve non-release archives and verification status semantics.",
+      "updated_at": "2026-11-20T16:48:41+00:00",
+      "note": "Original packager accepted a renamed archived or manifest-only OFFLINE_ONLY image in tests. SHA-256 guard added. Three package regressions pass; testing pinned project sources and real offline images.",
       "result": null
     },
     "H03-03": {
@@ -2318,9 +2318,17 @@
       "action": "heartbeat",
       "claim_id": "5e4502867edb4625887df3f56fafb8b0",
       "at": "2026-11-20T16:48:04+00:00"
+    },
+    {
+      "operation_id": "93f2e25d71e345f6be2477977366df2f",
+      "task": "REL-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "76adb69439704129b7ae37eeace39df2",
+      "at": "2026-11-20T16:48:41+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:48:04+00:00",
+  "updated_at": "2026-11-20T16:48:41+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
