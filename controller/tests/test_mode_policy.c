@@ -179,8 +179,54 @@ static void check_held_shift_at_mode_edge(const RbmU340ePolicy *policy, uint8_t 
     }
 }
 
+static void expect_uninitialized(RbmU340eController *controller, const RbmU340eInput *input)
+{
+    RbmU340eOutput output = {.requested_gear = 4u, .auto_request_valid = 1u, .relay_mask = 3u};
+    assert(!rbm_u340e_step(controller, input, &output));
+    assert(!output.requested_gear && !output.auto_request_valid && !output.relay_mask);
+}
+
+static void check_initialization_admission(void)
+{
+    RbmU340eController controller = {0};
+    RbmU340eInput input = {
+        .selector = RBM_U340E_SELECTOR_D, .actual_gear = 3, .allowed_gears = 15,
+        .buttons_valid = 1, .auto_request_valid = 1, .auto_request.speed_4549 = 254,
+    };
+    expect_uninitialized(&controller, &input);
+
+    const RbmU340ePolicy policy = {
+        .initial_mode = RBM_U340E_AUTO, .initial_overdrive_enabled = 1u,
+        .overdrive_limit_modes = RBM_U340E_OVERDRIVE_AUTO,
+    };
+    const RbmU340ePolicy invalid_policies[] = {
+        {.initial_mode = 2u},
+        {.initial_overdrive_enabled = 2u},
+        {.manual_selectors = 1u << RBM_U340E_SELECTOR_R},
+        {.overdrive_limit_modes = 0x80u},
+    };
+    const RbmU340ePolicy *const refused[] = {
+        NULL, &invalid_policies[0], &invalid_policies[1],
+        &invalid_policies[2], &invalid_policies[3],
+    };
+    for (unsigned i = 0; i < sizeof refused / sizeof refused[0]; ++i) {
+        assert(rbm_u340e_init(&controller, &policy));
+        assert(sample(&controller, &input, 0).requested_gear == 4u);
+        assert(!rbm_u340e_init(&controller, refused[i]));
+        expect_uninitialized(&controller, &input);
+
+        assert(rbm_u340e_init(&controller, &policy));
+        const RbmU340eOutput output = sample(
+            &controller, &input, RBM_U340E_BUTTON_MODE | RBM_U340E_BUTTON_OVERDRIVE);
+        assert(output.requested_gear == 4u && output.auto_request_valid);
+        assert(output.mode == RBM_U340E_AUTO && output.overdrive_enabled && !output.overdrive_pressed);
+    }
+}
+
 int main(void)
 {
+    check_initialization_admission();
+
     FactoryRequestState donor = {0};
     factory_lookup_thresholds(&donor);
     /* The normal Toyota bank produces 2 and 3 at the first two thresholds.
@@ -209,5 +255,6 @@ int main(void)
     }
     printf("MODE-03 policy: %u restart profiles, %u conflict profiles, %u held-shift transitions"
            " and %u gear proposal cases PASS.\n", restart_cases, restart_cases, 2u * restart_cases, range_cases);
+    puts("MODE-03 initialization: cold state and five rejected profiles with recovery PASS.");
     return 0;
 }

@@ -64,6 +64,7 @@ typedef struct {
     uint8_t overdrive_enabled;
     uint8_t buttons_seen;
     uint8_t previous_buttons;
+    uint8_t initialized; /* Set by successful policy initialization. */
 } RbmU340eController;
 
 typedef struct {
@@ -88,8 +89,11 @@ typedef struct {
     uint8_t auto_request_valid;
 } RbmU340eOutput;
 
-/* Both calls return 1 on success. Init validates every policy field. Step
- * requires an initialized controller and returns a proposal in gear units.
+/* Both calls return 1 on success. Init revokes any previous admission and
+ * validates every policy field before enabling the controller. Step rejects
+ * zero-initialized state and state left by a failed init with empty output.
+ * Reinitialize retained state on startup before calling step.
+ * A successful step returns a proposal in gear units.
  * A button conflict suppresses both the gear and donor Auto proposals in
  * either mode. Mode and Overdrive edges still update their state.
  * If an input snapshot is absent or rejected, the next valid button sample
