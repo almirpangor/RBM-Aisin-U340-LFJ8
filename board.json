@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 525,
+  "sequence": 526,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -167,12 +167,12 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/h03-02-sensor-placement.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "15e6e783e4d74a5b9c000d3658becff0",
       "claimed_at": "2026-11-20T19:37:59+00:00",
-      "updated_at": "2026-11-20T19:42:09+00:00",
-      "note": "Девять врезок включены в общую компоновку. Линк обёрток подтвердил OEM-продолжения, M32R S51/S83 и 11 пар ATF прошли. Проверяю полный набор на main.",
-      "result": null
+      "updated_at": "2026-11-20T19:49:29+00:00",
+      "note": "9 нативных S51/S83/ATF врезок в общей компоновке, 7 OEM-продолжений подтверждены ELF. 41 этап ПК, 21 native + phase-boot отдельно (38/80), 6 размещённых сценариев. 95402 байта с CAN и RAM-псевдонимами; FAIL_BINDINGS: application_binding и sensor_config. Отчёт h03-02-sensor-placement.md.",
+      "result": "e27adef36dc49933acdd8062446e3c4fe798f77a"
     },
     "CAN-05": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -4783,9 +4783,17 @@
       "action": "review",
       "claim_id": "c7107b9bc8974c67b7113c75529f935c",
       "at": "2026-11-20T19:48:44+00:00"
+    },
+    {
+      "operation_id": "20ee25d3dc8444a2b6f63b0c13526bc0",
+      "task": "H03-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "15e6e783e4d74a5b9c000d3658becff0",
+      "at": "2026-11-20T19:49:29+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:48:44+00:00",
+  "updated_at": "2026-11-20T19:49:29+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
