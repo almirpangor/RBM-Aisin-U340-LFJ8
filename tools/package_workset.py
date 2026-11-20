@@ -37,7 +37,21 @@ def write_file(archive: ZipFile, name: str, content: bytes) -> dict:
     return {"path": name, "bytes": len(content), "sha256": sha256(content).hexdigest()}
 
 
-def verify_firmware_pair(produced: list[tuple[dict, bytes]]) -> None:
+def offline_firmware_hashes(source: ZipFile) -> set[str]:
+    hashes = set()
+    for name in source.namelist():
+        path = PurePosixPath(name)
+        if path.suffix.lower() == ".bin" and "OFFLINE_ONLY" in name.upper():
+            hashes.add(sha256(source.read(name)).hexdigest())
+        elif name.startswith("verification/") and path.name == "manifest.json":
+            manifest = json.loads(source.read(name))
+            status = manifest.get("status") if isinstance(manifest, dict) else None
+            if isinstance(status, str) and "OFFLINE_ONLY" in status.upper():
+                hashes.add(manifest["sha256"].lower())
+    return hashes
+
+
+def verify_firmware_pair(produced: list[tuple[dict, bytes]], offline_hashes: set[str]) -> None:
     firmware = [(item, content) for item, content in produced
                 if PurePosixPath(item["path"]).suffix.lower() == ".bin"
                 or item["role"] in FIRMWARE_SIZES]
@@ -51,6 +65,8 @@ def verify_firmware_pair(produced: list[tuple[dict, bytes]]) -> None:
         labels = (item["file"], item["path"], item["status"])
         if any("OFFLINE_ONLY" in label.upper() for label in labels) or content.startswith(b"\x7fELF"):
             raise ValueError(f"Проверочный образ или ELF не подходит для комплекта BIN: {role}")
+        if item["sha256"] in offline_hashes:
+            raise ValueError(f"Образ {role} совпадает по SHA-256 с OFFLINE_ONLY исходного коммита")
         if (item.get("build_verified") is not True or item.get("model_verified") is not True
                 or type(item.get("hardware_verified")) is not bool):
             raise ValueError(f"Требуются подтверждения сборки и модели и отдельный статус стенда: {role}")
@@ -69,20 +85,18 @@ def create_workset(record_path: Path, output: Path, *, firmware_pair: bool = Fal
         if sha256(content).hexdigest() != item["sha256"]:
             raise ValueError(f"Файл сборки отличается от проверенного: {file}")
         produced.append((item, content))
-    if firmware_pair:
-        verify_firmware_pair(produced)
-
     buffer = BytesIO()
-    with ZipFile(buffer, "w") as archive:
+    with ZipFile(BytesIO(source_archive)) as source, ZipFile(buffer, "w") as archive:
+        if firmware_pair:
+            verify_firmware_pair(produced, offline_firmware_hashes(source))
         manifest = {key: value for key, value in record.items() if key != "artifacts"}
         manifest["source_commit"] = commit
         manifest["files"] = []
-        with ZipFile(BytesIO(source_archive)) as source:
-            for name in sorted(source.namelist()):
-                if name.endswith("/"):
-                    continue
-                item = write_file(archive, f"source/{name}", source.read(name))
-                manifest["files"].append(item)
+        for name in sorted(source.namelist()):
+            if name.endswith("/"):
+                continue
+            item = write_file(archive, f"source/{name}", source.read(name))
+            manifest["files"].append(item)
         for item, content in produced:
             entry = write_file(archive, item["path"], content)
             entry.update(role=item["role"], status=item["status"])
