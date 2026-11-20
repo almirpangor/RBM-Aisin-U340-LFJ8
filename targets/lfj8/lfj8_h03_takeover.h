@@ -70,11 +70,13 @@ int lfj8_h03_takeover_prepare_plan(Lfj8H03Takeover *state, const Lfj8H03OutputPl
  * of either phase must skip the original OEM call after this function. */
 int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation);
 
-/* Revoke on a fault event, even if its OEM flag may be cleared before apply.
+/* Revoke on a fault event under the same exclusion used for apply.
+ * The caller must already hold it across the latch store and this call.
+ * This covers an OEM flag that may be cleared before apply.
  * Keep the generation consumed and invoke the commissioned inhibit callback.
  * For the native P0745 hook the linker binds rbm_h03_takeover_state to the
  * existing takeover object. Initialize that object before exposing the hook. */
-void lfj8_h03_takeover_revoke(Lfj8H03Takeover *state);
+void lfj8_h03_takeover_revoke_locked(Lfj8H03Takeover *state);
 
 /* Check while waiting for the stock flag. Fault revokes a staged command
  * under the I/O lock. A fresh publication remains pending for take_phase. */

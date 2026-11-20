@@ -10,6 +10,7 @@ rbm_h03_slt_fault_hook:
     push \reg
     .endr
     mvfc r7,psw
+h03_slt_fault_mask_irq:
     clrpsw #0x40
     push r7
     mvfachi r7
@@ -20,13 +21,14 @@ rbm_h03_slt_fault_hook:
     ldi r0,#1
     stb r0,@r4
     ld24 r0,#rbm_h03_takeover_state
-    bl lfj8_h03_takeover_revoke
+    bl lfj8_h03_takeover_revoke_locked
 
     pop r7
     mvtaclo r7
     pop r7
     mvtachi r7
     pop r7
+h03_slt_fault_restore_irq:
     mvtc r7,psw
     .irp reg,r7,r6,r5,r4,r3,r2,r1,r0
     pop \reg

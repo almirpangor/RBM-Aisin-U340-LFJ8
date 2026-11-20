@@ -3,6 +3,7 @@
 import argparse
 from hashlib import sha256
 import json
+import re
 from pathlib import Path
 import subprocess
 from tempfile import TemporaryDirectory
@@ -24,6 +25,7 @@ START = """
     .global _start
 _start:
     ld24 sp,#0x9ffffc
+    setpsw #0x40
     bl main
     mv r1,r0
     ldi r0,#1
@@ -328,6 +330,59 @@ SCENARIOS = (
 )
 
 
+def probe_fault_hook(run, work, debugger, active):
+    script = work / "probe-hook.gdb"
+    condition = "!=" if active else "=="
+    preserved = [f"$r{i}" for i in range(1, 13)] + ["$fp", "$lr", "$psw", "$accl", "$acch"]
+    registers = ", ".join(preserved)
+    register_format = " ".join(["%08x"] * len(preserved))
+    script.write_text(f"""
+set confirm off
+set pagination off
+target sim --memory-size 16M
+load
+break *rbm_h03_slt_fault_hook if rbm_h03_takeover_state.ops {condition} 0
+run
+printf "CPU_BEFORE {register_format}\\n", {registers}
+set $start_sp = $sp
+set $low_sp = $sp
+set $steps = 0
+set $mask_start = -1
+set $mask_end = -1
+while $pc != 0x034850 && $steps < 512
+  if $pc == &h03_slt_fault_mask_irq
+    set $mask_start = $steps
+  end
+  if $pc == &h03_slt_fault_restore_irq
+    set $mask_end = $steps + 1
+  end
+  stepi
+  if $sp < $low_sp
+    set $low_sp = $sp
+  end
+  set $steps = $steps + 1
+end
+printf "HOOK %08x %08x %08x %08x %d %d %d\\n", $pc, $start_sp, $low_sp, $sp, $steps, $mask_start, $mask_end
+printf "CPU_AFTER {register_format}\\n", {registers}
+printf "LATCH %08x %08x\\n", $r0, *(unsigned char*)0x806356
+""", encoding="ascii")
+    log = run(debugger, "--batch", "-nx", "-x", script.name, "fixture.elf")
+    result = re.search(rb"^HOOK ((?:[0-9a-f]{8} ){4})([0-9-]+ [0-9-]+ [0-9-]+)\r?$", log, re.M)
+    if result is None:
+        raise ValueError(f"P0745 hook trace did not complete (owner active={active}): {log[-1200:]!r}")
+    pc, start, low, end = (int(field, 16) for field in result[1].split())
+    steps, mask_start, mask_end = (int(field) for field in result[2].split())
+    if pc != 0x034850 or start != end or low >= start or not 0 <= mask_start < mask_end <= steps:
+        raise ValueError(f"Invalid P0745 stack or mask trace (owner active={active}): {result[0]!r}")
+    before = re.search(rb"^CPU_BEFORE ([0-9a-f ]+)\r?$", log, re.M)
+    after = re.search(rb"^CPU_AFTER ([0-9a-f ]+)\r?$", log, re.M)
+    if before is None or after is None or before[1] != after[1] or (
+            re.search(rb"^LATCH 00000001 00000001\r?$", log, re.M) is None):
+        raise ValueError(f"P0745 hook changed the continuation context (owner active={active})")
+    return {"additional_stack_bytes": start - low, "simulator_steps": steps,
+            "mask_through_restore_steps": mask_end - mask_start}
+
+
 def check(base, compiler):
     identity = identify_h03(base)
     rom = base.read_bytes()
@@ -355,7 +410,7 @@ def check(base, compiler):
         simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")
         objcopy = compiler.with_name(f"m32r-elf-objcopy{compiler.suffix}")
         for hooked in (0, 1):
-            run(compiler, "-m32r", "-Wa,-EB", "-Os", "-ffreestanding", "-nostdlib",
+            run(compiler, "-m32r", "-Wa,-EB", "-Os", "-g", "-ffreestanding", "-nostdlib",
                 "-ffunction-sections", "-fdata-sections",
                 "-std=c11", "-Wall", "-Wextra", "-Werror", "-Wl,-T,fixture.ld,--gc-sections",
                 f"-DH03_SLT_FAULT_HOOK={hooked}", f"-I{here}", f"-I{root / 'controller/include'}",
@@ -377,6 +432,12 @@ def check(base, compiler):
                     raise ValueError(f"Unexpected P0745 result in {scenario} (hooked={hooked})") from error
                 raise
 
+        debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
+        hook_probe = {
+            "owner_uninitialized": probe_fault_hook(run, work, debugger, False),
+            "active_revoke_with_test_inhibit": probe_fault_hook(run, work, debugger, True),
+        }
+
     return {
         "base": identity,
         "compiler": version,
@@ -394,6 +455,7 @@ def check(base, compiler):
         "latch_hook": "0x03484C",
         "takeover_can_apply_old_generation_after_clear_without_latch_hook": True,
         "latch_hook_revokes_old_generation_and_invokes_inhibit": True,
+        "latch_hook_probe": hook_probe,
         "hardware_executed": False,
         "target_image_emitted": False,
     }
