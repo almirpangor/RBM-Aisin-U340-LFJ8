@@ -1,33 +1,32 @@
 {
   "schema_version": 1,
-  "sequence": 463,
+  "sequence": 464,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
-      "label": "Основной чат — общая компоновка и интеграция",
+      "label": "Основной чат — объединение и два BIN",
       "branch": "codex/integration-01a1f76d-20261120",
       "files": [
         "README.md",
-        "controller/build_target.py",
-        "controller/size_port.py",
         "data/project-tasks.json",
         "docs/lfj8-h03-memory-layout.md",
         "docs/project-map.md",
         "docs/working-set.md",
         "targets/lfj8/check_h03_storage.py",
-        "targets/lfj8/lfj8_h03_layout.py",
+        "targets/lfj8/h03_storage_layout.c",
         "targets/lfj8/lfj8_h03_storage.h",
-        "tests/test_h03_layout.py",
+        "tools/build_pc_checks.py",
         "tools/check_h03_image_layout.py",
-        "verification/project-audit/2026-11-20-memory-layout.json",
-        "verification/project-audit/memory-layout/"
+        "tools/check_integrated_h03.py",
+        "verification/project-audit/2026-11-21-integration.json",
+        "verification/project-audit/integration-20261121/"
       ],
-      "stage": "done",
-      "claim_id": "7247550aeb1e414987b6eb6a1a7b27bd",
-      "claimed_at": "2026-11-20T18:09:24+00:00",
-      "updated_at": "2026-11-20T18:37:51+00:00",
-      "note": "Принято в опубликованную main 760628b. Проверки и ограничения в docs/lfj8-h03-memory-layout.md. Закрыта порция, технический остаток сохранён в прежних карточках; два рабочих BIN ещё не выпущены.",
-      "result": "760628bd249b19051339403f5663e78187d12a9a"
+      "stage": "in_progress",
+      "claim_id": "52e7f6ec20834ce89a8c8faa785fe86b",
+      "claimed_at": "2026-11-20T19:11:44+00:00",
+      "updated_at": "2026-11-20T19:11:44+00:00",
+      "note": "Объединяю 28 опубликованных результатов, повторяю общую сборку и размещение памяти. Проверяю реальные условия выпуска пары BIN; статусы модели не заменяют готовность.",
+      "result": null
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -4264,9 +4263,17 @@
       "action": "review",
       "claim_id": "af75614181e6438cbed6652ba8147606",
       "at": "2026-11-20T19:07:53+00:00"
+    },
+    {
+      "operation_id": "4bc7a76402e247baaa81a01710a3ef54",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "52e7f6ec20834ce89a8c8faa785fe86b",
+      "at": "2026-11-20T19:11:44+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:07:53+00:00",
+  "updated_at": "2026-11-20T19:11:44+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
