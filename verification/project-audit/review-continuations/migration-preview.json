@@ -1,0 +1,10 @@
+{
+  "status": "PASS_READ_ONLY_MIGRATION_PREVIEW",
+  "source_board": "d3890fec0d3672cd5a3d324e86563e72892603e6",
+  "source_version": 1,
+  "new_version": 2,
+  "claim_records_preserved": 32,
+  "pending_reviews_preserved": 31,
+  "active_reservations_preserved": 1,
+  "published": false
+}

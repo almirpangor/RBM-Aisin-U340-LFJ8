@@ -157,51 +157,206 @@ class CoordinationTests(unittest.TestCase):
                                result=result, note="Invalid result")
         self.assertEqual(self.ca.read()[1]["claims"]["TEST-01"]["stage"], "in_progress")
 
-    def test_only_current_review_can_complete(self):
-        record = self.claim()
-        key = {"claim_id": record["claim_id"]}
-        self.run_git(self.a, "push", "origin", self.seed + ":refs/heads/codex/chat-a")
-        with self.assertRaises(Conflict):
-            self.ca.change("complete", "TEST-01", "chat-a", result=self.seed, note="No review", **key)
-        for action in ("resume", "block", "heartbeat"):
-            self.ca.change("review", "TEST-01", "chat-a", result=self.seed, note="Reviewed", **key)
-            kwargs = {"files": ["a.c", "extra.c"]} if action == "heartbeat" else {}
-            updated = self.ca.change(action, "TEST-01", "chat-a", note="New work", **key, **kwargs)
-            self.assertIsNone(updated["result"])
-            self.assertNotEqual(updated["stage"], "review")
+    def submit_result(self):
+        claim = self.claim()
+        self.run_git(self.a, "checkout", "-b", "codex/chat-a")
+        (self.a / "a.c").write_text("/* first submitted result */\n", encoding="utf-8")
+        self.run_git(self.a, "add", "a.c")
+        self.run_git(self.a, "commit", "-m", "First portion")
+        result = self.run_git(self.a, "rev-parse", "HEAD")
+        self.run_git(self.a, "push", "origin", "codex/chat-a")
+        self.ca.change("review", "TEST-01", "chat-a", claim_id=claim["claim_id"],
+                       result=result, note="First review")
+        return claim, result
+
+    def include_review(self, repo, branch, result):
+        self.run_git(repo, "fetch", "origin", "codex/chat-a")
+        self.run_git(repo, "branch", branch, result)
+
+    def test_review_releases_same_task_and_preserves_submission(self):
+        first, result = self.submit_result()
+        self.run_git(self.b, "branch", "codex/chat-b", self.seed)
+        with self.assertRaisesRegex(Conflict, "Include pending result"):
+            self.claim(self.cb, owner="chat-b")
+        self.run_git(self.b, "checkout", "codex/chat-b")
+        self.run_git(self.b, "merge", "--ff-only", result)
+        second = self.claim(self.cb, owner="chat-b")
+        self.assertNotEqual(second["claim_id"], first["claim_id"])
+        self.assertEqual(second["based_on_reviews"], [first["claim_id"]])
+        _, board = self.ca.view()
+        self.assertEqual(board["reviews"][first["claim_id"]]["result"], result)
+        self.assertEqual(board["reviews"][first["claim_id"]]["stage"], "review")
+        self.assertEqual(board["claims"]["TEST-01"], second)
+        page = render_board(board)
+        self.assertIn("Результаты на проверке — резерв свободен", page)
+        self.assertIn(result[:12], page)
+        for action in ("resume", "heartbeat", "release"):
             with self.assertRaises(Conflict):
-                self.ca.change("complete", "TEST-01", "chat-a", result=self.seed, note="Old review", **key)
-        self.ca.change("review", "TEST-01", "chat-a", result=self.seed, note="Reviewed again", **key)
-        same = self.ca.change("heartbeat", "TEST-01", "chat-a", files=["extra.c", "a.c"], **key)
-        self.assertEqual(same["stage"], "review")
-        self.run_git(self.a, "commit", "--allow-empty", "-m", "Different main commit")
-        other = self.run_git(self.a, "rev-parse", "HEAD")
-        self.run_git(self.a, "push", "origin", "main")
-        with self.assertRaises(Conflict):
-            self.ca.change("complete", "TEST-01", "chat-a", result=other, note="Wrong result", **key)
-        self.ca.change("complete", "TEST-01", "chat-a", result=self.seed, note="Exact review", **key)
+                self.ca.change(action, "TEST-01", "chat-a", claim_id=first["claim_id"], note="Stale lease")
 
-    def test_resume_racing_with_complete_preserves_new_work(self):
-        record = self.claim()
-        key = {"claim_id": record["claim_id"]}
-        self.run_git(self.a, "push", "origin", self.seed + ":refs/heads/codex/chat-a")
-        self.ca.change("review", "TEST-01", "chat-a", result=self.seed, note="Reviewed", **key)
+    def test_complete_uses_saved_review_without_touching_new_editor(self):
+        first, result = self.submit_result()
+        self.include_review(self.b, "codex/chat-b", result)
+        second = self.claim(self.cb, owner="chat-b")
+        key = {"claim_id": first["claim_id"]}
+        with self.assertRaises(CoordinationError):
+            self.ca.change("complete", "TEST-01", "chat-a", result=result, note="Not in main", **key)
+        self.run_git(self.a, "push", "origin", result + ":refs/heads/main")
+        for owner, task, wrong_result in (("chat-b", "TEST-01", result),
+                                           ("chat-a", "TEST-02", result),
+                                           ("chat-a", "TEST-01", self.seed)):
+            with self.assertRaises(Conflict):
+                self.ca.change("complete", task, owner, result=wrong_result, note="Wrong review", **key)
+        done = self.ca.change("complete", "TEST-01", "chat-a", result=result, note="Accepted",
+                              operation_id="accepted-first", **key)
+        board = self.ca.read()[1]
+        self.assertEqual(done["stage"], "done")
+        self.assertEqual(board["claims"]["TEST-01"], second)
+        self.assertEqual(board["reviews"][first["claim_id"]]["stage"], "done")
+        retried = self.ca.change("complete", "TEST-01", "chat-a", result=result, note="Retry",
+                                 operation_id="accepted-first", **key)
+        self.assertEqual(retried, done)
+        self.assertEqual(self.ca.read()[1]["sequence"], board["sequence"])
+
+    def test_review_allows_unrelated_files_and_requires_shared_file_ancestry(self):
+        first, result = self.submit_result()
+        unrelated = self.claim(self.cb, task="TEST-02", owner="chat-b")
+        with self.assertRaisesRegex(Conflict, "Include pending result"):
+            self.cb.change("heartbeat", "TEST-02", "chat-b", claim_id=unrelated["claim_id"],
+                           files=["a.c", "b.c"])
+        self.assertEqual(self.ca.read()[1]["claims"]["TEST-02"]["files"], ["b.c"])
+        self.include_review(self.b, "codex/chat-b", result)
+        extended = self.cb.change("heartbeat", "TEST-02", "chat-b", claim_id=unrelated["claim_id"],
+                                  files=["a.c", "b.c"])
+        self.assertEqual(extended["based_on_reviews"], [first["claim_id"]])
+        with self.assertRaises(Conflict):
+            self.claim(task="TEST-03", owner="chat-c", files=["A.c"])
+
+    def test_same_editor_can_continue_with_new_claim_on_same_branch(self):
+        first, result = self.submit_result()
+        second = self.claim()
+        self.assertNotEqual(second["claim_id"], first["claim_id"])
+        self.assertEqual(second["based_on_reviews"], [first["claim_id"]])
+        self.assertEqual(self.ca.read()[1]["reviews"][first["claim_id"]]["result"], result)
+
+    def test_new_submission_cannot_drop_its_pending_dependency(self):
+        first, result = self.submit_result()
+        second = self.claim()
+        with self.assertRaisesRegex(Conflict, "Include pending result"):
+            self.ca.change("review", "TEST-01", "chat-a", claim_id=second["claim_id"],
+                           result=self.seed, note="Loses first result")
+        board = self.ca.read()[1]
+        self.assertEqual(board["claims"]["TEST-01"]["stage"], "in_progress")
+        self.assertEqual(board["reviews"][first["claim_id"]]["result"], result)
+
+    def test_multiple_reviews_survive_later_claims_and_acceptance(self):
+        first, result = self.submit_result()
+        second = self.claim()
+        self.run_git(self.a, "commit", "--allow-empty", "-m", "Second portion")
+        result2 = self.run_git(self.a, "rev-parse", "HEAD")
+        self.run_git(self.a, "push", "origin", "codex/chat-a")
+        self.ca.change("review", "TEST-01", "chat-a", claim_id=second["claim_id"],
+                       result=result2, note="Second review")
+        third = self.claim()
+        self.assertEqual(set(third["based_on_reviews"]), {first["claim_id"], second["claim_id"]})
+        self.run_git(self.a, "push", "origin", result2 + ":refs/heads/main")
+        for c, sha in ((first, result), (second, result2)):
+            self.ca.change("complete", "TEST-01", "chat-a", claim_id=c["claim_id"],
+                           result=sha, note="Accepted portion")
+        board = self.ca.read()[1]
+        self.assertEqual(board["claims"]["TEST-01"], third)
+        self.assertEqual(len(board["reviews"]), 2)
+        self.assertTrue(all(r["stage"] == "done" for r in board["reviews"].values()))
+
+    def test_simultaneous_continuations_have_one_winner(self):
+        first, result = self.submit_result()
+        self.include_review(self.b, "codex/chat-b", result)
+        outcomes = self.race("TEST-01", "TEST-01")
+        self.assertEqual(sum(isinstance(o, dict) for o in outcomes), 1)
+        self.assertEqual(sum(isinstance(o, Conflict) for o in outcomes), 1)
+        self.assertEqual(self.ca.read()[1]["reviews"][first["claim_id"]]["result"], result)
+
+    def test_acceptance_racing_with_new_claim_preserves_new_work(self):
+        first, result = self.submit_result()
+        self.include_review(self.b, "codex/chat-b", result)
+        self.run_git(self.a, "push", "origin", result + ":refs/heads/main")
         producer = self.cb
-
-        class ResumedBeforePush(TaskBoard):
-            first = True
+        new_claim = []
+        class ContinuedBeforePush(TaskBoard):
+            first_push = True
             def push(self, commit):
-                if self.first:
-                    self.first = False
-                    producer.change("resume", "TEST-01", "chat-a", note="Continue new work", **key)
+                if self.first_push:
+                    self.first_push = False
+                    new_claim.append(producer.change("claim", "TEST-01", "chat-b", label="chat-b",
+                                                     branch="codex/chat-b", note="Continue"))
                 return super().push(commit)
+        accepted = ContinuedBeforePush(self.a).change(
+            "complete", "TEST-01", "chat-a", result=result, claim_id=first["claim_id"], note="Accept old portion")
+        board = self.ca.read()[1]
+        self.assertEqual(accepted["stage"], "done")
+        self.assertEqual(board["claims"]["TEST-01"], new_claim[0])
+        self.assertEqual(board["reviews"][first["claim_id"]]["stage"], "done")
 
+    def test_review_ack_after_another_chat_claims_returns_original_submission(self):
+        record = self.claim()
+        self.run_git(self.a, "push", "origin", self.seed + ":refs/heads/codex/chat-a")
+        self.run_git(self.b, "branch", "codex/chat-b", self.seed)
+        producer = self.cb
+        new_claim = []
+        class ClaimedBeforeAck(TaskBoard):
+            def push(self, commit):
+                result = super().push(commit)
+                if result.returncode == 0:
+                    new_claim.append(producer.change("claim", "TEST-01", "chat-b", label="chat-b",
+                                                     branch="codex/chat-b", note="Continue immediately"))
+                return result
+        submitted = ClaimedBeforeAck(self.a).change(
+            "review", "TEST-01", "chat-a", claim_id=record["claim_id"], result=self.seed,
+            note="Review", operation_id="review-with-new-editor")
+        self.assertEqual(submitted["claim_id"], record["claim_id"])
+        self.assertEqual(submitted["stage"], "review")
+        self.assertEqual(self.ca.read()[1]["claims"]["TEST-01"], new_claim[0])
+        replay = self.ca.change("review", "TEST-01", "chat-a", claim_id=record["claim_id"],
+                                result=self.seed, note="Retry", operation_id="review-with-new-editor")
+        self.assertEqual(replay, submitted)
+
+    def test_v1_migration_preserves_active_claims_and_pending_result(self):
+        first, result = self.submit_result()
+        active = self.claim(task="TEST-02", owner="chat-b")
+        blocked = self.ca.change("block", "TEST-02", "chat-b", claim_id=active["claim_id"],
+                                 note="Waiting")
+        tip, legacy = self.ca.read()
+        legacy["schema_version"] = 1
+        legacy.pop("reviews")
+        for event in legacy["events"]:
+            event.pop("record", None)
+        self.assertEqual(self.ca.push(self.ca.make_commit(legacy, tip)).returncode, 0)
+        read_tip, migrated = self.cb.read()
+        self.assertEqual(migrated["schema_version"], 2)
+        self.assertEqual(migrated["claims"], legacy["claims"])
+        self.assertEqual(migrated["reviews"][first["claim_id"]]["result"], result)
+        self.assertEqual(self.ca.read_json(read_tip, "board.json")["schema_version"], 1)
+        self.ca.change("heartbeat", "TEST-02", "chat-b", claim_id=active["claim_id"])
+        saved = self.ca.read_json(self.ca.fetch_tip("task-board"), "board.json")
+        self.assertEqual(saved["schema_version"], 2)
+        self.assertEqual(saved["claims"]["TEST-02"]["stage"], blocked["stage"])
+        self.assertEqual(saved["claims"]["TEST-02"]["claim_id"], active["claim_id"])
+        self.assertEqual(saved["reviews"][first["claim_id"]]["result"], result)
         with self.assertRaises(Conflict):
-            ResumedBeforePush(self.a).change("complete", "TEST-01", "chat-a", result=self.seed,
-                                            note="Finish stale review", **key)
-        current = self.ca.read()[1]["claims"]["TEST-01"]
-        self.assertEqual(current["stage"], "in_progress")
-        self.assertIsNone(current["result"])
+            self.claim(self.cb, "TEST-02", "chat-c")
+        page = render_board(migrated)
+        self.assertIn("Свободна для продолжения; порция на проверке", page)
+        reserved = page.split("## Зарезервированные файлы", 1)[1].split("## Последние события", 1)[0]
+        self.assertNotIn("### TEST-01", reserved)
+        self.assertIn("### TEST-02", reserved)
+
+    def test_missing_review_queue_is_rejected(self):
+        self.claim()
+        tip, board = self.ca.read()
+        board.pop("reviews")
+        self.assertEqual(self.ca.push(self.ca.make_commit(board, tip)).returncode, 0)
+        with self.assertRaisesRegex(CoordinationError, "Missing immutable review queue"):
+            self.cb.read()
 
     def test_linked_worktrees_fetch_without_shared_tracking_ref_updates(self):
         linked = self.root / "linked"

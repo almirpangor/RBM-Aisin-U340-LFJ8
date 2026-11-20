@@ -16,7 +16,8 @@ import sys
 import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
-ACTIVE = {"in_progress", "blocked", "review"}
+SCHEMA_VERSION = 2
+ACTIVE = {"in_progress", "blocked"}
 STAGES = {
     "in_progress": "Выполняется", "blocked": "Ожидает данных / решения",
     "review": "На проверке", "done": "Порция принята", "released": "Освобождена",
@@ -80,9 +81,43 @@ def catalog_entry(task):
     return {key: copy.deepcopy(task[key]) for key in keys if key in task}
 
 
+def upgrade_board(board):
+    """Preserve v1 submissions when separating them from editing leases."""
+    if not isinstance(board, dict) or not isinstance(board.get("claims"), dict):
+        raise CoordinationError("Invalid coordination board")
+    version = board.get("schema_version")
+    if version not in (1, SCHEMA_VERSION):
+        raise CoordinationError("Unsupported coordination board; update tools/task_coordination.py from main")
+    board = copy.deepcopy(board)
+    if version == 1:
+        board["schema_version"] = SCHEMA_VERSION
+        board["reviews"] = {}
+        for task_id, claim in board["claims"].items():
+            if claim["stage"] == "review":
+                board["reviews"][claim["claim_id"]] = {
+                    **copy.deepcopy(claim), "task": task_id,
+                    "submitted_at": claim["updated_at"],
+                }
+    if not isinstance(board.get("reviews"), dict):
+        raise CoordinationError("Missing immutable review queue")
+    for key, review in board["reviews"].items():
+        if (key != review.get("claim_id") or review.get("stage") not in ("review", "done") or
+                not re.fullmatch(r"[0-9a-f]{40}", review.get("result") or "") or
+                not review.get("task") or not review.get("owner") or not review.get("branch")):
+            raise CoordinationError("Invalid saved review")
+    for task_id, claim in board["claims"].items():
+        if claim["stage"] == "review":
+            review = board["reviews"].get(claim["claim_id"])
+            if not review or any(review.get(k) != claim.get(k) for k in ("owner", "result", "stage")) or review["task"] != task_id:
+                raise CoordinationError("Submitted claim has no matching review")
+    return board
+
+
 def work_state(task, claim):
     if claim and claim["stage"] in ACTIVE:
         return STAGES[claim["stage"]]
+    if claim and claim["stage"] == "review":
+        return "Свободна для продолжения; порция на проверке"
     if task["status"] == "deferred":
         return "Отложена владельцем"
     if task["status"] == "closed":
@@ -147,7 +182,10 @@ def render_board(board):
         f"Обновлено UTC: **{board['updated_at']}**. Изменение № **{board['sequence']}**.", "",
         "Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.",
         "Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.",
-        "Задача и пересекающиеся файлы удерживаются в состояниях «Выполняется», «Ожидает» и «На проверке».",
+        "Задача и файлы заняты только в состояниях «Выполняется» и «Ожидает».",
+        "«На проверке» сохраняет сданный коммит в отдельной очереди и освобождает резерв для продолжения.",
+        "Для продолжения включить относящиеся к задаче или файлам сданные коммиты в свою ветку и выполнить новый claim.",
+        "Нужен tools/task_coordination.py из актуальной main: старые клиенты не записывают формат доски 2.",
         "Давняя отметка не освобождается автоматически. Возобновившийся чат обязан проверить свой claim_id.", "",
         f"Каталог задач взят из main {board['main_commit']}.", "",
         "| Задача | Ход работы | Текущий / предыдущий чат | Ветка | Обновление UTC | Что делает / результат |",
@@ -169,6 +207,18 @@ def render_board(board):
                 title, work_state(task, claim),
                 ("" if claim["stage"] in ACTIVE else "Предыдущий: ") + claim["label"] + " [" + claim["owner"] + "]",
                 claim["branch"], claim["updated_at"], note))) + " |")
+    pending = [r for r in board.get("reviews", {}).values() if r["stage"] == "review"]
+    lines.extend(["", "## Результаты на проверке — резерв свободен", "",
+                  "Эти результаты остаются доступны интегратору, даже если другой чат уже продолжает задачу.",
+                  "Новый исполнитель сначала включает нужные коммиты в свою ветку. claim проверяет их наличие.", "",
+                  "| Задача | Автор | Коммит | Claim ID для приёмки | Результат |",
+                  "| --- | --- | --- | --- | --- |"])
+    for review in sorted(pending, key=lambda r: (r["task"], r["submitted_at"], r["claim_id"])):
+        commit = f"[{review['result'][:12]}]({PROJECT_WEB}/commit/{review['result']})"
+        lines.append("| " + " | ".join((cell(review["task"]), cell(review["label"]), commit,
+                                      cell(review["claim_id"]), cell(review["note"]))) + " |")
+    if not pending:
+        lines.extend(["", "Очередь проверки пуста."])
     lines.extend(["", *render_continuations(board)])
     lines.extend(["", "## Зарезервированные файлы", ""])
     for task_id, claim in sorted(board["claims"].items()):
@@ -237,14 +287,13 @@ class TaskBoard:
     def read(self):
         tip = self.fetch_tip(self.branch, optional=True)
         if tip is None:
-            return None, {"schema_version": 1, "sequence": 0, "claims": {}, "events": []}
+            return None, {"schema_version": SCHEMA_VERSION, "sequence": 0,
+                          "claims": {}, "reviews": {}, "events": []}
         names = set(self.git("ls-tree", "--name-only", tip).stdout.decode().splitlines())
         if names != {"board.json", "README.md"}:
             raise CoordinationError("Unexpected coordination branch contents; refusing to replace them")
         board = self.read_json(tip, "board.json")
-        if board.get("schema_version") != 1 or not isinstance(board.get("claims"), dict):
-            raise CoordinationError("Unsupported coordination board")
-        return tip, board
+        return tip, upgrade_board(board)
 
     def view(self):
         tip, board = self.read()
@@ -259,6 +308,35 @@ class TaskBoard:
         tip = self.fetch_tip(branch)
         if self.git("merge-base", "--is-ancestor", commit, tip, check=False).returncode:
             raise CoordinationError(f"Result commit is not published in {branch}")
+
+    def pending_dependencies(self, board, task_id, files):
+        return sorted(key for key, review in board["reviews"].items()
+                      if review["stage"] == "review" and
+                      (review["task"] == task_id or
+                       any(intersects(a, b) for a in files for b in review["files"])))
+
+    def ensure_dependencies(self, board, dependencies, revision):
+        for key in dependencies:
+            review = board["reviews"][key]
+            commit = review["result"]
+            if self.git("cat-file", "-e", commit + "^{commit}", check=False).returncode:
+                self.ensure_published(commit, review["branch"])
+            if self.git("merge-base", "--is-ancestor", commit, revision, check=False).returncode:
+                raise Conflict(f"Include pending result {review['task']} {commit} from {review['branch']} "
+                               f"in {revision} before continuing; the review does not reserve these files")
+
+    @staticmethod
+    def operation_result(board, operation_id):
+        event = next((e for e in board["events"] if e["operation_id"] == operation_id), None)
+        if event is None:
+            return None
+        if "record" in event:
+            return copy.deepcopy(event["record"])
+        # Compatibility for an acknowledgement retry from before migration.
+        record = board["claims"].get(event["task"])
+        if record and record["claim_id"] == event["claim_id"]:
+            return copy.deepcopy(record)
+        raise CoordinationError("The old operation succeeded, but its claim has since changed; inspect list")
 
     def make_commit(self, board, parent):
         contents = {
@@ -312,8 +390,9 @@ class TaskBoard:
 
         for _ in range(8):
             parent, observed = self.read()
-            if any(event["operation_id"] == op_id for event in observed["events"]):
-                return observed["claims"][task_id]
+            already = self.operation_result(observed, op_id)
+            if already is not None:
+                return already
             board = copy.deepcopy(observed)
             previous = board["claims"].get(task_id)
             now = utc_now()
@@ -325,10 +404,26 @@ class TaskBoard:
                     "stage": "in_progress", "claim_id": new_claim_id,
                     "claimed_at": now, "updated_at": now, "note": note, "result": None,
                 }
+            elif action == "complete":
+                submitted = board["reviews"].get(claim_id)
+                if (not submitted or submitted["stage"] != "review" or
+                        submitted["task"] != task_id or submitted["owner"] != owner or
+                        submitted["result"] != result):
+                    raise Conflict("Complete only the exact saved review, using its original owner and claim_id")
+                self.ensure_published(result, self.main)
+                record = copy.deepcopy(submitted)
+                record.update(stage="done", updated_at=now, note=note)
+                board["reviews"][claim_id] = record
+                # A reviewer accepts the immutable submission, never the
+                # next editor's reservation of the same task.
+                if previous and previous["claim_id"] == claim_id:
+                    board["claims"][task_id] = {**previous, "stage": "done",
+                                                "updated_at": now, "note": note}
             else:
                 if (not previous or previous["stage"] not in ACTIVE or previous["owner"] != owner or
                         previous["claim_id"] != claim_id):
-                    raise Conflict("Claim is absent, finished or owned by another chat/generation")
+                    raise Conflict("No matching active reservation. A submitted review releases its lease; "
+                                   "continue with a new claim and current files/branch")
                 record = copy.deepcopy(previous)
                 if files is not None:
                     record["files"] = files
@@ -336,20 +431,12 @@ class TaskBoard:
                     record["note"] = note
                 if action == "review":
                     self.ensure_published(result, record["branch"])
+                    self.ensure_dependencies(board, record.get("based_on_reviews", []), result)
                     record.update(stage="review", result=result)
-                elif action == "complete":
-                    if previous["stage"] != "review" or result != previous.get("result"):
-                        raise Conflict("Complete only the exact result currently under review")
-                    self.ensure_published(result, self.main)
-                    record.update(stage="done", result=result)
                 elif action in {"resume", "block", "release"}:
                     record["stage"] = {"resume": "in_progress", "block": "blocked", "release": "released"}[action]
                     if action != "release":
                         record["result"] = None
-                elif (action == "heartbeat" and files is not None and
-                      files != previous["files"] and previous["stage"] == "review"):
-                    # New work invalidates the previous review, but keeps the reservation.
-                    record.update(stage="in_progress", result=None)
                 record["updated_at"] = now
             if record["stage"] in ACTIVE:
                 for other_id, other in board["claims"].items():
@@ -360,19 +447,31 @@ class TaskBoard:
                     overlap = [(a, b) for a in record["files"] for b in other["files"] if intersects(a, b)]
                     if overlap:
                         raise Conflict(f"Files conflict with {other_id} ({other['label']}): {overlap}")
-            board["claims"][task_id] = record
+                if action == "claim" or files is not None:
+                    dependencies = sorted(set(record.get("based_on_reviews", [])) |
+                                          set(self.pending_dependencies(board, task_id, record["files"])))
+                    self.ensure_dependencies(board, dependencies, "refs/heads/" + record["branch"])
+                    record["based_on_reviews"] = dependencies
+            if action != "complete":
+                board["claims"][task_id] = record
+            if action == "review":
+                board["reviews"][record["claim_id"]] = {
+                    **copy.deepcopy(record), "task": task_id, "submitted_at": now,
+                }
             board.update(updated_at=now, main_commit=main, sequence=board["sequence"] + 1,
                          catalog=[catalog_entry(task) for task in tasks])
             board["events"].append({
                 "operation_id": op_id, "task": task_id, "owner": owner,
                 "action": action, "claim_id": record["claim_id"], "at": now,
+                "record": copy.deepcopy(record),
             })
             commit = self.make_commit(board, parent)
             pushed = self.push(commit)
             # An interrupted push may already have reached the remote.
             tip, confirmed = self.read()
-            if any(event["operation_id"] == op_id for event in confirmed["events"]):
-                return confirmed["claims"][task_id]
+            saved = self.operation_result(confirmed, op_id)
+            if saved is not None:
+                return saved
             if pushed.returncode == 0:
                 raise CoordinationError("Push succeeded but the operation is absent from the remote board")
             if tip == parent:
