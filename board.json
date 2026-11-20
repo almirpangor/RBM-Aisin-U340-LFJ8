@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 12,
+  "sequence": 13,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -61,13 +61,13 @@
         "targets/lfj8/check_h03_can_lifecycle.py",
         "targets/lfj8/h03_can_lifecycle_test.S",
         "verification/e4m3-can-9e1c/h03-can-lifecycle.json",
-        "verification/project-audit/2026-11-20.json"
+        "verification/project-audit/2026-11-20-dtc02-queue.json"
       ],
       "stage": "in_progress",
       "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
       "claimed_at": "2026-11-20T15:44:32+00:00",
-      "updated_at": "2026-11-20T15:49:11+00:00",
-      "note": "Готовлю воспроизводимую проверку CAN-03 и критерии приёмки двух BIN через CANHacker.",
+      "updated_at": "2026-11-20T15:49:41+00:00",
+      "note": "Обновляю активный снимок по повторным прогонам CAN-03 и протокол CANHacker.",
       "result": "c46e9b5cf857a95757aef1025f599e41972eaf64"
     },
     "TOY-03": {
@@ -181,9 +181,17 @@
       "action": "resume",
       "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
       "at": "2026-11-20T15:49:11+00:00"
+    },
+    {
+      "operation_id": "3ab5ca5a0dff443693995bdfe61d8a57",
+      "task": "CAN-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "heartbeat",
+      "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
+      "at": "2026-11-20T15:49:41+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:49:11+00:00",
+  "updated_at": "2026-11-20T15:49:41+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
