@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 398,
+  "sequence": 399,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -332,11 +332,11 @@
         "targets/lfj8/lfj8_h03_can13.c",
         "verification/project-audit/can02-broker-flash-size.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "80dd331a4841414ab2e1eea82dfb693b",
       "claimed_at": "2026-11-20T18:14:54+00:00",
-      "updated_at": "2026-11-20T18:19:59+00:00",
-      "note": "CAN13 экономит 48 байт. В expanded medium с 4ecfdd9 дефицит 268 байт. Expanded small с переносом объектов torque_can и dtc_can, H03-04 и обработчиком H03-05 в основном окне: 117 точек, запас 120/140 байт, 0 релокаций, 18 тестов M32R, тест CAN13 на ПК. Рецепт в can02-broker-flash-size.md; привязка штатного цикла и проверка устройства открыты.",
+      "updated_at": "2026-11-20T18:38:24+00:00",
+      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
       "result": "9cd6fb79735af38f699a39e655d414a45966376e"
     },
     "TOY-06": {
@@ -3745,9 +3745,17 @@
       "action": "claim",
       "claim_id": "649f9eb04dd24d0ea547f2886878f0b0",
       "at": "2026-11-20T18:38:10+00:00"
+    },
+    {
+      "operation_id": "437335947e0d4aacad5da8d56016e341",
+      "task": "CAN-02",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "complete",
+      "claim_id": "80dd331a4841414ab2e1eea82dfb693b",
+      "at": "2026-11-20T18:38:24+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:38:10+00:00",
+  "updated_at": "2026-11-20T18:38:24+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {

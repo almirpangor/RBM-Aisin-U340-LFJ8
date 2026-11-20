@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:38:10+00:00**. Изменение № **398**.
+Обновлено UTC: **2026-11-20T18:38:24+00:00**. Изменение № **399**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -19,7 +19,7 @@
 | TOY-05 — Обучение и сохранение адаптаций | На проверке | Codex — исходный снимок адаптаций S01 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy05-startup-baseline-32e6ac79 | 2026-11-20T18:35:22+00:00 | 34 байта холодного fallback подтверждены по ROM S01 и закреплённому V850-отчёту R3. Новый снимок доступен контроллеру. ПК 37 шагов/113 тестов, R3 288 сравнений, M32R 18+6 программных и 17 штатных групп, размещение 119 корней. Отчёт verification/project-audit/toy05-s01-baseline.md. Носитель, штатный запуск и долговечный сброс на блоке открыты. Передаю интегратору. / commit a806502d631248ae4a1c49396f05034c18d600dd |
 | TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — SLU в SECONDARY \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-secondary-schedule-fea1b366 | 2026-11-20T18:15:57+00:00 | Передаю на объединение. SLU в SECONDARY, GP−4735 продвигает FAST, SECONDARY сбрасывает; 5 публикаций/7 отказов. ПК 37 шагов/102 теста, M32R 6 компонентных групп, 17 штатных групп, строгая модель 18 компонентов PASS. Расширенное окно −2652 Б (+808 Б к дефициту базы). Отчёт verification/project-audit/toy06-slu-schedule.md. Владелец H03, полный снимок, компоновка и физический SLU открыты. / commit fd1c4a7fd479934eb2d6d0266462ad16a0b5a539 |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Чат CAN — поколение RPM/ОЖ H03 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-engine-rx-generation-1120-c7e4 | 2026-11-20T18:27:55+00:00 | RX11/12 detects native CAN generation changes in its ordinary poll and revokes RPM, ECT and model fields until reattachment. PC 37/102, M32R 18 components +17 native, Bosch PASS_OFFLINE_ONLY. RAM +8 B, code +76 B in bound sizing model. Integration call after init: lfj8_h03_engine_rx_bind_generation(rx, &amp;h03_can_owner.setup_generation). Evidence verification/project-audit/can01-engine-rx-generation.md. Target startup and hardware open. / commit c14dbfda51b20fe58b904f8d220e3d35e63ff5dd |
-| CAN-02 — Общий диспетчер CAN13 | На проверке | Codex — размер диспетчера CAN13 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/can02-broker-size-01a1f9a2 | 2026-11-20T18:19:59+00:00 | CAN13 экономит 48 байт. В expanded medium с 4ecfdd9 дефицит 268 байт. Expanded small с переносом объектов torque_can и dtc_can, H03-04 и обработчиком H03-05 в основном окне: 117 точек, запас 120/140 байт, 0 релокаций, 18 тестов M32R, тест CAN13 на ПК. Рецепт в can02-broker-flash-size.md; привязка штатного цикла и проверка устройства открыты. / commit 9cd6fb79735af38f699a39e655d414a45966376e |
+| CAN-02 — Общий диспетчер CAN13 | Свободна для продолжения | Предыдущий: Codex — размер диспетчера CAN13 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/can02-broker-size-01a1f9a2 | 2026-11-20T18:38:24+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit 9cd6fb79735af38f699a39e655d414a45966376e |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Выполняется | Codex CAN-03 monitor admission \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can03-h03-monitor-startup-01a1f99f | 2026-11-20T18:34:34+00:00 | Integrate the REL-02 monitor protection candidate with cold start and native CAN recovery barriers. Replay original receive-enable sites and measure linked Flash/RAM without touching shared owner files. |
 | CAN-04 — Запрос снижения момента по RB | Выполняется | Codex CAN-04 — срок подтверждения момента \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-progress-deadline-fea1b366 | 2026-11-20T18:35:52+00:00 | Ошибка ровно в 60 мс воспроизведена до правки. Срок проверяется по времени захвата перед обновлением состояния. Добавляю сценарий задержанного ответа модели Bosch в verify_h03_torque.py. |
 | CAN-05 — Полнота штатного обмена Chery | Свободна для продолжения | Предыдущий: Чат CAN — поколения RX Bosch \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can05-qualified-epoch-1120-c7e4 | 2026-11-20T18:37:31+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit 1b7de46a4d9078d3ef8d46fa4ac724ae5eb20150 |
@@ -288,13 +288,13 @@
 </details>
 
 <details>
-<summary>CAN-02 — Общий диспетчер CAN13: На проверке</summary>
+<summary>CAN-02 — Общий диспетчер CAN13: Свободна для продолжения</summary>
 
 **Сделано.** Сохранены отзыв владения/момента и диагностическая очередь; оптимизация диспетчера дала 48 байт, адаптера момента — 132. Проверки объединённой сборки пройдены.
 
 **Осталось доделать.** Окончательное аппаратное владение и вызовы ведутся в CAN-03/H03-03.
 
-**Сейчас выполняет.** Codex — размер диспетчера CAN13 — codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Программные тесты не заменяют измерение окон приёма 0x5E9.
 
@@ -540,13 +540,6 @@
 - targets/lfj8/test_lfj8_h03_engine_feed.c
 - verification/project-audit/can01-engine-rx-generation.md
 
-### CAN-02
-
-Чат: Codex — размер диспетчера CAN13. Claim ID: 80dd331a4841414ab2e1eea82dfb693b.
-
-- targets/lfj8/lfj8_h03_can13.c
-- verification/project-audit/can02-broker-flash-size.md
-
 ### CAN-03
 
 Чат: Codex CAN-03 monitor admission. Claim ID: 941f259113e042a39db21686bc935bc8.
@@ -698,6 +691,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:38:24+00:00 | CAN-02 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:38:10+00:00 | DTC-04 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T18:37:51+00:00 | ORG-01 | complete | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T18:37:31+00:00 | CAN-05 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
@@ -727,4 +721,3 @@
 | 2026-11-20T18:29:08+00:00 | REL-02 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:29:01+00:00 | TOY-01 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T18:27:55+00:00 | CAN-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
-| 2026-11-20T18:27:37+00:00 | DTC-01 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
