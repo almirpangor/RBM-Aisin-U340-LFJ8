@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 540,
+  "sequence": 541,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -410,13 +410,14 @@
         "targets/lfj8/lfj8_chery_tx.h",
         "targets/lfj8/lfj8_h03_can13.c",
         "targets/lfj8/lfj8_h03_can13.h",
+        "targets/lfj8/test_lfj8_h03_can_owner.c",
         "verification/project-audit/vss01-foreground-capture.md"
       ],
       "stage": "in_progress",
       "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
       "claimed_at": "2026-11-20T19:55:14+00:00",
-      "updated_at": "2026-11-20T19:55:14+00:00",
-      "note": "Подключить согласованный foreground-захват S51 к передатчику и брокеру CAN13. Проверить срок снимка, возраст фронта и потерю данных.",
+      "updated_at": "2026-11-20T19:56:43+00:00",
+      "note": "Добавляю проверку полного пути через CAN owner и брокер, без живого чтения S51.",
       "result": null
     },
     "H03-05": {
@@ -4908,9 +4909,17 @@
       "action": "claim",
       "claim_id": "625fae5569f34ec79ee0206423a3fa01",
       "at": "2026-11-20T19:56:16+00:00"
+    },
+    {
+      "operation_id": "6077508ff0d949b5bf6069b41b5bf043",
+      "task": "VSS-01",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "heartbeat",
+      "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
+      "at": "2026-11-20T19:56:43+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:56:16+00:00",
+  "updated_at": "2026-11-20T19:56:43+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
