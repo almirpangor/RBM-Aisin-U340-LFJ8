@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 132,
+  "sequence": 133,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -181,11 +181,11 @@
         "tests/test_chery_1ae_roundtrip.py",
         "verification/project-audit/can05-1ae-roundtrip.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "39e9816a3049466a955d4f49cf740da4",
       "claimed_at": "2026-11-20T15:56:36+00:00",
-      "updated_at": "2026-11-20T16:01:03+00:00",
-      "note": "Host 1AE round trip: 65536 operand pairs and validity transitions PASS. PC 33 steps / 59 tests PASS. Bosch compact build and ST10 model PASS OFFLINE_ONLY. Evidence can05-1ae-roundtrip.md; integrator to record the two new test files in the active audit. Native integration and hardware open.",
+      "updated_at": "2026-11-20T16:26:30+00:00",
+      "note": "Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена.",
       "result": "20247416c28972443bc2992d06d9706566c677d3"
     },
     "DTC-03": {
@@ -1509,9 +1509,17 @@
       "action": "heartbeat",
       "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
       "at": "2026-11-20T16:26:21+00:00"
+    },
+    {
+      "operation_id": "bb6f19c119604aecb671cd2b2e728953",
+      "task": "CAN-05",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "39e9816a3049466a955d4f49cf740da4",
+      "at": "2026-11-20T16:26:30+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:26:21+00:00",
+  "updated_at": "2026-11-20T16:26:30+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {

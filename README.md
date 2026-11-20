@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:26:21+00:00**. Изменение № **132**.
+Обновлено UTC: **2026-11-20T16:26:30+00:00**. Изменение № **133**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -22,7 +22,7 @@
 | CAN-02 — Общий диспетчер CAN13 | На проверке | Codex CAN-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/can02-telemetry-timeout-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:16:53+00:00 | Просроченная телеметрия отзывает подтверждение момента до освобождения CAN13. Регрессия воспроизведена, затем PC 33 шага/65 тестов и H03 link/17 компонентов PASS. Окна 0x5E9 и время отмены остаются в CAN-03. Отчёт verification/project-audit/can02-loan-timeout.md. / commit b48b4e50878c8173a40d65134213fbb8fdc37aa1 |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex — CAN0 H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can-03-h03-01a1f99f | 2026-11-20T15:50:27+00:00 | Сведено с main 264f249. 16 прогонов lifecycle, 12 TX gate и project_status --check PASS. Протокол CANHacker добавлен. Штатная привязка и аппаратная приёмка открыты. / commit 507ba30e1a3e68c727b137ef209d1a45333591ad |
 | CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 — снятие RB-запроса \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-torque-fea1b366 | 2026-11-20T16:13:07+00:00 | Снятие RB-запроса при отзыве профиля готово. ПК: 33 шага и 65 тестов PASS. M32R: 17 компонентных прогонов PASS. Bosch OFFLINE_ONLY: штатное снятие и потеря статуса PASS. Интегратору: обновить общий снимок и карточку по отчёту verification/project-audit/can04-torque-revocation.md, затем complete после принятия в main. Стенд и целевые калибровки открыты. / commit 0a3f6260d1bee66174df70712597fc868777e34b |
-| CAN-05 — Полнота штатного обмена Chery | На проверке | Codex CAN-05 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/u340-1120-c7e4 | 2026-11-20T16:01:03+00:00 | Host 1AE round trip: 65536 operand pairs and validity transitions PASS. PC 33 steps / 59 tests PASS. Bosch compact build and ST10 model PASS OFFLINE_ONLY. Evidence can05-1ae-roundtrip.md; integrator to record the two new test files in the active audit. Native integration and hardware open. / commit 20247416c28972443bc2992d06d9706566c677d3 |
+| CAN-05 — Полнота штатного обмена Chery | Работа завершена | Codex CAN-05 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/u340-1120-c7e4 | 2026-11-20T16:26:30+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit 20247416c28972443bc2992d06d9706566c677d3 |
 | ECU-01 — Проверочная сборка Bosch E4M3 | На проверке | Codex ECU-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/ecu01-1120-c7e4 | 2026-11-20T16:25:01+00:00 | E4M3 checksum coverage now requires all 51 exact record offsets. Real omission injection rejected. Eight profiles byte-identical to baseline, 68 unit tests and ordinary compact ST10 PASS_OFFLINE_ONLY. Evidence verification/project-audit/ecu01-checksum-coverage.md. Update shared audit at integration. / commit 84380128b8db2e0a6b24b297dd40aa020598e3ce |
 | ECU-02 — Калибровка момента и работа двигателя | Свободна | — | — | — | — |
 | H03-01 — Выбранная основа 9E1C и карта подключения | Свободна | — | — | — | — |
@@ -75,14 +75,6 @@
 - targets/lfj8/lfj8_h03_torque.h
 - targets/lfj8/test_lfj8_h03_torque.c
 - verification/project-audit/can04-torque-revocation.md
-
-### CAN-05
-
-Чат: Codex CAN-05. Claim ID: 39e9816a3049466a955d4f49cf740da4.
-
-- targets/bosch/test_chery_1ae_roundtrip.c
-- tests/test_chery_1ae_roundtrip.py
-- verification/project-audit/can05-1ae-roundtrip.md
 
 ### DTC-01
 
@@ -247,6 +239,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:26:30+00:00 | CAN-05 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:26:21+00:00 | VSS-02 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:26:06+00:00 | CAN-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:25:55+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
@@ -276,4 +269,3 @@
 | 2026-11-20T16:19:43+00:00 | TOY-06 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:19:32+00:00 | DTC-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:19:02+00:00 | TOY-04 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
-| 2026-11-20T16:18:46+00:00 | VSS-01 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
