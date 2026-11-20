@@ -2,11 +2,15 @@
 
 #include "lfj8_h03_application_binding.h"
 #include "lfj8_h03_mmio.h"
+#include "lfj8_h03_target_service.h"
 
 #ifndef RBM_H03_APPLICATION_PROFILE
 #error "Define RBM_H03_APPLICATION_PROFILE as an explicit, qualified profile header"
 #else
 #include RBM_H03_APPLICATION_PROFILE
+#ifndef RBM_H03_PROFILE_CAN_SERVICE_CONFIG
+#error "Define RBM_H03_PROFILE_CAN_SERVICE_CONFIG as an explicit, qualified CAN service object"
+#endif
 
 #define SERIAL_HALF_RANGE UINT32_C(0x80000000)
 #define TOYOTA_PERIOD ((uint64_t)(RBM_H03_PROFILE_TOYOTA_PERIOD_TICKS))
@@ -57,8 +61,11 @@ int rbm_h03_target_initialize(void *context)
 
     saved = io->enter(context);
     allowed = startup_allowed_locked(context);
-    if (allowed) {
+    if (allowed &&
+        lfj8_h03_target_service_prepare_locked(&RBM_H03_PROFILE_CAN_SERVICE_CONFIG)) {
         lfj8_h03_toyota_source_reset(toyota_source.release);
+    } else {
+        allowed = 0;
     }
     io->leave(context, saved);
     return allowed;

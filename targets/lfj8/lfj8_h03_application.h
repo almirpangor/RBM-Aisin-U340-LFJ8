@@ -70,6 +70,11 @@ typedef struct {
      * including any adaptation read state, before returning success. */
     int (*initialize)(void *context);
 
+    /* Optional service close, under the native lock and owned RAM. Called
+     * before invalidating the shared clock, including cold and failed start.
+     * It must tolerate retained/uninitialized service state and repetition. */
+    void (*stop_service_locked)(void);
+
     /* Optional read-only startup source. Return FACTORY_ADAPT_RECORD_BYTES
      * raw bytes for slot 0 or 1, even when erased or damaged. NULL denotes
      * a failed read. Keep both snapshots distinct, separate from runtime,

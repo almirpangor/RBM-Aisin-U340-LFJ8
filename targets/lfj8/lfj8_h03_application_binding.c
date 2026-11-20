@@ -2,6 +2,7 @@
 #include "lfj8_h03_atf_target.h"
 #include "lfj8_h03_mmio.h"
 #include "lfj8_h03_output_inhibit.h"
+#include "lfj8_h03_target_service.h"
 #include "lfj8_selector_adc.h"
 
 #ifndef RBM_H03_APPLICATION_PROFILE
@@ -88,6 +89,9 @@ const Lfj8H03ApplicationBinding rbm_h03_application_binding = {
     .ram_owned = rbm_h03_target_ram_owned,
     .clock_ready = rbm_h03_target_clock_ready,
     .initialize = initialize_target,
+#ifdef RBM_H03_PROFILE_CAN_SERVICE_CONFIG
+    .stop_service_locked = lfj8_h03_target_service_stop_locked,
+#endif
     .read_adaptation = RBM_H03_PROFILE_READ_ADAPTATION,
     .take_toyota = rbm_h03_target_take_toyota,
     .service_phase = rbm_h03_target_service_phase,
