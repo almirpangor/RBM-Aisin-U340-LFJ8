@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 497,
+  "sequence": 498,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -52,11 +52,11 @@
       "files": [
         "targets/lfj8/check_h03_can_monitor_startup.py"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "2ec8aacec9a4492593f09b24555a5f0f",
       "claimed_at": "2026-11-20T19:32:51+00:00",
-      "updated_at": "2026-11-20T19:33:07+00:00",
-      "note": "Приняты нативные входы CAN-03 и исправлен путь компоновки; код/релокации исходного и встроенного ассемблера совпали, общая проверка прошла.",
+      "updated_at": "2026-11-20T19:33:26+00:00",
+      "note": "Порция и совместимость сборщика приняты в main ae393e8. Установка всех обёрток, целевая платформа и аппаратная проверка остаются в карточке CAN-03.",
       "result": "ae393e852fd8e110892c6725f219f3e43585d33c"
     },
     "TOY-03": {
@@ -4531,9 +4531,17 @@
       "action": "review",
       "claim_id": "2ec8aacec9a4492593f09b24555a5f0f",
       "at": "2026-11-20T19:33:07+00:00"
+    },
+    {
+      "operation_id": "7885b39f139b4611972c586ace763d72",
+      "task": "CAN-03",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "complete",
+      "claim_id": "2ec8aacec9a4492593f09b24555a5f0f",
+      "at": "2026-11-20T19:33:26+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:33:07+00:00",
+  "updated_at": "2026-11-20T19:33:26+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
