@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 428,
+  "sequence": 429,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -132,12 +132,12 @@
         "verification/project-audit/h03-04-service-guard.md",
         "verification/project-audit/service-guard/"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "1589bd1e4830453f8a2572f3c6b98ff0",
       "claimed_at": "2026-11-20T18:39:50+00:00",
-      "updated_at": "2026-11-20T18:48:50+00:00",
-      "note": "Два писателя защищены в M32R: 240 сценариев, 20 отрицательных/граничных утверждений. 352 байта с модельной таблицей, 0 новой RAM. Резервирую общую сборку, чтобы новый C guard вошёл в учёт. Политика SBI/DMA/Virtual Flash и окончательное размещение открыты.",
-      "result": null
+      "updated_at": "2026-11-20T18:54:16+00:00",
+      "note": "В main 5e3ac74: защита двух писателей, 20 условий и 240 native сценариев PASS, 48 без измерительных вставок. Полный компонент 436 байт, 0 постоянной RAM. C-состав 89388 байт, семь прежних определений отсутствуют. Назначение rbm_h03_service_policy, явная отмена held copy, SBI/DMA/Virtual Flash и общий стек остаются открыты. Отчёт verification/project-audit/h03-04-service-guard.md.",
+      "result": "5e3ac748843f3a7326ad070b47f6c3b137e32289"
     },
     "DTC-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -3992,9 +3992,17 @@
       "action": "claim",
       "claim_id": "91dc6f6e798a4450860733fb188dbe9e",
       "at": "2026-11-20T18:54:09+00:00"
+    },
+    {
+      "operation_id": "3bffadf4bcd5469fa9fa0b82e6a4b3ce",
+      "task": "H03-04",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "review",
+      "claim_id": "1589bd1e4830453f8a2572f3c6b98ff0",
+      "at": "2026-11-20T18:54:16+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:54:09+00:00",
+  "updated_at": "2026-11-20T18:54:16+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
