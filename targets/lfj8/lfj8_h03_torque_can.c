@@ -40,10 +40,20 @@ static bool update_clock(Lfj8H03TorqueCan *adapter, uint16_t tick, uint32_t now_
     return continuous;
 }
 
+typedef struct {
+    const Lfj8RegisterIo *io;
+    bool unavailable;
+} TorqueSubmission;
+
 static bool submit(void *context, uint16_t id, const uint8_t payload[8])
 {
-    return id == LFJ8_TORQUE_REQUEST_ID &&
-        lfj8_h03_can0_torque_submit(context, 1u, payload) == LFJ8_CAN_SUBMITTED;
+    TorqueSubmission *tx = context;
+    if (id != LFJ8_TORQUE_REQUEST_ID) {
+        return false;
+    }
+    const Lfj8CanResult result = lfj8_h03_can0_torque_submit(tx->io, 1u, payload);
+    tx->unavailable = result != LFJ8_CAN_SUBMITTED && result != LFJ8_CAN_SLOT_BUSY;
+    return result == LFJ8_CAN_SUBMITTED;
 }
 
 static void clear_status(Lfj8H03TorqueCan *adapter)
@@ -70,6 +80,7 @@ Lfj8H03TorqueCanSlot lfj8_h03_torque_can_poll(
     }
     Lfj8H03TorqueCanSlot slot = LFJ8_H03_TORQUE_CAN_RESERVED;
     Lfj8TorqueSubmit tx_submit = NULL;
+    TorqueSubmission tx = {.io = io};
     uint16_t tick;
     if (slot13_owned != 1u || adapter->lease_lost || !lfj8_h03_can0_read_timestamp(io, &tick)) {
         goto lost_ownership;
@@ -149,6 +160,14 @@ unavailable:
     input = NULL;
     slot = LFJ8_H03_TORQUE_CAN_UNAVAILABLE;
 poll_request:
-    lfj8_h03_torque_poll(&adapter->request, input, cal, now_us, tx_submit, (void *)io);
+    lfj8_h03_torque_poll(&adapter->request, input, cal, now_us, tx_submit, &tx);
+    if (tx.unavailable) {
+        /* The slot became unavailable between listening and arming TX. */
+        adapter->lease_lost = true;
+        adapter->clock_seen = false;
+        clear_status(adapter);
+        lfj8_h03_torque_poll(&adapter->request, NULL, cal, now_us, NULL, NULL);
+        return LFJ8_H03_TORQUE_CAN_UNAVAILABLE;
+    }
     return slot;
 }
