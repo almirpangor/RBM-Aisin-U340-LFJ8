@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 688,
+  "sequence": 689,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -20,11 +20,11 @@
         "tools/task_coordination.py",
         "verification/project-audit/coordination-handoff-20261121/"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "f510dbb870b943e3bb8c5a9a5de1f914",
       "claimed_at": "2026-11-20T21:37:42+00:00",
-      "updated_at": "2026-11-20T21:46:25+00:00",
-      "note": "Обновлены 28 продолжений и единая передача Codex/Claude. Отдельные активные/ожидающие/сданные резервы, история вынесена; 33+9 проверок PASS. Код прошивок и их готовность не изменены.",
+      "updated_at": "2026-11-20T21:47:04+00:00",
+      "note": "Принято в main. Очередь и передача обновлены; 42 целевые проверки пройдены. Организационная порция завершена, готовность двух BIN не объявлена; продолжения свободны для новых резервов.",
       "result": "f64eff7c24744cef0fe608415039c6d10c677ff1",
       "based_on_reviews": []
     },
@@ -8162,9 +8162,45 @@
         "result": "f64eff7c24744cef0fe608415039c6d10c677ff1",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "92fa920485cc4656975e69ffa2e20343",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "complete",
+      "claim_id": "f510dbb870b943e3bb8c5a9a5de1f914",
+      "at": "2026-11-20T21:47:04+00:00",
+      "record": {
+        "owner": "codex-integration-01a1f76d-20261120",
+        "label": "Основной чат — очередь работ и передача Codex/Claude",
+        "branch": "codex/integration-01a1f76d-20261120",
+        "files": [
+          "AGENTS.md",
+          "README.md",
+          "data/project-tasks.json",
+          "docs/integration-next-tasks.md",
+          "docs/multi-chat.md",
+          "docs/project-map.md",
+          "docs/working-set.md",
+          "tests/test_project_status.py",
+          "tests/test_task_coordination.py",
+          "tools/project_status.py",
+          "tools/task_coordination.py",
+          "verification/project-audit/coordination-handoff-20261121/"
+        ],
+        "stage": "done",
+        "claim_id": "f510dbb870b943e3bb8c5a9a5de1f914",
+        "claimed_at": "2026-11-20T21:37:42+00:00",
+        "updated_at": "2026-11-20T21:47:04+00:00",
+        "note": "Принято в main. Очередь и передача обновлены; 42 целевые проверки пройдены. Организационная порция завершена, готовность двух BIN не объявлена; продолжения свободны для новых резервов.",
+        "result": "f64eff7c24744cef0fe608415039c6d10c677ff1",
+        "based_on_reviews": [],
+        "task": "ORG-01",
+        "submitted_at": "2026-11-20T21:46:25+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:46:25+00:00",
+  "updated_at": "2026-11-20T21:47:04+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -9671,11 +9707,11 @@
         "tools/task_coordination.py",
         "verification/project-audit/coordination-handoff-20261121/"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "f510dbb870b943e3bb8c5a9a5de1f914",
       "claimed_at": "2026-11-20T21:37:42+00:00",
-      "updated_at": "2026-11-20T21:46:25+00:00",
-      "note": "Обновлены 28 продолжений и единая передача Codex/Claude. Отдельные активные/ожидающие/сданные резервы, история вынесена; 33+9 проверок PASS. Код прошивок и их готовность не изменены.",
+      "updated_at": "2026-11-20T21:47:04+00:00",
+      "note": "Принято в main. Очередь и передача обновлены; 42 целевые проверки пройдены. Организационная порция завершена, готовность двух BIN не объявлена; продолжения свободны для новых резервов.",
       "result": "f64eff7c24744cef0fe608415039c6d10c677ff1",
       "based_on_reviews": [],
       "task": "ORG-01",
