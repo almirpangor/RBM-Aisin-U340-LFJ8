@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 693,
+  "sequence": 694,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -263,30 +263,26 @@
       "based_on_reviews": []
     },
     "MODE-02": {
-      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
-      "label": "Codex MODE-02 — приём снимка AN2/P1DATA по фазе",
-      "branch": "codex/mode02-phase-sample-lifecycle-01a1f9c7",
+      "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+      "label": "Codex MODE-02 — квалифицированная ручная цель",
+      "branch": "codex/mode02-qualified-target-892d",
       "files": [
-        "targets/lfj8/check_h03_selector_adc.py",
-        "targets/lfj8/h03_selector_adc_fixture.c",
+        "targets/lfj8/check_h03_toyota_source.py",
         "targets/lfj8/lfj8_h03_input_binding.c",
         "targets/lfj8/lfj8_h03_input_binding.h",
-        "targets/lfj8/lfj8_h03_input_target.c",
         "targets/lfj8/lfj8_range_control.c",
         "targets/lfj8/lfj8_range_control.h",
         "targets/lfj8/test_lfj8_h03_input_binding.c",
-        "verification/project-audit/mode02-h03-sample-lifecycle.md"
+        "targets/lfj8/test_lfj8_h03_toyota_source.c",
+        "verification/project-audit/mode02-qualified-manual-target.md"
       ],
-      "stage": "done",
-      "claim_id": "7b928a7629294ca3950e08c3c64055a4",
-      "claimed_at": "2026-11-20T20:33:07+00:00",
-      "updated_at": "2026-11-20T21:14:43+00:00",
-      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
-      "result": "5c5175c0742daa4139cb02ae8076309d80c9447b",
-      "based_on_reviews": [
-        "81b1f36f00b14bd49f57ba12c0f60bd1",
-        "cd210c0631df4fefa66ec640bb83c6ad"
-      ]
+      "stage": "in_progress",
+      "claim_id": "cda1c6bb3edf45bd993ee765cf29e055",
+      "claimed_at": "2026-11-20T21:53:04+00:00",
+      "updated_at": "2026-11-20T21:53:04+00:00",
+      "note": "Связываю квалифицированный MODE-02/03 с capture действующего take_toyota. Один владелец ручной цели, удержание и отзыв по поколению, входам, режиму и ограничениям. Общий application и физический профиль остаются за их владельцами.",
+      "result": null,
+      "based_on_reviews": []
     },
     "TOY-05": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -8318,9 +8314,39 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "5c5ab0da64ba47989c327258558e3105",
+      "task": "MODE-02",
+      "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+      "action": "claim",
+      "claim_id": "cda1c6bb3edf45bd993ee765cf29e055",
+      "at": "2026-11-20T21:53:04+00:00",
+      "record": {
+        "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+        "label": "Codex MODE-02 — квалифицированная ручная цель",
+        "branch": "codex/mode02-qualified-target-892d",
+        "files": [
+          "targets/lfj8/check_h03_toyota_source.py",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/lfj8_h03_input_binding.h",
+          "targets/lfj8/lfj8_range_control.c",
+          "targets/lfj8/lfj8_range_control.h",
+          "targets/lfj8/test_lfj8_h03_input_binding.c",
+          "targets/lfj8/test_lfj8_h03_toyota_source.c",
+          "verification/project-audit/mode02-qualified-manual-target.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "cda1c6bb3edf45bd993ee765cf29e055",
+        "claimed_at": "2026-11-20T21:53:04+00:00",
+        "updated_at": "2026-11-20T21:53:04+00:00",
+        "note": "Связываю квалифицированный MODE-02/03 с capture действующего take_toyota. Один владелец ручной цели, удержание и отзыв по поколению, входам, режиму и ограничениям. Общий application и физический профиль остаются за их владельцами.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:52:52+00:00",
+  "updated_at": "2026-11-20T21:53:04+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
