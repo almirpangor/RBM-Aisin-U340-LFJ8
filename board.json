@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 336,
+  "sequence": 337,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -177,8 +177,8 @@
       "stage": "in_progress",
       "claim_id": "02b9e231450d4f81b9517ac724b155ed",
       "claimed_at": "2026-11-20T18:08:03+00:00",
-      "updated_at": "2026-11-20T18:08:03+00:00",
-      "note": "Штатные S51/S83 после AA0C/AA70, связка ATF и foreground, единая эпоха TML0 с тестом M32R. Использую уже опубликованный поставщик VSS-02 как зависимость, без изменений файлов H03-03.",
+      "updated_at": "2026-11-20T18:10:54+00:00",
+      "note": "Штатные AA0C/AA70 и ABI прошли модель M32R, общий foreground-снимок видит S51/S83/ATF, смена эпохи сбрасывает источники. Повторяю базовые M32R/native проверки.",
       "result": null
     },
     "CAN-05": {
@@ -3263,9 +3263,17 @@
       "action": "heartbeat",
       "claim_id": "9a8289b65d604e5dabe669d1c94e2dba",
       "at": "2026-11-20T18:10:33+00:00"
+    },
+    {
+      "operation_id": "aeb14d4225b74a84a773bfc6152ebd09",
+      "task": "H03-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "02b9e231450d4f81b9517ac724b155ed",
+      "at": "2026-11-20T18:10:54+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:10:33+00:00",
+  "updated_at": "2026-11-20T18:10:54+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
