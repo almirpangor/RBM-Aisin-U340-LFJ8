@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 61,
+  "sequence": 62,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -254,6 +254,21 @@
       "claimed_at": "2026-11-20T16:04:25+00:00",
       "updated_at": "2026-11-20T16:06:28+00:00",
       "note": "Фильтр и сценарии добавлены. Проверяю дребезг и потерю снимка через существующий расчёт заявки на ПК и M32R.",
+      "result": null
+    },
+    "TOY-05": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex TOY-05",
+      "branch": "codex/toy05-adaptation-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "controller/tests/test_controller.c",
+        "verification/project-audit/toy05-adaptation-store.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "2bd31f54ff254c59802d402cf6dabb9b",
+      "claimed_at": "2026-11-20T16:08:20+00:00",
+      "updated_at": "2026-11-20T16:08:20+00:00",
+      "note": "Проверка донорского формата адаптаций в модели двух страниц: перезапуск, обрыв, повреждение, пределы и сброс.",
       "result": null
     }
   },
@@ -745,9 +760,17 @@
       "action": "review",
       "claim_id": "8af57ad2c27440c6822dea2579b051d2",
       "at": "2026-11-20T16:07:46+00:00"
+    },
+    {
+      "operation_id": "4ecf3d372b9f4922924bc3d462f81555",
+      "task": "TOY-05",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "2bd31f54ff254c59802d402cf6dabb9b",
+      "at": "2026-11-20T16:08:20+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:07:46+00:00",
+  "updated_at": "2026-11-20T16:08:20+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
