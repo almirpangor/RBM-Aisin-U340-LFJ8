@@ -25,6 +25,7 @@
     X(atf, volatile Lfj8H03Atf) \
     X(selector_adc, volatile Lfj8SelectorAdc) \
     X(range_control, Lfj8RangeControl) \
+    X(button_filter, Lfj8ButtonFilter) \
     X(gear_observer, Lfj8GearObserver)
 
 #define LFJ8_H03_COMMUNICATION_FIELDS(X) \
@@ -43,6 +44,8 @@
     X(toyota, Lfj8H03CycleWorkspace) \
     X(capture, Lfj8CapturePair) \
     X(cycle_input, Lfj8H03CycleInput) \
+    X(load_feed, RbmU340eQualifiedLoadFeed) \
+    X(button_reading, Lfj8ButtonReading) \
     X(dtc_delivery, Lfj8H03DtcRxDelivery) \
     X(atf_sample, Lfj8H03AtfSample) \
     X(engine_context, Ta2005EngineQualificationContext) \

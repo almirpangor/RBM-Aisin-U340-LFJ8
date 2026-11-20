@@ -8,6 +8,7 @@ typedef enum {
     LFJ8_H03_RX_WAIT_FOR_OEM,
     LFJ8_H03_RX_ACTIVE,
     LFJ8_H03_RX_DRAIN_PENDING,
+    LFJ8_H03_RX_CLOCK_WARMUP,
 } Lfj8H03EngineRxPhase;
 
 typedef struct {
@@ -36,7 +37,8 @@ int lfj8_h03_engine_rx_init(Lfj8H03EngineRx *rx, uint16_t max_age_ticks,
  * H03 completes CAN startup/recovery with the two slots clear. On BusOff
  * or ownership loss, attach again after OEM is operational with clear slots.
  * After a scheduling or counter discontinuity, discard pending frames and
- * reestablish the clock before accepting new frames.
+ * reestablish the clock before accepting new frames. During startup and
+ * recovery, accept only frames timestamped strictly after the clock anchor.
  * The snapshot grants no permission to actuate. */
 unsigned lfj8_h03_engine_rx_poll(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
                                 uint32_t now_us, uint8_t slots_owned,

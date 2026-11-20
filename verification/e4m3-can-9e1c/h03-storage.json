@@ -9,10 +9,10 @@
   "blocks": {
     "control": {
       "offset": 0,
-      "bytes": 1048,
+      "bytes": 1072,
       "alignment": 4,
       "address": 8416064,
-      "end_exclusive": 8417112
+      "end_exclusive": 8417136
     },
     "communication": {
       "offset": 0,
@@ -23,16 +23,16 @@
     },
     "workspace": {
       "offset": 0,
-      "bytes": 784,
+      "bytes": 816,
       "alignment": 4,
       "address": 8425516,
-      "end_exclusive": 8426300
+      "end_exclusive": 8426332
     }
   },
   "fields": {
     "control": {
       "offset": 0,
-      "bytes": 1048,
+      "bytes": 1072,
       "alignment": 4
     },
     "control/runtime": {
@@ -80,8 +80,13 @@
       "bytes": 24,
       "alignment": 4
     },
-    "control/gear_observer": {
+    "control/button_filter": {
       "offset": 996,
+      "bytes": 24,
+      "alignment": 4
+    },
+    "control/gear_observer": {
+      "offset": 1020,
       "bytes": 52,
       "alignment": 4
     },
@@ -127,7 +132,7 @@
     },
     "workspace": {
       "offset": 0,
-      "bytes": 784,
+      "bytes": 816,
       "alignment": 4
     },
     "workspace/toyota": {
@@ -145,57 +150,67 @@
       "bytes": 20,
       "alignment": 4
     },
-    "workspace/dtc_delivery": {
+    "workspace/load_feed": {
       "offset": 620,
+      "bytes": 24,
+      "alignment": 4
+    },
+    "workspace/button_reading": {
+      "offset": 644,
+      "bytes": 8,
+      "alignment": 4
+    },
+    "workspace/dtc_delivery": {
+      "offset": 652,
       "bytes": 28,
       "alignment": 4
     },
     "workspace/atf_sample": {
-      "offset": 648,
+      "offset": 680,
       "bytes": 8,
       "alignment": 4
     },
     "workspace/engine_context": {
-      "offset": 656,
+      "offset": 688,
       "bytes": 8,
       "alignment": 2
     },
     "workspace/can13_input": {
-      "offset": 664,
+      "offset": 696,
       "bytes": 44,
       "alignment": 4
     },
     "workspace/tx_input": {
-      "offset": 708,
+      "offset": 740,
       "bytes": 18,
       "alignment": 2
     },
     "workspace/oem_output": {
-      "offset": 726,
+      "offset": 758,
       "bytes": 14,
       "alignment": 1
     },
     "workspace/torque_input": {
-      "offset": 740,
+      "offset": 772,
       "bytes": 12,
       "alignment": 4
     },
     "workspace/gear_observation": {
-      "offset": 752,
+      "offset": 784,
       "bytes": 32,
       "alignment": 4
     }
   },
-  "storage_bytes": 2324,
+  "storage_bytes": 2380,
   "previous_two_window_capacity_bytes": 1780,
-  "previous_capacity_deficit_bytes": 544,
-  "primary_unused_bytes": 168,
+  "previous_capacity_deficit_bytes": 600,
+  "primary_unused_bytes": 144,
   "expanded_secondary_candidate": [
     8425024,
-    8426300
+    8426332
   ],
-  "extra_secondary_bytes_over_old_workspace": 712,
-  "gap_to_conditional_stack_lower_bound": 964,
+  "extra_secondary_bytes_over_old_workspace": 744,
+  "gap_to_conditional_stack_lower_bound": 932,
   "fixed_reference_candidates": {
     "control": {
       "LD24": [],
@@ -273,33 +288,33 @@
     }
   ],
   "compiled_object": {
-    "bytes": 2433,
-    "sha256": "ea047446a4b1addeea8bd87316c022d5170d8038353b53b5cd51792a3de0c3d8",
+    "bytes": 2565,
+    "sha256": "184daeddb6c4d8d258a3895f3c86a302e51c316792e9a5d4e3c2e95743c36657",
     "flags": 65536,
     "alloc_bytes": {
       "code": 0,
-      "read_only_data": 1380,
+      "read_only_data": 1512,
       "writable_data": 0,
-      "bss": 2324
+      "bss": 2380
     },
     "relocations": 0
   },
   "linked_storage_model": {
-    "bytes": 2189,
-    "sha256": "00085a3e21a8adfa222bc012fc858d4448bd4db2045d77a9cce8beb78be263df",
+    "bytes": 2321,
+    "sha256": "5616eb48fc8c8a55aa961af30329a9471dee01dbd4a9c9917013260045953222",
     "flags": 0,
     "alloc_bytes": {
       "code": 0,
-      "read_only_data": 1380,
+      "read_only_data": 1512,
       "writable_data": 0,
-      "bss": 2324
+      "bss": 2380
     },
     "relocations": 0
   },
   "input_sha256": {
     "controller/include/rbm_u340e.h": "9e4a48c83b53c60d81672d7f98cd8d78b5575b6ed7f2076b0df9ab51ad7fa2de",
     "controller/include/rbm_u340e_hydraulic_workspace.h": "0e446b7272fce9af343f627e427b024e45b010fce07bc20ecef3d08c910938d5",
-    "controller/include/rbm_u340e_runtime.h": "65bfc19d7f2e0f8713286c79c06a97c3bb8c0f542d85057bcf4862a5f4f45846",
+    "controller/include/rbm_u340e_runtime.h": "02bb9961f16c63404be3edb72aa353fea83d29623d4b8302436626a8c20f6355",
     "controller/include/rbm_u340e_scheduler.h": "09be707bd3fc7da26c313d45a4092631e3db814934d8baf2703de25f16ea1b09",
     "controller/vendor/toyota/include/factory_adaptation_store.h": "787611d51114f5976f17ed3d5436d1e61607ca78f9162bcd949d4233e219b5d2",
     "controller/vendor/toyota/include/factory_core.h": "2536872ba4b2d6b9aa5fd5f73d8184133b81c2377618b9d5116b34de25298cbd",
@@ -318,6 +333,7 @@
     "controller/vendor/toyota/include/factory_torque_state.h": "5fcc1e6e3560d210d1e31fe2493fb2c69d7a280a6415579f945fd8e968f56c6c",
     "diagnostics/chery_dtc.h": "9df0c7af41a91d6b4dd961aebc15d762d59967b4f29ddb2b659d88b7604ff12e",
     "diagnostics/chery_dtc_can.h": "5f65cbcb96a570d5b77f746395ab2d90556207b3b09de3f8b84c1e2f7c7b5c22",
+    "diagnostics/chery_dtc_journal.h": "56e387db7524b819f6891500557a0d72017b1f5e779b3cda9c6c1d53c402f692",
     "diagnostics/chery_dtc_link.h": "a8384905ca313984de3d7997f0d2ab42c3e7ef59a9fbf34216bd77fb1f76685c",
     "diagnostics/chery_model_monitor.h": "0f262f2913009ad60971081da7a2c1295b8ce47879169ef7aef60ea4827a0853",
     "targets/lfj8/h03_native_hooks.h": "497e1c6da606e2e792934bc57b54d4f9f3eb25b5ec8389b2dc92b0a5c1264a35",
@@ -326,21 +342,22 @@
     "targets/lfj8/lfj8_chery_tx.h": "e7c2632db305a10f169f5580fb7cead1186ee40bea6affdcc6f5956778e0f7fd",
     "targets/lfj8/lfj8_donor_io.h": "ea60743bfe13f1f6fee36faf369033ac8bb418633ee277d5c7cb9e5f6f57f6d8",
     "targets/lfj8/lfj8_gear_observer.h": "42ef5fef462a66065953bd0bb9910a499b42905f697975d47337ec2d3b111340",
-    "targets/lfj8/lfj8_h03_atf.h": "7d8fa8c471395b48f19baa7a212749abe97e710a4a1f2ba0f566ea5fe0b49ad8",
+    "targets/lfj8/lfj8_h03_atf.h": "3a2c6f3cbc832b9d8f91e754437ff0bef2682d80d325ee2ab5d925533cbe129d",
+    "targets/lfj8/lfj8_h03_atf_target.h": "1bfa10711ac18b255b32dca5f838a1f65f91feaf59e87fdb9e8eebf0d76080b1",
     "targets/lfj8/lfj8_h03_can13.h": "9c74d7e185cd9096670e90466737ff1cf700dad3db5c8a55ef68735b899afa9a",
     "targets/lfj8/lfj8_h03_cycle.h": "9fe156c988b747be71c9c6273ff3f92e792361e679c2928d49f1983b11094efb",
     "targets/lfj8/lfj8_h03_dtc_can.h": "d2e787b49521a97f11f039833c254f18cb1855d0b7637ee7641a1caa413b17af",
     "targets/lfj8/lfj8_h03_dtc_rx_queue.h": "fa74268ba188b323143dc9eec196d04818659abac718e333bd0c7d67700077e8",
     "targets/lfj8/lfj8_h03_engine_feed.h": "54ab11cc6b3ffb02a75fec457143bf7c4c30ee52ada659d9270cafe2e27167de",
-    "targets/lfj8/lfj8_h03_engine_rx.h": "ffe8e857958981352082aa5d135a5c802fc190874bb21d1048c88d27c266855b",
+    "targets/lfj8/lfj8_h03_engine_rx.h": "3e2d02e06d1344e8ec0bfdc8f021f1176280bd24c0153e1801e7a4207f42399d",
     "targets/lfj8/lfj8_h03_mmio.h": "e58bbf12ad250d127cfcf014088d17ecfaf3facefcf37a1aa1da5b28ac98c133",
     "targets/lfj8/lfj8_h03_outputs.h": "d5a894cfed0922172a9920c9cc35da16d2fc844dffadd8e8be1479ee682313bf",
     "targets/lfj8/lfj8_h03_phase_clock.h": "867996025e23d3205eec569019c8d7e4347f0a3b19b522b6b54bd154a1bfd96c",
-    "targets/lfj8/lfj8_h03_storage.h": "e65fe0c7502db48b4beda39b0f2bb2887b1d729eb8806f9156bec1d2753f0671",
+    "targets/lfj8/lfj8_h03_storage.h": "4342426773116520aedf0c0c000a8792faa4b20035c879fa4a4010b5595a67fd",
     "targets/lfj8/lfj8_h03_takeover.h": "afde8097349980a9705148b4a90d3e067955318f034578fac38a890a8a123294",
     "targets/lfj8/lfj8_h03_torque.h": "d70b832366e2d04acd04850605a2674999dd89468c990ed8e2aa6a6ba68abe15",
     "targets/lfj8/lfj8_h03_torque_can.h": "fc9121a6f045fb399d77aa065a3f21170fcdd1fd5d55e7605ec830308a513d46",
-    "targets/lfj8/lfj8_range_control.h": "78f47355a678b7fcfc3c7f3303c57002d199f85a16494b5a8e3c5da46e7aaa08",
+    "targets/lfj8/lfj8_range_control.h": "a963c31b61475c9f71d02746bc68e83121f973c288e3725d6b5fe853b5649dba",
     "targets/lfj8/lfj8_selector_adc.h": "5104de1d2277afff1886ce2453ef7c1b764a54d8c51092527721892b1e536e4f",
     "targets/lfj8/ta2005_chery_inputs.h": "b43104dffcf6642a375592a77339e38ae4e0edf2a43563a89dbbb92fdb703b1b",
     "targets/lfj8/ta2005_engine_qualifier.h": "fab179e498a8f980e27e8335794b07863ed1cf86db4bda69f7933010fcb6b913"

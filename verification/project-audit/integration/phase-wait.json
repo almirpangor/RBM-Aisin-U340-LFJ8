@@ -1,0 +1,141 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "wait": "0x008150",
+  "stock_clear": "0x00815C",
+  "native_continuation": "0x008160",
+  "cases": [
+    {
+      "scenario": "ready",
+      "initial_carry": 0,
+      "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
+      "callback_stack_written_bytes": [
+        112
+      ],
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "ready",
+      "initial_carry": 1,
+      "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
+      "callback_stack_written_bytes": [
+        112
+      ],
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "delayed_across_wrap",
+      "initial_carry": 0,
+      "callback_calls": 3,
+      "clock_samples_while_waiting": 8,
+      "callback_stack_written_bytes": [
+        112,
+        112,
+        112
+      ],
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "delayed_across_wrap",
+      "initial_carry": 1,
+      "callback_calls": 3,
+      "clock_samples_while_waiting": 8,
+      "callback_stack_written_bytes": [
+        112,
+        112,
+        112
+      ],
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "stalled",
+      "initial_carry": 0,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "stalled",
+      "initial_carry": 1,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "flag_before_next_poll",
+      "initial_carry": 0,
+      "callback_calls": 2,
+      "clock_samples_while_waiting": 2,
+      "callback_stack_written_bytes": [
+        112,
+        112
+      ],
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "flag_before_next_poll",
+      "initial_carry": 1,
+      "callback_calls": 2,
+      "clock_samples_while_waiting": 2,
+      "callback_stack_written_bytes": [
+        112,
+        112
+      ],
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    }
+  ],
+  "test_poll_interval_ticks": 2,
+  "extra_persistent_ram_bytes": 0,
+  "wrapper_stack_bytes": {
+    "waiting": 8,
+    "at_callback_entry": 64
+  },
+  "callback_stack_probe": {
+    "kind": "deepest overwritten aligned word below initial wrapper SP",
+    "marked_below_callback_entry_bytes": 256,
+    "guard_bytes": 16,
+    "maximum_written_depth_bytes": 120,
+    "interrupts_injected": false
+  },
+  "scope": "Real C phase clock and takeover check; synthetic clock, OEM flag and inhibit.",
+  "hardware_executed": false,
+  "flashable_image": null
+}
