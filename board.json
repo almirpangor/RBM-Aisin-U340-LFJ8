@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 763,
+  "sequence": 764,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -127,8 +127,8 @@
       "stage": "in_progress",
       "claim_id": "0ecd2acccbb947a886b1dceb6d968fb9",
       "claimed_at": "2026-11-20T23:09:45+00:00",
-      "updated_at": "2026-11-20T23:09:45+00:00",
-      "note": "Поле выпуска уже добавлено в сданном CAN-03. Подключаю воспроизводимую проверку штатного модуля в M32R по фактическим адресам общего плана, с абсолютным символом из свежего typed RAM. Общие файлы под чужим резервом не меняю.",
+      "updated_at": "2026-11-20T23:11:39+00:00",
+      "note": "Актуальный общий план разрешил оба callback и 16 байт RAM 0x806EFC–0x806F0C. M32R прошёл с абсолютным alias и четырьмя секциями по адресам плана; повторяю CAN и OEM boot.",
       "result": null,
       "based_on_reviews": [
         "2101184d356545bfa9a1e0bd6716a9ee",
@@ -10344,9 +10344,37 @@
           "ddeb80aa0d00427f9cdc2ac2b6ee7241"
         ]
       }
+    },
+    {
+      "operation_id": "29a381e2c55044cb8168eb3bcc11b14c",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "0ecd2acccbb947a886b1dceb6d968fb9",
+      "at": "2026-11-20T23:11:39+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex H03-03 — проверка адреса typed RAM",
+        "branch": "codex/h03-03-toyota-typed-ram-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/check_h03_target_platform.py",
+          "verification/project-audit/h03-03-typed-ram.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "0ecd2acccbb947a886b1dceb6d968fb9",
+        "claimed_at": "2026-11-20T23:09:45+00:00",
+        "updated_at": "2026-11-20T23:11:39+00:00",
+        "note": "Актуальный общий план разрешил оба callback и 16 байт RAM 0x806EFC–0x806F0C. M32R прошёл с абсолютным alias и четырьмя секциями по адресам плана; повторяю CAN и OEM boot.",
+        "result": null,
+        "based_on_reviews": [
+          "2101184d356545bfa9a1e0bd6716a9ee",
+          "43d58327bd434219b328d74d652d3be9",
+          "96f93fae25924717a50bf354ff863f44"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T23:11:12+00:00",
+  "updated_at": "2026-11-20T23:11:39+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
