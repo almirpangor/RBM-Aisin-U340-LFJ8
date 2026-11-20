@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 227,
+  "sequence": 228,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -47,15 +47,16 @@
         "verification/project-audit/dtc02-basiccan-order.md",
         "verification/project-audit/dtc02-basiccan.md",
         "verification/project-audit/dtc02-foreground.md",
+        "verification/project-audit/dtc02-native-paired-rx.md",
         "verification/project-audit/dtc02-native-rx-hook.md",
         "verification/project-audit/dtc02-preclear-capture.md"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:47:15+00:00",
-      "note": "Парный выбор RX14/15 по общей CAN-метке: ранний кадр первым, при равенстве RX15. Сеанс 10 86 перед 17 FF 00 через CAN13 и семь групп ПК/M32R PASS. ПК 35/71, M32R link 17, OEM 15 пар. Очередь 172 байта. Доказательства verification/project-audit/dtc02-basiccan-order.md. Штатная привязка, полный стек и стенд открыты.",
-      "result": "de7fc1060b4cb1ff1918a544932424b93a1d6b7d"
+      "updated_at": "2026-11-20T16:50:41+00:00",
+      "note": "Связка 0x004738 с послотовой точкой 0x001534: парный порядок, подавление первой дублирующей публикации, новый кадр на повторе. Проверка OEM-контекста и маршрута в M32R, только память симулятора.",
+      "result": null
     },
     "CAN-03": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -2367,9 +2368,17 @@
       "action": "review",
       "claim_id": "76adb69439704129b7ae37eeace39df2",
       "at": "2026-11-20T16:50:31+00:00"
+    },
+    {
+      "operation_id": "d411ef531b5c4955b2d1b058e4413310",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "resume",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:50:41+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:50:31+00:00",
+  "updated_at": "2026-11-20T16:50:41+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
