@@ -56,6 +56,29 @@ RbmU340eAdaptationResult rbm_u340e_runtime_restore_adaptation(
     RbmU340eRuntime *runtime, const FactoryAdaptation *baseline,
     const uint8_t *slot0, const uint8_t *slot1);
 
+typedef enum {
+    RBM_U340E_STARTUP_UNQUALIFIED = 0,
+    RBM_U340E_STARTUP_PREPARED,
+    RBM_U340E_STARTUP_S01_COLD,
+} RbmU340eStartupKind;
+
+typedef struct {
+    const FactoryGearState *gear;
+    const FactoryHydraulics *gp;
+    FactoryGearState *cold_work;
+    RbmU340eStartupKind kind;
+    FactoryAdaptRead read_adaptation;
+    void *read_context;
+} RbmU340eStartupSeed;
+
+/* Start from complete, independently qualified gear and GP snapshots.
+ * PREPARED preserves the supplied startup fields. S01_COLD requires
+ * disjoint scratch and applies the donor projection before reading NVM.
+ * The owner keeps tasks and outputs closed until this returns. INVALID
+ * leaves the runtime uninitialized. Slot snapshots follow restore's contract. */
+RbmU340eAdaptationResult rbm_u340e_runtime_start_from_seed(
+    RbmU340eRuntime *runtime, const RbmU340eStartupSeed *seed);
+
 /* Project current GP and private gear state into caller-owned workspace. The
  * scheduler may update gear-only inputs there. Publish shared inputs in gp.
  * Keep the typed workspace disjoint from the runtime and use it within the

@@ -451,6 +451,103 @@ static void check_adaptation_recovery(void)
 #endif
 }
 
+typedef struct {
+    RbmU340eRuntime *runtime;
+    uint8_t records[2][FACTORY_ADAPT_RECORD_BYTES];
+    unsigned reads;
+    int expect_cold;
+    int alias_slot;
+} StartupRead;
+
+static const uint8_t *read_startup_slot(void *context, unsigned slot)
+{
+    StartupRead *source = context;
+    FactoryGearState gear;
+    uint32_t shared;
+    assert(slot == source->reads++);
+    assert(rbm_u340e_runtime_snapshot_gears(source->runtime, &gear));
+    assert(gear.u7166 == (source->expect_cold ? UINT16_MAX : 123u));
+    assert(factory_hydraulics_get(&source->runtime->gp, -4852, 1u, &shared));
+    assert(shared == (source->expect_cold ? 2u : 0xa5u));
+    assert(gear.u7184 == 0x1357u);
+    return source->records[source->alias_slot ? 0u : slot];
+}
+
+static void check_start_from_seed(void)
+{
+    const FactoryAdaptation *const baseline = rbm_u340e_s01_adaptation_baseline();
+    const FactoryAdaptation learned = {.down = {-40, 40}, .down_seen = 1u};
+    RbmU340eRuntime runtime = {0};
+    FactoryGearState gear = {.u7166 = 123u, .u7184 = 0x1357u, .b4852 = 0xa5u};
+    FactoryGearState work;
+    FactoryHydraulics gp = {0};
+    StartupRead source = {.runtime = &runtime};
+    RbmU340eStartupSeed seed = {.gear = &gear, .gp = &gp,
+        .kind = RBM_U340E_STARTUP_PREPARED, .read_adaptation = read_startup_slot, .read_context = &source};
+    assert(factory_hydraulics_set(&gp, -7184, 2u, gear.u7184));
+    assert(factory_hydraulics_set(&gp, -4852, 1u, gear.b4852));
+    assert(factory_adaptation_encode(source.records[0], baseline, UINT32_MAX));
+    assert(factory_adaptation_encode(source.records[1], &learned, 0u));
+
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) == RBM_U340E_ADAPTATION_LOADED);
+    assert(source.reads == 2u && runtime.initialized == 1u);
+    FactoryAdaptation adaptation;
+    factory_hydraulics_capture(&runtime.gp, &adaptation);
+    assert(memcmp(&adaptation, &learned, sizeof adaptation) == 0);
+
+    source.expect_cold = 1;
+    source.reads = 0u;
+    seed.kind = RBM_U340E_STARTUP_S01_COLD;
+    seed.cold_work = &work;
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) == RBM_U340E_ADAPTATION_LOADED);
+    assert(source.reads == 2u && runtime.initialized == 1u);
+    factory_hydraulics_capture(&runtime.gp, &adaptation);
+    assert(memcmp(&adaptation, &learned, sizeof adaptation) == 0);
+    assert(gear.u7166 == 123u && gear.b4852 == 0xa5u);
+    uint32_t shared;
+    assert(factory_hydraulics_get(&gp, -4852, 1u, &shared) && shared == 0xa5u);
+
+    source.reads = 0u;
+    assert(factory_adaptation_encode(source.records[0], baseline, 0u));
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) ==
+           RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED);
+    assert(source.reads == 2u && runtime.initialized == 1u);
+    factory_hydraulics_capture(&runtime.gp, &adaptation);
+    assert(memcmp(&adaptation, baseline, sizeof adaptation) == 0);
+
+    source.reads = 0u;
+    source.alias_slot = 1;
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) == RBM_U340E_ADAPTATION_INVALID);
+    assert(source.reads == 2u && !runtime.initialized);
+    source.reads = 0u;
+    seed.cold_work = NULL;
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) == RBM_U340E_ADAPTATION_INVALID);
+    seed.cold_work = &gear;
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) == RBM_U340E_ADAPTATION_INVALID);
+    seed.cold_work = (FactoryGearState *)&runtime;
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) == RBM_U340E_ADAPTATION_INVALID);
+    seed.cold_work = &work;
+    seed.kind = RBM_U340E_STARTUP_UNQUALIFIED;
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) == RBM_U340E_ADAPTATION_INVALID);
+    assert(!source.reads && !runtime.initialized);
+
+    seed.kind = RBM_U340E_STARTUP_PREPARED;
+    gear.b4852 ^= 1u;
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) == RBM_U340E_ADAPTATION_INVALID);
+    gear.b4852 ^= 1u;
+    assert(!source.reads && !runtime.initialized);
+
+    seed.read_adaptation = NULL;
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) ==
+           RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED);
+    assert(runtime.initialized == 1u);
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, NULL) == RBM_U340E_ADAPTATION_INVALID);
+    assert(!runtime.initialized);
+#ifndef RBM_TEST_QUIET
+    puts("Toyota startup seed: selected projection before NVM, conflicting slots and closed failures passed.");
+#endif
+}
+
 static void check_s01_adaptation_baseline(void)
 {
     const FactoryAdaptation *baseline = rbm_u340e_s01_adaptation_baseline();
@@ -496,6 +593,7 @@ int main(void)
     check_hydraulic_cycle();
     check_adaptation_store();
     check_adaptation_recovery();
+    check_start_from_seed();
     check_s01_adaptation_baseline();
 #ifdef RBM_TEST_RUNTIME
     rbm_test_runtime();
