@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 276,
+  "sequence": 277,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -14,6 +14,7 @@
         "docs/integration-next-tasks.md",
         "docs/project-map.md",
         "docs/working-set.md",
+        "targets/lfj8/lfj8_h03_storage.h",
         "tools/check_integrated_h03.py",
         "verification/project-audit/2026-11-20-integration-3.json",
         "verification/project-audit/integration-3/"
@@ -21,8 +22,8 @@
       "stage": "in_progress",
       "claim_id": "d5108ac7030f46e2afe22bca1a1ee468",
       "claimed_at": "2026-11-20T17:16:57+00:00",
-      "updated_at": "2026-11-20T17:27:09+00:00",
-      "note": "31 результата объединены. ПК 37 шагов/98 тестов и M32R проходят; расширенная компоновка переполняется на 1888 байт. Проверяю сокращение M32R без изменения логики донора.",
+      "updated_at": "2026-11-20T17:29:56+00:00",
+      "note": "Добавляю в измеряемую RAM новые состояния SLU и парного RX; повторяю границы сервисной записи. Оптимизация getq/putq уже сократила модель на 552 байта.",
       "result": null
     },
     "DTC-02": {
@@ -2777,9 +2778,17 @@
       "action": "heartbeat",
       "claim_id": "d5108ac7030f46e2afe22bca1a1ee468",
       "at": "2026-11-20T17:27:09+00:00"
+    },
+    {
+      "operation_id": "8d1d0213a30e4584bea0a19c969ab72c",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "heartbeat",
+      "claim_id": "d5108ac7030f46e2afe22bca1a1ee468",
+      "at": "2026-11-20T17:29:56+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:27:09+00:00",
+  "updated_at": "2026-11-20T17:29:56+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
