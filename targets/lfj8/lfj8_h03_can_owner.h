@@ -11,6 +11,7 @@ typedef struct {
     volatile uint32_t setup_generation; /* Incremented by native setup. */
     volatile uint8_t grant;              /* Read by OEM TX gate and CAN0 IRQ. */
     bool initialized;
+    bool setup_permitted;               /* Guarded monitor permit, under the native IRQ lock. */
     uint32_t admitted_generation;       /* Last generation granted to the broker. */
 } Lfj8H03CanOwner;
 
