@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 313,
+  "sequence": 314,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -20,11 +20,11 @@
         "verification/project-audit/2026-11-20-task-board-continuations.json",
         "verification/project-audit/task-board-continuations/"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "d172b8b15e634c75ade19c907f4a8594",
       "claimed_at": "2026-11-20T17:52:56+00:00",
-      "updated_at": "2026-11-20T17:58:02+00:00",
-      "note": "В прежний task-board добавлены 28 карточек остатка и 11 следующих шагов, рекомендации 8 чатам. Реестр единый, резервирование сохранено. 20 проверок координации и 6 реестра прошли.",
+      "updated_at": "2026-11-20T17:58:22+00:00",
+      "note": "Продолжения опубликованы в существующий общий список. Всем чатам подходит один текст из docs/multi-chat.md; состояние прошивки не менялось.",
       "result": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db"
     },
     "DTC-02": {
@@ -3075,9 +3075,17 @@
       "action": "review",
       "claim_id": "d172b8b15e634c75ade19c907f4a8594",
       "at": "2026-11-20T17:58:02+00:00"
+    },
+    {
+      "operation_id": "55fcd9836e664287938cb84a728ce7cf",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "complete",
+      "claim_id": "d172b8b15e634c75ade19c907f4a8594",
+      "at": "2026-11-20T17:58:22+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:58:02+00:00",
+  "updated_at": "2026-11-20T17:58:22+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
