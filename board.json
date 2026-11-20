@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 205,
+  "sequence": 206,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -360,12 +360,12 @@
         "targets/lfj8/test_lfj8_h03_slu_secondary.c",
         "verification/project-audit/toy06-slu-pressure.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "a8e9ff099358496bacacf60bfcc8aa84",
       "claimed_at": "2026-11-20T16:37:07+00:00",
-      "updated_at": "2026-11-20T16:40:03+00:00",
-      "note": "ПК: 15 360 сочетаний состояния и 400 арифметических границ совпали с R3; проверены переход и сброс результата. Резервирую C-стенд для целевого симулятора M32R.",
-      "result": null
+      "updated_at": "2026-11-20T16:44:18+00:00",
+      "note": "05DCE8 → 055C5E: 15 760 сочетаний совпали с R3, общие 35 шагов ПК/71 тест PASS. M32R: 11 случаев/2 отказа и 17 компонентных прогонов PASS. Расширенная модель: +356 байт во втором окне, запас 324. Интегратору: отчёт verification/project-audit/toy06-slu-pressure.md для общего аудита. 05DC5E, снимок SECONDARY и физический канал открыты.",
+      "result": "583cf4a14897616018a6e08ee84dfa5c627b84b9"
     },
     "DTC-01": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -2170,9 +2170,17 @@
       "action": "heartbeat",
       "claim_id": "d048f56f20764374915133ea2b7bbcde",
       "at": "2026-11-20T16:44:10+00:00"
+    },
+    {
+      "operation_id": "27b1a433833b48b49fa1a361f4feaac7",
+      "task": "TOY-06",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "a8e9ff099358496bacacf60bfcc8aa84",
+      "at": "2026-11-20T16:44:18+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:44:10+00:00",
+  "updated_at": "2026-11-20T16:44:18+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {

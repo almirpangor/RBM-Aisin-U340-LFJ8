@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:44:10+00:00**. Изменение № **205**.
+Обновлено UTC: **2026-11-20T16:44:18+00:00**. Изменение № **206**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -17,7 +17,7 @@
 | TOY-03 — Независимые разрешающие сигналы диапазона | Работа завершена | Codex TOY-03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/toy-03-range-01a1f9a2 | 2026-11-20T16:22:02+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit dfc774eee013ba78c6679d3128f493f238f43000 |
 | TOY-04 — Полная последовательность переключений | Работа завершена | Codex — цикл переключений Toyota \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy04-cycle-32e6ac79 | 2026-11-20T16:34:19+00:00 | Порция с переходами D принята в опубликованную main b2ca79d. Резерв освобождаю. Полный гидравлический цикл, измерения, нагрузка и R остаются открыты. / commit 439188ac7049314db5c94d261f8e9570092d514b |
 | TOY-05 — Обучение и сохранение адаптаций | Работа завершена | Codex TOY-05 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy05-adaptation-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:33:11+00:00 | Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте. / commit dbc1762ffa86d37e2901b3a62f60b57a71763c24 |
-| TOY-06 — Блокировка гидротрансформатора SLU | Выполняется | Codex TOY-06 — давление SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-pressure-fea1b366 | 2026-11-20T16:40:03+00:00 | ПК: 15 360 сочетаний состояния и 400 арифметических границ совпали с R3; проверены переход и сброс результата. Резервирую C-стенд для целевого симулятора M32R. |
+| TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — давление SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-pressure-fea1b366 | 2026-11-20T16:44:18+00:00 | 05DCE8 → 055C5E: 15 760 сочетаний совпали с R3, общие 35 шагов ПК/71 тест PASS. M32R: 11 случаев/2 отказа и 17 компонентных прогонов PASS. Расширенная модель: +356 байт во втором окне, запас 324. Интегратору: отчёт verification/project-audit/toy06-slu-pressure.md для общего аудита. 05DC5E, снимок SECONDARY и физический канал открыты. / commit 583cf4a14897616018a6e08ee84dfa5c627b84b9 |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Работа завершена | Codex CAN-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-1120-c7e4 | 2026-11-20T16:26:06+00:00 | Reviewed RX epoch work integrated by 952658b and recorded in the shared audit. This closes the reservation; stock CAN startup and hardware verification remain open. / commit ca268743dfe173f93121d6b9148e0951932cfc9d |
 | CAN-02 — Общий диспетчер CAN13 | Работа завершена | Codex CAN-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/can02-telemetry-timeout-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:34:59+00:00 | Принято в опубликованную main b2ca79d после независимых и общих проверок. Аудит integration-2 содержит результаты и ограничения. Технические остатки ТЗ остаются открытыми. / commit b48b4e50878c8173a40d65134213fbb8fdc37aa1 |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex CAN-03 reset generation \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can03-epoch-1120-c7e4 | 2026-11-20T16:39:51+00:00 | Native H03 setup hook revokes TX13 grant before OEM and advances generation on return. PASS 16 lifecycle, 12 TX gate, 17 M32R components. BasicCAN flags persist in RAM shadow. See verification/project-audit/can03-native-epoch.md; target RAM, RX drain and bench remain open. / commit 6fc5a51975cd6bbbdf5bc4985d5d61b811435b6b |
@@ -249,6 +249,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:44:18+00:00 | TOY-06 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:44:10+00:00 | DTC-03 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T16:43:59+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T16:43:47+00:00 | SRC-01 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -278,4 +279,3 @@
 | 2026-11-20T16:37:36+00:00 | MODE-02 | review | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T16:37:13+00:00 | VSS-02 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:37:07+00:00 | TOY-06 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-20T16:36:49+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
