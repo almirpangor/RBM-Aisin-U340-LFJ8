@@ -16,6 +16,7 @@ from check_h03_flash_policy import (
 from check_h03_flash_residency import PROGRAMMING_MODE
 from check_h03_link import HERE, ROOT, TARGET, identify_h03
 from check_h03_service_isolation import INSTALL_ACCEPT, INSTALL_BEGIN, INSTALL_DENY
+from lfj8_h03_layout import alloc_sections, read_elf
 
 
 SLIST = 0x80100C
@@ -87,11 +88,6 @@ _start:
     ldi r10,#10
     .p2align 2
 fixture_ready:
-#ifdef RBM_DTC_RX_TARGET_FIXTURE
-    bl fixture_rx_foreground
-    .global fixture_target_ready
-fixture_target_ready:
-#endif
 #ifdef RBM_DTC_RX_RESIDENT_FIXTURE
     ld24 r0,#fixture_update_arguments
     ld r4,@r0
@@ -104,6 +100,11 @@ fixture_target_ready:
     jmp r4
     .p2align 2
 .Lrx_fixture_probe:
+#endif
+#ifdef RBM_DTC_RX_TARGET_FIXTURE
+    bl fixture_rx_foreground
+    .global fixture_target_ready
+fixture_target_ready:
 #endif
 #ifdef RBM_DTC_RX_HOOK_FIXTURE
     ld24 r0,#fixture_rx_high_probe
@@ -438,6 +439,110 @@ def cases(with_dispatch=False):
         ], paired_slots=1, paired_deliveries=(flow,))
 
 
+RX_RESIDENT_ROOTS = (
+    "rbm_h03_dtc_rx_hook",
+    "rbm_h03_dtc_rx_dispatch_hook",
+    "lfj8_h03_mmio",
+    "lfj8_h03_tml0ct_m32r",
+)
+
+
+def link_resident_target(run, work, gcc, compile_flags, sources, libraries):
+    objects = []
+    for source in ("fixture.S", *sources):
+        obj = Path(source).stem + ".o"
+        run(gcc, *TARGET, *compile_flags, "-c", source, "-o", obj)
+        objects.append(obj)
+
+    # The indirect epoch adapter has local linkage. Keeping it as a
+    # separate root avoids pulling the foreground via the const ops table.
+    (work / "closure.ld").write_text(
+        "SECTIONS { .text.rx_epoch : { KEEP(*(.text.rx_epoch)) } }\n", encoding="ascii")
+    roots = tuple(f"-Wl,--undefined={root}" for root in RX_RESIDENT_ROOTS)
+    objcopy = gcc.with_name(f"m32r-elf-objcopy{gcc.suffix}")
+    closure_objects = []
+    for obj in objects[1:]:
+        stripped = f"rx-{obj}"
+        run(objcopy, "--strip-debug", obj, stripped)
+        closure_objects.append(stripped)
+    run(gcc, *TARGET, "-r", "-nostdlib", "-Wl,--gc-sections,-T,closure.ld",
+        *roots, *closure_objects, *libraries, "-o", "rx-closure.o")
+    closure = read_elf(work / "rx-closure.o", 1)
+    missing = {name for name, symbol in closure["symbols"].items() if symbol["section"] == 0}
+    if missing != {"h03_dtc_rx_entry", "h03_dtc_rx_resume"}:
+        raise ValueError(f"Unexpected resident RX references: {sorted(missing)}")
+    sections = {s["name"]: s["size"] for s in alloc_sections(closure) if s["type"] != 8}
+    if ".text.rx_epoch" not in sections:
+        raise ValueError("Resident RX epoch adapter was not linked")
+    (work / "rx-sections.ld").write_text(
+        "".join(f"rx_input_{index}_start = .;\n*(\"{section}\")\nrx_input_{index}_end = .;\n"
+                for index, section in enumerate(sections)), encoding="ascii")
+    shutil.copyfile(HERE / "h03_dtc_rx_resident.ld", work / "fixture.ld")
+    run(gcc, *TARGET, "-nostdlib", "-Wl,--gc-sections,-T,fixture.ld",
+        *roots, *objects, *libraries, "-o", "fixture.elf")
+    return sections
+
+
+def verify_resident_target(path, symbols, end, sections, rom):
+    elf = read_elf(path, 2)
+    linked = {s["name"]: s for s in elf["sections"]}
+    resident = linked[".resident_rx"]
+    if (resident["address"], resident["size"]) != (RESIDENT_START, APP_START - RESIDENT_START):
+        raise ValueError("The linked resident RX sector differs from the H03 geometry")
+    for name, start, limit in ((".oem_low", 0, RESIDENT_START), (".oem_app", APP_START, FLASH_LIMIT)):
+        if (linked[name]["address"], linked[name]["data"]) != (start, rom[start:limit]):
+            raise ValueError(f"Linked fixture changed OEM bytes in {name}")
+    if resident["data"][end - RESIDENT_START:] != b"\xff" * (APP_START - end):
+        raise ValueError("Bytes after resident RX code do not preserve H03 sector fill")
+    if any(s["type"] in (4, 9) and s["size"] for s in elf["sections"]):
+        raise ValueError("The linked resident RX fixture contains unresolved relocations")
+    for index, (section, size) in enumerate(sections.items()):
+        start = symbols.get(f"rx_input_{index}_start", 0)
+        stop = symbols.get(f"rx_input_{index}_end", 0)
+        # A final input range can be larger because of alignment or another
+        # archive member using the same section name, but cannot shrink.
+        if not RESIDENT_START <= start <= stop <= end or stop - start < size:
+            raise ValueError(f"Resident RX input section missing from final link: {section}")
+
+    local_names = (*RX_RESIDENT_ROOTS, "rbm_h03_dtc_rx_begin", "rbm_h03_dtc_rx_observe",
+                   "lfj8_h03_can_owner_rx_epoch", "rx_epoch", "owner_ops")
+    if any(not RESIDENT_START <= symbols.get(name, 0) < end for name in local_names):
+        raise ValueError("A required RX symbol is not resident")
+
+    def words(name, count):
+        start = symbols[name] - RESIDENT_START
+        raw = resident["data"][start:start + 4 * count]
+        return tuple(int.from_bytes(raw[offset:offset + 4], "big") for offset in range(0, len(raw), 4))
+
+    epoch, poll, context = words("owner_ops", 3)
+    if (epoch, poll, context) != (symbols["rx_epoch"], symbols["poll_owner"], symbols["owner"]):
+        raise ValueError("The linked CAN-owner operations do not match the fixture binding")
+    foreground = linked[".text"]
+    upper_start = foreground["address"]
+    upper_end = max(linked[name]["address"] + linked[name]["size"]
+                    for name in (".text", ".rodata") if name in linked)
+    if not 0x101000 <= upper_start <= poll < upper_start + foreground["size"]:
+        raise ValueError("Foreground code was pulled into the resident RX sector")
+    bss = linked[".bss"]
+    if (bss["type"] != 8 or bss["address"] < upper_end or
+            any(not bss["address"] <= symbols[name] < bss["address"] + bss["size"]
+                for name in ("irq_target", "fixture_target", "owner"))):
+        raise ValueError("The fixture RX binding uses storage outside simulator BSS")
+    mmio = words("lfj8_h03_mmio", 7)
+    if len(mmio) != 7 or mmio[0] != 0 or any(not RESIDENT_START <= addr < end for addr in mmio[1:]):
+        raise ValueError("An indirect RX MMIO operation is not resident")
+    (path.parent / "erased-foreground.dat").write_bytes(b"\xff" * (upper_end - upper_start))
+    return {
+        "retained_read_only_input_sections": sorted(sections),
+        "resident_symbols": {name: f"0x{symbols[name]:06X}" for name in local_names},
+        "mmio_entry_addresses": [f"0x{addr:06X}" for addr in mmio[1:]],
+        "fixture_foreground_poll": f"0x{poll:06X}",
+        "fixture_foreground_code": [f"0x{upper_start:06X}", f"0x{upper_end:06X}"],
+        "fixture_irq_pointer": f"0x{symbols['irq_target']:06X}",
+        "resident_sector_sha256": sha256(resident["data"]).hexdigest(),
+    }
+
+
 def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False, target=False,
                        can_owner_dir=None):
     sites = [(HOOK_SITE, HOOK_STOCK, "rbm_h03_dtc_rx_hook", 0xFF000000)]
@@ -488,9 +593,14 @@ def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False,
         if rom[RESIDENT_START:APP_START] != b"\xff" * (APP_START - RESIDENT_START):
             raise ValueError("The H03 resident RX sector is not empty")
         defines.append("-DRBM_DTC_RX_RESIDENT_FIXTURE")
-    run(gcc, *TARGET, "-Os", "-g", "-std=c11", "-ffunction-sections", "-fdata-sections",
-        *defines, *roots, "-nostdlib", "-I.", "-Wl,--gc-sections,-T,fixture.ld",
-        "fixture.S", *sources, "-Wl,--start-group", "-lc", "-lgcc", "-Wl,--end-group", "-o", "fixture.elf")
+    compile_flags = ("-Os", "-g", "-std=c11", "-ffunction-sections", "-fdata-sections", *defines, "-I.")
+    libraries = ("-Wl,--start-group", "-lc", "-lgcc", "-Wl,--end-group")
+    resident_target = resident and target
+    if resident_target:
+        sections = link_resident_target(run, work, gcc, compile_flags, sources, libraries)
+    else:
+        run(gcc, *TARGET, *compile_flags, *roots, "-nostdlib", "-Wl,--gc-sections,-T,fixture.ld",
+            "fixture.S", *sources, *libraries, "-o", "fixture.elf")
     nm = gcc.with_name(f"m32r-elf-nm{gcc.suffix}")
     symbols = {word[2]: int(word[0], 16) for word in
                (line.split() for line in run(nm, "--defined-only", "fixture.elf").decode().splitlines())
@@ -506,7 +616,8 @@ def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False,
         if not minimum <= target < limit or displacement % 4 or not 0 <= displacement < (1 << 25):
             raise ValueError(f"The branch to {symbol} does not target the simulator fixture area")
         patches[site] = opcode | (displacement // 4)
-    return patches, limit
+    binding = verify_resident_target(work / "fixture.elf", symbols, limit, sections, rom) if resident_target else None
+    return patches, limit, binding
 
 
 def expected_observation(case, with_dispatch=False):
@@ -556,7 +667,7 @@ def compare_high_word(run, work, debugger, case, patches, with_dispatch=False):
             "returned": f"0x{returned:08X}"}
 
 
-def compare_resident_bypass(run, work, debugger, patches):
+def compare_resident_bypass(run, work, debugger, patches, target=False):
     case = next(case for case in cases(True) if case.name == "paired_retry_new_frame")
     (work / "erased-app.dat").write_bytes(b"\xff" * (FLASH_LIMIT - APP_START))
     programming = f"set {{unsigned char}}{PROGRAMMING_MODE:#x} = 1"
@@ -570,15 +681,20 @@ def compare_resident_bypass(run, work, debugger, patches):
             programming, f"restore erased-app.dat binary {APP_START:#x}",
         ),
     }
+    callback_trace = [
+        command
+        for label in ("rbm_h03_dtc_rx_begin", "rbm_h03_dtc_rx_observe")
+        for command in at(f"*{label}", trace("callback", "$pc"))
+    ] if target else []
     checks = {}
     for name, setup in contexts.items():
         stock = simulate(run, work, debugger, case, compare_hook=True, compare_dispatch=True,
-                         setup=setup)
+                         setup=setup, target=target)
         wrapped = simulate(run, work, debugger, case, compare_hook=True, compare_dispatch=True,
-                           patches=patches, setup=setup)
+                           patches=patches, setup=(*setup, *callback_trace), target=target)
         stock, stock_depth = split_stack_observation(stock)
         wrapped, wrapped_depth = split_stack_observation(wrapped)
-        empty = [("observer", 0, 0, 0, 0), ("dispatch", 0, 0, 0)]
+        empty = [("target_queue", 0, 0)] if target else [("observer", 0, 0, 0, 0), ("dispatch", 0, 0, 0)]
         attempts = sum(event[0] == "pre_clear" for event in stock)
         if stock[-len(empty):] != empty or attempts != 3 or wrapped != stock:
             raise ValueError(f"Resident RX bypass changed the original path in {name}")
@@ -586,6 +702,23 @@ def compare_resident_bypass(run, work, debugger, patches):
                         "stock_stack_bytes_written": stock_depth,
                         "hook_stack_bytes_written": wrapped_depth}
     return checks
+
+
+def compare_active_resident_rx(run, work, debugger, patches, foreground_start):
+    case = next(case for case in cases(True) if case.name == "paired_retry_new_frame")
+    ordinary = simulate(run, work, debugger, case, compare_hook=True, compare_dispatch=True,
+                        patches=patches, target=True)
+    # Admission and the pointer setup have already run at fixture_target_ready.
+    # Keep that RAM state and erase both higher code ranges before entering CAN0.
+    setup = (f"restore erased-app.dat binary {APP_START:#x}",
+             f"restore erased-foreground.dat binary {foreground_start}")
+    isolated = simulate(run, work, debugger, case, compare_hook=True, compare_dispatch=True,
+                        patches=patches, target=True, setup=setup)
+    if isolated != ordinary:
+        raise ValueError("Admitted resident RX depends on application or fixture foreground code")
+    return {"case": case.name, "application_erased_after_admission": True,
+            "fixture_foreground_erased_after_admission": True,
+            "deliveries": sum(row[0] == "delivery" for row in isolated)}
 
 
 def probe_native_policy(run, work, debugger, entry, registers, stops, *, setup=(), fields=()):
@@ -693,6 +826,8 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=Fal
           can_owner_dir=None):
     with_rx_dispatch = with_rx_dispatch or resident or target
     with_rx_hook = with_rx_hook or with_rx_dispatch
+    if resident and target and can_owner_dir is None:
+        can_owner_dir = HERE
     identity = identify_h03(base)
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
@@ -712,8 +847,8 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=Fal
         (work / "fixture.S").write_text(FIXTURE, encoding="ascii")
         patches = {}
         if with_rx_hook:
-            patches, code_end = build_hook_fixture(run, work, gcc, rom, with_rx_dispatch, resident,
-                                                  target, can_owner_dir)
+            patches, code_end, binding = build_hook_fixture(run, work, gcc, rom, with_rx_dispatch,
+                                                           resident, target, can_owner_dir)
         else:
             (work / "fixture.ld").write_text(LAYOUT, encoding="ascii")
             run(gcc, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,fixture.ld", "fixture.S", "-o", "fixture.elf")
@@ -762,9 +897,13 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=Fal
             single_rx = next(case for case in cases() if case.name == "rx14_session")
             high_word = compare_high_word(run, work, debugger, single_rx, patches, with_rx_dispatch)
         if resident:
-            bypass = compare_resident_bypass(run, work, debugger, patches)
+            bypass = compare_resident_bypass(run, work, debugger, patches, target)
             update = compare_update_boundary(run, work, debugger)
             lower_pages = probe_lower_page_selections(run, work, debugger)
+            if binding is not None:
+                foreground_start = binding["fixture_foreground_code"][0]
+                binding["active_capture_with_erased_upper_code"] = compare_active_resident_rx(
+                    run, work, debugger, patches, foreground_start)
     result = {
         "base": identity,
         "compiler": version,
@@ -810,6 +949,8 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=Fal
             "actual_virtual_flash_mapping_modelled": False,
             "target_ram_ownership_verified": False,
         }
+        if binding is not None:
+            result["resident_layout"]["target_binding"] = binding
     if target:
         result["target_foreground"] = dialogue
         result["target_foreground"]["can_owner_implementation"] = "CAN-03" if can_owner_dir else "fixture"
@@ -830,17 +971,21 @@ def main():
                        help="Verify both hooks with code and constants below H03 application Flash")
     modes.add_argument("--with-target-rx", action="store_true",
                        help="Run the target binding and CAN13 foreground from the native RX path")
+    modes.add_argument("--with-resident-target-rx", action="store_true",
+                       help="Link the target RX IRQ below application Flash and run CAN-03 foreground")
     parser.add_argument("--can-owner-dir", type=Path,
                         help="Use CAN-03 owner and donor I/O sources from this targets/lfj8 directory")
     args = parser.parse_args()
-    if args.can_owner_dir and not args.with_target_rx:
-        parser.error("--can-owner-dir requires --with-target-rx")
+    resident = args.with_resident_rx or args.with_resident_target_rx
+    target = args.with_target_rx or args.with_resident_target_rx
+    if args.can_owner_dir and not target:
+        parser.error("--can-owner-dir requires a target RX mode")
     if args.out and (args.out.suffix.lower() != ".json" or args.out.resolve() == args.base.resolve()):
         parser.error("--out must be a separate JSON report")
     try:
         result = check(args.base, args.gcc.resolve(), args.with_rx_hook,
-                       with_rx_dispatch=args.with_rx_dispatch, resident=args.with_resident_rx,
-                       target=args.with_target_rx, can_owner_dir=args.can_owner_dir)
+                       with_rx_dispatch=args.with_rx_dispatch, resident=resident,
+                       target=target, can_owner_dir=args.can_owner_dir)
         if args.out:
             args.out.parent.mkdir(parents=True, exist_ok=True)
             args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
@@ -849,11 +994,11 @@ def main():
             print(f"PASS: {result['simulator_hook']['paired_cases']} stock/hook comparisons")
         if "high_accumulator_probe" in result.get("simulator_hook", {}):
             print("PASS: high accumulator operand, instruction and return probe")
-        if args.with_resident_rx:
+        if resident:
             print(f"PASS: {len(result['resident_layout']['bypass_cases'])} resident RX bypass comparisons")
             print("PASS: H03 write and erase admission at the resident RX boundary")
             print("PASS: H03 Virtual Flash register probes for the lower RX pages")
-        if args.with_target_rx:
+        if target:
             print("PASS: native BasicCAN RX -> target foreground -> CAN13 0x722")
     except subprocess.CalledProcessError as error:
         detail = b"\n".join(filter(None, (error.stdout, error.stderr))) or str(error).encode()
