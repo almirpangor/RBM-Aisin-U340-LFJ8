@@ -77,7 +77,7 @@
 
 **Завершено в указанном объёме** · ТЗ §1
 
-**Сделано.** Объединены ещё 13 опубликованных порций восьми чатов. Добавлены строгая адресная сборка, контроль свежести объектов и общий аудит памяти; продолжения сохраняются в прежних карточках.
+**Сделано.** Объединены ещё 13 опубликованных порций восьми чатов. Добавлены строгая адресная сборка, контроль свежести объектов и общий аудит памяти; продолжения сохраняются в прежних карточках. Review теперь освобождает задачу и файлы; неизменяемые сданные SHA хранятся отдельно. Проверены новый claim, включение предыдущих результатов и приёмка без снятия нового резерва.
 
 **Осталось.** Окончательные BIN и оставшиеся привязки ведутся в REL-01/H03-03/H03-04.
 
@@ -87,7 +87,7 @@
 
 **Что настраивать.** Публикация в GitHub возобновлена по указанию владельца 20.11.2026. Учёт чатов отделён от готовности прошивки.
 
-**Проверки.** [SOURCES](#check-sources) · [COORD](#check-coord) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4)
+**Проверки.** [SOURCES](#check-sources) · [COORD](#check-coord) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [COORD_REVIEW](#check-coord_review)
 
 **Разбор и основания.** [decisions.md](../docs/decisions.md) · [multi-chat.md](../docs/multi-chat.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md)
 
@@ -977,3 +977,12 @@ python -B targets/lfj8/check_h03_service_guard.py --base $h03 --gcc $m32rGcc --s
 ```
 
 **Последний сохранённый результат.** [2026-11-21-integration.json](../verification/project-audit/2026-11-21-integration.json) · [PC-CHECKS.json](../verification/project-audit/integration-20261121/pc/PC-CHECKS.json) · [standard-link.json](../verification/project-audit/integration-20261121/standard-link.json) · [summary.json](../verification/project-audit/integration-20261121/native/summary.json) · [summary.json](../verification/project-audit/integration-20261121/components/summary.json) · [bindings.json](../verification/project-audit/integration-20261121/bindings.json) · [summary.json](../verification/project-audit/integration-20261121/extra/summary.json)
+
+<a id="check-coord_review"></a>
+### COORD_REVIEW — Свободное продолжение review и сохранение очереди сдачи
+
+```powershell
+python -B -m unittest discover -s tests -v
+```
+
+**Последний сохранённый результат.** [unit-tests.txt](../verification/project-audit/review-continuations/unit-tests.txt) · [migration-preview.json](../verification/project-audit/review-continuations/migration-preview.json) · [README.md](../verification/project-audit/review-continuations/README.md)

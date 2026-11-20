@@ -9,7 +9,7 @@
     "engine": "GW4G15 / Bosch ME7.9.71 E4M3"
   },
   "release_ready": false,
-  "audit": "verification/project-audit/2026-11-21-integration.json",
+  "audit": "verification/project-audit/2026-11-21-coordination-review.json",
   "status_labels": {
     "closed": "Завершено в указанном объёме",
     "model": "Проверено программно",
@@ -278,6 +278,15 @@
         "verification/project-audit/integration-20261121/bindings.json",
         "verification/project-audit/integration-20261121/extra/summary.json"
       ]
+    },
+    "COORD_REVIEW": {
+      "title": "Свободное продолжение review и сохранение очереди сдачи",
+      "command": "python -B -m unittest discover -s tests -v",
+      "reports": [
+        "verification/project-audit/review-continuations/unit-tests.txt",
+        "verification/project-audit/review-continuations/migration-preview.json",
+        "verification/project-audit/review-continuations/README.md"
+      ]
     }
   },
   "modules": [
@@ -338,7 +347,7 @@
       ],
       "title": "Основа проекта и локальная работа",
       "status": "closed",
-      "current": "Объединены ещё 13 опубликованных порций восьми чатов. Добавлены строгая адресная сборка, контроль свежести объектов и общий аудит памяти; продолжения сохраняются в прежних карточках.",
+      "current": "Объединены ещё 13 опубликованных порций восьми чатов. Добавлены строгая адресная сборка, контроль свежести объектов и общий аудит памяти; продолжения сохраняются в прежних карточках. Review теперь освобождает задачу и файлы; неизменяемые сданные SHA хранятся отдельно. Проверены новый claim, включение предыдущих результатов и приёмка без снятия нового резерва.",
       "remaining": "Окончательные BIN и оставшиеся привязки ведутся в REL-01/H03-03/H03-04.",
       "acceptance": "Файлы доступны, источник каждой сборки прослеживается.",
       "code": [
@@ -353,7 +362,8 @@
         "COORD",
         "INTEGRATION",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "COORD_REVIEW"
       ],
       "docs": [
         "docs/decisions.md",
