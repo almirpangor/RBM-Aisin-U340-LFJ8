@@ -23,6 +23,7 @@ typedef struct {
     uint16_t can_control;
     uint16_t can_status;
     uint16_t formats;
+    uint16_t formats_set_on_rx_clear;
     uint16_t slot_interrupts;
     uint16_t rx_timestamp;
     uint16_t coolant_timestamp;
@@ -158,6 +159,9 @@ static void write8(void *context, uint32_t address, uint8_t value)
     switch (address) {
     case 0x80105Bu:
         assert(value == 0x4eu || value == 0x40u || value == 0u);
+        if (value == 0x4eu) {
+            f->formats |= f->formats_set_on_rx_clear;
+        }
         f->rx_control = value == 0x4eu ? (uint8_t)(f->rx_after | (f->rx_control & 4u)) : value;
         break;
     case 0x80105Cu:
@@ -295,6 +299,37 @@ static void test_can_receive(void)
     assert(snapshot.coolant_f9e9 == 137u);
 }
 
+static void test_fullcan_copy_configuration(void)
+{
+    Fixture f = {
+        .rx_dlc = 8u, .rx_sid = {0x03u, 0x3au}, .rx_data = {0x12u, 0xc0u},
+        .rx_timestamp = 17u,
+    };
+    const Lfj8RegisterIo io = {&f, read8, read16, read32, write8, lock, unlock};
+    const uint8_t wrong_after[] = {0u, 0x60u};
+    Lfj8CanData8 frame;
+
+    for (unsigned index = 0; index < sizeof(wrong_after); ++index) {
+        f.rx_control = 0x41u;
+        f.rx_after = wrong_after[index];
+        assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_WRONG_SLOT);
+        assert(frame.id == 0u && frame.timestamp == 0u && frame.payload[0] == 0u);
+    }
+
+    f.rx_after = 0x40u;
+    f.rx_control = 0x41u;
+    f.formats_set_on_rx_clear = 0x0010u;
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_WRONG_SLOT);
+    assert(frame.id == 0u && frame.timestamp == 0u && frame.payload[0] == 0u);
+
+    f.formats = 0u;
+    f.rx_control = 0x41u;
+    f.formats_set_on_rx_clear = 0x0008u; /* Slot 12 changes, slot 11 stays valid. */
+    assert(lfj8_can0_receive8(&io, 11u, 1u, &frame) == LFJ8_CAN_RX_RECEIVED);
+    assert(frame.id == 0x0fau && frame.timestamp == 17u && frame.payload[0] == 0x12u);
+    assert(f.writes == 4u && f.lock_depth == 0u);
+}
+
 static void test_engine_can_lifecycle(void)
 {
     Fixture f = {
@@ -414,8 +449,16 @@ static void test_engine_can_lifecycle(void)
     assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 234u, 1u, &sample) == TA2005_CHERY_SPEED);
     assert(rx.time_ticks == 0u && sample.speed_fad8 == 9600u);
 
-    f.can_status = 0x4000u;
+    f.rx_control = 0x41u;
+    f.rx_after = 0u;
+    f.rx_timestamp = 133u;
+    f.can_timestamp = 133u;
     assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 235u, 1u, &sample) == 0u);
+    assert(rx.phase == LFJ8_H03_RX_WAIT_FOR_OEM && rx.discontinuity);
+    assert(sample.speed_fad8 == UINT16_MAX && sample.model.f9e8 == UINT8_MAX);
+
+    f.can_status = 0x4000u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 236u, 1u, &sample) == 0u);
     assert(rx.phase == LFJ8_H03_RX_WAIT_FOR_OEM && f.lock_depth == 0u);
 }
 
@@ -776,6 +819,7 @@ int main(void)
     test_donor_io();
     test_can_receive_assignment();
     test_can_receive();
+    test_fullcan_copy_configuration();
     test_engine_can_lifecycle();
     test_capture_pair();
     test_raw_capture();

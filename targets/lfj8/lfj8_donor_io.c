@@ -259,16 +259,21 @@ int lfj8_h03_can0_read_timestamp(const Lfj8RegisterIo *io, uint16_t *timestamp)
     return running;
 }
 
+static int fullcan_receive_mode(const Lfj8RegisterIo *io, uint8_t slot, uint8_t control)
+{
+    const uint8_t allowed = CAN_SLOT_RR | CAN_SLOT_TRFIN | CAN_SLOT_TRSTAT | CAN_SLOT_ML;
+    return (control & CAN_SLOT_RR) != 0u && (control & (uint8_t)~allowed) == 0u &&
+           (io->read16(io->context, LFJ8_CAN0_EXTID) & (UINT16_C(0x8000) >> slot)) == 0u;
+}
+
 static Lfj8CanRxResult receive8(const Lfj8RegisterIo *io, uint8_t slot, Lfj8CanData8 *frame)
 {
     if (!can0_available(io)) {
         return LFJ8_CAN_RX_UNAVAILABLE;
     }
     const uint32_t control_address = LFJ8_CAN0_SLOT_CNT + slot;
-    const uint8_t allowed = CAN_SLOT_RR | CAN_SLOT_TRFIN | CAN_SLOT_TRSTAT | CAN_SLOT_ML;
     const uint8_t control = io->read8(io->context, control_address);
-    if ((control & CAN_SLOT_RR) == 0u || (control & (uint8_t)~allowed) != 0u ||
-        (io->read16(io->context, LFJ8_CAN0_EXTID) & (UINT16_C(0x8000) >> slot)) != 0u) {
+    if (!fullcan_receive_mode(io, slot, control)) {
         return LFJ8_CAN_RX_WRONG_SLOT;
     }
     if ((control & CAN_SLOT_TRSTAT) != 0u) {
@@ -300,6 +305,9 @@ static Lfj8CanRxResult receive8(const Lfj8RegisterIo *io, uint8_t slot, Lfj8CanD
     const uint8_t after = io->read8(io->context, control_address);
     if (!can0_available(io)) {
         return LFJ8_CAN_RX_UNAVAILABLE;
+    }
+    if (!fullcan_receive_mode(io, slot, after)) {
+        return LFJ8_CAN_RX_WRONG_SLOT;
     }
     if ((after & CAN_SLOT_ML) != 0u) {
         return LFJ8_CAN_RX_LOST;
