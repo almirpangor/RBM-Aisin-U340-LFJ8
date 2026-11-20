@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 419,
+  "sequence": 420,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -150,12 +150,12 @@
         "targets/lfj8/test_lfj8_h03_nvm.c",
         "verification/project-audit/dtc04-retired-history.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "649f9eb04dd24d0ea547f2886878f0b0",
       "claimed_at": "2026-11-20T18:38:10+00:00",
-      "updated_at": "2026-11-20T18:41:19+00:00",
-      "note": "Регрессия воспроизвелась на исходном коде. После правки ПК/M32R исключают возврат истории при потере подтверждённой пустой записи; 48 отсечек, 35 стираний и 320 битовых проверок прошли. Идут общие проверки.",
-      "result": null
+      "updated_at": "2026-11-20T18:45:07+00:00",
+      "note": "Пустая запись и исключение старого слота подтверждаются до ответа 54 FF 00. Модель носителя на ПК/M32R, 37 шагов ПК и сборка/эмуляция M32R прошли. Отчёт verification/project-audit/dtc04-retired-history.md. Физический носитель, запуск и стенд остаются открыты.",
+      "result": "3f5f8730ab544fc9fb0185138b97b6956e04c377"
     },
     "H03-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -3921,9 +3921,17 @@
       "action": "review",
       "claim_id": "d5aa9e367a344b3f8dbadc189b368dbd",
       "at": "2026-11-20T18:44:53+00:00"
+    },
+    {
+      "operation_id": "3dac42a6bdda47588cff955c19d62e6e",
+      "task": "DTC-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "649f9eb04dd24d0ea547f2886878f0b0",
+      "at": "2026-11-20T18:45:07+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:44:53+00:00",
+  "updated_at": "2026-11-20T18:45:07+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
