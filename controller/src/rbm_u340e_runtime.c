@@ -228,6 +228,15 @@ int rbm_u340e_runtime_init(RbmU340eRuntime *runtime, const FactoryGearState *gea
     return 1;
 }
 
+const FactoryAdaptation *rbm_u340e_s01_adaptation_baseline(void)
+{
+    /* The S01 group-7 fallback pointer table at 00B0E0 supplies zero
+     * for all 34 bytes selected by FactoryAdaptation. */
+    _Static_assert(sizeof(FactoryAdaptation) == 34u, "Recheck the S01 adaptation projection");
+    static const FactoryAdaptation baseline = {0};
+    return &baseline;
+}
+
 static int adaptation_marker_erased(const uint8_t *record)
 {
     /* The last four bytes of UFL1 are the commit marker, written after the

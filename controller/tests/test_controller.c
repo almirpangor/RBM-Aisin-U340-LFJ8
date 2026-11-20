@@ -451,6 +451,36 @@ static void check_adaptation_recovery(void)
 #endif
 }
 
+static void check_s01_adaptation_baseline(void)
+{
+    const FactoryAdaptation *baseline = rbm_u340e_s01_adaptation_baseline();
+    const FactoryAdaptation zero = {0};
+    const FactoryAdaptation learned = {
+        .learned_flags = {0x05u, 0x10u}, .up_counts = {1u, 2u}, .down_counts = {3u, 4u},
+        .down = {-7, 3, 10}, .down_seen = 1u,
+    };
+    RbmU340eRuntime runtime = {0};
+    const FactoryGearState gear = {0};
+    uint8_t stored[FACTORY_ADAPT_RECORD_BYTES];
+    uint8_t erased[FACTORY_ADAPT_RECORD_BYTES];
+    memset(erased, 0xff, sizeof erased);
+    memset(stored, 0xff, sizeof stored);
+    assert(factory_adaptation_valid(baseline));
+    assert(memcmp(baseline, &zero, sizeof zero) == 0);
+    assert(rbm_u340e_runtime_init(&runtime, &gear, &runtime.gp));
+    assert(factory_hydraulics_set(&runtime.gp, -7184, 2, 0x1153u));
+    assert(factory_hydraulics_restore(&runtime.gp, &learned));
+    expect_adaptation_restore(&runtime, baseline, erased, stored,
+                              RBM_U340E_ADAPTATION_BASELINE_UNPUBLISHED, baseline);
+    assert(factory_adaptation_encode(stored, &learned, 1u));
+    expect_adaptation_restore(&runtime, baseline, erased, stored, RBM_U340E_ADAPTATION_LOADED, &learned);
+    expect_adaptation_restore(&runtime, baseline, NULL, stored,
+                              RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED, baseline);
+#ifndef RBM_TEST_QUIET
+    puts("Toyota S01 adaptation baseline: empty, valid, and unreadable startup passed.");
+#endif
+}
+
 #ifdef RBM_TEST_TRANSFERS
 unsigned rbm_test_hydraulic_transfer(void);
 #endif
@@ -466,6 +496,7 @@ int main(void)
     check_hydraulic_cycle();
     check_adaptation_store();
     check_adaptation_recovery();
+    check_s01_adaptation_baseline();
 #ifdef RBM_TEST_RUNTIME
     rbm_test_runtime();
 #endif
