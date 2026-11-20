@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:05:38+00:00**. Изменение № **326**.
+Обновлено UTC: **2026-11-20T18:05:58+00:00**. Изменение № **327**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -35,7 +35,7 @@
 | VSS-02 — Кинематика и параметры реальной скорости | На проверке | Codex — общий снимок S51/S83/ATF \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss02-common-sensor-mwp5rm2ofhaxjfi9dss | 2026-11-20T18:05:38+00:00 | Поставщик S51/S83/ATF в одной эпохе TML0. ПК и отдельный M32R PASS: потеря, остановка, первый фронт, wrap, reset, ATF. База H03 18 компонентов, INTEGRATION3 5 PASS. Отчёт verification/project-audit/vss02-common-sensor.md. Вызовы и размещение H03-02 открыты. / commit 5cfe81106f0401ebbd4cabb2fce1b8d00929aead |
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
 | MODE-01 — Логика шести положений и кнопок | Свободна для продолжения | Предыдущий: Codex MODE-01 — восстановление кнопок после отказа входа \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode01-button-rebaseline-01a1f9c7 | 2026-11-20T17:43:09+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 6bbc342ce3f6a2a60a9b58f23044e7a6a02fbd31 |
-| MODE-02 — Подключение селектора, Tiptronic и Overdrive | Свободна для продолжения | Предыдущий: Codex MODE-02 — публикация ADC H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode02-h03-selector-01a1f9c7 | 2026-11-20T17:42:09+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit f92fde84f590460d713dee020ee5ddc6ccd089e4 |
+| MODE-02 — Подключение селектора, Tiptronic и Overdrive | Выполняется | Codex MODE-02 — общая квалификация входов H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode02-qualified-inputs-01a1f9c7 | 2026-11-20T18:05:58+00:00 | Независимый объём MODE-02/TOY-03: нативный callback AN2 и сборка общей заявки из селектора, кнопок и разрешений. Отдельные тесты ПК/M32R без пересечения с TOY-06. Физические карты и привязка к владельцу H03 требуют подтверждения. |
 | MODE-03 — Окончательная политика режимов | Свободна для продолжения | Предыдущий: Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T17:45:40+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit dd4fdbc2862093359df9329d7e6e9ab211d13940 |
 | SRC-01 — Реестр происхождения и контроль исходников | Закрыта по текущему объёму | Предыдущий: Codex SRC-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/src01-donor-pins-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:47:57+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 72f71983154edb4dcc7f0b3dc931bebfdb0d9b6d |
 | AUD-01 — Программный аудит истории E4M3 | Закрыта по текущему объёму | Предыдущий: Codex AUD-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/aud01-pinned-replay-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:48:17+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 6748075bd8cda69a0b6c2b9d6e2a471a00463434 |
@@ -60,7 +60,7 @@
 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#h03-05) | На проверке | Связать потерю допуска со штатным отключением выходов и проверить порядок записей. Недостающие ток–давление и полярность оставить отдельными измерениями. | Чат силовых выходов |
 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#vss-02) | На проверке | Подключить единый снимок S51/S83/ATF с общим временем; затем продолжить H03-02. Отделить остановку, потерю импульсов и сброс счётчика. | Чат датчиков |
 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#toy-04) | Свободна для продолжения | Замкнуть оставшиеся стадии полного цикла, R и ручные запросы; затем подключить SLU SECONDARY и назначить одного владельца таймера в TOY-06. | Чат переключений Toyota |
-| [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#mode-02) | Свободна для продолжения | Связать физические AN2/Tiptronic/OD и независимые разрешения с общей заявкой; продолжить независимые входы TOY-03. | Чат селектора и кнопок |
+| [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#mode-02) | Выполняется | Связать физические AN2/Tiptronic/OD и независимые разрешения с общей заявкой; продолжить независимые входы TOY-03. | Чат селектора и кнопок |
 | [DTC-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#dtc-02) | Выполняется | Заменить тестовую обвязку RX привязкой к очереди и часам приложения; провести запрос через foreground до ответа. | Чат диагностики |
 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#dtc-04) | Свободна для продолжения | Восстановить геометрию и операции NVM, реализовать запись и восстановление при старте; затем подключить адаптации TOY-05. | Чат постоянной памяти |
 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#h03-04) | Свободна для продолжения | Устранить дефицит Flash с сохранением всех функций; проверить окончательное размещение RAM, стек и сервисные границы с новыми привязками. | Основной чат — общая сборка |
@@ -165,7 +165,7 @@
 </details>
 
 <details>
-<summary>MODE-02 — Подключение селектора, Tiptronic и Overdrive: Свободна для продолжения</summary>
+<summary>MODE-02 — Подключение селектора, Tiptronic и Overdrive: Выполняется</summary>
 
 **Сделано.** Публикация AN2 проверена четырьмя парами и тремя отказами M32R. Фильтр кнопок объединён; физический опрос и применение ко всему циклу открыты.
 
@@ -175,7 +175,7 @@
 
 **Рекомендуемый чат.** Чат селектора и кнопок — 01a1f9c7-675a-78c3-be98-5bd65e44995c.
 
-**Исполнитель сейчас.** Задача не занята.
+**Сейчас выполняет.** Codex MODE-02 — общая квалификация входов H03 — 01a1f9c7-675a-78c3-be98-5bd65e44995c.
 
 **Критерий приёмки.** Реальные нажатия проходят до исполнения запроса в полном цикле, дребезг/обрыв не создают повторных команд.
 
@@ -582,6 +582,23 @@
 - targets/lfj8/lfj8_h03_output_inhibit.c
 - targets/lfj8/lfj8_h03_output_inhibit.h
 
+### MODE-02
+
+Чат: Codex MODE-02 — общая квалификация входов H03. Claim ID: 9a8289b65d604e5dabe669d1c94e2dba.
+
+- targets/lfj8/check_h03_input_binding.py
+- targets/lfj8/check_h03_selector_adc.py
+- targets/lfj8/h03_selector_adc_fixture.c
+- targets/lfj8/lfj8_h03_input_binding.c
+- targets/lfj8/lfj8_h03_input_binding.h
+- targets/lfj8/lfj8_h03_input_target.c
+- targets/lfj8/lfj8_range_control.c
+- targets/lfj8/lfj8_range_control.h
+- targets/lfj8/lfj8_selector_adc.c
+- targets/lfj8/lfj8_selector_adc.h
+- targets/lfj8/test_lfj8_h03_input_binding.c
+- verification/project-audit/mode02-h03-input-binding.md
+
 ### TOY-06
 
 Чат: Codex TOY-06 — SLU в SECONDARY. Claim ID: 2b42f17a3d734aa29534d7fcee10f2ea.
@@ -610,6 +627,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:05:58+00:00 | MODE-02 | claim | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T18:05:38+00:00 | VSS-02 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T18:05:28+00:00 | CAN-03 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T18:05:17+00:00 | DTC-02 | claim | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
@@ -639,4 +657,3 @@
 | 2026-11-20T17:45:20+00:00 | H03-05 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T17:44:55+00:00 | VSS-01 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:44:35+00:00 | DTC-01 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
-| 2026-11-20T17:44:14+00:00 | TOY-06 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |

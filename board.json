@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 326,
+  "sequence": 327,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -261,20 +261,28 @@
     },
     "MODE-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
-      "label": "Codex MODE-02 — публикация ADC H03",
-      "branch": "codex/mode02-h03-selector-01a1f9c7",
+      "label": "Codex MODE-02 — общая квалификация входов H03",
+      "branch": "codex/mode02-qualified-inputs-01a1f9c7",
       "files": [
+        "targets/lfj8/check_h03_input_binding.py",
         "targets/lfj8/check_h03_selector_adc.py",
         "targets/lfj8/h03_selector_adc_fixture.c",
-        "targets/lfj8/h03_selector_adc_hook.S",
-        "verification/project-audit/mode02-h03-selector-adc.md"
+        "targets/lfj8/lfj8_h03_input_binding.c",
+        "targets/lfj8/lfj8_h03_input_binding.h",
+        "targets/lfj8/lfj8_h03_input_target.c",
+        "targets/lfj8/lfj8_range_control.c",
+        "targets/lfj8/lfj8_range_control.h",
+        "targets/lfj8/lfj8_selector_adc.c",
+        "targets/lfj8/lfj8_selector_adc.h",
+        "targets/lfj8/test_lfj8_h03_input_binding.c",
+        "verification/project-audit/mode02-h03-input-binding.md"
       ],
-      "stage": "done",
-      "claim_id": "e02562d3b21f423d914c1c00a9c88077",
-      "claimed_at": "2026-11-20T16:28:17+00:00",
-      "updated_at": "2026-11-20T17:42:09+00:00",
-      "note": "袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md.",
-      "result": "f92fde84f590460d713dee020ee5ddc6ccd089e4"
+      "stage": "in_progress",
+      "claim_id": "9a8289b65d604e5dabe669d1c94e2dba",
+      "claimed_at": "2026-11-20T18:05:58+00:00",
+      "updated_at": "2026-11-20T18:05:58+00:00",
+      "note": "Независимый объём MODE-02/TOY-03: нативный callback AN2 и сборка общей заявки из селектора, кнопок и разрешений. Отдельные тесты ПК/M32R без пересечения с TOY-06. Физические карты и привязка к владельцу H03 требуют подтверждения.",
+      "result": null
     },
     "TOY-05": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -3184,9 +3192,17 @@
       "action": "review",
       "claim_id": "da83556f0097488ba39c6ee642e4a002",
       "at": "2026-11-20T18:05:38+00:00"
+    },
+    {
+      "operation_id": "23e0f0a619ca4b949a568e83a8ed3575",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "9a8289b65d604e5dabe669d1c94e2dba",
+      "at": "2026-11-20T18:05:58+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:05:38+00:00",
+  "updated_at": "2026-11-20T18:05:58+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
