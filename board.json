@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 392,
+  "sequence": 393,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -241,28 +241,21 @@
     },
     "MODE-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
-      "label": "Codex MODE-02 — общая квалификация входов H03",
-      "branch": "codex/mode02-qualified-inputs-01a1f9c7",
+      "label": "Codex MODE-02 — квалификация сырых входов кнопок",
+      "branch": "codex/mode02-p1data-capture-01a1f9c7",
       "files": [
-        "targets/lfj8/check_h03_input_binding.py",
-        "targets/lfj8/check_h03_selector_adc.py",
-        "targets/lfj8/h03_selector_adc_fixture.c",
-        "targets/lfj8/lfj8_h03_input_binding.c",
-        "targets/lfj8/lfj8_h03_input_binding.h",
-        "targets/lfj8/lfj8_h03_input_target.c",
-        "targets/lfj8/lfj8_range_control.c",
-        "targets/lfj8/lfj8_range_control.h",
-        "targets/lfj8/lfj8_selector_adc.c",
-        "targets/lfj8/lfj8_selector_adc.h",
-        "targets/lfj8/test_lfj8_h03_input_binding.c",
-        "verification/project-audit/mode02-h03-input-binding.md"
+        "targets/lfj8/check_h03_button_capture.py",
+        "targets/lfj8/lfj8_h03_button_capture.c",
+        "targets/lfj8/lfj8_h03_button_capture.h",
+        "targets/lfj8/test_lfj8_h03_button_capture.c",
+        "verification/project-audit/mode02-h03-button-capture.md"
       ],
-      "stage": "done",
-      "claim_id": "9a8289b65d604e5dabe669d1c94e2dba",
-      "claimed_at": "2026-11-20T18:05:58+00:00",
-      "updated_at": "2026-11-20T18:35:31+00:00",
-      "note": "Порция принята интегратором в опубликованную main f366131, с общей сверкой памяти и M32R. В карточке остаётся подключение к штатному foreground и физические входы.",
-      "result": "22c4173bba0ed640a64841cffb037620dbea8060"
+      "stage": "in_progress",
+      "claim_id": "d5aa9e367a344b3f8dbadc189b368dbd",
+      "claimed_at": "2026-11-20T18:36:48+00:00",
+      "updated_at": "2026-11-20T18:36:48+00:00",
+      "note": "H03-03 зарезервировал общее подключение foreground. Независимо сверяю штатное чтение P1DATA и добавляю нормализацию кнопок по явно заданной карте входов с проверкой их доступности и поколения.",
+      "result": null
     },
     "TOY-05": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -3705,9 +3698,17 @@
       "action": "complete",
       "claim_id": "02b9e231450d4f81b9517ac724b155ed",
       "at": "2026-11-20T18:36:31+00:00"
+    },
+    {
+      "operation_id": "1ba63100f18c474ea7d1e8d86aeda2c9",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "d5aa9e367a344b3f8dbadc189b368dbd",
+      "at": "2026-11-20T18:36:48+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:36:31+00:00",
+  "updated_at": "2026-11-20T18:36:48+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
