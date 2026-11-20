@@ -109,19 +109,32 @@ int main(void)
     assert(snapshot.capture.nt_at_tml0 == 1u - 110u);
     assert(snapshot.atf_valid && snapshot.atf.atf_c == 60 && snapshot.atf.acquired_us == acquired);
 
+    Lfj8H03AtfSample atf;
     MMIO8(0x800FEB) = 0x30;
-    assert(rbm_h03_sensor_foreground(1, &snapshot) == LFJ8_H03_SENSOR_CLOCK_UNAVAILABLE);
+    assert(!lfj8_h03_atf_target_snapshot(300u, &atf));
     assert(!rbm_h03_tml0_1mhz_qualified && !rbm_h03_atf_state.valid);
+
+    /* Restore the register before either capture hook or foreground sees the change. */
+    MMIO8(0x800FEB) = 0x31;
+    uint32_t now_us = 0x12345678u;
+    assert(!rbm_h03_atf_now_us(&now_us) && now_us == 0x12345678u);
     assert(!fixture_s51(2) && MMIO32(0x8048B8) == 2);
-    assert(!rbm_h03_sensor_state.s51.primed);
+    assert(!rbm_h03_sensor_state.s51.primed && !rbm_h03_sensor_state.s83.primed);
+    assert(rbm_h03_sensor_foreground(1, &snapshot) == LFJ8_H03_SENSOR_CLOCK_UNAVAILABLE);
+    MMIO8(0x800FEB) = 0x30;
     assert(!rbm_h03_sensor_clock_rebase(1));
     MMIO8(0x800FEB) = 0x31;
     assert(rbm_h03_sensor_clock_rebase(1));
     assert(rbm_h03_sensor_foreground(0, &snapshot) == LFJ8_H03_SENSOR_SNAPSHOT);
     assert(snapshot.epoch == 4u && snapshot.capture.vss.state == LFJ8_VSS_UNAVAILABLE && !snapshot.atf_valid);
+
+    MMIO8(0x8003EB) = 0x11; /* Bit 0 still selects Clock Bus 1. */
+    assert(!rbm_h03_atf_now_us(&now_us) && !rbm_h03_tml0_1mhz_qualified);
+    MMIO8(0x8003EB) = 0x01;
+    assert(!rbm_h03_atf_now_us(&now_us));
     assert(!rbm_h03_sensor_clock_rebase(0));
 
-    puts("H03 sensor hooks and foreground: native stores, epoch, S51/S83 and ATF PASS");
+    puts("H03 sensors: native stores, common clock revocation and new epoch PASS");
 #endif
     return 0;
 }

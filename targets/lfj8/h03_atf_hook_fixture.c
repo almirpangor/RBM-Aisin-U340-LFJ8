@@ -31,9 +31,12 @@ int __wrap_rbm_h03_atf_now_us(uint32_t *now_us)
 {
     atf_fixture_irq_enabled |= read_psw() & 0x40u;
     const uint32_t failure = atf_fixture_clock_fail & clock_stage;
-    rbm_h03_tml0_1mhz_qualified = failure != 1u;
+    if (failure == 1u) {
+        rbm_h03_tml0_1mhz_qualified = 0u;
+    }
     *(volatile uint8_t *)0x800203 = failure == 2u ? 8u : 9u;
     *(volatile uint8_t *)0x8003EB = failure == 4u ? 0u : 1u;
+    *(volatile uint8_t *)0x800FEB = 0x31u;
     *(volatile uint32_t *)0x8003E0 = clock_us;
     return __real_rbm_h03_atf_now_us(now_us);
 }
@@ -44,6 +47,9 @@ void __real_rbm_h03_atf_publish_callback(uint32_t site, const uint32_t *acquired
 
 void __wrap_rbm_h03_atf_adc_callback(void)
 {
+    if (!clock_stage) {
+        rbm_h03_tml0_1mhz_qualified = 1u;
+    }
     clock_stage = 1u;
     clock_us = atf_fixture_adc_us;
     __real_rbm_h03_atf_adc_callback();
