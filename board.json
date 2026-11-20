@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 153,
+  "sequence": 154,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -22,11 +22,11 @@
         "verification/project-audit/integration-2/",
         "verification/project-audit/integration/"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "claimed_at": "2026-11-20T16:10:26+00:00",
-      "updated_at": "2026-11-20T16:29:27+00:00",
-      "note": "Вторая интеграция опубликована: 71 тест без пропусков, 17 компонентов M32R, кнопки, адаптации, SLU и диалог момента на побайтно восстановленном ordinary Bosch. Аудит 229 исходников / 57 доказательств. Рабочие BIN и аппаратные пункты открыты.",
+      "updated_at": "2026-11-20T16:31:04+00:00",
+      "note": "19 порций объединены в main, свежий аудит и карта опубликованы. 71 тест и M32R PASS, GitHub Actions 44773915924 success. Техническая готовность и два рабочих BIN остаются открытыми. Общие страницы освобождены.",
       "result": "b2ca79d006426a9839d64e8553cd81bf71953fe9"
     },
     "DTC-02": {
@@ -1711,9 +1711,17 @@
       "action": "complete",
       "claim_id": "8ca0999c579843d5a6c858b0ba44f0b2",
       "at": "2026-11-20T16:30:54+00:00"
+    },
+    {
+      "operation_id": "e1bba305970946e988c4cc67276ca264",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "complete",
+      "claim_id": "68c8347a91944cb3929878ea53cc9204",
+      "at": "2026-11-20T16:31:04+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:30:54+00:00",
+  "updated_at": "2026-11-20T16:31:04+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {

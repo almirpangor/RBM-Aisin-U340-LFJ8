@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:30:54+00:00**. Изменение № **153**.
+Обновлено UTC: **2026-11-20T16:31:04+00:00**. Изменение № **154**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -11,7 +11,7 @@
 
 | Задача | Ход работы | Чат | Ветка | Обновление UTC | Что делает / результат |
 | --- | --- | --- | --- | --- | --- |
-| ORG-01 — Основа проекта и локальная работа | На проверке | Основной чат — объединение и проверка результатов \[codex-integration-01a1f76d-20261120\] | codex/integration-01a1f76d-20261120 | 2026-11-20T16:29:27+00:00 | Вторая интеграция опубликована: 71 тест без пропусков, 17 компонентов M32R, кнопки, адаптации, SLU и диалог момента на побайтно восстановленном ordinary Bosch. Аудит 229 исходников / 57 доказательств. Рабочие BIN и аппаратные пункты открыты. / commit b2ca79d006426a9839d64e8553cd81bf71953fe9 |
+| ORG-01 — Основа проекта и локальная работа | Работа завершена | Основной чат — объединение и проверка результатов \[codex-integration-01a1f76d-20261120\] | codex/integration-01a1f76d-20261120 | 2026-11-20T16:31:04+00:00 | 19 порций объединены в main, свежий аудит и карта опубликованы. 71 тест и M32R PASS, GitHub Actions 44773915924 success. Техническая готовность и два рабочих BIN остаются открытыми. Общие страницы освобождены. / commit b2ca79d006426a9839d64e8553cd81bf71953fe9 |
 | TOY-01 — Перенос ядра и единое состояние Toyota | Выполняется | Codex TOY-01 — карта переносов GP \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-01-gp-transfer-fea1b366 | 2026-11-20T16:28:35+00:00 | Сокращаю Flash переносимой карты GP Toyota: кодирую порядок байтов в свободных битах смещения, сохраняю проверку всех полей на ПК и M32R и сравниваю компоновку. |
 | TOY-02 — Подтверждённая нагрузка двигателя для Toyota | Работа завершена | Codex TOY-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy02-load-feed-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:27:59+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit ff7f42b48d58831a8d7a396711042fc45685acd3 |
 | TOY-03 — Независимые разрешающие сигналы диапазона | Работа завершена | Codex TOY-03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/toy-03-range-01a1f9a2 | 2026-11-20T16:22:02+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit dfc774eee013ba78c6679d3128f493f238f43000 |
@@ -178,25 +178,6 @@
 - controller/tests/test_mode_policy.c
 - verification/project-audit/mode03-policy-matrix.md
 
-### ORG-01
-
-Чат: Основной чат — объединение и проверка результатов. Claim ID: 68c8347a91944cb3929878ea53cc9204.
-
-- README.md
-- data/project-tasks.json
-- docs/lfj8-h03-ram-audit.md
-- docs/multi-chat.md
-- docs/project-map.md
-- docs/working-set.md
-- targets/lfj8/lfj8_h03_storage.h
-- tests/test_task_coordination.py
-- tools/task_coordination.py
-- verification/e4m3-can-9e1c/h03-storage.json
-- verification/project-audit/2026-11-20-integration-2.json
-- verification/project-audit/2026-11-20-integration.json
-- verification/project-audit/integration-2/
-- verification/project-audit/integration/
-
 ### TOY-01
 
 Чат: Codex TOY-01 — карта переносов GP. Claim ID: 4b00bd7fdda2433d8439e95c7b0b1454.
@@ -247,6 +228,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:31:04+00:00 | ORG-01 | complete | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T16:30:54+00:00 | DTC-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:30:47+00:00 | VSS-02 | resume | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:30:41+00:00 | CAN-05 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
@@ -276,4 +258,3 @@
 | 2026-11-20T16:25:01+00:00 | ECU-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:24:53+00:00 | VSS-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:24:42+00:00 | H03-04 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
-| 2026-11-20T16:24:18+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
