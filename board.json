@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 535,
+  "sequence": 536,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -140,21 +140,21 @@
       "result": null
     },
     "DTC-04": {
-      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex — исключение возврата очищенной истории DTC",
-      "branch": "codex/dtc04-retire-cleared-history-32e6ac79",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex DTC-04 — повтор записи после утраты журнала",
+      "branch": "codex/dtc04-retired-slot-retry-7bd19ea4",
       "files": [
         "targets/lfj8/lfj8_h03_nvm.c",
         "targets/lfj8/lfj8_h03_nvm.h",
         "targets/lfj8/test_lfj8_h03_nvm.c",
-        "verification/project-audit/dtc04-retired-history.md"
+        "verification/project-audit/dtc04-retired-slot-retry.md"
       ],
-      "stage": "done",
-      "claim_id": "649f9eb04dd24d0ea547f2886878f0b0",
-      "claimed_at": "2026-11-20T18:38:10+00:00",
-      "updated_at": "2026-11-20T19:24:07+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "3f5f8730ab544fc9fb0185138b97b6956e04c377"
+      "stage": "in_progress",
+      "claim_id": "3118c56ba79c42ab952bbd17df49ca78",
+      "claimed_at": "2026-11-20T19:54:35+00:00",
+      "updated_at": "2026-11-20T19:54:35+00:00",
+      "note": "Проверяю сбой при утрате пустой записи после подтверждённой очистки. На первом повторном сохранении сохраняю метку исключения старого блока до публикации новой записи. Границы блоков и реальный носитель не назначаю.",
+      "result": null
     },
     "H03-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -4868,9 +4868,17 @@
       "action": "review",
       "claim_id": "5fcdd962167d41129b445b4ea70a2c80",
       "at": "2026-11-20T19:53:03+00:00"
+    },
+    {
+      "operation_id": "15cc02120dad4447ac6f1063c35cabe4",
+      "task": "DTC-04",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "3118c56ba79c42ab952bbd17df49ca78",
+      "at": "2026-11-20T19:54:35+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:53:03+00:00",
+  "updated_at": "2026-11-20T19:54:35+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
