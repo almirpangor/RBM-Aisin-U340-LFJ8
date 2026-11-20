@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 590,
+  "sequence": 591,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -78,12 +78,12 @@
         "targets/lfj8/test_lfj8_h03_range_pn.c",
         "verification/project-audit/toy03-independent-pn-qualifier.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "5d801751d9964d70bb7719d4db03f597",
       "claimed_at": "2026-11-20T20:09:46+00:00",
-      "updated_at": "2026-11-20T20:12:26+00:00",
-      "note": "Независимый P/N квалифицируется по двум отсчётам; штатный M32R range-pnp и сравнительные прогоны AN2 прошли. Проверяю компоненты и сохраняю ограничения жгута.",
-      "result": null
+      "updated_at": "2026-11-20T20:15:31+00:00",
+      "note": "Допуск независимого P/N проверяет AN2, поколения, давность и рассогласование; в снимок идёт старейшая метка. M32R: 1024 AN2, 12 сочетаний P/N, проверки отказа, 5 ADC-сравнений и 8 компонентных групп PASS. Жгут и foreground открыты. Отчёт toy03-independent-pn-qualifier.md.",
+      "result": "3f2596f31930203fe9cd7918e9b62f81ea82699c"
     },
     "REL-01": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -5307,9 +5307,17 @@
       "action": "review",
       "claim_id": "e313f0457b4d468897a8179d3615ce3e",
       "at": "2026-11-20T20:14:56+00:00"
+    },
+    {
+      "operation_id": "cc86e04ae0164206bcf5217775354563",
+      "task": "TOY-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "5d801751d9964d70bb7719d4db03f597",
+      "at": "2026-11-20T20:15:31+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:14:56+00:00",
+  "updated_at": "2026-11-20T20:15:31+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
