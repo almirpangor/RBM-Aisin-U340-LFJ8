@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:25:01+00:00**. Изменение № **127**.
+Обновлено UTC: **2026-11-20T16:25:17+00:00**. Изменение № **128**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -35,7 +35,7 @@
 | VSS-02 — Кинематика и параметры реальной скорости | Выполняется | Codex VSS-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss02-measurement-check-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:24:53+00:00 | Офлайн-проверка измеренных параметров S51, эталонной скорости и 0x1AE. Явно различаю неподвижность и потерю импульсов, значения калибровок не подставляю. |
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
 | MODE-01 — Логика шести положений и кнопок | На проверке | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:14:42+00:00 | Staggered Tiptronic plus/minus overlap now blocks manual requests. Original C/Python regressions reproduced. PC 33 steps/66 tests plus dedicated C regression PASS; M32R build, 17 components and dedicated regression PASS. Evidence verification/project-audit/mode01-shift-conflict.md. Integrator to record the audit; physical input and hydraulic execution remain open. / commit ed33ea93653f7bcbc2c6f13736fe1424335085e6 |
-| MODE-02 — Подключение селектора, Tiptronic и Overdrive | На проверке | Codex — входы Tiptronic H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/u340-32e6ac79 | 2026-11-20T16:10:33+00:00 | Передаю интегратору. ПК 33 шага / 65 тестов PASS, M32R сборка с H03, сквозной прогон с трассой Bosch и 17 компонентов PASS. Отчёт mode02-button-input.md содержит хеши для общего аудита. Подключение к расписанию H03, измерение входов и полный гидравлический цикл остаются открытыми. / commit 53c5f27e40f4ed48fd5873d002a0ab315f448bcf |
+| MODE-02 — Подключение селектора, Tiptronic и Overdrive | Работа завершена | Codex — входы Tiptronic H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/u340-32e6ac79 | 2026-11-20T16:25:17+00:00 | Порция MODE-02 принята в опубликованную main 952658b. Программный фильтр и отчёт включены, резерв освобождаю. Физические входы и привязка к циклу H03 остаются за рамками принятой порции. / commit 53c5f27e40f4ed48fd5873d002a0ab315f448bcf |
 | MODE-03 — Окончательная политика режимов | Выполняется | Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T16:24:03+00:00 | Матрица добавлена в штатную сборку ПК. Проверяю все 128 конфигураций запуска и заявки по четырём донорским передачам, положениям, маскам и запретам. |
 | SRC-01 — Реестр происхождения и контроль исходников | Свободна | — | — | — | — |
 | AUD-01 — Программный аудит истории E4M3 | Свободна | — | — | — | — |
@@ -183,15 +183,6 @@
 - tests/test_u340.py
 - verification/project-audit/mode01-shift-conflict.md
 
-### MODE-02
-
-Чат: Codex — входы Tiptronic H03. Claim ID: 2b87aa66de244cf9b30a828391ad9001.
-
-- targets/lfj8/lfj8_range_control.c
-- targets/lfj8/lfj8_range_control.h
-- tests/u340_integration_host.c
-- verification/project-audit/mode02-button-input.md
-
 ### MODE-03
 
 Чат: Codex MODE-03 — матрица режимов. Claim ID: b0a3618e8676435c94101b0abb236b6a.
@@ -272,6 +263,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:25:17+00:00 | MODE-02 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:25:01+00:00 | ECU-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:24:53+00:00 | VSS-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:24:42+00:00 | H03-04 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
@@ -301,4 +293,3 @@
 | 2026-11-20T16:18:17+00:00 | DTC-01 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:18:08+00:00 | TOY-06 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:18:01+00:00 | H03-03 | claim | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
-| 2026-11-20T16:17:43+00:00 | ORG-01 | heartbeat | codex-integration-01a1f76d-20261120 |
