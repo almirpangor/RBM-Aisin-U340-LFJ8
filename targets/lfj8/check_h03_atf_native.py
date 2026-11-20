@@ -28,6 +28,9 @@ REGISTERS = [f"$r{i}" for i in range(13)] + ["$fp", "$lr", "$sp", "$psw", "$accl
 CONTINUATIONS = (0x04017C, 0x03B114, 0x03B13C, 0x03B21C, 0x03B220)
 VOLTS = 0x804F04
 TEMPERATURE = 0x805028
+STACK_END = 0x9FFFFC
+STACK_FLOOR = STACK_END - 1024
+STACK_STAGES = ("adc", "temperature", "snapshot")
 INITIAL_TEMP = 0x41A00000  # 20 C
 
 
@@ -39,10 +42,19 @@ def run(*command, directory):
 
 
 def emulate(directory, debugger, patches, mode, fault, phase, divider, rom_override=None,
-            clock_fail=0):
+            clock_fail=0, stack_word=0xA55A6996):
+    stack_seed = stack_word.to_bytes(4, "big") * ((STACK_END - STACK_FLOOR) // 4)
+    (directory / "stack.seed").write_bytes(stack_seed)
+    seed_stack = f"restore stack.seed binary {STACK_FLOOR:#x}"
+
+    def dump_stack(stage):
+        return f"dump binary memory stack-{stage}.bin {STACK_FLOOR:#x} {STACK_END:#x}"
+
+    check_sp = (f"if $sp != {STACK_END:#x}", 'printf "Unbalanced fixture stack: %08x\\n", $sp',
+                "quit 1", "end")
     commands = [
         "set confirm off", "target sim --memory-size 16M", "load",
-        "tbreak *_start", "run",
+        "tbreak *_start", "run", seed_stack,
         f"set {{unsigned int}}{TEMPERATURE:#x} = {INITIAL_TEMP:#x}",
         f"set {{unsigned short}}0x0166a4 = {mode}",
         f"set {{unsigned char}}0x8063e7 = {fault}",
@@ -56,13 +68,11 @@ def emulate(directory, debugger, patches, mode, fault, phase, divider, rom_overr
     for site in SITES:
         commands.extend((f"tbreak *{site:#x}", "commands", "silent",
                          f'printf "SITE {site:06x}\\n"', "continue", "end"))
+    commands.extend(("tbreak *0x03b110", "commands", "silent", *check_sp, dump_stack("adc"), seed_stack))
     if mode == 400:
         # Reuse a stack slot containing a plausible timestamp from an older call.
-        commands.extend((
-            "tbreak *0x03b110", "commands", "silent",
-            "set {unsigned int}($sp - 16) = 1", "set {unsigned int}($sp - 12) = 100",
-            "continue", "end",
-        ))
+        commands.extend(("set {unsigned int}($sp - 16) = 1", "set {unsigned int}($sp - 12) = 100"))
+    commands.extend(("continue", "end"))
     register_args = ", ".join(REGISTERS)
     register_format = "%08x " * len(REGISTERS)
     for site in CONTINUATIONS:
@@ -74,7 +84,8 @@ def emulate(directory, debugger, patches, mode, fault, phase, divider, rom_overr
         f'printf "VALUES %08x %08x\\n", *(unsigned int*){VOLTS:#x}, '
         f'*(unsigned int*){TEMPERATURE:#x}',
         f'printf "REGS {register_format}\\n", {register_args}',
-        "tbreak *fixture_observed", "continue",
+        *check_sp, dump_stack("temperature"), seed_stack,
+        "tbreak *fixture_observed", "continue", *check_sp, dump_stack("snapshot"),
         f'printf "ATF {"%08x " * len(FIXTURE_FIELDS)}\\n", '
         + ", ".join(f"atf_fixture_{field}" for field in FIXTURE_FIELDS),
     ))
@@ -100,7 +111,25 @@ def emulate(directory, debugger, patches, mode, fault, phase, divider, rom_overr
         if 0x03B110 in patches and in_temperature_call:
             state[15] += 8
         contexts.append((site, tuple(state)))
-    return (trace, voltage, temperature, regs[1], contexts), tuple(int(field, 16) for field in atf[1].split())
+    depths = []
+    for stage in STACK_STAGES:
+        stack = (directory / f"stack-{stage}.bin").read_bytes()
+        if len(stack) != len(stack_seed) or stack[:16] != stack_seed[:16]:
+            raise ValueError(f"The stack measurement guard was overwritten during {stage}")
+        first_write = next((i for i, (before, after) in enumerate(zip(stack_seed, stack))
+                            if before != after), len(stack))
+        depths.append(len(stack) - first_write)
+    return ((trace, voltage, temperature, regs[1], contexts),
+            tuple(int(field, 16) for field in atf[1].split()), tuple(depths))
+
+
+def measure(directory, debugger, variant, inputs):
+    first, adapter, written = emulate(directory, debugger, variant, *inputs)
+    second, second_adapter, second_written = emulate(
+        directory, debugger, variant, *inputs, stack_word=0x5AA59669)
+    if (first, adapter) != (second, second_adapter):
+        raise ValueError("Stack fill changed the program's result")
+    return first, adapter, tuple(max(left, right) for left, right in zip(written, second_written))
 
 
 def branch_patch(rom, site, target, stock_word, opcode):
@@ -184,8 +213,8 @@ def check(base, gcc):
         for label, inputs, expected, expected_voltage in cases:
             replaced = label == "new AN1 with identical bits"
             interruption = replacement if replaced else {}
-            stock, _ = emulate(directory, debugger, interruption, *inputs)
-            hooked, fixture = emulate(directory, debugger, patches | interruption, *inputs)
+            stock, _, stock_stack = measure(directory, debugger, interruption, inputs)
+            hooked, fixture, hooked_stack = measure(directory, debugger, patches | interruption, inputs)
             if hooked != stock:
                 raise ValueError(f"{label}: OEM outcome or CPU context differs: {stock!r} vs {hooked!r}")
             trace, voltage, temperature, _, contexts = stock
@@ -209,7 +238,8 @@ def check(base, gcc):
             acquisitions = 2 if replaced else int(label != "clock absent at ADC")
             if fixture != (0, acquisitions, reads, site, source, int(measured), 100 if measured else 0, q8):
                 raise ValueError(f"{label}: unexpected adapter outcome (IRQ, ADC, read, publication): {fixture!r}")
-            print(f"{label}: {' -> '.join(f'{site:06x}' for site in trace)}, {temperature:08x}")
+            print(f"{label}: stock {stock_stack}, hooked {hooked_stack} bytes "
+                  "(AN1 / temperature / foreground read)")
     direct = struct.unpack(">f", temperatures["direct"].to_bytes(4, "big"))[0]
     filtered = struct.unpack(">f", temperatures["filtered"].to_bytes(4, "big"))[0]
     if not (59 < direct < 61 and abs(filtered - (20 + (direct - 20) / 8)) < 0.001
