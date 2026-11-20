@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 723,
+  "sequence": 724,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -138,24 +138,25 @@
       "based_on_reviews": []
     },
     "DTC-04": {
-      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
-      "label": "Codex DTC-04 — запрет ложной очистки в H03",
-      "branch": "codex/target-continuation-922b7b11",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex DTC-04 — чтение массива H03",
+      "branch": "codex/dtc04-native-array-read-7bd19ea4-v2",
       "files": [
-        "targets/lfj8/check_h03_dtc_basiccan.py",
-        "targets/lfj8/lfj8_h03_dtc_can.c",
-        "targets/lfj8/lfj8_h03_dtc_can.h",
-        "targets/lfj8/lfj8_h03_dtc_native.c",
-        "targets/lfj8/lfj8_h03_dtc_native.h",
-        "verification/project-audit/dtc04-native-clear-admission.md"
+        "targets/lfj8/check_h03_nvm.py",
+        "targets/lfj8/h03_nvm_native_fixture.c",
+        "targets/lfj8/lfj8_h03_nvm_native.c",
+        "targets/lfj8/lfj8_h03_nvm_native.h",
+        "verification/project-audit/dtc04-h03-native-array-read.md"
       ],
-      "stage": "review",
-      "claim_id": "e72d13fcb2254ca89fd0736136b11462",
-      "claimed_at": "2026-11-20T21:52:52+00:00",
-      "updated_at": "2026-11-20T22:01:30+00:00",
-      "note": "Нативная привязка H03 запрещает подтверждение очистки DTC при отсутствии постоянного носителя. В M32R запрос 14 FF 00 поглощается без TX13, следующий ответ 17 FF 00 сохраняет P0710. Пройдены BasicCAN, foreground, ATF, NVM, RAM и отзыв разрешения CAN. Полная линковка имеет те же отсутствующие привязки, что чистая main. Остались два подтверждённых стираемых блока и право записи H03-04, физический драйвер, загрузочное восстановление и фиксация очистки вне блокировки CAN. Отчёт verification/project-audit/dtc04-native-clear-admission.md.",
-      "result": "dc2afd95a829473823c05f10eabd66142177a0dc",
-      "based_on_reviews": []
+      "stage": "in_progress",
+      "claim_id": "eb973761003948398f33f495758fde06",
+      "claimed_at": "2026-11-20T22:37:29+00:00",
+      "updated_at": "2026-11-20T22:37:29+00:00",
+      "note": "Подключаю нативное чтение физического массива к восстановлению DTC. Проверю отказ в E/W, Virtual Flash и при ошибке; два сектора и запись требуют подтверждения.",
+      "result": null,
+      "based_on_reviews": [
+        "e72d13fcb2254ca89fd0736136b11462"
+      ]
     },
     "H03-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -9120,9 +9121,38 @@
         "result": "cf5f2879f589a0fbf823b3948bdeb47f43fb5053",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "9310894f13b64b5eaadf631699c6e38d",
+      "task": "DTC-04",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "eb973761003948398f33f495758fde06",
+      "at": "2026-11-20T22:37:29+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-04 — чтение массива H03",
+        "branch": "codex/dtc04-native-array-read-7bd19ea4-v2",
+        "files": [
+          "targets/lfj8/check_h03_nvm.py",
+          "targets/lfj8/h03_nvm_native_fixture.c",
+          "targets/lfj8/lfj8_h03_nvm_native.c",
+          "targets/lfj8/lfj8_h03_nvm_native.h",
+          "verification/project-audit/dtc04-h03-native-array-read.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "eb973761003948398f33f495758fde06",
+        "claimed_at": "2026-11-20T22:37:29+00:00",
+        "updated_at": "2026-11-20T22:37:29+00:00",
+        "note": "Подключаю нативное чтение физического массива к восстановлению DTC. Проверю отказ в E/W, Virtual Flash и при ошибке; два сектора и запись требуют подтверждения.",
+        "result": null,
+        "based_on_reviews": [
+          "e72d13fcb2254ca89fd0736136b11462"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:08:56+00:00",
+  "updated_at": "2026-11-20T22:37:29+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
