@@ -4,6 +4,7 @@
 #include "lfj8_h03_dtc_can.h"
 
 enum { LFJ8_H03_DTC_RX_CAPACITY = 4 };
+enum { LFJ8_H03_DTC_RX15_PENDING = 0x0001, LFJ8_H03_DTC_RX14_PENDING = 0x0002 };
 
 typedef struct {
     Lfj8H03DtcReceive received;
@@ -70,6 +71,16 @@ Lfj8H03DtcRxPublish lfj8_h03_dtc_rx_queue_publish(
  * preserve the caller's IRQ state. Hardware overwrites can still occur. */
 Lfj8H03DtcRxPublish lfj8_h03_dtc_rx_queue_capture_basic(
     Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io, uint8_t slot,
+    uint32_t generation, uint32_t now_us, uint16_t can_now);
+
+/* Before OEM dispatch, pass one CAN0SLIST snapshot and one current pair
+ * of clocks for the group. This owns observation of the pending RX14/RX15
+ * slots for that pass. Use one capture path per attempt to avoid duplicates.
+ * The OEM retains acknowledgement. Qualified copies are appended oldest
+ * first by CAN timestamp, with RX15 first on a tie. Existing FIFO entries
+ * retain their order. Return the CAN0SLIST bits of the slots appended. */
+uint16_t lfj8_h03_dtc_rx_queue_capture_pending(
+    Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io, uint16_t pending,
     uint32_t generation, uint32_t now_us, uint16_t can_now);
 
 /* Call before EVERY broker poll, even while it is busy. This returns a

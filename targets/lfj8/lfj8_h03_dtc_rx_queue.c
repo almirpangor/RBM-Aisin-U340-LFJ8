@@ -183,6 +183,58 @@ Lfj8H03DtcRxPublish lfj8_h03_dtc_rx_queue_capture_basic(
     return result;
 }
 
+static uint16_t raw_age(const uint8_t copy[16], uint16_t can_now)
+{
+    const uint16_t timestamp = (uint16_t)((uint16_t)copy[14] << 8 | copy[15]);
+    return (uint16_t)(can_now - timestamp);
+}
+
+uint16_t lfj8_h03_dtc_rx_queue_capture_pending(
+    Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io, uint16_t pending,
+    uint32_t generation, uint32_t now_us, uint16_t can_now)
+{
+    const uint16_t both = LFJ8_H03_DTC_RX15_PENDING | LFJ8_H03_DTC_RX14_PENDING;
+    pending &= both;
+    if (!pending || !ready(queue, io) || !io->read8 || !io->read16) {
+        return 0;
+    }
+    const uint32_t saved = io->enter(io->context);
+    uint8_t copies[2][16]; /* Indexed by the CAN0SLIST bit: RX15, then RX14. */
+    uint16_t captured = 0;
+    if (generation == queue->generation) {
+        for (unsigned i = 0; i < 2; ++i) {
+            const uint16_t bit = (uint16_t)(1u << i);
+            if ((pending & bit) && capture_basic(io, (uint8_t)(15u - i), copies[i])) {
+                captured |= bit;
+            }
+        }
+        if (captured && !basiccan_active(io)) {
+            captured = 0;
+        }
+    }
+
+    /* Both copies use one clock sample. publish_locked rejects ages
+     * outside the queue budget, which is strictly below half a CAN wrap. */
+    const unsigned first = captured == both && raw_age(copies[1], can_now) > raw_age(copies[0], can_now)
+        ? 1u : 0u;
+    uint16_t queued = 0;
+    for (unsigned offset = 0; offset < 2; ++offset) {
+        const unsigned i = (first + offset) % 2u;
+        const uint16_t bit = (uint16_t)(1u << i);
+        if (!(pending & bit)) {
+            continue;
+        }
+        if (!(captured & bit)) {
+            increment(&queue->rejected);
+        } else if (publish_locked(queue, copies[i], CAN0_RX_COMPLETE, false,
+                                   generation, now_us, can_now) == LFJ8_H03_DTC_RX_QUEUED) {
+            queued |= bit;
+        }
+    }
+    io->leave(io->context, saved);
+    return queued;
+}
+
 bool lfj8_h03_dtc_rx_queue_peek(Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io,
                                uint32_t generation, uint32_t now_us,
                                uint16_t can_now, Lfj8H03DtcRxDelivery *delivery)

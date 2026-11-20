@@ -55,7 +55,7 @@ def check(compiler, controller):
             run(*driver, *FLAGS, *sources, library.name, *rpath.get(sys.platform, ("-Wl,-rpath,$ORIGIN",)),
                 "-o", executable)
             output = run(executable)
-        if not output.startswith("PASS H03 DTC foreground:"):
+        if not output.startswith("PASS H03 DTC foreground:") or "\nPASS BasicCAN pair:" not in output:
             raise ValueError(f"The fixture did not report a passing result: {output}")
         return output
 

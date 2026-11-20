@@ -10,7 +10,7 @@ enum {
     SLIMK = 0x801010, MODE = 0x801018, GMSKS0 = 0x801028, GMSKS1 = 0x801029,
     MSC13 = 0x80105d, SLOT13 = 0x8011d0, MSC14 = 0x80105e, SLOT14 = 0x8011e0,
     OEM_STATE = 0x806ae6, TML0 = 0x8003e0, BASIC_RUNNING = 0x0800, BUS_OFF = 0x4000,
-    DTC_AGE_BITS = 100,
+    DTC_AGE_BITS = 100, BOTH_RX = LFJ8_H03_DTC_RX14_PENDING | LFJ8_H03_DTC_RX15_PENDING,
 };
 
 static const uint8_t session[] = {2, 0x10, 0x86};
@@ -26,10 +26,10 @@ typedef struct {
     uint32_t now_us;
     uint16_t status;
     uint8_t tx[16];
-    uint8_t rx[16];
+    uint8_t rx[2][16];
     uint8_t tx_control;
-    uint8_t rx_control;
-    uint8_t rx_slot;
+    uint8_t rx_control[2];
+    uint8_t bus_off_on_rx_slot;
     bool grant;
     bool locked;
     bool replace_after_peek;
@@ -52,12 +52,16 @@ static uint8_t read8(void *context, uint32_t address)
 {
     Fixture *f = context;
     assert(f->locked);
-    const uint32_t rx_start = SLOT14 + 16u * f->rx_slot;
-    if (address == MSC14 + (uint32_t)f->rx_slot) {
-        return f->rx_control;
+    if (address >= MSC14 && address < MSC14 + 2u) {
+        return f->rx_control[address - MSC14];
     }
-    if (address >= rx_start && address < rx_start + 16u) {
-        return f->rx[address - rx_start];
+    if (address >= SLOT14 && address < SLOT14 + 32u) {
+        const unsigned slot = (address - SLOT14) / 16u;
+        const unsigned offset = (address - SLOT14) % 16u;
+        if (slot + 14u == f->bus_off_on_rx_slot && offset == 15u) {
+            f->status |= BUS_OFF;
+        }
+        return f->rx[slot][offset];
     }
     switch (address) {
     case OEM_STATE: return 6;
@@ -116,22 +120,38 @@ static uint32_t enter(void *context)
     return 17;
 }
 
+static void prepare_rx(Fixture *f, uint8_t slot, uint32_t at_us,
+                       const uint8_t *frame, uint8_t length)
+{
+    const unsigned index = slot - 14u;
+    uint8_t *rx = f->rx[index];
+    memset(rx, 0, sizeof(f->rx[index]));
+    rx[0] = 0x1c;
+    rx[1] = 0x32;
+    rx[5] = length;
+    memcpy(&rx[6], frame, length);
+    stamp(rx, at_us);
+    f->rx_control[index] = 0x41;
+}
+
 static Lfj8H03DtcRxPublish capture(Fixture *f, uint8_t slot, uint32_t generation,
                                    uint32_t now_us, const uint8_t *frame, uint8_t length)
 {
+    prepare_rx(f, slot, now_us, frame, length);
     f->now_us = now_us;
-    f->rx_slot = (uint8_t)(slot - 14u);
-    memset(f->rx, 0, sizeof(f->rx));
-    f->rx[0] = 0x1c;
-    f->rx[1] = 0x32;
-    f->rx[5] = length;
-    memcpy(&f->rx[6], frame, length);
-    stamp(f->rx, now_us);
-    f->rx_control = 0x41;
     const Lfj8H03DtcRxPublish result = lfj8_h03_dtc_rx_queue_capture_basic(
         &f->queue, &f->io, slot, generation, now_us, can_tick(now_us));
-    assert(f->rx_control == 0x41 && !f->locked);
-    f->rx_control = 0x40; /* OEM acknowledges after the observer returns. */
+    assert(f->rx_control[slot - 14u] == 0x41 && !f->locked);
+    f->rx_control[slot - 14u] = 0x40; /* OEM acknowledges after the observer returns. */
+    return result;
+}
+
+static uint16_t capture_pending(Fixture *f, uint16_t pending, uint32_t now_us)
+{
+    f->now_us = now_us;
+    const uint16_t result = lfj8_h03_dtc_rx_queue_capture_pending(
+        &f->queue, &f->io, pending, f->generation, now_us, can_tick(now_us));
+    assert(!f->locked);
     return result;
 }
 
@@ -198,8 +218,10 @@ static void test_fifo_busy_and_flow_control(void)
     init(&f, 7);
     assert(chery_dtc_store_snapshot(&f.dtc, 0, 0x10));
     assert(chery_dtc_store_snapshot(&f.dtc, 1, 0x12));
-    assert(capture(&f, 14, 7, 20, session, sizeof(session)) == LFJ8_H03_DTC_RX_QUEUED);
-    assert(capture(&f, 15, 7, 30, read_dtc, sizeof(read_dtc)) == LFJ8_H03_DTC_RX_QUEUED);
+    prepare_rx(&f, 14, 20, session, sizeof(session));
+    prepare_rx(&f, 15, 30, read_dtc, sizeof(read_dtc));
+    assert(capture_pending(&f, BOTH_RX, 34) == BOTH_RX);
+    assert(f.rx_control[0] == 0x41 && f.rx_control[1] == 0x41);
     assert(poll(&f, 40, true).diagnostic_consumed && f.queue.count == 1);
     assert_reply(&f, 1, 2);
     assert(f.tx[7] == 0x50);
@@ -272,12 +294,105 @@ static void test_irq_during_dispatch(void)
     assert_reply(&f, 1, 2);
 }
 
+static void take_service(Fixture *f, uint32_t now_us, uint8_t service)
+{
+    Lfj8H03DtcRxDelivery delivery;
+    assert(lfj8_h03_dtc_rx_queue_peek(&f->queue, &f->io, f->generation, now_us,
+                                     can_tick(now_us), &delivery));
+    assert(delivery.received.frame.data[1] == service);
+    assert(lfj8_h03_dtc_rx_queue_consume(&f->queue, &f->io, &delivery));
+}
+
+static void test_batch_wrap_and_tie(void)
+{
+    Fixture f;
+    init(&f, 7);
+    prepare_rx(&f, 14, 508, session, sizeof(session));
+    prepare_rx(&f, 15, 514, read_dtc, sizeof(read_dtc));
+    assert(can_tick(508) == 0xfffeu && can_tick(514) == 0x0001u);
+    assert(capture_pending(&f, BOTH_RX, 516) == BOTH_RX);
+    take_service(&f, 518, 0x10);
+    take_service(&f, 518, 0x17);
+
+    prepare_rx(&f, 14, 520, read_dtc, sizeof(read_dtc));
+    prepare_rx(&f, 15, 520, session, sizeof(session));
+    assert(capture_pending(&f, BOTH_RX, 522) == BOTH_RX);
+    take_service(&f, 524, 0x10);
+    take_service(&f, 524, 0x17);
+
+    prepare_rx(&f, 14, 528, read_dtc, sizeof(read_dtc));
+    prepare_rx(&f, 15, 526, session, sizeof(session));
+    assert(capture_pending(&f, BOTH_RX, 530) == BOTH_RX);
+    take_service(&f, 532, 0x10);
+    take_service(&f, 532, 0x17);
+}
+
+static void test_batch_rejects_loss_and_stale_samples(void)
+{
+    Fixture f;
+    init(&f, 7);
+    prepare_rx(&f, 14, 20, session, sizeof(session));
+    prepare_rx(&f, 15, 30, read_dtc, sizeof(read_dtc));
+    f.rx_control[0] = 0x45;
+    assert(capture_pending(&f, 0x8000u, 32) == 0 && f.queue.rejected == 0);
+    assert(capture_pending(&f, BOTH_RX | 0x8000u, 32) == LFJ8_H03_DTC_RX15_PENDING);
+    assert(f.rx_control[0] == 0x45 && f.rx_control[1] == 0x41 && f.queue.rejected == 1);
+    take_service(&f, 34, 0x17);
+
+    prepare_rx(&f, 14, 20, session, sizeof(session));
+    prepare_rx(&f, 15, 240, read_dtc, sizeof(read_dtc));
+    assert(capture_pending(&f, BOTH_RX, 242) == LFJ8_H03_DTC_RX15_PENDING);
+    take_service(&f, 244, 0x17);
+    assert(f.queue.rejected == 2);
+
+    prepare_rx(&f, 14, 246, session, sizeof(session));
+    prepare_rx(&f, 15, 254, read_dtc, sizeof(read_dtc));
+    assert(capture_pending(&f, BOTH_RX, 250) == LFJ8_H03_DTC_RX14_PENDING);
+    take_service(&f, 252, 0x10);
+    assert(f.queue.rejected == 3 && f.queue.count == 0);
+
+    prepare_rx(&f, 14, 260, session, sizeof(session));
+    prepare_rx(&f, 15, 262, read_dtc, sizeof(read_dtc));
+    assert(capture_pending(&f, LFJ8_H03_DTC_RX15_PENDING, 264) == LFJ8_H03_DTC_RX15_PENDING);
+    take_service(&f, 266, 0x17);
+    assert(f.queue.count == 0 && f.queue.rejected == 3);
+    assert(lfj8_h03_dtc_rx_queue_capture_pending(&f.queue, &f.io, BOTH_RX, 6,
+                                                 268, can_tick(268)) == 0);
+    assert(f.queue.count == 0 && f.queue.rejected == 5);
+}
+
+static void test_batch_capacity_and_bus_off(void)
+{
+    Fixture f;
+    init(&f, 7);
+    for (unsigned i = 0; i < LFJ8_H03_DTC_RX_CAPACITY - 1; ++i) {
+        assert(capture(&f, 14, 7, 20 + 2u * i, read_dtc, sizeof(read_dtc)) == LFJ8_H03_DTC_RX_QUEUED);
+    }
+    prepare_rx(&f, 14, 30, session, sizeof(session));
+    prepare_rx(&f, 15, 32, flow_control, sizeof(flow_control));
+    assert(capture_pending(&f, BOTH_RX, 34) == LFJ8_H03_DTC_RX14_PENDING);
+    assert(f.queue.count == LFJ8_H03_DTC_RX_CAPACITY && f.queue.overflow == 1);
+    for (unsigned i = 0; i < LFJ8_H03_DTC_RX_CAPACITY - 1; ++i) {
+        take_service(&f, 36, 0x17);
+    }
+    take_service(&f, 36, 0x10);
+
+    prepare_rx(&f, 14, 40, read_dtc, sizeof(read_dtc));
+    prepare_rx(&f, 15, 42, session, sizeof(session));
+    f.bus_off_on_rx_slot = 14;
+    assert(capture_pending(&f, BOTH_RX, 44) == 0 && f.queue.count == 0 && f.queue.rejected == 2);
+}
+
 int main(void)
 {
     test_fifo_busy_and_flow_control();
     test_generation_reset();
     test_busy_expiry_after_can_wrap();
     test_irq_during_dispatch();
+    test_batch_wrap_and_tie();
+    test_batch_rejects_loss_and_stale_samples();
+    test_batch_capacity_and_bus_off();
     puts("PASS H03 DTC foreground: FIFO/FC, CAN generation, busy wrap, IRQ between peek and consume");
+    puts("PASS BasicCAN pair: timestamp order, rollover, tie, loss, FIFO capacity, bus-off");
     return 0;
 }
