@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 188,
+  "sequence": 189,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -353,13 +353,14 @@
         "targets/lfj8/check_toyota_slu.py",
         "targets/lfj8/lfj8_h03_slu.c",
         "targets/lfj8/lfj8_h03_slu.h",
+        "targets/lfj8/test_lfj8_h03_slu_secondary.c",
         "verification/project-audit/toy06-slu-pressure.md"
       ],
       "stage": "in_progress",
       "claim_id": "a8e9ff099358496bacacf60bfcc8aa84",
       "claimed_at": "2026-11-20T16:37:07+00:00",
-      "updated_at": "2026-11-20T16:37:07+00:00",
-      "note": "Переношу численный участок SECONDARY 05DCE8 → 055C5E: давление, промежуточный таймер и проверка цепочки на закреплённом R3. Назначение выхода H03 остаётся открытым.",
+      "updated_at": "2026-11-20T16:40:03+00:00",
+      "note": "ПК: 15 360 сочетаний состояния и 400 арифметических границ совпали с R3; проверены переход и сброс результата. Резервирую C-стенд для целевого симулятора M32R.",
       "result": null
     },
     "DTC-01": {
@@ -2013,9 +2014,17 @@
       "action": "review",
       "claim_id": "0b028669dc7e44b69526dde8046610db",
       "at": "2026-11-20T16:39:51+00:00"
+    },
+    {
+      "operation_id": "44cfc2e732b74e9a8c1aa0e37611813e",
+      "task": "TOY-06",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "heartbeat",
+      "claim_id": "a8e9ff099358496bacacf60bfcc8aa84",
+      "at": "2026-11-20T16:40:03+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:39:51+00:00",
+  "updated_at": "2026-11-20T16:40:03+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
