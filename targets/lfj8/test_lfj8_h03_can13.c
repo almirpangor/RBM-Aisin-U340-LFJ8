@@ -27,6 +27,7 @@ typedef struct {
     bool grant;
     bool demand;
     bool queued;
+    bool bus_off_before_tx_request;
     unsigned sent;
     unsigned aborts;
     unsigned writes;
@@ -89,6 +90,9 @@ static void write8(void *context, uint32_t address, uint8_t value)
     if (address != MSC13) {
         assert(address >= SLOT13 && address < SLOT13 + 14u && !f->control);
         f->slot[address - SLOT13] = value;
+        if (f->bus_off_before_tx_request && address == SLOT13 + 13u) {
+            f->stat = 0x4000u;
+        }
     } else if (value == 0x0f) {
         assert(f->control == 0x80u || f->control == 0x82u);
         f->control &= 2u;
@@ -272,6 +276,33 @@ static void test_telemetry_loan_expires_before_slot_is_idle(void)
     assert(active_id(&f) == LFJ8_TORQUE_REQUEST_ID && f.slot[7] == 0 && f.slot[8] == 2);
 }
 
+static void test_bus_off_during_telemetry_submission(void)
+{
+    Fixture f;
+    init(&f, 2000, 0);
+    start_torque(&f);
+    finish(&f, 900);
+    poll(&f, 1000);
+    torque_status(&f, 1400, 0x72, 1, 32, 1);
+
+    /* The new torque confirmation opens the telemetry window in this poll.
+     * Inject BusOff after staging 0x1AE, before arming transmission. */
+    f.bus_off_before_tx_request = true;
+    const Lfj8H03Can13Result result = poll(&f, 2500);
+    assert(f.stat == 0x4000u && active_id(&f) == LFJ8_CAN_1AE);
+    assert(f.sent == 1u && f.control == 0u && f.broker.status.counter_f8e4 == 0u);
+    assert(!result.available && f.broker.lease_lost && !result.status_submitted);
+    assert(!f.broker.torque.request.full_reduction);
+
+    f.bus_off_before_tx_request = false;
+    f.stat = 0;
+    const unsigned writes = f.writes;
+    assert(!poll(&f, 2600).available && f.writes == writes);
+    f.demand = false;
+    ++f.generation;
+    assert(poll(&f, 2700).available && f.control == 0x40 && !f.broker.lease_lost);
+}
+
 static void test_diagnostic_flow_and_status_handoff(void)
 {
     Fixture f;
@@ -376,6 +407,7 @@ int main(void)
 {
     test_torque_priority_and_cancel();
     test_telemetry_loan_expires_before_slot_is_idle();
+    test_bus_off_during_telemetry_submission();
     test_diagnostic_flow_and_status_handoff();
     test_timeout_and_generation();
     test_receive_lease_loss_requires_generation();

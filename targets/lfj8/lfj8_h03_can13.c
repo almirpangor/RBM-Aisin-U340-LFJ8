@@ -152,8 +152,15 @@ Lfj8H03Can13Result lfj8_h03_can13_poll(Lfj8H03Can13 *broker, const Lfj8RegisterI
     }
     if (use_status) {
         broker->counter_before_status = broker->status.counter_f8e4;
-        result.status_submitted = lfj8_chery_tx_poll(&broker->status, io, now, 1u,
-                                                    input->vss, input->vehicle, input->status);
+        const Lfj8CanResult status = lfj8_chery_tx_poll_status(
+            &broker->status, io, now, 1u, input->vss, input->vehicle, input->status,
+            &result.status_submitted);
+        if (status == LFJ8_CAN_READY || status == LFJ8_CAN_SLOT_BUSY) {
+            return result;
+        }
+        if (status != LFJ8_CAN_SUBMITTED) {
+            return unavailable(broker, io, input);
+        }
         broker->status_started_us = now;
         broker->status_in_flight = result.status_submitted;
         broker->status_during_reduction = status_window;
