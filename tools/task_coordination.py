@@ -77,7 +77,7 @@ def cell(value):
 
 def catalog_entry(task):
     """Carry continuation text from the same published register as readiness."""
-    keys = ("id", "title", "status", "current", "remaining", "acceptance", "continuation")
+    keys = ("id", "title", "status", "current", "remaining", "acceptance", "continuation", "depends")
     return {key: copy.deepcopy(task[key]) for key in keys if key in task}
 
 
@@ -125,11 +125,15 @@ def work_state(task, claim):
     return "Свободна для продолжения"
 
 
+def task_order(task):
+    return task.get("continuation", {}).get("order", 1000), task["id"]
+
+
 def render_continuations(board):
     tasks = [task for task in board["catalog"] if task["status"] not in ("closed", "deferred")]
     if not tasks:
         return []
-    tasks.sort(key=lambda task: (task.get("continuation", {}).get("order", 1000), task["id"]))
+    tasks.sort(key=task_order)
     base = PROJECT_WEB + "/blob/" + board["main_commit"]
     lines = [
         "## Что осталось доделать", "",
@@ -137,17 +141,22 @@ def render_continuations(board):
         "Рекомендованный чат — подсказка для продолжения прежнего направления, а не резерв.",
         "Сначала обновить свою копию из main, посмотреть список и занять задачу с точными файлами.",
         "Активный исполнитель и пересекающиеся файлы защищены общим резервом.", "",
-        "| Задача | Сейчас | Следующий шаг | Кому удобно продолжить |",
-        "| --- | --- | --- | --- |",
+        "Порядок задаёт приоритет продолжения. Зависимости нужны для итоговой приёмки; независимую часть можно делать сразу.",
+        "Свободная задача может требовать ещё не полученных данных. Их отсутствие фиксируется отдельно от готовности кода.",
+        f"[Подробное распределение и единый текст для Codex / Claude]({base}/docs/integration-next-tasks.md)", "",
+        "| Приоритет | Задача | Занятость | Что сдать | Зависимости приёмки |",
+        "| --- | --- | --- | --- | --- |",
     ]
     for task in tasks:
-        follow = task.get("continuation")
-        if follow:
-            link = f"[{task['id']}]({base}/docs/project-map.md#{task['id'].lower()})"
-            lines.append("| " + " | ".join((
-                link, cell(work_state(task, board["claims"].get(task["id"]))),
-                cell(follow["action"]), cell(follow.get("chat_label", "Любой свободный чат")),
-            )) + " |")
+        follow = task.get("continuation", {})
+        link = f"[{task['id']}]({base}/docs/project-map.md#{task['id'].lower()})"
+        needs = ", ".join(task.get("depends", [])) or "См. входные условия карточки"
+        lines.append("| " + " | ".join((
+            str(follow.get("order", "—")), link,
+            cell(work_state(task, board["claims"].get(task["id"]))),
+            cell(follow.get("deliverable", follow.get("action", task.get("remaining", task["title"])))),
+            cell(needs),
+        )) + " |")
     lines.extend(["", "### Сделано и остаток по каждой незакрытой задаче", ""])
     for task in tasks:
         claim = board["claims"].get(task["id"])
@@ -160,11 +169,15 @@ def render_continuations(board):
         ])
         if follow:
             lines.extend(["**Следующий шаг.** " + cell(follow["action"]), ""])
+            for key, label in (("inputs", "Исходные условия"), ("deliverable", "Что сдать")):
+                if follow.get(key):
+                    lines.extend([f"**{label}.** " + cell(follow[key]), ""])
             if follow.get("chat_id"):
                 lines.extend(["**Рекомендуемый чат.** " + cell(follow["chat_label"]) +
                               " — " + cell(follow["chat_id"]) + ".", ""])
         if claim and claim["stage"] in ACTIVE:
-            lines.extend(["**Сейчас выполняет.** " + cell(claim["label"]) +
+            label = "Сейчас выполняет" if claim["stage"] == "in_progress" else "Резерв удерживает"
+            lines.extend([f"**{label}.** " + cell(claim["label"]) +
                           " — " + cell(claim["owner"]) + ".", ""])
         else:
             lines.extend(["**Исполнитель сейчас.** Задача не занята.", ""])
@@ -177,6 +190,10 @@ def render_continuations(board):
 
 
 def render_board(board):
+    ordered = sorted(board["catalog"], key=task_order)
+    working = [t for t in ordered if board["claims"].get(t["id"], {}).get("stage") == "in_progress"]
+    waiting = [t for t in ordered if board["claims"].get(t["id"], {}).get("stage") == "blocked"]
+    pending = [r for r in board.get("reviews", {}).values() if r["stage"] == "review"]
     lines = [
         "# Кто сейчас работает над проектом", "",
         f"Обновлено UTC: **{board['updated_at']}**. Изменение № **{board['sequence']}**.", "",
@@ -188,26 +205,26 @@ def render_board(board):
         "Нужен tools/task_coordination.py из актуальной main: старые клиенты не записывают формат доски 2.",
         "Давняя отметка не освобождается автоматически. Возобновившийся чат обязан проверить свой claim_id.", "",
         f"Каталог задач взят из main {board['main_commit']}.", "",
-        "| Задача | Ход работы | Текущий / предыдущий чат | Ветка | Обновление UTC | Что делает / результат |",
-        "| --- | --- | --- | --- | --- | --- |",
+        f"**В работе: {len(working)} · Ожидают с резервом: {len(waiting)} · Порций на проверке: {len(pending)}.**", "",
+        "Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.", "",
     ]
-    for task in board["catalog"]:
-        claim = board["claims"].get(task["id"])
-        title = f"{task['id']} — {task['title']}"
-        if not claim:
-            state = work_state(task, claim)
-            lines.append(f"| {cell(title)} | {state} | — | — | — | — |")
-        else:
-            note = claim["note"]
-            if claim["stage"] == "done":
-                note = "Предыдущая порция принята. " + note
-            if claim.get("result"):
-                note += " / commit " + claim["result"]
+    for heading, tasks, empty in (
+        ("Сейчас выполняются", working, "Нет действующих резервов выполнения."),
+        ("Ожидают — резерв сохранён", waiting, "Нет задач, удерживаемых в ожидании."),
+    ):
+        lines.extend(["## " + heading, ""])
+        if not tasks:
+            lines.extend([empty, ""])
+            continue
+        lines.extend(["| Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |",
+                      "| --- | --- | --- | --- | --- |"])
+        for task in tasks:
+            claim = board["claims"][task["id"]]
             lines.append("| " + " | ".join(map(cell, (
-                title, work_state(task, claim),
-                ("" if claim["stage"] in ACTIVE else "Предыдущий: ") + claim["label"] + " [" + claim["owner"] + "]",
-                claim["branch"], claim["updated_at"], note))) + " |")
-    pending = [r for r in board.get("reviews", {}).values() if r["stage"] == "review"]
+                task.get("continuation", {}).get("order", "—"),
+                task["id"] + " — " + task["title"], claim["label"] + " [" + claim["owner"] + "]",
+                claim["updated_at"], claim["note"]))) + " |")
+        lines.append("")
     lines.extend(["", "## Результаты на проверке — резерв свободен", "",
                   "Эти результаты остаются доступны интегратору, даже если другой чат уже продолжает задачу.",
                   "Новый исполнитель сначала включает нужные коммиты в свою ветку. claim проверяет их наличие.", "",
@@ -220,6 +237,17 @@ def render_board(board):
     if not pending:
         lines.extend(["", "Очередь проверки пуста."])
     lines.extend(["", *render_continuations(board)])
+    lines.extend(["## История предыдущих исполнителей", "", "<details>",
+                  "<summary>Принятые, сданные и освобождённые порции — это не текущая работа</summary>", "",
+                  "| Задача | Состояние порции | Предыдущий исполнитель | Ветка | Результат |",
+                  "| --- | --- | --- | --- | --- |"])
+    for task in ordered:
+        claim = board["claims"].get(task["id"])
+        if claim and claim["stage"] not in ACTIVE:
+            note = claim["note"] + (" / commit " + claim["result"] if claim.get("result") else "")
+            lines.append("| " + " | ".join(map(cell, (task["id"], STAGES[claim["stage"]],
+                claim["label"], claim["branch"], note))) + " |")
+    lines.extend(["", "</details>", ""])
     lines.extend(["", "## Зарезервированные файлы", ""])
     for task_id, claim in sorted(board["claims"].items()):
         if claim["stage"] in ACTIVE:

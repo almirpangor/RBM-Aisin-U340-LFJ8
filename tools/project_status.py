@@ -76,6 +76,9 @@ def validate(data):
                     not re.fullmatch(r"[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}", follow["chat_id"]) or
                     not isinstance(follow.get("chat_label"), str) or not follow["chat_label"].strip()):
                 raise ValueError(f"Invalid continuation chat: {task['id']}")
+            for key in ("inputs", "deliverable"):
+                if key in follow and (not isinstance(follow[key], str) or not follow[key].strip()):
+                    raise ValueError(f"Invalid continuation {key}: {task['id']}")
         if not task["sections"] or not set(task["sections"]) <= expected:
             raise ValueError(f"Invalid specification section: {task['id']}")
         covered.update(task["sections"])
@@ -190,6 +193,9 @@ def render_status(data):
 
 
 def render_map(data):
+    tasks = sorted(data["tasks"], key=lambda task: (
+        2 if task["status"] == "deferred" else 1 if task["status"] == "closed" else 0,
+        task.get("continuation", {}).get("order", 1000), task["id"]))
     lines = [
         "# Подзадачи и карта кода",
         "",
@@ -224,12 +230,13 @@ def render_map(data):
         "",
         "## Быстрый список",
         "",
-        "| ID | Задача | Статус |",
-        "| --- | --- | --- |",
+        "| Приоритет | ID | Задача | Статус |",
+        "| --- | --- | --- | --- |",
     ])
-    for task in data["tasks"]:
-        lines.append(f"| [{task['id']}](#{task['id'].lower()}) | {task['title']} | {data['status_labels'][task['status']]} |")
-    for task in data["tasks"]:
+    for task in tasks:
+        order = task.get("continuation", {}).get("order", "—")
+        lines.append(f"| {order} | [{task['id']}](#{task['id'].lower()}) | {task['title']} | {data['status_labels'][task['status']]} |")
+    for task in tasks:
         name = task["id"]
         lines.extend([
             "",
@@ -257,6 +264,10 @@ def render_map(data):
         if task.get("continuation"):
             follow = task["continuation"]
             lines.extend(["", "**Следующий шаг для продолжения.** " + follow["action"]])
+            for key, label in (("order", "Приоритет продолжения"), ("inputs", "Исходные условия"),
+                               ("deliverable", "Что сдать")):
+                if key in follow:
+                    lines.extend(["", f"**{label}.** " + str(follow[key])])
             if follow.get("chat_id"):
                 lines.extend(["", "**Кому удобно продолжить.** " + follow["chat_label"] +
                               " — " + follow["chat_id"] + ". Это рекомендация, не резерв."])

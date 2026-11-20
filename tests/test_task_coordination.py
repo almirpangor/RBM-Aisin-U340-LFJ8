@@ -12,6 +12,67 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from task_coordination import TaskBoard, Conflict, CoordinationError, edit_paths, render_board
 
 
+class BoardPresentationTests(unittest.TestCase):
+    def board(self):
+        def task(name, order):
+            return {"id": name, "title": name, "status": "open", "depends": [],
+                    "continuation": {"order": order, "action": "Next step", "inputs": "Source",
+                                     "deliverable": "Native provider"}}
+        def claim(stage, name):
+            return {"stage": stage, "label": name, "owner": name, "branch": "codex/" + name,
+                    "updated_at": "2026-11-21T00:00:00+00:00", "note": "Progress", "files": [name + ".c"],
+                    "claim_id": name, "result": "a" * 40 if stage == "done" else None}
+        return {"updated_at": "2026-11-21", "sequence": 1, "main_commit": "b" * 40,
+                "catalog": [task("LATE-01", 30), task("FIRST-01", 1), task("WAIT-01", 2),
+                            task("OLD-01", 3)],
+                "claims": {"LATE-01": claim("in_progress", "late-chat"),
+                           "FIRST-01": claim("in_progress", "first-chat"),
+                           "WAIT-01": claim("blocked", "waiting-chat"),
+                           "OLD-01": claim("done", "old-chat")},
+                "reviews": {}, "events": []}
+
+    def test_active_waiting_and_previous_editors_are_separate(self):
+        page = render_board(self.board())
+        working = page.split("## Сейчас выполняются", 1)[1].split("## Ожидают", 1)[0]
+        self.assertLess(working.index("FIRST-01"), working.index("LATE-01"))
+        self.assertNotIn("old-chat", working)
+        self.assertNotIn("waiting-chat", working)
+        waiting = page.split("## Ожидают", 1)[1].split("## Результаты", 1)[0]
+        self.assertIn("waiting-chat", waiting)
+        self.assertIn("В работе: 2 · Ожидают с резервом: 1 · Порций на проверке: 0", page)
+        self.assertIn("**Резерв удерживает.** waiting-chat", page)
+
+    def test_complete_queue_is_sorted_and_carries_handoffs(self):
+        board = self.board()
+        board["catalog"].append({"id": "EXTRA-01", "title": "No continuation", "status": "open"})
+        board["catalog"][1]["depends"] = ["WAIT-01"]
+        page = render_board(board)
+        queue = page.split("## Что осталось доделать", 1)[1].split("### Сделано", 1)[0]
+        self.assertLess(queue.index("[FIRST-01]"), queue.index("[WAIT-01]"))
+        self.assertLess(queue.index("[WAIT-01]"), queue.index("[LATE-01]"))
+        self.assertIn("[EXTRA-01]", queue)
+        self.assertIn("Native provider", queue)
+        self.assertIn("**Исходные условия.** Source", page)
+
+    def test_review_is_visible_without_becoming_an_active_editor(self):
+        board = self.board()
+        claim = board["claims"]["OLD-01"]
+        claim["stage"] = "review"
+        board["reviews"]["old-chat"] = {**claim, "task": "OLD-01", "submitted_at": claim["updated_at"]}
+        page = render_board(board)
+        working = page.split("## Сейчас выполняются", 1)[1].split("## Ожидают", 1)[0]
+        self.assertNotIn("old-chat", working)
+        self.assertIn("Свободна для продолжения; порция на проверке", page)
+        self.assertIn("Порций на проверке: 1", page)
+
+    def test_handoff_text_cannot_create_markdown_rows_or_html(self):
+        board = self.board()
+        board["catalog"][0]["continuation"]["deliverable"] = "<script>x</script> | extra\nrow"
+        page = render_board(board)
+        self.assertNotIn("<script>", page)
+        self.assertIn("&lt;script&gt;x&lt;/script&gt; \\| extra row", page)
+
+
 class CoordinationTests(unittest.TestCase):
     def setUp(self):
         self.temp = TemporaryDirectory(prefix="rbm-coordination-tests-")

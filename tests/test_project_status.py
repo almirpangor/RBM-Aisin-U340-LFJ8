@@ -86,6 +86,37 @@ class ProjectStatusTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Invalid continuation"):
                 status.validate(modified)
 
+    def test_handoff_fields_reject_empty_or_nontext_values(self):
+        registry = json.loads(status.REGISTER.read_text(encoding="utf-8"))
+        for key in ("inputs", "deliverable"):
+            for value in ("", "  ", [], 3):
+                modified = copy.deepcopy(registry)
+                task = next(task for task in modified["tasks"] if task["status"] == "open")
+                task["continuation"] = {"order": 1, "action": "Work", key: value}
+                with self.assertRaisesRegex(ValueError, "Invalid continuation"):
+                    status.validate(modified)
+
+    def test_handoff_fields_are_visible_in_task_map(self):
+        registry = json.loads(status.REGISTER.read_text(encoding="utf-8"))
+        task = next(task for task in registry["tasks"] if task["status"] == "open")
+        task["continuation"] = {"order": 1, "action": "Bind", "inputs": "Pinned signals",
+                                "deliverable": "Compiled provider"}
+        page = status.render_map(registry)
+        self.assertIn("**Приоритет продолжения.** 1", page)
+        self.assertIn("**Исходные условия.** Pinned signals", page)
+        self.assertIn("**Что сдать.** Compiled provider", page)
+
+    def test_task_map_orders_queue_before_closed_and_deferred(self):
+        registry = json.loads(status.REGISTER.read_text(encoding="utf-8"))
+        page = status.render_map(registry)
+        queue = sorted((t for t in registry["tasks"] if t.get("continuation")),
+                       key=lambda t: (t["continuation"]["order"], t["id"]))
+        anchors = [page.index(f'<a id="{t["id"].lower()}">') for t in queue]
+        self.assertEqual(anchors, sorted(anchors))
+        for task in registry["tasks"]:
+            if task["status"] in ("closed", "deferred"):
+                self.assertGreater(page.index(f'<a id="{task["id"].lower()}">'), anchors[-1])
+
 
 if __name__ == "__main__":
     unittest.main()
