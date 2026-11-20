@@ -232,6 +232,160 @@ static void test_validation_and_saturation(void)
     assert(critical.entries == critical.leaves && !critical.inside);
 }
 
+enum { BASIC_STAT = 0x801002, BASIC_EXTID = 0x801004, BASIC_MSC = 0x801050,
+       BASIC_DATA = 0x801100, BASIC_RUNNING = 0x0800 };
+
+typedef struct {
+    Critical critical; /* Shared enter/leave callbacks receive this first member. */
+    uint8_t raw[16];
+    uint8_t slot;
+    uint8_t control;
+    uint8_t replacement_control;
+    uint16_t status;
+    uint16_t extended;
+    uint16_t replacement_status;
+    unsigned replace_after;
+    unsigned reads;
+    unsigned control_reads;
+} BasicCanModel;
+
+static void begin_basic(BasicCanModel *model, uint8_t slot)
+{
+    *model = (BasicCanModel){.critical = {.irq_mask = 1}, .slot = slot,
+                             .status = BASIC_RUNNING, .control = 0x41};
+    slot_at(model->raw, 500, 0x86);
+}
+
+static uint8_t basic_read8(void *context, uint32_t address)
+{
+    BasicCanModel *model = context;
+    assert(model->critical.inside);
+    if (address == BASIC_MSC + (uint32_t)model->slot) {
+        ++model->control_reads;
+        return model->control;
+    }
+    const uint32_t base = BASIC_DATA + (uint32_t)model->slot * 16u;
+    assert(address >= base && address < base + 16u);
+    assert(model->control_reads == 1);
+    const uint8_t value = model->raw[address - base];
+    if (++model->reads == model->replace_after) {
+        slot_at(model->raw, 501, 0x99);
+        model->control = model->replacement_control;
+        model->status = model->replacement_status;
+    }
+    return value;
+}
+
+static uint16_t basic_read16(void *context, uint32_t address)
+{
+    BasicCanModel *model = context;
+    assert(model->critical.inside);
+    assert(address == BASIC_STAT || address == BASIC_EXTID);
+    return address == BASIC_STAT ? model->status : model->extended;
+}
+
+static Lfj8RegisterIo basic_io(BasicCanModel *model)
+{
+    return (Lfj8RegisterIo){.context = model, .enter = enter, .leave = leave,
+                            .read8 = basic_read8, .read16 = basic_read16};
+}
+
+static void test_basic_capture_keeps_oem_ack(void)
+{
+    BasicCanModel model;
+    const Lfj8RegisterIo io = basic_io(&model);
+    Lfj8H03DtcRxQueue queue;
+    assert(lfj8_h03_dtc_rx_queue_init(&queue, 9, 100, 2));
+    begin_basic(&model, 14);
+    model.raw[5] = 8;
+    model.raw[13] = 0xC3;
+    model.extended = 1; /* The other slot's IDE bit is independent. */
+    assert(lfj8_h03_dtc_rx_queue_capture_basic(&queue, &io, 14, 9, 1008, 504) == LFJ8_H03_DTC_RX_QUEUED);
+    assert(model.reads == 16 && model.control_reads == 2 && model.control == 0x41);
+    assert(model.critical.entries == 1 && model.critical.leaves == 1 && model.critical.irq_mask == 1);
+
+    begin_basic(&model, 15);
+    model.raw[6] = 0x30;
+    model.raw[7] = 0;
+    model.raw[8] = 0;
+    model.raw[13] = 0xEE; /* Bytes outside the actual DLC are undefined. */
+    assert(lfj8_h03_dtc_rx_queue_capture_basic(&queue, &io, 15, 9, 1010, 505) == LFJ8_H03_DTC_RX_QUEUED);
+    assert(model.control == 0x41 && queue.count == 2);
+    memset(model.raw, 0xff, sizeof(model.raw));
+    Lfj8H03DtcRxDelivery delivery;
+    assert(lfj8_h03_dtc_rx_queue_peek(&queue, &io, 9, 1012, 506, &delivery));
+    assert(delivery.received.frame.length == 8 && delivery.received.frame.data[7] == 0xC3);
+    assert(delivery.received.can_timestamp == 500 && delivery.received.generation == 9);
+    assert(lfj8_h03_dtc_rx_queue_consume(&queue, &io, &delivery));
+    assert(lfj8_h03_dtc_rx_queue_peek(&queue, &io, 9, 1012, 506, &delivery));
+    assert(delivery.received.frame.length == 3 && delivery.received.frame.data[0] == 0x30);
+    assert(delivery.received.frame.data[7] == 0 && delivery.received.can_timestamp == 500);
+    assert(lfj8_h03_dtc_rx_queue_consume(&queue, &io, &delivery));
+}
+
+static void test_basic_capture_drops_unqualified_slots(void)
+{
+    BasicCanModel model;
+    const Lfj8RegisterIo io = basic_io(&model);
+    Lfj8H03DtcRxQueue queue;
+    assert(lfj8_h03_dtc_rx_queue_init(&queue, 9, 100, 2));
+    const struct {
+        uint8_t slot, control;
+        uint16_t status, extended;
+        uint32_t generation;
+    } rejected[] = {
+        {13, 0x41, BASIC_RUNNING, 0, 9}, {16, 0x41, BASIC_RUNNING, 0, 9},
+        {15, 0x40, BASIC_RUNNING, 0, 9}, {15, 0x43, BASIC_RUNNING, 0, 9},
+        {15, 0x45, BASIC_RUNNING, 0, 9}, {15, 0x49, BASIC_RUNNING, 0, 9},
+        {15, 0x41, BASIC_RUNNING, 1, 9}, {14, 0x41, BASIC_RUNNING, 2, 9},
+        {15, 0x41, 0x0000, 0, 9}, {15, 0x41, 0x4800, 0, 9},
+        {15, 0x41, 0x0900, 0, 9}, {15, 0x41, 0x0a00, 0, 9},
+        {15, 0x41, BASIC_RUNNING, 0, 8},
+    };
+    for (unsigned i = 0; i < sizeof(rejected) / sizeof(rejected[0]); ++i) {
+        begin_basic(&model, rejected[i].slot);
+        model.control = rejected[i].control;
+        model.status = rejected[i].status;
+        model.extended = rejected[i].extended;
+        assert(lfj8_h03_dtc_rx_queue_capture_basic(&queue, &io, model.slot,
+                   rejected[i].generation, 1008, 504) == LFJ8_H03_DTC_RX_REJECTED);
+        assert(model.reads == 0 && queue.count == 0 && queue.rejected == i + 1);
+    }
+
+    begin_basic(&model, 15);
+    model.raw[1] = 0x33;
+    assert(lfj8_h03_dtc_rx_queue_capture_basic(&queue, &io, 15, 9, 1008, 504) == LFJ8_H03_DTC_RX_REJECTED);
+    begin_basic(&model, 15);
+    assert(lfj8_h03_dtc_rx_queue_capture_basic(&queue, &io, 15, 9, 1200, 600) == LFJ8_H03_DTC_RX_REJECTED);
+    assert(queue.count == 0 && queue.next_ticket == 0);
+}
+
+static void test_basic_capture_drops_changes_during_copy(void)
+{
+    BasicCanModel model;
+    const Lfj8RegisterIo io = basic_io(&model);
+    Lfj8H03DtcRxQueue queue;
+    assert(lfj8_h03_dtc_rx_queue_init(&queue, 9, 100, 2));
+    for (unsigned boundary = 1; boundary <= 16; ++boundary) {
+        begin_basic(&model, 15);
+        model.replace_after = boundary;
+        model.replacement_control = 0x45; /* TRFIN already set when this overwrite completes. */
+        model.replacement_status = BASIC_RUNNING;
+        assert(lfj8_h03_dtc_rx_queue_capture_basic(&queue, &io, 15, 9, 1008, 504) == LFJ8_H03_DTC_RX_REJECTED);
+        assert(model.control_reads == 2 && model.control == 0x45 && queue.count == 0);
+    }
+    const uint8_t after[] = {0x47, 0x40, 0x41}; /* In progress, cleared, and bus-off below. */
+    for (unsigned i = 0; i < sizeof(after); ++i) {
+        begin_basic(&model, 14);
+        model.replace_after = 8;
+        model.replacement_control = after[i];
+        model.replacement_status = after[i] == 0x41 ? 0x4800 : BASIC_RUNNING;
+        assert(lfj8_h03_dtc_rx_queue_capture_basic(&queue, &io, 14, 9, 1008, 504) == LFJ8_H03_DTC_RX_REJECTED);
+        assert(queue.count == 0 && queue.next_ticket == 0);
+    }
+    assert(queue.rejected == 19);
+}
+
 int main(void)
 {
     test_fifo_full_and_interrupted_consumer();
@@ -239,7 +393,11 @@ int main(void)
     test_clock_sample_preempted_by_producer();
     test_expired_head_and_can_reset();
     test_validation_and_saturation();
+    test_basic_capture_keeps_oem_ack();
+    test_basic_capture_drops_unqualified_slots();
+    test_basic_capture_drops_changes_during_copy();
     puts("H03 DTC RX queue: FIFO, overflow, stale delivery, time wrap and CAN reset PASS");
+    puts("H03 DTC BasicCAN capture: both slots, unchanged MSC, overwritten copy and bus-off PASS");
     printf("queue_bytes=%u delivery_bytes=%u capacity=%u\n",
            (unsigned)sizeof(Lfj8H03DtcRxQueue), (unsigned)sizeof(Lfj8H03DtcRxDelivery),
            LFJ8_H03_DTC_RX_CAPACITY);

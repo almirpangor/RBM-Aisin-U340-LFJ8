@@ -61,6 +61,17 @@ Lfj8H03DtcRxPublish lfj8_h03_dtc_rx_queue_publish(
     uint8_t control, bool extended, uint32_t generation, uint32_t now_us,
     uint16_t can_now);
 
+/* Observe one pending RX14/RX15 attempt before the OEM clears TRFIN.
+ * Call once per OEM attempt with freshly paired clocks and the active
+ * CAN generation. The owner must discard old hardware slots on reset before
+ * publishing with the new generation. The only MMIO accesses are reads.
+ * The OEM retains responsibility for acknowledgement and retries.
+ * io->enter/leave must serialize with other CPU users of the slots and
+ * preserve the caller's IRQ state. Hardware overwrites can still occur. */
+Lfj8H03DtcRxPublish lfj8_h03_dtc_rx_queue_capture_basic(
+    Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io, uint8_t slot,
+    uint32_t generation, uint32_t now_us, uint16_t can_now);
+
 /* Call before EVERY broker poll, even while it is busy. This returns a
  * COPY, leaving the head queued. Expiry uses both CAN bits and monotonic
  * microseconds, so waiting a full 16-bit CAN wrap cannot rejuvenate it.
