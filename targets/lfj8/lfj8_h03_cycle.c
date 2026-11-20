@@ -49,14 +49,27 @@ static int main_step(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
         !rbm_u340e_schedule_main_done(&cycle->scheduler)) {
         return 0;
     }
-    result->command_at = input->command_at;
     result->valid = 1u;
     return 1;
 }
 
-Lfj8H03CycleResult lfj8_h03_cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
-                                      const Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work,
-                                      Lfj8H03MainResult *result)
+static int publish_cycle_load(RbmU340eRuntime *runtime, const Lfj8H03CycleLoad *load,
+                              uint32_t *command_at)
+{
+    const uint32_t input_age = load->now_us - *command_at;
+    if (input_age >= UINT32_C(0x80000000) ||
+        !rbm_u340e_runtime_publish_load(runtime, load->sample, load->now_us, load->max_age_us)) {
+        return 0;
+    }
+    if (load->now_us - load->sample->sampled_at > input_age) {
+        *command_at = load->sample->sampled_at;
+    }
+    return 1;
+}
+
+static Lfj8H03CycleResult cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
+    const Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work, Lfj8H03MainResult *result,
+    const Lfj8H03CycleLoad *load)
 {
     if (!result) {
         return LFJ8_H03_CYCLE_FAULT;
@@ -72,6 +85,11 @@ Lfj8H03CycleResult lfj8_h03_cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *run
         input->qualified != 1u || input->engine.coherent != 1u ||
         input->selector < RBM_U340E_SELECTOR_P || input->selector > RBM_U340E_SELECTOR_L ||
         (cycle->have_event && input->event - cycle->last_event != 1u)) {
+        cycle->faulted = 1u;
+        return LFJ8_H03_CYCLE_FAULT;
+    }
+    uint32_t command_at = input->command_at;
+    if (load && !publish_cycle_load(runtime, load, &command_at)) {
         cycle->faulted = 1u;
         return LFJ8_H03_CYCLE_FAULT;
     }
@@ -113,6 +131,7 @@ Lfj8H03CycleResult lfj8_h03_cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *run
         }
         if (secondary == RBM_U340E_SECONDARY_RUN_MAIN &&
             main_step(cycle, runtime, input, &range, work, result)) {
+            result->command_at = command_at;
             return LFJ8_H03_CYCLE_MAIN;
         }
         break;
@@ -123,6 +142,20 @@ Lfj8H03CycleResult lfj8_h03_cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *run
     cycle->faulted = 1u;
     *result = (Lfj8H03MainResult){0};
     return LFJ8_H03_CYCLE_FAULT;
+}
+
+Lfj8H03CycleResult lfj8_h03_cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
+                                      const Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work,
+                                      Lfj8H03MainResult *result)
+{
+    return cycle_tick(cycle, runtime, input, work, result, NULL);
+}
+
+Lfj8H03CycleResult lfj8_h03_cycle_tick_with_load(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
+    const Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work, Lfj8H03MainResult *result,
+    Lfj8H03CycleLoad load)
+{
+    return cycle_tick(cycle, runtime, input, work, result, &load);
 }
 
 static int16_t signed_word(uint32_t value)

@@ -33,6 +33,12 @@ typedef struct {
 } Lfj8H03CycleInput;
 
 typedef struct {
+    const RbmU340eQualifiedLoadFeed *sample;
+    uint32_t now_us;
+    uint32_t max_age_us;
+} Lfj8H03CycleLoad;
+
+typedef struct {
     FactoryGearWrites shift;
     Lfj8TorqueDemand torque;
     uint32_t command_at;
@@ -77,6 +83,18 @@ int lfj8_h03_cycle_init(Lfj8H03Cycle *cycle, const RbmU340eRangeState *range,
 Lfj8H03CycleResult lfj8_h03_cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
                                       const Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work,
                                       Lfj8H03MainResult *result);
+
+/* Publish the qualified donor load before advancing a new Toyota event.
+ * The caller supplies the source-qualified snapshot and a continuous
+ * clock shared by sampled_at, command_at and now_us. max_age_us is
+ * inclusive and less than half a clock wrap. Both source timestamps
+ * must be in the past half-wrap, including now. A refused load latches
+ * a cycle fault without writing GP or advancing the scheduler. MAIN's
+ * command timestamp includes the oldest load operand. Otherwise the
+ * same serialization and recovery rules as cycle_tick apply. */
+Lfj8H03CycleResult lfj8_h03_cycle_tick_with_load(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
+    const Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work, Lfj8H03MainResult *result,
+    Lfj8H03CycleLoad load);
 
 /* Read the SLT operands already published by MAIN. Use them at donor FAST
  * 05AF96/055BF4 with the separately qualified correction state. */
