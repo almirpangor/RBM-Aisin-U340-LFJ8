@@ -43,6 +43,12 @@ static bool programmed_zero(const uint8_t *value)
     return value[0] == 0u && value[1] == 0u;
 }
 
+static bool published(const uint8_t slot[SLOT_BYTES])
+{
+    return programmed_zero(slot + MARKER_OFFSET) &&
+           slot[CHERY_DTC_JOURNAL_BODY_BYTES] == UINT8_MAX;
+}
+
 static void decode_marker(uint8_t slot[SLOT_BYTES])
 {
     uint8_t marker = 1u; /* Neither valid portable marker. */
@@ -50,8 +56,7 @@ static void decode_marker(uint8_t slot[SLOT_BYTES])
      * requires a fully verified retirement before it can acknowledge. */
     if (!erased_halfword(slot + RETIRED_OFFSET) || erased_halfword(slot + MARKER_OFFSET)) {
         marker = CHERY_DTC_JOURNAL_UNCOMMITTED;
-    } else if (programmed_zero(slot + MARKER_OFFSET) &&
-               slot[CHERY_DTC_JOURNAL_BODY_BYTES] == UINT8_MAX) {
+    } else if (published(slot)) {
         marker = CHERY_DTC_JOURNAL_COMMITTED;
     }
     slot[CHERY_DTC_JOURNAL_BODY_BYTES] = marker;
@@ -141,6 +146,36 @@ static bool retire_record(const Lfj8H03Nvm *nvm, unsigned block_number,
            programmed_zero(slot + RETIRED_OFFSET);
 }
 
+static bool first_publication(const Lfj8H03Nvm *nvm, const Lfj8H03NvmBlock blocks[2],
+                              uint8_t slots[2][SLOT_BYTES], CheryDtcState *scratch,
+                              unsigned *active, uint32_t *generation)
+{
+    const bool retired0 = !erased_halfword(slots[0] + RETIRED_OFFSET);
+    const bool retired1 = !erased_halfword(slots[1] + RETIRED_OFFSET);
+    if (!retired0 && !retired1) {
+        return true;
+    }
+    if (retired0 && retired1) {
+        return false;
+    }
+
+    /* Keep the exclusion marker intact until another record is durable.
+     * An interrupted erase may remove only that marker, exposing a record
+     * that the journal must still be able to order behind the next one. */
+    const unsigned retired = retired0 ? 0u : 1u;
+    *active = 1u - retired;
+    uint8_t *const record = slots[retired];
+    if (!nvm->read(nvm->context, blocks[retired].first, record, SLOT_BYTES) ||
+        erased_halfword(record + RETIRED_OFFSET) || !published(record)) {
+        return false;
+    }
+    record[CHERY_DTC_JOURNAL_BODY_BYTES] = CHERY_DTC_JOURNAL_COMMITTED;
+    const bool valid = chery_dtc_journal_restore(record, slots[*active], scratch, generation)
+        == CHERY_DTC_JOURNAL_SLOT_0;
+    record[CHERY_DTC_JOURNAL_BODY_BYTES] = CHERY_DTC_JOURNAL_UNCOMMITTED;
+    return valid;
+}
+
 static bool save_dtc(const Lfj8H03Nvm *nvm, const CheryDtcState *state, bool retire_previous)
 {
     Lfj8H03NvmBlock blocks[2];
@@ -161,6 +196,10 @@ static bool save_dtc(const Lfj8H03Nvm *nvm, const CheryDtcState *state, bool ret
     unsigned active = result == LFJ8_H03_NVM_SLOT_1 ? 1u : 0u;
     if (!unchanged) {
         active = result == LFJ8_H03_NVM_SLOT_0 ? 1u : 0u;
+        if (result == LFJ8_H03_NVM_EMPTY &&
+            !first_publication(nvm, blocks, slots, &previous, &active, &generation)) {
+            return false;
+        }
         uint8_t body[SLOT_BYTES];
         memset(body, UINT8_MAX, sizeof body);
         if (!chery_dtc_journal_encode(state, generation + 1u, body) ||

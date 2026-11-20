@@ -46,7 +46,9 @@ Lfj8H03NvmResult lfj8_h03_nvm_restore_dtc(const Lfj8H03Nvm *nvm, CheryDtcState *
 /* Save only on a history change. Use commit_empty_dtc for an authorized
  * clear. Retry after an uncertain operation by reading both blocks again,
  * once the device can safely return array data. Corrupt or unreadable
- * storage refuses further writes. */
+ * storage refuses further writes. With only a retired record left, its
+ * verified generation orders the next publication in the other block.
+ * An ambiguous or damaged retired record cannot authorize a write. */
 bool lfj8_h03_nvm_save_dtc(const Lfj8H03Nvm *nvm, const CheryDtcState *state);
 
 /* CheryDtcClearStore callback. context is the same configured Lfj8H03Nvm.

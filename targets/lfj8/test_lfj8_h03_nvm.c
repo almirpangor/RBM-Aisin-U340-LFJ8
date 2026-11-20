@@ -6,7 +6,7 @@
 #include <string.h>
 
 enum { MARKER_OFFSET = 30, RETIRED_OFFSET = 32, SLOT_BYTES = 34, LARGE_BLOCK_BYTES = 0x10000 };
-enum { COMPLETE, FAIL_BEFORE, FAIL_PARTIAL, FAIL_AFTER };
+enum { COMPLETE, FAIL_BEFORE, FAIL_PARTIAL, FAIL_AFTER, ERASE_RETIREMENT_ONLY };
 
 typedef struct {
     unsigned reads;
@@ -60,6 +60,11 @@ static bool erase_block(void *context, uint32_t last_even)
     const unsigned slot = last_even == address[0] + length[0] - 2u ? 0u : 1u;
     assert(last_even == address[slot] + length[slot] - 2u);
     const unsigned cut = cut_mode(fixture);
+    if (cut == ERASE_RETIREMENT_ONLY) {
+        /* No erased-prefix ordering is guaranteed by the backend. */
+        memset(flash[slot] + RETIRED_OFFSET, 0xff, 2u);
+        return false;
+    }
     if (cut != FAIL_BEFORE) {
         const size_t size = cut == FAIL_PARTIAL ? fixture->erase_prefix : length[slot];
         assert(size <= length[slot]);
@@ -363,6 +368,81 @@ static void check_retirement_retry(void)
     }
 }
 
+static void lose_empty_record(unsigned empty_slot, bool erase_all)
+{
+    if (erase_all) {
+        memset(flash[empty_slot], 0xff, length[empty_slot]);
+    } else {
+        memset(flash[empty_slot] + MARKER_OFFSET, 0xff, 2u);
+    }
+}
+
+static void check_first_write_after_lost_clear(void)
+{
+    static const uint32_t generations[] = {71u, UINT32_MAX};
+    const CheryDtcState old = history();
+    CheryDtcState fresh, later;
+    chery_dtc_init(&fresh);
+    chery_dtc_init(&later);
+    assert(chery_dtc_raise_c0(&fresh, 0x24u, false));
+    assert(chery_dtc_raise_c0(&later, 0x31u, false));
+
+    for (unsigned previous = 0; previous < 2u; ++previous) {
+        const unsigned replacement = 1u - previous;
+        const Lfj8H03NvmResult expected =
+            replacement == 0u ? LFJ8_H03_NVM_SLOT_0 : LFJ8_H03_NVM_SLOT_1;
+        for (unsigned loss = 0; loss < 2u; ++loss) {
+            for (unsigned clock = 0; clock < 2u; ++clock) {
+                Fixture fixture = {.idle = true};
+                Lfj8H03Nvm nvm = medium(&fixture);
+                memset(flash, 0xff, sizeof flash);
+                install_record(previous, &old, generations[clock]);
+                CheryDtcState state = old;
+                request_clear(&nvm, &state, true);
+                lose_empty_record(replacement, loss != 0u);
+                assert(lfj8_h03_nvm_restore_dtc(&nvm, &state) == LFJ8_H03_NVM_EMPTY);
+
+                fixture.cut_on = fixture.changes + 1u;
+                fixture.cut_mode = ERASE_RETIREMENT_ONLY;
+                assert(!lfj8_h03_nvm_save_dtc(&nvm, &fresh));
+                assert(lfj8_h03_nvm_restore_dtc(&nvm, &state) == LFJ8_H03_NVM_EMPTY);
+                expect_empty(&state);
+                assert(flash[previous][RETIRED_OFFSET] == 0u);
+
+                assert(lfj8_h03_nvm_save_dtc(&nvm, &fresh));
+                assert(lfj8_h03_nvm_restore_dtc(&nvm, &state) == expected);
+                expect_history(&state, &fresh);
+                fixture.cut_on = fixture.changes + 1u;
+                assert(!lfj8_h03_nvm_save_dtc(&nvm, &later));
+                assert(flash[previous][RETIRED_OFFSET] == UINT8_MAX);
+                assert(lfj8_h03_nvm_restore_dtc(&nvm, &state) == expected);
+                expect_history(&state, &fresh);
+            }
+        }
+    }
+}
+
+static void check_untrusted_retired_generation(void)
+{
+    const CheryDtcState old = history();
+    for (unsigned fault = 0; fault < 3u; ++fault) {
+        Fixture fixture = {.idle = true};
+        Lfj8H03Nvm nvm = medium(&fixture);
+        memset(flash, 0xff, sizeof flash);
+        install_record(0u, &old, 1u);
+        flash[0][RETIRED_OFFSET] = 0u;
+        if (fault == 0u) {
+            flash[0][4] ^= 1u; /* Retired record's generation no longer passes CRC. */
+        } else if (fault == 1u) {
+            fixture.fail_read = 3u; /* A read of the physical retired record fails. */
+        } else {
+            flash[1][RETIRED_OFFSET] = 0u;
+        }
+        assert(!lfj8_h03_nvm_save_dtc(&nvm, &old));
+        assert(fixture.changes == 0u);
+    }
+}
+
 int main(void)
 {
     printf("H03 erase ends:");
@@ -378,6 +458,9 @@ int main(void)
     check_after_durable_clear();
     check_read_back_and_retry();
     check_retirement_retry();
+    check_first_write_after_lost_clear();
+    check_untrusted_retired_generation();
+    puts("H03 DTC NVM: eight lost-clear recoveries, sixteen interrupted erases and three unsafe retries PASS");
     puts("H03 DTC NVM: four replacement losses, 64 retirement bit faults and three interrupted retries PASS");
     printf("H03 DTC NVM: %u write cuts, 35 erase prefixes, 256 bit faults and restart PASS\n", clear_cuts);
     return 0;
