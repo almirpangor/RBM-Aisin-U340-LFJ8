@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 554,
+  "sequence": 555,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -361,23 +361,19 @@
       "result": null
     },
     "TOY-06": {
-      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
-      "label": "Codex TOY-06 — границы стадий SLU",
-      "branch": "codex/toy-06-slu-stage-boundaries-fea1b366",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "label": "Codex TOY-06 — штатные выходы H03",
+      "branch": "codex/toy06-native-lockup-output-01a1f9a2",
       "files": [
-        "targets/lfj8/check_toyota_slu.py",
-        "targets/lfj8/lfj8_h03_cycle.c",
-        "targets/lfj8/lfj8_h03_slu.c",
-        "targets/lfj8/lfj8_h03_slu.h",
-        "targets/lfj8/test_lfj8_h03_cycle.c",
-        "verification/project-audit/toy06-slu-stage-boundaries.md"
+        "targets/lfj8/check_h03_slu_output_paths.py",
+        "verification/project-audit/toy06-h03-slu-output-paths.md"
       ],
-      "stage": "done",
-      "claim_id": "f9f139056ba24b4a88ede7ceaeb63df1",
-      "claimed_at": "2026-11-20T18:42:41+00:00",
-      "updated_at": "2026-11-20T19:30:06+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "021ca3fe3c7c4ee657cb7ebb59a1a4b855c2b6bd"
+      "stage": "in_progress",
+      "claim_id": "25f1a0e7da1d41bba388e0e989f02e36",
+      "claimed_at": "2026-11-20T20:00:31+00:00",
+      "updated_at": "2026-11-20T20:00:31+00:00",
+      "note": "Проверяю на точном H03 кандидаты физического канала SLU: штатный Mazda TCC и отдельный TIO9/P97, источник команды, выход и поведение по запрету. Не пересекаюсь с общим циклом TOY-04 и силовыми файлами H03-05.",
+      "result": null
     },
     "DTC-01": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -5021,9 +5017,17 @@
       "action": "heartbeat",
       "claim_id": "1f0ef50b040d4c8ca2e5a05fd7501d40",
       "at": "2026-11-20T20:00:05+00:00"
+    },
+    {
+      "operation_id": "59f44f5d929243dbb0574bcf289ac254",
+      "task": "TOY-06",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "claim",
+      "claim_id": "25f1a0e7da1d41bba388e0e989f02e36",
+      "at": "2026-11-20T20:00:31+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:00:05+00:00",
+  "updated_at": "2026-11-20T20:00:31+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
