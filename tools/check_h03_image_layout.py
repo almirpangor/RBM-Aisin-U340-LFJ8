@@ -12,6 +12,7 @@ ROOT=Path(__file__).resolve().parents[1]
 LFJ8=ROOT/"targets/lfj8"
 sys.path.insert(0,str(LFJ8))
 import check_h03_link as legacy
+import check_h03_sensor_config as sensor_config
 from lfj8_h03_layout import (PROFILES,Window,PlacementError,read_elf,alloc_sections,
                             validate_windows,pack,linker_script,verify_linked,
                             symbol_bytes,raw_reference_patterns)
@@ -192,6 +193,16 @@ def build(args):
         application_profile = Path(application_profile).resolve()
         if not args.with_bindings or not application_profile.is_file():
             raise ValueError("Application profile requires --with-bindings and an existing header")
+    clock_reference = getattr(args, "sensor_clock_reference", None)
+    calibration_profile = getattr(args, "sensor_calibration_profile", None)
+    sensor_report = None
+    sensor_source = None
+    if clock_reference is not None or calibration_profile is not None:
+        if not args.with_bindings or clock_reference is None or calibration_profile is None:
+            raise ValueError("Sensor calibration requires --with-bindings and both sensor input files")
+        sensor_report = sensor_config.check_inputs(args.base, clock_reference, calibration_profile)
+        sensor_source = sensor_config.config_source(sensor_report).encode("utf-8")
+
     identity=legacy.identify_h03(args.base)
     rom=args.base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
@@ -254,6 +265,11 @@ def build(args):
             "bindings_not_present":[name for name in BINDING_MODULES if not (LFJ8/name).is_file()],
             "raw_reference_patterns":raw_reference_patterns(rom,flash_windows),
             "hardware_verified":False,"target_ownership_verified":False,"flashable_image":None}
+    if sensor_source is not None:
+        generator = Path(sensor_config.__file__).resolve()
+        report["input_sources"][generator.relative_to(ROOT).as_posix()] = digest(generator)
+        report["bindings_included"].append("h03_sensor_config.c")
+        report["sensor_config"] = {**sensor_report, "generated_source_sha256": sha256(sensor_source).hexdigest()}
     report["application_profile"] = ({"path": str(application_profile),
         "sha256": digest(application_profile), "hardware_qualified_by_this_tool": False}
         if application_profile is not None else None)
@@ -267,6 +283,12 @@ def build(args):
         report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
     with TemporaryDirectory(prefix="rbm-h03-placement-") as folder:
         stage=Path(folder)
+        if sensor_source is not None:
+            generated = stage / "h03_sensor_config.c"
+            generated.write_bytes(sensor_source)
+            modules.append(generated)
+            bindings.append(generated)
+
         def run(*items):
             return subprocess.run([str(i) for i in items],cwd=stage,check=True,capture_output=True,
                                   text=True,timeout=120).stdout.strip()
@@ -409,16 +431,22 @@ def main():
     parser.add_argument("--with-bindings",action="store_true")
     parser.add_argument("--application-profile",type=Path,
                         help="Include the actual application binding with an explicit profile header; never qualifies hardware")
+    parser.add_argument("--sensor-clock-reference", type=Path,
+                        help="Paired TML0/TML1 observations against an independent time reference")
+    parser.add_argument("--sensor-calibration-profile", type=Path,
+                        help="H03 sensor limits and observed maxima for the paired clock reference")
     parser.add_argument("--with-dtc-rx", action="store_true",
                         help="Place the protected BasicCAN RX graph in the lower H03 sector")
     parser.add_argument("--cpu-test",action="store_true")
     parser.add_argument("--storage-report",type=Path)
     args=parser.parse_args()
     args.out=args.out.resolve()
-    for name in ("base","gcc","controller","bridge","storage_report","application_profile"):
+    input_names = ("base", "gcc", "controller", "bridge", "storage_report", "application_profile",
+                   "sensor_clock_reference", "sensor_calibration_profile")
+    for name in input_names:
         if getattr(args,name) is not None:
             setattr(args,name,getattr(args,name).resolve())
-    inputs=[getattr(args,name) for name in ("base","gcc","controller","bridge","storage_report","application_profile") if getattr(args,name) is not None]
+    inputs=[getattr(args,name) for name in input_names if getattr(args,name) is not None]
     # Invalidate the previous result before any new attempt, including failure.
     try:
         invalidate_outputs(args.out,inputs)
@@ -426,7 +454,7 @@ def main():
         parser.error(str(error))
     try:
         result=build(args)
-    except (ValueError,OSError,subprocess.SubprocessError) as error:
+    except (ValueError,KeyError,OSError,subprocess.SubprocessError) as error:
         detail=getattr(error,"stderr",None) or str(error)
         save(args.out/"summary.json",{"passed":False,"error":detail,"flashable_image":None})
         print(detail)
