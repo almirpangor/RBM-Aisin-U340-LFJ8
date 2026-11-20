@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 323,
+  "sequence": 324,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -29,33 +29,23 @@
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
-      "label": "Codex — штатный RX BasicCAN H03",
+      "label": "Codex — DTC-02, целевой приём и foreground",
       "branch": "codex/dtc02-basiccan-7bd19ea4",
       "files": [
         "targets/lfj8/check_h03_dtc_basiccan.py",
         "targets/lfj8/check_h03_dtc_foreground.py",
-        "targets/lfj8/h03_dtc_rx_hook.S",
         "targets/lfj8/h03_dtc_rx_hook_fixture.c",
-        "targets/lfj8/lfj8_h03_dtc_foreground.c",
-        "targets/lfj8/lfj8_h03_dtc_foreground.h",
-        "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
-        "targets/lfj8/lfj8_h03_dtc_rx_queue.h",
+        "targets/lfj8/lfj8_h03_dtc_target.c",
+        "targets/lfj8/lfj8_h03_dtc_target.h",
         "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
-        "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
-        "verification/project-audit/dtc02-basiccan-order.md",
-        "verification/project-audit/dtc02-basiccan.md",
-        "verification/project-audit/dtc02-foreground.md",
-        "verification/project-audit/dtc02-h03-rx-binding.md",
-        "verification/project-audit/dtc02-native-paired-rx.md",
-        "verification/project-audit/dtc02-native-rx-hook.md",
-        "verification/project-audit/dtc02-preclear-capture.md"
+        "verification/project-audit/dtc02-target-foreground.md"
       ],
-      "stage": "done",
-      "claim_id": "36f7538204a944d68df89f474cc590e4",
-      "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T17:37:01+00:00",
-      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
-      "result": "f38da53a7796dd1c71f7fe39e206f1334c6b9071"
+      "stage": "in_progress",
+      "claim_id": "7b194ec723ee434f9d361bebb30ba41a",
+      "claimed_at": "2026-11-20T18:05:17+00:00",
+      "updated_at": "2026-11-20T18:05:17+00:00",
+      "note": "Заменяю тестовые RX callbacks целевой обвязкой для очереди, пары часов и CAN-поколения. Провожу запрос от штатного IRQ H03 через общий CAN13 foreground до ответа. Использую явные входы H03-03/CAN-03 в своей ветке.",
+      "result": null
     },
     "CAN-03": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -3170,9 +3160,17 @@
       "action": "review",
       "claim_id": "8ca3ba1785c84f3189ca9a9ecbb4b228",
       "at": "2026-11-20T18:04:53+00:00"
+    },
+    {
+      "operation_id": "1ebbcbeec0a94d6ba3109df21045cfb2",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "7b194ec723ee434f9d361bebb30ba41a",
+      "at": "2026-11-20T18:05:17+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:04:53+00:00",
+  "updated_at": "2026-11-20T18:05:17+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {

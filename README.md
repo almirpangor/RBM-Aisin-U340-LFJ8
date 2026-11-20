@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:04:53+00:00**. Изменение № **323**.
+Обновлено UTC: **2026-11-20T18:05:17+00:00**. Изменение № **324**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -40,7 +40,7 @@
 | SRC-01 — Реестр происхождения и контроль исходников | Закрыта по текущему объёму | Предыдущий: Codex SRC-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/src01-donor-pins-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:47:57+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 72f71983154edb4dcc7f0b3dc931bebfdb0d9b6d |
 | AUD-01 — Программный аудит истории E4M3 | Закрыта по текущему объёму | Предыдущий: Codex AUD-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/aud01-pinned-replay-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:48:17+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 6748075bd8cda69a0b6c2b9d6e2a471a00463434 |
 | DTC-01 — Прикладной сеанс и статусы Chery | Свободна для продолжения | Предыдущий: Codex — снимок полей модели Chery в H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc01-shared-engine-snapshot-32e6ac79 | 2026-11-20T17:44:35+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 6cdb95e861728cffbc7635d0d9f366a1d0fd51a4 |
-| DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Свободна для продолжения | Предыдущий: Codex — штатный RX BasicCAN H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T17:37:01+00:00 | Предыдущая порция принята. Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit f38da53a7796dd1c71f7fe39e206f1334c6b9071 |
+| DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Выполняется | Codex — DTC-02, целевой приём и foreground \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T18:05:17+00:00 | Заменяю тестовые RX callbacks целевой обвязкой для очереди, пары часов и CAN-поколения. Провожу запрос от штатного IRQ H03 через общий CAN13 foreground до ответа. Использую явные входы H03-03/CAN-03 в своей ветке. |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Свободна для продолжения | Предыдущий: Codex DTC-03 — монитор цепи ATF H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-atf-monitor-01a1f9c7 | 2026-11-20T17:40:03+00:00 | Предыдущая порция принята. Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit d487840ba2505064c7f281305a10813cbdf3b695 |
 | DTC-04 — Хранение DTC после выключения питания | Свободна для продолжения | Предыдущий: Codex — подтверждение долговечной очистки DTC \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-durable-clear-32e6ac79 | 2026-11-20T17:39:02+00:00 | Предыдущая порция принята. Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit acd7d12c2e65cbb521331b175365aa2ae8ffc343 |
 | REL-01 — Два целевых BIN и воспроизводимый комплект | Свободна для продолжения | Предыдущий: Codex REL-01 binary identity \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/rel01-bin-identity-1120-c7e4 | 2026-11-20T17:38:02+00:00 | Предыдущая порция принята. Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 3fda923bffc63005e8c2372b22e5197f8d4b7db1 |
@@ -61,7 +61,7 @@
 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#vss-02) | Выполняется | Подключить единый снимок S51/S83/ATF с общим временем; затем продолжить H03-02. Отделить остановку, потерю импульсов и сброс счётчика. | Чат датчиков |
 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#toy-04) | Свободна для продолжения | Замкнуть оставшиеся стадии полного цикла, R и ручные запросы; затем подключить SLU SECONDARY и назначить одного владельца таймера в TOY-06. | Чат переключений Toyota |
 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#mode-02) | Свободна для продолжения | Связать физические AN2/Tiptronic/OD и независимые разрешения с общей заявкой; продолжить независимые входы TOY-03. | Чат селектора и кнопок |
-| [DTC-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#dtc-02) | Свободна для продолжения | Заменить тестовую обвязку RX привязкой к очереди и часам приложения; провести запрос через foreground до ответа. | Чат диагностики |
+| [DTC-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#dtc-02) | Выполняется | Заменить тестовую обвязку RX привязкой к очереди и часам приложения; провести запрос через foreground до ответа. | Чат диагностики |
 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#dtc-04) | Свободна для продолжения | Восстановить геометрию и операции NVM, реализовать запись и восстановление при старте; затем подключить адаптации TOY-05. | Чат постоянной памяти |
 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#h03-04) | Свободна для продолжения | Устранить дефицит Flash с сохранением всех функций; проверить окончательное размещение RAM, стек и сервисные границы с новыми привязками. | Основной чат — общая сборка |
 | [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#toy-02) | Свободна для продолжения | Установить источники и шкалы нагрузки Bosch, довести их до квалифицированного GP Toyota и повторить сквозной обмен. | Основной чат — нагрузка Bosch |
@@ -184,7 +184,7 @@
 </details>
 
 <details>
-<summary>DTC-02 — Штатный приём BasicCAN для диагностического сеанса: Свободна для продолжения</summary>
+<summary>DTC-02 — Штатный приём BasicCAN для диагностического сеанса: Выполняется</summary>
 
 **Сделано.** Обе обёртки парного RX проверены в нижней Flash модели: 18 сравнений, обходы, границы обновления, foreground. Целевые callbacks, установка нижней Flash, RAM и IRQ открыты.
 
@@ -194,7 +194,7 @@
 
 **Рекомендуемый чат.** Чат диагностики — 01a1f9ae-4a7e-7e31-951a-f6383e1831ee.
 
-**Исполнитель сейчас.** Задача не занята.
+**Сейчас выполняет.** Codex — DTC-02, целевой приём и foreground — codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046.
 
 **Критерий приёмки.** Прогон оригинального пути RX с потерей/перезаписью и ложными кадрами. Учтена граница приложения 0x008000.
 
@@ -548,6 +548,18 @@
 - targets/lfj8/test_lfj8_h03_can_owner.c
 - verification/project-audit/can03-owner-recovery.md
 
+### DTC-02
+
+Чат: Codex — DTC-02, целевой приём и foreground. Claim ID: 7b194ec723ee434f9d361bebb30ba41a.
+
+- targets/lfj8/check_h03_dtc_basiccan.py
+- targets/lfj8/check_h03_dtc_foreground.py
+- targets/lfj8/h03_dtc_rx_hook_fixture.c
+- targets/lfj8/lfj8_h03_dtc_target.c
+- targets/lfj8/lfj8_h03_dtc_target.h
+- targets/lfj8/test_lfj8_h03_dtc_foreground.c
+- verification/project-audit/dtc02-target-foreground.md
+
 ### H03-03
 
 Чат: Codex H03 application owner. Claim ID: dde35120f1f04f6b9be6619a41ccbc33.
@@ -598,6 +610,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:05:17+00:00 | DTC-02 | claim | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T18:04:53+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:04:06+00:00 | TOY-06 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T18:03:50+00:00 | H03-05 | heartbeat | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
@@ -627,4 +640,3 @@
 | 2026-11-20T17:44:14+00:00 | TOY-06 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:43:49+00:00 | CAN-02 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T17:43:29+00:00 | TOY-04 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
-| 2026-11-20T17:43:09+00:00 | MODE-01 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
