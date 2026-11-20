@@ -79,6 +79,81 @@ static int plain_flash(void)
               io->read16(context, H03_FESBANK0) | io->read16(context, H03_FESBANK1)) & 0x8000u);
 }
 
+enum {
+    DMA_ENABLE = 0x08, DMA_REQUEST = 0x40, DMA_BYTE = 0x04, DMA_DST_INCREMENT = 0x01,
+};
+
+static int dma_channel_safe(const Lfj8H03ServicePolicy *policy, uint32_t reg, unsigned channel)
+{
+    const Lfj8RegisterIo *const io = &lfj8_h03_mmio;
+    void *const context = io->context;
+    const unsigned control = io->read8(context, reg);
+    /* A request accepted before TENL was cleared can still finish. */
+    if (!(control & (DMA_ENABLE | DMA_REQUEST))) {
+        return 1;
+    }
+
+    uint32_t first;
+    uint32_t end;
+    unsigned stock_mode;
+    switch (channel) {
+    case 0:
+    case 1:
+        first = UINT32_C(0x806ACE) + channel * 12u;
+        end = first + 12u;
+        stock_mode = 0x31u;
+        break;
+    case 3:
+        first = UINT32_C(0x800113);
+        end = first + 1u;
+        stock_mode = 0x16u;
+        break;
+    case 4:
+        first = UINT32_C(0x80683A);
+        end = UINT32_C(0x80693B);
+        stock_mode = 0x25u;
+        break;
+    default:
+        return 0;
+    }
+    /* The known programs use normal mode, validated transfer widths,
+     * directions and request sources. Ring and unknown modes fail closed. */
+    if ((control & ~(unsigned)(DMA_ENABLE | DMA_REQUEST)) != stock_mode) {
+        return 0;
+    }
+    const unsigned count = io->read8(context, reg + 1u);
+    const uint32_t low_destination = io->read16(context, reg + 4u);
+    if (io->read16(context, reg + 4u) != low_destination ||
+        io->read8(context, reg + 1u) != count ||
+        (io->read8(context, reg) & ~(unsigned)DMA_REQUEST) !=
+            (control & ~(unsigned)DMA_REQUEST)) {
+        return 0;
+    }
+
+    const uint32_t destination = UINT32_C(0x800000) | low_destination;
+    const uint32_t width = control & DMA_BYTE ? 1u : 2u;
+    const uint32_t transfers = (control & DMA_ENABLE) && (control & DMA_DST_INCREMENT)
+        ? count + 1u : 1u;
+    const uint32_t bytes = width * transfers;
+    return !(destination & (width - 1u)) && destination >= first &&
+           destination + bytes <= end &&
+           lfj8_h03_service_span_allowed(policy, destination, bytes);
+}
+
+static int dma_safe_locked(const Lfj8H03ServicePolicy *policy)
+{
+    /* DMA0..4 and DMA5..9 are interleaved. The latter start at +8,
+     * not after the first five control groups. */
+    for (unsigned group = 0; group < 5u; ++group) {
+        const uint32_t reg = UINT32_C(0x800410) + group * 16u;
+        if (!dma_channel_safe(policy, reg, group) ||
+            !dma_channel_safe(policy, reg + 8u, group + 5u)) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 static int branch_matches(uint32_t at, uint32_t target, uint32_t opcode)
 {
     return read_word(at) == (opcode | (((target - at) >> 2) & LOW_24_BITS));
@@ -173,5 +248,6 @@ int lfj8_h03_ram_owned(void *context)
         owner->boot_and_other_writers_owned(owner->platform) != 1) {
         return 0;
     }
-    return qualified_layout(owner, installed_policy(owner));
+    const Lfj8H03ServicePolicy *const policy = installed_policy(owner);
+    return qualified_layout(owner, policy) && dma_safe_locked(policy);
 }

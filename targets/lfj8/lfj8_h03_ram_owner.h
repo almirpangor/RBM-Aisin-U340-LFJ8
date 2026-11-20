@@ -15,8 +15,11 @@ typedef struct {
 /* Lfj8H03ApplicationBinding.ram_owned adapter. The platform passes a
  * read-only linker-bound context and holds the native interrupt exclusion.
  * The boot witness must already have a safe stack and verify that other
- * writers (including SBI and DMA) and the initial IRQ ordering are covered.
- * It must not inspect project RAM to decide whether RAM can be accessed.
+ * writers and the initial IRQ ordering are covered. The native DMA check
+ * reads live destinations and counts only. The boot witness must guarantee
+ * that subsequent DMA reconfiguration is contained and that other writers,
+ * including SBI, remain covered. It must not inspect project RAM to decide
+ * whether RAM can be accessed.
  * Supply the required remaining SPI/PSW reserves in bytes for the final
  * image. The native check reads CR2 and the OEM PSW cursor under the lock.
  * It assumes the existing entry frame was already placed safely.
