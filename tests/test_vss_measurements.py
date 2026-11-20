@@ -32,6 +32,7 @@ class VssMeasurementsTests(unittest.TestCase):
     def test_three_independent_cases(self):
         report = evaluate(fixture())
         self.assertEqual(report["status"], "PASS_OFFLINE_ONLY")
+        self.assertIsNone(report["clock_reference"])
         self.assertEqual([row["expected_raw"] for row in report["samples"]], [6000, 0, 0xFFFF])
         self.assertEqual([row["reference_kmh"] for row in report["samples"]], ["60", "0", "60"])
         self.assertEqual([row["capture_valid"] for row in report["samples"]], [True, False, False])
@@ -89,6 +90,50 @@ class VssMeasurementsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "sample 1.*age_ticks"):
             evaluate(data)
 
+    def test_clock_check_recovers_rollover_and_accepts_exact_tolerance(self):
+        data = fixture()
+        data["clock_reference"] = {
+            "max_error_ppm": 10,
+            "intervals": [
+                {"start_ticks": 0xFFFF0000, "end_ticks": 34464, "elapsed_us": 100000},
+                {"start_ticks": 3000, "end_ticks": 103001, "elapsed_us": 100000},
+            ],
+        }
+        report = evaluate(data)
+        self.assertEqual(report["status"], "PASS_OFFLINE_ONLY")
+        intervals = report["clock_reference"]["intervals"]
+        self.assertEqual([row["measured_hz"] for row in intervals], ["1000000", "1000010"])
+        self.assertEqual([row["error_ppm"] for row in intervals], ["0", "10"])
+
+    def test_clock_check_rejects_wrong_and_stalled_clock(self):
+        data = fixture()
+        data["clock_reference"] = {
+            "max_error_ppm": 100,
+            "intervals": [
+                {"start_ticks": 1000, "end_ticks": 51000, "elapsed_us": 100000},
+                {"start_ticks": 10, "end_ticks": 10, "elapsed_us": 100000},
+            ],
+        }
+        report = evaluate(data)
+        self.assertEqual(report["status"], "FAIL")
+        clock = report["clock_reference"]
+        self.assertFalse(clock["passed"])
+        self.assertEqual([row["measured_hz"] for row in clock["intervals"]], ["500000", "0"])
+        self.assertTrue(all(not row["problems"] for row in report["samples"]))
+
+    def test_clock_check_rejects_ambiguous_duration_and_empty_reference(self):
+        data = fixture()
+        data["clock_reference"] = {
+            "max_error_ppm": 0,
+            "intervals": [
+                {"start_ticks": 0, "end_ticks": 1, "elapsed_us": 1 << 32},
+            ],
+        }
+        with self.assertRaisesRegex(ValueError, "full TML0 revolution"):
+            evaluate(data)
+        data["clock_reference"]["intervals"] = []
+        with self.assertRaisesRegex(ValueError, "nonempty array"):
+            evaluate(data)
     def test_cli_exit_codes_and_json_report(self):
         data = fixture()
         failed = copy.deepcopy(data)

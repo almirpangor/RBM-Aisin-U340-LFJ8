@@ -29,6 +29,44 @@ def integer(record, key, minimum, maximum=None, *, nullable=False):
     return value
 
 
+def evaluate_clock(reference, tick_hz):
+    if not isinstance(reference, dict):
+        raise ValueError("clock_reference must be an object")
+    tolerance = integer(reference, "max_error_ppm", 0)
+    intervals = reference["intervals"]
+    if not isinstance(intervals, list) or not intervals:
+        raise ValueError("clock_reference.intervals must be a nonempty array")
+
+    rows = []
+    for index, interval in enumerate(intervals, start=1):
+        try:
+            if not isinstance(interval, dict):
+                raise ValueError("expected an object")
+            start = integer(interval, "start_ticks", 0, UINT32_MAX)
+            end = integer(interval, "end_ticks", 0, UINT32_MAX)
+            elapsed_us = integer(interval, "elapsed_us", 1)
+            # Reject durations that could span a full wrap even within tolerance.
+            if tick_hz * elapsed_us * (1_000_000 + tolerance) >= (1 << 32) * 10**12:
+                raise ValueError("duration could span a full TML0 revolution")
+        except (KeyError, ValueError) as error:
+            raise ValueError(f"clock_reference interval {index}: {error}") from error
+
+        elapsed_ticks = (end - start) & UINT32_MAX
+        measured_hz = Fraction(elapsed_ticks * 1_000_000, elapsed_us)
+        error_ppm = abs(measured_hz - tick_hz) * 1_000_000 / tick_hz
+        rows.append({
+            "elapsed_ticks": elapsed_ticks,
+            "measured_hz": str(measured_hz),
+            "error_ppm": str(error_ppm),
+            "passed": elapsed_ticks > 0 and error_ppm <= tolerance,
+        })
+    return {
+        "expected_hz": tick_hz,
+        "max_error_ppm": tolerance,
+        "passed": all(row["passed"] for row in rows),
+        "intervals": rows,
+    }
+
 def evaluate_sample(sample, distance_per_pulse_um, tick_hz, timeout, tolerance):
     if not isinstance(sample, dict):
         raise ValueError("expected an object")
@@ -114,8 +152,11 @@ def evaluate(data):
             raise ValueError(f"sample {index}: {error}") from error
 
     missing = [case for case in CASES if not any(row["case"] == case for row in rows)]
+    clock = evaluate_clock(data["clock_reference"], tick_hz) if "clock_reference" in data else None
+    failed = missing or any(row["problems"] for row in rows) or (clock is not None and not clock["passed"])
     return {
-        "status": "FAIL" if missing or any(row["problems"] for row in rows) else "PASS_OFFLINE_ONLY",
+        "status": "FAIL" if failed else "PASS_OFFLINE_ONLY",
+        "clock_reference": clock,
         "missing_cases": missing,
         "samples": rows,
     }
