@@ -97,7 +97,9 @@ def expected_cases(rom):
     )
 
 
-def simulator_checks(rom, compiler):
+def simulator_checks(rom, compiler, workspace_window=WORKSPACE_WINDOW):
+    if not (RAM_START <= workspace_window[0] < workspace_window[1] <= RAM_END):
+        raise ValueError("Workspace candidate must be inside H03 RAM")
     with TemporaryDirectory(prefix="rbm-h03-ram-candidate-") as folder:
         work = Path(folder)
         sections = ["ENTRY(_start)", "SECTIONS {",
@@ -169,7 +171,7 @@ def simulator_checks(rom, compiler):
                     (work / "before.dat").read_bytes() != before or after != expected):
                 raise ValueError(f"Unexpected CPU or RAM snapshot in {name}")
             lower, upper = (address - RAM_START for address in WINDOW)
-            work_lo, work_hi = (address - RAM_START for address in WORKSPACE_WINDOW)
+            work_lo, work_hi = (address - RAM_START for address in workspace_window)
             if dma_case:
                 dma_registers = bytearray([FILL]) * (dma_end - dma_start)
                 for address, data in CAPTURE_DMA_CONFIG.items():
