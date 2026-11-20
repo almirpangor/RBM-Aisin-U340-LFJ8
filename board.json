@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 268,
+  "sequence": 269,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -52,12 +52,12 @@
         "verification/project-audit/dtc02-native-rx-hook.md",
         "verification/project-audit/dtc02-preclear-capture.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T17:05:16+00:00",
-      "note": "18 сравнений с компоновкой 0x006000 и 3 обхода PASS. Точные адреса и три нижних сектора отвергнуты штатным обновлением; селекторы Virtual Flash для затронутых страниц воспроизведены.",
-      "result": null
+      "updated_at": "2026-11-20T17:07:08+00:00",
+      "note": "Компоновка обеих RX-обёрток в нижней Flash 0x006000–0x006A2B. 18 сравнений, 3 обхода, 9 проверок границы записи/стирания и 4 селектора Virtual Flash. ПК 35/71, M32R 17. Штатный апдейт не ставит нижние правки, защита отображения, RAM, стек и стенд открыты. Отчёт dtc02-h03-rx-binding.md.",
+      "result": "f38da53a7796dd1c71f7fe39e206f1334c6b9071"
     },
     "CAN-03": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -2715,9 +2715,17 @@
       "action": "review",
       "claim_id": "698c00d00af84972b5562bc8498c8628",
       "at": "2026-11-20T17:06:35+00:00"
+    },
+    {
+      "operation_id": "6ad4450295044a42a6bcc0f1e1cee7f1",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T17:07:08+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:06:35+00:00",
+  "updated_at": "2026-11-20T17:07:08+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
