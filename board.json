@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 400,
+  "sequence": 401,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -31,23 +31,19 @@
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
-      "label": "Codex — DTC-02, целевой приём и foreground",
-      "branch": "codex/dtc02-basiccan-7bd19ea4",
+      "label": "Codex — DTC-02, нижняя Flash целевого RX",
+      "branch": "codex/dtc02-resident-target-7bd19ea4",
       "files": [
         "targets/lfj8/check_h03_dtc_basiccan.py",
-        "targets/lfj8/check_h03_dtc_foreground.py",
-        "targets/lfj8/h03_dtc_rx_hook_fixture.c",
-        "targets/lfj8/lfj8_h03_dtc_target.c",
-        "targets/lfj8/lfj8_h03_dtc_target.h",
-        "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
-        "verification/project-audit/dtc02-target-foreground.md"
+        "targets/lfj8/h03_dtc_rx_resident.ld",
+        "verification/project-audit/dtc02-resident-target-rx.md"
       ],
-      "stage": "done",
-      "claim_id": "7b194ec723ee434f9d361bebb30ba41a",
-      "claimed_at": "2026-11-20T18:05:17+00:00",
-      "updated_at": "2026-11-20T18:31:43+00:00",
-      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
-      "result": "0a71a1ca6b8f84e246248eb6378166dddb9eeed3"
+      "stage": "in_progress",
+      "claim_id": "7ace3d79f2284f379601029d5ac4f737",
+      "claimed_at": "2026-11-20T18:38:57+00:00",
+      "updated_at": "2026-11-20T18:38:57+00:00",
+      "note": "DTC-01 ещё на review. В независимой DTC-02 проверяю обе нижние обёртки с целевыми callbacks и владельцем CAN-03 в общей адресной модели, включая контроль переходов IRQ и исходный RX при отсутствующем приложении. Без BIN.",
+      "result": null
     },
     "CAN-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -3761,9 +3757,17 @@
       "action": "complete",
       "claim_id": "2b42f17a3d734aa29534d7fcee10f2ea",
       "at": "2026-11-20T18:38:46+00:00"
+    },
+    {
+      "operation_id": "45ee6446c62540ff901aa312517ef395",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "7ace3d79f2284f379601029d5ac4f737",
+      "at": "2026-11-20T18:38:57+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:38:46+00:00",
+  "updated_at": "2026-11-20T18:38:57+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
