@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 395,
+  "sequence": 396,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -181,11 +181,11 @@
         "targets/bosch/test_chery_torque_rx.c",
         "verification/project-audit/can05-rx-generation.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "fbadfbdf06d745cf885f45918e8b9a03",
       "claimed_at": "2026-11-20T18:12:06+00:00",
-      "updated_at": "2026-11-20T18:16:32+00:00",
-      "note": "Приёмник Bosch отбрасывает отложенный 0x1AE чужого поколения и сбрасывает операнды при смене поколения. Целевой тест, 65 536 пар, ПК 37/102, Bosch PASS_OFFLINE_ONLY. Отчёт verification/project-audit/can05-rx-generation.md. Штатный производитель тика и поколения, калибровки и стенд открыты.",
+      "updated_at": "2026-11-20T18:37:31+00:00",
+      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
       "result": "1b7de46a4d9078d3ef8d46fa4ac724ae5eb20150"
     },
     "DTC-03": {
@@ -3722,9 +3722,17 @@
       "action": "complete",
       "claim_id": "9e93704114d342ff9848b326e2d3d7fc",
       "at": "2026-11-20T18:37:08+00:00"
+    },
+    {
+      "operation_id": "59ddd00389fa494688b6e9c0339e7f6d",
+      "task": "CAN-05",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "fbadfbdf06d745cf885f45918e8b9a03",
+      "at": "2026-11-20T18:37:31+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:37:08+00:00",
+  "updated_at": "2026-11-20T18:37:31+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
