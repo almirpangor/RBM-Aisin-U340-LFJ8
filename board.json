@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 199,
+  "sequence": 200,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -112,14 +112,16 @@
         "targets/lfj8/h03_phase_wait_fixture.c",
         "targets/lfj8/lfj8_h03_mmio.c",
         "targets/lfj8/lfj8_h03_mmio.h",
+        "targets/lfj8/lfj8_h03_phase_startup.c",
+        "targets/lfj8/lfj8_h03_phase_startup.h",
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "claimed_at": "2026-11-20T16:18:01+00:00",
-      "updated_at": "2026-11-20T16:40:44+00:00",
-      "note": "22 M32R PASS: 8 прогонов через 040424 и 008150 на одном TML0CT. Поздняя и сдвоенная публикации снимают команду; контроль без timestamp hook не проходит. Реестр ветки PASS. При объединении нужен активный снимок; целевой запуск и аппаратный inhibit открыты.",
+      "updated_at": "2026-11-20T16:43:12+00:00",
+      "note": "Добавляю сериализованный запуск фаз и проверки команд в выделенной памяти, без привязки к неподтверждённому адресу RAM.",
       "result": "7122fe326eff5c0f165caa527fd21c6a293743bf"
     },
     "H03-04": {
@@ -2120,9 +2122,17 @@
       "action": "heartbeat",
       "claim_id": "8ac9d38cec054d318a8eb919f6783de2",
       "at": "2026-11-20T16:42:49+00:00"
+    },
+    {
+      "operation_id": "19799131b82343309a11808bfd8e6cff",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "resume",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "at": "2026-11-20T16:43:12+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:42:49+00:00",
+  "updated_at": "2026-11-20T16:43:12+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
