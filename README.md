@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:58:58+00:00**. Изменение № **443**.
+Обновлено UTC: **2026-11-20T18:59:17+00:00**. Изменение № **444**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -43,7 +43,7 @@
 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | На проверке | Codex — DTC-02, нижняя Flash целевого RX \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-resident-target-7bd19ea4 | 2026-11-20T18:46:58+00:00 | 3176 байт в нижней Flash с целевым RX и CAN-03. 18 сравнений, три обхода, активный повтор после удаления верхнего кода, две отрицательные компоновки. ПК 37 шагов и 113 тестов, M32R 18 компонентных прогонов, 11 тестов размещения. Доказано в симуляторе. Остались установка переходов, RAM, Virtual Flash и стенд. Отчёт dtc02-resident-target-rx.md. / commit 500b34cb08d9d61ce2016a47e0f09e77132edf21 |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | На проверке | Codex DTC-03 — квалификация P0710 TA2005 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-ta2005-p0710-01a1f9c7 | 2026-11-20T18:25:56+00:00 | Передаю переносимый P0710: 6920 сравнений с S03, отдельные тесты ПК/M32R, общая регрессия ПК и комплекты H03 M32R прошли. Результат в verification/project-audit/dtc03-ta2005-p0710.md. Подключение к H03 ждёт подтверждённых диапазонов датчика, опоры и периода вызова. Аппаратная проверка открыта. / commit 69ccd6c59ad096fd2e1de078955cef8ae6ee1081 |
 | DTC-04 — Хранение DTC после выключения питания | На проверке | Codex — исключение возврата очищенной истории DTC \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-retire-cleared-history-32e6ac79 | 2026-11-20T18:45:07+00:00 | Пустая запись и исключение старого слота подтверждаются до ответа 54 FF 00. Модель носителя на ПК/M32R, 37 шагов ПК и сборка/эмуляция M32R прошли. Отчёт verification/project-audit/dtc04-retired-history.md. Физический носитель, запуск и стенд остаются открыты. / commit 3f5f8730ab544fc9fb0185138b97b6956e04c377 |
-| REL-01 — Два целевых BIN и воспроизводимый комплект | Выполняется | Чат RBM — проверка OFFLINE_ONLY перед упаковкой \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/rel01-offline-report-guard-1120-c7e4 | 2026-11-20T18:57:39+00:00 | Расширить проверку пакета BIN на хеши проверочных образов из отчётов ST10 и журнала обмена, сохранив упаковку доказательств. Сборка целевых BIN не входит в порцию. |
+| REL-01 — Два целевых BIN и воспроизводимый комплект | Выполняется | Чат RBM — проверка OFFLINE_ONLY перед упаковкой \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/rel01-offline-report-guard-1120-c7e4 | 2026-11-20T18:59:17+00:00 | Пять сценариев упаковки переименованного OFFLINE_ONLY воспроизведены до исправления. После исправления шесть тестов упаковщика прошли. Проверяю реальный манифест Bosch и полный набор ПК. |
 | REL-02 — Приёмка новой связки на оборудовании | На проверке | Codex REL-02 H03 application-only isolation \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/rel02-h03-application-isolation-01a1f99f | 2026-11-20T18:31:28+00:00 | PASS 41 exact-H03 CPU probes. Upper-only candidate filters out 602 on both BasicCAN controllers, cancels both pending operations and disables Virtual Flash. OEM CAN setup restores broad masks. Warm reset leaves bank 08 active and a valid marker can still bypass entry. Requires cold access and retention by the CAN owner before a bench image. / commit c8d6d0d7b4852e8cbcf0919ea09d4883e1d608ae |
 
 ## Что осталось доделать
@@ -772,6 +772,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:59:17+00:00 | REL-01 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T18:58:58+00:00 | TOY-03 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:58:41+00:00 | H03-04 | claim | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T18:58:05+00:00 | CAN-02 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -801,4 +802,3 @@
 | 2026-11-20T18:44:13+00:00 | VSS-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T18:43:53+00:00 | TOY-02 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:43:07+00:00 | H03-03 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T18:42:53+00:00 | CAN-03 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
