@@ -22,6 +22,23 @@ typedef struct {
 int rbm_u340e_runtime_init(RbmU340eRuntime *runtime, const FactoryGearState *gear,
                            const FactoryHydraulics *gp);
 
+typedef enum {
+    RBM_U340E_ADAPTATION_INVALID = 0,
+    RBM_U340E_ADAPTATION_LOADED,
+    RBM_U340E_ADAPTATION_BASELINE_UNPUBLISHED,
+    RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED,
+} RbmU340eAdaptationResult;
+
+/* Restore at startup before scheduling learning or outputs. The serialized
+ * owner supplies a qualified baseline and independent, stable slot snapshots
+ * from a last-marker-write store. A NULL slot represents a failed read.
+ * Keep the inputs disjoint from the runtime. An invalid call leaves GP intact.
+ * Neither baseline outcome writes storage or qualifies actuation. The owner
+ * must handle an untrusted store before allowing further saves. */
+RbmU340eAdaptationResult rbm_u340e_runtime_restore_adaptation(
+    RbmU340eRuntime *runtime, const FactoryAdaptation *baseline,
+    const uint8_t *slot0, const uint8_t *slot1);
+
 /* Project current GP and private gear state into caller-owned workspace. The
  * scheduler may update gear-only inputs there. Publish shared inputs in gp.
  * Keep the typed workspace disjoint from the runtime and use it within the

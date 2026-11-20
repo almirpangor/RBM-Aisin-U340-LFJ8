@@ -228,6 +228,54 @@ int rbm_u340e_runtime_init(RbmU340eRuntime *runtime, const FactoryGearState *gea
     return 1;
 }
 
+static int adaptation_marker_erased(const uint8_t *record)
+{
+    /* The last four bytes of UFL1 are the commit marker, written after the
+     * payload and CRC. This test requires a readable slot snapshot. */
+    const uint8_t *marker = record + FACTORY_ADAPT_RECORD_BYTES - 4u;
+    return (marker[0] & marker[1] & marker[2] & marker[3]) == UINT8_MAX;
+}
+
+RbmU340eAdaptationResult rbm_u340e_runtime_restore_adaptation(
+    RbmU340eRuntime *runtime, const FactoryAdaptation *baseline,
+    const uint8_t *slot0, const uint8_t *slot1)
+{
+    if (!runtime || runtime->initialized != 1u || !baseline ||
+        overlaps(runtime, sizeof *runtime, baseline, sizeof *baseline) ||
+        (slot0 && overlaps(runtime, sizeof *runtime, slot0, FACTORY_ADAPT_RECORD_BYTES)) ||
+        (slot1 && overlaps(runtime, sizeof *runtime, slot1, FACTORY_ADAPT_RECORD_BYTES)) ||
+        (slot0 && slot1 && overlaps(slot0, FACTORY_ADAPT_RECORD_BYTES, slot1, FACTORY_ADAPT_RECORD_BYTES)) ||
+        !factory_adaptation_valid(baseline)) {
+        return RBM_U340E_ADAPTATION_INVALID;
+    }
+
+    RbmU340eAdaptationResult result = RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED;
+    FactoryAdaptation selected;
+    const FactoryAdaptation *restore = baseline;
+    if (slot0 && slot1) {
+        uint32_t generation;
+        const int slot = factory_adaptation_load(slot0, slot1, &selected, &generation);
+        if (slot >= 0) {
+            const uint8_t *other = slot == 0 ? slot1 : slot0;
+            FactoryAdaptation checked;
+            /* A damaged or partially written marker can conceal a newer
+             * reset. Use the older slot only when the peer is unpublished
+             * or the donor decoder can validate both generations. */
+            if (adaptation_marker_erased(other) ||
+                factory_adaptation_decode(other, &checked, &generation)) {
+                restore = &selected;
+                result = RBM_U340E_ADAPTATION_LOADED;
+            }
+        } else if (adaptation_marker_erased(slot0) && adaptation_marker_erased(slot1)) {
+            result = RBM_U340E_ADAPTATION_BASELINE_UNPUBLISHED;
+        }
+    }
+    if (!factory_hydraulics_restore(&runtime->gp, restore)) {
+        return RBM_U340E_ADAPTATION_INVALID;
+    }
+    return result;
+}
+
 int rbm_u340e_runtime_snapshot_gears(const RbmU340eRuntime *runtime, FactoryGearState *work)
 {
     if (!runtime || runtime->initialized != 1u || !work ||
