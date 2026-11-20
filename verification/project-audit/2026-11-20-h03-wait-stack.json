@@ -227,7 +227,10 @@
     "tools/verify_sources.py": "405a4f27d83b7d6ce9f8fbd5ba6eb27ff0532053a54c16c9533e72a6d2abfb3c",
     "targets/lfj8/h03_phase_wait_fixture.c": "9d634a08b5cbe2c72fafc9fbeca0d6e03edb64673ff59878071b36dfe8dc9914",
     "targets/lfj8/lfj8_h03_phase_startup.c": "a3c99331dcf5ee38b019ef4837720d4e7717b9632ab6e4f85f753ca26ac31e56",
-    "targets/lfj8/lfj8_h03_phase_startup.h": "7acba95ed9220ec399418d22232b59e3b7cd694bf0cd5d0f13e3cd97cb59d6e5"
+    "targets/lfj8/lfj8_h03_phase_startup.h": "7acba95ed9220ec399418d22232b59e3b7cd694bf0cd5d0f13e3cd97cb59d6e5",
+    "targets/lfj8/check_h03_phase_boot.py": "2e5f16e60441fb82ad0bb3bd11446c3a2627105ea52f6b6645960cf760df2e1c",
+    "targets/lfj8/h03_phase_boot_fixture.c": "3c4b517f4ab8b74a53f2e8323065466ec4ee8e81fb04f86b5d42bb1113fb12e0",
+    "targets/lfj8/h03_phase_startup_hook.S": "8426297fda3d58b75826773de50096de4ff36fe83d9030930f7e79bd3217ea08"
   },
   "evidence_sha256": {
     ".github/workflows/project-checks.yml": "6c98ced782463fe13630ee073ca17481468a42acdc14b78d40f498dc6048a767",
@@ -260,7 +263,8 @@
     "verification/project-audit/source-guard-checks.json": "279bf820b80330e2c2a611a76e4cf5f119eaed478a24aa3e6497ea1294d6d742",
     "verification/project-audit/sources.txt": "1a5d35501c1e3267ffe263b04eff4fa298d0993b5187aa87dcd2c9791101cb7c",
     "verification/project-audit/status-guard-checks.json": "56200f7c2138efb251e71926f61ab9207d858d90160130ad8991a56a0cd8a26a",
-    "verification/project-audit/2026-11-20-h03-storage.json": "47a0b6177b05ea93bd9d4b656edcb032baa0ba82442fa12aed978e5f58a9662e"
+    "verification/project-audit/2026-11-20-h03-storage.json": "47a0b6177b05ea93bd9d4b656edcb032baa0ba82442fa12aed978e5f58a9662e",
+    "verification/e4m3-can-9e1c/h03-phase-boot.json": "390cf930223a977f0963c1f7007be60afbc2b210b954040464a5ba051b966603"
   },
   "previous_audit": "verification/project-audit/2026-11-20-h03-storage.json",
   "scope": "H03 phase wait hook timing gate, wrapper and test callback stack, simulator fault response",
@@ -461,5 +465,25 @@
       "startup_address_in_model": "0x07E9E0",
       "scope": "Private prospective merge. No main update and no flashable image."
     }
+  },
+  "native_reset_hook_followup": {
+    "changed_code_and_tests": [
+      "targets/lfj8/check_h03_phase_boot.py",
+      "targets/lfj8/h03_phase_boot_fixture.c",
+      "targets/lfj8/h03_phase_startup_hook.S"
+    ],
+    "reset_dispatch": "0x003DC8",
+    "site": "0x00814C",
+    "continuation": "0x008150",
+    "repeated_checks": [
+      "12 M32R reset cases across two OEM timer states",
+      "Original marker check, A82C/A838 timing and first OEM wait executed",
+      "Valid, invalid-period, unowned-RAM and two marker-recovery paths",
+      "Temporary controls for skipped OEM timing record and skipped ACC restore fail",
+      "Existing 22 phase-wait runs and H03 flash-policy replay",
+      "65 Python unit tests",
+      "Original 040468 phase release and timestamp wrapper deliver the first project event after startup"
+    ],
+    "limits": "The loader decision, application path and first publication run in the simulator. Early peripheral routines, RAM permission, publication timing and the recovery body are fixture-controlled. No target BIN or hardware inhibit."
   }
 }
