@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 353,
+  "sequence": 354,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -42,12 +42,12 @@
         "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
         "verification/project-audit/dtc02-target-foreground.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "7b194ec723ee434f9d361bebb30ba41a",
       "claimed_at": "2026-11-20T18:05:17+00:00",
-      "updated_at": "2026-11-20T18:13:23+00:00",
-      "note": "Совместный прогон с CAN-03 720bb64 подтверждён: 18 нативных сценариев, RX 0x732 → TX 0x722, два сравнения обхода. ПК 37/102, M32R 18 и компонентный переход поколения. Готовлю результат к review.",
-      "result": null
+      "updated_at": "2026-11-20T18:18:41+00:00",
+      "note": "Для объединения с CAN-03 720bb64 и H03-03 7ced523: обвязка IRQ/foreground на общей очереди и паре часов, без второго владельца CAN. 18 сравнений H03, 0x732→0x722, смена поколения очищает кадр и сеанс. ПК 37/102, M32R 18, общие native 17/components 5. Открыты вызовы cold/foreground приложения, RAM, итоговая Flash и стенд. Отчёт dtc02-target-foreground.md.",
+      "result": "0a71a1ca6b8f84e246248eb6378166dddb9eeed3"
     },
     "CAN-03": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -3397,9 +3397,17 @@
       "action": "heartbeat",
       "claim_id": "728ac0bbf9a84b04bfdc5f0fce5a6b1b",
       "at": "2026-11-20T18:18:32+00:00"
+    },
+    {
+      "operation_id": "1904466af64b4104a7f5a29e7f05458e",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "7b194ec723ee434f9d361bebb30ba41a",
+      "at": "2026-11-20T18:18:41+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:18:32+00:00",
+  "updated_at": "2026-11-20T18:18:41+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
