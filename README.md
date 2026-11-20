@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:16:49+00:00**. Изменение № **94**.
+Обновлено UTC: **2026-11-20T16:16:53+00:00**. Изменение № **95**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -19,7 +19,7 @@
 | TOY-05 — Обучение и сохранение адаптаций | На проверке | Codex TOY-05 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy05-adaptation-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:12:31+00:00 | 96 прерываний и 768 битовых повреждений проверены на ПК и M32R. PC 33 шага/65 тестов и H03 link PASS. Зафиксирован возврат прежних коррекций при повреждении уже записанного сброса. NVM и политика сброса H03 открыты. Отчёт verification/project-audit/toy05-adaptation-store.md. / commit dbc1762ffa86d37e2901b3a62f60b57a71763c24 |
 | TOY-06 — Блокировка гидротрансформатора SLU | Выполняется | Codex TOY-06 — команда SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-fea1b366 | 2026-11-20T16:15:26+00:00 | Отслеживаю донорский расчёт команды SLU до границы драйвера. Реализую и проверю вычислительный слой без назначения физического выхода H03. |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Codex CAN-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-1120-c7e4 | 2026-11-20T16:10:06+00:00 | CAN RX epoch guard; reproduced old startup and drain race, fixed regressions on host and M32R. PC 33 steps/59 tests, M32R 17 components and Bosch OFFLINE_ONLY PASS. Evidence verification/project-audit/can01-rx-epoch.md. Integrator to update the shared audit; OEM startup and hardware timing remain open. / commit ca268743dfe173f93121d6b9148e0951932cfc9d |
-| CAN-02 — Общий диспетчер CAN13 | Выполняется | Codex CAN-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/can02-telemetry-timeout-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:15:07+00:00 | Регрессия воспроизведена до исправления: подтверждение оставалось активным после истечения срока. Внесён отзыв с ожиданием освобождения слота; идут ПК и M32R. |
+| CAN-02 — Общий диспетчер CAN13 | На проверке | Codex CAN-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/can02-telemetry-timeout-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:16:53+00:00 | Просроченная телеметрия отзывает подтверждение момента до освобождения CAN13. Регрессия воспроизведена, затем PC 33 шага/65 тестов и H03 link/17 компонентов PASS. Окна 0x5E9 и время отмены остаются в CAN-03. Отчёт verification/project-audit/can02-loan-timeout.md. / commit b48b4e50878c8173a40d65134213fbb8fdc37aa1 |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex — CAN0 H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can-03-h03-01a1f99f | 2026-11-20T15:50:27+00:00 | Сведено с main 264f249. 16 прогонов lifecycle, 12 TX gate и project_status --check PASS. Протокол CANHacker добавлен. Штатная привязка и аппаратная приёмка открыты. / commit 507ba30e1a3e68c727b137ef209d1a45333591ad |
 | CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 — снятие RB-запроса \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-torque-fea1b366 | 2026-11-20T16:13:07+00:00 | Снятие RB-запроса при отзыве профиля готово. ПК: 33 шага и 65 тестов PASS. M32R: 17 компонентных прогонов PASS. Bosch OFFLINE_ONLY: штатное снятие и потеря статуса PASS. Интегратору: обновить общий снимок и карточку по отчёту verification/project-audit/can04-torque-revocation.md, затем complete после принятия в main. Стенд и целевые калибровки открыты. / commit 0a3f6260d1bee66174df70712597fc868777e34b |
 | CAN-05 — Полнота штатного обмена Chery | На проверке | Codex CAN-05 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/u340-1120-c7e4 | 2026-11-20T16:01:03+00:00 | Host 1AE round trip: 65536 operand pairs and validity transitions PASS. PC 33 steps / 59 tests PASS. Bosch compact build and ST10 model PASS OFFLINE_ONLY. Evidence can05-1ae-roundtrip.md; integrator to record the two new test files in the active audit. Native integration and hardware open. / commit 20247416c28972443bc2992d06d9706566c677d3 |
@@ -235,6 +235,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:16:53+00:00 | CAN-02 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:16:49+00:00 | DTC-01 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:16:11+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:15:44+00:00 | DTC-02 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
@@ -264,4 +265,3 @@
 | 2026-11-20T16:09:33+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:09:22+00:00 | H03-02 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:09:14+00:00 | CAN-04 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-20T16:08:55+00:00 | MODE-02 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |

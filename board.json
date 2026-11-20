@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 94,
+  "sequence": 95,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -331,12 +331,12 @@
         "targets/lfj8/test_lfj8_h03_can13.c",
         "verification/project-audit/can02-loan-timeout.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "c53be951e4c44833aea3f77adecbd92b",
       "claimed_at": "2026-11-20T16:13:59+00:00",
-      "updated_at": "2026-11-20T16:15:07+00:00",
-      "note": "Регрессия воспроизведена до исправления: подтверждение оставалось активным после истечения срока. Внесён отзыв с ожиданием освобождения слота; идут ПК и M32R.",
-      "result": null
+      "updated_at": "2026-11-20T16:16:53+00:00",
+      "note": "Просроченная телеметрия отзывает подтверждение момента до освобождения CAN13. Регрессия воспроизведена, затем PC 33 шага/65 тестов и H03 link/17 компонентов PASS. Окна 0x5E9 и время отмены остаются в CAN-03. Отчёт verification/project-audit/can02-loan-timeout.md.",
+      "result": "b48b4e50878c8173a40d65134213fbb8fdc37aa1"
     },
     "TOY-06": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -1124,9 +1124,17 @@
       "action": "claim",
       "claim_id": "8ca0999c579843d5a6c858b0ba44f0b2",
       "at": "2026-11-20T16:16:49+00:00"
+    },
+    {
+      "operation_id": "2c56d87e47454dc38ea747bf16ccb91c",
+      "task": "CAN-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "c53be951e4c44833aea3f77adecbd92b",
+      "at": "2026-11-20T16:16:53+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:16:49+00:00",
+  "updated_at": "2026-11-20T16:16:53+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
