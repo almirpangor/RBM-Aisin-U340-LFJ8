@@ -14,6 +14,7 @@ typedef struct {
     uint32_t interval;
     uint32_t formats;
     uint32_t capture_timer;
+    uint32_t captured_ticks;
     uint16_t edge_count;
     uint16_t pulse_count;
     uint16_t can_control;
@@ -28,6 +29,7 @@ typedef struct {
     unsigned writes;
     unsigned submissions;
     uint8_t slot_clear_fails;
+    uint8_t use_9e1c_vss_map;
 } Fixture;
 
 static uint32_t lock(void *context)
@@ -60,8 +62,14 @@ static uint16_t read16(void *context, uint32_t address)
     switch (address) {
     case 0x801000u: return f->can_control;
     case 0x801002u: return f->can_status;
-    case 0x8061C4u: return f->edge_count;
-    case 0x8061CCu: return f->pulse_count;
+    case 0x8061C4u:
+        assert(f->use_9e1c_vss_map == 0u);
+        return f->edge_count;
+    case 0x8061CCu:
+        return f->use_9e1c_vss_map != 0u ? f->edge_count : f->pulse_count;
+    case 0x8061D4u:
+        assert(f->use_9e1c_vss_map != 0u);
+        return f->pulse_count;
     default: assert(0); return 0;
     }
 }
@@ -74,7 +82,15 @@ static uint32_t read32(void *context, uint32_t address)
     case 0x80101Cu: return f->formats;
     case 0x8003E0u: return f->capture_timer;
     case 0x804EC4u: return f->freshness;
-    case 0x806164u: return f->interval;
+    case 0x8048B8u:
+        assert(f->use_9e1c_vss_map != 0u);
+        return f->captured_ticks;
+    case 0x806164u:
+        assert(f->use_9e1c_vss_map == 0u);
+        return f->interval;
+    case 0x80616Cu:
+        assert(f->use_9e1c_vss_map != 0u);
+        return f->interval;
     default: assert(0); return 0;
     }
 }
@@ -212,6 +228,8 @@ static void test_donor_io(void)
     assert(f.writes == 1u && f.submissions == 0u);
     f.slot_control = 0x81u;
     f.slot_clear_fails = 0u;
+    f.can_control = 0x0008u;
+    f.can_status = 0x0800u;
     assert(lfj8_can0_slot13_submit(&io, 1u, LFJ8_CAN_1AE, payload) == LFJ8_CAN_SUBMITTED);
     assert(f.last_sid[0] == 0x06u && f.last_sid[1] == 0x2Eu && f.last_dlc == 8u);
     assert(memcmp(f.last_data, payload, sizeof payload) == 0);
@@ -242,6 +260,62 @@ static void test_raw_capture(void)
     assert(lfj8_9e1b_raw_vss_snapshot(&tracker, &io, expiry).state == LFJ8_VSS_UNAVAILABLE);
     lfj8_9e1b_raw_vss_edge(&tracker, f.capture_timer, expiry);
     assert(lfj8_9e1b_raw_vss_snapshot(&tracker, &io, expiry).state == LFJ8_VSS_UNAVAILABLE);
+}
+
+static void test_9e1c_capture(void)
+{
+    Fixture f = {0};
+    const Lfj8RegisterIo io = {&f, read8, read16, read32, write8, lock, unlock};
+    volatile Lfj8RawVss tracker;
+    const uint32_t expiry = 500000u;
+    Lfj8CaptureSnapshot sample;
+    uint32_t saved_state;
+
+    f.use_9e1c_vss_map = 1u;
+    f.interval = 26400u;
+    f.pulse_count = 1u;
+    f.freshness = 0x43610000u;
+    f.edge_count = 1u;
+    assert(lfj8_9e1c_capture_snapshot(&io).state == LFJ8_VSS_UNAVAILABLE);
+    f.edge_count = 0u;
+    sample = lfj8_9e1c_capture_snapshot(&io);
+    assert(sample.state == LFJ8_VSS_VALID && sample.interval_ticks == 26400u);
+    assert(sample.pulse_window == 1u);
+    f.freshness = 0u;
+    assert(lfj8_9e1c_capture_snapshot(&io).state == LFJ8_VSS_UNAVAILABLE);
+
+    lfj8_9e1c_raw_vss_init(&tracker);
+    f.captured_ticks = UINT32_MAX - 149999u;
+    f.capture_timer = f.captured_ticks + 10u;
+    saved_state = lock(&f);
+    lfj8_9e1c_raw_vss_after_capture_store(&tracker, &io, expiry);
+    lfj8_9e1c_raw_vss_after_capture_store(&tracker, &io, expiry);
+    unlock(&f, saved_state);
+    assert(lfj8_raw_vss_snapshot(&tracker, &io, expiry).state == LFJ8_VSS_UNAVAILABLE);
+
+    f.captured_ticks = 150000u;
+    f.capture_timer = f.captured_ticks + 20u;
+    saved_state = lock(&f);
+    lfj8_9e1c_raw_vss_after_capture_store(&tracker, &io, expiry);
+    unlock(&f, saved_state);
+    sample = lfj8_raw_vss_snapshot(&tracker, &io, expiry);
+    assert(sample.state == LFJ8_VSS_VALID && sample.interval_ticks == 300000u);
+    assert(sample.pulse_window == 1u);
+    assert(lfj8_raw_vss_snapshot(&tracker, &io, expiry).interval_ticks == 300000u);
+    assert(f.writes == 0u && f.lock_depth == 0u);
+
+    Lfj8CheryTx tx;
+    const Lfj8VehicleCalibration cal = {1000000u, expiry, 2000000u, 1u, 1u};
+    const Lfj8CheryTxInputs inputs = {0};
+    lfj8_chery_tx_init(&tx, 0u, 10000u, 30000u);
+    f.can_control = 0x0008u;
+    f.can_status = 0x0800u;
+    assert(lfj8_chery_tx_poll(&tx, &io, 10000u, 1u, &tracker, &cal, &inputs) == LFJ8_DUE_1AE);
+    assert(f.last_data[6] == 0x02u && f.last_data[7] == 0x10u);
+
+    f.capture_timer = f.captured_ticks + expiry + 1u;
+    assert(lfj8_raw_vss_snapshot(&tracker, &io, expiry).state == LFJ8_VSS_UNAVAILABLE);
+    assert(f.submissions == 1u && f.lock_depth == 0u);
 }
 
 static void test_pipeline(void)
@@ -345,6 +419,7 @@ int main(void)
     test_schedule();
     test_donor_io();
     test_raw_capture();
+    test_9e1c_capture();
     test_pipeline();
     test_engine_receive();
     puts("LFJ8 host: VSS, Chery TX, RPM/ECT RX, relays, schedule, CAN0 and integrated pipeline passed");

@@ -13,6 +13,9 @@ typedef struct {
     unsigned reads;
 } Fixture;
 
+typedef void (*StockPublisher)(volatile Lfj8SelectorAdc *adc,
+                               const Lfj8RegisterIo *io, uint8_t valid);
+
 static uint32_t enter(void *context)
 {
     Fixture *fixture = context;
@@ -50,7 +53,7 @@ static void expect(Lfj8SelectorAdcReading reading, Lfj8SelectorAdcEvent event, u
     assert(reading.event == event && reading.raw == raw);
 }
 
-static void verify_publication_contract(void)
+static void verify_publication_contract(StockPublisher publish)
 {
     volatile Lfj8SelectorAdc mailbox;
     Fixture fixture = {.hardware_raw = 512u};
@@ -60,12 +63,12 @@ static void verify_publication_contract(void)
     expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_NONE, UINT16_MAX);
     assert(fixture.reads == 0u);
 
-    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+    publish(&mailbox, &io, 1u);
     expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_VALUE, 512u);
     expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_NONE, UINT16_MAX);
     assert(fixture.reads == 1u);
 
-    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 0u);
+    publish(&mailbox, &io, 0u);
     expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_INVALID, UINT16_MAX);
     assert(fixture.reads == 1u);
 
@@ -92,7 +95,7 @@ static uint8_t consume(volatile Lfj8SelectorAdc *mailbox, const Lfj8RegisterIo *
                ? position : rbm_u340e_selector_sample(decoder, reading.raw);
 }
 
-static void verify_four_distinct_events(void)
+static void verify_four_distinct_events(StockPublisher publish)
 {
     volatile Lfj8SelectorAdc mailbox;
     RbmU340eSelectorInput decoder = {0};
@@ -101,41 +104,43 @@ static void verify_four_distinct_events(void)
     uint8_t position = RBM_U340E_SELECTOR_UNKNOWN;
 
     lfj8_selector_adc_init(&mailbox);
-    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+    publish(&mailbox, &io, 1u);
     for (unsigned poll = 0u; poll < 8u; ++poll) {
         position = consume(&mailbox, &io, &decoder, position);
         assert(position == RBM_U340E_SELECTOR_UNKNOWN);
     }
     for (unsigned event = 0u; event < 2u; ++event) {
-        lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+        publish(&mailbox, &io, 1u);
         position = consume(&mailbox, &io, &decoder, position);
         assert(position == RBM_U340E_SELECTOR_UNKNOWN);
     }
-    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+    publish(&mailbox, &io, 1u);
     position = consume(&mailbox, &io, &decoder, position);
     assert(position == RBM_U340E_SELECTOR_2);
     assert(consume(&mailbox, &io, &decoder, position) == RBM_U340E_SELECTOR_2);
 
-    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
-    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+    publish(&mailbox, &io, 1u);
+    publish(&mailbox, &io, 1u);
     position = consume(&mailbox, &io, &decoder, position);
     assert(position == RBM_U340E_SELECTOR_UNKNOWN);
     for (unsigned event = 0u; event < 3u; ++event) {
-        lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+        publish(&mailbox, &io, 1u);
         position = consume(&mailbox, &io, &decoder, position);
         assert(position == RBM_U340E_SELECTOR_UNKNOWN);
     }
-    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+    publish(&mailbox, &io, 1u);
     position = consume(&mailbox, &io, &decoder, position);
     assert(position == RBM_U340E_SELECTOR_2);
 
-    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 0u);
+    publish(&mailbox, &io, 0u);
     assert(consume(&mailbox, &io, &decoder, position) == RBM_U340E_SELECTOR_UNKNOWN);
     assert(fixture.reads == 10u && fixture.depth == 0u);
 }
 
 void verify_lfj8_selector_adc(void)
 {
-    verify_publication_contract();
-    verify_four_distinct_events();
+    verify_publication_contract(lfj8_selector_adc_publish_9e1b);
+    verify_four_distinct_events(lfj8_selector_adc_publish_9e1b);
+    verify_publication_contract(lfj8_selector_adc_publish_9e1c);
+    verify_four_distinct_events(lfj8_selector_adc_publish_9e1c);
 }

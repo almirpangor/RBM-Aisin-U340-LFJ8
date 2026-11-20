@@ -36,6 +36,13 @@ void lfj8_selector_adc_publish(volatile Lfj8SelectorAdc *adc,
 void lfj8_selector_adc_publish_9e1b(volatile Lfj8SelectorAdc *adc,
                                     const Lfj8RegisterIo *io, uint8_t valid);
 
+/* Read-only binding to LFJ8-T-D.bin with embedded 9E1C identity. Call once
+ * after confirmation of a fresh channel 2 conversion and its store at
+ * 0x040370. A zero valid flag publishes INVALID without reading stock RAM.
+ */
+void lfj8_selector_adc_publish_9e1c(volatile Lfj8SelectorAdc *adc,
+                                    const Lfj8RegisterIo *io, uint8_t valid);
+
 /* Consume a pending event once. The raw value is UINT16_MAX for every event
  * except VALUE. OVERRUN drops all pending samples because their order is lost.
  * Pass VALUE/INVALID/OVERRUN to the decoder. NONE is ordinary idle polling.

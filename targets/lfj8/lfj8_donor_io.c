@@ -1,10 +1,14 @@
 #include "lfj8_donor_io.h"
 #include "lfj8_bridge.h"
 
-#define LFJ8_VSS_INTERVAL UINT32_C(0x806164)
+#define LFJ8_9E1B_VSS_INTERVAL UINT32_C(0x806164)
+#define LFJ8_9E1B_VSS_EDGES_TO_LOCK UINT32_C(0x8061C4)
+#define LFJ8_9E1B_VSS_PULSE_WINDOW UINT32_C(0x8061CC)
+#define LFJ8_9E1C_VSS_INTERVAL UINT32_C(0x80616C)
+#define LFJ8_9E1C_VSS_EDGES_TO_LOCK UINT32_C(0x8061CC)
+#define LFJ8_9E1C_VSS_PULSE_WINDOW UINT32_C(0x8061D4)
+#define LFJ8_9E1C_VSS_CAPTURED_TICKS UINT32_C(0x8048B8)
 #define LFJ8_VSS_FRESHNESS UINT32_C(0x804EC4)
-#define LFJ8_VSS_EDGES_TO_LOCK UINT32_C(0x8061C4)
-#define LFJ8_VSS_PULSE_WINDOW UINT32_C(0x8061CC)
 #define LFJ8_VSS_TIMER_NOW UINT32_C(0x8003E0)
 #define LFJ8_CAN0_MODE UINT32_C(0x801018)
 #define LFJ8_CAN0_CNT UINT32_C(0x801000)
@@ -19,26 +23,27 @@
 
 enum {
     CAN_CNT_FRST = 0x0010,
-    CAN_CNT_BCM = 0x0008,
     CAN_CNT_LBM = 0x0002,
     CAN_CNT_RST = 0x0001,
     CAN_STAT_BOS = 0x4000,
-    CAN_STAT_BCS = 0x0800,
     CAN_STAT_LBS = 0x0200,
     CAN_STAT_CRS = 0x0100,
     CAN_SLOT_TR = 0x80,
     CAN_SLOT_TRFIN = 0x01,
 };
 
-Lfj8CaptureSnapshot lfj8_9e1b_capture_snapshot(const Lfj8RegisterIo *io)
+static Lfj8CaptureSnapshot capture_snapshot(const Lfj8RegisterIo *io,
+                                            uint32_t interval_address,
+                                            uint32_t pulse_window_address,
+                                            uint32_t edge_lock_address)
 {
     Lfj8CaptureSnapshot snapshot;
     uint32_t freshness;
     uint16_t edges_to_lock;
     const uint32_t saved_state = io->enter(io->context);
-    snapshot.interval_ticks = io->read32(io->context, LFJ8_VSS_INTERVAL);
-    snapshot.pulse_window = io->read16(io->context, LFJ8_VSS_PULSE_WINDOW);
-    edges_to_lock = io->read16(io->context, LFJ8_VSS_EDGES_TO_LOCK);
+    snapshot.interval_ticks = io->read32(io->context, interval_address);
+    snapshot.pulse_window = io->read16(io->context, pulse_window_address);
+    edges_to_lock = io->read16(io->context, edge_lock_address);
     freshness = io->read32(io->context, LFJ8_VSS_FRESHNESS);
     io->leave(io->context, saved_state);
 
@@ -52,15 +57,27 @@ Lfj8CaptureSnapshot lfj8_9e1b_capture_snapshot(const Lfj8RegisterIo *io)
     return snapshot;
 }
 
-void lfj8_9e1b_raw_vss_init(volatile Lfj8RawVss *vss)
+Lfj8CaptureSnapshot lfj8_9e1b_capture_snapshot(const Lfj8RegisterIo *io)
+{
+    return capture_snapshot(io, LFJ8_9E1B_VSS_INTERVAL, LFJ8_9E1B_VSS_PULSE_WINDOW,
+                            LFJ8_9E1B_VSS_EDGES_TO_LOCK);
+}
+
+Lfj8CaptureSnapshot lfj8_9e1c_capture_snapshot(const Lfj8RegisterIo *io)
+{
+    return capture_snapshot(io, LFJ8_9E1C_VSS_INTERVAL, LFJ8_9E1C_VSS_PULSE_WINDOW,
+                            LFJ8_9E1C_VSS_EDGES_TO_LOCK);
+}
+
+static void raw_vss_init(volatile Lfj8RawVss *vss)
 {
     vss->last_edge = 0u;
     vss->interval_ticks = 0u;
     vss->primed = 0u;
 }
 
-void lfj8_9e1b_raw_vss_edge(volatile Lfj8RawVss *vss, uint32_t captured_ticks,
-                           uint32_t timeout_ticks)
+static void raw_vss_edge(volatile Lfj8RawVss *vss, uint32_t captured_ticks,
+                         uint32_t timeout_ticks)
 {
     if (vss->primed != 0u) {
         const uint32_t elapsed = captured_ticks - vss->last_edge;
@@ -73,9 +90,9 @@ void lfj8_9e1b_raw_vss_edge(volatile Lfj8RawVss *vss, uint32_t captured_ticks,
     vss->primed = 1u;
 }
 
-Lfj8CaptureSnapshot lfj8_9e1b_raw_vss_snapshot(volatile Lfj8RawVss *vss,
-                                             const Lfj8RegisterIo *io,
-                                             uint32_t timeout_ticks)
+Lfj8CaptureSnapshot lfj8_raw_vss_snapshot(volatile Lfj8RawVss *vss,
+                                         const Lfj8RegisterIo *io,
+                                         uint32_t timeout_ticks)
 {
     Lfj8CaptureSnapshot snapshot = {0u, 1u, LFJ8_VSS_UNAVAILABLE};
     const uint32_t saved_state = io->enter(io->context);
@@ -83,7 +100,7 @@ Lfj8CaptureSnapshot lfj8_9e1b_raw_vss_snapshot(volatile Lfj8RawVss *vss,
 
     if (vss->primed != 0u) {
         if (timeout_ticks == 0u || now - vss->last_edge > timeout_ticks) {
-            lfj8_9e1b_raw_vss_init(vss);
+            raw_vss_init(vss);
         } else if (vss->interval_ticks != 0u && vss->interval_ticks <= timeout_ticks) {
             snapshot.interval_ticks = vss->interval_ticks;
             snapshot.state = LFJ8_VSS_VALID;
@@ -93,12 +110,45 @@ Lfj8CaptureSnapshot lfj8_9e1b_raw_vss_snapshot(volatile Lfj8RawVss *vss,
     return snapshot;
 }
 
+void lfj8_9e1b_raw_vss_init(volatile Lfj8RawVss *vss)
+{
+    raw_vss_init(vss);
+}
+
+void lfj8_9e1b_raw_vss_edge(volatile Lfj8RawVss *vss, uint32_t captured_ticks,
+                           uint32_t timeout_ticks)
+{
+    raw_vss_edge(vss, captured_ticks, timeout_ticks);
+}
+
+Lfj8CaptureSnapshot lfj8_9e1b_raw_vss_snapshot(volatile Lfj8RawVss *vss,
+                                             const Lfj8RegisterIo *io,
+                                             uint32_t timeout_ticks)
+{
+    return lfj8_raw_vss_snapshot(vss, io, timeout_ticks);
+}
+
+void lfj8_9e1c_raw_vss_init(volatile Lfj8RawVss *vss)
+{
+    raw_vss_init(vss);
+}
+
+void lfj8_9e1c_raw_vss_after_capture_store(volatile Lfj8RawVss *vss,
+                                         const Lfj8RegisterIo *io,
+                                         uint32_t timeout_ticks)
+{
+    const uint32_t captured_ticks = io->read32(io->context, LFJ8_9E1C_VSS_CAPTURED_TICKS);
+
+    raw_vss_edge(vss, captured_ticks, timeout_ticks);
+}
+
 static uint8_t can0_available(const Lfj8RegisterIo *io)
 {
+    /* BasicCAN affects only slots 30/31 (Renesas §§13.2.2–13.2.3). */
     return (io->read16(io->context, LFJ8_CAN0_CNT) &
-            (CAN_CNT_FRST | CAN_CNT_BCM | CAN_CNT_LBM | CAN_CNT_RST)) == 0u &&
+            (CAN_CNT_FRST | CAN_CNT_LBM | CAN_CNT_RST)) == 0u &&
            (io->read16(io->context, LFJ8_CAN0_STAT) &
-            (CAN_STAT_BOS | CAN_STAT_BCS | CAN_STAT_LBS | CAN_STAT_CRS)) == 0u &&
+            (CAN_STAT_BOS | CAN_STAT_LBS | CAN_STAT_CRS)) == 0u &&
            (io->read8(io->context, LFJ8_CAN0_MODE) & 3u) == 0u;
 }
 

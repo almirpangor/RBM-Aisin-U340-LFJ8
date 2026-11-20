@@ -8,10 +8,12 @@ from pathlib import Path
 import shutil
 import struct
 import subprocess
+import sys
 import tempfile
 
 
 ROOT = Path(__file__).resolve().parent
+PROJECT = ROOT.parents[1]
 CORE = ["lfj8_bridge.c", "ta2005_chery_inputs.c"]
 S05_ADAPTER = ["../pcm-s05/native/s05_chery.c"]
 DONOR_ADAPTER = ["lfj8_donor_io.c", "lfj8_chery_tx.c", "lfj8_selector_adc.c"]
@@ -36,6 +38,26 @@ def summary(file):
     return {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
 
 
+def verified_9e1c_base(image):
+    registry = json.loads((PROJECT / "data/sources.json").read_text(encoding="utf-8"))
+    expected = next(item for item in registry["supporting_materials"] if item["id"] == "H03")
+    identity = json.loads(command(
+        sys.executable, "-B", PROJECT / "tools/inspect_lfj8_tcm.py", image,
+        "--expect", "LFJ8-18-9E1C",
+    ))
+    if identity["sha256"] != expected["sha256"] or identity["bytes"] != expected["bytes"]:
+        raise ValueError("Supply the exact LFJ8-T-D.bin selected as H03")
+    return {
+        "source_id": "H03",
+        "name": image.name,
+        "embedded_id": identity["embedded_id"],
+        "software": identity["software"],
+        "bytes": identity["bytes"],
+        "sha256": identity["sha256"],
+        "physical_9e1d_compatibility_verified": False,
+    }
+
+
 def publish(file, destination):
     descriptor, staging = tempfile.mkstemp(prefix=f".{file.name}.", dir=destination)
     os.close(descriptor)
@@ -56,7 +78,7 @@ def build_host(zig, work):
     return output, {"compiler": f"Zig {command(zig, 'version')}", "host_test": result}
 
 
-def build_embedded(compiler, work, architecture, sh_cpu):
+def build_embedded(compiler, work, architecture, sh_cpu, use_9e1c_base=False):
     triple = command(compiler, "-dumpmachine")
     if architecture == "m32r":
         if not triple.startswith("m32r"):
@@ -64,7 +86,7 @@ def build_embedded(compiler, work, architecture, sh_cpu):
         sources = CORE + DONOR_ADAPTER
         target_flags = ["-m32r", "-mmodel=medium", "-msdata=none"]
         assembler_flags = ["-Wa,-EB"]
-        output_name = "lfj8_m32r.o"
+        output_name = "lfj8_9e1c_m32r.o" if use_9e1c_base else "lfj8_m32r.o"
         expected_machine = 88
         expected_sh_flags = None
     else:
@@ -123,11 +145,14 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--zig", type=Path)
     parser.add_argument("--m32r-cc", type=Path)
+    parser.add_argument("--base-9e1c", type=Path, help="Bind the M32R build report to the exact H03 input")
     parser.add_argument("--sh-cc", type=Path)
     parser.add_argument("--sh-cpu", choices=["m2", "m2e"], default="m2")
     args = parser.parse_args()
     if not any((args.zig, args.m32r_cc, args.sh_cc)):
         parser.error("Supply at least one compiler with --zig, --m32r-cc or --sh-cc")
+    if args.base_9e1c and not args.m32r_cc:
+        parser.error("--base-9e1c requires --m32r-cc")
 
     sources = [*CORE, *DONOR_ADAPTER, "host_check.c", "build.py",
                "lfj8_bridge.h", "lfj8_donor_io.h", "lfj8_chery_tx.h", "lfj8_selector_adc.h",
@@ -137,16 +162,19 @@ def main():
         s05_files = [*S05_ADAPTER, "../pcm-s05/native/s05_chery.h"]
         for name in s05_files:
             manifest["sources"][name] = summary(ROOT / name)
-    destination = args.output.resolve()
-    destination.mkdir(parents=True, exist_ok=True)
     try:
+        if args.base_9e1c:
+            manifest["m32r_base"] = verified_9e1c_base(args.base_9e1c.resolve())
+        destination = args.output.resolve()
+        destination.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix="rbm-lfj8-build-") as temporary:
             work = Path(temporary)
             results = []
             if args.zig:
                 results.append(build_host(args.zig.resolve(), work))
             if args.m32r_cc:
-                results.append(build_embedded(args.m32r_cc.resolve(), work, "m32r", args.sh_cpu))
+                results.append(build_embedded(args.m32r_cc.resolve(), work, "m32r", args.sh_cpu,
+                                              use_9e1c_base=args.base_9e1c is not None))
             if args.sh_cc:
                 results.append(build_embedded(args.sh_cc.resolve(), work, "sh", args.sh_cpu))
             for artifact, metadata in results:
@@ -157,6 +185,8 @@ def main():
             publish(staged_manifest, destination)
     except subprocess.CalledProcessError as error:
         raise SystemExit(error.stderr or error.stdout or str(error)) from error
+    except (OSError, ValueError) as error:
+        parser.exit(1, f"{error}\n")
 
 
 if __name__ == "__main__":

@@ -36,6 +36,8 @@ typedef enum {
 
 /* Call with the 9E1B address map bound and producer interrupts maskable. */
 Lfj8CaptureSnapshot lfj8_9e1b_capture_snapshot(const Lfj8RegisterIo *io);
+/* OEM interval, pulse window and freshness from the selected 9E1C software. */
+Lfj8CaptureSnapshot lfj8_9e1c_capture_snapshot(const Lfj8RegisterIo *io);
 
 /* Initialize before subscribing to the one-positive-edge TIN23 producer. */
 void lfj8_9e1b_raw_vss_init(volatile Lfj8RawVss *vss);
@@ -46,6 +48,19 @@ void lfj8_9e1b_raw_vss_edge(volatile Lfj8RawVss *vss, uint32_t captured_ticks,
 Lfj8CaptureSnapshot lfj8_9e1b_raw_vss_snapshot(volatile Lfj8RawVss *vss,
                                              const Lfj8RegisterIo *io,
                                              uint32_t timeout_ticks);
+
+void lfj8_9e1c_raw_vss_init(volatile Lfj8RawVss *vss);
+/* Run once from the confirmed TIN23 branch after the 0x00AA0C store,
+ * with the OEM producer lock held. read32 reads the published timestamp.
+ * The caller still runs the OEM update and interrupt acknowledgement.
+ */
+void lfj8_9e1c_raw_vss_after_capture_store(volatile Lfj8RawVss *vss,
+                                         const Lfj8RegisterIo *io,
+                                         uint32_t timeout_ticks);
+/* Both verified versions use TML0CT at 0x8003E0 for the live timer. */
+Lfj8CaptureSnapshot lfj8_raw_vss_snapshot(volatile Lfj8RawVss *vss,
+                                         const Lfj8RegisterIo *io,
+                                         uint32_t timeout_ticks);
 
 /* Submission only. The owner checks completion separately. */
 Lfj8CanResult lfj8_can0_slot13_submit(const Lfj8RegisterIo *io, uint8_t slot13_owned,

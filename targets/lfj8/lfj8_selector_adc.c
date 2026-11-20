@@ -1,6 +1,6 @@
 #include "lfj8_selector_adc.h"
 
-#define LFJ8_9E1B_SELECTOR_RAW_ADDRESS UINT32_C(0x804BC6)
+#define LFJ8_SELECTOR_RAW_ADDRESS UINT32_C(0x804BC6)
 #define LFJ8_SELECTOR_ADC_MAX UINT16_C(1023)
 
 void lfj8_selector_adc_init(volatile Lfj8SelectorAdc *adc)
@@ -31,14 +31,26 @@ void lfj8_selector_adc_publish(volatile Lfj8SelectorAdc *adc,
     io->leave(io->context, saved_state);
 }
 
-void lfj8_selector_adc_publish_9e1b(volatile Lfj8SelectorAdc *adc,
-                                    const Lfj8RegisterIo *io, uint8_t valid)
+static void publish_stock_sample(volatile Lfj8SelectorAdc *adc,
+                                 const Lfj8RegisterIo *io, uint8_t valid)
 {
     const uint32_t saved_state = io->enter(io->context);
-    const uint16_t raw = valid ? io->read16(io->context, LFJ8_9E1B_SELECTOR_RAW_ADDRESS)
+    const uint16_t raw = valid ? io->read16(io->context, LFJ8_SELECTOR_RAW_ADDRESS)
                                : UINT16_MAX;
     publish_locked(adc, raw);
     io->leave(io->context, saved_state);
+}
+
+void lfj8_selector_adc_publish_9e1b(volatile Lfj8SelectorAdc *adc,
+                                    const Lfj8RegisterIo *io, uint8_t valid)
+{
+    publish_stock_sample(adc, io, valid);
+}
+
+void lfj8_selector_adc_publish_9e1c(volatile Lfj8SelectorAdc *adc,
+                                    const Lfj8RegisterIo *io, uint8_t valid)
+{
+    publish_stock_sample(adc, io, valid);
 }
 
 Lfj8SelectorAdcReading lfj8_selector_adc_take(volatile Lfj8SelectorAdc *adc,

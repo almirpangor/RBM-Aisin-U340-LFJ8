@@ -39,7 +39,7 @@ uint8_t lfj8_chery_tx_poll(Lfj8CheryTx *tx, const Lfj8RegisterIo *io, uint32_t n
 
     if (selected == LFJ8_DUE_1AE) {
         const Lfj8CaptureSnapshot sample =
-            lfj8_9e1b_raw_vss_snapshot(vss, io, cal->vss_timeout_ticks);
+            lfj8_raw_vss_snapshot(vss, io, cal->vss_timeout_ticks);
         uint8_t state = sample.state;
         uint16_t raw;
 
