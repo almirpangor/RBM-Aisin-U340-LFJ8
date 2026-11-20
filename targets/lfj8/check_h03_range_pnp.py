@@ -1,4 +1,4 @@
-"""Trace the stock H03 P/N flag back to AN2 in the M32R simulator."""
+"""Trace the stock AN2 P/N flag and check the independent P/N qualifier in M32R."""
 
 import argparse
 from hashlib import sha256
@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 from tempfile import TemporaryDirectory
 
-from check_h03_link import identify_h03
+from check_h03_link import HERE, ROOT, identify_h03
 
 
 START = """
@@ -51,6 +51,7 @@ FIXTURE = """
 
 extern void stock_an2_voltage(void);
 extern void stock_range_flags(void);
+extern int check_independent_pn(void);
 
 static volatile uint32_t *const history = (volatile uint32_t *)0x804f08;
 enum position { UNKNOWN, DRIVE, PARK, NEUTRAL, REVERSE };
@@ -118,7 +119,8 @@ int main(void)
             return 22 + i;
         }
     }
-    return 0;
+    const int independent_case = check_independent_pn();
+    return independent_case ? independent_case + 25 : 0;
 }
 """
 
@@ -143,8 +145,12 @@ def check(base, compiler):
         (work / "fixture.ld").write_text(LAYOUT, encoding="ascii")
         (work / "fixture.c").write_text(FIXTURE, encoding="ascii")
         run(compiler, "-m32r", "-Wa,-EB", "-Os", "-ffreestanding", "-nostdlib",
-            "-std=c11", "-Wall", "-Wextra", "-Werror", "-Wl,-T,fixture.ld",
-            "fixture.S", "fixture.c", "-lc", "-lgcc", "-o", "fixture.elf")
+            "-std=c11", "-Wall", "-Wextra", "-Werror", "-Wno-missing-braces",
+            "-Wno-missing-field-initializers", "-ffunction-sections", "-fdata-sections",
+            "-Wl,-T,fixture.ld,--gc-sections", "-I", ROOT / "controller/include",
+            "-I", ROOT / "controller/vendor/toyota/include",
+            "fixture.S", "fixture.c", HERE / "lfj8_h03_range_pn.c", HERE / "lfj8_range_control.c",
+            HERE / "test_lfj8_h03_range_pn.c", "-lc", "-lgcc", "-o", "fixture.elf")
         objcopy = compiler.with_name(f"m32r-elf-objcopy{compiler.suffix}")
         run(objcopy, "-j", ".stock", "-O", "binary", "fixture.elf", "linked.rom")
         if (work / "linked.rom").read_bytes() != rom:
@@ -160,6 +166,8 @@ def check(base, compiler):
                 raise ValueError(f"Unexpected stock range flags on replay call {stage - 1}") from error
             if 22 <= stage < 26:
                 raise ValueError(f"Unexpected calibration override on call {stage - 21}") from error
+            if stage >= 26:
+                raise ValueError(f"Independent P/N check failed at test_lfj8_h03_range_pn.c:{stage - 25}") from error
             raise
 
     return {
@@ -178,6 +186,8 @@ def check(base, compiler):
         "simulator_rom_override_calls": 4,
         "simulator_override_voltage": 3.25,
         "simulator_override_decoded_as": "N",
+        "independent_pn_qualifier": "PASS",
+        "independent_physical_input_verified": False,
     }
 
 
