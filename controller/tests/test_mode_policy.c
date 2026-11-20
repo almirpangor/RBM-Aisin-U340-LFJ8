@@ -144,6 +144,41 @@ static void check_auto_conflicts(RbmU340ePolicy policy)
     assert(!output.conflicting_buttons && output.requested_gear == normal && output.auto_request_valid);
 }
 
+static void check_held_shift_at_mode_edge(const RbmU340ePolicy *policy, uint8_t shift)
+{
+    RbmU340eController controller;
+    RbmU340eInput input = {
+        .selector = RBM_U340E_SELECTOR_D, .actual_gear = 3, .allowed_gears = 15,
+        .buttons_valid = 1, .auto_request_valid = 1, .auto_request.speed_4549 = 254,
+    };
+    assert(rbm_u340e_init(&controller, policy));
+    sample(&controller, &input, 0);
+    sample(&controller, &input, shift);
+
+    RbmU340eOutput output = sample(&controller, &input, shift | RBM_U340E_BUTTON_MODE);
+    assert(output.mode != policy->initial_mode);
+    assert(!output.requested_gear && !output.auto_request_valid);
+    assert(output.conflicting_buttons);
+    assert(output.overdrive_enabled == policy->initial_overdrive_enabled && !output.overdrive_pressed);
+
+    output = sample(&controller, &input, 0);
+    assert(!output.conflicting_buttons && output.mode != policy->initial_mode);
+    if (output.mode == RBM_U340E_AUTO) {
+        const int limit_fourth = !policy->initial_overdrive_enabled &&
+                                 (policy->overdrive_limit_modes & RBM_U340E_OVERDRIVE_AUTO);
+        assert(output.requested_gear == (limit_fourth ? 3u : 4u) && output.auto_request_valid);
+    } else {
+        assert(!output.requested_gear && !output.auto_request_valid);
+        const int manual_allowed = policy->manual_selectors & (1u << RBM_U340E_SELECTOR_D);
+        const int limit_fourth = !policy->initial_overdrive_enabled &&
+                                 (policy->overdrive_limit_modes & RBM_U340E_OVERDRIVE_TIPTRONIC);
+        const uint8_t target = shift == RBM_U340E_BUTTON_DOWN ? 2u : 4u;
+        const uint8_t expected = manual_allowed && (target != 4u || !limit_fourth) ? target : 0u;
+        output = sample(&controller, &input, shift);
+        assert(!output.conflicting_buttons && output.requested_gear == expected);
+    }
+}
+
 int main(void)
 {
     FactoryRequestState donor = {0};
@@ -165,12 +200,14 @@ int main(void)
                     check_restart(&policy);
                     ++restart_cases;
                     check_auto_conflicts(policy);
+                    check_held_shift_at_mode_edge(&policy, RBM_U340E_BUTTON_UP);
+                    check_held_shift_at_mode_edge(&policy, RBM_U340E_BUTTON_DOWN);
                     range_cases += check_range_matrix(&policy, donor_speeds);
                 }
             }
         }
     }
-    printf("MODE-03 policy: %u restart profiles, %u conflict profiles and %u gear proposal cases PASS.\n",
-           restart_cases, restart_cases, range_cases);
+    printf("MODE-03 policy: %u restart profiles, %u conflict profiles, %u held-shift transitions"
+           " and %u gear proposal cases PASS.\n", restart_cases, restart_cases, 2u * restart_cases, range_cases);
     return 0;
 }
