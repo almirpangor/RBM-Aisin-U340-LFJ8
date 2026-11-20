@@ -76,6 +76,52 @@ static void test_capture_order_after_revocation(void) {
     assert(submit_captured(&rx, 22, 23, 4) == BOSCH_CHERY_TORQUE_ACCEPTED);
 }
 
+static void test_capture_generation(void) {
+    BoschCheryTorqueRx rx;
+    assert(bosch_chery_torque_init(&rx, 8));
+    const BoschCheryTorqueFrame first = make_frame(7, 40, 60, true, false);
+    const BoschCheryTorqueFrame second = make_frame(0, 40, 60, true, false);
+    const BoschCheryTorqueCapture old_first = {.tick = 1, .generation = UINT32_MAX};
+    const BoschCheryTorqueCapture old_second = {.tick = 2, .generation = UINT32_MAX};
+    const BoschCheryTorqueCapture new_first = {.tick = 1, .generation = 0};
+    const BoschCheryTorqueCapture new_second = {.tick = 2, .generation = 0};
+
+    assert(bosch_chery_torque_receive_queued(&rx, &first, new_first, 1, true) ==
+           BOSCH_CHERY_TORQUE_STALE);
+    bosch_chery_torque_set_generation(&rx, UINT32_MAX);
+    assert(bosch_chery_torque_receive_queued(&rx, &first, old_first, 1, true) ==
+           BOSCH_CHERY_TORQUE_SYNCHRONIZING);
+    assert(bosch_chery_torque_receive_queued(&rx, &second, old_second, 2, true) ==
+           BOSCH_CHERY_TORQUE_ACCEPTED);
+
+    /* CAN recovered and its clock restarted. Old captures appear fresh. */
+    bosch_chery_torque_set_generation(&rx, 0);
+    assert(bosch_chery_torque_snapshot(&rx, 1, true).valid_channels == 0);
+    assert(bosch_chery_torque_receive_queued(&rx, &first, old_first, 1, true) ==
+           BOSCH_CHERY_TORQUE_STALE);
+    assert(bosch_chery_torque_receive_queued(&rx, &second, old_second, 2, true) ==
+           BOSCH_CHERY_TORQUE_STALE);
+    assert(bosch_chery_torque_receive_queued(&rx, &first, new_first, 2, true) ==
+           BOSCH_CHERY_TORQUE_SYNCHRONIZING);
+    assert(bosch_chery_torque_receive_queued(&rx, &second, new_second, 2, true) ==
+           BOSCH_CHERY_TORQUE_ACCEPTED);
+
+    const BoschCheryTorqueFrame inactive = make_frame(1, 40, 60, false, false);
+    const BoschCheryTorqueCapture late_old = {.tick = 3, .generation = UINT32_MAX};
+    assert(bosch_chery_torque_receive_queued(&rx, &inactive, late_old, 3, true) ==
+           BOSCH_CHERY_TORQUE_STALE);
+    bosch_chery_torque_set_generation(&rx, 0);
+    assert(bosch_chery_torque_snapshot(&rx, 3, true).valid_channels == BOSCH_CHERY_TORQUE_BOTH);
+    assert(rx.order_floor_tick == 2);
+
+    /* An external permit withdrawal remains effective even with a stale frame. */
+    assert(bosch_chery_torque_receive_queued(&rx, &inactive, late_old, 4, false) ==
+           BOSCH_CHERY_TORQUE_BLOCKED);
+    assert(bosch_chery_torque_snapshot(&rx, 4, true).valid_channels == 0);
+    assert(bosch_chery_torque_receive_queued(&rx, &second, new_second, 4, true) ==
+           BOSCH_CHERY_TORQUE_STALE);
+}
+
 static void test_transport(void) {
     BoschCheryTorqueRx rx;
     assert(!bosch_chery_torque_init(&rx, 0));
@@ -180,8 +226,9 @@ int main(void) {
     test_transport();
     test_capture_age();
     test_capture_order_after_revocation();
+    test_capture_generation();
     test_qualification();
     test_calibration_lookup();
-    puts("Bosch Chery torque qualification, capture-time lease and calibrated lookup PASS (host)");
+    puts("Bosch Chery torque qualification, capture-time lease, CAN generation and calibrated lookup PASS (host)");
     return 0;
 }
