@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 266,
+  "sequence": 267,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -384,12 +384,12 @@
         "targets/lfj8/test_lfj8_h03_engine_feed.c",
         "verification/project-audit/dtc01-shared-engine-snapshot.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "57db4a43b5754a71a19f9ab77e4c69f4",
       "claimed_at": "2026-11-20T17:00:49+00:00",
-      "updated_at": "2026-11-20T17:02:27+00:00",
-      "note": "Выдача общего RX-снимка реализована. Проверяю на ПК и M32R независимые байты, один опрос, границу давности, BusOff и повторный запуск.",
-      "result": null
+      "updated_at": "2026-11-20T17:06:16+00:00",
+      "note": "Общий CAN-снимок для RPM, ОЖ и модели Chery доступен с явным запретом при сбое CAN. ПК 35 шагов и 71 тест, M32R 17 компонентов, сверка S03 5190 шагов. Отчёт verification/project-audit/dtc01-shared-engine-snapshot.md. Штатный вызов монитора и стенд остаются открыты, общий аудит передаю интегратору.",
+      "result": "6cdb95e861728cffbc7635d0d9f366a1d0fd51a4"
     },
     "VSS-01": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -2699,9 +2699,17 @@
       "action": "review",
       "claim_id": "7dfd6790e36a47d2a1e356338ffe82e8",
       "at": "2026-11-20T17:05:57+00:00"
+    },
+    {
+      "operation_id": "eb76e626c6ad4a5186964effa13f7bec",
+      "task": "DTC-01",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "57db4a43b5754a71a19f9ab77e4c69f4",
+      "at": "2026-11-20T17:06:16+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:05:57+00:00",
+  "updated_at": "2026-11-20T17:06:16+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
