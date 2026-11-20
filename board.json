@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 745,
+  "sequence": 746,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -284,8 +284,8 @@
       "stage": "in_progress",
       "claim_id": "4a65fba7869f4e4b9d9ae39ae27d33a4",
       "claimed_at": "2026-11-20T22:42:45+00:00",
-      "updated_at": "2026-11-20T22:44:07+00:00",
-      "note": "Ложный запрос воспроизведён на ПК. Фильтр удерживает конфликт до квалифицированного нейтрального снимка, проверяю захват AN2/P1DATA и повторную выдачу в цикле M32R.",
+      "updated_at": "2026-11-20T22:48:03+00:00",
+      "note": "Штатный источник Toyota и регрессия на ПК прошли, 8 компонентных и 6 размещённых групп M32R также прошли. Фиксирую результаты и ограничение полной компоновки перед review.",
       "result": null,
       "based_on_reviews": [
         "cda1c6bb3edf45bd993ee765cf29e055"
@@ -9787,9 +9787,37 @@
           "9436326dc3784bbe994f50e6dce8e9c0"
         ]
       }
+    },
+    {
+      "operation_id": "fef977d94b0b44dcb520c7b5f8d2864a",
+      "task": "MODE-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "4a65fba7869f4e4b9d9ae39ae27d33a4",
+      "at": "2026-11-20T22:48:03+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex MODE-02 — конфликт Tiptronic между событиями Toyota",
+        "branch": "codex/mode02-chord-1121-c7e4",
+        "files": [
+          "targets/lfj8/lfj8_range_control.c",
+          "targets/lfj8/test_lfj8_h03_input_binding.c",
+          "targets/lfj8/test_lfj8_h03_toyota_source.c",
+          "verification/project-audit/mode02-h03-conflict-recovery.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "4a65fba7869f4e4b9d9ae39ae27d33a4",
+        "claimed_at": "2026-11-20T22:42:45+00:00",
+        "updated_at": "2026-11-20T22:48:03+00:00",
+        "note": "Штатный источник Toyota и регрессия на ПК прошли, 8 компонентных и 6 размещённых групп M32R также прошли. Фиксирую результаты и ограничение полной компоновки перед review.",
+        "result": null,
+        "based_on_reviews": [
+          "cda1c6bb3edf45bd993ee765cf29e055"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:47:45+00:00",
+  "updated_at": "2026-11-20T22:48:03+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
