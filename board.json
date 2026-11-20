@@ -1,33 +1,27 @@
 {
   "schema_version": 1,
-  "sequence": 274,
+  "sequence": 275,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
-      "label": "Основной чат — объединение и проверка результатов",
+      "label": "Основной чат — общая сборка 31 результата",
       "branch": "codex/integration-01a1f76d-20261120",
       "files": [
         "README.md",
         "data/project-tasks.json",
-        "docs/lfj8-h03-ram-audit.md",
-        "docs/multi-chat.md",
+        "docs/integration-next-tasks.md",
         "docs/project-map.md",
         "docs/working-set.md",
-        "targets/lfj8/lfj8_h03_storage.h",
-        "tests/test_task_coordination.py",
-        "tools/task_coordination.py",
-        "verification/e4m3-can-9e1c/h03-storage.json",
-        "verification/project-audit/2026-11-20-integration-2.json",
-        "verification/project-audit/2026-11-20-integration.json",
-        "verification/project-audit/integration-2/",
-        "verification/project-audit/integration/"
+        "tools/check_integrated_h03.py",
+        "verification/project-audit/2026-11-20-integration-3.json",
+        "verification/project-audit/integration-3/"
       ],
-      "stage": "done",
-      "claim_id": "68c8347a91944cb3929878ea53cc9204",
-      "claimed_at": "2026-11-20T16:10:26+00:00",
-      "updated_at": "2026-11-20T16:31:04+00:00",
-      "note": "19 порций объединены в main, свежий аудит и карта опубликованы. 71 тест и M32R PASS, GitHub Actions 44773915924 success. Техническая готовность и два рабочих BIN остаются открытыми. Общие страницы освобождены.",
-      "result": "b2ca79d006426a9839d64e8553cd81bf71953fe9"
+      "stage": "in_progress",
+      "claim_id": "d5108ac7030f46e2afe22bca1a1ee468",
+      "claimed_at": "2026-11-20T17:16:57+00:00",
+      "updated_at": "2026-11-20T17:16:57+00:00",
+      "note": "Объединяю 31 опубликованный результат, проверяю общую сборку и оформляю конкретные остатки для чатов.",
+      "result": null
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -2765,9 +2759,17 @@
       "action": "review",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "at": "2026-11-20T17:11:59+00:00"
+    },
+    {
+      "operation_id": "a73dad3c69964437a5f24fee6973e8a6",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "d5108ac7030f46e2afe22bca1a1ee468",
+      "at": "2026-11-20T17:16:57+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:11:59+00:00",
+  "updated_at": "2026-11-20T17:16:57+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
