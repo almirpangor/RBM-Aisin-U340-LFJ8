@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:19:59+00:00**. Изменение № **356**.
+Обновлено UTC: **2026-11-20T18:20:19+00:00**. Изменение № **357**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -43,7 +43,7 @@
 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | На проверке | Codex — DTC-02, целевой приём и foreground \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T18:18:41+00:00 | Для объединения с CAN-03 720bb64 и H03-03 7ced523: обвязка IRQ/foreground на общей очереди и паре часов, без второго владельца CAN. 18 сравнений H03, 0x732→0x722, смена поколения очищает кадр и сеанс. ПК 37/102, M32R 18, общие native 17/components 5. Открыты вызовы cold/foreground приложения, RAM, итоговая Flash и стенд. Отчёт dtc02-target-foreground.md. / commit 0a71a1ca6b8f84e246248eb6378166dddb9eeed3 |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Выполняется | Codex DTC-03 — квалификация P0710 TA2005 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-ta2005-p0710-01a1f9c7 | 2026-11-20T18:18:10+00:00 | Сверка штатной квалификации P0710 с закреплённым S03 и перенос на нормализованный вход. Подключение к H03 выполняется отдельно. |
 | DTC-04 — Хранение DTC после выключения питания | На проверке | Codex — геометрия NVM и backend DTC H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-h03-nvm-32e6ac79 | 2026-11-20T18:16:11+00:00 | Передаю интегратору геометрию 13 блоков H03, полусловный backend журнала и восстановление перед запуском. ПК 37 шагов и 102 теста, M32R 45 прерываний записи, 33 стирания и 256 битовых отказов, INTEGRATION3 native и components PASS. Expanded повторил дефицит 448 байт. Носитель, физический драйвер и штатный вызов открыты. Отчёт verification/project-audit/dtc04-h03-nvm.md. / commit e54b8051439965f4274969e46af534d4d98284db |
-| REL-01 — Два целевых BIN и воспроизводимый комплект | Выполняется | Codex REL-01 H03 service preflight \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/rel01-h03-service-preflight-01a1f99f | 2026-11-20T18:18:32+00:00 | 36 exact-ROM M32R runs confirm that the overlay lockout leaves both RAM stores reachable and close leaves deferred stores in flight. Recheck native write boundaries and record release prerequisites. |
+| REL-01 — Два целевых BIN и воспроизводимый комплект | На проверке | Codex REL-01 H03 service preflight \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/rel01-h03-service-preflight-01a1f99f | 2026-11-20T18:20:19+00:00 | PASS 36 exact-ROM store cases and 512 overlay lockout cases. All 2532 RAM bytes pass stock admission; direct and deferred stores still write each block with the overlay disabled. Closing the session leaves a 257-byte copy in flight. Use measured RAM endpoints 806F78/809034/8093EC for integration; PCM Flash coverage below 008000 is unconfirmed. / commit 8a99dcb1a1ea1031e71c54c9281ff83651e7491d |
 | REL-02 — Приёмка новой связки на оборудовании | Свободна для продолжения | Предыдущий: Codex REL-02 — проверка записи CAN \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/rel-02-can-trace-fea1b366 | 2026-11-20T17:48:37+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 2ebae711ad169cf22528a0a7297d8d3b210d4e0a |
 
 ## Что осталось доделать
@@ -65,7 +65,7 @@
 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#dtc-04) | На проверке | Восстановить геометрию и операции NVM, реализовать запись и восстановление при старте; затем подключить адаптации TOY-05. | Чат постоянной памяти |
 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#h03-04) | На проверке | Устранить дефицит Flash с сохранением всех функций; проверить окончательное размещение RAM, стек и сервисные границы с новыми привязками. | Основной чат — общая сборка |
 | [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#toy-02) | Свободна для продолжения | Установить источники и шкалы нагрузки Bosch, довести их до квалифицированного GP Toyota и повторить сквозной обмен. | Основной чат — нагрузка Bosch |
-| [REL-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#rel-01) | Выполняется | После закрытия обязательных привязок собрать два целевых BIN, проверить запуск, целостность и отсутствие тестовых функций. | Основной чат — выпуск |
+| [REL-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#rel-01) | На проверке | После закрытия обязательных привязок собрать два целевых BIN, проверить запуск, целостность и отсутствие тестовых функций. | Основной чат — выпуск |
 
 ### Сделано и остаток по каждой незакрытой задаче
 
@@ -256,7 +256,7 @@
 </details>
 
 <details>
-<summary>REL-01 — Два целевых BIN и воспроизводимый комплект: Выполняется</summary>
+<summary>REL-01 — Два целевых BIN и воспроизводимый комплект: На проверке</summary>
 
 **Сделано.** Переименованный OFFLINE_ONLY отвергается по содержимому. Все 31 порция объединены, но расширенный состав не помещается и не имеет финальной привязки. TCM BIN отсутствует, Bosch проверочный.
 
@@ -708,6 +708,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:20:19+00:00 | REL-01 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:19:59+00:00 | CAN-02 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:18:48+00:00 | CAN-02 | heartbeat | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:18:41+00:00 | DTC-02 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
@@ -737,4 +738,3 @@
 | 2026-11-20T18:07:39+00:00 | H03-03 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:07:03+00:00 | H03-04 | claim | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:06:13+00:00 | DTC-04 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
-| 2026-11-20T18:05:58+00:00 | MODE-02 | claim | 01a1f9c7-675a-78c3-be98-5bd65e44995c |

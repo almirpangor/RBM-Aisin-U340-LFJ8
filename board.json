@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 356,
+  "sequence": 357,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -101,12 +101,12 @@
         "verification/project-audit/2026-11-20-h03-service-writes.json",
         "verification/project-audit/rel01-h03-service-preflight.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "728ac0bbf9a84b04bfdc5f0fce5a6b1b",
       "claimed_at": "2026-11-20T18:14:59+00:00",
-      "updated_at": "2026-11-20T18:18:32+00:00",
-      "note": "36 exact-ROM M32R runs confirm that the overlay lockout leaves both RAM stores reachable and close leaves deferred stores in flight. Recheck native write boundaries and record release prerequisites.",
-      "result": null
+      "updated_at": "2026-11-20T18:20:19+00:00",
+      "note": "PASS 36 exact-ROM store cases and 512 overlay lockout cases. All 2532 RAM bytes pass stock admission; direct and deferred stores still write each block with the overlay disabled. Closing the session leaves a 257-byte copy in flight. Use measured RAM endpoints 806F78/809034/8093EC for integration; PCM Flash coverage below 008000 is unconfirmed.",
+      "result": "8a99dcb1a1ea1031e71c54c9281ff83651e7491d"
     },
     "H03-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -3420,9 +3420,17 @@
       "action": "review",
       "claim_id": "80dd331a4841414ab2e1eea82dfb693b",
       "at": "2026-11-20T18:19:59+00:00"
+    },
+    {
+      "operation_id": "182c8640af2a424f91497435e08b4d18",
+      "task": "REL-01",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "728ac0bbf9a84b04bfdc5f0fce5a6b1b",
+      "at": "2026-11-20T18:20:19+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:19:59+00:00",
+  "updated_at": "2026-11-20T18:20:19+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
