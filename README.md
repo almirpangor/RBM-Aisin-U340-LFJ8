@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:46:57+00:00**. Изменение № **304**.
+Обновлено UTC: **2026-11-20T17:47:17+00:00**. Изменение № **305**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -24,7 +24,7 @@
 | CAN-04 — Запрос снижения момента по RB | Работа завершена | Codex CAN-04 TX loss \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can04-tx-loss-1120-c7e4 | 2026-11-20T17:42:49+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit e02095c6b8d294dacd71db21ea36f970019d0790 |
 | CAN-05 — Полнота штатного обмена Chery | Работа завершена | Codex CAN-05 RX age \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can05-rx-age-1120-c7e4 | 2026-11-20T17:39:43+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 82947a42cfb33ef5350af1ce98e39055ba6a1508 |
 | ECU-01 — Проверочная сборка Bosch E4M3 | Работа завершена | Codex ECU-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/ecu01-1120-c7e4 | 2026-11-20T17:46:01+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 84380128b8db2e0a6b24b297dd40aa020598e3ce |
-| ECU-02 — Калибровка момента и работа двигателя | На проверке | Codex — обороты и отпускание момента Bosch \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/ecu02-torque-rpm-32e6ac79 | 2026-11-20T16:35:57+00:00 | Передаю интегратору. Точный обычный компактный образ E4M3 OFFLINE_ONLY: 4 границы RPM, 6 отзывов через air/fast/load, нулевой статус и защита старого токена PASS. Повтор 26 команд и сквозной диалог H03 с потерей статуса PASS. Отчёт ecu02-torque-rpm-guard.md. Аппаратный пуск и калибровки открыты. / commit 06eacf1ff4f42e423886b4b25b849ead054ac924 |
+| ECU-02 — Калибровка момента и работа двигателя | Работа завершена | Codex — обороты и отпускание момента Bosch \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/ecu02-torque-rpm-32e6ac79 | 2026-11-20T17:47:17+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 06eacf1ff4f42e423886b4b25b849ead054ac924 |
 | H03-01 — Выбранная основа 9E1C и карта подключения | На проверке | Codex H03-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-01-base-guard-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:40:16+00:00 | Строгая сверка H03 с реестром добавлена. Подлинный H03 PASS, изменённая копия с тем же ID отвергнута. Два теста и SOURCES PASS. Отчёт verification/project-audit/h03-01-base-guard.md. Требуется актуализация общего аудита интегратором. / commit cf488af90f0e7beca13fe3c02599cd4854f3668e |
 | H03-02 — S51, S83 и температура ATF | Работа завершена | Codex — привязка ATF H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-02-atf-01a1f9a2 | 2026-11-20T17:39:23+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit f8535218156ba32282a6e299e256a77ef0ae752d |
 | H03-03 — Единое расписание и запуск приложения H03 | Работа завершена | Codex — foreground H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/h03-03-foreground-01a1f99f | 2026-11-20T17:38:22+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit abaa51c3e09d017366e05906cafd1fe3de32515c |
@@ -54,13 +54,6 @@
 
 - targets/bosch/replay_e4m3_torque.py
 - verification/project-audit/aud01-pinned-replay.md
-
-### ECU-02
-
-Чат: Codex — обороты и отпускание момента Bosch. Claim ID: c8de734571c443c3b11766566ad20891.
-
-- targets/bosch/verify_e4m3_torque_rpm.py
-- verification/project-audit/ecu02-torque-rpm-guard.md
 
 ### H03-01
 
@@ -106,6 +99,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:47:17+00:00 | ECU-02 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T17:46:57+00:00 | TOY-01 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:46:37+00:00 | VSS-02 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:46:01+00:00 | ECU-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
@@ -135,4 +129,3 @@
 | 2026-11-20T17:36:11+00:00 | ORG-01 | heartbeat | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T17:29:56+00:00 | ORG-01 | heartbeat | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T17:27:09+00:00 | ORG-01 | heartbeat | codex-integration-01a1f76d-20261120 |
-| 2026-11-20T17:16:57+00:00 | ORG-01 | claim | codex-integration-01a1f76d-20261120 |
