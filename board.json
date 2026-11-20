@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 42,
+  "sequence": 43,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -108,11 +108,11 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-phase-wait.json"
       ],
-      "stage": "in_progress",
+      "stage": "done",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "claimed_at": "2026-11-20T15:51:48+00:00",
-      "updated_at": "2026-11-20T16:00:49+00:00",
-      "note": "Связываю штатную точку ожидания и C-проверку срока в M32R, без сборки прошивочного BIN.",
+      "updated_at": "2026-11-20T16:02:15+00:00",
+      "note": "Основной интегратор принял порцию в main. Повторены project_status, 4 сценария wait и 17 компонентов M32R с replay Bosch. Нативный callback, запуск и аппаратный inhibit остаются открыты.",
       "result": "9fa9c8aa18cd88543ba464f98fc8f7fc6a21a7d1"
     },
     "H03-04": {
@@ -559,10 +559,18 @@
       "action": "claim",
       "claim_id": "04163e758d304ae28f99c09cf17d8d25",
       "at": "2026-11-20T16:01:53+00:00"
+    },
+    {
+      "operation_id": "39d5384186af4d999ce16db1d2ba867c",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "ef041474d8994309836820d6cd886071",
+      "at": "2026-11-20T16:02:15+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:01:53+00:00",
-  "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
+  "updated_at": "2026-11-20T16:02:15+00:00",
+  "main_commit": "9fa9c8aa18cd88543ba464f98fc8f7fc6a21a7d1",
   "catalog": [
     {
       "id": "ORG-01",
