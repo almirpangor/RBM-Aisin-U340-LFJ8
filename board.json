@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 83,
+  "sequence": 84,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -302,8 +302,8 @@
       "stage": "in_progress",
       "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
       "claimed_at": "2026-11-20T16:11:44+00:00",
-      "updated_at": "2026-11-20T16:11:44+00:00",
-      "note": "Reproduce and fix Tiptronic accepting an opposite shift while the other key is still held. Align C and Python models; leave MODE-02 hardware input and its files to their owner.",
+      "updated_at": "2026-11-20T16:13:40+00:00",
+      "note": "Reproduced staggered plus/minus overlap on the original C controller and Python model. Fixed both, including no delayed request on release. Running PC and M32R checks.",
       "result": null
     },
     "TOY-04": {
@@ -986,9 +986,17 @@
       "action": "resume",
       "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
       "at": "2026-11-20T16:13:29+00:00"
+    },
+    {
+      "operation_id": "8e05588eccc9408395c617570cbf3c01",
+      "task": "MODE-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
+      "at": "2026-11-20T16:13:40+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:13:29+00:00",
+  "updated_at": "2026-11-20T16:13:40+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {

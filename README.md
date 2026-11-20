@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:13:29+00:00**. Изменение № **83**.
+Обновлено UTC: **2026-11-20T16:13:40+00:00**. Изменение № **84**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -34,7 +34,7 @@
 | VSS-01 — Точный расчёт VSS и скорость по CAN | Свободна | — | — | — | — |
 | VSS-02 — Кинематика и параметры реальной скорости | Свободна | — | — | — | — |
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
-| MODE-01 — Логика шести положений и кнопок | Выполняется | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:11:44+00:00 | Reproduce and fix Tiptronic accepting an opposite shift while the other key is still held. Align C and Python models; leave MODE-02 hardware input and its files to their owner. |
+| MODE-01 — Логика шести положений и кнопок | Выполняется | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:13:40+00:00 | Reproduced staggered plus/minus overlap on the original C controller and Python model. Fixed both, including no delayed request on release. Running PC and M32R checks. |
 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | На проверке | Codex — входы Tiptronic H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/u340-32e6ac79 | 2026-11-20T16:10:33+00:00 | Передаю интегратору. ПК 33 шага / 65 тестов PASS, M32R сборка с H03, сквозной прогон с трассой Bosch и 17 компонентов PASS. Отчёт mode02-button-input.md содержит хеши для общего аудита. Подключение к расписанию H03, измерение входов и полный гидравлический цикл остаются открытыми. / commit 53c5f27e40f4ed48fd5873d002a0ab315f448bcf |
 | MODE-03 — Окончательная политика режимов | Свободна | — | — | — | — |
 | SRC-01 — Реестр происхождения и контроль исходников | Свободна | — | — | — | — |
@@ -209,6 +209,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:13:40+00:00 | MODE-01 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:13:29+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:13:20+00:00 | H03-02 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:13:07+00:00 | CAN-04 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -238,4 +239,3 @@
 | 2026-11-20T16:06:28+00:00 | MODE-02 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:06:24+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T16:06:05+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
-| 2026-11-20T16:05:54+00:00 | CAN-01 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
