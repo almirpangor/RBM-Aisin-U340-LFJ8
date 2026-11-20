@@ -1,22 +1,25 @@
 {
   "schema_version": 1,
-  "sequence": 79,
+  "sequence": 80,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
       "label": "Основной чат — объединение и проверка результатов",
       "branch": "codex/integration-01a1f76d-20261120",
       "files": [
+        "docs/lfj8-h03-ram-audit.md",
         "docs/multi-chat.md",
+        "targets/lfj8/lfj8_h03_storage.h",
         "tests/test_task_coordination.py",
         "tools/task_coordination.py",
+        "verification/e4m3-can-9e1c/h03-storage.json",
         "verification/project-audit/integration/"
       ],
       "stage": "in_progress",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "claimed_at": "2026-11-20T16:10:26+00:00",
-      "updated_at": "2026-11-20T16:10:26+00:00",
-      "note": "Исправляю две гонки учёта параллельных чатов. Проверяю опубликованные порции CAN, диагностики и комплекта двух BIN перед совместной интеграцией. Общий реестр пока занят другим чатом.",
+      "updated_at": "2026-11-20T16:12:48+00:00",
+      "note": "Проверяю готовые порции перед объединением. Учту новое состояние фильтра кнопок в целевой карте RAM; общие карточки пока не редактирую.",
       "result": null
     },
     "DTC-02": {
@@ -952,9 +955,17 @@
       "action": "claim",
       "claim_id": "66ff2c9c89284dcaba9ce91746f4bde4",
       "at": "2026-11-20T16:12:39+00:00"
+    },
+    {
+      "operation_id": "441742d6e21e458b861ede6303b84a15",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "heartbeat",
+      "claim_id": "68c8347a91944cb3929878ea53cc9204",
+      "at": "2026-11-20T16:12:48+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:12:39+00:00",
+  "updated_at": "2026-11-20T16:12:48+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
