@@ -13,7 +13,7 @@ typedef struct {
 
 typedef struct {
     uint32_t tick_hz;
-    uint32_t vss_timeout_ticks;
+    uint32_t vss_timeout_ticks; /* 1 through 0x7FFFFFFF ticks. */
     uint32_t wheel_um;
     uint16_t wheel_num;
     uint16_t wheel_den;
@@ -37,8 +37,10 @@ void lfj8_chery_tx_init(Lfj8CheryTx *tx, uint32_t now_us, uint32_t period_1ae_us
                        uint32_t period_300_us);
 
 /* Reports the driver's result and sets submitted to the admitted due-mask bit
- * or zero. Returns LFJ8_CAN_READY when no frame is due. Raw vss may be NULL
- * when inputs supplies an S51 capture. */
+ * or zero. Returns LFJ8_CAN_READY when no frame is due. A due 0x1AE carries
+ * unavailable speed if the calibration or both S51 sources are absent, or if
+ * the timeout is outside the supported range. These cases do not read raw VSS.
+ * The 0x300 frame does not use the calibration or S51 sources. */
 Lfj8CanResult lfj8_chery_tx_poll_status(Lfj8CheryTx *tx, const Lfj8RegisterIo *io,
                                        uint32_t now_us, uint8_t slot13_owned,
                                        volatile Lfj8RawVss *vss, const Lfj8VehicleCalibration *cal,

@@ -838,6 +838,81 @@ static void test_foreground_s51_for_telemetry(void)
     }
 }
 
+static void test_1ae_timing_admission(void)
+{
+    Fixture f = {.capture_timer_read_step = 1u, .use_9e1c_vss_map = 1u};
+    const Lfj8RegisterIo io = {&f, read8, read16, read32, write8, lock, unlock};
+    const uint32_t last_edge = UINT32_MAX - 9u;
+    volatile Lfj8RawVss vss = {.last_edge = last_edge, .interval_ticks = 26400u, .primed = 1u};
+    Lfj8VehicleCalibration cal = {1000000u, 100u, 2000000u, 1u, 1u};
+    Lfj8CheryTxInputs inputs = {0};
+    Lfj8CheryTx tx;
+    uint32_t now = 0u;
+    lfj8_chery_tx_init(&tx, now, 10u, 0u);
+
+    const uint32_t invalid_timeouts[] = {UINT32_C(0x80000000), UINT32_MAX, 0u};
+    const uint32_t ambiguous_time = last_edge + UINT32_C(0x80000000);
+    f.capture_timer = ambiguous_time;
+    for (unsigned i = 0; i < sizeof invalid_timeouts / sizeof invalid_timeouts[0]; ++i) {
+        cal.vss_timeout_ticks = invalid_timeouts[i];
+        f.slot_control = 0x81u;
+        now += 10u;
+        assert(lfj8_chery_tx_poll(&tx, &io, now, 1u, &vss, &cal, &inputs) == LFJ8_DUE_1AE);
+        assert(f.last_data[6] == 0xffu && f.last_data[7] == 0xffu);
+        assert(f.capture_timer == ambiguous_time);
+        assert(vss.last_edge == last_edge && vss.interval_ticks == 26400u && vss.primed == 1u);
+    }
+
+    cal.vss_timeout_ticks = UINT32_C(0x7fffffff);
+    f.capture_timer = last_edge + 10u;
+    f.slot_control = 0x81u;
+    now += 10u;
+    assert(lfj8_chery_tx_poll(&tx, &io, now, 1u, &vss, &cal, &inputs) == LFJ8_DUE_1AE);
+    assert(f.last_data[6] == 0x17u && f.last_data[7] == 0x70u);
+
+    Lfj8CapturePair capture = {
+        .vss = {.interval_ticks = 26400u, .state = LFJ8_VSS_VALID},
+        .now_tml0 = now, .vss_at_tml0 = now - 26400u,
+    };
+    inputs.s51_capture = &capture;
+    const uint16_t invalid_windows[] = {0x0101u, 0x0102u, 0x0104u};
+    const uint32_t timer_after_raw = f.capture_timer;
+    for (unsigned i = 0; i < sizeof invalid_windows / sizeof invalid_windows[0]; ++i) {
+        capture.vss.pulse_window = invalid_windows[i];
+        f.slot_control = 0x81u;
+        now += 10u;
+        assert(lfj8_chery_tx_poll(&tx, &io, now, 1u, &vss, &cal, &inputs) == LFJ8_DUE_1AE);
+        assert(f.last_data[6] == 0xffu && f.last_data[7] == 0xffu);
+        assert(f.capture_timer == timer_after_raw);
+    }
+
+    capture.vss.pulse_window = 1u;
+    f.slot_control = 0x81u;
+    now += 10u;
+    assert(lfj8_chery_tx_poll(&tx, &io, now, 1u, &vss, &cal, &inputs) == LFJ8_DUE_1AE);
+    assert(f.last_data[6] == 0x17u && f.last_data[7] == 0x70u);
+
+    f.slot_control = 0x81u;
+    now += 10u;
+    assert(lfj8_chery_tx_poll(&tx, &io, now, 1u, &vss, NULL, &inputs) == LFJ8_DUE_1AE);
+    assert(f.last_data[6] == 0xffu && f.last_data[7] == 0xffu);
+
+    inputs.s51_capture = NULL;
+    inputs.stopped = 1u;
+    f.slot_control = 0x81u;
+    now += 10u;
+    assert(lfj8_chery_tx_poll(&tx, &io, now, 1u, NULL, &cal, &inputs) == LFJ8_DUE_1AE);
+    assert(f.last_data[6] == 0xffu && f.last_data[7] == 0xffu);
+    assert(f.capture_timer == timer_after_raw);
+
+    lfj8_chery_tx_init(&tx, now, 0u, 10u);
+    inputs.atf_c = 80;
+    inputs.atf_valid = 1u;
+    f.slot_control = 0x81u;
+    assert(lfj8_chery_tx_poll(&tx, &io, now + 10u, 1u, NULL, NULL, &inputs) == LFJ8_DUE_300);
+    assert(f.last_data[3] == 120u && f.capture_timer == timer_after_raw);
+}
+
 static void test_engine_receive(void)
 {
     Ta2005CheryInputs receiver;
@@ -919,6 +994,7 @@ int main(void)
     test_pipeline();
     test_standstill_during_s51_restart();
     test_foreground_s51_for_telemetry();
+    test_1ae_timing_admission();
     test_engine_receive();
     puts("LFJ8 I/O: S51, S83, Chery TX, CAN0 RX/TX and recovery, RPM/ECT, relays and schedule passed");
     return 0;
