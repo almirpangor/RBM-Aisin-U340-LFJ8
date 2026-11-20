@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 440,
+  "sequence": 441,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -338,14 +338,13 @@
         "targets/lfj8/lfj8_h03_can13.c",
         "targets/lfj8/lfj8_h03_torque_can.c",
         "targets/lfj8/test_lfj8_h03_can13.c",
-        "targets/lfj8/test_lfj8_h03_torque_can.c",
         "verification/project-audit/can02-torque-submit.md"
       ],
       "stage": "in_progress",
       "claim_id": "a9db7d810e7b460fb52e5042ad8e2450",
       "claimed_at": "2026-11-20T18:54:52+00:00",
-      "updated_at": "2026-11-20T18:56:05+00:00",
-      "note": "В модели воспроизведён BusOff при REFRESH: на main брокер возвращал available. Адаптер теперь отзывает подтверждение в том же опросе; проверяю повтор при SLOT_BUSY и сборку.",
+      "updated_at": "2026-11-20T18:58:05+00:00",
+      "note": "Два сценария CAN13 прошли. Сборка M32R и адресная модель H03 прошли; ожидаю завершения полного набора ПК и готовлю доказательства.",
       "result": null
     },
     "TOY-06": {
@@ -4091,9 +4090,17 @@
       "action": "claim",
       "claim_id": "15ef4cba9c9a49b1acc46893d21aabad",
       "at": "2026-11-20T18:57:46+00:00"
+    },
+    {
+      "operation_id": "634feee29ae042dd8d7ecc6f6bfbc392",
+      "task": "CAN-02",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "heartbeat",
+      "claim_id": "a9db7d810e7b460fb52e5042ad8e2450",
+      "at": "2026-11-20T18:58:05+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:57:46+00:00",
+  "updated_at": "2026-11-20T18:58:05+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
