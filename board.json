@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 103,
+  "sequence": 104,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -322,12 +322,12 @@
         "targets/lfj8/test_lfj8_h03_cycle.c",
         "verification/project-audit/toy04-upper-gears.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "66ff2c9c89284dcaba9ce91746f4bde4",
       "claimed_at": "2026-11-20T16:12:39+00:00",
-      "updated_at": "2026-11-20T16:15:18+00:00",
-      "note": "Из S01 сверены пороги для нулевой нагрузки. На ПК подтверждены 2→3, 3→4 и понижения, запрет 4-й при низкой ОЖ и отзыв при потере события; запущены полные PC, M32R и NATIVE.",
-      "result": null
+      "updated_at": "2026-11-20T16:19:02+00:00",
+      "note": "Передаю интегратору. 12 точек D в двух профилях ОЖ: 2→3, 3→4, понижения, холодный запрет 4-й и потеря события до выдачи — PASS. ПК 33 шага/65 тестов, M32R 17 компонентов, NATIVE 16+15. Отчёт toy04-upper-gears.md содержит хеш для общего аудита. Под нагрузкой, в R и на оборудовании не проверено.",
+      "result": "439188ac7049314db5c94d261f8e9570092d514b"
     },
     "CAN-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -1219,9 +1219,17 @@
       "action": "claim",
       "claim_id": "698c00d00af84972b5562bc8498c8628",
       "at": "2026-11-20T16:18:46+00:00"
+    },
+    {
+      "operation_id": "aa81d63eba97472687f69bdbd8034c95",
+      "task": "TOY-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "66ff2c9c89284dcaba9ce91746f4bde4",
+      "at": "2026-11-20T16:19:02+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:18:46+00:00",
+  "updated_at": "2026-11-20T16:19:02+00:00",
   "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {
