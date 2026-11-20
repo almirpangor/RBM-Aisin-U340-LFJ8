@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 416,
+  "sequence": 417,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -400,12 +400,12 @@
         "targets/lfj8/lfj8_donor_io.h",
         "verification/project-audit/vss01-standstill-guard.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "f685f2c55ce644bd9790da0a174088e9",
       "claimed_at": "2026-11-20T18:39:04+00:00",
-      "updated_at": "2026-11-20T18:41:07+00:00",
-      "note": "Целевой тест воспроизвёл ложный ноль 0x1AE после первого фронта S51. Исправлено под той же блокировкой. Целевой тест прошёл, повторяю полный ПК, M32R и проверочный Bosch.",
-      "result": null
+      "updated_at": "2026-11-20T18:44:13+00:00",
+      "note": "Устранён ложный ноль скорости 0x1AE после первого фронта S51. Регрессия на ПК и M32R, общий ПК 37/113, M32R 18 компонентных, 6 проверок по адресам и Bosch PASS_OFFLINE_ONLY. Отчёт verification/project-audit/vss01-standstill-guard.md. Физический источник подтверждения остановки и калибровка S51 открыты.",
+      "result": "79fc4e071100a977eda10a412a23ac682d5be672"
     },
     "H03-05": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -3897,9 +3897,17 @@
       "action": "review",
       "claim_id": "c7748c04f5024bd6a2b2ff2914153463",
       "at": "2026-11-20T18:43:53+00:00"
+    },
+    {
+      "operation_id": "c681603a8daf4e48952c64ccce124008",
+      "task": "VSS-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "f685f2c55ce644bd9790da0a174088e9",
+      "at": "2026-11-20T18:44:13+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:43:53+00:00",
+  "updated_at": "2026-11-20T18:44:13+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
