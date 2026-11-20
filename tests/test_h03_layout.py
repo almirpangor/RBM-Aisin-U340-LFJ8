@@ -127,6 +127,31 @@ class PlacementTests(unittest.TestCase):
                 path.write_text(content)
                 with self.assertRaises(ValueError): builder.storage_space(path)
 
+    def test_toyota_release_is_resolved_only_from_a_typed_field(self):
+        storage = {
+            "blocks": {"control": {"address": 0x100, "end_exclusive": 0x130}},
+            "fields": {"control/application": {"offset": 0, "bytes": 8, "alignment": 4}},
+        }
+        self.assertIsNone(builder.toyota_release_range(storage))
+        storage["fields"][builder.TOYOTA_RELEASE_FIELD] = {"offset": 8, "bytes": 16, "alignment": 4}
+        self.assertEqual(builder.toyota_release_range(storage), {
+            "field": "control/toyota_release", "symbol": "rbm_h03_toyota_release_state",
+            "address": 0x108, "end_exclusive": 0x118, "bytes": 16, "alignment": 4,
+        })
+
+    def test_toyota_release_rejects_wrong_geometry_or_overlapping_storage(self):
+        storage = {
+            "blocks": {"control": {"address": 0x100, "end_exclusive": 0x130}},
+            "fields": {"control/application": {"offset": 0, "bytes": 8, "alignment": 4}},
+        }
+        for overrides in ({"bytes": 12}, {"alignment": 2}, {"offset": 9},
+                          {"offset": -4}, {"offset": 0x28}, {"offset": 4}):
+            with self.subTest(overrides=overrides), self.assertRaises(ValueError):
+                storage["fields"][builder.TOYOTA_RELEASE_FIELD] = {
+                    "offset": 8, "bytes": 16, "alignment": 4, **overrides,
+                }
+                builder.toyota_release_range(storage)
+
 
 if __name__=='__main__':
     unittest.main()

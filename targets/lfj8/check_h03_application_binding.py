@@ -7,6 +7,7 @@ import subprocess
 from tempfile import TemporaryDirectory
 
 from check_h03_link import HERE, ROOT, TARGET
+from check_h03_sensor_config import config_source
 
 
 FIXTURE_PROFILE = """\
@@ -31,13 +32,27 @@ def check(compiler, controller):
 
         flags = [compiler, *TARGET, "-Os", "-std=c11", "-Wall", "-Wextra", "-Werror",
                  "-Wno-missing-braces", "-Wno-missing-field-initializers",
-                 "-ffunction-sections", "-fdata-sections", "-I", ROOT / "controller/include",
+                 "-ffunction-sections", "-fdata-sections", "-I", HERE, "-I", ROOT / "controller/include",
                  "-I", ROOT / "controller/vendor/toyota/include", "-I", ROOT / "diagnostics"]
         refused = run([*flags, "-c", source, "-o", "binding-without-profile.o"], checked=False)
         if refused.returncode == 0 or "Define RBM_H03_APPLICATION_PROFILE" not in refused.stderr:
             raise ValueError("The native binding did not explicitly reject an absent profile")
 
         (work / "fixture-profile.h").write_text(FIXTURE_PROFILE, encoding="ascii")
+        # Exercise the emitted C, including the production MMIO callback.
+        # Limits and hashes here are synthetic and only linked into this ELF.
+        synthetic = {
+            "status": "PASS_CONFIG_INPUTS",
+            "base": {"sha256": "0" * 64},
+            "calibration_profile": {"sha256": "0" * 64},
+            "clock_reference_sha256": "0" * 64,
+            "production_sensor_config": {
+                "s51_timeout_ticks": 200, "s83_timeout_ticks": 200,
+                "atf_max_age_us": 200, "max_read_span_ticks": 0,
+            },
+        }
+        sensor_source = work / "test-sensor-config.c"
+        sensor_source.write_text(config_source(synthetic), encoding="ascii")
         shim = work / "sim-crt.c"
         shim.write_text("void __init(void) {}\nvoid __fini(void) {}\n", encoding="ascii")
         crt = run([compiler, *TARGET, "-print-file-name=crt0.o"]).stdout.strip()
@@ -51,7 +66,7 @@ def check(compiler, controller):
             "ta2005_chery_inputs.c", "ta2005_engine_qualifier.c",
         )
         run([*flags, "-I", work, '-DRBM_H03_APPLICATION_PROFILE="fixture-profile.h"',
-             "-nostartfiles", crt, source, *(HERE / name for name in sources),
+             "-nostartfiles", crt, source, sensor_source, *(HERE / name for name in sources),
              ROOT / "diagnostics/chery_dtc.c", shim, controller,
              "-Wl,--gc-sections,-e,_start,--start-group", "-lc", "-lgloss", "-lgcc", "-Wl,--end-group",
              "-o", "binding.elf"])
@@ -60,6 +75,7 @@ def check(compiler, controller):
         if not output.endswith("PASS"):
             raise ValueError("The native binding fixture did not reach its verified result")
         return {"status": "PASS", "fixture_result": output, "unprofiled_compile_rejected": True,
+                "generated_clock_callback": True, "sensor_profile_synthetic": True,
                 "hardware_tested": False, "flashable_image": None}
 
 

@@ -14,6 +14,7 @@
 #include "lfj8_h03_can_owner.h"
 #include "lfj8_h03_input_binding.h"
 #include "lfj8_h03_dtc_target.h"
+#include "lfj8_h03_target_service.h"
 
 /* Typed inventory of CURRENT components, not approved RAM addresses or a
  * startup initializer. Initialize each component through its own API.
@@ -45,6 +46,7 @@
     X(can_owner, Lfj8H03CanOwner) \
     X(dtc, CheryDtcState) \
     X(dtc_target, Lfj8H03DtcTarget) \
+    X(can_service, Lfj8H03TargetService) \
     X(main_result, Lfj8H03MainResult) \
     X(fast_output, Lfj8H03FastOutput)
 
