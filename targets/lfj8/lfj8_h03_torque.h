@@ -89,6 +89,9 @@ typedef bool (*Lfj8TorqueSubmit)(void *context, uint16_t id, const uint8_t data[
  * A NULL input signals unavailable data. A NULL calibration or a zero profile
  * disables requests. Changing the selected profile ends the current pulse.
  * Poll can transmit CANCEL after input or profile loss when TX permits.
+ * Pass the capture time to receive even when delivering just before poll.
+ * A status captured at or past the progress or pulse deadline cannot
+ * acknowledge an expired request.
  */
 void lfj8_h03_torque_init(Lfj8H03Torque *link);
 void lfj8_h03_torque_poll(Lfj8H03Torque *link, const Lfj8TorqueInput *input,
