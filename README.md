@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:36:49+00:00**. Изменение № **176**.
+Обновлено UTC: **2026-11-20T16:37:07+00:00**. Изменение № **177**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -17,7 +17,7 @@
 | TOY-03 — Независимые разрешающие сигналы диапазона | Работа завершена | Codex TOY-03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/toy-03-range-01a1f9a2 | 2026-11-20T16:22:02+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit dfc774eee013ba78c6679d3128f493f238f43000 |
 | TOY-04 — Полная последовательность переключений | Работа завершена | Codex — цикл переключений Toyota \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy04-cycle-32e6ac79 | 2026-11-20T16:34:19+00:00 | Порция с переходами D принята в опубликованную main b2ca79d. Резерв освобождаю. Полный гидравлический цикл, измерения, нагрузка и R остаются открыты. / commit 439188ac7049314db5c94d261f8e9570092d514b |
 | TOY-05 — Обучение и сохранение адаптаций | Работа завершена | Codex TOY-05 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy05-adaptation-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:33:11+00:00 | Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте. / commit dbc1762ffa86d37e2901b3a62f60b57a71763c24 |
-| TOY-06 — Блокировка гидротрансформатора SLU | Работа завершена | Codex TOY-06 — команда SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-fea1b366 | 2026-11-20T16:33:34+00:00 | Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте. / commit db9896a28e87f0b956d9a14409c41910d1d335e7 |
+| TOY-06 — Блокировка гидротрансформатора SLU | Выполняется | Codex TOY-06 — давление SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-pressure-fea1b366 | 2026-11-20T16:37:07+00:00 | Переношу численный участок SECONDARY 05DCE8 → 055C5E: давление, промежуточный таймер и проверка цепочки на закреплённом R3. Назначение выхода H03 остаётся открытым. |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Работа завершена | Codex CAN-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-1120-c7e4 | 2026-11-20T16:26:06+00:00 | Reviewed RX epoch work integrated by 952658b and recorded in the shared audit. This closes the reservation; stock CAN startup and hardware verification remain open. / commit ca268743dfe173f93121d6b9148e0951932cfc9d |
 | CAN-02 — Общий диспетчер CAN13 | Работа завершена | Codex CAN-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/can02-telemetry-timeout-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:34:59+00:00 | Принято в опубликованную main b2ca79d после независимых и общих проверок. Аудит integration-2 содержит результаты и ограничения. Технические остатки ТЗ остаются открытыми. / commit b48b4e50878c8173a40d65134213fbb8fdc37aa1 |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Выполняется | Codex CAN-03 reset generation \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can03-epoch-1120-c7e4 | 2026-11-20T16:36:31+00:00 | Exercise a native call-site wrapper for both H03 OEM CAN setup calls: drop the TX13 grant before setup, advance the generation after it returns, preserve OEM context. Simulator addresses only. |
@@ -169,6 +169,15 @@
 - targets/lfj8/check_h03_toyota_stack.py
 - verification/project-audit/toy01-gp-transfer-size.md
 
+### TOY-06
+
+Чат: Codex TOY-06 — давление SLU. Claim ID: a8e9ff099358496bacacf60bfcc8aa84.
+
+- targets/lfj8/check_toyota_slu.py
+- targets/lfj8/lfj8_h03_slu.c
+- targets/lfj8/lfj8_h03_slu.h
+- verification/project-audit/toy06-slu-pressure.md
+
 ### VSS-01
 
 Чат: Codex VSS-01. Claim ID: 698c00d00af84972b5562bc8498c8628.
@@ -189,6 +198,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:37:07+00:00 | TOY-06 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:36:49+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:36:31+00:00 | CAN-03 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:36:12+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
@@ -218,4 +228,3 @@
 | 2026-11-20T16:30:29+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:30:25+00:00 | ECU-02 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:30:09+00:00 | CAN-04 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-20T16:29:36+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
