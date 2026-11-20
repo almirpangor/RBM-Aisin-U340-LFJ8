@@ -9,7 +9,7 @@
     "engine": "GW4G15 / Bosch ME7.9.71 E4M3"
   },
   "release_ready": false,
-  "audit": "verification/project-audit/2026-11-20-memory-layout.json",
+  "audit": "verification/project-audit/2026-11-20-service-guard.json",
   "status_labels": {
     "closed": "Завершено в указанном объёме",
     "model": "Проверено программно",
@@ -256,6 +256,15 @@
         "verification/project-audit/memory-layout/summary.json"
       ],
       "title": "Объединение 13 порций, память и код по конечным адресам"
+    },
+    "SERVICE_GUARD": {
+      "title": "Запрет прямой и отложенной сервисной записи",
+      "command": "python -B targets/lfj8/check_h03_service_guard.py --base $h03 --gcc $m32rGcc --storage-report $storageReport --out $guardReport",
+      "reports": [
+        "verification/project-audit/2026-11-20-service-guard.json",
+        "verification/project-audit/service-guard/native.json",
+        "verification/project-audit/service-guard/all-bindings.json"
+      ]
     }
   },
   "modules": [
@@ -901,8 +910,8 @@
       ],
       "title": "Память, стек и сервисные пути",
       "status": "open",
-      "current": "118 корней общей логики, 434 секции: 82812 байт. Новая компоновка с началом 0x1F7D0 оставляет 916 байт; шесть M32R сценариев исполняются по этим адресам. Все C-привязки требуют уже 89252 байта плюс неизвестная платформа. RAM 2684 + 4 байта.",
-      "remaining": "Разрешить семь недостающих определений, включить обёртки/настройки, доказать владение расширенными Flash/RAM, закрыть прямой и отложенный сервисный писатель, измерить полный стек/IRQ.",
+      "current": "Собрана адресная модель 118 корней с остатком 916 байт. Учёт RAM — 2684 + 4 байта. Добавлен запрет двух сервисных писателей: 240 нативных сценариев и 20 проверок границ прошли. Обёртки и модельная политика занимают 436 байт, новых постоянных переменных нет. Известный C-состав с guard — 89388 байт; полная платформа ещё не связана.",
+      "remaining": "Назначить окончательные объекты и rbm_h03_service_policy, установить обёртки, реализовать явную отмену удержанного запроса. Проверить прочие писатели, SBI/DMA, Virtual Flash, длительность запрета IRQ и полный стек; повторить окончательную компоновку.",
       "acceptance": "Карта сборки и анализ всех владельцев, подтверждённый запас стека и измерения. Свободное окно в ELF само по себе не разрешает запись.",
       "code": [
         "targets/lfj8/check_h03_link.py",
@@ -915,7 +924,11 @@
         "tools/check_h03_image_layout.py",
         "targets/lfj8/lfj8_h03_layout.py",
         "tests/test_h03_layout.py",
-        "targets/lfj8/check_h03_service_writes.py"
+        "targets/lfj8/check_h03_service_writes.py",
+        "targets/lfj8/lfj8_h03_service_guard.c",
+        "targets/lfj8/lfj8_h03_service_guard.h",
+        "targets/lfj8/h03_service_guard_hooks.S",
+        "targets/lfj8/check_h03_service_guard.py"
       ],
       "settings": "Flash: prefix-candidate [0x1F7D0,0x30000), [0x7C118,0x7FFFC), только модель. RAM: [0x806B40,0x806F8C), [0x808E40,0x809054), [0x809054,0x809470); ещё 4 байта native BSS и полный стек вне инвентаря. FF и успешный ELF не подтверждают владение.",
       "checks": [
@@ -925,19 +938,21 @@
         "INTEGRATION",
         "INTEGRATION2",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "SERVICE_GUARD"
       ],
       "docs": [
         "docs/lfj8-h03-ram-audit.md",
         "docs/lfj8-h03-flash.md",
         "docs/lfj8-h03-service-isolation.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/h03-04-service-guard.md"
       ],
       "depends": [],
       "continuation": {
         "order": 9,
-        "action": "Закрыть прямые и уже принятые отложенные сервисные записи в проектную RAM, установить политику Virtual Flash; пересчитать окончательную карту и полный стек.",
+        "action": "Включить guard и неизменяемую политику по итоговой карте, добавить явную отмену удержанного запроса; доказать резидентность, остальные пути записи, время запрета IRQ и полный стек.",
         "chat_label": "Основной чат — общая сборка"
       }
     },
@@ -1408,7 +1423,7 @@
       ],
       "title": "Два целевых BIN и воспроизводимый комплект",
       "status": "open",
-      "current": "Ещё 13 порций объединены и проверены. Адресная модель общего кода проходит; полный набор привязок отклонён из-за семи определений. Сервисные записи достигают новой RAM. TCM BIN отсутствует, Bosch остаётся OFFLINE_ONLY.",
+      "current": "Объединены 13 порций, пройдены общие проверки и 240 сценариев нового запрета сервисных записей. Окончательная платформа, политика памяти и аппаратные калибровки открыты. TCM BIN отсутствует, Bosch остаётся OFFLINE_ONLY.",
       "remaining": "Завершить привязки и защиту памяти, источники/масштабы входов, арбитраж Bosch, NVM и аппаратные калибровки; затем собрать два целевых BIN и манифест.",
       "acceptance": "Оба образа соответствуют выбранным основам и закрытому объёму первого файла, связаны с исходниками и фактическими результатами проверки.",
       "code": [
@@ -1426,7 +1441,8 @@
         "BOSCH",
         "INTEGRATION",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "SERVICE_GUARD"
       ],
       "docs": [
         "docs/verification.md",

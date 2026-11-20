@@ -34,6 +34,7 @@ BINDING_MODULES=(
     "lfj8_h03_can_owner.c","lfj8_h03_dtc_target.c","lfj8_h03_input_binding.c",
     "lfj8_h03_input_target.c","lfj8_h03_nvm.c","lfj8_h03_sensor_target.c",
     "lfj8_h03_atf_target.c","lfj8_h03_atf_tml0.c",
+    "lfj8_h03_service_guard.c",
 )
 
 

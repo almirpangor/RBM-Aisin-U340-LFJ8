@@ -436,21 +436,21 @@
 
 **Требуется разработка** · ТЗ §5
 
-**Сделано.** 118 корней общей логики, 434 секции: 82812 байт. Новая компоновка с началом 0x1F7D0 оставляет 916 байт; шесть M32R сценариев исполняются по этим адресам. Все C-привязки требуют уже 89252 байта плюс неизвестная платформа. RAM 2684 + 4 байта.
+**Сделано.** Собрана адресная модель 118 корней с остатком 916 байт. Учёт RAM — 2684 + 4 байта. Добавлен запрет двух сервисных писателей: 240 нативных сценариев и 20 проверок границ прошли. Обёртки и модельная политика занимают 436 байт, новых постоянных переменных нет. Известный C-состав с guard — 89388 байт; полная платформа ещё не связана.
 
-**Осталось.** Разрешить семь недостающих определений, включить обёртки/настройки, доказать владение расширенными Flash/RAM, закрыть прямой и отложенный сервисный писатель, измерить полный стек/IRQ.
+**Осталось.** Назначить окончательные объекты и rbm_h03_service_policy, установить обёртки, реализовать явную отмену удержанного запроса. Проверить прочие писатели, SBI/DMA, Virtual Flash, длительность запрета IRQ и полный стек; повторить окончательную компоновку.
 
 **Критерий результата.** Карта сборки и анализ всех владельцев, подтверждённый запас стека и измерения. Свободное окно в ELF само по себе не разрешает запись.
 
-**Код.** [targets/lfj8/check_h03_link.py](../targets/lfj8/check_h03_link.py) · [targets/lfj8/check_h03_ram_candidate.py](../targets/lfj8/check_h03_ram_candidate.py) · [targets/lfj8/check_h03_flash_residency.py](../targets/lfj8/check_h03_flash_residency.py) · [targets/lfj8/check_h03_service_isolation.py](../targets/lfj8/check_h03_service_isolation.py) · [targets/lfj8/audit_h03_irq_stack.py](../targets/lfj8/audit_h03_irq_stack.py) · [targets/lfj8/lfj8_h03_storage.h](../targets/lfj8/lfj8_h03_storage.h) · [targets/lfj8/check_h03_storage.py](../targets/lfj8/check_h03_storage.py) · [tools/check_h03_image_layout.py](../tools/check_h03_image_layout.py) · [targets/lfj8/lfj8_h03_layout.py](../targets/lfj8/lfj8_h03_layout.py) · [tests/test_h03_layout.py](../tests/test_h03_layout.py) · [targets/lfj8/check_h03_service_writes.py](../targets/lfj8/check_h03_service_writes.py)
+**Код.** [targets/lfj8/check_h03_link.py](../targets/lfj8/check_h03_link.py) · [targets/lfj8/check_h03_ram_candidate.py](../targets/lfj8/check_h03_ram_candidate.py) · [targets/lfj8/check_h03_flash_residency.py](../targets/lfj8/check_h03_flash_residency.py) · [targets/lfj8/check_h03_service_isolation.py](../targets/lfj8/check_h03_service_isolation.py) · [targets/lfj8/audit_h03_irq_stack.py](../targets/lfj8/audit_h03_irq_stack.py) · [targets/lfj8/lfj8_h03_storage.h](../targets/lfj8/lfj8_h03_storage.h) · [targets/lfj8/check_h03_storage.py](../targets/lfj8/check_h03_storage.py) · [tools/check_h03_image_layout.py](../tools/check_h03_image_layout.py) · [targets/lfj8/lfj8_h03_layout.py](../targets/lfj8/lfj8_h03_layout.py) · [tests/test_h03_layout.py](../tests/test_h03_layout.py) · [targets/lfj8/check_h03_service_writes.py](../targets/lfj8/check_h03_service_writes.py) · [targets/lfj8/lfj8_h03_service_guard.c](../targets/lfj8/lfj8_h03_service_guard.c) · [targets/lfj8/lfj8_h03_service_guard.h](../targets/lfj8/lfj8_h03_service_guard.h) · [targets/lfj8/h03_service_guard_hooks.S](../targets/lfj8/h03_service_guard_hooks.S) · [targets/lfj8/check_h03_service_guard.py](../targets/lfj8/check_h03_service_guard.py)
 
 **Что настраивать.** Flash: prefix-candidate [0x1F7D0,0x30000), [0x7C118,0x7FFFC), только модель. RAM: [0x806B40,0x806F8C), [0x808E40,0x809054), [0x809054,0x809470); ещё 4 байта native BSS и полный стек вне инвентаря. FF и успешный ELF не подтверждают владение.
 
-**Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native) · [STORAGE](#check-storage) · [INTEGRATION](#check-integration) · [INTEGRATION2](#check-integration2) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4)
+**Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native) · [STORAGE](#check-storage) · [INTEGRATION](#check-integration) · [INTEGRATION2](#check-integration2) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [SERVICE_GUARD](#check-service_guard)
 
-**Разбор и основания.** [lfj8-h03-ram-audit.md](../docs/lfj8-h03-ram-audit.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [lfj8-h03-service-isolation.md](../docs/lfj8-h03-service-isolation.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md)
+**Разбор и основания.** [lfj8-h03-ram-audit.md](../docs/lfj8-h03-ram-audit.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [lfj8-h03-service-isolation.md](../docs/lfj8-h03-service-isolation.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [h03-04-service-guard.md](../verification/project-audit/h03-04-service-guard.md)
 
-**Следующий шаг для продолжения.** Закрыть прямые и уже принятые отложенные сервисные записи в проектную RAM, установить политику Virtual Flash; пересчитать окончательную карту и полный стек.
+**Следующий шаг для продолжения.** Включить guard и неизменяемую политику по итоговой карте, добавить явную отмену удержанного запроса; доказать резидентность, остальные пути записи, время запрета IRQ и полный стек.
 
 **Кто сейчас выполняет.** Проверить [общий список исполнителей](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). Перед изменениями занять этот ID и точные файлы.
 
@@ -761,7 +761,7 @@
 
 **Требуется разработка** · ТЗ §1, §4, §5, §9
 
-**Сделано.** Ещё 13 порций объединены и проверены. Адресная модель общего кода проходит; полный набор привязок отклонён из-за семи определений. Сервисные записи достигают новой RAM. TCM BIN отсутствует, Bosch остаётся OFFLINE_ONLY.
+**Сделано.** Объединены 13 порций, пройдены общие проверки и 240 сценариев нового запрета сервисных записей. Окончательная платформа, политика памяти и аппаратные калибровки открыты. TCM BIN отсутствует, Bosch остаётся OFFLINE_ONLY.
 
 **Осталось.** Завершить привязки и защиту памяти, источники/масштабы входов, арбитраж Bosch, NVM и аппаратные калибровки; затем собрать два целевых BIN и манифест.
 
@@ -771,7 +771,7 @@
 
 **Что настраивать.** Отдельные поля build_verified, model_verified и hardware_verified. Не переименовывать ELF/тестовый BIN в рабочую прошивку.
 
-**Проверки.** [SOURCES](#check-sources) · [PC](#check-pc) · [M32R](#check-m32r) · [NATIVE](#check-native) · [BOSCH](#check-bosch) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4)
+**Проверки.** [SOURCES](#check-sources) · [PC](#check-pc) · [M32R](#check-m32r) · [NATIVE](#check-native) · [BOSCH](#check-bosch) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [SERVICE_GUARD](#check-service_guard)
 
 **Разбор и основания.** [verification.md](../docs/verification.md) · [working-set.md](../docs/working-set.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md)
 
@@ -959,3 +959,12 @@ python -B tools/check_h03_image_layout.py --base $h03 --gcc $m32rGcc --controlle
 ```
 
 **Последний сохранённый результат.** [2026-11-20-memory-layout.json](../verification/project-audit/2026-11-20-memory-layout.json) · [summary.json](../verification/project-audit/memory-layout/summary.json)
+
+<a id="check-service_guard"></a>
+### SERVICE_GUARD — Запрет прямой и отложенной сервисной записи
+
+```powershell
+python -B targets/lfj8/check_h03_service_guard.py --base $h03 --gcc $m32rGcc --storage-report $storageReport --out $guardReport
+```
+
+**Последний сохранённый результат.** [2026-11-20-service-guard.json](../verification/project-audit/2026-11-20-service-guard.json) · [native.json](../verification/project-audit/service-guard/native.json) · [all-bindings.json](../verification/project-audit/service-guard/all-bindings.json)
