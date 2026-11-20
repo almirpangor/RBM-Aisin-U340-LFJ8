@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 368,
+  "sequence": 369,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -390,13 +390,16 @@
         "diagnostics/chery_dtc_link.h",
         "diagnostics/test_chery_dtc_link.c",
         "diagnostics/verify_c0_session_timer.py",
+        "targets/lfj8/lfj8_h03_dtc_can.c",
+        "targets/lfj8/lfj8_h03_dtc_can.h",
+        "targets/lfj8/test_lfj8_h03_dtc_can.c",
         "verification/project-audit/dtc01-c0-session-timer.md"
       ],
       "stage": "in_progress",
       "claim_id": "69ac904b985641cea43c72eba859a273",
       "claimed_at": "2026-11-20T18:25:00+00:00",
-      "updated_at": "2026-11-20T18:25:00+00:00",
-      "note": "DTC-02 уже на review. В свободной DTC-01 проверяю отдельный таймер сеанса C0 по исходным инструкциям S03. Добавлю только подтверждённые условия истечения или точное доказательство внешнего ограничения.",
+      "updated_at": "2026-11-20T18:27:37+00:00",
+      "note": "S03: найден отдельный F9F1 и исходный reload AB3B=9. Проверяю исполнение границы и штатный teardown ответа H03 при этом событии.",
       "result": null
     },
     "VSS-01": {
@@ -3521,9 +3524,17 @@
       "action": "review",
       "claim_id": "07e364700a914694bb6ff3542e87e98a",
       "at": "2026-11-20T18:27:21+00:00"
+    },
+    {
+      "operation_id": "980a9c6fb4174539915e9ee2deb31ba0",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "69ac904b985641cea43c72eba859a273",
+      "at": "2026-11-20T18:27:37+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:27:21+00:00",
+  "updated_at": "2026-11-20T18:27:37+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
