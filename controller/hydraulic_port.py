@@ -34,7 +34,7 @@ def write_port(vendor_src: Path, destination: Path) -> Path:
 
     seen_arrays = set()
     assertions = []
-    formulas = {}
+    element_widths = {}
     for position, structure, member, length in rows:
         path = f"(({structure}*)0)->{member}"
         array = member in ARRAY_MEMBERS.get(structure, set())
@@ -46,18 +46,22 @@ def write_port(vendor_src: Path, destination: Path) -> Path:
             f'_Static_assert(sizeof({element}) == 1 || sizeof({element}) == 2 || '
             f'sizeof({element}) == 4, "element width of {structure}.{member}");'
         )
-        formulas[(position, structure, member, length)] = f"sizeof({element})"
+        element_widths[(position, structure, member, length)] = f"sizeof({element})"
 
     expected_arrays = {(structure, member) for structure, fields in ARRAY_MEMBERS.items() for member in fields}
     if seen_arrays != expected_arrays:
         raise ValueError("Toyota GP array fields changed")
 
-    def width(match: re.Match) -> str:
-        return f"{match.group(0)[:-1]},{formulas[match.groups()]}}}"
+    def encode_row(match: re.Match) -> str:
+        position, structure, member, length = match.groups()
+        width = element_widths[match.groups()]
+        return f"{{TRANSFER_POSITION({position}, {width}),offsetof({structure},{member}),{length}}}"
 
+    extent = max(int(position) + int(length) for position, _, _, length in rows)
+    assertions.append(f'_Static_assert({extent}u <= sizeof(((FactoryHydraulics *)0)->data), "GP map extent");')
     converted_mapping = "#include <limits.h>\n_Static_assert(CHAR_BIT == 8, \"byte width\");\n"
     converted_mapping += "\n".join(assertions) + "\n"
-    converted_mapping += TRANSFER_ROW.sub(width, mapping)
+    converted_mapping += TRANSFER_ROW.sub(encode_row, mapping)
     destination.mkdir(parents=True, exist_ok=True)
     (destination / "hydraulic_mapping_port.h").write_text(converted_mapping, encoding="utf-8", newline="\n")
 
@@ -72,7 +76,12 @@ def write_port(vendor_src: Path, destination: Path) -> Path:
     source = replace_once(
         source,
         "typedef struct { uint16_t pos;uint8_t member,bytes; } Transfer;",
-        "typedef struct { uint16_t pos; uint8_t member, bytes, width; } Transfer;",
+        """typedef struct { uint16_t packed_pos; uint8_t member, bytes; } Transfer;
+enum { TRANSFER_POS_BITS = 14, TRANSFER_POS_MASK = (1u << TRANSFER_POS_BITS) - 1u };
+/* The upper two bits carry the element's byte-reversal mask (0, 1 or 3). */
+#define TRANSFER_POSITION(pos, width) ((pos) | (((width) - 1u) << TRANSFER_POS_BITS))
+_Static_assert(sizeof(Transfer) == 4, "GP transfer descriptor size");
+_Static_assert(sizeof(((FactoryHydraulics *)0)->data) <= TRANSFER_POS_MASK + 1u, "GP offset width");""",
     )
     source = replace_once(
         source, '#include "hydraulic_mapping.h"', '#include "hydraulic_mapping_port.h"'
@@ -90,11 +99,15 @@ __attribute__((noinline)) static void transfer(FactoryHydraulics *s,void *object
 }""",
         """/* GP bytes are canonical little endian. Each n-byte element, not each
  * entire record, is converted to the ABI's native order. */
+static inline unsigned transfer_offset(const Transfer *entry)
+{
+    return entry->packed_pos & TRANSFER_POS_MASK;
+}
+
 static unsigned native_byte(const Transfer *entry, unsigned byte)
 {
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-    const unsigned in_element = byte & (entry->width - 1u);
-    byte = (byte - in_element) + (entry->width - 1u - in_element);
+    byte ^= entry->packed_pos >> TRANSFER_POS_BITS;
 #endif
     return entry->member + byte;
 }
@@ -102,8 +115,9 @@ static unsigned native_byte(const Transfer *entry, unsigned byte)
 static void read_member(const FactoryHydraulics *s, void *object, const Transfer *entry)
 {
     uint8_t *native = object;
+    const uint8_t *gp = s->data + transfer_offset(entry);
     for (unsigned i = 0; i < entry->bytes; ++i) {
-        native[native_byte(entry, i)] = s->data[entry->pos + i];
+        native[native_byte(entry, i)] = gp[i];
     }
 }
 
@@ -114,8 +128,9 @@ __attribute__((noinline)) static void transfer(FactoryHydraulics *s, void *objec
     for (unsigned i = 0; i < count; ++i) {
         const Transfer *entry = &map[i];
         if (write) {
+            uint8_t *gp = s->data + transfer_offset(entry);
             for (unsigned j = 0; j < entry->bytes; ++j) {
-                s->data[entry->pos + j] = native[native_byte(entry, j)];
+                gp[j] = native[native_byte(entry, j)];
             }
         } else {
             read_member(s, object, entry);
@@ -211,8 +226,9 @@ static void test_{structure}(FactoryHydraulics *state)
     transfer(&encoded, &value, map_{structure}, sizeof map_{structure} / sizeof map_{structure}[0], 1);
     for (unsigned i = 0; i < sizeof map_{structure} / sizeof map_{structure}[0]; ++i) {{
         const Transfer *entry = &map_{structure}[i];
+        const unsigned offset = transfer_offset(entry);
         for (unsigned j = 0; j < entry->bytes; ++j) {{
-            assert(encoded.data[entry->pos + j] == state->data[entry->pos + j]);
+            assert(encoded.data[offset + j] == state->data[offset + j]);
         }}
     }}
 }}
