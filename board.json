@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 541,
+  "sequence": 542,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -83,20 +83,20 @@
       "result": "27ebaeb9efc5844de3924a58520754635b50c875"
     },
     "REL-01": {
-      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Чат RBM — проверка OFFLINE_ONLY перед упаковкой",
-      "branch": "codex/rel01-offline-report-guard-1120-c7e4",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "label": "Codex REL-01 — идентификация BIN",
+      "branch": "codex/rel01-donor-firmware-guard-01a1f9c7",
       "files": [
         "tests/test_package_workset.py",
         "tools/package_workset.py",
-        "verification/project-audit/rel01-offline-report-guard.md"
+        "verification/project-audit/rel01-firmware-identity.md"
       ],
-      "stage": "done",
-      "claim_id": "955fa03480184bffadb909ff493f7946",
-      "claimed_at": "2026-11-20T18:57:39+00:00",
-      "updated_at": "2026-11-20T19:23:07+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "982a46d7af0060426920137e0f130d6215e92d14"
+      "stage": "in_progress",
+      "claim_id": "fe39fa893cbe4843b42a5e9a0f82f3ed",
+      "claimed_at": "2026-11-20T19:56:50+00:00",
+      "updated_at": "2026-11-20T19:56:50+00:00",
+      "note": "В режиме комплекта двух BIN проверяю, что файлы отличаются от зарегистрированных доноров и содержат подтверждённые признаки платформ, сохраняя отдельные статусы сборки, модели и стенда.",
+      "result": null
     },
     "H03-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -4917,9 +4917,17 @@
       "action": "heartbeat",
       "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
       "at": "2026-11-20T19:56:43+00:00"
+    },
+    {
+      "operation_id": "772626220d7d44fca36f5d59a451457a",
+      "task": "REL-01",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "fe39fa893cbe4843b42a5e9a0f82f3ed",
+      "at": "2026-11-20T19:56:50+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:56:43+00:00",
+  "updated_at": "2026-11-20T19:56:50+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
