@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:07:21+00:00**. Изменение № **60**.
+Обновлено UTC: **2026-11-20T16:07:46+00:00**. Изменение № **61**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -18,7 +18,7 @@
 | TOY-04 — Полная последовательность переключений | Свободна | — | — | — | — |
 | TOY-05 — Обучение и сохранение адаптаций | Свободна | — | — | — | — |
 | TOY-06 — Блокировка гидротрансформатора SLU | Свободна | — | — | — | — |
-| CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Выполняется | Codex CAN-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-1120-c7e4 | 2026-11-20T16:05:54+00:00 | Both regressions reproduced on the original C receiver. Fixed version passes the LFJ8 host fixture and M32R simulator, 33 PC steps, and Bosch offline checks. |
+| CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Codex CAN-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-1120-c7e4 | 2026-11-20T16:07:46+00:00 | CAN RX epoch guard; reproduced old startup and drain race, fixed regressions on host and M32R. PC 33 steps/59 tests, M32R 17 components and Bosch OFFLINE_ONLY PASS. Evidence verification/project-audit/can01-rx-epoch.md. Integrator to update the shared audit; OEM startup and hardware timing remain open. / commit ca268743dfe173f93121d6b9148e0951932cfc9d |
 | CAN-02 — Общий диспетчер CAN13 | Свободна | — | — | — | — |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex — CAN0 H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can-03-h03-01a1f99f | 2026-11-20T15:50:27+00:00 | Сведено с main 264f249. 16 прогонов lifecycle, 12 TX gate и project_status --check PASS. Протокол CANHacker добавлен. Штатная привязка и аппаратная приёмка открыты. / commit 507ba30e1a3e68c727b137ef209d1a45333591ad |
 | CAN-04 — Запрос снижения момента по RB | Свободна | — | — | — | — |
@@ -159,6 +159,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:07:46+00:00 | CAN-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:07:21+00:00 | H03-04 | complete | codex-h03-04-01a1f76d-20261120 |
 | 2026-11-20T16:06:58+00:00 | TOY-02 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:06:43+00:00 | H03-02 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
@@ -188,4 +189,3 @@
 | 2026-11-20T15:59:20+00:00 | H03-02 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T15:59:02+00:00 | DTC-03 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T15:57:52+00:00 | DTC-03 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T15:57:48+00:00 | CAN-05 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |

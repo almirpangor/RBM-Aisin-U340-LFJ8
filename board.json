@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 60,
+  "sequence": 61,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -232,12 +232,12 @@
         "targets/lfj8/lfj8_h03_engine_rx.h",
         "verification/project-audit/can01-rx-epoch.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "8af57ad2c27440c6822dea2579b051d2",
       "claimed_at": "2026-11-20T16:03:00+00:00",
-      "updated_at": "2026-11-20T16:05:54+00:00",
-      "note": "Both regressions reproduced on the original C receiver. Fixed version passes the LFJ8 host fixture and M32R simulator, 33 PC steps, and Bosch offline checks.",
-      "result": null
+      "updated_at": "2026-11-20T16:07:46+00:00",
+      "note": "CAN RX epoch guard; reproduced old startup and drain race, fixed regressions on host and M32R. PC 33 steps/59 tests, M32R 17 components and Bosch OFFLINE_ONLY PASS. Evidence verification/project-audit/can01-rx-epoch.md. Integrator to update the shared audit; OEM startup and hardware timing remain open.",
+      "result": "ca268743dfe173f93121d6b9148e0951932cfc9d"
     },
     "MODE-02": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -737,9 +737,17 @@
       "action": "complete",
       "claim_id": "83b9428ce0f2463f92341fea12156d66",
       "at": "2026-11-20T16:07:21+00:00"
+    },
+    {
+      "operation_id": "d1346be7b8434fdeac3853338fcd42ed",
+      "task": "CAN-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "8af57ad2c27440c6822dea2579b051d2",
+      "at": "2026-11-20T16:07:46+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:07:21+00:00",
+  "updated_at": "2026-11-20T16:07:46+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
