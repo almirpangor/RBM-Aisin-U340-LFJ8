@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 564,
+  "sequence": 565,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -308,21 +308,21 @@
       "result": "6ed9a9e2480dc356725b3f1d47f683bef6625171"
     },
     "MODE-01": {
-      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex MODE-01 — отзыв кнопок при явной потере",
-      "branch": "codex/mode01-explicit-button-loss-32e6ac79",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex MODE-01 — отзыв диапазона при отказе ADC",
+      "branch": "codex/mode01-selector-fault-mwp5rm2ofhaxjfi9dss",
       "files": [
         "targets/lfj8/lfj8_range_control.c",
         "targets/lfj8/lfj8_range_control.h",
         "tests/u340_integration_host.c",
-        "verification/project-audit/mode01-button-source-loss.md"
+        "verification/project-audit/mode01-selector-fault.md"
       ],
-      "stage": "done",
-      "claim_id": "f086342106b64dd7b09e8960948904da",
-      "claimed_at": "2026-11-20T19:02:35+00:00",
-      "updated_at": "2026-11-20T19:29:06+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "0ac06d144f842aadd1a31c3bc5f2a4c3c18c30df"
+      "stage": "in_progress",
+      "claim_id": "81b1f36f00b14bd49f57ba12c0f60bd1",
+      "claimed_at": "2026-11-20T20:03:40+00:00",
+      "updated_at": "2026-11-20T20:03:40+00:00",
+      "note": "Исправляю сохранение диапазона при INVALID/OVERRUN с непригодной меткой: отзыв до сравнения времени, прежняя отметка не откатывается, повторный допуск штатными четырьмя отсчётами. Проверю ПК и M32R.",
+      "result": null
     },
     "TOY-04": {
       "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
@@ -5097,9 +5097,17 @@
       "action": "release",
       "claim_id": "9459ef396a854e778a241074b8d5aa57",
       "at": "2026-11-20T20:03:31+00:00"
+    },
+    {
+      "operation_id": "ae4661e2aefb4591af0043fb62bee105",
+      "task": "MODE-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "81b1f36f00b14bd49f57ba12c0f60bd1",
+      "at": "2026-11-20T20:03:40+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:03:31+00:00",
+  "updated_at": "2026-11-20T20:03:40+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
