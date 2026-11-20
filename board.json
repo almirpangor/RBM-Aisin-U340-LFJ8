@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 67,
+  "sequence": 68,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -94,18 +94,20 @@
       "label": "Codex — foreground H03",
       "branch": "codex/h03-03-foreground-01a1f99f",
       "files": [
+        "data/project-tasks.json",
         "docs/lfj8-h03-control-cycle.md",
         "targets/lfj8/check_h03_phase_wait.py",
         "targets/lfj8/h03_phase_wait_fixture.c",
         "targets/lfj8/h03_phase_wait_hook.S",
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
-        "verification/project-audit/2026-11-20-h03-phase-wait.json"
+        "verification/project-audit/2026-11-20-h03-phase-wait.json",
+        "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
       "claimed_at": "2026-11-20T16:04:02+00:00",
-      "updated_at": "2026-11-20T16:08:24+00:00",
-      "note": "Ограничение watchdog по счётчику без новой постоянной RAM. 8 M32R, контроль без ограничения и реестр ветки PASS. При объединении обновить активный снимок H03-04. Целевые таймер, inhibit и замеры IRQ открыты.",
+      "updated_at": "2026-11-20T16:09:33+00:00",
+      "note": "Сокращаю стек ожидания, измеряю глубину в M32R и обновляю снимок после интеграции H03-04.",
       "result": "ff8b5164cdbf5121db9e788b975921699960d524"
     },
     "H03-04": {
@@ -825,9 +827,17 @@
       "action": "review",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T16:09:22+00:00"
+    },
+    {
+      "operation_id": "3c4620ce0b754385bb4f59dab79c273c",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "resume",
+      "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
+      "at": "2026-11-20T16:09:33+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:09:22+00:00",
+  "updated_at": "2026-11-20T16:09:33+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
