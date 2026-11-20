@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 123,
+  "sequence": 124,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -110,12 +110,12 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "claimed_at": "2026-11-20T16:18:01+00:00",
-      "updated_at": "2026-11-20T16:18:01+00:00",
-      "note": "Проверяю два вложенных входа через оригинальный диспетчер IRQ H03 в M32R поверх принятого 4fd3f71.",
-      "result": null
+      "updated_at": "2026-11-20T16:24:18+00:00",
+      "note": "10 сценариев M32R. В двух новых исполнен оригинальный диспетчер с двумя кадрами по 48 байт; глубина 164 байта, SP/R0/R5/C восстановлены, отзыв прошёл. Контроль пропуска вложенного входа и project_status PASS. Тела IRQ, приоритеты и аппаратный inhibit открыты.",
+      "result": "b45c1bfc040fb6d47d9756a81fb0163a588f2510"
     },
     "H03-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -1421,9 +1421,17 @@
       "action": "resume",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "at": "2026-11-20T16:24:11+00:00"
+    },
+    {
+      "operation_id": "d5c7ced6ed99483db3d8fd178174fa53",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "at": "2026-11-20T16:24:18+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:24:11+00:00",
+  "updated_at": "2026-11-20T16:24:18+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
