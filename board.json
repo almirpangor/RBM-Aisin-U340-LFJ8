@@ -1,31 +1,23 @@
 {
   "schema_version": 1,
-  "sequence": 70,
+  "sequence": 71,
   "claims": {
     "ORG-01": {
-      "owner": "codex-coordination-27a510e",
-      "label": "Текущий чат — совместная работа Codex",
-      "branch": "main",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "label": "Основной чат — объединение и проверка результатов",
+      "branch": "codex/integration-01a1f76d-20261120",
       "files": [
-        ".github/",
-        "AGENTS.md",
-        "README.md",
-        "data/project-tasks.json",
-        "docs/decisions.md",
         "docs/multi-chat.md",
-        "docs/project-map.md",
-        "tests/test_project_status.py",
         "tests/test_task_coordination.py",
-        "tools/project_status.py",
         "tools/task_coordination.py",
-        "verification/project-audit/"
+        "verification/project-audit/integration/"
       ],
-      "stage": "done",
-      "claim_id": "640a773925544cfd8486c913f6839c07",
-      "claimed_at": "2026-11-20T15:30:42+00:00",
-      "updated_at": "2026-11-20T15:37:39+00:00",
-      "note": "Опубликованы карта задач и общий учёт чатов. Пройдены 59 локальных тестов; GitHub Actions 44764817941 завершён успешно. Настройка совместной работы завершена.",
-      "result": "2875ed80264fd7714d44047f849e2df4b04123ef"
+      "stage": "in_progress",
+      "claim_id": "68c8347a91944cb3929878ea53cc9204",
+      "claimed_at": "2026-11-20T16:10:26+00:00",
+      "updated_at": "2026-11-20T16:10:26+00:00",
+      "note": "Исправляю две гонки учёта параллельных чатов. Проверяю опубликованные порции CAN, диагностики и комплекта двух BIN перед совместной интеграцией. Общий реестр пока занят другим чатом.",
+      "result": null
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -851,9 +843,17 @@
       "action": "review",
       "claim_id": "8af57ad2c27440c6822dea2579b051d2",
       "at": "2026-11-20T16:10:06+00:00"
+    },
+    {
+      "operation_id": "8314fcf0472247f997b1c0f811c4d01b",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "68c8347a91944cb3929878ea53cc9204",
+      "at": "2026-11-20T16:10:26+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:10:06+00:00",
+  "updated_at": "2026-11-20T16:10:26+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
