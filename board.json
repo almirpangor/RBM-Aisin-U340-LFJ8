@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 491,
+  "sequence": 492,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -349,11 +349,11 @@
         "targets/lfj8/test_lfj8_h03_cycle.c",
         "verification/project-audit/toy06-slu-stage-boundaries.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "f9f139056ba24b4a88ede7ceaeb63df1",
       "claimed_at": "2026-11-20T18:42:41+00:00",
-      "updated_at": "2026-11-20T18:48:09+00:00",
-      "note": "Передаю на объединение. 05DA44 очищает входное смещение, 05B6DE ведёт GP−4829.2 с каноническими счётчиками FAST. R3 1280+38400, PC 37/113, M32R 18+17+6, 6 сценариев по адресам PASS. ELF +236 Б, запас prefix 680 Б. Отчёт verification/project-audit/toy06-slu-stage-boundaries.md. Полный снимок и физический SLU открыты.",
+      "updated_at": "2026-11-20T19:30:06+00:00",
+      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
       "result": "021ca3fe3c7c4ee657cb7ebb59a1a4b855c2b6bd"
     },
     "DTC-01": {
@@ -4488,9 +4488,17 @@
       "action": "complete",
       "claim_id": "a9db7d810e7b460fb52e5042ad8e2450",
       "at": "2026-11-20T19:29:46+00:00"
+    },
+    {
+      "operation_id": "7d8763a0dd30412cb93daf3276f63614",
+      "task": "TOY-06",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "f9f139056ba24b4a88ede7ceaeb63df1",
+      "at": "2026-11-20T19:30:06+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:29:46+00:00",
+  "updated_at": "2026-11-20T19:30:06+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
