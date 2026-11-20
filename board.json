@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 453,
+  "sequence": 454,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -161,12 +161,12 @@
         "targets/lfj8/lfj8_h03_sensor_target.c",
         "verification/project-audit/h03-02-shared-clock.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "15ef4cba9c9a49b1acc46893d21aabad",
       "claimed_at": "2026-11-20T18:57:46+00:00",
-      "updated_at": "2026-11-20T19:00:03+00:00",
-      "note": "Дефект ATF при расхождении TML1CR воспроизведён на исходной реализации и исправлен. Нативные S51/S83/ATF прошли, продолжаю интеграционные проверки M32R.",
-      "result": null
+      "updated_at": "2026-11-20T19:02:49+00:00",
+      "note": "S51/S83/ATF используют единый допуск. PASS: регрессия отзыва в M32R, 11 пар ATF, 17 native, совместно с H03-03 38 сценариев и 80 IRQ/RTE. Полная компоновка FAIL_BINDINGS. Отчёт h03-02-shared-clock.md.",
+      "result": "5b195f4a2ac6d48862f063e957e07b6ef77db971"
     },
     "CAN-05": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -4187,9 +4187,17 @@
       "action": "claim",
       "claim_id": "f086342106b64dd7b09e8960948904da",
       "at": "2026-11-20T19:02:35+00:00"
+    },
+    {
+      "operation_id": "377a4c68497843618efd3a6067852fea",
+      "task": "H03-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "15ef4cba9c9a49b1acc46893d21aabad",
+      "at": "2026-11-20T19:02:49+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:02:35+00:00",
+  "updated_at": "2026-11-20T19:02:49+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
