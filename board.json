@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 192,
+  "sequence": 193,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -44,17 +44,18 @@
         "targets/lfj8/lfj8_h03_dtc_rx_queue.h",
         "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
         "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
+        "verification/project-audit/dtc02-basiccan-order.md",
         "verification/project-audit/dtc02-basiccan.md",
         "verification/project-audit/dtc02-foreground.md",
         "verification/project-audit/dtc02-native-rx-hook.md",
         "verification/project-audit/dtc02-preclear-capture.md"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:39:00+00:00",
-      "note": "Точка RX 0x001534 проверена от OEM CAN0 0x004724: 15 пар, отдельный ACC-прогон и три контрольные подмены. Сток 32 и с тестовой обёрткой 220 байт на 0x732; полный стек открыт. ПК 35/71, M32R link 17, foreground 4 PASS на main b2ca79d. Отчёт verification/project-audit/dtc02-native-rx-hook.md. Привязка ниже 0x008000 и стенд открыты.",
-      "result": "0bee9be0b53146110b147ccd267fb44ba7147769"
+      "updated_at": "2026-11-20T16:40:57+00:00",
+      "note": "Два ожидающих слота RX14/15: единая выборка без записи CAN0, порядок по меткам CAN до FIFO. Проверю переполнение, оборот таймера, ложные входы и двухкадровый сеанс через CAN13.",
+      "result": null
     },
     "CAN-03": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -2046,9 +2047,17 @@
       "action": "review",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "at": "2026-11-20T16:40:44+00:00"
+    },
+    {
+      "operation_id": "d0a00dd6379b4645ad118eea6c5ae3b6",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "resume",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:40:57+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:40:44+00:00",
+  "updated_at": "2026-11-20T16:40:57+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
