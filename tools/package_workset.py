@@ -10,6 +10,7 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 
 ROOT = Path(__file__).resolve().parents[1]
+FIRMWARE_SIZES = {"tcm_h03": 524_288, "ecu_e4m3": 851_968}
 
 
 def git(*arguments: str) -> bytes:
@@ -36,7 +37,26 @@ def write_file(archive: ZipFile, name: str, content: bytes) -> dict:
     return {"path": name, "bytes": len(content), "sha256": sha256(content).hexdigest()}
 
 
-def create_workset(record_path: Path, output: Path) -> str:
+def verify_firmware_pair(produced: list[tuple[dict, bytes]]) -> None:
+    firmware = [(item, content) for item, content in produced
+                if PurePosixPath(item["path"]).suffix.lower() == ".bin"
+                or item["role"] in FIRMWARE_SIZES]
+    if len(firmware) != len(FIRMWARE_SIZES) or {item["role"] for item, _ in firmware} != FIRMWARE_SIZES.keys():
+        raise ValueError("Требуется по одному BIN для tcm_h03 и ecu_e4m3")
+    for item, content in firmware:
+        role = item["role"]
+        if (PurePosixPath(item["path"]).suffix.lower() != ".bin"
+                or len(content) != FIRMWARE_SIZES[role]):
+            raise ValueError(f"Неверное расширение или размер BIN для {role}")
+        labels = (item["file"], item["path"], item["status"])
+        if any("OFFLINE_ONLY" in label.upper() for label in labels) or content.startswith(b"\x7fELF"):
+            raise ValueError(f"Проверочный образ или ELF не подходит для комплекта BIN: {role}")
+        if (item.get("build_verified") is not True or item.get("model_verified") is not True
+                or type(item.get("hardware_verified")) is not bool):
+            raise ValueError(f"Требуются подтверждения сборки и модели и отдельный статус стенда: {role}")
+
+
+def create_workset(record_path: Path, output: Path, *, firmware_pair: bool = False) -> str:
     record = json.loads(record_path.read_text(encoding="utf-8-sig"))
     commit = git("rev-parse", "--verify", f"{record['source_commit']}^{{commit}}").decode().strip()
     if commit != record["source_commit"]:
@@ -49,6 +69,8 @@ def create_workset(record_path: Path, output: Path) -> str:
         if sha256(content).hexdigest() != item["sha256"]:
             raise ValueError(f"Файл сборки отличается от проверенного: {file}")
         produced.append((item, content))
+    if firmware_pair:
+        verify_firmware_pair(produced)
 
     buffer = BytesIO()
     with ZipFile(buffer, "w") as archive:
@@ -64,6 +86,9 @@ def create_workset(record_path: Path, output: Path) -> str:
         for item, content in produced:
             entry = write_file(archive, item["path"], content)
             entry.update(role=item["role"], status=item["status"])
+            if firmware_pair and item["role"] in FIRMWARE_SIZES:
+                for field in ("build_verified", "model_verified", "hardware_verified"):
+                    entry[field] = item[field]
             manifest["files"].append(entry)
         manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode()
         write_file(archive, "MANIFEST.json", manifest_bytes)
@@ -84,9 +109,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("record", type=Path, help="JSON с идентификацией проверенной сборки")
     parser.add_argument("output", type=Path, help="Путь к новому ZIP")
+    parser.add_argument(
+        "--firmware-pair", action="store_true",
+        help="Проверить наличие BIN ролей tcm_h03 и ecu_e4m3 и статусы их проверок",
+    )
     arguments = parser.parse_args()
     try:
-        digest = create_workset(arguments.record.resolve(), arguments.output.resolve())
+        digest = create_workset(arguments.record.resolve(), arguments.output.resolve(),
+                                firmware_pair=arguments.firmware_pair)
     except (OSError, ValueError, KeyError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"Сборка комплекта остановлена: {error}\n")
     print(f"{arguments.output} SHA-256 {digest}")
