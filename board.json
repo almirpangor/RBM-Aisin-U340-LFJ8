@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 51,
+  "sequence": 52,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -163,12 +163,12 @@
         "targets/lfj8/lfj8_h03_atf.h",
         "targets/lfj8/test_lfj8_h03_atf.c"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "claimed_at": "2026-11-20T15:54:09+00:00",
-      "updated_at": "2026-11-20T16:00:34+00:00",
-      "note": "Реализую обвязку штатных чтений и записей ATF, проверю парные прогоны OEM в M32R.",
-      "result": "cb64fe124bdd2602cf363ba463a6e01e591367c5"
+      "updated_at": "2026-11-20T16:05:24+00:00",
+      "note": "Семь точек ATF реализованы в ASM. Семь пар прогонов M32R PASS, включая новый отсчёт с тем же AN1. Целевые часы, карта памяти, замеры IRQ и тарировка открыты. Общий снимок аудита требует обновления интегратором.",
+      "result": "c2d2c9d2109476c01229f8830fdff21a57362e39"
     },
     "CAN-05": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -662,9 +662,17 @@
       "action": "heartbeat",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "at": "2026-11-20T16:04:54+00:00"
+    },
+    {
+      "operation_id": "a95dea0f77f84f1ca2cc218220247130",
+      "task": "H03-02",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "11e70992d32245529e20626f4b9bd867",
+      "at": "2026-11-20T16:05:24+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:04:54+00:00",
+  "updated_at": "2026-11-20T16:05:24+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
