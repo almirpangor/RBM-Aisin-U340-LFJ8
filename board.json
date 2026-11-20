@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 265,
+  "sequence": 266,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -316,12 +316,12 @@
         "controller/tests/test_shift_buttons.c",
         "verification/project-audit/mode01-button-rebaseline.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "7dfd6790e36a47d2a1e356338ffe82e8",
       "claimed_at": "2026-11-20T17:01:37+00:00",
-      "updated_at": "2026-11-20T17:04:05+00:00",
-      "note": "Регрессия на базовой библиотеке ПК и объекте M32R воспроизведена. После исправления отдельный тест M32R проходит 8 сценариев. Завершаю полный набор проверок и отчёт.",
-      "result": null
+      "updated_at": "2026-11-20T17:05:57+00:00",
+      "note": "Передаю исправление ложных фронтов после отклонённого или отсутствующего снимка. На исходной версии ошибка воспроизведена на ПК/M32R. Исправление: 8 сценариев ПК и M32R, полный ПК 35 шагов/71 тест, 17 компонентов M32R PASS. Отчёт verification/project-audit/mode01-button-rebaseline.md. При принятии учесть 3 изменённых файла в аудите и выполнить complete после публикации main. Оборудование и привязка MODE-02 открыты.",
+      "result": "6bbc342ce3f6a2a60a9b58f23044e7a6a02fbd31"
     },
     "TOY-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -2691,9 +2691,17 @@
       "action": "review",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T17:05:48+00:00"
+    },
+    {
+      "operation_id": "76fc1892f8474ee498ad8bb09e72110c",
+      "task": "MODE-01",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "review",
+      "claim_id": "7dfd6790e36a47d2a1e356338ffe82e8",
+      "at": "2026-11-20T17:05:57+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:05:48+00:00",
+  "updated_at": "2026-11-20T17:05:57+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
