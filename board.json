@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 722,
+  "sequence": 723,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -56,12 +56,12 @@
         "targets/lfj8/lfj8_h03_target_service.h",
         "verification/project-audit/can03-target-service-phase.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "1b7a53b2c91c49d481c892507323d9d9",
       "claimed_at": "2026-11-20T21:53:30+00:00",
-      "updated_at": "2026-11-20T22:04:24+00:00",
-      "note": "Проверены штатные CAN-вызовы, T6, диагностика, телеметрия и отзыв. Повторяю сценарий START/CANCEL и измеряю известный адресный состав.",
-      "result": null,
+      "updated_at": "2026-11-20T22:08:56+00:00",
+      "note": "Сервис H03 связан с application_binding, единым брокером, DTC IRQ и TML0/T6. M32R 22/22, ПК 41 шаг, Python 178 PASS + 1 skip, Bosch PASS_OFFLINE_ONLY. Открыты профиль/initialize/stop H03-03, общая компоновка и испытания на блоке. Отчёт verification/project-audit/can03-target-service-phase.md.",
+      "result": "cf5f2879f589a0fbf823b3948bdeb47f43fb5053",
       "based_on_reviews": []
     },
     "TOY-03": {
@@ -9093,9 +9093,36 @@
         "result": "98192034cc9888b95800f8f3b916a744172cc4ea",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "0a43cb7ba9b648f89560166a1bf8c83a",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "1b7a53b2c91c49d481c892507323d9d9",
+      "at": "2026-11-20T22:08:56+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 target service",
+        "branch": "codex/can03-target-service-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_storage.h",
+          "targets/lfj8/lfj8_h03_target_service.c",
+          "targets/lfj8/lfj8_h03_target_service.h",
+          "verification/project-audit/can03-target-service-phase.md"
+        ],
+        "stage": "review",
+        "claim_id": "1b7a53b2c91c49d481c892507323d9d9",
+        "claimed_at": "2026-11-20T21:53:30+00:00",
+        "updated_at": "2026-11-20T22:08:56+00:00",
+        "note": "Сервис H03 связан с application_binding, единым брокером, DTC IRQ и TML0/T6. M32R 22/22, ПК 41 шаг, Python 178 PASS + 1 skip, Bosch PASS_OFFLINE_ONLY. Открыты профиль/initialize/stop H03-03, общая компоновка и испытания на блоке. Отчёт verification/project-audit/can03-target-service-phase.md.",
+        "result": "cf5f2879f589a0fbf823b3948bdeb47f43fb5053",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:06:50+00:00",
+  "updated_at": "2026-11-20T22:08:56+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -10848,6 +10875,27 @@
       "based_on_reviews": [],
       "task": "DTC-03",
       "submitted_at": "2026-11-20T22:06:50+00:00"
+    },
+    "1b7a53b2c91c49d481c892507323d9d9": {
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex CAN-03 target service",
+      "branch": "codex/can03-target-service-fea1b366",
+      "files": [
+        "targets/lfj8/check_h03_can_monitor_revoke.py",
+        "targets/lfj8/lfj8_h03_storage.h",
+        "targets/lfj8/lfj8_h03_target_service.c",
+        "targets/lfj8/lfj8_h03_target_service.h",
+        "verification/project-audit/can03-target-service-phase.md"
+      ],
+      "stage": "review",
+      "claim_id": "1b7a53b2c91c49d481c892507323d9d9",
+      "claimed_at": "2026-11-20T21:53:30+00:00",
+      "updated_at": "2026-11-20T22:08:56+00:00",
+      "note": "Сервис H03 связан с application_binding, единым брокером, DTC IRQ и TML0/T6. M32R 22/22, ПК 41 шаг, Python 178 PASS + 1 skip, Bosch PASS_OFFLINE_ONLY. Открыты профиль/initialize/stop H03-03, общая компоновка и испытания на блоке. Отчёт verification/project-audit/can03-target-service-phase.md.",
+      "result": "cf5f2879f589a0fbf823b3948bdeb47f43fb5053",
+      "based_on_reviews": [],
+      "task": "CAN-03",
+      "submitted_at": "2026-11-20T22:08:56+00:00"
     }
   }
 }
