@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 468,
+  "sequence": 469,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -88,11 +88,11 @@
         "tools/package_workset.py",
         "verification/project-audit/rel01-offline-report-guard.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "955fa03480184bffadb909ff493f7946",
       "claimed_at": "2026-11-20T18:57:39+00:00",
-      "updated_at": "2026-11-20T19:02:12+00:00",
-      "note": "Упаковщик пары BIN распознаёт OFFLINE_ONLY по SHA из отчётов ST10 и соседнего manifest.json. 6 тестов упаковщика, ПК 37/116, сверка источников PASS. Реальный переименованный альтернативный Bosch отклонён; два ZIP доказательств совпали. Отчёт verification/project-audit/rel01-offline-report-guard.md. Целевая пара BIN открыта.",
+      "updated_at": "2026-11-20T19:23:07+00:00",
+      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
       "result": "982a46d7af0060426920137e0f130d6215e92d14"
     },
     "H03-03": {
@@ -4304,9 +4304,17 @@
       "action": "complete",
       "claim_id": "91dc6f6e798a4450860733fb188dbe9e",
       "at": "2026-11-20T19:22:47+00:00"
+    },
+    {
+      "operation_id": "6d00d71d26a8480c9470313bf53c0bd9",
+      "task": "REL-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "955fa03480184bffadb909ff493f7946",
+      "at": "2026-11-20T19:23:07+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:22:47+00:00",
+  "updated_at": "2026-11-20T19:23:07+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
