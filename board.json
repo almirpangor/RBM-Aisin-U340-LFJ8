@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 362,
+  "sequence": 363,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -381,21 +381,22 @@
       "result": "fd1c4a7fd479934eb2d6d0266462ad16a0b5a539"
     },
     "DTC-01": {
-      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex — снимок полей модели Chery в H03",
-      "branch": "codex/dtc01-shared-engine-snapshot-32e6ac79",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex — DTC-01, срок диагностического сеанса C0",
+      "branch": "codex/dtc01-session-timer-7bd19ea4",
       "files": [
-        "targets/lfj8/lfj8_h03_engine_feed.c",
-        "targets/lfj8/lfj8_h03_engine_feed.h",
-        "targets/lfj8/test_lfj8_h03_engine_feed.c",
-        "verification/project-audit/dtc01-shared-engine-snapshot.md"
+        "diagnostics/chery_dtc_link.c",
+        "diagnostics/chery_dtc_link.h",
+        "diagnostics/test_chery_dtc_link.c",
+        "diagnostics/verify_c0_session_timer.py",
+        "verification/project-audit/dtc01-c0-session-timer.md"
       ],
-      "stage": "done",
-      "claim_id": "57db4a43b5754a71a19f9ab77e4c69f4",
-      "claimed_at": "2026-11-20T17:00:49+00:00",
-      "updated_at": "2026-11-20T17:44:35+00:00",
-      "note": "袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md.",
-      "result": "6cdb95e861728cffbc7635d0d9f366a1d0fd51a4"
+      "stage": "in_progress",
+      "claim_id": "69ac904b985641cea43c72eba859a273",
+      "claimed_at": "2026-11-20T18:25:00+00:00",
+      "updated_at": "2026-11-20T18:25:00+00:00",
+      "note": "DTC-02 уже на review. В свободной DTC-01 проверяю отдельный таймер сеанса C0 по исходным инструкциям S03. Добавлю только подтверждённые условия истечения или точное доказательство внешнего ограничения.",
+      "result": null
     },
     "VSS-01": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -3472,9 +3473,17 @@
       "action": "heartbeat",
       "claim_id": "7247550aeb1e414987b6eb6a1a7b27bd",
       "at": "2026-11-20T18:24:31+00:00"
+    },
+    {
+      "operation_id": "2d8b6b73cee145cdb8f0b47419b4d8fb",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "69ac904b985641cea43c72eba859a273",
+      "at": "2026-11-20T18:25:00+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:24:31+00:00",
+  "updated_at": "2026-11-20T18:25:00+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
