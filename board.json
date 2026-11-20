@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 426,
+  "sequence": 427,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -421,8 +421,8 @@
       "stage": "in_progress",
       "claim_id": "8618b77e068c469baa54217bf3b2f9f2",
       "claimed_at": "2026-11-20T18:47:57+00:00",
-      "updated_at": "2026-11-20T18:47:57+00:00",
-      "note": "Bind native CAN recovery to the existing CAN owner and commissioned inhibit contract. Resolve typed storage aliases in the layout model and recheck release blockers without touching reserved application or RAM files.",
+      "updated_at": "2026-11-20T18:53:05+00:00",
+      "note": "Отзыв CAN и штатный запрет прошли 8 прямых и 12 сценариев холодного запуска и восстановления в M32R. Привязки RAM убрали шесть неопределённых символов из варианта CAN-03. Готовлю проверенную сводку компоновки и результат для объединения.",
       "result": null
     },
     "MODE-03": {
@@ -3978,9 +3978,17 @@
       "action": "heartbeat",
       "claim_id": "1589bd1e4830453f8a2572f3c6b98ff0",
       "at": "2026-11-20T18:48:50+00:00"
+    },
+    {
+      "operation_id": "28a6f42484204d1191e8af400ff665ff",
+      "task": "H03-05",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "heartbeat",
+      "claim_id": "8618b77e068c469baa54217bf3b2f9f2",
+      "at": "2026-11-20T18:53:05+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:48:50+00:00",
+  "updated_at": "2026-11-20T18:53:05+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
