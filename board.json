@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 376,
+  "sequence": 377,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -42,11 +42,11 @@
         "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
         "verification/project-audit/dtc02-target-foreground.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "7b194ec723ee434f9d361bebb30ba41a",
       "claimed_at": "2026-11-20T18:05:17+00:00",
-      "updated_at": "2026-11-20T18:18:41+00:00",
-      "note": "Для объединения с CAN-03 720bb64 и H03-03 7ced523: обвязка IRQ/foreground на общей очереди и паре часов, без второго владельца CAN. 18 сравнений H03, 0x732→0x722, смена поколения очищает кадр и сеанс. ПК 37/102, M32R 18, общие native 17/components 5. Открыты вызовы cold/foreground приложения, RAM, итоговая Flash и стенд. Отчёт dtc02-target-foreground.md.",
+      "updated_at": "2026-11-20T18:31:43+00:00",
+      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
       "result": "0a71a1ca6b8f84e246248eb6378166dddb9eeed3"
     },
     "CAN-03": {
@@ -3585,9 +3585,17 @@
       "action": "review",
       "claim_id": "e050fbd1bb5d4d14a3f58aac59b8cf86",
       "at": "2026-11-20T18:31:28+00:00"
+    },
+    {
+      "operation_id": "3b8722beef904483bec2e126ea6c73cb",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "complete",
+      "claim_id": "7b194ec723ee434f9d361bebb30ba41a",
+      "at": "2026-11-20T18:31:43+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:31:28+00:00",
+  "updated_at": "2026-11-20T18:31:43+00:00",
   "main_commit": "f36613136fffce586a2736c1ea043794784c5c6f",
   "catalog": [
     {
