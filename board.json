@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 317,
+  "sequence": 318,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -59,20 +59,29 @@
     },
     "CAN-03": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Codex CAN-03 reset generation",
-      "branch": "codex/can03-epoch-1120-c7e4",
+      "label": "Чат CAN — владелец поколения CAN0",
+      "branch": "codex/can03-generation-rx-1120-c7e4",
       "files": [
         "targets/lfj8/check_h03_can_lifecycle.py",
+        "targets/lfj8/check_h03_can_owner.py",
+        "targets/lfj8/check_h03_torque_tx_gate.py",
         "targets/lfj8/h03_can0_setup_hook.S",
+        "targets/lfj8/h03_can13_tx_gate.S",
         "targets/lfj8/h03_can_lifecycle_test.S",
-        "verification/project-audit/can03-native-epoch.md"
+        "targets/lfj8/h03_torque_tx_gate_fixture.S",
+        "targets/lfj8/lfj8_donor_io.c",
+        "targets/lfj8/lfj8_donor_io.h",
+        "targets/lfj8/lfj8_h03_can_owner.c",
+        "targets/lfj8/lfj8_h03_can_owner.h",
+        "targets/lfj8/test_lfj8_h03_can_owner.c",
+        "verification/project-audit/can03-owner-recovery.md"
       ],
-      "stage": "done",
-      "claim_id": "0b028669dc7e44b69526dde8046610db",
-      "claimed_at": "2026-11-20T16:36:31+00:00",
-      "updated_at": "2026-11-20T17:37:21+00:00",
-      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
-      "result": "6fc5a51975cd6bbbdf5bc4985d5d61b811435b6b"
+      "stage": "in_progress",
+      "claim_id": "dcf0c14e62c842e1a210b316e85b93fa",
+      "claimed_at": "2026-11-20T18:01:51+00:00",
+      "updated_at": "2026-11-20T18:01:51+00:00",
+      "note": "Связать нативный setup и запрет OEM TX13 с единым состоянием. Допускать новое поколение после дренажа TX13/BasicCAN, сбросить очередь и проверить RX/foreground с отзывом при BusOff и потере владения.",
+      "result": null
     },
     "TOY-03": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -3108,9 +3117,17 @@
       "action": "claim",
       "claim_id": "da83556f0097488ba39c6ee642e4a002",
       "at": "2026-11-20T18:01:39+00:00"
+    },
+    {
+      "operation_id": "566988ed5d6d4636846630397ea5c762",
+      "task": "CAN-03",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "claim",
+      "claim_id": "dcf0c14e62c842e1a210b316e85b93fa",
+      "at": "2026-11-20T18:01:51+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:01:39+00:00",
+  "updated_at": "2026-11-20T18:01:51+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
