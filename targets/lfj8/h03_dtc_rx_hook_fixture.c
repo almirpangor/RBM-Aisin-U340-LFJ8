@@ -1,3 +1,87 @@
+#ifdef RBM_DTC_RX_TARGET_FIXTURE
+
+#include "lfj8_h03_dtc_target.h"
+#include "lfj8_h03_mmio.h"
+#ifdef RBM_DTC_RX_CAN_OWNER_FIXTURE
+#include "lfj8_h03_can_owner.h"
+#endif
+
+Lfj8H03DtcTarget fixture_target;
+Lfj8H03Can13Result fixture_foreground_result;
+uint32_t fixture_rx_high_probe;
+static Lfj8H03Can13 broker;
+static CheryDtcState dtc;
+
+#ifdef RBM_DTC_RX_CAN_OWNER_FIXTURE
+static Lfj8H03CanOwner owner;
+
+static bool rx_epoch(void *context, uint32_t *generation)
+{
+    return lfj8_h03_can_owner_rx_epoch(context, generation);
+}
+
+static Lfj8H03Can13Result poll_owner(void *context, Lfj8H03Can13 *can13, Lfj8H03DtcRxQueue *queue,
+                                     const Lfj8RegisterIo *io, Lfj8H03Can13Input *input,
+                                     const uint16_t *can_now, bool native_ready)
+{
+    return lfj8_h03_can_owner_poll(context, can13, queue, io, input, can_now, native_ready);
+}
+
+static void owner_setup_completed(void)
+{
+    lfj8_h03_can_owner_init(&owner);
+    owner.setup_generation = 7; /* The model supplies the native setup notification. */
+}
+#else
+static uint32_t owner;
+
+static bool rx_epoch(void *context, uint32_t *generation)
+{
+    *generation = *(const uint32_t *)context;
+    return true;
+}
+
+static Lfj8H03Can13Result poll_owner(void *context, Lfj8H03Can13 *can13, Lfj8H03DtcRxQueue *queue,
+                                     const Lfj8RegisterIo *io, Lfj8H03Can13Input *input,
+                                     const uint16_t *can_now, bool native_ready)
+{
+    input->generation = *(const uint32_t *)context;
+    input->owns_slot13 = native_ready;
+    lfj8_h03_dtc_rx_queue_reset(queue, io, input->generation);
+    return lfj8_h03_dtc_foreground_poll(can13, queue, io, input, can_now);
+}
+
+static void owner_setup_completed(void)
+{
+    owner = 7;
+}
+#endif
+
+static const Lfj8H03DtcCanOwnerOps owner_ops = {rx_epoch, poll_owner, &owner};
+
+void fixture_rx_init(void)
+{
+    const Lfj8H03Can13Config config = {
+        .torque_receive_age_bits = 4000, .diagnostic_receive_age_bits = 1024,
+        .max_poll_gap_us = 5000, .bit_time_us = 2,
+    };
+    lfj8_h03_dtc_target_unbind();
+    chery_dtc_init(&dtc);
+    if (lfj8_h03_can13_init(&broker, &config, 0) &&
+        lfj8_h03_dtc_target_init(&fixture_target, &broker, &lfj8_h03_mmio, &owner_ops,
+                                lfj8_h03_tml0ct_m32r, 4)) {
+        owner_setup_completed();
+    }
+}
+
+void fixture_rx_foreground(void)
+{
+    Lfj8H03Can13Input input = {.diagnostic_tick = 10, .owns_slot13 = 1, .dtc = &dtc};
+    fixture_foreground_result = lfj8_h03_dtc_target_poll(&fixture_target, &input, true);
+}
+
+#else
+
 #include "lfj8_h03_dtc_rx_queue.h"
 
 Lfj8H03DtcRxQueue fixture_rx_queue;
@@ -85,3 +169,5 @@ void rbm_h03_dtc_rx_observe(uint8_t slot)
     /* Exercise the wrapper's accumulator and condition-bit restore. */
     clobber_context(entry_psw);
 }
+
+#endif

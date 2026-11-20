@@ -87,6 +87,11 @@ _start:
     ldi r10,#10
     .p2align 2
 fixture_ready:
+#ifdef RBM_DTC_RX_TARGET_FIXTURE
+    bl fixture_rx_foreground
+    .global fixture_target_ready
+fixture_target_ready:
+#endif
 #ifdef RBM_DTC_RX_RESIDENT_FIXTURE
     ld24 r0,#fixture_update_arguments
     ld r4,@r0
@@ -119,7 +124,15 @@ fixture_ready:
     mvfaclo r2
 #endif
 fixture_done:
+#ifdef RBM_DTC_RX_TARGET_FIXTURE
+    bl fixture_rx_foreground
+    .global fixture_target_done
+fixture_target_done:
+    bl fixture_rx_foreground
+    bra fixture_target_done
+#else
     bra fixture_done
+#endif
 #ifdef RBM_DTC_RX_RESIDENT_FIXTURE
     .section .bss.fixture_update,"aw",@nobits
     .p2align 2
@@ -193,11 +206,30 @@ def run_probe(run, work, debugger, commands):
 
 
 def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
-             compare_dispatch=False, high_probe=False, setup=()):
+             compare_dispatch=False, high_probe=False, setup=(), target=False, foreground=False,
+             reset_owner=False):
     pending = sum(slot_mask(slot) for slot in case.slots)
     commands = [
         "set confirm off", "target sim --memory-size 16M", "load",
         "tbreak *fixture_ready", "run",
+    ]
+    if target:
+        commands += [
+            "set {unsigned char}0x806ae6 = 6",
+            "set {unsigned short}0x801000 = 8",
+            "set {unsigned short}0x801002 = 0x0800",
+            "set {unsigned short}0x801008 = 0x1400",
+            "set {unsigned short}0x801010 = 0x8003",
+            "set {unsigned char}0x801028 = 0x1f",
+            "set {unsigned char}0x801029 = 0x3f",
+            "set {unsigned int}0x8003e0 = 5000",
+            f"set {{unsigned char}}{MSC + 14:#x} = 0x40",
+            f"set {{unsigned char}}{MSC + 15:#x} = 0x40",
+            "tbreak *fixture_target_ready", "continue",
+            trace("startup", "fixture_foreground_result.available",
+                  "fixture_target.queue.generation", "fixture_target.queue.count"),
+        ]
+    commands += [
         f"set {{unsigned short}}{SLIST:#x} = {pending:#x}",
         f"set {{unsigned short}}{EXTID:#x} = {case.extended:#x}",
         f"set {{unsigned int}}0x80851c = {MSC:#x}",
@@ -278,11 +310,16 @@ def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
               f"*(unsigned short*){SLIST:#x}"),
     ]
     if compare_hook:
-        received = "fixture_rx_queue.entries[$entry].delivery.received"
-        dispatch_trace = []
-        if compare_dispatch:
-            dispatch_trace.append(trace("dispatch", "fixture_rx_begins", "fixture_rx_paired_mask",
-                                        "fixture_rx_skips"))
+        queue = "fixture_target.queue" if target else "fixture_rx_queue"
+        received = f"{queue}.entries[$entry].delivery.received"
+        if target:
+            observation = [trace("target_queue", f"{queue}.count", f"{queue}.rejected")]
+        else:
+            observation = [trace("observer", "fixture_rx_calls", "fixture_rx_irq_enabled",
+                                 f"{queue}.count", f"{queue}.rejected")]
+            if compare_dispatch:
+                observation.append(trace("dispatch", "fixture_rx_begins", "fixture_rx_paired_mask",
+                                         "fixture_rx_skips"))
         commands += [
             trace("accumulator", "$r1", "$r2"),
             "set $probe = $stack_floor",
@@ -290,16 +327,35 @@ def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
             "set $probe = $probe + 4",
             "end",
             trace("stack", "$sp - $probe"),
-            trace("observer", "fixture_rx_calls", "fixture_rx_irq_enabled",
-                  "fixture_rx_queue.count", "fixture_rx_queue.rejected"),
-            *dispatch_trace,
+            *observation,
             "set $entry = 0",
-            "while $entry < fixture_rx_queue.count && $entry < 4",
+            f"while $entry < {queue}.count && $entry < 4",
             trace("delivery", f"{received}.generation", f"{received}.can_timestamp",
                   f"{received}.frame.id", f"{received}.frame.length",
                   *(f"{received}.frame.data[{i}]" for i in range(8))),
             "set $entry = $entry + 1",
             "end",
+        ]
+    if foreground:
+        commands += [
+            "tbreak *fixture_target_done", "continue",
+            trace("foreground", "fixture_foreground_result.available",
+                  "fixture_foreground_result.diagnostic_consumed", "fixture_target.queue.count",
+                  "*(unsigned char*)0x80105d", *bytes_at(0x8011d0, 14)),
+        ]
+    if reset_owner:
+        commands += [
+            "set owner.grant = 0", "set owner.setup_generation = 8",
+            f"set {{unsigned short}}{SLIST:#x} = 0",
+            f"set {{unsigned char}}{MSC + 13:#x} = 0",
+            f"set {{unsigned char}}{MSC + 14:#x} = 0x40",
+            f"set {{unsigned char}}{MSC + 15:#x} = 0x40",
+            "set {unsigned short}0x801008 = 0x1402",
+            "set {unsigned int}0x8003e0 = 5004",
+            "tbreak *fixture_target_done", "continue",
+            trace("new_generation", "owner.grant", "fixture_target.queue.generation",
+                  "fixture_target.queue.count", "fixture_foreground_result.diagnostic_consumed",
+                  "*(unsigned char*)0x80105d", "broker.diagnostic.link.session.mode_bits"),
         ]
     events = []
     for line in run_probe(run, work, debugger, commands).splitlines():
@@ -382,7 +438,8 @@ def cases(with_dispatch=False):
         ], paired_slots=1, paired_deliveries=(flow,))
 
 
-def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False):
+def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False, target=False,
+                       can_owner_dir=None):
     sites = [(HOOK_SITE, HOOK_STOCK, "rbm_h03_dtc_rx_hook", 0xFF000000)]
     if with_dispatch:
         sites.append((DISPATCH_SITE, DISPATCH_STOCK, "rbm_h03_dtc_rx_dispatch_hook", 0xFE000000))
@@ -391,9 +448,21 @@ def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False)
             raise ValueError(f"The H03 instruction at {site:#x} differs")
     sources = ("h03_dtc_rx_hook.S", "h03_dtc_rx_hook_fixture.c",
                "lfj8_h03_dtc_rx_queue.c", "lfj8_h03_dtc_can.c")
+    diagnostics = ROOT / "diagnostics"
+    header_dirs = [HERE, diagnostics]
+    if target:
+        sources += ("lfj8_h03_dtc_target.c", "lfj8_h03_dtc_foreground.c", "lfj8_h03_mmio.c",
+                    "lfj8_donor_io.c", "lfj8_h03_can13.c", "lfj8_h03_torque_can.c",
+                    "lfj8_h03_torque.c", "lfj8_chery_tx.c", "lfj8_bridge.c")
+        header_dirs.append(ROOT / "controller/vendor/toyota/include")
     for name in sources:
         shutil.copyfile(HERE / name, work / name)
-    for directory in (HERE, ROOT / "diagnostics"):
+    if target:
+        diagnostic_sources = ("chery_dtc.c", "chery_dtc_link.c", "chery_dtc_can.c")
+        for name in diagnostic_sources:
+            shutil.copyfile(diagnostics / name, work / name)
+        sources += diagnostic_sources
+    for directory in header_dirs:
         for path in directory.glob("*.h"):
             shutil.copyfile(path, work / path.name)
     (work / "fixture.ld").write_text(RESIDENT_LAYOUT if resident else HOOK_LAYOUT, encoding="ascii")
@@ -402,6 +471,13 @@ def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False)
     if with_dispatch:
         defines.append("-DRBM_DTC_RX_DISPATCH_FIXTURE")
         roots.append("-Wl,--undefined=rbm_h03_dtc_rx_dispatch_hook")
+    if target:
+        defines.append("-DRBM_DTC_RX_TARGET_FIXTURE")
+    if can_owner_dir:
+        for name in ("lfj8_h03_can_owner.c", "lfj8_h03_can_owner.h", "lfj8_donor_io.c", "lfj8_donor_io.h"):
+            shutil.copyfile(can_owner_dir / name, work / name)
+        sources += ("lfj8_h03_can_owner.c",)
+        defines.append("-DRBM_DTC_RX_CAN_OWNER_FIXTURE")
     if resident:
         if int.from_bytes(rom[CAN0_IRQ_TABLE_WORD:CAN0_IRQ_TABLE_WORD + 4], "big") != CAN0_IRQ_ENTRY:
             raise ValueError("Unexpected H03 CAN0 IRQ table entry")
@@ -568,8 +644,54 @@ def probe_lower_page_selections(run, work, debugger):
     return selections
 
 
-def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=False):
-    with_rx_dispatch = with_rx_dispatch or resident
+def check_target_foreground(run, work, debugger, patches, with_can_owner=False):
+    case = next(case for case in cases() if case.name == "rx14_session")
+    trace_events = simulate(run, work, debugger, case, compare_hook=True, patches=patches,
+                            compare_dispatch=True, target=True, foreground=True)
+    reply = [row for row in trace_events if row[0] == "foreground"]
+    expected = (1, 1, 0, 0x80)
+    if len(reply) != 1 or reply[0][1:5] != expected:
+        raise ValueError(f"The diagnostic request did not reach CAN13 TX: {reply}")
+    slot = reply[0][5:]
+    can_id = ((slot[0] & 0x1F) << 6) | (slot[1] & 0x3F)
+    if (can_id, slot[5], slot[6:14]) != (0x722, 8, (2, 0x50, 0x86, 0, 0, 0, 0, 0)):
+        raise ValueError(f"Unexpected native diagnostic reply in slot 13: {slot}")
+
+    (work / "erased-app.dat").write_bytes(b"\xff" * (FLASH_LIMIT - APP_START))
+    bypass = {
+        "unbound": ("set irq_target = 0",),
+        "programming_with_erased_application": (
+            f"set {{unsigned char}}{PROGRAMMING_MODE:#x} = 1",
+            f"restore erased-app.dat binary {APP_START:#x}",
+        ),
+    }
+    for name, setup in bypass.items():
+        stock = simulate(run, work, debugger, case, compare_hook=True, compare_dispatch=True,
+                         target=True, setup=setup)
+        wrapped = simulate(run, work, debugger, case, compare_hook=True, patches=patches,
+                           compare_dispatch=True, target=True, setup=setup)
+        if split_stack_observation(wrapped)[0] != split_stack_observation(stock)[0]:
+            raise ValueError(f"The target altered the OEM receive path in {name}")
+    result = {"request_id": "0x732", "reply_id": f"0x{can_id:03X}", "reply": bytes(slot[6:14]).hex(),
+              "consumed": True, "tx13_submission": True, "oem_bypass_comparisons": list(bypass)}
+    if with_can_owner:
+        both = next(case for case in cases(True) if case.name == "both_slots_pending")
+        events = simulate(run, work, debugger, both, compare_hook=True, patches=patches,
+                          compare_dispatch=True, target=True, foreground=True, reset_owner=True)
+        before = [row[1:5] for row in events if row[0] == "foreground"]
+        after = [row for row in events if row[0] == "new_generation"]
+        if before != [(1, 1, 1, 0x80)] or after != [("new_generation", 1, 8, 0, 0, 0x40, 0x9F)]:
+            raise ValueError(f"The old queue or diagnostic session survived CAN reset: {before}, {after}")
+        result["native_owner_restart"] = {
+            "new_generation": 8, "old_frames_retained": 0, "default_session_mode": "0x9F",
+            "post_reset_tx13_submission": False,
+        }
+    return result
+
+
+def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=False, target=False,
+          can_owner_dir=None):
+    with_rx_dispatch = with_rx_dispatch or resident or target
     with_rx_hook = with_rx_hook or with_rx_dispatch
     identity = identify_h03(base)
     rom = base.read_bytes()
@@ -590,7 +712,8 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=Fal
         (work / "fixture.S").write_text(FIXTURE, encoding="ascii")
         patches = {}
         if with_rx_hook:
-            patches, code_end = build_hook_fixture(run, work, gcc, rom, with_rx_dispatch, resident)
+            patches, code_end = build_hook_fixture(run, work, gcc, rom, with_rx_dispatch, resident,
+                                                  target, can_owner_dir)
         else:
             (work / "fixture.ld").write_text(LAYOUT, encoding="ascii")
             run(gcc, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,fixture.ld", "fixture.S", "-o", "fixture.elf")
@@ -598,10 +721,13 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=Fal
         hook_cases = {}
         for case in cases(with_rx_dispatch):
             stock = simulate(run, work, debugger, case, compare_hook=with_rx_hook,
-                             compare_dispatch=with_rx_dispatch)
+                             compare_dispatch=with_rx_dispatch, target=target)
+            if target and stock[0:1] != [("startup", 1, 7, 0)]:
+                raise ValueError(f"{case.name}: CAN foreground did not admit the fresh empty queue")
             if with_rx_hook:
                 stock, stock_depth = split_stack_observation(stock)
-            observer_events = ("observer", "context", "accumulator", "dispatch", "dispatch_entry")
+            observer_events = ("observer", "context", "accumulator", "dispatch", "dispatch_entry",
+                               "target_queue", "startup")
             actual = [event for event in stock if event[0] not in observer_events]
             pending = slot_mask(case.overwrite.slot) if case.overwrite else 0
             expected = [*case.expected, ("return", 1, 0x9FFFFC, 8, 9, 10, pending)]
@@ -612,12 +738,16 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=Fal
                 empty = [("observer", 0, 0, 0, 0)]
                 if with_rx_dispatch:
                     empty.append(("dispatch", 0, 0, 0))
+                if target:
+                    empty = [("target_queue", 0, 0)]
                 if stock[-len(empty):] != empty:
                     raise ValueError(f"{case.name}: the unmodified H03 called the observer")
                 wrapped = simulate(run, work, debugger, case, compare_hook=True, patches=patches,
-                                   compare_dispatch=with_rx_dispatch)
+                                   compare_dispatch=with_rx_dispatch, target=target)
                 wrapped, wrapped_depth = split_stack_observation(wrapped)
                 expected_tail = expected_observation(case, with_rx_dispatch)
+                if target:
+                    expected_tail = [("target_queue", *expected_tail[0][-2:]), *expected_tail[2:]]
                 expected_hook = [*stock[:-len(empty)], *expected_tail]
                 if wrapped != expected_hook:
                     raise ValueError(f"{case.name}, with hook:\nexpected {expected_hook}\nobserved {wrapped}")
@@ -626,7 +756,9 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=Fal
                     "stock_stack_bytes_written": stock_depth,
                     "hook_stack_bytes_written": wrapped_depth,
                 }
-        if with_rx_hook:
+        if target:
+            dialogue = check_target_foreground(run, work, debugger, patches, can_owner_dir is not None)
+        elif with_rx_hook:
             single_rx = next(case for case in cases() if case.name == "rx14_session")
             high_word = compare_high_word(run, work, debugger, single_rx, patches, with_rx_dispatch)
         if resident:
@@ -650,8 +782,9 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=Fal
             "matched_context": REGISTERS,
             "paired_cases": len(hook_cases),
             "all_observations": hook_cases,
-            "high_accumulator_probe": high_word,
         }
+        if not target:
+            result["simulator_hook"]["high_accumulator_probe"] = high_word
     if with_rx_dispatch:
         result["simulator_hook"]["dispatch_site"] = f"0x{DISPATCH_SITE:06X}"
         result["simulator_hook"]["dispatch_entry"] = "0x0013F0"
@@ -677,6 +810,9 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=Fal
             "actual_virtual_flash_mapping_modelled": False,
             "target_ram_ownership_verified": False,
         }
+    if target:
+        result["target_foreground"] = dialogue
+        result["target_foreground"]["can_owner_implementation"] = "CAN-03" if can_owner_dir else "fixture"
     return result
 
 
@@ -692,23 +828,33 @@ def main():
                        help="Compare the ordered pair and per-attempt hooks together")
     modes.add_argument("--with-resident-rx", action="store_true",
                        help="Verify both hooks with code and constants below H03 application Flash")
+    modes.add_argument("--with-target-rx", action="store_true",
+                       help="Run the target binding and CAN13 foreground from the native RX path")
+    parser.add_argument("--can-owner-dir", type=Path,
+                        help="Use CAN-03 owner and donor I/O sources from this targets/lfj8 directory")
     args = parser.parse_args()
+    if args.can_owner_dir and not args.with_target_rx:
+        parser.error("--can-owner-dir requires --with-target-rx")
     if args.out and (args.out.suffix.lower() != ".json" or args.out.resolve() == args.base.resolve()):
         parser.error("--out must be a separate JSON report")
     try:
         result = check(args.base, args.gcc.resolve(), args.with_rx_hook,
-                       with_rx_dispatch=args.with_rx_dispatch, resident=args.with_resident_rx)
+                       with_rx_dispatch=args.with_rx_dispatch, resident=args.with_resident_rx,
+                       target=args.with_target_rx, can_owner_dir=args.can_owner_dir)
         if args.out:
             args.out.parent.mkdir(parents=True, exist_ok=True)
             args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
         print(f"PASS: {result['executed_cases']} H03 BasicCAN RX cases (M32R CPU simulator)")
         if "simulator_hook" in result:
             print(f"PASS: {result['simulator_hook']['paired_cases']} stock/hook comparisons")
+        if "high_accumulator_probe" in result.get("simulator_hook", {}):
             print("PASS: high accumulator operand, instruction and return probe")
         if args.with_resident_rx:
             print(f"PASS: {len(result['resident_layout']['bypass_cases'])} resident RX bypass comparisons")
             print("PASS: H03 write and erase admission at the resident RX boundary")
             print("PASS: H03 Virtual Flash register probes for the lower RX pages")
+        if args.with_target_rx:
+            print("PASS: native BasicCAN RX -> target foreground -> CAN13 0x722")
     except subprocess.CalledProcessError as error:
         detail = b"\n".join(filter(None, (error.stdout, error.stderr))) or str(error).encode()
         parser.exit(1, detail.decode(errors="replace") + "\n")

@@ -13,7 +13,8 @@ from check_h03_link import HERE, ROOT, TARGET, elf_info
 LFJ8_SOURCES = (
     "lfj8_bridge.c", "lfj8_donor_io.c", "lfj8_chery_tx.c", "lfj8_h03_torque.c",
     "lfj8_h03_torque_can.c", "lfj8_h03_dtc_can.c", "lfj8_h03_can13.c",
-    "lfj8_h03_dtc_rx_queue.c", "lfj8_h03_dtc_foreground.c", "test_lfj8_h03_dtc_foreground.c",
+    "lfj8_h03_dtc_rx_queue.c", "lfj8_h03_dtc_foreground.c", "lfj8_h03_dtc_target.c",
+    "test_lfj8_h03_dtc_foreground.c",
 )
 DIAGNOSTIC_SOURCES = ("chery_dtc.c", "chery_dtc_can.c", "chery_dtc_link.c")
 FLAGS = ("-std=c11", "-O2", "-Wall", "-Wextra", "-Werror",
@@ -56,7 +57,7 @@ def check(compiler, controller):
                 "-o", executable)
             output = run(executable)
         if (not output.startswith("PASS H03 DTC foreground:") or "\nPASS BasicCAN pair:" not in output
-                or "\nPASS BasicCAN dispatch markers:" not in output):
+                or "\nPASS BasicCAN dispatch markers:" not in output or "\nPASS H03 DTC target:" not in output):
             raise ValueError(f"The fixture did not report a passing result: {output}")
         return output
 
