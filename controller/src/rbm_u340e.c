@@ -44,7 +44,11 @@ uint8_t rbm_u340e_selector_sample(RbmU340eSelectorInput *state, uint16_t adc)
 
 int rbm_u340e_init(RbmU340eController *controller, const RbmU340ePolicy *policy)
 {
-    if (!controller || !policy || policy->initial_mode > RBM_U340E_TIPTRONIC ||
+    if (!controller) {
+        return 0;
+    }
+    controller->initialized = 0u;
+    if (!policy || policy->initial_mode > RBM_U340E_TIPTRONIC ||
         policy->initial_overdrive_enabled > 1 ||
         (policy->manual_selectors & ~RBM_U340E_FORWARD_SELECTORS) ||
         (policy->overdrive_limit_modes & ~OVERDRIVE_MODE_MASK)) {
@@ -55,6 +59,7 @@ int rbm_u340e_init(RbmU340eController *controller, const RbmU340ePolicy *policy)
     initial.policy = *policy;
     initial.mode = policy->initial_mode;
     initial.overdrive_enabled = policy->initial_overdrive_enabled;
+    initial.initialized = 1u;
     *controller = initial;
     return 1;
 }
@@ -138,7 +143,7 @@ int rbm_u340e_step(RbmU340eController *controller, const RbmU340eInput *input,
         return 0;
     }
     *output = (RbmU340eOutput){0};
-    if (!controller) {
+    if (!controller || controller->initialized != 1u) {
         return 0;
     }
     if (!input || controller->mode > RBM_U340E_TIPTRONIC ||
