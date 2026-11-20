@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 371,
+  "sequence": 372,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -575,8 +575,8 @@
       "stage": "in_progress",
       "claim_id": "e050fbd1bb5d4d14a3f58aac59b8cf86",
       "claimed_at": "2026-11-20T18:22:47+00:00",
-      "updated_at": "2026-11-20T18:22:47+00:00",
-      "note": "Test the app-only H03 isolation boundary: cancel deferred writes and disable an existing map under exclusion, verify stock CAN can reopen the monitor, and replay warm reset under the application-entry overlay.",
+      "updated_at": "2026-11-20T18:29:08+00:00",
+      "note": "Application-only filter installer and quiesce pass M32R. Exact CAN reinitialization restores both broader masks; warm reset reaches marker check with bank 08 still active. Preparing integration evidence.",
       "result": null
     }
   },
@@ -3548,9 +3548,17 @@
       "action": "heartbeat",
       "claim_id": "a36532debaa64238a1ee2b84f37624a1",
       "at": "2026-11-20T18:29:01+00:00"
+    },
+    {
+      "operation_id": "93552f2a53c149599920ec5b9805b424",
+      "task": "REL-02",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "heartbeat",
+      "claim_id": "e050fbd1bb5d4d14a3f58aac59b8cf86",
+      "at": "2026-11-20T18:29:08+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:29:01+00:00",
+  "updated_at": "2026-11-20T18:29:08+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
