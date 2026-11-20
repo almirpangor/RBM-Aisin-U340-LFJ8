@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:40:45+00:00**. Изменение № **290**.
+Обновлено UTC: **2026-11-20T17:42:09+00:00**. Изменение № **291**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -35,7 +35,7 @@
 | VSS-02 — Кинематика и параметры реальной скорости | На проверке | Codex VSS-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss02-measurement-check-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:37:13+00:00 | Сверка TML0 по независимому времени и допуску ppm, перенос, неправильная частота и остановка проверены. PC 35 шагов/82 теста, M32R 17 компонентов PASS. Реальная частота TML0 и стенд открыты, отчёт verification/project-audit/vss02-measurement-check.md. / commit 0ce144d22b18682e3384b05ec602224f8ec6d159 |
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
 | MODE-01 — Логика шести положений и кнопок | На проверке | Codex MODE-01 — восстановление кнопок после отказа входа \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode01-button-rebaseline-01a1f9c7 | 2026-11-20T17:05:57+00:00 | Передаю исправление ложных фронтов после отклонённого или отсутствующего снимка. На исходной версии ошибка воспроизведена на ПК/M32R. Исправление: 8 сценариев ПК и M32R, полный ПК 35 шагов/71 тест, 17 компонентов M32R PASS. Отчёт verification/project-audit/mode01-button-rebaseline.md. При принятии учесть 3 изменённых файла в аудите и выполнить complete после публикации main. Оборудование и привязка MODE-02 открыты. / commit 6bbc342ce3f6a2a60a9b58f23044e7a6a02fbd31 |
-| MODE-02 — Подключение селектора, Tiptronic и Overdrive | На проверке | Codex MODE-02 — публикация ADC H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode02-h03-selector-01a1f9c7 | 2026-11-20T16:37:36+00:00 | Передаю интегратору привязку публикации AN2 к штатной записи H03: 4 пары и 3 отрицательные проверки M32R, ПК 35 шагов/71 тест, M32R link и 17 компонентов PASS. Отчёт verification/project-audit/mode02-h03-selector-adc.md. При приёмке внести 3 новых файла в общий аудит и выполнить complete после публикации main. Штатный callback, часы/стек, кнопки и стенд остаются открыты. / commit f92fde84f590460d713dee020ee5ddc6ccd089e4 |
+| MODE-02 — Подключение селектора, Tiptronic и Overdrive | Работа завершена | Codex MODE-02 — публикация ADC H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode02-h03-selector-01a1f9c7 | 2026-11-20T17:42:09+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit f92fde84f590460d713dee020ee5ddc6ccd089e4 |
 | MODE-03 — Окончательная политика режимов | На проверке | Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T16:27:03+00:00 | Штатная матрица ПК: 128 конфигураций запуска и 501 760 сценариев заявок PASS. Все 35 шагов ПК прошли; донорский тест S03 повторён отдельно с проверенным входом. Интегратору: учесть новые файлы и отчёт verification/project-audit/mode03-policy-matrix.md в аудите. Политика выпуска и подключение к циклу H03 открыты. / commit dd4fdbc2862093359df9329d7e6e9ab211d13940 |
 | SRC-01 — Реестр происхождения и контроль исходников | На проверке | Codex SRC-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/src01-donor-pins-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:43:47+00:00 | Проверка pinned Git объектов R1–R4 добавлена. SOURCES: ТЗ, S01–S04, H03 и четыре ревизии PASS; два теста, совместимая команда R1 и отказ для неверного клона проверены. Отчёт verification/project-audit/src01-donor-pins.md; снимок для интегратора. / commit 72f71983154edb4dcc7f0b3dc931bebfdb0d9b6d |
 | AUD-01 — Программный аудит истории E4M3 | На проверке | Codex AUD-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/aud01-pinned-replay-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:47:07+00:00 | Трасса и инструменты из одного R4. Два повтора без checkout совпали с сохранёнными отчётами; 3256 CRC и 26 команд в каждом. Ordinary BOSCH и SOURCES PASS. Отчёт verification/project-audit/aud01-pinned-replay.md; стенд ECU-02 открыт. / commit 6748075bd8cda69a0b6c2b9d6e2a471a00463434 |
@@ -126,15 +126,6 @@
 - controller/src/rbm_u340e.c
 - controller/tests/test_shift_buttons.c
 - verification/project-audit/mode01-button-rebaseline.md
-
-### MODE-02
-
-Чат: Codex MODE-02 — публикация ADC H03. Claim ID: e02562d3b21f423d914c1c00a9c88077.
-
-- targets/lfj8/check_h03_selector_adc.py
-- targets/lfj8/h03_selector_adc_fixture.c
-- targets/lfj8/h03_selector_adc_hook.S
-- verification/project-audit/mode02-h03-selector-adc.md
 
 ### MODE-03
 
@@ -230,6 +221,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:42:09+00:00 | MODE-02 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T17:40:45+00:00 | CAN-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T17:40:25+00:00 | TOY-02 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:40:03+00:00 | DTC-03 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
@@ -259,4 +251,3 @@
 | 2026-11-20T17:05:16+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T17:04:19+00:00 | CAN-02 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T17:04:05+00:00 | MODE-01 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
-| 2026-11-20T17:03:52+00:00 | VSS-01 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
