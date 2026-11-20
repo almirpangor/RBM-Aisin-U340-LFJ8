@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 291,
+  "sequence": 292,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -282,11 +282,11 @@
         "controller/tests/test_controller.c",
         "verification/project-audit/toy05-recovery-policy.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "5e8a320b9b764646ac4a68af00a061dd",
       "claimed_at": "2026-11-20T16:53:04+00:00",
-      "updated_at": "2026-11-20T16:57:40+00:00",
-      "note": "Восстановление после повреждения записи сброса адаптаций проверено на ПК и M32R. Отчёт verification/project-audit/toy05-recovery-policy.md. Запуск H03 и страницы NVM открыты. Снимок аудита и реестр передаю интегратору.",
+      "updated_at": "2026-11-20T17:42:29+00:00",
+      "note": "袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md.",
       "result": "8d6a6f1f62d70c827531f672c98d309e708df595"
     },
     "CAN-04": {
@@ -2898,9 +2898,17 @@
       "action": "complete",
       "claim_id": "e02562d3b21f423d914c1c00a9c88077",
       "at": "2026-11-20T17:42:09+00:00"
+    },
+    {
+      "operation_id": "7f64920bca074ad89b0b0e737dc81733",
+      "task": "TOY-05",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "5e8a320b9b764646ac4a68af00a061dd",
+      "at": "2026-11-20T17:42:29+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:42:09+00:00",
+  "updated_at": "2026-11-20T17:42:29+00:00",
   "main_commit": "320b72e41aa4a85815f2db8942f88f7050abb3f0",
   "catalog": [
     {
