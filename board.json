@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 37,
+  "sequence": 38,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -28,28 +28,19 @@
       "result": "2875ed80264fd7714d44047f849e2df4b04123ef"
     },
     "DTC-02": {
-      "owner": "codex-dtc02-01a1f76d-20261120",
-      "label": "Основной чат — приём диагностики CAN",
-      "branch": "codex/dtc-02-rx-20261120",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex — штатный RX BasicCAN H03",
+      "branch": "codex/dtc02-basiccan-7bd19ea4",
       "files": [
-        "README.md",
-        "data/project-tasks.json",
-        "docs/diagnostics-integration.md",
-        "docs/project-map.md",
-        "docs/working-set.md",
-        "targets/lfj8/check_h03_link.py",
-        "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
-        "targets/lfj8/lfj8_h03_dtc_rx_queue.h",
-        "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
-        "tools/build_pc_checks.py",
-        "verification/project-audit/"
+        "targets/lfj8/check_h03_dtc_basiccan.py",
+        "verification/project-audit/dtc02-basiccan.md"
       ],
-      "stage": "done",
-      "claim_id": "ed274f83f44345a3b9d759cf44aa6541",
-      "claimed_at": "2026-11-20T15:39:41+00:00",
-      "updated_at": "2026-11-20T15:48:07+00:00",
-      "note": "В main принята часть DTC-02: очередь с проверкой давности и поколения. 33 шага ПК, 17 M32R и GitHub Actions 44766797993 PASS. Остаток DTC-02 открыт: штатный когерентный RX, OEM-сервис и foreground. Резерв файлов освобождён.",
-      "result": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d"
+      "stage": "in_progress",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "claimed_at": "2026-11-20T16:00:26+00:00",
+      "updated_at": "2026-11-20T16:00:26+00:00",
+      "note": "Прогон штатного RX14/15 H03: момент очистки TRFIN, содержимое копии, потеря или перезапись и сохранение OEM-маршрута. Только изолированный прогон.",
+      "result": null
     },
     "CAN-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -508,9 +499,17 @@
       "action": "review",
       "claim_id": "b8f5993a9046405492ff005c31e01675",
       "at": "2026-11-20T16:00:19+00:00"
+    },
+    {
+      "operation_id": "0d89973fe42f4615a14fd829b0797e93",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:00:26+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:00:19+00:00",
+  "updated_at": "2026-11-20T16:00:26+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
