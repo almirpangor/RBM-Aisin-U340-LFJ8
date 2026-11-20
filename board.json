@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 254,
+  "sequence": 255,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -303,22 +303,21 @@
       "result": "e02095c6b8d294dacd71db21ea36f970019d0790"
     },
     "MODE-01": {
-      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Codex MODE-01",
-      "branch": "codex/mode01-1120-c7e4",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "label": "Codex MODE-01 — восстановление кнопок после отказа входа",
+      "branch": "codex/mode01-button-rebaseline-01a1f9c7",
       "files": [
+        "controller/include/rbm_u340e.h",
         "controller/src/rbm_u340e.c",
         "controller/tests/test_shift_buttons.c",
-        "model/u340.py",
-        "tests/test_u340.py",
-        "verification/project-audit/mode01-shift-conflict.md"
+        "verification/project-audit/mode01-button-rebaseline.md"
       ],
-      "stage": "done",
-      "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
-      "claimed_at": "2026-11-20T16:11:44+00:00",
-      "updated_at": "2026-11-20T16:31:25+00:00",
-      "note": "Reviewed shift-button conflict fix integrated in b2ca79d with PC/M32R evidence in integration-2. Released this reservation; hardware input and hydraulic execution remain open.",
-      "result": "ed33ea93653f7bcbc2c6f13736fe1424335085e6"
+      "stage": "in_progress",
+      "claim_id": "7dfd6790e36a47d2a1e356338ffe82e8",
+      "claimed_at": "2026-11-20T17:01:37+00:00",
+      "updated_at": "2026-11-20T17:01:37+00:00",
+      "note": "Проверяю и исправляю ложный фронт при первом корректном снимке после отклонения входа rbm_u340e_step. Регрессия MODE/UP/DOWN/OD на ПК и M32R, без изменения правил штатных нажатий.",
+      "result": null
     },
     "TOY-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -2600,9 +2599,17 @@
       "action": "heartbeat",
       "claim_id": "90cda8d0e88e47969f50d8225f329437",
       "at": "2026-11-20T17:01:25+00:00"
+    },
+    {
+      "operation_id": "1ff35759706440ee8f7474ec00b85f96",
+      "task": "MODE-01",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "7dfd6790e36a47d2a1e356338ffe82e8",
+      "at": "2026-11-20T17:01:37+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:01:25+00:00",
+  "updated_at": "2026-11-20T17:01:37+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
