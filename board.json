@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 34,
+  "sequence": 35,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -116,12 +116,12 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-phase-wait.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "claimed_at": "2026-11-20T15:51:48+00:00",
-      "updated_at": "2026-11-20T15:57:32+00:00",
-      "note": "Подключаю отзыв при ожидании без потребления события к проверке M32R.",
-      "result": "2584dd654ded6cfaae0d0ab65520eb443bcb8445"
+      "updated_at": "2026-11-20T15:59:46+00:00",
+      "note": "Добавлена проверка фазы без потребления с отзывом команды и inhibit. Сборки M32R, 17 компонентов, replay Bosch и реестр PASS. Штатная привязка к 008150 и аппаратный inhibit открыты.",
+      "result": "9fa9c8aa18cd88543ba464f98fc8f7fc6a21a7d1"
     },
     "H03-04": {
       "owner": "codex-h03-04-01a1f76d-20261120",
@@ -482,9 +482,17 @@
       "action": "review",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T15:59:20+00:00"
+    },
+    {
+      "operation_id": "7be9cd8cf1c84eeab6c364aeb01d6ae4",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "ef041474d8994309836820d6cd886071",
+      "at": "2026-11-20T15:59:46+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:59:20+00:00",
+  "updated_at": "2026-11-20T15:59:46+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
