@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 595,
+  "sequence": 596,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -574,12 +574,12 @@
         "verification/project-audit/rel02-h03-ram-owner.md",
         "verification/project-audit/rel02-h03-stack-admission.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "3fd1870717ff4cc684af517ec9f56903",
       "claimed_at": "2026-11-20T20:00:42+00:00",
-      "updated_at": "2026-11-20T20:11:22+00:00",
-      "note": "Продолжаю собственную порцию 8fcdf27. Подключаю к ram_owned живую проверку SPI и курсора PSW с заданными границами и резервом. Повторяю штатные доказательства DMA/SBI, верхнюю и нижнюю компоновку. Резерв H03-04 сохраняется.",
-      "result": null
+      "updated_at": "2026-11-20T20:20:04+00:00",
+      "note": "Нативный ram_owned проверяет живые SPI и курсор PSW. В точной ветви SBI наблюдались 40+4 байта; DMA0/1 подтверждён на штатной инициализации. Отбор штатной записи повторно показывает границу 0x8000. Совместный состав 96658 байт, окончательные привязки и аппаратная приёмка открыты.",
+      "result": "8af2346d908aab149ccf6c18a025e6f5880b8b35"
     }
   },
   "events": [
@@ -5342,9 +5342,17 @@
       "action": "review",
       "claim_id": "d06e51f28ad0459dbc4d456c75b56bb4",
       "at": "2026-11-20T20:18:13+00:00"
+    },
+    {
+      "operation_id": "bec3b98f700f41439f9141c5ae3a83c8",
+      "task": "REL-02",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "3fd1870717ff4cc684af517ec9f56903",
+      "at": "2026-11-20T20:20:04+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:18:13+00:00",
+  "updated_at": "2026-11-20T20:20:04+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
