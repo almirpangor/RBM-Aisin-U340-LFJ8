@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 611,
+  "sequence": 612,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -115,8 +115,8 @@
       "stage": "in_progress",
       "claim_id": "77e3f918a51449ab982b5ad578a53b85",
       "claimed_at": "2026-11-20T20:33:34+00:00",
-      "updated_at": "2026-11-20T20:33:34+00:00",
-      "note": "Отдельное определение rbm_h03_application_binding на существующий ABI с явным профилем запуска, типизированными полями RAM и сбросом AN2 перед фазами. Общий код и тест CAN-01 заняты, сохраняю его резерв.",
+      "updated_at": "2026-11-20T20:36:29+00:00",
+      "note": "Нативная привязка прошла M32R: отказ без RAM/часов, сброс AN2, штатная foreground-обёртка и отзыв срока. Повторяю полный штатный запуск и проверяю типизированные адреса.",
       "result": null,
       "based_on_reviews": [
         "c7107b9bc8974c67b7113c75529f935c"
@@ -5814,9 +5814,38 @@
           "15e6e783e4d74a5b9c000d3658becff0"
         ]
       }
+    },
+    {
+      "operation_id": "851ca748faa24eca8aa51f11c3f6264a",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "77e3f918a51449ab982b5ad578a53b85",
+      "at": "2026-11-20T20:36:29+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex H03-03 — нативная привязка приложения",
+        "branch": "codex/h03-03-application-binding-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/check_h03_application_binding.py",
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_application_binding.h",
+          "verification/project-audit/h03-03-native-binding.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "77e3f918a51449ab982b5ad578a53b85",
+        "claimed_at": "2026-11-20T20:33:34+00:00",
+        "updated_at": "2026-11-20T20:36:29+00:00",
+        "note": "Нативная привязка прошла M32R: отказ без RAM/часов, сброс AN2, штатная foreground-обёртка и отзыв срока. Повторяю полный штатный запуск и проверяю типизированные адреса.",
+        "result": null,
+        "based_on_reviews": [
+          "c7107b9bc8974c67b7113c75529f935c"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:34:46+00:00",
+  "updated_at": "2026-11-20T20:36:29+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
