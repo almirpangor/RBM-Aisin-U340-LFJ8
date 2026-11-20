@@ -141,7 +141,7 @@
     "targets/bosch/verify_tx.py": "3eee8e74a0a4b90bfe415e6f6f2e3ebfc35b5c076d2cc635857e18ae61ed8ec0",
     "targets/lfj8/audit_h03_irq_stack.py": "7e3d629f206000ed3d0c1edf076048ec54f3420c8496ac43df500896eb03d4e0",
     "targets/lfj8/build.py": "c028a4daf4c8f71cacf64fe4de37dc840b59dbfc7a2ddd48af1345de2498aa78",
-    "targets/lfj8/check_h03_can_lifecycle.py": "3ac8a992b42259fa656bdf6c0614c5977dc0d9a2185c75e9448b5ab4375049e2",
+    "targets/lfj8/check_h03_can_lifecycle.py": "af1c456b984b8b33c125a6083e632373583a2f588c792511d627eb1d6f719092",
     "targets/lfj8/check_h03_flash_policy.py": "a74efda1ecff15f7c5564ddf66698d251b6b75cc814e903f396484b75ca1b6f2",
     "targets/lfj8/check_h03_flash_residency.py": "95b297db910d81fc0fabe098d1bf57aa0e566800f2779e17056c7e407bbd65b1",
     "targets/lfj8/check_h03_foreground.py": "28de5adb44c77fa3e93c36e26ec5ecaa5a64f84023303c05a4642cb9ad1a44b1",
@@ -161,7 +161,7 @@
     "targets/lfj8/check_h03_toyota_stack.py": "cbd6e6a186545d537eae74b6c2afec0289d8da4c51cd21855e3024e33d803d60",
     "targets/lfj8/check_ta2005_engine_qualifier.py": "1eea8fde005a698d29ada3f49d431c7cda9e18ad38aef2e5155af76394771d60",
     "targets/lfj8/check_toyota_slu.py": "47eecc16db2b7e2347d7e3421ae751231284886c915781b53cb41b37cc9da8a0",
-    "targets/lfj8/h03_can_lifecycle_test.S": "0372abef4d04713e6f9319d78d8c1c5d88797e60ed76269f63be724459079300",
+    "targets/lfj8/h03_can_lifecycle_test.S": "c76c681c342e97a309415f49b0c6856901cca3412dbb31f3379ce7d633d3f4a4",
     "targets/lfj8/h03_foreground_test.S": "f17b1d2337936ab9e41a349bf5d85834479824b74b7febedee93b11c527c0b80",
     "targets/lfj8/h03_full_phase_fixture.c": "3414f8efc716a6ecd0f84b69f41a8a1da281264b860612e7c83b03dd3f70fa07",
     "targets/lfj8/h03_native_hooks.S": "5aad9d5f76b5fb12eacc56308072a2635db91872800d56e34215c66bb0a13f55",
@@ -286,6 +286,20 @@
     "verification/project-audit/dtc02-h03-link.json": "9b9acaf5b4f75c5bbbb1d6d0759143fcc29a4c0557985ecb52967ee3b2da1313",
     "verification/project-audit/source-guard-checks.json": "279bf820b80330e2c2a611a76e4cf5f119eaed478a24aa3e6497ea1294d6d742",
     "verification/project-audit/sources.txt": "1a5d35501c1e3267ffe263b04eff4fa298d0993b5187aa87dcd2c9791101cb7c",
-    "verification/project-audit/status-guard-checks.json": "56200f7c2138efb251e71926f61ab9207d858d90160130ad8991a56a0cd8a26a"
+    "verification/project-audit/status-guard-checks.json": "56200f7c2138efb251e71926f61ab9207d858d90160130ad8991a56a0cd8a26a",
+    "verification/e4m3-can-9e1c/h03-can-lifecycle.json": "0520e4e4352c5dbbbcea4de0bc6747e5aa640960fd6f14f1f2b3c711f846d2c1"
+  },
+  "can03_followup": {
+    "scope": "H03 OEM CAN0 lifecycle and TX13 writer in the M32R simulator",
+    "changed_fixtures": [
+      "targets/lfj8/check_h03_can_lifecycle.py",
+      "targets/lfj8/h03_can_lifecycle_test.S"
+    ],
+    "repeated_checks": {
+      "lifecycle_runs": 16,
+      "tx_writer_runs": 12
+    },
+    "result": "With CAN0 MMIO backed by RAM, OEM reconfiguration clears MSC13 and retains the seeded interrupt mask in all exercised paths.",
+    "limits": "Native application hookup and hardware timing remain open. No firmware algorithms or BINs changed."
   }
 }

@@ -38,7 +38,10 @@ static void accept_frame(Lfj8H03EngineRx *rx, Lfj8CanRxResult result, const Lfj8
     }
     if (result == LFJ8_CAN_RX_RECEIVED && frame->id == expected_id) {
         const uint16_t age = (uint16_t)(rx->last_can_tick - frame->timestamp);
-        if (age < rx->max_age_ticks) {
+        /* A slot may receive between the two drain reads. Until a full
+         * age window has elapsed, reject stamps at or before the anchor. */
+        if (age < rx->max_age_ticks &&
+            (rx->phase == LFJ8_H03_RX_ACTIVE || age < rx->time_ticks)) {
             const uint32_t captured_at = rx->time_ticks - age;
             ta2005_chery_inputs_receive(&rx->inputs, frame->id, 8u, frame->payload, &captured_at);
             return;
@@ -64,7 +67,7 @@ static void expire_inputs(Lfj8H03EngineRx *rx)
 
 static void start_clock(Lfj8H03EngineRx *rx, uint32_t now_us, uint16_t tick)
 {
-    rx->phase = LFJ8_H03_RX_ACTIVE;
+    rx->phase = LFJ8_H03_RX_CLOCK_WARMUP;
     rx->last_poll_us = now_us;
     rx->last_clock_advance_us = now_us;
     rx->last_can_tick = tick;
@@ -96,7 +99,7 @@ static unsigned poll_rx(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
         }
         return 0u;
     }
-    if (rx->phase == LFJ8_H03_RX_ACTIVE &&
+    if (rx->phase != LFJ8_H03_RX_DRAIN_PENDING &&
         now_us - rx->last_poll_us >= rx->max_poll_gap_us) {
         start_drain(rx, tick);
         return 0u;
@@ -130,6 +133,9 @@ static unsigned poll_rx(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
     }
     rx->last_can_tick = tick;
     rx->time_ticks += delta;
+    if (rx->phase == LFJ8_H03_RX_CLOCK_WARMUP && rx->time_ticks >= rx->max_age_ticks) {
+        rx->phase = LFJ8_H03_RX_ACTIVE;
+    }
     rx->last_poll_us = now_us;
     expire_inputs(rx);
     accept_frame(rx, rpm_result, &rpm, 0x0fau, TA2005_CHERY_SPEED);

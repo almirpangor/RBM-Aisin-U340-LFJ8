@@ -93,10 +93,140 @@ static void check_selector_clock(void)
     assert(!output.relay_mask && !output.requested_gear);
 }
 
+static RbmU340eOutput step_range_buttons(Lfj8RangeControl *control, Lfj8ButtonFilter *filter,
+    uint32_t now_us, const Lfj8ButtonReading *reading)
+{
+    const Lfj8SelectorAdcReading selector = {
+        .raw = 500, .captured_us = now_us, .event = LFJ8_SELECTOR_ADC_VALUE,
+    };
+    const RbmU340eInput input = {
+        .actual_gear = 2, .allowed_gears = 0x0f,
+        .stable_buttons = RBM_U340E_BUTTON_MODE, .buttons_valid = 1,
+    };
+    RbmU340eOutput output;
+    assert(lfj8_range_control_step_with_buttons(control, selector, filter, reading,
+        now_us, &input, &output));
+    return output;
+}
+
+static RbmU340eOutput capture_range_buttons(Lfj8RangeControl *control, Lfj8ButtonFilter *filter,
+    uint32_t now_us, uint8_t pressed)
+{
+    const Lfj8ButtonReading reading = {.captured_us = now_us, .pressed = pressed, .valid = 1};
+    return step_range_buttons(control, filter, now_us, &reading);
+}
+
+static void check_button_debounce(void)
+{
+    const RbmU340ePolicy policy = {
+        .manual_selectors = 1u << RBM_U340E_SELECTOR_D,
+        .initial_mode = RBM_U340E_AUTO, .initial_overdrive_enabled = 1,
+    };
+    Lfj8RangeControl control;
+    Lfj8ButtonFilter filter;
+    const uint32_t start = UINT32_MAX - 20u;
+    const uint8_t mode = RBM_U340E_BUTTON_MODE;
+    const uint8_t up = RBM_U340E_BUTTON_UP;
+    const uint8_t down = RBM_U340E_BUTTON_DOWN;
+    const uint8_t od = RBM_U340E_BUTTON_OVERDRIVE;
+
+    assert(lfj8_range_control_init(&control, &policy, 30));
+    assert(!lfj8_button_filter_init(&filter, 0, 30));
+    assert(!lfj8_button_filter_init(&filter, 8, 0));
+    assert(!lfj8_button_filter_init(&filter, 8, UINT32_C(0x80000000)));
+    assert(lfj8_button_filter_init(&filter, 8, 30));
+
+    assert(capture_range_buttons(&control, &filter, start, mode).mode == RBM_U340E_AUTO);
+    assert(capture_range_buttons(&control, &filter, start + 8, mode).mode == RBM_U340E_AUTO);
+    capture_range_buttons(&control, &filter, start + 9, 0);
+    capture_range_buttons(&control, &filter, start + 17, 0);
+    capture_range_buttons(&control, &filter, start + 18, mode);
+    capture_range_buttons(&control, &filter, start + 20, 0);
+    assert(capture_range_buttons(&control, &filter, start + 21, mode).mode == RBM_U340E_AUTO);
+    assert(capture_range_buttons(&control, &filter, start + 28, mode).mode == RBM_U340E_AUTO);
+    assert(capture_range_buttons(&control, &filter, start + 29, mode).mode == RBM_U340E_TIPTRONIC);
+    assert(capture_range_buttons(&control, &filter, start + 30, mode).mode == RBM_U340E_TIPTRONIC);
+
+    assert(!capture_range_buttons(&control, &filter, start + 31, up).requested_gear);
+    assert(!step_range_buttons(&control, &filter, start + 39, NULL).requested_gear);
+    assert(capture_range_buttons(&control, &filter, start + 40, up).requested_gear == 3);
+    assert(!capture_range_buttons(&control, &filter, start + 41, up).requested_gear);
+    capture_range_buttons(&control, &filter, start + 42, 0);
+    assert(!capture_range_buttons(&control, &filter, start + 43, up).requested_gear);
+    assert(!capture_range_buttons(&control, &filter, start + 51, up).requested_gear);
+    capture_range_buttons(&control, &filter, start + 52, 0);
+    capture_range_buttons(&control, &filter, start + 60, 0);
+    capture_range_buttons(&control, &filter, start + 61, up);
+    assert(capture_range_buttons(&control, &filter, start + 69, up).requested_gear == 3);
+    capture_range_buttons(&control, &filter, start + 70, down);
+    assert(capture_range_buttons(&control, &filter, start + 78, down).requested_gear == 1);
+    capture_range_buttons(&control, &filter, start + 79, 0);
+    capture_range_buttons(&control, &filter, start + 87, 0);
+    capture_range_buttons(&control, &filter, start + 88, up | down);
+    const RbmU340eOutput conflict = capture_range_buttons(&control, &filter, start + 96, up | down);
+    assert(conflict.conflicting_buttons && !conflict.requested_gear);
+    assert(!capture_range_buttons(&control, &filter, start + 97, od).overdrive_pressed);
+    const RbmU340eOutput overdrive = capture_range_buttons(&control, &filter, start + 105, od);
+    assert(overdrive.overdrive_pressed && !overdrive.overdrive_enabled);
+    assert(!capture_range_buttons(&control, &filter, start + 106, od).overdrive_pressed);
+}
+
+static void check_button_recovery(void)
+{
+    const RbmU340ePolicy policy = {
+        .manual_selectors = 1u << RBM_U340E_SELECTOR_D,
+        .initial_mode = RBM_U340E_TIPTRONIC,
+    };
+    Lfj8RangeControl control;
+    Lfj8ButtonFilter filter;
+    const uint8_t up = RBM_U340E_BUTTON_UP;
+    const uint8_t down = RBM_U340E_BUTTON_DOWN;
+
+    assert(lfj8_range_control_init(&control, &policy, 50));
+    assert(lfj8_button_filter_init(&filter, 8, 30));
+    capture_range_buttons(&control, &filter, 1, 0);
+    capture_range_buttons(&control, &filter, 9, 0);
+    capture_range_buttons(&control, &filter, 10, up);
+
+    Lfj8ButtonReading rejected = {.captured_us = 10, .pressed = down, .valid = 1};
+    assert(!step_range_buttons(&control, &filter, 18, &rejected).requested_gear);
+    rejected.captured_us = 8;
+    assert(!step_range_buttons(&control, &filter, 19, &rejected).requested_gear);
+    rejected.captured_us = 21;
+    assert(!step_range_buttons(&control, &filter, 20, &rejected).requested_gear);
+    assert(capture_range_buttons(&control, &filter, 21, up).requested_gear == 3);
+
+    const Lfj8ButtonReading lost = {.captured_us = 22, .valid = 0};
+    step_range_buttons(&control, &filter, 22, &lost);
+    capture_range_buttons(&control, &filter, 23, down);
+    assert(!capture_range_buttons(&control, &filter, 31, down).requested_gear);
+    capture_range_buttons(&control, &filter, 32, 0);
+    capture_range_buttons(&control, &filter, 40, 0);
+    capture_range_buttons(&control, &filter, 41, down);
+    assert(capture_range_buttons(&control, &filter, 49, down).requested_gear == 1);
+
+    /* A duplicate cannot refresh the lifetime. At the boundary a held value
+     * starts recovery even if the first capture after the gap is fresh. */
+    rejected = (Lfj8ButtonReading){.captured_us = 49, .pressed = down, .valid = 1};
+    step_range_buttons(&control, &filter, 78, &rejected);
+    capture_range_buttons(&control, &filter, 79, up);
+    assert(!capture_range_buttons(&control, &filter, 87, up).requested_gear);
+    capture_range_buttons(&control, &filter, 88, 0);
+    capture_range_buttons(&control, &filter, 96, 0);
+    capture_range_buttons(&control, &filter, 97, up);
+    assert(capture_range_buttons(&control, &filter, 105, up).requested_gear == 3);
+
+    capture_range_buttons(&control, &filter, 106, 0x80);
+    capture_range_buttons(&control, &filter, 107, down);
+    assert(!capture_range_buttons(&control, &filter, 115, down).requested_gear);
+}
+
 int main(int argc, char **argv)
 {
     verify_lfj8_selector_adc();
     check_selector_clock();
+    check_button_debounce();
+    check_button_recovery();
     assert(argc == 1 || argc == 3);
     uint8_t rpm_frame[8] = {0x12, 0xc0, 0xff, 0xff, 0x00, 0xff, 0x00, 0x00};
     uint8_t coolant_frame[8] = {0xb4, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};

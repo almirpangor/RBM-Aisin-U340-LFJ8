@@ -214,6 +214,68 @@ static void check_engine_main_publications(void)
     assert(gp_value(&runtime.gp, -7164, 2u) == 0u);
 }
 
+static void check_qualified_load_feed(void)
+{
+    RbmU340eRuntime runtime = {0};
+    FactoryHydraulics gp = {0};
+    const FactoryGearState gear = {.b5299 = 0xA7u, .u7202 = 123u};
+    assert(factory_hydraulics_set(&gp, -5299, 1u, gear.b5299));
+    assert(factory_hydraulics_set(&gp, -7202, 2u, 123u));
+    assert(rbm_u340e_runtime_init(&runtime, &gear, &gp));
+
+    RbmU340eQualifiedLoadFeed feed = {
+        .sampled_at = UINT32_MAX - 2u,
+        .gp_8270 = 79, .gp_8272 = 80, .gp_8306 = INT16_MIN,
+        .gp_8298 = -11, .gp_8302 = 1024, .gp_8310 = INT16_MAX,
+        .gp_9044 = -50, .gp_9030 = -200, .coherent = 1u,
+    };
+    assert(rbm_u340e_runtime_publish_load(&runtime, &feed, 2u, 5u));
+    assert(gp_value(&runtime.gp, -8270, 2) == 79);
+    assert(gp_value(&runtime.gp, -8272, 2) == 80);
+    assert(gp_value(&runtime.gp, -8306, 2) == 0x8000u);
+    assert(gp_value(&runtime.gp, -8298, 2) == 0xFFF5u);
+    assert(gp_value(&runtime.gp, -8302, 2) == 1024);
+    assert(gp_value(&runtime.gp, -8310, 2) == 0x7FFFu);
+    assert(gp_value(&runtime.gp, -9044, 2) == 0xFFCEu);
+    assert(gp_value(&runtime.gp, -9030, 2) == 0xFF38u);
+    assert(gp_value(&runtime.gp, -5299, 1) == 0xA5u);
+    assert(gp_value(&runtime.gp, -7202, 2) == 123u);
+
+    uint8_t request = 0;
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 0, &request) && request == 0x11u);
+    factory_hydraulics_load_main(&runtime.gp);
+    assert(gp_value(&runtime.gp, -7202, 2) == ((factory_load_code(79u) + 64u) & 0xFF80u));
+    assert(gp_value(&runtime.gp, -7200, 2) == ((factory_load_code(80u) + 64u) & 0xFF80u));
+    assert(gp_value(&runtime.gp, -7198, 2) == ((factory_load_code(150u) + 64u) & 0xFF80u));
+
+    const RbmU340eRuntime committed = runtime;
+    feed.gp_8270 = 300;
+    assert(!rbm_u340e_runtime_publish_load(&runtime, &feed, 3u, 5u));
+    assert(!rbm_u340e_runtime_publish_load(&runtime, &feed, 2u, UINT32_C(0x80000000)));
+    feed.sampled_at = 4u;
+    assert(!rbm_u340e_runtime_publish_load(&runtime, &feed, 3u, 5u));
+    feed.sampled_at = 3u;
+    feed.coherent = 0u;
+    assert(!rbm_u340e_runtime_publish_load(&runtime, &feed, 3u, 5u));
+    feed.coherent = 2u;
+    assert(!rbm_u340e_runtime_publish_load(&runtime, &feed, 3u, 5u));
+    feed.coherent = 1u;
+    feed.fallback_5299_bit1 = 2u;
+    assert(!rbm_u340e_runtime_publish_load(&runtime, &feed, 3u, 5u));
+    assert(!rbm_u340e_runtime_publish_load(&runtime, NULL, 3u, 5u));
+    assert(memcmp(&runtime, &committed, sizeof runtime) == 0);
+
+    feed.fallback_5299_bit1 = 1u;
+    assert(rbm_u340e_runtime_publish_load(&runtime, &feed, 3u, 0u));
+    assert(gp_value(&runtime.gp, -5299, 1) == 0xA7u);
+    assert(gp_value(&runtime.gp, -8270, 2) == 300u);
+    assert(rbm_u340e_runtime_secondary_load_qualify(&runtime, 0, &request) && request == 0u);
+    factory_hydraulics_load_main(&runtime.gp);
+    const uint16_t fallback = (uint16_t)((factory_load_code(786u) + 64u) & 0xFF80u);
+    assert(gp_value(&runtime.gp, -7202, 2) == fallback);
+    assert(gp_value(&runtime.gp, -7200, 2) == fallback);
+    assert(gp_value(&runtime.gp, -7198, 2) == fallback);
+}
 static void check_secondary_load_publication(void)
 {
     RbmU340eRuntime runtime = {0};
@@ -521,6 +583,7 @@ void rbm_test_runtime(void)
     check_workspace_overlap();
     check_live_stages();
     check_engine_main_publications();
+    check_qualified_load_feed();
     check_secondary_load_publication();
     check_standstill_drive(925, RBM_U340E_SELECTOR_P);
     check_standstill_drive(670, RBM_U340E_SELECTOR_N);

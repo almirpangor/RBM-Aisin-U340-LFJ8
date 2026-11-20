@@ -68,6 +68,30 @@ int rbm_u340e_runtime_main_coolant(RbmU340eRuntime *runtime,
 int rbm_u340e_runtime_main_engine_speed(RbmU340eRuntime *runtime,
                                       const RbmU340eMainEngineInputs *prepared);
 
+/* Coherent, source-qualified S01-domain operands for 054AB2 and 05518C.
+ * The producer must establish the scaling and fallback flag from evidence. */
+typedef struct {
+    uint32_t sampled_at; /* Oldest operand, in the caller's monotonic clock. */
+    int16_t gp_8270;
+    int16_t gp_8272;
+    int16_t gp_8306;
+    int16_t gp_8298;
+    int16_t gp_8302;
+    int16_t gp_8310;
+    int16_t gp_9044;
+    int16_t gp_9030;
+    uint8_t fallback_5299_bit1; /* Qualified donor mode, 0 or 1. */
+    uint8_t coherent;           /* Exactly 1 after producer qualification. */
+} RbmU340eQualifiedLoadFeed;
+
+/* Publish before releasing any load consumer for the sample. The serialized
+ * owner must reject the cycle on refusal and discard cached inputs on clock
+ * discontinuity. now and sampled_at wrap at 2^32; max_age is inclusive and
+ * must be below 2^31. Refusal leaves GP intact. Runtime and feed are disjoint. */
+int rbm_u340e_runtime_publish_load(RbmU340eRuntime *runtime,
+                                  const RbmU340eQualifiedLoadFeed *feed,
+                                  uint32_t now, uint32_t max_age);
+
 /* Toyota SECONDARY 054220 -> 05518C. Call once for each executed
  * SECONDARY before MAIN consumes the result. request_1120 is the persistent
  * donor byte, initialized by the caller, and must be disjoint from runtime.

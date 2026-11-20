@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "scope": "Synthetic packaging format only; no real BIN validation",
+  "negative_cases": [
+    "missing_role",
+    "duplicate_role",
+    "offline_label",
+    "bad_extension",
+    "unbuilt",
+    "unmodeled",
+    "not_boolean_hardware",
+    "wrong_size",
+    "elf_content",
+    "artifact_hash_mismatch"
+  ],
+  "deterministic_archive": true,
+  "all_archive_hashes_checked": true,
+  "hardware_verified": false
+}
