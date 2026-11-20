@@ -485,5 +485,147 @@
       "Original 040468 phase release and timestamp wrapper deliver the first project event after startup"
     ],
     "limits": "The loader decision, application path and first publication run in the simulator. Early peripheral routines, RAM permission, publication timing and the recovery body are fixture-controlled. No target BIN or hardware inhibit."
+  },
+  "pre_bin_ram_and_output_review": {
+    "model_main": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
+    "model_startup_branch": "7a0abe2c9b801c6efd9577e559abdbc0212757f2",
+    "service_verifier": "e4ac4b09967f7edf86cf2c1911218ba34e260b24",
+    "output_and_flash_verifiers": "5813eaf480e4814fc5e78ed19d65b171e5f39a86",
+    "ram": {
+      "storage_bytes": 2396,
+      "old_capacity_bytes": 1780,
+      "old_capacity_deficit_bytes": 616,
+      "blocks": {
+        "control": [
+          "0x806B40",
+          "0x806F70"
+        ],
+        "communication": [
+          "0x808E40",
+          "0x80902C"
+        ],
+        "workspace": [
+          "0x80902C",
+          "0x80936C"
+        ]
+      },
+      "oem_initializers_replayed": 6,
+      "service_chunks_accepted": 11,
+      "bytes_in_accepted_chunks": 2396,
+      "service_write_executed": false,
+      "exclusive_ownership_verified": false
+    },
+    "outputs": {
+      "simulated_scenarios": [
+        "in_range_loads_countdown",
+        "low_feedback_at_19_calls",
+        "low_feedback_latches_at_20_calls",
+        "fault_latch_leaves_actuator_registers_unchanged",
+        "in_range_feedback_does_not_clear_latch",
+        "separate_clear_path_without_request",
+        "separate_clear_path_with_request",
+        "high_feedback_latches_at_20_calls",
+        "voltage_at_8v_does_not_arm_monitor",
+        "current_below_arm_threshold_does_not_arm_monitor",
+        "actuator_path_starts_with_pwm_applied",
+        "second_fault_before_arbitration_preserves_pwm",
+        "arbitration_zeroes_request_but_leaves_pwm_until_apply",
+        "apply_selects_gpio_low_and_updates_reloads",
+        "clear_then_apply_keeps_last_zero_result",
+        "stock_rearbitration_can_restore_the_old_proposal",
+        "P0745_prepare_before_fault",
+        "P0745_before_debounce_threshold",
+        "P0745_latch_revokes_only_with_hook",
+        "P0745_old_generation_after_clear",
+        "P0745_duplicate_rejected_and_next_generation_applied",
+        "P0768_prepare_before_fault",
+        "P0768_before_debounce_threshold",
+        "P0768_latch_revokes_only_with_hook",
+        "P0768_old_generation_after_clear",
+        "P0768_duplicate_rejected_and_next_generation_applied",
+        "P0773_prepare_before_fault",
+        "P0773_before_debounce_threshold",
+        "P0773_latch_revokes_only_with_hook",
+        "P0773_old_generation_after_clear",
+        "P0773_duplicate_rejected_and_next_generation_applied",
+        "P2709_prepare_before_fault",
+        "P2709_before_debounce_threshold",
+        "P2709_latch_revokes_only_with_hook",
+        "P2709_old_generation_after_clear",
+        "P2709_duplicate_rejected_and_next_generation_applied",
+        "monitor_gate_idle_mode_0",
+        "monitor_gate_idle_mode_4",
+        "monitor_gate_active_virtual_flash_mode_0",
+        "monitor_gate_active_virtual_flash_mode_4",
+        "monitor_gate_closed_virtual_flash_pending_checksum_mode_0",
+        "monitor_gate_closed_virtual_flash_pending_checksum_mode_4",
+        "monitor_gate_closed_pending_copy_mode_0",
+        "monitor_gate_closed_pending_copy_mode_4",
+        "monitor_gate_active_suspended_virtual_flash_mode_0",
+        "monitor_gate_active_suspended_virtual_flash_mode_4"
+      ],
+      "native_fault_latch_changes_actuator_registers": false,
+      "native_apply_after_zero_selects_gpio_low": true,
+      "new_latch_hook_revokes_stale_generation": true,
+      "hardware_executed": false
+    },
+    "flash_placement": {
+      "elf_sha256": "ee434e89034a74ebec6bd2137656f112777341b08890c3c6e544f4d56f063409",
+      "scope": "allocated ELF sections intersecting internal Flash",
+      "observed_service_activation_entry": "0x003364",
+      "s_banks_replayed": 128,
+      "overlaps_stock_selector_pages": true,
+      "collisions": [
+        {
+          "section_start": "0x07C118",
+          "section_end_exclusive": "0x07FAD4",
+          "executable": true,
+          "bytes": 14780,
+          "overlapping_s_banks": [
+            "0x7C",
+            "0x7D",
+            "0x7E",
+            "0x7F"
+          ]
+        },
+        {
+          "section_start": "0x020000",
+          "section_end_exclusive": "0x02DD94",
+          "executable": true,
+          "bytes": 56724,
+          "overlapping_s_banks": [
+            "0x20",
+            "0x21",
+            "0x22",
+            "0x23",
+            "0x24",
+            "0x25",
+            "0x26",
+            "0x27",
+            "0x28",
+            "0x29",
+            "0x2A",
+            "0x2B",
+            "0x2C",
+            "0x2D"
+          ]
+        },
+        {
+          "section_start": "0x02DD94",
+          "section_end_exclusive": "0x02FAF0",
+          "executable": false,
+          "bytes": 7516,
+          "overlapping_s_banks": [
+            "0x2D",
+            "0x2E",
+            "0x2F"
+          ]
+        }
+      ],
+      "physical_remapping_verified": false,
+      "external_service_admission_verified": false,
+      "verifier_exit_code": 2
+    },
+    "limits": "Storage and link address models plus OEM instructions in M32R. Hardware, external service admission and physical remapping were not exercised. No release BIN."
   }
 }
