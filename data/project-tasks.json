@@ -9,7 +9,7 @@
     "engine": "GW4G15 / Bosch ME7.9.71 E4M3"
   },
   "release_ready": false,
-  "audit": "verification/project-audit/2026-11-20-integration-2.json",
+  "audit": "verification/project-audit/2026-11-20-integration-3.json",
   "status_labels": {
     "closed": "Завершено в указанном объёме",
     "model": "Проверено программно",
@@ -18,11 +18,11 @@
     "deferred": "Отложено владельцем"
   },
   "next": [
-    "DTC-02",
-    "CAN-03",
+    "H03-04",
     "H03-03",
     "TOY-02",
-    "TOY-03"
+    "CAN-03",
+    "DTC-02"
   ],
   "sections": [
     {
@@ -36,7 +36,7 @@
     {
       "id": 2,
       "title": "Логика Toyota U340E",
-      "summary": "Ядро и отдельные переходы проверены. Полный цикл не завершён.",
+      "summary": "Расчёты и новые компоненты объединены. Полный целевой цикл открыт.",
       "prefixes": [
         "TOY"
       ]
@@ -60,7 +60,7 @@
     {
       "id": 5,
       "title": "Целевой блок 9E1C",
-      "summary": "Основа выбрана. Привязка полного приложения к блоку открыта.",
+      "summary": "Штатные пути проверены в модели. Выявлены дефицит Flash и незавершённое владение ресурсами.",
       "prefixes": [
         "H03"
       ]
@@ -127,14 +127,14 @@
       "title": "Полный набор проверок на компьютере",
       "command": "python -B tools/build_pc_checks.py --cc $zig --out local/pc-checks",
       "reports": [
-        "verification/project-audit/dtc02-PC-CHECKS.json"
+        "verification/project-audit/integration-3/pc-checks.json"
       ]
     },
     "M32R": {
       "title": "Сборка и модель M32R",
       "command": "python -B controller/build_target.py m32r --cc $m32rGcc --out local/audit/controller\npython -B targets/lfj8/build.py --output local/audit/bridge --m32r-cc $m32rGcc --base-9e1c $h03\npython -B targets/lfj8/check_h03_link.py --base $h03 --gcc $m32rGcc --bridge local/audit/bridge/lfj8_9e1c_m32r.o --controller local/audit/controller/rbm_u340e_m32r_be.o --out local/audit/h03-link.json --bosch-trace verification/e4m3-can-9e1c/ordinary-model/round-trip.json",
       "reports": [
-        "verification/project-audit/h03-phase-integration-link.json"
+        "verification/project-audit/integration-3/m32r-link.json"
       ]
     },
     "PHASE": {
@@ -199,8 +199,8 @@
       "title": "Актуальные состояния и кандидаты RAM M32R",
       "command": "python -B targets/lfj8/check_h03_storage.py --base $h03 --gcc $m32rGcc --out local/audit/h03-storage.json\npython -B -m unittest discover -s tests -p test_h03_storage.py -v",
       "reports": [
-        "verification/e4m3-can-9e1c/h03-storage.json",
-        "verification/project-audit/h03-storage-tests.txt"
+        "verification/project-audit/integration-3/final-storage.json",
+        "verification/project-audit/integration-3/final-storage-tests.txt"
       ]
     },
     "INTEGRATION": {
@@ -231,6 +231,21 @@
         "verification/project-audit/integration-2/shift-buttons.json",
         "verification/project-audit/integration-2/slu.json",
         "verification/project-audit/integration-2/slu-m32r.txt"
+      ]
+    },
+    "INTEGRATION3": {
+      "title": "Общая проверка 31 результата и расширенного состава",
+      "command": "python -B tools/check_integrated_h03.py --suite native --base $h03 --gcc $m32rGcc --controller local/integration3/controller/rbm_u340e_m32r_be.o --out local/integration3/native\npython -B tools/check_integrated_h03.py --suite components --base $h03 --gcc $m32rGcc --controller local/integration3/controller/rbm_u340e_m32r_be.o --out local/integration3/components\n--suite expanded с --bridge и --bosch-trace отвергает переполненную компоновку. Границы и повторные проверки после оптимизации: docs/working-set.md.",
+      "reports": [
+        "verification/project-audit/integration-3/pc-checks.json",
+        "verification/project-audit/integration-3/m32r-link.json",
+        "verification/project-audit/integration-3/native/summary.json",
+        "verification/project-audit/integration-3/components/summary.json",
+        "verification/project-audit/integration-3/expanded/summary.json",
+        "verification/project-audit/integration-3/expanded/unbounded-sizing.json",
+        "verification/project-audit/integration-3/final-storage.json",
+        "verification/project-audit/integration-3/final-stack.json",
+        "verification/project-audit/integration-3/torque-dialogue.json"
       ]
     }
   },
@@ -292,23 +307,26 @@
       ],
       "title": "Основа проекта и локальная работа",
       "status": "closed",
-      "current": "Проект и общий учёт опубликованы. Чаты работают в отдельных ветках; устранены гонки чтения Git refs и закрытия прежнего результата после возобновления. 18 проверок координации, включая связанные worktree и конкурирующий resume/complete, прошли.",
+      "current": "Объединены 31 новая опубликованная порция и прежние 19. Пересечение списка модулей H03 разрешено с сохранением запуска фаз и ATF. Общая проверка и задания восьми чатам оформлены.",
       "remaining": "Окончательный комплект ведётся отдельно в REL-01.",
       "acceptance": "Файлы доступны, источник каждой сборки прослеживается.",
       "code": [
         "tools/package_workset.py",
         "tools/task_coordination.py",
-        "tests/test_task_coordination.py"
+        "tests/test_task_coordination.py",
+        "tools/check_integrated_h03.py"
       ],
       "settings": "Публикация в GitHub возобновлена по указанию владельца 20.11.2026. Учёт чатов отделён от готовности прошивки.",
       "checks": [
         "SOURCES",
         "COORD",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/decisions.md",
-        "docs/multi-chat.md"
+        "docs/multi-chat.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -319,22 +337,25 @@
       ],
       "title": "Перенос ядра и единое состояние Toyota",
       "status": "model",
-      "current": "Перенесены расчёты передач, гидравлики, давления и обучения. Проверены 292 поля переноса, пять снимков и общий GP на ПК/M32R.",
+      "current": "Карта 292 переносов GP сокращена с 1752 до 1168 байт. Дополнительно M32R сохраняет общие getq/putq вместо повторного встраивания: экономия 552 байта. Vendor неизменен, CPU-проверки повторены.",
       "remaining": "Довести полный рабочий цикл в TOY-04 и H03-03.",
       "acceptance": "Программный результат относится к проверенным функциям, а не ко всем режимам АКПП.",
       "code": [
         "controller/src/rbm_u340e_runtime.c",
         "controller/src/rbm_u340e_scheduler.c",
         "controller/hydraulic_port.py",
-        "controller/vendor/toyota/manifest.json"
+        "controller/vendor/toyota/manifest.json",
+        "controller/size_port.py"
       ],
       "settings": "Исходные таблицы S01 и контракт controller/include/rbm_u340e_runtime.h.",
       "checks": [
         "PC",
-        "M32R"
+        "M32R",
+        "INTEGRATION3"
       ],
       "docs": [
-        "docs/toyota-integration.md"
+        "docs/toyota-integration.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -347,7 +368,7 @@
       ],
       "title": "Подтверждённая нагрузка двигателя для Toyota",
       "status": "open",
-      "current": "Восстановлены операнды нагрузки; доступный CAN в трёх профилях Bosch неоднозначен для TPS/нагрузки. Добавлена атомарная публикация восьми квалифицированных операндов и флага fallback в GP: давность, согласованность, переход времени через ноль и сохранение GP при отказе проверены на ПК/M32R.",
+      "current": "Квалифицированная нагрузка публикуется перед новым событием цикла; MAIN учитывает старейшую метку. Просрочка, wrap, повтор и потеря события проверены на ПК и M32R. Источники и шкалы Bosch открыты.",
       "remaining": "Определить источник и шкалы GP−9046/−8288/−8330 и флаги режимов либо полные результаты арбитража. Подключить квалификацию и отказы.",
       "acceptance": "Трасса происхождения каждого операнда, сравнение с S01 и отдельные переходные режимы. Одного TPS и кадров RPM/ОЖ недостаточно.",
       "code": [
@@ -362,12 +383,14 @@
       "checks": [
         "SIGNALS",
         "M32R",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/toyota-integration.md",
         "docs/bosch-integration.md",
-        "verification/project-audit/toy02-load-feed.md"
+        "verification/project-audit/toy02-load-feed.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -379,7 +402,7 @@
       ],
       "title": "Независимые разрешающие сигналы диапазона",
       "status": "open",
-      "current": "Биты GP−5722 прослежены до локального обмена Toyota. Составлена карта независимых источников, кандидатов контактов Mazda и сценариев проверки. Один резистивный AN2 не доказывает независимые сигналы Toyota.",
+      "current": "Пять независимых входов GP−5722/GP−5250.2 проходят проверку поколения и отдельной давности. 32 сочетания проверены на M32R. Физические производители не подключены.",
       "remaining": "Установить соответствующие входы H03, условия обновления и недостоверности.",
       "acceptance": "Для каждого бита известны источник, шкала времени и реакция на отказ. Проверка P/N не проверяет сама себя.",
       "code": [
@@ -389,11 +412,13 @@
       "settings": "Lfj8H03CycleInput.range_5722 и inhibit_5250.",
       "checks": [
         "M32R",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/lfj8-h03-input-paths.md",
-        "docs/toyota-integration.md"
+        "docs/toyota-integration.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -405,7 +430,7 @@
       ],
       "title": "Полная последовательность переключений",
       "status": "open",
-      "current": "Помимо N→D и 1→2 проверены 12 точек карты D: 2→3, 3→4, понижения, холодный запрет четвёртой и потеря события до выдачи. ПК и M32R прошли при нулевой модельной нагрузке. Матрица под нагрузкой, R, ручные заявки и вся гидравлика ещё открыты.",
+      "current": "24 точки D при двух синтетических нагрузках проверены в общем цикле: повышения, понижения, холодный запрет четвёртой, потеря события. R, ручное управление и вся гидравлика открыты.",
       "remaining": "Связать оставшиеся стадии и входы. Проверить R, 2→3, 3→4, понижения, холодные/горячие режимы, ручные запросы и защитные переходы целым циклом.",
       "acceptance": "Матрица режимов с ожидаемыми результатами S01 и сквозными трассами. Отдельный тест момента не закрывает всё переключение 2→3.",
       "code": [
@@ -419,11 +444,13 @@
         "PC",
         "M32R",
         "NATIVE",
-        "INTEGRATION2"
+        "INTEGRATION2",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/lfj8-h03-control-cycle.md",
-        "verification/project-audit/toy04-upper-gears.md"
+        "verification/project-audit/toy04-upper-gears.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": [
         "TOY-02",
@@ -440,8 +467,8 @@
       ],
       "title": "Обучение и сохранение адаптаций",
       "status": "open",
-      "current": "Донорский формат адаптаций проверен на ПК/M32R: 96 прерываний записи, 768 повреждений битов, пределы, переход поколения и восстановление GP. Повреждение записи сброса возвращает предыдущие коррекции — это открытый вопрос политики H03.",
-      "remaining": "Связать обучение со всеми фазами, назначить NVM H03, исходное состояние сброса, условия износа и долговечную политику сброса без возврата отменённых коррекций.",
+      "current": "Повреждённые адаптации восстанавливаются из исходного снимка вызывающего кода. M32R: 96 прерываний записи, повреждения битов и wrap поколения прошли. NVM и запуск H03 не подключены.",
+      "remaining": "Подтвердить исходный снимок сброса, назначить NVM, подключить восстановление к запуску H03 и сохранение адаптаций полного цикла. Проверить долговечность сброса.",
       "acceptance": "Проверены пределы коррекции, повторный пуск, повреждённая запись и сброс адаптаций.",
       "code": [
         "controller/vendor/toyota/src/factory_learning.c",
@@ -452,12 +479,14 @@
       "checks": [
         "PC",
         "M32R",
-        "INTEGRATION2"
+        "INTEGRATION2",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/toyota-integration.md",
         "docs/lfj8-h03-flash.md",
-        "verification/project-audit/toy05-adaptation-store.md"
+        "verification/project-audit/toy05-adaptation-store.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": [
         "TOY-04",
@@ -472,7 +501,7 @@
       ],
       "title": "Блокировка гидротрансформатора SLU",
       "status": "open",
-      "current": "Добавлен расчёт численной команды 055C5E на квалифицированном снимке. На ПК совпали 65536 слов и 2560 сочетаний условий с R3; M32R выполнил 65536 слов по точной кривой S01, force и инвалидирование. Компонент включён в расширенную адресную модель. Снимок SECONDARY и физический SLU ещё не привязаны.",
+      "current": "Цепочка 05DC5E → 05DCE8 → 055C5E сверена с R3; 20 сценариев и три отказа M32R прошли. Вызов из SECONDARY, полный снимок и физический канал открыты.",
       "remaining": "Включить SLU в полный цикл, установить канал H03, измерить характеристики и условия снятия блокировки.",
       "acceptance": "Трасса от квалифицированных входов до канала H03, проверка скольжения, удержания и снятия по отказу.",
       "code": [
@@ -485,12 +514,14 @@
       "settings": "Целевой адаптер SLU ещё отсутствует. Результат сравнения регистров Toyota не задаёт ток канала H03.",
       "checks": [
         "SLU",
-        "INTEGRATION2"
+        "INTEGRATION2",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/toyota-integration.md",
         "docs/lfj8-9e1c-minimum-bench.md",
-        "verification/project-audit/toy06-slu-command.md"
+        "verification/project-audit/toy06-slu-command.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": [
         "TOY-02",
@@ -504,7 +535,7 @@
       ],
       "title": "Форматы CAN и квалификация RPM/ОЖ",
       "status": "model",
-      "current": "Проверены 0x0FA/0x278, 0x1AE/0x300, потери и восстановление RPM/ОЖ с U111F/U1100. При запуске/восстановлении отвергаются кадры не новее временной опоры; проверены застывшие часы и приход кадра между очисткой слотов. ПК и M32R прошли.",
+      "current": "Повторная проверка RR/EXTID после копирования не допускает принятия исчезнувшего кадра. ПК/M32R и сквозное сравнение с точным Bosch прошли.",
       "remaining": "Подключить к штатному запуску и измеренному времени в CAN-03. Остальные поля ведутся в CAN-05.",
       "acceptance": "Результат ограничен перечисленными полями и сценариями приёма.",
       "code": [
@@ -518,12 +549,14 @@
         "PC",
         "M32R",
         "BOSCH",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/chery-can-dtc.md",
         "docs/toyota-integration.md",
-        "verification/project-audit/can01-rx-epoch.md"
+        "verification/project-audit/can01-rx-epoch.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -534,7 +567,7 @@
       ],
       "title": "Общий диспетчер CAN13",
       "status": "model",
-      "current": "Телеметрия 0x1AE/0x300 и приоритеты CAN13 проверены. При превышении срока временной передачи телеметрии старое подтверждение снижения момента отзывается сразу, даже пока передатчик завершает отмену. Сценарии ПК/M32R прошли.",
+      "current": "Потеря TX13 при постановке телеметрии сразу отзывает владение и момент; временная занятость сохраняет кадр. Общий диспетчер проверен с диагностикой и моментом.",
       "remaining": "Физическое владение ящиком ведётся в CAN-03.",
       "acceptance": "Программные тесты не заменяют измерение окон приёма 0x5E9.",
       "code": [
@@ -546,11 +579,13 @@
       "checks": [
         "PC",
         "M32R",
-        "INTEGRATION2"
+        "INTEGRATION2",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/lfj8-h03-torque.md",
-        "verification/project-audit/can02-loan-timeout.md"
+        "verification/project-audit/can02-loan-timeout.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -562,7 +597,7 @@
       ],
       "title": "Штатный запуск, IRQ и восстановление CAN0",
       "status": "open",
-      "current": "Исследованы штатные отправители и BusOff. 12 сценариев заслонки TX и 16 запусков штатной настройки/восстановления проверены в модели. CAN13 теряет конфигурацию при штатной настройке даже при сохранённой SLIMK; это учтено в контракте повторного владения.",
+      "current": "Нативный setup отзывает разрешение TX13 до штатного вызова и меняет поколение после возврата. 16 сценариев и запрет передачи проверены; владелец и очистка RX открыты.",
       "remaining": "Подключить арбитраж ко всем вызовам OEM 0x00C34C, запуску/сбросу CAN и RAM владельца. Измерить окна TX→RX и период опроса.",
       "acceptance": "Штатная ветвь не перезаписывает CAN13, старые кадры не принимаются после сброса, сохранена диагностика и отмена.",
       "code": [
@@ -574,11 +609,13 @@
       "settings": "CAN0SLIMK/SLIST, флаг владельца, поколение, RX11/12 и TX/RX13.",
       "checks": [
         "M32R",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/lfj8-9e1c-base.md",
-        "docs/lfj8-h03-torque.md"
+        "docs/lfj8-h03-torque.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": [
         "H03-04"
@@ -592,7 +629,7 @@
       ],
       "title": "Запрос снижения момента по RB",
       "status": "model",
-      "current": "Клиент RB теперь снимает запрос при отзыве или изменении выбранного профиля. Проверены START в передаче, поздний ответ, CANCEL и отсутствие повторного импульса для той же заявки. Текущий ordinary Bosch побайтно восстановлен и прошёл обычный диалог и потерю статуса с обновлённым C-клиентом.",
+      "current": "BusOff и чужое завершение TX13 отзывают подтверждение момента. Повторены нормальный диалог и потеря статуса с точным ordinary Bosch OFFLINE_ONLY.",
       "remaining": "Целевые величины снижения и соответствие штатному Chery остаются ECU-02/CAN-05.",
       "acceptance": "Протокол 0x5E8/0x5E9 является RB. Его успешный тест не означает полного штатного Chery CAN.",
       "code": [
@@ -605,11 +642,13 @@
         "PC",
         "M32R",
         "TORQUE",
-        "INTEGRATION2"
+        "INTEGRATION2",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/lfj8-h03-torque.md",
-        "verification/project-audit/can04-torque-revocation.md"
+        "verification/project-audit/can04-torque-revocation.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -621,7 +660,7 @@
       ],
       "title": "Полнота штатного обмена Chery",
       "status": "open",
-      "current": "Основные сообщения и ограниченный мост реализованы в модели. Сквозной C-тест паковщика TCM и квалификатора Chery проверил все 65536 пары операндов 0x1AE, счётчик, потерю, повтор, контроль и отключение. Это проверка формата и квалификации, не полного рабочего контракта двух блоков.",
+      "current": "Раздельные время захвата и обработки не продлевают старые операнды 0x1AE. Проверены 65536 пар и отказы. Нативный захват Bosch и полный штатный арбитраж открыты.",
       "remaining": "Довести семантику остальных статусных полей и двух операндов запроса 0x1AE, разрешения и отказ. Описать окончательный контракт между обоими BIN.",
       "acceptance": "Для каждого требуемого поля есть источник, единицы, период, недостоверность и проверенный потребитель. Замена штатного протокола отдельным RB не считается закрытием §3.",
       "code": [
@@ -636,12 +675,14 @@
       "checks": [
         "PC",
         "BOSCH",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/chery-can-dtc.md",
         "docs/bosch-integration.md",
-        "verification/project-audit/can05-1ae-roundtrip.md"
+        "verification/project-audit/can05-1ae-roundtrip.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": [
         "TOY-02"
@@ -654,7 +695,7 @@
       ],
       "title": "Проверочная сборка Bosch E4M3",
       "status": "model",
-      "current": "Воспроизводится профиль обычного режима с приёмом скорости и публикацией трёх полей модели. Проверяются 51 запись целостности и кодирование.",
+      "current": "Сверяются все 51 точная запись целостности E4M3. Ordinary образ восстановлен побайтно; ST10, обмен и историческая трасса повторены. Статус OFFLINE_ONLY.",
       "remaining": "Окончательный профиль после CAN-05/ECU-02 и выпуск REL-01.",
       "acceptance": "Это образ OFFLINE_ONLY, сохранение всех функций двигателя на машине не подтверждено.",
       "code": [
@@ -664,10 +705,12 @@
       ],
       "settings": "Опции with-model-fields, with-ordinary-model-field и compact. Профиль cruise=false/override=false явно ограничен.",
       "checks": [
-        "BOSCH"
+        "BOSCH",
+        "INTEGRATION3"
       ],
       "docs": [
-        "docs/bosch-integration.md"
+        "docs/bosch-integration.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -679,7 +722,7 @@
       ],
       "title": "Калибровка момента и работа двигателя",
       "status": "measure",
-      "current": "История E4M3 и стендовые запросы прежней связки исследованы. Модельные ветви air/fast/load проверены.",
+      "current": "Проверены границы RPM, снятие момента по трём путям и старый токен; повторены 3256 CRC и 26 команд. Измерений новой пары нет.",
       "remaining": "Проверить фактическое уменьшение момента для профилей переключений, пуск, впрыск, зажигание и потерю связи на новой паре. Сверить S04 с действующим образом.",
       "acceptance": "Протокол с идентифицированными BIN и измеренным результатом. Исторический стенд STM32 не переносит автоматически приёмку на LFJ8.",
       "code": [
@@ -689,11 +732,13 @@
       "settings": "Шесть профилей up/down в Lfj8TorqueCalibration и применимость E4M3 к конкретному ЭБУ.",
       "checks": [
         "TORQUE",
-        "E4AUDIT"
+        "E4AUDIT",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/e4m3-audit.md",
-        "docs/lfj8-9e1c-minimum-bench.md"
+        "docs/lfj8-9e1c-minimum-bench.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": [
         "CAN-05"
@@ -706,7 +751,7 @@
       ],
       "title": "Выбранная основа 9E1C и карта подключения",
       "status": "closed",
-      "current": "H03 идентифицирован по размеру, SHA-256 и внутреннему ID. Пользователь подтвердил блок 9E1C, резервную копию и штатные цепи.",
+      "current": "H03 проверяется по точным SHA-256 и размеру; одного внутреннего ID недостаточно. Подлинный образ принят, изменённый отвергается.",
       "remaining": "Физические параметры отдельных каналов учитываются в H03-05 и MODE-02.",
       "acceptance": "Для выбора платформы повторное подтверждение 9E1D и запуск PCMflash не нужны.",
       "code": [
@@ -715,11 +760,13 @@
       ],
       "settings": "H03 LFJ8-T-D.bin, 524 288 байт. S05/S06 только исторические доноры.",
       "checks": [
-        "SOURCES"
+        "SOURCES",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/lfj8-target-identity.md",
-        "docs/lfj8-wiring-sources.md"
+        "docs/lfj8-wiring-sources.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -731,7 +778,7 @@
       ],
       "title": "S51, S83 и температура ATF",
       "status": "model",
-      "current": "Проверены захват S51/S83 и наблюдение передачи. Для ATF добавлены семь кандидатных перехватов, целевые callbacks с MMIO и атомарный снимок. 10 пар штатного/изменённого пути M32R сохранили OEM-результат и отвергли устаревший отсчёт/потерю часов.",
+      "current": "Свежий ATF поступает в GP−7184 и 0x300; просроченный отзывает допуск Toyota и даёт FF в CAN. Штатные пути и M32R проверены; общий вызов, часы и тарировка открыты.",
       "remaining": "Установить вызовы в окончательном приложении, подтвердить датчик ATF U340E и масштабы физического тракта.",
       "acceptance": "Компоненты не подменяют окончательную установку обработчиков в BIN.",
       "code": [
@@ -746,11 +793,13 @@
       "settings": "Lfj8GearCalibration, частоты таймеров, число фронтов S83, max_age_us/max_skew_us, тарировка ATF.",
       "checks": [
         "M32R",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/lfj8-h03-input-paths.md",
-        "docs/lfj8-h03-atf-native.md"
+        "docs/lfj8-h03-atf-native.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -762,7 +811,7 @@
       ],
       "title": "Единое расписание и запуск приложения H03",
       "status": "open",
-      "current": "Проверены контроль фаз, снятие просроченной команды и ожидание без потребления события. Кандидат 0x008150 ограничивает частоту проверки работающим счётчиком без новой постоянной RAM. 8 сценариев/24 вызова M32R: запись стека 112/120 байт с обёрткой, без IRQ. Общие часы и физический inhibit не подключены.",
+      "current": "Проверены старт фаз после 00814C и ограниченное ожидание. Выключение Virtual Flash прошло 512 сценариев модели, но требует правки ниже 008000. Финальное приложение не собрано.",
       "remaining": "Подключить foreground-потребителя, начальную инициализацию, владельцев снимков и callback. Раздельно установить ритмы H03 и Toyota, измерить выполнение и IRQ.",
       "acceptance": "Полный цикл вызывается автономно, пропуск обнаруживается и без фазы выдачи, тестовые callbacks заменены подтверждёнными целевыми.",
       "code": [
@@ -780,10 +829,12 @@
         "M32R",
         "PHASE",
         "NATIVE",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
-        "docs/lfj8-h03-control-cycle.md"
+        "docs/lfj8-h03-control-cycle.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": [
         "H03-04"
@@ -796,8 +847,8 @@
       ],
       "title": "Память, стек и сервисные пути",
       "status": "open",
-      "current": "Актуальная ABI M32R с SLU: управление 1072, связь 492, рабочие снимки 832 байта; всего 2396. Прежних окон не хватает на 616 байт. Кандидаты RAM проверены по компоновке и 6 OEM-инициализациям. Расширенная модель ROM с кнопками, журналом и SLU оставляет 732/680 байт, без окончательных привязок.",
-      "remaining": "Закрепить сервисную изоляцию Flash/RAM и запуск после сброса, добавить ещё не определённые состояния CAN/journal/платформы в единый состав, доказать полный стек с вложенными IRQ. Не использовать прежнюю оценку 1080/1116 байт как размер всего приложения.",
+      "current": "Расширенный общий состав первоначально превысил две области Flash на 1888 байт суммарно. getq/putq экономят 552 байта; основной вариант всё ещё не помещается. Инвентарь RAM дополнен новыми состояниями SLU/range/RX и проверен заново.",
+      "remaining": "Уменьшить полный состав или обосновать новые области Flash; финальная обвязка ещё добавит код. Довести владельца RAM, инициализацию и защиту от прямой/отложенной сервисной записи; учесть полный стек и вложенные IRQ.",
       "acceptance": "Карта сборки и анализ всех владельцев, подтверждённый запас стека и измерения. Свободное окно в ELF само по себе не разрешает запись.",
       "code": [
         "targets/lfj8/check_h03_link.py",
@@ -814,12 +865,14 @@
         "NATIVE",
         "STORAGE",
         "INTEGRATION",
-        "INTEGRATION2"
+        "INTEGRATION2",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/lfj8-h03-ram-audit.md",
         "docs/lfj8-h03-flash.md",
-        "docs/lfj8-h03-service-isolation.md"
+        "docs/lfj8-h03-service-isolation.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -831,7 +884,7 @@
       ],
       "title": "SLT, силовые выходы и реакция на отказ",
       "status": "measure",
-      "current": "Преобразование S1/S2/ST/SLT и арбитраж проверены в модели. Штатный P0745 сам по себе не отключает выходы немедленно.",
+      "current": "Штатный отказ SLT/P0745 и отзыв команды проверены на M32R. Внутренняя ветвь Virtual Flash охватывает все 128 страниц модели. Целевой inhibit и физическая калибровка открыты.",
       "remaining": "Подтвердить каналы и полярность, измерить q Toyota→ток→давление→задание H03, реализовать и проверить физическую процедуру inhibit, включая остановку программы.",
       "acceptance": "Измеренные таблицы в допустимой области питания/ATF, реакция каждого выхода и гидравлики на отказ, отсутствие старой команды после восстановления.",
       "code": [
@@ -842,12 +895,14 @@
       "settings": "Lfj8H03OutputBinding, Lfj8H03SltCalibration, рабочая область ATF/питания и Lfj8H03TakeoverOps.inhibit. Тестовые 500 мА не являются калибровкой.",
       "checks": [
         "M32R",
-        "NATIVE"
+        "NATIVE",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/lfj8-slt-calibration.md",
         "docs/lfj8-h03-output-adapter.md",
-        "docs/lfj8-9e1c-minimum-bench.md"
+        "docs/lfj8-9e1c-minimum-bench.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -882,7 +937,7 @@
       ],
       "title": "Точный расчёт VSS и скорость по CAN",
       "status": "model",
-      "current": "Сохранено точное отношение 100/22, проверен путь S51→0x1AE→Bosch/PID 0D и код недостоверности.",
+      "current": "Устранено промежуточное переполнение; 25000 сравнений и профиль 37/8, 3,53 м прошли на ПК/M32R. Bosch принимает кадр скорости. Параметры реального времени и машины учитываются отдельно.",
       "remaining": "Рабочие параметры машины ведутся в VSS-02, штатная установка в CAN-03/H03-03.",
       "acceptance": "Округление 4,545 не используется как расчётный коэффициент.",
       "code": [
@@ -894,10 +949,12 @@
       "checks": [
         "PC",
         "M32R",
-        "BOSCH"
+        "BOSCH",
+        "INTEGRATION3"
       ],
       "docs": [
-        "targets/lfj8/README.md"
+        "targets/lfj8/README.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -908,7 +965,7 @@
       ],
       "title": "Кинематика и параметры реальной скорости",
       "status": "measure",
-      "current": "Формула параметризована. Пример с окружностью 2 м используется только в тестах.",
+      "current": "Добавлены проверки независимого замера TML0, wrap, остановки и потери импульсов. Реальная частота таймера и скорость не измерялись.",
       "remaining": "Задать подтверждённую окружность и отношение дифференциал→колесо, частоты таймеров и критерий остановки.",
       "acceptance": "Скорость совпадает с эталоном в согласованном диапазоне, потеря импульсов отличается от остановки.",
       "code": [
@@ -918,10 +975,12 @@
       ],
       "settings": "wheel_um, wheel_num/wheel_den, частота счётчика, тайм-ауты; 100/22 уже задано.",
       "checks": [
-        "M32R"
+        "M32R",
+        "INTEGRATION3"
       ],
       "docs": [
-        "docs/lfj8-9e1c-minimum-bench.md"
+        "docs/lfj8-9e1c-minimum-bench.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -956,7 +1015,7 @@
       ],
       "title": "Логика шести положений и кнопок",
       "status": "model",
-      "current": "Auto/Tiptronic и OD проверены программно. Перекрытие удерживаемой кнопки с противоположной теперь блокирует заявку в C и Python; после отпускания нужен новый фронт. Отдельные регрессии ПК/M32R прошли.",
+      "current": "Восстановление после отказа снимка больше не создаёт ложных фронтов кнопок. Удержание требует отпускания и нового нажатия; восемь сценариев ПК/M32R прошли.",
       "remaining": "Довести физические входы и применение результата в MODE-02, правила поставки в MODE-03.",
       "acceptance": "Компонентный requested_gear не равен выполненному гидравлическому переключению.",
       "code": [
@@ -969,11 +1028,13 @@
       "checks": [
         "PC",
         "M32R",
-        "INTEGRATION2"
+        "INTEGRATION2",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/lfj8-selector.md",
-        "verification/project-audit/mode01-shift-conflict.md"
+        "verification/project-audit/mode01-shift-conflict.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -985,7 +1046,7 @@
       ],
       "title": "Подключение селектора, Tiptronic и Overdrive",
       "status": "open",
-      "current": "Публикация ADC связана с логическим расчётом; добавлен фильтр кнопок с давностью, дребезгом, подавлением удержания при запуске и повторным взведением после отпускания. Сценарии ПК/M32R прошли. Физический опрос кнопок и команда всему циклу Toyota открыты.",
+      "current": "Публикация AN2 проверена четырьмя парами и тремя отказами M32R. Фильтр кнопок объединён; физический опрос и применение ко всему циклу открыты.",
       "remaining": "Связать реальные ADC/кнопки с requested_gear и всеми условиями гидравлики, установить вход Overdrive, полярности и измеренные сроки фильтрации. Проверить шесть уровней и переходные положения.",
       "acceptance": "Реальные нажатия проходят до исполнения запроса в полном цикле, дребезг/обрыв не создают повторных команд.",
       "code": [
@@ -998,12 +1059,14 @@
       "checks": [
         "PC",
         "M32R",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/lfj8-selector.md",
         "docs/lfj8-h03-input-paths.md",
-        "verification/project-audit/mode02-button-input.md"
+        "verification/project-audit/mode02-button-input.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": [
         "H03-03"
@@ -1016,7 +1079,7 @@
       ],
       "title": "Окончательная политика режимов",
       "status": "open",
-      "current": "Auto при старте и другие разрешения заданы как конфигурация тестов, что записано в журнале решений.",
+      "current": "128 конфигураций и 501760 заявок прошли на ПК и M32R. Политика выпуска и привязка к целевому циклу открыты.",
       "remaining": "Определить режим после питания, сохранение выбора, разрешённые положения и ограничения +/−/OD для выпуска.",
       "acceptance": "Политика согласована с донорской логикой и подтверждена матрицей режимов. Тестовые defaults не выдаются за решение владельца.",
       "code": [
@@ -1025,11 +1088,13 @@
       ],
       "settings": "initial_mode, initial_overdrive_enabled, manual_selectors, overdrive_limit_modes, allowed_gears.",
       "checks": [
-        "PC"
+        "PC",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/decisions.md",
-        "docs/lfj8-selector.md"
+        "docs/lfj8-selector.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -1040,7 +1105,7 @@
       ],
       "title": "Реестр происхождения и контроль исходников",
       "status": "closed",
-      "current": "R1–R4 закреплены, Toyota vendor сверяется по манифесту. В новой сверке проверены ТЗ, S01–S04 и H03.",
+      "current": "Проверены ТЗ, S01–S04, H03 и точные Git-ревизии R1–R4; неверный клон отвергается. Реестр происхождения сохранён.",
       "remaining": "Для новых материалов продолжать реестр. Архивные S05/S06 заново не нужны для идентификации H03.",
       "acceptance": "Зафиксированы роли, версии и SHA-256 отдельно от Git blob. Новые материалы не подменяют выбранную основу.",
       "code": [
@@ -1050,10 +1115,12 @@
       ],
       "settings": "Активная цель H03. S05=PCM SuperH, S06/H02=9E1B для сравнения.",
       "checks": [
-        "SOURCES"
+        "SOURCES",
+        "INTEGRATION3"
       ],
       "docs": [
-        "docs/decisions.md"
+        "docs/decisions.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -1064,7 +1131,7 @@
       ],
       "title": "Программный аудит истории E4M3",
       "status": "closed",
-      "current": "Оформлены §§10.1–10.6: идентичность, различия REV8/E4M2/E4M3, назначение правок, проверки и ограничения, необходимые аппаратные испытания.",
+      "current": "Трасса, сборщик и ST10 берутся из одного закреплённого R4. Повторены 3256 CRC и 26 команд ordinary образа; аппаратная часть остаётся в ECU-02.",
       "remaining": "Аппаратное подтверждение и целевые профили остаются в ECU-02.",
       "acceptance": "Закрыт объём отчёта и программного исследования. Штатная работа установленного ECU не объявлена проверенной.",
       "code": [
@@ -1076,10 +1143,12 @@
       "checks": [
         "SOURCES",
         "BOSCH",
-        "E4AUDIT"
+        "E4AUDIT",
+        "INTEGRATION3"
       ],
       "docs": [
-        "docs/e4m3-audit.md"
+        "docs/e4m3-audit.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -1090,7 +1159,7 @@
       ],
       "title": "Прикладной сеанс и статусы Chery",
       "status": "model",
-      "current": "Прикладной Chery C0 проверен; чужое завершение TX13 и BusOff закрывают сеанс и отзывают владение до нового поколения CAN. Повторены сценарии на ПК и M32R. Физический сканер и NVM ещё не проверены.",
+      "current": "Общий снимок H03 снабжает RPM, ОЖ и модель Chery; BusOff и сбой часов приостанавливают обработку. Общий набор прошёл; штатный вызов и сканер открыты.",
       "remaining": "Native RX, прочие мониторы, сохранение и сканер ведутся отдельно.",
       "acceptance": "Поддержан конкретный профиль CAN C0. Остальные FC/сервисы и K-Line не объявлены реализованными.",
       "code": [
@@ -1104,11 +1173,13 @@
       "checks": [
         "PC",
         "M32R",
-        "INTEGRATION2"
+        "INTEGRATION2",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/diagnostics-integration.md",
-        "verification/project-audit/dtc01-session-lease.md"
+        "verification/project-audit/dtc01-session-lease.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -1120,7 +1191,7 @@
       ],
       "title": "Штатный приём BasicCAN для диагностического сеанса",
       "status": "open",
-      "current": "Очередь на 4 кадра (172 байта M32R) проверена. 15 прогонов оригинального RX14/15 показали порядок, перезапись, копию кадра и штатные маршруты. Найдено окно потери ML при OEM read-mask-write; одной SLIST недостаточно. Нативный перехват ещё не подключён.",
+      "current": "Обе обёртки парного RX проверены в нижней Flash модели: 18 сравнений, обходы, границы обновления, foreground. Целевые callbacks, установка нижней Flash, RAM и IRQ открыты.",
       "remaining": "Реализовать когерентный захват RX14/15 с проверкой исходного TRFIN, ML/RA и результата копирования; учесть исследованное окно перезаписи. Подключить очередь к foreground и поколению CAN, сохранив сервис ниже 0x008000.",
       "acceptance": "Прогон оригинального пути RX с потерей/перезаписью и ложными кадрами. Учтена граница приложения 0x008000.",
       "code": [
@@ -1136,12 +1207,14 @@
       "checks": [
         "PC",
         "M32R",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/diagnostics-integration.md",
         "docs/lfj8-h03-flash.md",
-        "verification/project-audit/dtc02-basiccan.md"
+        "verification/project-audit/dtc02-basiccan.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": []
     },
@@ -1152,7 +1225,7 @@
       ],
       "title": "Все диагностические события и соответствия Toyota/Chery",
       "status": "open",
-      "current": "Все 96 индексов таблицы C сверены с извлечением и точным S03 по SHA-256. RPM/ОЖ связаны с общей историей. Таблица кодов не заменяет остальные мониторы отказов.",
+      "current": "Нативный монитор ATF включён в перемещаемый мост; 20 сценариев и отрицательные проверки M32R прошли. Другие мониторы и соответствия Chery открыты.",
       "remaining": "Завершить и согласовать соответствия ATF, скоростей, соленоидов, давления, SLU и двигателя. Реализовать условия обнаружения/сохранения/сброса.",
       "acceptance": "Код соответствует фактическому отказу и узлу, статусы подтверждены. Отсутствующий прямой аналог явно обозначен.",
       "code": [
@@ -1165,11 +1238,13 @@
       "checks": [
         "PC",
         "M32R",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/diagnostics-integration.md",
-        "verification/project-audit/dtc03-table.md"
+        "verification/project-audit/dtc03-table.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": [
         "H03-05",
@@ -1184,8 +1259,8 @@
       ],
       "title": "Хранение DTC после выключения питания",
       "status": "open",
-      "current": "Добавлен журнал версии 1: два 30-байтовых слота, поколение, CRC, маркер публикации. На ПК и M32R проверены очистка, восстановление, 30 границ прерванной записи и 240 повреждений битов. Это модель формата; запись в NVM H03 не подключена.",
-      "remaining": "Назначить NVM H03 и её свойства стирания/записи, реализовать долговечную очистку до положительного ответа сканеру, износ и восстановление после отключения питания.",
+      "current": "При настроенном backend положительный ответ очистки следует за долговечной записью пустого журнала. При отказе RAM сохранена, TX не ставится. ПК/M32R прошли; backend H03 отсутствует.",
+      "remaining": "Назначить NVM H03, установить геометрию и порядок операций, подключить backend долговечной очистки и восстановления. Проверить износ и прерванное питание на реальном носителе.",
       "acceptance": "Перезапуск и прерванная запись не восстанавливают очищенную или повреждённую историю.",
       "code": [
         "diagnostics/chery_dtc.h",
@@ -1197,12 +1272,14 @@
       "settings": "Целевая область NVM и политика износа ещё не назначены.",
       "checks": [
         "PC",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/diagnostics-integration.md",
         "docs/lfj8-h03-flash.md",
-        "verification/project-audit/dtc04-journal.md"
+        "verification/project-audit/dtc04-journal.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": [
         "H03-04"
@@ -1218,7 +1295,7 @@
       ],
       "title": "Два целевых BIN и воспроизводимый комплект",
       "status": "open",
-      "current": "Упаковщик проверяет пару ролей tcm_h03/ecu_e4m3, размеры, SHA-256 и раздельные статусы проверок; отвергает ELF и OFFLINE_ONLY. Детерминированность архива и 10 отказных сценариев проверены на искусственных данных. Целевого BIN TCM нет, Bosch остаётся OFFLINE_ONLY.",
+      "current": "Переименованный OFFLINE_ONLY отвергается по содержимому. Все 31 порция объединены, но расширенный состав не помещается и не имеет финальной привязки. TCM BIN отсутствует, Bosch проверочный.",
       "remaining": "Собрать итоговые H03 и Bosch без тестовых callback/калибровок, проверить целостность и точные изменения, оформить манифест, подключение и восстановление.",
       "acceptance": "Оба образа соответствуют выбранным основам и закрытому объёму первого файла, связаны с исходниками и фактическими результатами проверки.",
       "code": [
@@ -1234,11 +1311,13 @@
         "M32R",
         "NATIVE",
         "BOSCH",
-        "INTEGRATION"
+        "INTEGRATION",
+        "INTEGRATION3"
       ],
       "docs": [
         "docs/verification.md",
-        "docs/working-set.md"
+        "docs/working-set.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": [
         "TOY-04",
@@ -1270,7 +1349,7 @@
       ],
       "title": "Приёмка новой связки на оборудовании",
       "status": "measure",
-      "current": "Минимальный протокол с точками измерений и открытыми критериями подготовлен. Доступа к стенду нет.",
+      "current": "Разбор CANHacker TRC проверяет четыре периодических ID, сроки, контроль и счётчик 0x1AE. Архив и отрицательные случаи проверены; испытаний новой пары не было.",
       "remaining": "После подготовки соответствующего образа выполнить входы, CAN, момент, переключения, SLT/SLU, отказы, пуск и проверку сканером в режиме Chery.",
       "acceptance": "Журналы содержат версии BIN, условия, измерения, допуски и результат. Программные тесты учитываются отдельно.",
       "code": [
@@ -1278,9 +1357,12 @@
         "docs/verification.md"
       ],
       "settings": "Приборы, температуры/нагрузки и численные допуски должны иметь источник. Реле и панель исключены из первой приёмки.",
-      "checks": [],
+      "checks": [
+        "INTEGRATION3"
+      ],
       "docs": [
-        "docs/lfj8-9e1c-minimum-bench.md"
+        "docs/lfj8-9e1c-minimum-bench.md",
+        "docs/integration-next-tasks.md"
       ],
       "depends": [
         "REL-01"

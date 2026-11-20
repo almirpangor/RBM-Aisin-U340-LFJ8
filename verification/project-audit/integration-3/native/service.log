@@ -1,0 +1,223 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "monitor_config_cases": [
+    {
+      "config": 1,
+      "dispatch_reached": true,
+      "already_enabled_virtual_flash_preserved": true
+    },
+    {
+      "config": 0,
+      "dispatch_reached": false,
+      "already_enabled_virtual_flash_preserved": true
+    }
+  ],
+  "update_boundary_cases": [
+    {
+      "config": 1,
+      "start": "0x000201",
+      "accepted": false
+    },
+    {
+      "config": 1,
+      "start": "0x003550",
+      "accepted": false
+    },
+    {
+      "config": 1,
+      "start": "0x007FFF",
+      "accepted": false
+    },
+    {
+      "config": 1,
+      "start": "0x008000",
+      "accepted": true
+    },
+    {
+      "config": 1,
+      "start": "0x020000",
+      "accepted": true
+    },
+    {
+      "config": 0,
+      "start": "0x000201",
+      "accepted": false
+    },
+    {
+      "config": 0,
+      "start": "0x003550",
+      "accepted": false
+    },
+    {
+      "config": 0,
+      "start": "0x007FFF",
+      "accepted": false
+    },
+    {
+      "config": 0,
+      "start": "0x008000",
+      "accepted": true
+    },
+    {
+      "config": 0,
+      "start": "0x020000",
+      "accepted": true
+    }
+  ],
+  "monitor_address_cases": [
+    {
+      "address": "0x806B40",
+      "accepted": true
+    },
+    {
+      "address": "0x806FFF",
+      "accepted": true
+    },
+    {
+      "address": "0x808578",
+      "accepted": false
+    },
+    {
+      "address": "0x808DB3",
+      "accepted": false
+    }
+  ],
+  "transport_executed": false,
+  "flash_or_ram_write_routine_executed": false,
+  "hardware_executed": false,
+  "monitor_storage_spans": {
+    "storage_report_sha256": "33e54547ecb0c9d86fec3082fbc2432241c65181004563aed8fa31ed6f873875",
+    "stock_protected_ram": [
+      "0x808578",
+      "0x808DB4"
+    ],
+    "boundary_cases": [
+      {
+        "address": "0x808576",
+        "bytes": 1,
+        "accepted": true
+      },
+      {
+        "address": "0x808577",
+        "bytes": 1,
+        "accepted": false
+      },
+      {
+        "address": "0x808578",
+        "bytes": 1,
+        "accepted": false
+      },
+      {
+        "address": "0x808478",
+        "bytes": 255,
+        "accepted": true
+      },
+      {
+        "address": "0x808479",
+        "bytes": 255,
+        "accepted": false
+      },
+      {
+        "address": "0x808DB3",
+        "bytes": 1,
+        "accepted": false
+      },
+      {
+        "address": "0x808DB3",
+        "bytes": 255,
+        "accepted": false
+      },
+      {
+        "address": "0x808DB4",
+        "bytes": 1,
+        "accepted": true
+      }
+    ],
+    "blocks": {
+      "control": {
+        "start": "0x806B40",
+        "end_exclusive": "0x806F70",
+        "tested_bytes": 1072,
+        "bytes_in_accepted_spans": 1072,
+        "cases": [
+          {
+            "address": "0x806B40",
+            "bytes": 255,
+            "accepted": true
+          },
+          {
+            "address": "0x806C3F",
+            "bytes": 255,
+            "accepted": true
+          },
+          {
+            "address": "0x806D3E",
+            "bytes": 255,
+            "accepted": true
+          },
+          {
+            "address": "0x806E3D",
+            "bytes": 255,
+            "accepted": true
+          },
+          {
+            "address": "0x806F3C",
+            "bytes": 52,
+            "accepted": true
+          }
+        ]
+      },
+      "communication": {
+        "start": "0x808E40",
+        "end_exclusive": "0x80902C",
+        "tested_bytes": 492,
+        "bytes_in_accepted_spans": 492,
+        "cases": [
+          {
+            "address": "0x808E40",
+            "bytes": 255,
+            "accepted": true
+          },
+          {
+            "address": "0x808F3F",
+            "bytes": 237,
+            "accepted": true
+          }
+        ]
+      },
+      "workspace": {
+        "start": "0x80902C",
+        "end_exclusive": "0x80936C",
+        "tested_bytes": 832,
+        "bytes_in_accepted_spans": 832,
+        "cases": [
+          {
+            "address": "0x80902C",
+            "bytes": 255,
+            "accepted": true
+          },
+          {
+            "address": "0x80912B",
+            "bytes": 255,
+            "accepted": true
+          },
+          {
+            "address": "0x80922A",
+            "bytes": 255,
+            "accepted": true
+          },
+          {
+            "address": "0x809329",
+            "bytes": 67,
+            "accepted": true
+          }
+        ]
+      }
+    },
+    "ram_ownership_verified": false
+  }
+}

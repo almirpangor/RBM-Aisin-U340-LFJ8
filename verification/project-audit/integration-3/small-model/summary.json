@@ -1,0 +1,8 @@
+{
+  "passed": false,
+  "error": "Expanded roots exceed reserved windows: {\"primary\": {\"capacity\": 65536, \"bytes\": 64360, \"margin\": 1176}, \"can_extension\": {\"capacity\": 16100, \"bytes\": 17904, \"margin\": -1804}}",
+  "suite": "expanded",
+  "compiler_memory_model": "small",
+  "hardware_verified": false,
+  "flashable_image": null
+}

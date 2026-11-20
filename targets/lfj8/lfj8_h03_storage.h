@@ -27,7 +27,9 @@
     X(selector_adc, volatile Lfj8SelectorAdc) \
     X(range_control, Lfj8RangeControl) \
     X(button_filter, Lfj8ButtonFilter) \
-    X(gear_observer, Lfj8GearObserver)
+    X(gear_observer, Lfj8GearObserver) \
+    X(slu_baseline, Lfj8H03SluBaselineState) \
+    X(slu_secondary, Lfj8H03SluSecondaryState)
 
 #define LFJ8_H03_COMMUNICATION_FIELDS(X) \
     X(engine_rx, Lfj8H03EngineRx) \
@@ -35,6 +37,7 @@
     X(can13, Lfj8H03Can13) \
     X(dtc, CheryDtcState) \
     X(dtc_rx_queue, Lfj8H03DtcRxQueue) \
+    X(dtc_rx_dispatch, Lfj8H03DtcRxDispatch) \
     X(main_result, Lfj8H03MainResult) \
     X(fast_output, Lfj8H03FastOutput)
 
@@ -47,8 +50,13 @@
     X(cycle_input, Lfj8H03CycleInput) \
     X(load_feed, RbmU340eQualifiedLoadFeed) \
     X(button_reading, Lfj8ButtonReading) \
+    X(range_inputs, Lfj8H03RangeInputs) \
+    X(range_snapshot, Lfj8H03RangeSnapshot) \
     X(slu_input, Lfj8H03SluInput) \
     X(slu_command, Lfj8H03SluCommand) \
+    X(slu_baseline_input, Lfj8H03SluBaselineInput) \
+    X(slu_secondary_input, Lfj8H03SluSecondaryInput) \
+    X(slu_secondary_result, Lfj8H03SluSecondaryResult) \
     X(dtc_delivery, Lfj8H03DtcRxDelivery) \
     X(atf_sample, Lfj8H03AtfSample) \
     X(engine_context, Ta2005EngineQualificationContext) \

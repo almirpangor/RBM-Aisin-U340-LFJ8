@@ -1,0 +1,49 @@
+{
+  "purpose": "relocatable control code and CPU simulation, without board I/O",
+  "architecture": "m32r",
+  "size_port": {
+    "file": "factory_phase_modes.c",
+    "functions": [
+      "getq",
+      "putq"
+    ],
+    "change": "noinline attribute only; staged copy, original vendor unchanged",
+    "before_lf_sha256": "07a5d733e9259e6b22f9ba855dcd9a4b8758f0207356f739a1398252a194fe90",
+    "after_lf_sha256": "436bc48d9484a5376ab19b59f420bce484041be018a7ab51a0c506958b7c1c8e"
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "flags": [
+    "-std=c11",
+    "-Os",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-Wno-missing-braces",
+    "-Wno-missing-field-initializers",
+    "-ffreestanding",
+    "-fno-builtin",
+    "-fno-common",
+    "-fno-stack-protector",
+    "-fno-unwind-tables",
+    "-fno-asynchronous-unwind-tables",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-m32r",
+    "-mmodel=medium",
+    "-msdata=none",
+    "-Wa,-EB",
+    "-Iinclude",
+    "-Ivendor/include"
+  ],
+  "elf_flags": "0x0",
+  "undefined_symbols": [
+    "memcpy",
+    "memset"
+  ],
+  "toyota_commit": "8cf4308d8539253d4ac994dd99c9650f02da6236",
+  "tests": "Toyota adaptation store: 96 write cuts, 768 bit faults, reset and rollover passed.\nToyota adaptation recovery: 96 write cuts, 768 bit faults in either slot, and rollover passed.\nToyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.\nToyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.\nToyota 05518C: SECONDARY load qualifiers, hysteresis, clamp, fallback and MAIN handoff passed.\nToyota S01 range: P/N to warm low-load D, standstill fill, S1/S2 and first upshift passed.\nToyota scheduler: event release, FAST phase latch, busy drop and rollover passed.\nVerified 292 GP transfer fields and five donor hydraulic snapshots.\nController tests passed: six ADC ranges, relays, Auto, Tiptronic, OD, S1/S2, ST and SLT.",
+  "sha256": {
+    "rbm_u340e_m32r_be.o": "723bfc4abe7870ebbb0eb598ef8eba02c7b56c796a9d679bb3e745ee28ad1f2d",
+    "u340e_m32r_sim.elf": "3cc2245cfa14052aed2dde5943668def677d15fe5714c37b2fc223c1fa81f307"
+  }
+}

@@ -10,6 +10,7 @@ from tempfile import TemporaryDirectory
 
 from build import CONTROLLER, CONTROLLER_SOURCES, CONTROLLER_TESTS, TOYOTA, sha256, stage_toyota_sources, verify_toyota
 from hydraulic_port import write_port
+from size_port import apply_m32r_size_port
 
 
 ARCHITECTURE = {
@@ -44,6 +45,7 @@ def build(architecture: str, compiler: Path, destination: Path, sh_runner: Path 
         shutil.copytree(CONTROLLER / "include", stage / "include")
         shutil.copytree(TOYOTA / "include", stage / "vendor/include")
         stage_toyota_sources(stage / "vendor/src")
+        size_port = apply_m32r_size_port(stage / "vendor/src") if architecture == "m32r" else None
 
         def copy_source(path: str) -> str:
             name = Path(path).name
@@ -158,6 +160,7 @@ def build(architecture: str, compiler: Path, destination: Path, sh_runner: Path 
         manifest = {
             "purpose": "relocatable control code and CPU simulation, without board I/O",
             "architecture": architecture,
+            "size_port": size_port,
             "compiler": subprocess.check_output([compiler, "--version"], env=environment, text=True).splitlines()[0],
             "flags": compile_flags,
             "elf_flags": f"{arch_flags:#x}",

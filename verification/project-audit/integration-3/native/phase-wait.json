@@ -1,0 +1,489 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "wait": "0x008150",
+  "stock_clear": "0x00815C",
+  "native_continuation": "0x008160",
+  "cases": [
+    {
+      "scenario": "ready",
+      "initial_carry": 0,
+      "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
+      "callback_stack_written_bytes": [
+        132
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "ready",
+      "initial_carry": 1,
+      "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
+      "callback_stack_written_bytes": [
+        132
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "delayed_across_wrap",
+      "initial_carry": 0,
+      "callback_calls": 3,
+      "clock_samples_while_waiting": 8,
+      "callback_stack_written_bytes": [
+        132,
+        132,
+        132
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "delayed_across_wrap",
+      "initial_carry": 1,
+      "callback_calls": 3,
+      "clock_samples_while_waiting": 8,
+      "callback_stack_written_bytes": [
+        132,
+        132,
+        132
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "stalled",
+      "initial_carry": 0,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        140
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "stalled",
+      "initial_carry": 1,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        140
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "flag_before_next_poll",
+      "initial_carry": 0,
+      "callback_calls": 2,
+      "clock_samples_while_waiting": 2,
+      "callback_stack_written_bytes": [
+        132,
+        132
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "flag_before_next_poll",
+      "initial_carry": 1,
+      "callback_calls": 2,
+      "clock_samples_while_waiting": 2,
+      "callback_stack_written_bytes": [
+        132,
+        132
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "stalled_nested_irq",
+      "initial_carry": 0,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        140,
+        140,
+        140,
+        140,
+        164,
+        140
+      ],
+      "oem_irq_levels_injected": 2,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "stalled_nested_irq",
+      "initial_carry": 1,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        140,
+        140,
+        140,
+        140,
+        164,
+        140
+      ],
+      "oem_irq_levels_injected": 2,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "stalled_nested_top8_idle",
+      "initial_carry": 0,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        140,
+        140,
+        140,
+        140,
+        184,
+        140
+      ],
+      "oem_irq_levels_injected": 2,
+      "oem_top8_status_before": 8,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "stalled_nested_top8_idle",
+      "initial_carry": 1,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        140,
+        140,
+        140,
+        140,
+        184,
+        140
+      ],
+      "oem_irq_levels_injected": 2,
+      "oem_top8_status_before": 8,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "stalled_nested_top8_pending",
+      "initial_carry": 0,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        140,
+        140,
+        140,
+        140,
+        184,
+        140
+      ],
+      "oem_irq_levels_injected": 2,
+      "oem_top8_status_before": 24,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "stalled_nested_top8_pending",
+      "initial_carry": 1,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        140,
+        140,
+        140,
+        140,
+        184,
+        140
+      ],
+      "oem_irq_levels_injected": 2,
+      "oem_top8_status_before": 24,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "native_ready",
+      "initial_carry": 0,
+      "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
+      "callback_stack_written_bytes": [
+        132
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 1,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "native_ready",
+      "initial_carry": 1,
+      "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
+      "callback_stack_written_bytes": [
+        132
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 1,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "native_delayed_across_wrap",
+      "initial_carry": 0,
+      "callback_calls": 3,
+      "clock_samples_while_waiting": 8,
+      "callback_stack_written_bytes": [
+        132,
+        132,
+        184
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 1,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "native_delayed_across_wrap",
+      "initial_carry": 1,
+      "callback_calls": 3,
+      "clock_samples_while_waiting": 8,
+      "callback_stack_written_bytes": [
+        132,
+        132,
+        184
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 1,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "native_stalled_then_late",
+      "initial_carry": 0,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        192
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 1,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "native_stalled_then_late",
+      "initial_carry": 1,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        192
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 1,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "native_coalesced",
+      "initial_carry": 0,
+      "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
+      "callback_stack_written_bytes": [
+        132
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 2,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "native_coalesced",
+      "initial_carry": 1,
+      "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
+      "callback_stack_written_bytes": [
+        132
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 2,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    }
+  ],
+  "test_poll_interval_ticks": 2,
+  "extra_persistent_ram_bytes": 0,
+  "wrapper_stack_bytes": {
+    "waiting": 8,
+    "at_callback_entry": 64
+  },
+  "callback_stack_probe": {
+    "kind": "deepest overwritten aligned word below initial wrapper SP",
+    "marked_below_callback_entry_bytes": 256,
+    "guard_bytes": 16,
+    "maximum_written_depth_bytes": 140,
+    "interrupts_injected": false
+  },
+  "nested_irq_probe": {
+    "oem_dispatcher_range": [
+      "0x003DE0",
+      "0x003E40"
+    ],
+    "oem_dispatcher_sha256": "6c2188a5309263b9d0c18b53617ff89178601a5217ae400cfae504b3cffd618a",
+    "levels": 2,
+    "frame_bytes_each": 48,
+    "checked_return_context": [
+      "SP",
+      "R0",
+      "R5",
+      "foreground C"
+    ],
+    "maximum_written_depth_bytes": 164,
+    "scope": "Original dispatcher and RTE; simulator TRAP entry and synthetic vector targets."
+  },
+  "nested_top8_probe": {
+    "oem_handler_range": [
+      "0x00ACD8",
+      "0x00B1C0"
+    ],
+    "oem_handler_sha256": "1c10de2d5a82459f5a350179306e8e8ac20b9a02111dd675b9208a8c5e182297",
+    "oem_psw_helper_range": [
+      "0x003E50",
+      "0x003E78"
+    ],
+    "oem_psw_helper_sha256": "d3730699d376a0a4645f6a5734f59e0223af828c4cb4ced31ec3c97aa72394c5",
+    "maximum_written_depth_bytes": 184,
+    "psw_stack_written_bytes": 4,
+    "psw_cursor_restored": true,
+    "pending_timer_state": {
+      "status_before": 24,
+      "status_after": 40,
+      "compare": 1249,
+      "next_state": 1
+    },
+    "scope": "Synthetic outer handler; original TOP8/9 idle and pending state-0 paths."
+  },
+  "native_release_probe": {
+    "hook_call": "0x040424",
+    "oem_fragments": {
+      "stock_release": {
+        "range": [
+          "0x040468",
+          "0x0404C4"
+        ],
+        "sha256": "797b440ddcb28edacbca68b0be4c8b7a307ceba10ba64c55b07bd35b16edc0d1"
+      },
+      "stock_release_helper": {
+        "range": [
+          "0x00A06C",
+          "0x00A0B0"
+        ],
+        "sha256": "d8938d834b8cbc235038ee6fe9ea3590ead1556a94915efbd48eca9e25f023fc"
+      }
+    },
+    "scope": "Native phase publisher and foreground wait with common RAM-backed TML0CT."
+  },
+  "startup_probe": {
+    "clock_and_takeover_under_one_lock": true,
+    "invalid_phase_timing_and_missing_callback_rejected": true,
+    "confirmed_wait_before_first_release": true,
+    "scope": "Caller-owned fixture state; no target RAM addresses selected."
+  },
+  "platform_io": {
+    "clock_address": "0x8003E0",
+    "clock_read_bits": 32,
+    "checks_interrupt_mask_and_restore": true
+  },
+  "scope": "Target MMIO, phase clock and takeover code; RAM-backed clock, flag and inhibit.",
+  "hardware_executed": false,
+  "flashable_image": null
+}
