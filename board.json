@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 253,
+  "sequence": 254,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -349,8 +349,8 @@
       "stage": "in_progress",
       "claim_id": "90cda8d0e88e47969f50d8225f329437",
       "claimed_at": "2026-11-20T16:59:25+00:00",
-      "updated_at": "2026-11-20T16:59:25+00:00",
-      "note": "Propagate fatal telemetry submission errors to the slot13 broker in the same poll, with model coverage for BusOff across submission.",
+      "updated_at": "2026-11-20T17:01:25+00:00",
+      "note": "Reproduced BusOff during 0x1AE staging on baseline, corrected and focused fixture passes; running PC and M32R checks.",
       "result": null
     },
     "TOY-06": {
@@ -2592,9 +2592,17 @@
       "action": "claim",
       "claim_id": "57db4a43b5754a71a19f9ab77e4c69f4",
       "at": "2026-11-20T17:00:49+00:00"
+    },
+    {
+      "operation_id": "0eda055565b9468384346e4d642f5c63",
+      "task": "CAN-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "90cda8d0e88e47969f50d8225f329437",
+      "at": "2026-11-20T17:01:25+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:00:49+00:00",
+  "updated_at": "2026-11-20T17:01:25+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
