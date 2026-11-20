@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 583,
+  "sequence": 584,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -551,19 +551,19 @@
       "result": "30a37a9f5672164bb8326dcc76d9581dc83c01db"
     },
     "AUD-01": {
-      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
-      "label": "Codex AUD-01",
-      "branch": "codex/aud01-pinned-replay-mwp5rm2ofhaxjfi9dss",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "label": "Codex AUD-01 — офлайн-сверка диапазонов Bosch",
+      "branch": "codex/aud01-e4m3-diff-check-922b7b11",
       "files": [
-        "targets/bosch/replay_e4m3_torque.py",
-        "verification/project-audit/aud01-pinned-replay.md"
+        "tools/check_e4m3_diff.py",
+        "verification/project-audit/aud01-e4m3-diff-check.md"
       ],
-      "stage": "done",
-      "claim_id": "69a90e88e1b54af298f0f4e5760e308f",
-      "claimed_at": "2026-11-20T16:45:11+00:00",
-      "updated_at": "2026-11-20T17:48:17+00:00",
-      "note": "袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md.",
-      "result": "6748075bd8cda69a0b6c2b9d6e2a471a00463434"
+      "stage": "in_progress",
+      "claim_id": "905e8720217a4978bc115ceef39b1035",
+      "claimed_at": "2026-11-20T20:10:29+00:00",
+      "updated_at": "2026-11-20T20:10:29+00:00",
+      "note": "Независимая офлайн-сверка data/e4m3-diff.json с Git-объектами R1/R4. Проверяю размеры, SHA-256, blob ID, побайтовое равенство и каждый диапазон смещений. Результат только локально.",
+      "result": null
     },
     "REL-02": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -5249,9 +5249,17 @@
       "action": "claim",
       "claim_id": "5d801751d9964d70bb7719d4db03f597",
       "at": "2026-11-20T20:09:46+00:00"
+    },
+    {
+      "operation_id": "b7d9bd0bf98e4eab86f4ddd20b202d9f",
+      "task": "AUD-01",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "claim",
+      "claim_id": "905e8720217a4978bc115ceef39b1035",
+      "at": "2026-11-20T20:10:29+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:09:46+00:00",
+  "updated_at": "2026-11-20T20:10:29+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
