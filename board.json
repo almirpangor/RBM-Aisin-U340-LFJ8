@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 322,
+  "sequence": 323,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -435,12 +435,12 @@
         "targets/lfj8/lfj8_h03_output_inhibit.c",
         "targets/lfj8/lfj8_h03_output_inhibit.h"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "8ca3ba1785c84f3189ca9a9ecbb4b228",
       "claimed_at": "2026-11-20T18:01:03+00:00",
-      "updated_at": "2026-11-20T18:03:50+00:00",
-      "note": "Реализован целевой callback inhibit. Прогоны защёлок, потери CAN, таймаута и сервисной передачи прошли; подтверждён порядок девяти изменений регистров. Проверяю связанные сценарии и оформляю передачу.",
-      "result": null
+      "updated_at": "2026-11-20T18:04:53+00:00",
+      "note": "Целевой callback D/E/F и Pressure A, девять переходов по трассе регистров, отзыв поколения и обнуление обоих банков. Прошли 17 проверок native M32R. Модуль 148 байт, собственной RAM нет. Для H03-03 передать в Lfj8H03TakeoverOps.inhibit после квалификации, вызвать отзыв до смены владельца. Нужны стендовые полярность, ток, давление и независимое снятие питания при остановке CPU.",
+      "result": "c0e68fe2fc43a86df71cf122d228af63b7c29fed"
     },
     "MODE-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -3162,9 +3162,17 @@
       "action": "claim",
       "claim_id": "2b42f17a3d734aa29534d7fcee10f2ea",
       "at": "2026-11-20T18:04:06+00:00"
+    },
+    {
+      "operation_id": "0b8a1b57ba204717a72e843159ea24a4",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "8ca3ba1785c84f3189ca9a9ecbb4b228",
+      "at": "2026-11-20T18:04:53+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:04:06+00:00",
+  "updated_at": "2026-11-20T18:04:53+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
