@@ -23,4 +23,37 @@ bool lfj8_h03_dtc_native_bind(Lfj8H03DtcTarget *target, Lfj8H03Can13 *broker,
 Lfj8H03Can13Result lfj8_h03_dtc_native_poll(Lfj8H03DtcTarget *target,
                                           Lfj8H03Can13Input *input, bool native_ready);
 
+typedef struct {
+    uint32_t period_us_numerator;
+    uint32_t period_us_denominator;
+    uint32_t max_sample_gap_us;
+} Lfj8H03DtcT6Config;
+
+typedef struct {
+    Lfj8H03DtcT6Config config;
+    uint32_t sampled_us;
+    uint32_t tick;
+    uint32_t remainder;
+    bool active;
+} Lfj8H03DtcT6Clock;
+
+/* The application owns this foreground-only state. Supply the verified T6
+ * period as a fraction of a microsecond, at least 1 us, and a measured upper
+ * bound on consecutive sampling gaps, less than half a TML0 wrap. The low
+ * bits of initial_tick determine the donor task phase at the first sample.
+ * Start after TML0 qualification and before admitting CAN. Rephase only
+ * with CAN admission closed. On a timer reconfiguration run the normal
+ * unbind/clock qualification/startup path before reusing this state. */
+bool lfj8_h03_dtc_native_start_t6(Lfj8H03DtcT6Clock *clock,
+                                  const Lfj8H03DtcT6Config *config, uint32_t initial_tick);
+
+/* Use in place of native_poll when the application supplies T6 from TML0.
+ * Advances the wrapping T6 tick and writes it to input->diagnostic_tick.
+ * Loss of qualified time or an excessive sample gap disables the source
+ * and withdraws CAN admission. A stopped source must be started explicitly.
+ * An unavailable turn still runs the broker's ordinary revocation path. */
+Lfj8H03Can13Result lfj8_h03_dtc_native_poll_t6(Lfj8H03DtcTarget *target,
+                                             Lfj8H03Can13Input *input, bool native_ready,
+                                             Lfj8H03DtcT6Clock *clock);
+
 #endif
