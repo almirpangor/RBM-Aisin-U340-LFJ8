@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 201,
+  "sequence": 202,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -296,8 +296,8 @@
       "stage": "in_progress",
       "claim_id": "8ac9d38cec054d318a8eb919f6783de2",
       "claimed_at": "2026-11-20T16:41:24+00:00",
-      "updated_at": "2026-11-20T16:42:49+00:00",
-      "note": "Reproduced wrong-ID TRFIN and same-generation reuse after BusOff during REFRESH. Both host regressions pass with lease failure handling. Running PC, M32R and Bosch dialogue.",
+      "updated_at": "2026-11-20T16:43:43+00:00",
+      "note": "Host and M32R regressions reproduce and prevent wrong-ID completion and old lease reuse; 17 M32R components pass. Checking full PC suite and replaying the Bosch dialogue.",
       "result": null
     },
     "MODE-01": {
@@ -2138,9 +2138,17 @@
       "action": "review",
       "claim_id": "08c2265b7b3d431fb60bc73ce5c54109",
       "at": "2026-11-20T16:43:22+00:00"
+    },
+    {
+      "operation_id": "a5de339291ff41aa8fd470c2fa9b5ff1",
+      "task": "CAN-04",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "8ac9d38cec054d318a8eb919f6783de2",
+      "at": "2026-11-20T16:43:43+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:43:22+00:00",
+  "updated_at": "2026-11-20T16:43:43+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
