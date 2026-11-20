@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 569,
+  "sequence": 570,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -320,8 +320,8 @@
       "stage": "in_progress",
       "claim_id": "81b1f36f00b14bd49f57ba12c0f60bd1",
       "claimed_at": "2026-11-20T20:03:40+00:00",
-      "updated_at": "2026-11-20T20:03:40+00:00",
-      "note": "Исправляю сохранение диапазона при INVALID/OVERRUN с непригодной меткой: отзыв до сравнения времени, прежняя отметка не откатывается, повторный допуск штатными четырьмя отсчётами. Проверю ПК и M32R.",
+      "updated_at": "2026-11-20T20:05:25+00:00",
+      "note": "Подтвердил дефект на исходном коде. После исправления проходят 10 сценариев отзыва и восстановления на ПК; M32R input-binding PASS, общий линк и проверки памяти идут.",
       "result": null
     },
     "TOY-04": {
@@ -5139,9 +5139,17 @@
       "action": "heartbeat",
       "claim_id": "3fd1870717ff4cc684af517ec9f56903",
       "at": "2026-11-20T20:04:56+00:00"
+    },
+    {
+      "operation_id": "d2aff950174c4be789f8f2c403476887",
+      "task": "MODE-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "81b1f36f00b14bd49f57ba12c0f60bd1",
+      "at": "2026-11-20T20:05:25+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:04:56+00:00",
+  "updated_at": "2026-11-20T20:05:25+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
