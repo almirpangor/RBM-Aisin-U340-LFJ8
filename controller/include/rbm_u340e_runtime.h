@@ -29,6 +29,12 @@ typedef enum {
     RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED,
 } RbmU340eAdaptationResult;
 
+/* Immutable cold-fallback adaptation fields from S01 0540B0 -> 0545E0.
+ * The startup owner can pass this baseline to restore_adaptation when
+ * selecting the S01 profile. Use the same snapshot for an explicit reset
+ * transaction. This does not initialize other GP fields or write storage. */
+const FactoryAdaptation *rbm_u340e_s01_adaptation_baseline(void);
+
 /* Restore at startup before scheduling learning or outputs. The serialized
  * owner supplies a qualified baseline and independent, stable slot snapshots
  * from a last-marker-write store. A NULL slot represents a failed read.
