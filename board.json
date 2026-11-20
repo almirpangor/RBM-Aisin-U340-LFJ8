@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 22,
+  "sequence": 23,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -151,8 +151,8 @@
       "stage": "in_progress",
       "claim_id": "b714560b3e9a4abba849b7ea649a1622",
       "claimed_at": "2026-11-20T15:53:33+00:00",
-      "updated_at": "2026-11-20T15:53:33+00:00",
-      "note": "Формат и восстановление истории DTC, модель прерванной записи и очистки.",
+      "updated_at": "2026-11-20T15:54:58+00:00",
+      "note": "Формат и восстановление реализованы, запущены сборка ПК и модель прерванной записи.",
       "result": null
     },
     "H03-02": {
@@ -348,9 +348,17 @@
       "action": "resume",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "at": "2026-11-20T15:54:48+00:00"
+    },
+    {
+      "operation_id": "9acd55e174b94256b7dc877992846eb5",
+      "task": "DTC-04",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "b714560b3e9a4abba849b7ea649a1622",
+      "at": "2026-11-20T15:54:58+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:54:48+00:00",
+  "updated_at": "2026-11-20T15:54:58+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
