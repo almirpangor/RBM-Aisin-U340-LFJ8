@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 577,
+  "sequence": 578,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -540,12 +540,12 @@
         "tests/test_verify_sources.py",
         "verification/project-audit/src01-pinned-input-tests.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "31b87bf2ede54a3fa81c666e3bdd72ab",
       "claimed_at": "2026-11-20T20:07:11+00:00",
-      "updated_at": "2026-11-20T20:07:11+00:00",
-      "note": "Повторный резерв для публикации согласованного коммита 30a37a9 и передачи на проверку. Пять тестов проверки источников и два теста определения H03.",
-      "result": null
+      "updated_at": "2026-11-20T20:07:56+00:00",
+      "note": "Опубликованы только тесты происхождения и отчёт. Повторно прошли пять тестов проверки исходников и два теста определения H03. Результат для проверки интегратором.",
+      "result": "30a37a9f5672164bb8326dcc76d9581dc83c01db"
     },
     "AUD-01": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -5198,9 +5198,17 @@
       "action": "claim",
       "claim_id": "e313f0457b4d468897a8179d3615ce3e",
       "at": "2026-11-20T20:07:45+00:00"
+    },
+    {
+      "operation_id": "48c03b15fb3245259a5be04cac099c56",
+      "task": "SRC-01",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "review",
+      "claim_id": "31b87bf2ede54a3fa81c666e3bdd72ab",
+      "at": "2026-11-20T20:07:56+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:07:45+00:00",
+  "updated_at": "2026-11-20T20:07:56+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
