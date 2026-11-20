@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 49,
+  "sequence": 50,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -209,13 +209,14 @@
         "controller/include/rbm_u340e_runtime.h",
         "controller/src/rbm_u340e_runtime.c",
         "controller/tests/test_runtime.c",
+        "targets/lfj8/check_h03_link.py",
         "verification/project-audit/toy02-load-feed.md"
       ],
       "stage": "in_progress",
       "claim_id": "04163e758d304ae28f99c09cf17d8d25",
       "claimed_at": "2026-11-20T16:01:53+00:00",
-      "updated_at": "2026-11-20T16:04:06+00:00",
-      "note": "Публикация одного снимка нагрузки и проверки отказа реализованы. Контроллер собран и проверен в M32R. Идут H03 link, ПК и повтор аудита Bosch.",
+      "updated_at": "2026-11-20T16:04:41+00:00",
+      "note": "Резервирую H03 link checker: отдельный CPU-тест новых операндов требует полный объект контроллера, поскольку компоновщик исключает пока неподключённый вход из компактной модели.",
       "result": null
     },
     "CAN-01": {
@@ -645,9 +646,17 @@
       "action": "review",
       "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
       "at": "2026-11-20T16:04:31+00:00"
+    },
+    {
+      "operation_id": "ce7aa0b62a3a4d09a7fe7bbb9cba8454",
+      "task": "TOY-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "04163e758d304ae28f99c09cf17d8d25",
+      "at": "2026-11-20T16:04:41+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:04:31+00:00",
+  "updated_at": "2026-11-20T16:04:41+00:00",
   "main_commit": "9fa9c8aa18cd88543ba464f98fc8f7fc6a21a7d1",
   "catalog": [
     {
