@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 447,
+  "sequence": 448,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -428,12 +428,12 @@
         "targets/lfj8/test_lfj8_h03_input_binding.c",
         "verification/project-audit/mode03-conflict-policy.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "b49a1451f0334d85925f428bba02510d",
       "claimed_at": "2026-11-20T18:55:44+00:00",
-      "updated_at": "2026-11-20T18:57:11+00:00",
-      "note": "На исходном коде тест воспроизвёл запрос Auto в такт конфликта. Общий контроллер теперь подавляет обе заявки при принятом конфликте, H03 использует тот же результат. Идут ПК/M32R и проверки компоновки.",
-      "result": null
+      "updated_at": "2026-11-20T19:01:09+00:00",
+      "note": "Общий контроллер и H03 одинаково подавляют заявки на такте конфликта. Пройдены ПК 37/113, 128 профилей конфликта, 501760 заявок, отдельная проверка H03 на ПК/M32R, M32R 18+11+6+17 групп и 6 проверок размещённого CPU-кода. Отчёт mode03-conflict-policy.md. Настройки выпуска, привязки и стенд открыты.",
+      "result": "671a63edbaf189ff048edd0d5f5e22e94ea0c440"
     },
     "ECU-01": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -4139,9 +4139,17 @@
       "action": "review",
       "claim_id": "a9db7d810e7b460fb52e5042ad8e2450",
       "at": "2026-11-20T19:00:23+00:00"
+    },
+    {
+      "operation_id": "d976316990674b87a522e7a00668b459",
+      "task": "MODE-03",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "b49a1451f0334d85925f428bba02510d",
+      "at": "2026-11-20T19:01:09+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:00:23+00:00",
+  "updated_at": "2026-11-20T19:01:09+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
