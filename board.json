@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 438,
+  "sequence": 439,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -80,20 +80,20 @@
       "result": null
     },
     "REL-01": {
-      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
-      "label": "Codex REL-01 H03 service preflight",
-      "branch": "codex/rel01-h03-service-preflight-01a1f99f",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "label": "Чат RBM — проверка OFFLINE_ONLY перед упаковкой",
+      "branch": "codex/rel01-offline-report-guard-1120-c7e4",
       "files": [
-        "targets/lfj8/check_h03_service_writes.py",
-        "verification/project-audit/2026-11-20-h03-service-writes.json",
-        "verification/project-audit/rel01-h03-service-preflight.md"
+        "tests/test_package_workset.py",
+        "tools/package_workset.py",
+        "verification/project-audit/rel01-offline-report-guard.md"
       ],
-      "stage": "done",
-      "claim_id": "728ac0bbf9a84b04bfdc5f0fce5a6b1b",
-      "claimed_at": "2026-11-20T18:14:59+00:00",
-      "updated_at": "2026-11-20T18:32:59+00:00",
-      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
-      "result": "8a99dcb1a1ea1031e71c54c9281ff83651e7491d"
+      "stage": "in_progress",
+      "claim_id": "955fa03480184bffadb909ff493f7946",
+      "claimed_at": "2026-11-20T18:57:39+00:00",
+      "updated_at": "2026-11-20T18:57:39+00:00",
+      "note": "Расширить проверку пакета BIN на хеши проверочных образов из отчётов ST10 и журнала обмена, сохранив упаковку доказательств. Сборка целевых BIN не входит в порцию.",
+      "result": null
     },
     "H03-03": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -4075,9 +4075,17 @@
       "action": "heartbeat",
       "claim_id": "59327b6eafdb4bdcac7a920397975731",
       "at": "2026-11-20T18:57:29+00:00"
+    },
+    {
+      "operation_id": "2213549adc8a4fc9b05014f35bebe4ab",
+      "task": "REL-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "claim",
+      "claim_id": "955fa03480184bffadb909ff493f7946",
+      "at": "2026-11-20T18:57:39+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:57:29+00:00",
+  "updated_at": "2026-11-20T18:57:39+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
