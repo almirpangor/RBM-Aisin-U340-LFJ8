@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 32,
+  "sequence": 33,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -205,8 +205,8 @@
       "stage": "in_progress",
       "claim_id": "b8f5993a9046405492ff005c31e01675",
       "claimed_at": "2026-11-20T15:57:52+00:00",
-      "updated_at": "2026-11-20T15:57:52+00:00",
-      "note": "Сверка всех 96 индексов, слов и статусов таблицы Chery с извлечением S03. Без активации неподтверждённых мониторов.",
+      "updated_at": "2026-11-20T15:59:02+00:00",
+      "note": "Все 96 строк совпали с C и с проверенным по SHA-256 S03. Идёт полный прогон ПК.",
       "result": null
     }
   },
@@ -466,9 +466,17 @@
       "action": "claim",
       "claim_id": "b8f5993a9046405492ff005c31e01675",
       "at": "2026-11-20T15:57:52+00:00"
+    },
+    {
+      "operation_id": "449c33112bb547bc9b2dde32f3679ed0",
+      "task": "DTC-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "b8f5993a9046405492ff005c31e01675",
+      "at": "2026-11-20T15:59:02+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:57:52+00:00",
+  "updated_at": "2026-11-20T15:59:02+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
