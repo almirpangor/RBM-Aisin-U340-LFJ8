@@ -532,6 +532,9 @@ static void check_start_from_seed(void)
     assert(!source.reads && !runtime.initialized);
 
     seed.kind = RBM_U340E_STARTUP_PREPARED;
+    seed.gp = &runtime.gp;
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) == RBM_U340E_ADAPTATION_INVALID);
+    seed.gp = &gp;
     gear.b4852 ^= 1u;
     assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) == RBM_U340E_ADAPTATION_INVALID);
     gear.b4852 ^= 1u;

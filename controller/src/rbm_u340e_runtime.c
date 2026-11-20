@@ -351,6 +351,7 @@ RbmU340eAdaptationResult rbm_u340e_runtime_start_from_seed(
     }
     runtime->initialized = 0u;
     if (!seed || overlaps(runtime, sizeof *runtime, seed, sizeof *seed) ||
+        seed->gp == &runtime->gp ||
         (seed->kind != RBM_U340E_STARTUP_PREPARED && seed->kind != RBM_U340E_STARTUP_S01_COLD)) {
         return RBM_U340E_ADAPTATION_INVALID;
     }

@@ -71,8 +71,8 @@ typedef struct {
     void *read_context;
 } RbmU340eStartupSeed;
 
-/* Start from complete, independently qualified gear and GP snapshots.
- * PREPARED preserves the supplied startup fields. S01_COLD requires
+/* Start from complete, independently qualified gear and GP snapshots
+ * disjoint from the runtime. PREPARED preserves those fields. S01_COLD requires
  * disjoint scratch and applies the donor projection before reading NVM.
  * The owner keeps tasks and outputs closed until this returns. INVALID
  * leaves the runtime uninitialized. Slot snapshots follow restore's contract. */
