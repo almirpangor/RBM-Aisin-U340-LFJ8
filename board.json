@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 503,
+  "sequence": 504,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -373,7 +373,7 @@
       "stage": "in_progress",
       "claim_id": "f6547625e0dd48c180162a7963424191",
       "claimed_at": "2026-11-20T19:38:10+00:00",
-      "updated_at": "2026-11-20T19:38:45+00:00",
+      "updated_at": "2026-11-20T19:39:13+00:00",
       "note": "Резервирую также реализацию адаптера DTC CAN. Состояние фазы T6 и закрытие сеанса остаются в том же объекте, что и управление TX13.",
       "result": null
     },
@@ -4584,9 +4584,17 @@
       "action": "heartbeat",
       "claim_id": "f6547625e0dd48c180162a7963424191",
       "at": "2026-11-20T19:38:45+00:00"
+    },
+    {
+      "operation_id": "22f9b0400280453fbd7c802b33ca5692",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "f6547625e0dd48c180162a7963424191",
+      "at": "2026-11-20T19:39:13+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:38:45+00:00",
+  "updated_at": "2026-11-20T19:39:13+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
