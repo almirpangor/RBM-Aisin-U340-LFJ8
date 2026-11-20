@@ -22,6 +22,11 @@ PRESSURE_PROOF = "research/results/C167_SECONDARY_SLU_PRESSURE_PROBE.json"
 PRESSURE_SOURCE = "research/probes/c167_secondary_slu_pressure.c"
 PRESSURE_INPUTS = (PRESSURE_SOURCE, "research/probes/c167_secondary_slu_pressure.h",
                    "research/probes/c167_secondary_slu.h")
+BASELINE_PROOF = "research/results/C167_SECONDARY_SLU_BASELINE_PROBE.json"
+BASELINE_SOURCE = "research/probes/c167_secondary_slu_baseline.c"
+BASELINE_INPUTS = (BASELINE_SOURCE, "research/probes/c167_secondary_slu_baseline.h",
+                   "research/probes/c167_fast_oscillation.h")
+BASELINE_DEPENDENCY = "research/probes/ta2005_compact_input_projection.h"
 ENTRY = 0x055C5E
 GP = 12288
 CTRL, PERIOD, CMP, ENABLE = 0xFFFFF602, 0xFFFFF614, 0xFFFFF616, 0xFFFFF41E
@@ -61,6 +66,71 @@ class SecondaryResult(C.Structure):
     _fields_ = [("pressure_7136", C.c_uint16), ("command", SluCommand)]
 
 
+class BaselineInput(C.Structure):
+    _fields_ = [("speed_7200", C.c_uint16), ("speed_7204", C.c_uint16),
+                ("base_7054", C.c_uint16), ("trim_7066", C.c_int16),
+                ("gear", C.c_uint8), ("learning_4616", C.c_uint8 * 12)]
+
+
+class BaselineState(C.Structure):
+    _fields_ = [("baseline_7026", C.c_uint16), ("adjustment_7032", C.c_int16)]
+
+
+def compare_baseline_flow(compare_case, combined):
+    inputs = SecondaryInput(baseline_7026=65535, selector_4544=0xa5, qualified=True)
+    sample = BaselineInput(base_7054=10000, gear=1)
+    sample.learning_4616[:] = (0, 255, 10, 220, 50, 255, 3, 224, 80, 241, 1, 188)
+    control_cases = 0
+    for mode, gear, speed, nt, hold in product((0, 1, 2, 3, 255), (0, 1, 255), (0, 128), (0, 1), (0, 8)):
+        inputs.mode_4505, sample.gear = mode, gear
+        inputs.flags_4828, inputs.flags_4827, inputs.flags_4825 = speed, nt, hold
+        sample.speed_7200, sample.speed_7204 = 6000, 31000
+        compare_case(inputs, SecondaryState(1, 200), sample, BaselineState(17777, -1234))
+        control_cases += 1
+
+    inputs.mode_4505 = 3
+    inputs.flags_4825 = 0
+    sample.gear = 1
+    curve_cases = 0
+    for use_nt, breaks in ((False, (21, 31, 41, 51, 61, 71, 81)), (True, (128, 241, 243, 245, 247))):
+        inputs.flags_4828, inputs.flags_4827 = 128, int(use_nt)
+        points = {0, 1, 32767, 32768, 65535}
+        points.update(x * 128 + delta for x, delta in product(breaks, (-2, -1, 0, 1, 2)))
+        points.update((a + b) * 64 for a, b in zip(breaks, breaks[1:]))
+        for speed, base, trim in product(sorted(points), (0, 2559, 2560, 10000, 20480, 65535),
+                                         (-32768, -2000, 0, 2000, 32767)):
+            sample.speed_7200 = sample.speed_7204 = speed
+            sample.base_7054, sample.trim_7066 = base, trim
+            compare_case(inputs, SecondaryState(3, 0), sample, BaselineState())
+            curve_cases += 1
+
+    state, baseline = SecondaryState(1, 199), BaselineState(12345, -3210)
+    sample.base_7054, sample.trim_7066 = 10000, 0
+    inputs.mode_4505, inputs.flags_4827 = 2, 0
+    for gear, hold, speed in ((1, 0, 6000), (1, 8, 6400), (0, 8, 6400), (1, 8, 6400), (1, 0, 6400)):
+        sample.gear, inputs.flags_4825, sample.speed_7200 = gear, hold, speed
+        compare_case(inputs, state, sample, baseline)
+
+    arguments = [C.byref(arg) for arg in (inputs, sample, baseline, state)]
+    saved = bytes(state), bytes(baseline)
+    for missing in range(5):
+        result = SecondaryResult(1, SluCommand(2, 3, True))
+        args = [*arguments, C.byref(result)]
+        args[missing] = None
+        assert not combined(*args)
+        if missing != 4:
+            assert (result.pressure_7136, result.command.selected_7246,
+                    result.command.characteristic_7130, result.command.force) == (0, 0, 0, False)
+        assert (bytes(state), bytes(baseline)) == saved
+    inputs.qualified = False
+    result = SecondaryResult(1, SluCommand(2, 3, True))
+    assert not combined(*arguments, C.byref(result))
+    assert (result.pressure_7136, result.command.selected_7246,
+            result.command.characteristic_7130, result.command.force) == (0, 0, 0, False)
+    assert (bytes(state), bytes(baseline)) == saved
+    return {"control_cases": control_cases, "curve_cases": curve_cases, "sequence_steps": 5, "invalid_cases": 6}
+
+
 def compare_secondary(library, projection, reference_command):
     # The frozen R3 probe uses canonical GP bytes and C167 state views.
     core = (C.c_uint8 * 843)()
@@ -73,7 +143,17 @@ def compare_secondary(library, projection, reference_command):
     secondary.argtypes = [C.POINTER(SecondaryInput), C.POINTER(SecondaryState), C.POINTER(SecondaryResult)]
     secondary.restype = C.c_bool
 
-    def compare_case(inputs, state):
+    reference_baseline = library.probe_secondary_slu_baseline
+    baseline_bytes = (C.c_uint8 * 18)()
+    osc = (C.c_uint8 * 39)()
+    reference_baseline.argtypes = [type(core), type(context), type(baseline_bytes), type(osc)]
+    reference_baseline.restype = C.c_int
+    combined = projection.lfj8_h03_slu_secondary_from_baseline
+    combined.argtypes = [C.POINTER(SecondaryInput), C.POINTER(BaselineInput), C.POINTER(BaselineState),
+                         C.POINTER(SecondaryState), C.POINTER(SecondaryResult)]
+    combined.restype = C.c_bool
+
+    def compare_case(inputs, state, sample=None, baseline=None):
         core[124:126] = inputs.temperature_7184.to_bytes(2, "little")
         core[241:244] = (inputs.flags_4829, inputs.flags_4828, inputs.flags_4827)
         core[327] = state.timer_4735
@@ -81,12 +161,31 @@ def compare_secondary(library, projection, reference_command):
         context[3:] = b"".join((word & 0xffff).to_bytes(2, "little") for word in
                                (inputs.baseline_7026, inputs.offset_7028, inputs.offset_7030,
                                 inputs.override_7082))
+        if sample is not None:
+            core[108:110] = sample.speed_7204.to_bytes(2, "little")
+            core[112:114] = sample.speed_7200.to_bytes(2, "little")
+            core[220] = sample.gear
+            context[3:5] = baseline.baseline_7026.to_bytes(2, "little")
+            osc[30] = inputs.flags_4825
+            baseline_bytes[:6] = (
+                sample.trim_7066.to_bytes(2, "little", signed=True)
+                + sample.base_7054.to_bytes(2, "little")
+                + baseline.adjustment_7032.to_bytes(2, "little", signed=True)
+            )
+            baseline_bytes[6:] = sample.learning_4616[:]
+            assert reference_baseline(core, context, baseline_bytes, osc) == 1
+            expected_baseline = int.from_bytes(context[3:5], "little")
+            expected_adjustment = int.from_bytes(baseline_bytes[4:6], "little", signed=True)
         assert pressure(core, context, slu) == 1
         expected_pressure = int.from_bytes(slu[2:4], "little")
         expected_command = reference_command(inputs, expected_pressure)
 
         result = SecondaryResult()
-        assert secondary(C.byref(inputs), C.byref(state), C.byref(result))
+        if sample is None:
+            assert secondary(C.byref(inputs), C.byref(state), C.byref(result))
+        else:
+            assert combined(C.byref(inputs), C.byref(sample), C.byref(baseline), C.byref(state), C.byref(result))
+            assert (baseline.baseline_7026, baseline.adjustment_7032) == (expected_baseline, expected_adjustment)
         assert result.pressure_7136 == expected_pressure
         assert (state.previous_mode_1637, state.timer_4735) == (context[1], core[327])
         assert (result.command.selected_7246, result.command.characteristic_7130, result.command.force) == expected_command
@@ -138,7 +237,8 @@ def compare_secondary(library, projection, reference_command):
     assert not secondary(C.byref(inputs), C.byref(state), None)
     assert (state.previous_mode_1637, state.timer_4735) == (2, 2)
     return {"condition_cases": condition_cases, "arithmetic_cases": arithmetic_cases,
-            "transition_steps": 4, "invalid_cases": 4}
+            "transition_steps": 4, "invalid_cases": 4,
+            "from_baseline": compare_baseline_flow(compare_case, combined)}
 
 
 def compare(library, projection, rom):
@@ -352,10 +452,13 @@ def verify(r1, r3, compiler, m32r=None):
     analog_bytes = git_bytes(r3, f"{r3_commit}:{ANALOG_PROOF}")
     chain_bytes = git_bytes(r3, f"{r3_commit}:{CHAIN_PROOF}")
     pressure_bytes = git_bytes(r3, f"{r3_commit}:{PRESSURE_PROOF}")
+    baseline_bytes = git_bytes(r3, f"{r3_commit}:{BASELINE_PROOF}")
     analog, chain, pressure = json.loads(analog_bytes), json.loads(chain_bytes), json.loads(pressure_bytes)
+    baseline = json.loads(baseline_bytes)
     assert analog["donor_sha256"] == s01["sha256"] and analog["status"] == "passed"
     assert chain["comparisons"] == 3072 and chain["physical_slu_output_bound"] is False
     assert pressure["entry"] == "05DCE8" and pressure["next_entry"] == "055C5E"
+    assert baseline["original_entries"] == ["05DC5E", "05DCE8"] and baseline["next_entry"] == "055C5E"
 
     analog_source = "toyota_isolation/output_analog.c"
     core_source = "u340e_logic/factory/src/factory_core.c"
@@ -367,6 +470,7 @@ def verify(r1, r3, compiler, m32r=None):
             pinned_headers.extractall(staged)
         sources = dict(analog["input_sha256"])
         sources.update({filename: pressure["input_sha256"][filename] for filename in PRESSURE_INPUTS})
+        sources.update({filename: baseline["input_sha256"][filename] for filename in BASELINE_INPUTS})
         for filename, expected in sources.items():
             source = git_bytes(r3, f"{r3_commit}:{filename}")
             if sha256(source).hexdigest() != expected:
@@ -376,6 +480,7 @@ def verify(r1, r3, compiler, m32r=None):
             target = staged / filename
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(source)
+        (staged / BASELINE_DEPENDENCY).write_bytes(git_bytes(r3, f"{r3_commit}:{BASELINE_DEPENDENCY}"))
         suffix = ".dll" if os.name == "nt" else ".so"
         shared = staged / ("slu" + suffix)
         h03_shared = staged / ("h03_slu" + suffix)
@@ -384,13 +489,19 @@ def verify(r1, r3, compiler, m32r=None):
         abi_check = staged / "pressure_abi.c"
         abi_check.write_text(
             '#include "research/probes/c167_secondary_slu_pressure.h"\n'
+            '#include "research/probes/c167_secondary_slu_baseline.h"\n'
+            '#include <stddef.h>\n'
             '_Static_assert(sizeof(FactoryTcuState) == 843, "R3 GP state ABI");\n'
             '_Static_assert(sizeof(ToyotaSluPressureState) == 11, "R3 pressure context ABI");\n'
-            '_Static_assert(sizeof(ToyotaSecondarySlu) == 20, "R3 SLU state ABI");\n',
+            '_Static_assert(sizeof(ToyotaSecondarySlu) == 20, "R3 SLU state ABI");\n'
+            '_Static_assert(sizeof(ToyotaSluBaselineState) == 18, "R3 baseline state ABI");\n'
+            '_Static_assert(sizeof(ToyotaFastOscillation) == 39, "R3 oscillator state ABI");\n'
+            '_Static_assert(offsetof(ToyotaFastOscillation, flags_4825) == 30, "R3 oscillator flag ABI");\n',
             encoding="ascii",
         )
         subprocess.run([*shared_flags, "-I", str(staged / headers), str(staged / analog_source),
-                        str(staged / core_source), str(staged / PRESSURE_SOURCE), str(abi_check),
+                        str(staged / core_source), str(staged / PRESSURE_SOURCE), str(staged / BASELINE_SOURCE),
+                        str(abi_check),
                         "-o", str(shared)], check=True)
         vendor = ROOT / "controller/vendor/toyota"
         subprocess.run([*shared_flags, "-I", str(vendor / "include"),
@@ -417,11 +528,13 @@ def verify(r1, r3, compiler, m32r=None):
         "local_host_checks": coverage,
         "upstream_055c5e_oracle_cases": next(x["cases"] for x in analog["operations"] if x["entry"] == "055C5E"),
         "upstream_05dce8_oracle_cases": pressure["comparisons"],
+        "upstream_05dc5e_05dce8_oracle_cases": baseline["comparisons"],
         "upstream_secondary_slu_chain_cases": chain["comparisons"],
         "upstream_secondary_slu_chain_call_boundaries": chain["compared_call_boundaries"],
         "upstream_proof_sha256": {ANALOG_PROOF: sha256(analog_bytes).hexdigest(),
                                   CHAIN_PROOF: sha256(chain_bytes).hexdigest(),
-                                  PRESSURE_PROOF: sha256(pressure_bytes).hexdigest()},
+                                  PRESSURE_PROOF: sha256(pressure_bytes).hexdigest(),
+                                  BASELINE_PROOF: sha256(baseline_bytes).hexdigest()},
         "h03_scheduler_or_snapshot_bound": False,
         "h03_physical_channel_current_or_failure_bound": False,
         "ready_for_flash": False,

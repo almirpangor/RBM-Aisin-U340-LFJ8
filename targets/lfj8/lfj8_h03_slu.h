@@ -55,4 +55,26 @@ typedef struct {
 bool lfj8_h03_slu_secondary(const Lfj8H03SluSecondaryInput *input,
                            Lfj8H03SluSecondaryState *state, Lfj8H03SluSecondaryResult *result);
 
+typedef struct {
+    uint16_t speed_7200, speed_7204, base_7054;
+    int16_t trim_7066;
+    uint8_t gear;
+    uint8_t learning_4616[12];
+} Lfj8H03SluBaselineInput;
+
+typedef struct {
+    uint16_t baseline_7026;
+    int16_t adjustment_7032;
+} Lfj8H03SluBaselineState;
+
+/* Run 05DC5E before pressure and command calculation. Qualify both inputs
+ * together, including the shared learning bank and the retained owner state.
+ * The calculated baseline replaces input->baseline_7026 for this call.
+ * Failure preserves both states and clears any supplied result. */
+bool lfj8_h03_slu_secondary_from_baseline(const Lfj8H03SluSecondaryInput *input,
+                                         const Lfj8H03SluBaselineInput *baseline_input,
+                                         Lfj8H03SluBaselineState *baseline_state,
+                                         Lfj8H03SluSecondaryState *state,
+                                         Lfj8H03SluSecondaryResult *result);
+
 #endif

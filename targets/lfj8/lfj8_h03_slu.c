@@ -29,12 +29,12 @@ bool lfj8_h03_slu_command(const Lfj8H03SluInput *input, Lfj8H03SluCommand *comma
 }
 
 static uint16_t secondary_pressure(const Lfj8H03SluSecondaryInput *input,
-                                   Lfj8H03SluSecondaryState *state)
+                                   Lfj8H03SluSecondaryState *state, uint16_t baseline)
 {
     const bool enabled = (input->flags_4828 & 0x80u) != 0u;
     uint16_t pressure = 0u;
     if (enabled || (input->flags_4827 & 0x01u)) {
-        pressure = input->baseline_7026;
+        pressure = baseline;
         if (input->mode_4505 > 1u) {
             const int16_t offset = (input->flags_1636 & 0x02u) ? input->offset_7028 : input->offset_7030;
             int32_t corrected = (int32_t)pressure + offset;
@@ -62,18 +62,20 @@ static uint16_t secondary_pressure(const Lfj8H03SluSecondaryInput *input,
     return (input->flags_4829 & 0x18u) ? input->override_7082 : pressure;
 }
 
-bool lfj8_h03_slu_secondary(const Lfj8H03SluSecondaryInput *input,
-                           Lfj8H03SluSecondaryState *state, Lfj8H03SluSecondaryResult *result)
+static bool clear_secondary(Lfj8H03SluSecondaryResult *result)
 {
-    if (!result) {
-        return false;
-    }
-    if (!input || !state || !input->qualified) {
+    if (result) {
         result->pressure_7136 = 0u;
-        return lfj8_h03_slu_command(NULL, &result->command);
+        lfj8_h03_slu_command(NULL, &result->command);
     }
+    return false;
+}
 
-    result->pressure_7136 = secondary_pressure(input, state);
+static bool secondary_result(const Lfj8H03SluSecondaryInput *input,
+                             Lfj8H03SluSecondaryState *state, uint16_t baseline,
+                             Lfj8H03SluSecondaryResult *result)
+{
+    result->pressure_7136 = secondary_pressure(input, state, baseline);
     const Lfj8H03SluInput command = {
         .pressure_7136 = result->pressure_7136,
         .selector_4544 = input->selector_4544,
@@ -86,4 +88,72 @@ bool lfj8_h03_slu_secondary(const Lfj8H03SluSecondaryInput *input,
         .qualified = true,
     };
     return lfj8_h03_slu_command(&command, &result->command);
+}
+
+bool lfj8_h03_slu_secondary(const Lfj8H03SluSecondaryInput *input,
+                           Lfj8H03SluSecondaryState *state, Lfj8H03SluSecondaryResult *result)
+{
+    if (!input || !state || !result || !input->qualified) {
+        return clear_secondary(result);
+    }
+    return secondary_result(input, state, input->baseline_7026, result);
+}
+
+static int16_t baseline_adjustment(const Lfj8H03SluBaselineInput *input, bool use_nt)
+{
+    static const uint8_t speed_axis[] = {7, 21, 31, 41, 51, 61, 71, 81};
+    static const uint8_t nt_axis[] = {5, 128, 241, 243, 245, 247};
+    const uint8_t *axis = use_nt ? nt_axis : speed_axis;
+    const uint8_t *points = input->learning_4616 + (use_nt ? 7u : 0u);
+    const uint16_t speed = use_nt ? input->speed_7204 : input->speed_7200;
+    uint8_t table[15];
+    const unsigned count = axis[0];
+
+    for (unsigned i = 0; i <= count; ++i) {
+        table[i] = axis[i];
+    }
+    for (unsigned i = 0; i < count; ++i) {
+        table[count + 1u + i] = points[i];
+    }
+    /* Double in the donor's wide domain. Both maps have ended by UINT16_MAX. */
+    const uint16_t doubled = speed > UINT16_MAX / 2u ? UINT16_MAX : (uint16_t)(speed * 2u);
+    return (int16_t)((int32_t)(factory_interp1(doubled, table) >> 3) - 4096);
+}
+
+static uint16_t baseline_pressure(const Lfj8H03SluSecondaryInput *input,
+                                  const Lfj8H03SluBaselineInput *baseline,
+                                  Lfj8H03SluBaselineState *state)
+{
+    const bool use_nt = (input->flags_4827 & 0x01u) != 0u;
+    if (baseline->gear == 0u || (!use_nt && !(input->flags_4828 & 0x80u))) {
+        return 0u;
+    }
+    if (input->mode_4505 == 1u) {
+        return 2560u;
+    }
+    if (input->flags_4825 & 0x08u) {
+        return state->baseline_7026;
+    }
+    /* When both branches run, the NT curve supplies the final GP-7032. */
+    state->adjustment_7032 = baseline_adjustment(baseline, use_nt);
+    int32_t pressure = (int32_t)baseline->base_7054 + baseline->trim_7066 + state->adjustment_7032;
+    if (pressure < 2560) {
+        pressure = 2560;
+    } else if (pressure > 20480) {
+        pressure = 20480;
+    }
+    return (uint16_t)pressure;
+}
+
+bool lfj8_h03_slu_secondary_from_baseline(const Lfj8H03SluSecondaryInput *input,
+                                         const Lfj8H03SluBaselineInput *baseline_input,
+                                         Lfj8H03SluBaselineState *baseline_state,
+                                         Lfj8H03SluSecondaryState *state,
+                                         Lfj8H03SluSecondaryResult *result)
+{
+    if (!input || !baseline_input || !baseline_state || !state || !result || !input->qualified) {
+        return clear_secondary(result);
+    }
+    baseline_state->baseline_7026 = baseline_pressure(input, baseline_input, baseline_state);
+    return secondary_result(input, state, baseline_state->baseline_7026, result);
 }
