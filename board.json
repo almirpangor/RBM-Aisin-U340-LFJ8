@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 562,
+  "sequence": 563,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -426,12 +426,12 @@
         "targets/lfj8/test_lfj8_h03_takeover.c",
         "verification/project-audit/h03-05-latch-revoke.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "1f0ef50b040d4c8ca2e5a05fd7501d40",
       "claimed_at": "2026-11-20T19:57:18+00:00",
-      "updated_at": "2026-11-20T20:00:05+00:00",
-      "note": "ПК воспроизвёл повторное принятие поколения после синхронного отзыва. Теперь apply принимает только завершённый план, а проверка блокирует отменённое поколение и принимает следующий номер через переполнение. Идут регрессии M32R и ПК.",
-      "result": null
+      "updated_at": "2026-11-20T20:02:38+00:00",
+      "note": "Краткий отзыв внутри арбитрации больше не восстанавливает старую команду в prepare/apply. ПК 41/120, строгий M32R и целевой регрессионный сценарий, 59 сценариев отказов, 16 нативных обёрток, CAN 8+12 и 6 проверок размещения прошли. Отчёт h03-05-latch-revoke.md. Силовая карта, калибровка и стенд открыты.",
+      "result": "8e866f469975c07bf741fe3f1c00317ba6c21fcf"
     },
     "MODE-03": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -5081,9 +5081,17 @@
       "action": "review",
       "claim_id": "fe39fa893cbe4843b42a5e9a0f82f3ed",
       "at": "2026-11-20T20:02:20+00:00"
+    },
+    {
+      "operation_id": "831f3b4a6bfe4b4090b87128205eb060",
+      "task": "H03-05",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "1f0ef50b040d4c8ca2e5a05fd7501d40",
+      "at": "2026-11-20T20:02:38+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:02:20+00:00",
+  "updated_at": "2026-11-20T20:02:38+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
