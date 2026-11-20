@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 98,
+  "sequence": 99,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -103,20 +103,17 @@
       "label": "Codex — foreground H03",
       "branch": "codex/h03-03-foreground-01a1f99f",
       "files": [
-        "data/project-tasks.json",
         "docs/lfj8-h03-control-cycle.md",
         "targets/lfj8/check_h03_phase_wait.py",
-        "targets/lfj8/h03_phase_wait_fixture.c",
-        "targets/lfj8/h03_phase_wait_hook.S",
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "done",
-      "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
-      "claimed_at": "2026-11-20T16:04:02+00:00",
-      "updated_at": "2026-11-20T16:17:17+00:00",
-      "note": "Принято в main после независимого повторения 8 сценариев M32R и project_status. Измеренная глубина относится к модели без IRQ; аппаратный inhibit и общие часы остаются открыты. Общий реестр освобождён для интегратора.",
-      "result": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659"
+      "stage": "in_progress",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "claimed_at": "2026-11-20T16:18:01+00:00",
+      "updated_at": "2026-11-20T16:18:01+00:00",
+      "note": "Проверяю два вложенных входа через оригинальный диспетчер IRQ H03 в M32R поверх принятого 4fd3f71.",
+      "result": null
     },
     "H03-04": {
       "owner": "codex-h03-04-01a1f76d-20261120",
@@ -1166,9 +1163,17 @@
       "action": "heartbeat",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "at": "2026-11-20T16:17:43+00:00"
+    },
+    {
+      "operation_id": "bd9d6d75a0454eab93eb8a9db15d9a18",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "at": "2026-11-20T16:18:01+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:17:43+00:00",
+  "updated_at": "2026-11-20T16:18:01+00:00",
   "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {
