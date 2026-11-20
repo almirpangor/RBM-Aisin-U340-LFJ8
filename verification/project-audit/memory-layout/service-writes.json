@@ -1,0 +1,728 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "storage_report_sha256_lf": "48e79ce98e0c315e3dbf465b4eed00a6aeea65d53edbfd72e2a69cc0c3175016",
+  "storage_bytes": 2684,
+  "storage_blocks": {
+    "control": [
+      "0x806B40",
+      "0x806F8C"
+    ],
+    "communication": [
+      "0x808E40",
+      "0x809054"
+    ],
+    "workspace": [
+      "0x809054",
+      "0x809470"
+    ]
+  },
+  "results": [
+    {
+      "case": "control_first_direct",
+      "destination": "0x806B40",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "control_first_direct",
+      "destination": "0x806B40",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "control_first_after_close",
+      "destination": "0x806B40",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "control_first_after_close",
+      "destination": "0x806B40",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "control_last_direct",
+      "destination": "0x806F8B",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "control_last_direct",
+      "destination": "0x806F8B",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "control_last_after_close",
+      "destination": "0x806F8B",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "control_last_after_close",
+      "destination": "0x806F8B",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "communication_first_direct",
+      "destination": "0x808E40",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "communication_first_direct",
+      "destination": "0x808E40",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "communication_first_after_close",
+      "destination": "0x808E40",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "communication_first_after_close",
+      "destination": "0x808E40",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "communication_last_direct",
+      "destination": "0x809053",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "communication_last_direct",
+      "destination": "0x809053",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "communication_last_after_close",
+      "destination": "0x809053",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "communication_last_after_close",
+      "destination": "0x809053",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "workspace_first_direct",
+      "destination": "0x809054",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "workspace_first_direct",
+      "destination": "0x809054",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "workspace_first_after_close",
+      "destination": "0x809054",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "workspace_first_after_close",
+      "destination": "0x809054",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "workspace_last_direct",
+      "destination": "0x80946F",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "workspace_last_direct",
+      "destination": "0x80946F",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "workspace_last_after_close",
+      "destination": "0x80946F",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "workspace_last_after_close",
+      "destination": "0x80946F",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "crosses_into_control",
+      "destination": "0x806B3F",
+      "count": 2,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 2,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "crosses_into_control",
+      "destination": "0x806B3F",
+      "count": 2,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 2,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "control_two_adc0_passes",
+      "destination": "0x806B40",
+      "count": 257,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 256,
+          "remaining": 1,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100038"
+        },
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 2,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "control_two_adc0_passes",
+      "destination": "0x806B40",
+      "count": 257,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 256,
+          "remaining": 1,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100038"
+        },
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 2,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "no_pending_copy",
+      "destination": "0x806B40",
+      "count": 0,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "no_pending_copy",
+      "destination": "0x806B40",
+      "count": 0,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "checksum_delays_copy",
+      "destination": "0x806B40",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 1,
+          "checksum_remaining": 1,
+          "adc0_ticks": 1,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "checksum_delays_copy",
+      "destination": "0x806B40",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 1,
+          "checksum_remaining": 1,
+          "adc0_ticks": 1,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "stock_protected_direct",
+      "destination": "0x8085A0",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "stock_protected_direct",
+      "destination": "0x8085A0",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100038"
+        }
+      ]
+    },
+    {
+      "case": "stock_protected_prepared_copy",
+      "destination": "0x8085A0",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": false,
+      "fcnt1": 1,
+      "fesbank1": "0x8020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "stock_protected_prepared_copy",
+      "destination": "0x8085A0",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x10",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    }
+  ],
+  "prepared_internal_state_only": true,
+  "physical_remapping_modelled": false,
+  "external_programmer_verified": false,
+  "hardware_executed": false,
+  "flashable_image": null
+}

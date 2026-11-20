@@ -9,20 +9,27 @@
 #include "lfj8_range_control.h"
 #include "lfj8_gear_observer.h"
 #include "lfj8_h03_slu.h"
+#include "lfj8_h03_sensor_target.h"
+#include "lfj8_h03_application.h"
+#include "lfj8_h03_can_owner.h"
+#include "lfj8_h03_input_binding.h"
+#include "lfj8_h03_dtc_target.h"
 
 /* Typed inventory of CURRENT components, not approved RAM addresses or a
  * startup initializer. Initialize each component through its own API.
  * cycle owns its scheduler/range; can13 owns torque, diagnostic transport
  * and telemetry; engine_rx owns Chery inputs. Do not allocate them twice.
- * Owner/reset, journal, remaining Toyota stages and callback state must be
- * added when their storage contracts are defined. */
+ * sensor owns S51/S83/epoch. Application and CAN ownership are counted here.
+ * NVM transaction buffers are on the stack; they are not free storage.
+ * Remaining callback contexts must be added when their contracts are defined. */
 #define LFJ8_H03_CONTROL_FIELDS(X) \
     X(runtime, RbmU340eRuntime) \
     X(cycle, Lfj8H03Cycle) \
     X(takeover, Lfj8H03Takeover) \
     X(phase_clock, volatile Lfj8H03PhaseClock) \
-    X(vss, volatile Lfj8RawVss) \
-    X(nt, volatile Lfj8RawCapture) \
+    X(sensors, Lfj8H03SensorTarget) \
+    X(application, Lfj8H03Application) \
+    X(clock_qualified, volatile uint8_t) \
     X(atf, volatile Lfj8H03Atf) \
     X(selector_adc, volatile Lfj8SelectorAdc) \
     X(range_control, Lfj8RangeControl) \
@@ -35,9 +42,9 @@
     X(engine_rx, Lfj8H03EngineRx) \
     X(engine_qualifier, Ta2005EngineQualifier) \
     X(can13, Lfj8H03Can13) \
+    X(can_owner, Lfj8H03CanOwner) \
     X(dtc, CheryDtcState) \
-    X(dtc_rx_queue, Lfj8H03DtcRxQueue) \
-    X(dtc_rx_dispatch, Lfj8H03DtcRxDispatch) \
+    X(dtc_target, Lfj8H03DtcTarget) \
     X(main_result, Lfj8H03MainResult) \
     X(fast_output, Lfj8H03FastOutput)
 
@@ -47,6 +54,8 @@
 #define LFJ8_H03_WORKSPACE_FIELDS(X) \
     X(toyota, Lfj8H03CycleWorkspace) \
     X(capture, Lfj8CapturePair) \
+    X(sensor_snapshot, Lfj8H03SensorSnapshot) \
+    X(input_proposal, Lfj8H03InputProposal) \
     X(cycle_input, Lfj8H03CycleInput) \
     X(load_feed, RbmU340eQualifiedLoadFeed) \
     X(button_reading, Lfj8ButtonReading) \

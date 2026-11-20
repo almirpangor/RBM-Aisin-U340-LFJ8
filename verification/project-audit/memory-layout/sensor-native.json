@@ -1,0 +1,18 @@
+{
+  "source": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "runs": {
+    "stock": "H03 stock S51/S83 stores and PSW PASS",
+    "hooked": "H03 sensor hooks and foreground: native stores, epoch, S51/S83 and ATF PASS"
+  },
+  "capture_store_addresses": [
+    "0x00aa0c",
+    "0x00aa70"
+  ],
+  "scope": "native store bundles with simulated MMIO and isolated foreground invocation",
+  "hardware_tested": false,
+  "flashable_image": null
+}

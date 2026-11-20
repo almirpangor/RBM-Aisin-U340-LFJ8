@@ -1,6 +1,7 @@
 """Build big-endian relocatable controller code and run the M32R CPU checks."""
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -29,6 +30,11 @@ def elf_flags(path: Path, machine: int, elf_type: int) -> int:
 
 def build(architecture: str, compiler: Path, destination: Path, sh_runner: Path | None) -> None:
     provenance, files = verify_toyota()
+    source_paths = sorted(path for path in CONTROLLER.rglob("*")
+                          if path.is_file() and path.suffix in (".c", ".h", ".py"))
+    source_hashes = {path.relative_to(CONTROLLER.parent).as_posix():
+                     hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+                     for path in source_paths}
     machine, target_flags, triplet = ARCHITECTURE[architecture]
     suffix = compiler.suffix
     environment = dict(os.environ, PATH=str(compiler.parent) + os.pathsep + os.environ.get("PATH", ""))
@@ -160,6 +166,8 @@ def build(architecture: str, compiler: Path, destination: Path, sh_runner: Path 
         manifest = {
             "purpose": "relocatable control code and CPU simulation, without board I/O",
             "architecture": architecture,
+            "source_hash_format": "lf",
+            "source_sha256": source_hashes,
             "size_port": size_port,
             "compiler": subprocess.check_output([compiler, "--version"], env=environment, text=True).splitlines()[0],
             "flags": compile_flags,

@@ -1,0 +1,49 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "native_call": "0x0725b0",
+  "native_monitor": "0x0753a4",
+  "lower_limit_v_exclusive": 0.05859399959445,
+  "upper_limit_v_exclusive": 4.667969226837158,
+  "inclusive_10bit_counts": [
+    13,
+    956
+  ],
+  "native_dtc_record_addresses": {
+    "P0712": "0x031510",
+    "P0713": "0x031524"
+  },
+  "stock_countdown_values": {
+    "direction": 150000,
+    "override": 1000,
+    "recovery": 2000
+  },
+  "simulated_scenarios": [
+    "high_at_limit_still_pending_after_29_calls",
+    "high_at_limit_active_on_call_30",
+    "high_remains_active_during_low_countdown",
+    "opposite_direction_can_latch_without_clearing_first",
+    "both_still_active_after_three_good_steps",
+    "fourth_good_step_clears_both_and_confirms_recovery",
+    "one_good_step_resets_unqualified_low_countdown",
+    "low_at_limit_active_on_call_30",
+    "disabled_gate_reloads_high_countdown",
+    "first_alternate_gate_admits_high_monitor",
+    "second_alternate_gate_admits_low_monitor",
+    "override_holds_stock_short_countdown",
+    "first_step_after_override_remains_pending",
+    "second_step_after_override_latches_high",
+    "service_clear_leaves_unqualified_directional_flag",
+    "old_direction_can_reappear_when_opposite_fault_qualifies",
+    "fresh_recovery_clears_stale_direction",
+    "unsupported_flag_value_and_missing_io",
+    "aggregate_without_direction_is_unknown",
+    "fault_with_recovery_flag_is_inconsistent"
+  ],
+  "hardware_executed": false,
+  "target_image_emitted": false
+}

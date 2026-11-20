@@ -146,7 +146,8 @@ def check(base, compiler):
         "input_sha256": {source.relative_to(ROOT).as_posix():
                          sha256(source.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
                          for source in sorted(sources)},
-        "not_included": ["future CAN ownership/reset state", "DTC journal and adaptation persistence",
+        "not_included": ["native globals outside this inventory, including the DTC IRQ binding pointer",
+                         "DTC/adaptation NVM transaction buffers on the stack and physical driver state",
                          "remaining Toyota stages", "platform callback/context storage",
                          "stack frames and nested interrupts", "read-only calibration and callback tables"],
         "exclusive_ram_ownership_verified": False, "stack_bound_verified": False,

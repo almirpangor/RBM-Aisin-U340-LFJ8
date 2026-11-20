@@ -1,0 +1,4419 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "sector": [
+    "0x020000",
+    "0x030000"
+  ],
+  "flash_erase_table_address": "0x000958",
+  "flash_erase_last_even_address": "0x02FFFE",
+  "boot_dispatch": {
+    "original": "0x008100",
+    "sector_has_content": "0x008100",
+    "begin_marker_changed": "0x0047D8",
+    "end_marker_changed": "0x0047D8"
+  },
+  "erase_parser": [
+    {
+      "start": "0x008000",
+      "end": "0x080000",
+      "allowed": true
+    },
+    {
+      "start": "0x010000",
+      "end": "0x020000",
+      "allowed": true
+    },
+    {
+      "start": "0x020000",
+      "end": "0x030000",
+      "allowed": true
+    },
+    {
+      "start": "0x010000",
+      "end": "0x030000",
+      "allowed": true
+    },
+    {
+      "start": "0x020001",
+      "end": "0x030000",
+      "allowed": false
+    },
+    {
+      "start": "0x020000",
+      "end": "0x02FFFF",
+      "allowed": false
+    },
+    {
+      "start": "0x020000",
+      "end": "0x030001",
+      "allowed": false
+    },
+    {
+      "start": "0x030000",
+      "end": "0x040000",
+      "allowed": false
+    }
+  ],
+  "readback_equality_and_mismatch_verified": true,
+  "virtual_flash_selector_register_shadow_cases": [
+    "0x8000",
+    "0x8001",
+    "0x8002",
+    "0x8003",
+    "0x8004",
+    "0x8005",
+    "0x8006",
+    "0x8007",
+    "0x8008",
+    "0x8009",
+    "0x800A",
+    "0x800B",
+    "0x800C",
+    "0x800D",
+    "0x800E",
+    "0x800F",
+    "0x8010",
+    "0x8011",
+    "0x8012",
+    "0x8013",
+    "0x8014",
+    "0x8015",
+    "0x8016",
+    "0x8017",
+    "0x8018",
+    "0x8019",
+    "0x801A",
+    "0x801B",
+    "0x801C",
+    "0x801D",
+    "0x801E",
+    "0x801F",
+    "0x8020",
+    "0x8021",
+    "0x8022",
+    "0x8023",
+    "0x8024",
+    "0x8025",
+    "0x8026",
+    "0x8027",
+    "0x8028",
+    "0x8029",
+    "0x802A",
+    "0x802B",
+    "0x802C",
+    "0x802D",
+    "0x802E",
+    "0x802F",
+    "0x8030",
+    "0x8031",
+    "0x8032",
+    "0x8033",
+    "0x8034",
+    "0x8035",
+    "0x8036",
+    "0x8037",
+    "0x8038",
+    "0x8039",
+    "0x803A",
+    "0x803B",
+    "0x803C",
+    "0x803D",
+    "0x803E",
+    "0x803F",
+    "0x8040",
+    "0x8041",
+    "0x8042",
+    "0x8043",
+    "0x8044",
+    "0x8045",
+    "0x8046",
+    "0x8047",
+    "0x8048",
+    "0x8049",
+    "0x804A",
+    "0x804B",
+    "0x804C",
+    "0x804D",
+    "0x804E",
+    "0x804F",
+    "0x8050",
+    "0x8051",
+    "0x8052",
+    "0x8053",
+    "0x8054",
+    "0x8055",
+    "0x8056",
+    "0x8057",
+    "0x8058",
+    "0x8059",
+    "0x805A",
+    "0x805B",
+    "0x805C",
+    "0x805D",
+    "0x805E",
+    "0x805F",
+    "0x8060",
+    "0x8061",
+    "0x8062",
+    "0x8063",
+    "0x8064",
+    "0x8065",
+    "0x8066",
+    "0x8067",
+    "0x8068",
+    "0x8069",
+    "0x806A",
+    "0x806B",
+    "0x806C",
+    "0x806D",
+    "0x806E",
+    "0x806F",
+    "0x8070",
+    "0x8071",
+    "0x8072",
+    "0x8073",
+    "0x8074",
+    "0x8075",
+    "0x8076",
+    "0x8077",
+    "0x8078",
+    "0x8079",
+    "0x807A",
+    "0x807B",
+    "0x807C",
+    "0x807D",
+    "0x807E",
+    "0x807F"
+  ],
+  "virtual_flash_service_activation": {
+    "entry": "0x003364",
+    "already_prepared_monitor_state": true,
+    "enabled_s_banks": [
+      "0x00",
+      "0x01",
+      "0x02",
+      "0x03",
+      "0x04",
+      "0x05",
+      "0x06",
+      "0x07",
+      "0x08",
+      "0x09",
+      "0x0A",
+      "0x0B",
+      "0x0C",
+      "0x0D",
+      "0x0E",
+      "0x0F",
+      "0x10",
+      "0x11",
+      "0x12",
+      "0x13",
+      "0x14",
+      "0x15",
+      "0x16",
+      "0x17",
+      "0x18",
+      "0x19",
+      "0x1A",
+      "0x1B",
+      "0x1C",
+      "0x1D",
+      "0x1E",
+      "0x1F",
+      "0x20",
+      "0x21",
+      "0x22",
+      "0x23",
+      "0x24",
+      "0x25",
+      "0x26",
+      "0x27",
+      "0x28",
+      "0x29",
+      "0x2A",
+      "0x2B",
+      "0x2C",
+      "0x2D",
+      "0x2E",
+      "0x2F",
+      "0x30",
+      "0x31",
+      "0x32",
+      "0x33",
+      "0x34",
+      "0x35",
+      "0x36",
+      "0x37",
+      "0x38",
+      "0x39",
+      "0x3A",
+      "0x3B",
+      "0x3C",
+      "0x3D",
+      "0x3E",
+      "0x3F",
+      "0x40",
+      "0x41",
+      "0x42",
+      "0x43",
+      "0x44",
+      "0x45",
+      "0x46",
+      "0x47",
+      "0x48",
+      "0x49",
+      "0x4A",
+      "0x4B",
+      "0x4C",
+      "0x4D",
+      "0x4E",
+      "0x4F",
+      "0x50",
+      "0x51",
+      "0x52",
+      "0x53",
+      "0x54",
+      "0x55",
+      "0x56",
+      "0x57",
+      "0x58",
+      "0x59",
+      "0x5A",
+      "0x5B",
+      "0x5C",
+      "0x5D",
+      "0x5E",
+      "0x5F",
+      "0x60",
+      "0x61",
+      "0x62",
+      "0x63",
+      "0x64",
+      "0x65",
+      "0x66",
+      "0x67",
+      "0x68",
+      "0x69",
+      "0x6A",
+      "0x6B",
+      "0x6C",
+      "0x6D",
+      "0x6E",
+      "0x6F",
+      "0x70",
+      "0x71",
+      "0x72",
+      "0x73",
+      "0x74",
+      "0x75",
+      "0x76",
+      "0x77",
+      "0x78",
+      "0x79",
+      "0x7A",
+      "0x7B",
+      "0x7C",
+      "0x7D",
+      "0x7E",
+      "0x7F"
+    ],
+    "adjacent_destinations_disable_overlay": true,
+    "external_transport_executed": false
+  },
+  "raw_reference_candidates_outside_the_sector": {
+    "wide_branch": [],
+    "medium_branch": [
+      [
+        "0x01320C",
+        "0x02B318"
+      ],
+      [
+        "0x013230",
+        "0x02E5D8"
+      ],
+      [
+        "0x013384",
+        "0x0218E8"
+      ],
+      [
+        "0x0133A8",
+        "0x02190C"
+      ],
+      [
+        "0x013420",
+        "0x029420"
+      ],
+      [
+        "0x013448",
+        "0x023444"
+      ],
+      [
+        "0x01346C",
+        "0x0211E4"
+      ],
+      [
+        "0x013490",
+        "0x021208"
+      ],
+      [
+        "0x0135DC",
+        "0x020414"
+      ],
+      [
+        "0x013600",
+        "0x020438"
+      ],
+      [
+        "0x013624",
+        "0x02045C"
+      ],
+      [
+        "0x013648",
+        "0x020480"
+      ],
+      [
+        "0x013664",
+        "0x02A874"
+      ],
+      [
+        "0x013670",
+        "0x027680"
+      ],
+      [
+        "0x013688",
+        "0x02A898"
+      ],
+      [
+        "0x013694",
+        "0x0276A4"
+      ],
+      [
+        "0x0136AC",
+        "0x02A8BC"
+      ],
+      [
+        "0x0136B8",
+        "0x0276C8"
+      ],
+      [
+        "0x0136D0",
+        "0x02A8E0"
+      ],
+      [
+        "0x0136DC",
+        "0x0276EC"
+      ],
+      [
+        "0x01A034",
+        "0x0270B4"
+      ],
+      [
+        "0x01A098",
+        "0x02E414"
+      ],
+      [
+        "0x01A0B4",
+        "0x02B080"
+      ],
+      [
+        "0x01A0E8",
+        "0x02E464"
+      ],
+      [
+        "0x01A104",
+        "0x02B0D0"
+      ],
+      [
+        "0x01F2DC",
+        "0x02BFA8"
+      ],
+      [
+        "0x01F4EC",
+        "0x02C1B8"
+      ]
+    ],
+    "short_branch": [],
+    "ld24": [
+      [
+        "0x005220",
+        "0x020000"
+      ],
+      [
+        "0x005228",
+        "0x020000"
+      ],
+      [
+        "0x005274",
+        "0x020000"
+      ],
+      [
+        "0x00527C",
+        "0x020000"
+      ]
+    ],
+    "u32_be": [
+      [
+        "0x000958",
+        "0x020000"
+      ],
+      [
+        "0x00095C",
+        "0x02FFFE"
+      ],
+      [
+        "0x01A194",
+        "0x020003"
+      ],
+      [
+        "0x0318A0",
+        "0x021000"
+      ]
+    ]
+  },
+  "stock_diagnostic_sum": "0xC97D",
+  "diagnostic_sum_after_simulated_sector_change": "0xC8D8",
+  "ends_are_exclusive": true,
+  "physical_erase_or_write_executed": false,
+  "programmer_compatibility_verified": false,
+  "placement": {
+    "elf_sha256": "ab17c0d838ee27a01f40a2cf11a4a83048bebaf117c27b4d18d9a99beddc626e",
+    "scope": "allocated ELF sections intersecting internal Flash",
+    "observed_service_activation_entry": "0x003364",
+    "s_banks_replayed": 128,
+    "overlaps_stock_selector_pages": true,
+    "collisions": [
+      {
+        "section_start": "0x01F7D0",
+        "section_end_exclusive": "0x01FAFC",
+        "executable": true,
+        "bytes": 812,
+        "overlapping_s_banks": [
+          "0x1F"
+        ]
+      },
+      {
+        "section_start": "0x01FAFC",
+        "section_end_exclusive": "0x01FE24",
+        "executable": true,
+        "bytes": 808,
+        "overlapping_s_banks": [
+          "0x1F"
+        ]
+      },
+      {
+        "section_start": "0x01FE24",
+        "section_end_exclusive": "0x020144",
+        "executable": false,
+        "bytes": 800,
+        "overlapping_s_banks": [
+          "0x1F",
+          "0x20"
+        ]
+      },
+      {
+        "section_start": "0x020144",
+        "section_end_exclusive": "0x020464",
+        "executable": true,
+        "bytes": 800,
+        "overlapping_s_banks": [
+          "0x20"
+        ]
+      },
+      {
+        "section_start": "0x020464",
+        "section_end_exclusive": "0x020780",
+        "executable": true,
+        "bytes": 796,
+        "overlapping_s_banks": [
+          "0x20"
+        ]
+      },
+      {
+        "section_start": "0x020780",
+        "section_end_exclusive": "0x020A9C",
+        "executable": true,
+        "bytes": 796,
+        "overlapping_s_banks": [
+          "0x20"
+        ]
+      },
+      {
+        "section_start": "0x020A9C",
+        "section_end_exclusive": "0x020D8C",
+        "executable": true,
+        "bytes": 752,
+        "overlapping_s_banks": [
+          "0x20"
+        ]
+      },
+      {
+        "section_start": "0x020D8C",
+        "section_end_exclusive": "0x021068",
+        "executable": false,
+        "bytes": 732,
+        "overlapping_s_banks": [
+          "0x20",
+          "0x21"
+        ]
+      },
+      {
+        "section_start": "0x021068",
+        "section_end_exclusive": "0x021340",
+        "executable": true,
+        "bytes": 728,
+        "overlapping_s_banks": [
+          "0x21"
+        ]
+      },
+      {
+        "section_start": "0x021340",
+        "section_end_exclusive": "0x0215E4",
+        "executable": true,
+        "bytes": 676,
+        "overlapping_s_banks": [
+          "0x21"
+        ]
+      },
+      {
+        "section_start": "0x0215E4",
+        "section_end_exclusive": "0x021848",
+        "executable": true,
+        "bytes": 612,
+        "overlapping_s_banks": [
+          "0x21"
+        ]
+      },
+      {
+        "section_start": "0x021848",
+        "section_end_exclusive": "0x021AA0",
+        "executable": true,
+        "bytes": 600,
+        "overlapping_s_banks": [
+          "0x21"
+        ]
+      },
+      {
+        "section_start": "0x021AA0",
+        "section_end_exclusive": "0x021CF4",
+        "executable": true,
+        "bytes": 596,
+        "overlapping_s_banks": [
+          "0x21"
+        ]
+      },
+      {
+        "section_start": "0x021CF4",
+        "section_end_exclusive": "0x021F44",
+        "executable": true,
+        "bytes": 592,
+        "overlapping_s_banks": [
+          "0x21"
+        ]
+      },
+      {
+        "section_start": "0x021F44",
+        "section_end_exclusive": "0x022190",
+        "executable": true,
+        "bytes": 588,
+        "overlapping_s_banks": [
+          "0x21",
+          "0x22"
+        ]
+      },
+      {
+        "section_start": "0x022190",
+        "section_end_exclusive": "0x0223D8",
+        "executable": true,
+        "bytes": 584,
+        "overlapping_s_banks": [
+          "0x22"
+        ]
+      },
+      {
+        "section_start": "0x0223D8",
+        "section_end_exclusive": "0x022600",
+        "executable": true,
+        "bytes": 552,
+        "overlapping_s_banks": [
+          "0x22"
+        ]
+      },
+      {
+        "section_start": "0x022600",
+        "section_end_exclusive": "0x022818",
+        "executable": true,
+        "bytes": 536,
+        "overlapping_s_banks": [
+          "0x22"
+        ]
+      },
+      {
+        "section_start": "0x022818",
+        "section_end_exclusive": "0x022A2C",
+        "executable": true,
+        "bytes": 532,
+        "overlapping_s_banks": [
+          "0x22"
+        ]
+      },
+      {
+        "section_start": "0x022A2C",
+        "section_end_exclusive": "0x022C3C",
+        "executable": true,
+        "bytes": 528,
+        "overlapping_s_banks": [
+          "0x22"
+        ]
+      },
+      {
+        "section_start": "0x022C3C",
+        "section_end_exclusive": "0x022E4C",
+        "executable": true,
+        "bytes": 528,
+        "overlapping_s_banks": [
+          "0x22"
+        ]
+      },
+      {
+        "section_start": "0x022E4C",
+        "section_end_exclusive": "0x023058",
+        "executable": true,
+        "bytes": 524,
+        "overlapping_s_banks": [
+          "0x22",
+          "0x23"
+        ]
+      },
+      {
+        "section_start": "0x023058",
+        "section_end_exclusive": "0x02325C",
+        "executable": true,
+        "bytes": 516,
+        "overlapping_s_banks": [
+          "0x23"
+        ]
+      },
+      {
+        "section_start": "0x02325C",
+        "section_end_exclusive": "0x023460",
+        "executable": true,
+        "bytes": 516,
+        "overlapping_s_banks": [
+          "0x23"
+        ]
+      },
+      {
+        "section_start": "0x023460",
+        "section_end_exclusive": "0x023664",
+        "executable": true,
+        "bytes": 516,
+        "overlapping_s_banks": [
+          "0x23"
+        ]
+      },
+      {
+        "section_start": "0x023664",
+        "section_end_exclusive": "0x023860",
+        "executable": true,
+        "bytes": 508,
+        "overlapping_s_banks": [
+          "0x23"
+        ]
+      },
+      {
+        "section_start": "0x023860",
+        "section_end_exclusive": "0x023A5C",
+        "executable": true,
+        "bytes": 508,
+        "overlapping_s_banks": [
+          "0x23"
+        ]
+      },
+      {
+        "section_start": "0x023A5C",
+        "section_end_exclusive": "0x023C58",
+        "executable": true,
+        "bytes": 508,
+        "overlapping_s_banks": [
+          "0x23"
+        ]
+      },
+      {
+        "section_start": "0x023C58",
+        "section_end_exclusive": "0x023E54",
+        "executable": true,
+        "bytes": 508,
+        "overlapping_s_banks": [
+          "0x23"
+        ]
+      },
+      {
+        "section_start": "0x023E54",
+        "section_end_exclusive": "0x02404C",
+        "executable": true,
+        "bytes": 504,
+        "overlapping_s_banks": [
+          "0x23",
+          "0x24"
+        ]
+      },
+      {
+        "section_start": "0x02404C",
+        "section_end_exclusive": "0x024240",
+        "executable": true,
+        "bytes": 500,
+        "overlapping_s_banks": [
+          "0x24"
+        ]
+      },
+      {
+        "section_start": "0x024240",
+        "section_end_exclusive": "0x024430",
+        "executable": true,
+        "bytes": 496,
+        "overlapping_s_banks": [
+          "0x24"
+        ]
+      },
+      {
+        "section_start": "0x024430",
+        "section_end_exclusive": "0x024620",
+        "executable": true,
+        "bytes": 496,
+        "overlapping_s_banks": [
+          "0x24"
+        ]
+      },
+      {
+        "section_start": "0x024620",
+        "section_end_exclusive": "0x02480C",
+        "executable": true,
+        "bytes": 492,
+        "overlapping_s_banks": [
+          "0x24"
+        ]
+      },
+      {
+        "section_start": "0x02480C",
+        "section_end_exclusive": "0x0249F0",
+        "executable": false,
+        "bytes": 484,
+        "overlapping_s_banks": [
+          "0x24"
+        ]
+      },
+      {
+        "section_start": "0x0249F0",
+        "section_end_exclusive": "0x024BD4",
+        "executable": true,
+        "bytes": 484,
+        "overlapping_s_banks": [
+          "0x24"
+        ]
+      },
+      {
+        "section_start": "0x024BD4",
+        "section_end_exclusive": "0x024DB8",
+        "executable": true,
+        "bytes": 484,
+        "overlapping_s_banks": [
+          "0x24"
+        ]
+      },
+      {
+        "section_start": "0x024DB8",
+        "section_end_exclusive": "0x024F98",
+        "executable": true,
+        "bytes": 480,
+        "overlapping_s_banks": [
+          "0x24"
+        ]
+      },
+      {
+        "section_start": "0x024F98",
+        "section_end_exclusive": "0x02516C",
+        "executable": true,
+        "bytes": 468,
+        "overlapping_s_banks": [
+          "0x24",
+          "0x25"
+        ]
+      },
+      {
+        "section_start": "0x02516C",
+        "section_end_exclusive": "0x02532C",
+        "executable": true,
+        "bytes": 448,
+        "overlapping_s_banks": [
+          "0x25"
+        ]
+      },
+      {
+        "section_start": "0x02532C",
+        "section_end_exclusive": "0x0254EC",
+        "executable": true,
+        "bytes": 448,
+        "overlapping_s_banks": [
+          "0x25"
+        ]
+      },
+      {
+        "section_start": "0x0254EC",
+        "section_end_exclusive": "0x0256A4",
+        "executable": true,
+        "bytes": 440,
+        "overlapping_s_banks": [
+          "0x25"
+        ]
+      },
+      {
+        "section_start": "0x0256A4",
+        "section_end_exclusive": "0x02585C",
+        "executable": true,
+        "bytes": 440,
+        "overlapping_s_banks": [
+          "0x25"
+        ]
+      },
+      {
+        "section_start": "0x02585C",
+        "section_end_exclusive": "0x025A12",
+        "executable": false,
+        "bytes": 438,
+        "overlapping_s_banks": [
+          "0x25"
+        ]
+      },
+      {
+        "section_start": "0x025A14",
+        "section_end_exclusive": "0x025BC8",
+        "executable": true,
+        "bytes": 436,
+        "overlapping_s_banks": [
+          "0x25"
+        ]
+      },
+      {
+        "section_start": "0x025BC8",
+        "section_end_exclusive": "0x025D7C",
+        "executable": true,
+        "bytes": 436,
+        "overlapping_s_banks": [
+          "0x25"
+        ]
+      },
+      {
+        "section_start": "0x025D7C",
+        "section_end_exclusive": "0x025F24",
+        "executable": true,
+        "bytes": 424,
+        "overlapping_s_banks": [
+          "0x25"
+        ]
+      },
+      {
+        "section_start": "0x025F24",
+        "section_end_exclusive": "0x0260C4",
+        "executable": true,
+        "bytes": 416,
+        "overlapping_s_banks": [
+          "0x25",
+          "0x26"
+        ]
+      },
+      {
+        "section_start": "0x0260C4",
+        "section_end_exclusive": "0x026260",
+        "executable": true,
+        "bytes": 412,
+        "overlapping_s_banks": [
+          "0x26"
+        ]
+      },
+      {
+        "section_start": "0x026260",
+        "section_end_exclusive": "0x0263F8",
+        "executable": true,
+        "bytes": 408,
+        "overlapping_s_banks": [
+          "0x26"
+        ]
+      },
+      {
+        "section_start": "0x0263F8",
+        "section_end_exclusive": "0x02658C",
+        "executable": true,
+        "bytes": 404,
+        "overlapping_s_banks": [
+          "0x26"
+        ]
+      },
+      {
+        "section_start": "0x02658C",
+        "section_end_exclusive": "0x02671C",
+        "executable": true,
+        "bytes": 400,
+        "overlapping_s_banks": [
+          "0x26"
+        ]
+      },
+      {
+        "section_start": "0x02671C",
+        "section_end_exclusive": "0x0268AC",
+        "executable": true,
+        "bytes": 400,
+        "overlapping_s_banks": [
+          "0x26"
+        ]
+      },
+      {
+        "section_start": "0x0268AC",
+        "section_end_exclusive": "0x026A34",
+        "executable": true,
+        "bytes": 392,
+        "overlapping_s_banks": [
+          "0x26"
+        ]
+      },
+      {
+        "section_start": "0x026A34",
+        "section_end_exclusive": "0x026BB4",
+        "executable": false,
+        "bytes": 384,
+        "overlapping_s_banks": [
+          "0x26"
+        ]
+      },
+      {
+        "section_start": "0x026BB4",
+        "section_end_exclusive": "0x026D30",
+        "executable": true,
+        "bytes": 380,
+        "overlapping_s_banks": [
+          "0x26"
+        ]
+      },
+      {
+        "section_start": "0x026D30",
+        "section_end_exclusive": "0x026EA0",
+        "executable": true,
+        "bytes": 368,
+        "overlapping_s_banks": [
+          "0x26"
+        ]
+      },
+      {
+        "section_start": "0x026EA0",
+        "section_end_exclusive": "0x02700C",
+        "executable": true,
+        "bytes": 364,
+        "overlapping_s_banks": [
+          "0x26",
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x02700C",
+        "section_end_exclusive": "0x027174",
+        "executable": false,
+        "bytes": 360,
+        "overlapping_s_banks": [
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x027174",
+        "section_end_exclusive": "0x0272D4",
+        "executable": true,
+        "bytes": 352,
+        "overlapping_s_banks": [
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x0272D4",
+        "section_end_exclusive": "0x027430",
+        "executable": true,
+        "bytes": 348,
+        "overlapping_s_banks": [
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x027430",
+        "section_end_exclusive": "0x027584",
+        "executable": false,
+        "bytes": 340,
+        "overlapping_s_banks": [
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x027584",
+        "section_end_exclusive": "0x0276D0",
+        "executable": true,
+        "bytes": 332,
+        "overlapping_s_banks": [
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x0276D0",
+        "section_end_exclusive": "0x02781C",
+        "executable": true,
+        "bytes": 332,
+        "overlapping_s_banks": [
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x02781C",
+        "section_end_exclusive": "0x027968",
+        "executable": false,
+        "bytes": 332,
+        "overlapping_s_banks": [
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x027968",
+        "section_end_exclusive": "0x027AAC",
+        "executable": true,
+        "bytes": 324,
+        "overlapping_s_banks": [
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x027AAC",
+        "section_end_exclusive": "0x027BEC",
+        "executable": true,
+        "bytes": 320,
+        "overlapping_s_banks": [
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x027BEC",
+        "section_end_exclusive": "0x027D24",
+        "executable": true,
+        "bytes": 312,
+        "overlapping_s_banks": [
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x027D24",
+        "section_end_exclusive": "0x027E50",
+        "executable": true,
+        "bytes": 300,
+        "overlapping_s_banks": [
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x027E50",
+        "section_end_exclusive": "0x027F7C",
+        "executable": true,
+        "bytes": 300,
+        "overlapping_s_banks": [
+          "0x27"
+        ]
+      },
+      {
+        "section_start": "0x027F7C",
+        "section_end_exclusive": "0x0280A0",
+        "executable": true,
+        "bytes": 292,
+        "overlapping_s_banks": [
+          "0x27",
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x0280A0",
+        "section_end_exclusive": "0x0281BC",
+        "executable": true,
+        "bytes": 284,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x0281BC",
+        "section_end_exclusive": "0x0282D4",
+        "executable": true,
+        "bytes": 280,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x0282D4",
+        "section_end_exclusive": "0x0283EC",
+        "executable": true,
+        "bytes": 280,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x0283EC",
+        "section_end_exclusive": "0x028500",
+        "executable": true,
+        "bytes": 276,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x028500",
+        "section_end_exclusive": "0x028614",
+        "executable": true,
+        "bytes": 276,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x028614",
+        "section_end_exclusive": "0x028724",
+        "executable": true,
+        "bytes": 272,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x028724",
+        "section_end_exclusive": "0x028834",
+        "executable": true,
+        "bytes": 272,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x028834",
+        "section_end_exclusive": "0x02893C",
+        "executable": true,
+        "bytes": 264,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x02893C",
+        "section_end_exclusive": "0x028A44",
+        "executable": true,
+        "bytes": 264,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x028A44",
+        "section_end_exclusive": "0x028B4C",
+        "executable": true,
+        "bytes": 264,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x028B4C",
+        "section_end_exclusive": "0x028C50",
+        "executable": true,
+        "bytes": 260,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x028C50",
+        "section_end_exclusive": "0x028D54",
+        "executable": true,
+        "bytes": 260,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x028D54",
+        "section_end_exclusive": "0x028E58",
+        "executable": true,
+        "bytes": 260,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x028E58",
+        "section_end_exclusive": "0x028F54",
+        "executable": true,
+        "bytes": 252,
+        "overlapping_s_banks": [
+          "0x28"
+        ]
+      },
+      {
+        "section_start": "0x028F54",
+        "section_end_exclusive": "0x02904C",
+        "executable": true,
+        "bytes": 248,
+        "overlapping_s_banks": [
+          "0x28",
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x02904C",
+        "section_end_exclusive": "0x029144",
+        "executable": true,
+        "bytes": 248,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029144",
+        "section_end_exclusive": "0x029238",
+        "executable": true,
+        "bytes": 244,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029238",
+        "section_end_exclusive": "0x029328",
+        "executable": true,
+        "bytes": 240,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029328",
+        "section_end_exclusive": "0x029414",
+        "executable": true,
+        "bytes": 236,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029414",
+        "section_end_exclusive": "0x029500",
+        "executable": true,
+        "bytes": 236,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029500",
+        "section_end_exclusive": "0x0295E8",
+        "executable": true,
+        "bytes": 232,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x0295E8",
+        "section_end_exclusive": "0x0296D0",
+        "executable": true,
+        "bytes": 232,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x0296D0",
+        "section_end_exclusive": "0x0297B4",
+        "executable": true,
+        "bytes": 228,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x0297B4",
+        "section_end_exclusive": "0x029898",
+        "executable": true,
+        "bytes": 228,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029898",
+        "section_end_exclusive": "0x029978",
+        "executable": true,
+        "bytes": 224,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029978",
+        "section_end_exclusive": "0x029A58",
+        "executable": true,
+        "bytes": 224,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029A58",
+        "section_end_exclusive": "0x029B34",
+        "executable": true,
+        "bytes": 220,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029B34",
+        "section_end_exclusive": "0x029C10",
+        "executable": true,
+        "bytes": 220,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029C10",
+        "section_end_exclusive": "0x029CEC",
+        "executable": true,
+        "bytes": 220,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029CEC",
+        "section_end_exclusive": "0x029DC8",
+        "executable": true,
+        "bytes": 220,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029DC8",
+        "section_end_exclusive": "0x029EA0",
+        "executable": true,
+        "bytes": 216,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029EA0",
+        "section_end_exclusive": "0x029F78",
+        "executable": true,
+        "bytes": 216,
+        "overlapping_s_banks": [
+          "0x29"
+        ]
+      },
+      {
+        "section_start": "0x029F78",
+        "section_end_exclusive": "0x02A050",
+        "executable": true,
+        "bytes": 216,
+        "overlapping_s_banks": [
+          "0x29",
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A050",
+        "section_end_exclusive": "0x02A120",
+        "executable": true,
+        "bytes": 208,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A120",
+        "section_end_exclusive": "0x02A1F0",
+        "executable": true,
+        "bytes": 208,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A1F0",
+        "section_end_exclusive": "0x02A2C0",
+        "executable": true,
+        "bytes": 208,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A2C0",
+        "section_end_exclusive": "0x02A390",
+        "executable": true,
+        "bytes": 208,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A390",
+        "section_end_exclusive": "0x02A45C",
+        "executable": true,
+        "bytes": 204,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A45C",
+        "section_end_exclusive": "0x02A528",
+        "executable": true,
+        "bytes": 204,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A528",
+        "section_end_exclusive": "0x02A5F0",
+        "executable": true,
+        "bytes": 200,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A5F0",
+        "section_end_exclusive": "0x02A6B8",
+        "executable": true,
+        "bytes": 200,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A6B8",
+        "section_end_exclusive": "0x02A780",
+        "executable": true,
+        "bytes": 200,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A780",
+        "section_end_exclusive": "0x02A844",
+        "executable": false,
+        "bytes": 196,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A844",
+        "section_end_exclusive": "0x02A908",
+        "executable": true,
+        "bytes": 196,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A908",
+        "section_end_exclusive": "0x02A9CC",
+        "executable": true,
+        "bytes": 196,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02A9CC",
+        "section_end_exclusive": "0x02AA8C",
+        "executable": true,
+        "bytes": 192,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02AA8C",
+        "section_end_exclusive": "0x02AB4C",
+        "executable": true,
+        "bytes": 192,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02AB4C",
+        "section_end_exclusive": "0x02AC0C",
+        "executable": true,
+        "bytes": 192,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02AC0C",
+        "section_end_exclusive": "0x02ACCC",
+        "executable": true,
+        "bytes": 192,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02ACCC",
+        "section_end_exclusive": "0x02AD84",
+        "executable": true,
+        "bytes": 184,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02AD84",
+        "section_end_exclusive": "0x02AE3C",
+        "executable": true,
+        "bytes": 184,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02AE3C",
+        "section_end_exclusive": "0x02AEF0",
+        "executable": true,
+        "bytes": 180,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02AEF0",
+        "section_end_exclusive": "0x02AFA0",
+        "executable": true,
+        "bytes": 176,
+        "overlapping_s_banks": [
+          "0x2A"
+        ]
+      },
+      {
+        "section_start": "0x02AFA0",
+        "section_end_exclusive": "0x02B050",
+        "executable": true,
+        "bytes": 176,
+        "overlapping_s_banks": [
+          "0x2A",
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B050",
+        "section_end_exclusive": "0x02B0FC",
+        "executable": false,
+        "bytes": 172,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B0FC",
+        "section_end_exclusive": "0x02B1A8",
+        "executable": false,
+        "bytes": 172,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B1A8",
+        "section_end_exclusive": "0x02B254",
+        "executable": true,
+        "bytes": 172,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B254",
+        "section_end_exclusive": "0x02B300",
+        "executable": true,
+        "bytes": 172,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B300",
+        "section_end_exclusive": "0x02B3AC",
+        "executable": false,
+        "bytes": 172,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B3AC",
+        "section_end_exclusive": "0x02B450",
+        "executable": true,
+        "bytes": 164,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B450",
+        "section_end_exclusive": "0x02B4F4",
+        "executable": true,
+        "bytes": 164,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B4F4",
+        "section_end_exclusive": "0x02B594",
+        "executable": true,
+        "bytes": 160,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B594",
+        "section_end_exclusive": "0x02B634",
+        "executable": true,
+        "bytes": 160,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B634",
+        "section_end_exclusive": "0x02B6D4",
+        "executable": true,
+        "bytes": 160,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B6D4",
+        "section_end_exclusive": "0x02B774",
+        "executable": true,
+        "bytes": 160,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B774",
+        "section_end_exclusive": "0x02B814",
+        "executable": true,
+        "bytes": 160,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B814",
+        "section_end_exclusive": "0x02B8B4",
+        "executable": true,
+        "bytes": 160,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B8B4",
+        "section_end_exclusive": "0x02B954",
+        "executable": true,
+        "bytes": 160,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B954",
+        "section_end_exclusive": "0x02B9F0",
+        "executable": true,
+        "bytes": 156,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02B9F0",
+        "section_end_exclusive": "0x02BA8C",
+        "executable": true,
+        "bytes": 156,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02BA8C",
+        "section_end_exclusive": "0x02BB28",
+        "executable": true,
+        "bytes": 156,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02BB28",
+        "section_end_exclusive": "0x02BBC4",
+        "executable": true,
+        "bytes": 156,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02BBC4",
+        "section_end_exclusive": "0x02BC60",
+        "executable": true,
+        "bytes": 156,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02BC60",
+        "section_end_exclusive": "0x02BCF4",
+        "executable": true,
+        "bytes": 148,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02BCF4",
+        "section_end_exclusive": "0x02BD84",
+        "executable": true,
+        "bytes": 144,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02BD84",
+        "section_end_exclusive": "0x02BE14",
+        "executable": true,
+        "bytes": 144,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02BE14",
+        "section_end_exclusive": "0x02BEA4",
+        "executable": true,
+        "bytes": 144,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02BEA4",
+        "section_end_exclusive": "0x02BF34",
+        "executable": true,
+        "bytes": 144,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02BF34",
+        "section_end_exclusive": "0x02BFC4",
+        "executable": true,
+        "bytes": 144,
+        "overlapping_s_banks": [
+          "0x2B"
+        ]
+      },
+      {
+        "section_start": "0x02BFC4",
+        "section_end_exclusive": "0x02C054",
+        "executable": true,
+        "bytes": 144,
+        "overlapping_s_banks": [
+          "0x2B",
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C054",
+        "section_end_exclusive": "0x02C0E0",
+        "executable": false,
+        "bytes": 140,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C0E0",
+        "section_end_exclusive": "0x02C16C",
+        "executable": false,
+        "bytes": 140,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C16C",
+        "section_end_exclusive": "0x02C1F8",
+        "executable": true,
+        "bytes": 140,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C1F8",
+        "section_end_exclusive": "0x02C284",
+        "executable": true,
+        "bytes": 140,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C284",
+        "section_end_exclusive": "0x02C310",
+        "executable": true,
+        "bytes": 140,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C310",
+        "section_end_exclusive": "0x02C398",
+        "executable": true,
+        "bytes": 136,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C398",
+        "section_end_exclusive": "0x02C420",
+        "executable": true,
+        "bytes": 136,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C420",
+        "section_end_exclusive": "0x02C4A8",
+        "executable": true,
+        "bytes": 136,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C4A8",
+        "section_end_exclusive": "0x02C528",
+        "executable": false,
+        "bytes": 128,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C528",
+        "section_end_exclusive": "0x02C5A8",
+        "executable": false,
+        "bytes": 128,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C5A8",
+        "section_end_exclusive": "0x02C628",
+        "executable": false,
+        "bytes": 128,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C628",
+        "section_end_exclusive": "0x02C6A8",
+        "executable": true,
+        "bytes": 128,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C6A8",
+        "section_end_exclusive": "0x02C728",
+        "executable": true,
+        "bytes": 128,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C728",
+        "section_end_exclusive": "0x02C7A4",
+        "executable": true,
+        "bytes": 124,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C7A4",
+        "section_end_exclusive": "0x02C820",
+        "executable": true,
+        "bytes": 124,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C820",
+        "section_end_exclusive": "0x02C89C",
+        "executable": true,
+        "bytes": 124,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C89C",
+        "section_end_exclusive": "0x02C918",
+        "executable": true,
+        "bytes": 124,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C918",
+        "section_end_exclusive": "0x02C994",
+        "executable": true,
+        "bytes": 124,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02C994",
+        "section_end_exclusive": "0x02CA10",
+        "executable": true,
+        "bytes": 124,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CA10",
+        "section_end_exclusive": "0x02CA8C",
+        "executable": true,
+        "bytes": 124,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CA8C",
+        "section_end_exclusive": "0x02CB04",
+        "executable": false,
+        "bytes": 120,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CB04",
+        "section_end_exclusive": "0x02CB7C",
+        "executable": true,
+        "bytes": 120,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CB7C",
+        "section_end_exclusive": "0x02CBF4",
+        "executable": true,
+        "bytes": 120,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CBF4",
+        "section_end_exclusive": "0x02CC6C",
+        "executable": true,
+        "bytes": 120,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CC6C",
+        "section_end_exclusive": "0x02CCE4",
+        "executable": true,
+        "bytes": 120,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CCE4",
+        "section_end_exclusive": "0x02CD5C",
+        "executable": true,
+        "bytes": 120,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CD5C",
+        "section_end_exclusive": "0x02CDD4",
+        "executable": true,
+        "bytes": 120,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CDD4",
+        "section_end_exclusive": "0x02CE4C",
+        "executable": true,
+        "bytes": 120,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CE4C",
+        "section_end_exclusive": "0x02CEC0",
+        "executable": true,
+        "bytes": 116,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CEC0",
+        "section_end_exclusive": "0x02CF34",
+        "executable": true,
+        "bytes": 116,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CF34",
+        "section_end_exclusive": "0x02CFA8",
+        "executable": true,
+        "bytes": 116,
+        "overlapping_s_banks": [
+          "0x2C"
+        ]
+      },
+      {
+        "section_start": "0x02CFA8",
+        "section_end_exclusive": "0x02D018",
+        "executable": true,
+        "bytes": 112,
+        "overlapping_s_banks": [
+          "0x2C",
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D018",
+        "section_end_exclusive": "0x02D088",
+        "executable": true,
+        "bytes": 112,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D088",
+        "section_end_exclusive": "0x02D0F8",
+        "executable": true,
+        "bytes": 112,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D0F8",
+        "section_end_exclusive": "0x02D164",
+        "executable": false,
+        "bytes": 108,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D164",
+        "section_end_exclusive": "0x02D1D0",
+        "executable": true,
+        "bytes": 108,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D1D0",
+        "section_end_exclusive": "0x02D23C",
+        "executable": true,
+        "bytes": 108,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D23C",
+        "section_end_exclusive": "0x02D2A8",
+        "executable": true,
+        "bytes": 108,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D2A8",
+        "section_end_exclusive": "0x02D310",
+        "executable": true,
+        "bytes": 104,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D310",
+        "section_end_exclusive": "0x02D378",
+        "executable": true,
+        "bytes": 104,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D378",
+        "section_end_exclusive": "0x02D3E0",
+        "executable": true,
+        "bytes": 104,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D3E0",
+        "section_end_exclusive": "0x02D448",
+        "executable": true,
+        "bytes": 104,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D448",
+        "section_end_exclusive": "0x02D4AC",
+        "executable": true,
+        "bytes": 100,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D4AC",
+        "section_end_exclusive": "0x02D510",
+        "executable": true,
+        "bytes": 100,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D510",
+        "section_end_exclusive": "0x02D574",
+        "executable": true,
+        "bytes": 100,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D574",
+        "section_end_exclusive": "0x02D5D8",
+        "executable": true,
+        "bytes": 100,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D5D8",
+        "section_end_exclusive": "0x02D63C",
+        "executable": true,
+        "bytes": 100,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D63C",
+        "section_end_exclusive": "0x02D69C",
+        "executable": true,
+        "bytes": 96,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D69C",
+        "section_end_exclusive": "0x02D6FC",
+        "executable": true,
+        "bytes": 96,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D6FC",
+        "section_end_exclusive": "0x02D75C",
+        "executable": true,
+        "bytes": 96,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D75C",
+        "section_end_exclusive": "0x02D7BC",
+        "executable": true,
+        "bytes": 96,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D7BC",
+        "section_end_exclusive": "0x02D81C",
+        "executable": true,
+        "bytes": 96,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D81C",
+        "section_end_exclusive": "0x02D87C",
+        "executable": true,
+        "bytes": 96,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D87C",
+        "section_end_exclusive": "0x02D8DC",
+        "executable": true,
+        "bytes": 96,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D8DC",
+        "section_end_exclusive": "0x02D938",
+        "executable": false,
+        "bytes": 92,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D938",
+        "section_end_exclusive": "0x02D994",
+        "executable": false,
+        "bytes": 92,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D994",
+        "section_end_exclusive": "0x02D9F0",
+        "executable": true,
+        "bytes": 92,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02D9F0",
+        "section_end_exclusive": "0x02DA4C",
+        "executable": true,
+        "bytes": 92,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DA4C",
+        "section_end_exclusive": "0x02DAA8",
+        "executable": true,
+        "bytes": 92,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DAA8",
+        "section_end_exclusive": "0x02DB04",
+        "executable": true,
+        "bytes": 92,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DB04",
+        "section_end_exclusive": "0x02DB60",
+        "executable": true,
+        "bytes": 92,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DB60",
+        "section_end_exclusive": "0x02DBBC",
+        "executable": true,
+        "bytes": 92,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DBBC",
+        "section_end_exclusive": "0x02DC18",
+        "executable": true,
+        "bytes": 92,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DC18",
+        "section_end_exclusive": "0x02DC74",
+        "executable": true,
+        "bytes": 92,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DC74",
+        "section_end_exclusive": "0x02DCD0",
+        "executable": true,
+        "bytes": 92,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DCD0",
+        "section_end_exclusive": "0x02DD2C",
+        "executable": true,
+        "bytes": 92,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DD2C",
+        "section_end_exclusive": "0x02DD84",
+        "executable": true,
+        "bytes": 88,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DD84",
+        "section_end_exclusive": "0x02DDDC",
+        "executable": true,
+        "bytes": 88,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DDDC",
+        "section_end_exclusive": "0x02DE30",
+        "executable": true,
+        "bytes": 84,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DE30",
+        "section_end_exclusive": "0x02DE84",
+        "executable": true,
+        "bytes": 84,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DE84",
+        "section_end_exclusive": "0x02DED8",
+        "executable": true,
+        "bytes": 84,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DED8",
+        "section_end_exclusive": "0x02DF2C",
+        "executable": true,
+        "bytes": 84,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DF2C",
+        "section_end_exclusive": "0x02DF80",
+        "executable": true,
+        "bytes": 84,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DF80",
+        "section_end_exclusive": "0x02DFD4",
+        "executable": true,
+        "bytes": 84,
+        "overlapping_s_banks": [
+          "0x2D"
+        ]
+      },
+      {
+        "section_start": "0x02DFD4",
+        "section_end_exclusive": "0x02E028",
+        "executable": true,
+        "bytes": 84,
+        "overlapping_s_banks": [
+          "0x2D",
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E028",
+        "section_end_exclusive": "0x02E078",
+        "executable": true,
+        "bytes": 80,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E078",
+        "section_end_exclusive": "0x02E0C8",
+        "executable": true,
+        "bytes": 80,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E0C8",
+        "section_end_exclusive": "0x02E118",
+        "executable": true,
+        "bytes": 80,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E118",
+        "section_end_exclusive": "0x02E168",
+        "executable": true,
+        "bytes": 80,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E168",
+        "section_end_exclusive": "0x02E1B8",
+        "executable": true,
+        "bytes": 80,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E1B8",
+        "section_end_exclusive": "0x02E208",
+        "executable": false,
+        "bytes": 80,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E208",
+        "section_end_exclusive": "0x02E254",
+        "executable": false,
+        "bytes": 76,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E254",
+        "section_end_exclusive": "0x02E2A0",
+        "executable": true,
+        "bytes": 76,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E2A0",
+        "section_end_exclusive": "0x02E2EC",
+        "executable": true,
+        "bytes": 76,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E2EC",
+        "section_end_exclusive": "0x02E338",
+        "executable": true,
+        "bytes": 76,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E338",
+        "section_end_exclusive": "0x02E384",
+        "executable": true,
+        "bytes": 76,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E384",
+        "section_end_exclusive": "0x02E3D0",
+        "executable": true,
+        "bytes": 76,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E3D0",
+        "section_end_exclusive": "0x02E41C",
+        "executable": true,
+        "bytes": 76,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E41C",
+        "section_end_exclusive": "0x02E468",
+        "executable": true,
+        "bytes": 76,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E468",
+        "section_end_exclusive": "0x02E4B4",
+        "executable": true,
+        "bytes": 76,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E4B4",
+        "section_end_exclusive": "0x02E500",
+        "executable": true,
+        "bytes": 76,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E500",
+        "section_end_exclusive": "0x02E548",
+        "executable": true,
+        "bytes": 72,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E548",
+        "section_end_exclusive": "0x02E590",
+        "executable": true,
+        "bytes": 72,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E590",
+        "section_end_exclusive": "0x02E5D8",
+        "executable": true,
+        "bytes": 72,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E5D8",
+        "section_end_exclusive": "0x02E620",
+        "executable": true,
+        "bytes": 72,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E620",
+        "section_end_exclusive": "0x02E664",
+        "executable": false,
+        "bytes": 68,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E664",
+        "section_end_exclusive": "0x02E6A8",
+        "executable": true,
+        "bytes": 68,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E6A8",
+        "section_end_exclusive": "0x02E6EC",
+        "executable": true,
+        "bytes": 68,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E6EC",
+        "section_end_exclusive": "0x02E730",
+        "executable": true,
+        "bytes": 68,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E730",
+        "section_end_exclusive": "0x02E774",
+        "executable": true,
+        "bytes": 68,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E774",
+        "section_end_exclusive": "0x02E7B8",
+        "executable": true,
+        "bytes": 68,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E7B8",
+        "section_end_exclusive": "0x02E7FC",
+        "executable": true,
+        "bytes": 68,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E7FC",
+        "section_end_exclusive": "0x02E840",
+        "executable": true,
+        "bytes": 68,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E840",
+        "section_end_exclusive": "0x02E884",
+        "executable": true,
+        "bytes": 68,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E884",
+        "section_end_exclusive": "0x02E8C8",
+        "executable": true,
+        "bytes": 68,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E8C8",
+        "section_end_exclusive": "0x02E90C",
+        "executable": true,
+        "bytes": 68,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E90C",
+        "section_end_exclusive": "0x02E950",
+        "executable": false,
+        "bytes": 68,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E950",
+        "section_end_exclusive": "0x02E990",
+        "executable": true,
+        "bytes": 64,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E990",
+        "section_end_exclusive": "0x02E9D0",
+        "executable": true,
+        "bytes": 64,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02E9D0",
+        "section_end_exclusive": "0x02EA10",
+        "executable": true,
+        "bytes": 64,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EA10",
+        "section_end_exclusive": "0x02EA50",
+        "executable": true,
+        "bytes": 64,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EA50",
+        "section_end_exclusive": "0x02EA90",
+        "executable": true,
+        "bytes": 64,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EA90",
+        "section_end_exclusive": "0x02EAD0",
+        "executable": true,
+        "bytes": 64,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EAD0",
+        "section_end_exclusive": "0x02EB10",
+        "executable": true,
+        "bytes": 64,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EB10",
+        "section_end_exclusive": "0x02EB50",
+        "executable": true,
+        "bytes": 64,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EB50",
+        "section_end_exclusive": "0x02EB8C",
+        "executable": true,
+        "bytes": 60,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EB8C",
+        "section_end_exclusive": "0x02EBC8",
+        "executable": true,
+        "bytes": 60,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EBC8",
+        "section_end_exclusive": "0x02EC04",
+        "executable": true,
+        "bytes": 60,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EC04",
+        "section_end_exclusive": "0x02EC40",
+        "executable": true,
+        "bytes": 60,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EC40",
+        "section_end_exclusive": "0x02EC78",
+        "executable": false,
+        "bytes": 56,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EC78",
+        "section_end_exclusive": "0x02ECB0",
+        "executable": true,
+        "bytes": 56,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02ECB0",
+        "section_end_exclusive": "0x02ECE8",
+        "executable": true,
+        "bytes": 56,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02ECE8",
+        "section_end_exclusive": "0x02ED20",
+        "executable": true,
+        "bytes": 56,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02ED20",
+        "section_end_exclusive": "0x02ED58",
+        "executable": true,
+        "bytes": 56,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02ED58",
+        "section_end_exclusive": "0x02ED90",
+        "executable": true,
+        "bytes": 56,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02ED90",
+        "section_end_exclusive": "0x02EDC8",
+        "executable": true,
+        "bytes": 56,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EDC8",
+        "section_end_exclusive": "0x02EE00",
+        "executable": true,
+        "bytes": 56,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EE00",
+        "section_end_exclusive": "0x02EE38",
+        "executable": true,
+        "bytes": 56,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EE38",
+        "section_end_exclusive": "0x02EE6C",
+        "executable": false,
+        "bytes": 52,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EE6C",
+        "section_end_exclusive": "0x02EEA0",
+        "executable": false,
+        "bytes": 52,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EEA0",
+        "section_end_exclusive": "0x02EED4",
+        "executable": true,
+        "bytes": 52,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EED4",
+        "section_end_exclusive": "0x02EF08",
+        "executable": true,
+        "bytes": 52,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EF08",
+        "section_end_exclusive": "0x02EF3C",
+        "executable": true,
+        "bytes": 52,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EF3C",
+        "section_end_exclusive": "0x02EF70",
+        "executable": true,
+        "bytes": 52,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EF70",
+        "section_end_exclusive": "0x02EFA0",
+        "executable": false,
+        "bytes": 48,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EFA0",
+        "section_end_exclusive": "0x02EFD0",
+        "executable": true,
+        "bytes": 48,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02EFD0",
+        "section_end_exclusive": "0x02F000",
+        "executable": true,
+        "bytes": 48,
+        "overlapping_s_banks": [
+          "0x2E"
+        ]
+      },
+      {
+        "section_start": "0x02F000",
+        "section_end_exclusive": "0x02F030",
+        "executable": true,
+        "bytes": 48,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F030",
+        "section_end_exclusive": "0x02F060",
+        "executable": true,
+        "bytes": 48,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F060",
+        "section_end_exclusive": "0x02F090",
+        "executable": true,
+        "bytes": 48,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F090",
+        "section_end_exclusive": "0x02F0C0",
+        "executable": false,
+        "bytes": 48,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F0C0",
+        "section_end_exclusive": "0x02F0F0",
+        "executable": false,
+        "bytes": 48,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F0F0",
+        "section_end_exclusive": "0x02F11C",
+        "executable": true,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F11C",
+        "section_end_exclusive": "0x02F148",
+        "executable": true,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F148",
+        "section_end_exclusive": "0x02F174",
+        "executable": true,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F174",
+        "section_end_exclusive": "0x02F1A0",
+        "executable": true,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F1A0",
+        "section_end_exclusive": "0x02F1CC",
+        "executable": true,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F1CC",
+        "section_end_exclusive": "0x02F1F8",
+        "executable": true,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F1F8",
+        "section_end_exclusive": "0x02F224",
+        "executable": true,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F224",
+        "section_end_exclusive": "0x02F250",
+        "executable": true,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F250",
+        "section_end_exclusive": "0x02F27C",
+        "executable": true,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F27C",
+        "section_end_exclusive": "0x02F2A8",
+        "executable": true,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F2A8",
+        "section_end_exclusive": "0x02F2D4",
+        "executable": true,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F2D4",
+        "section_end_exclusive": "0x02F300",
+        "executable": true,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F300",
+        "section_end_exclusive": "0x02F32C",
+        "executable": false,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F32C",
+        "section_end_exclusive": "0x02F358",
+        "executable": false,
+        "bytes": 44,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F358",
+        "section_end_exclusive": "0x02F380",
+        "executable": false,
+        "bytes": 40,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F380",
+        "section_end_exclusive": "0x02F3A8",
+        "executable": true,
+        "bytes": 40,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F3A8",
+        "section_end_exclusive": "0x02F3D0",
+        "executable": true,
+        "bytes": 40,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F3D0",
+        "section_end_exclusive": "0x02F3F8",
+        "executable": true,
+        "bytes": 40,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F3F8",
+        "section_end_exclusive": "0x02F420",
+        "executable": true,
+        "bytes": 40,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F420",
+        "section_end_exclusive": "0x02F448",
+        "executable": true,
+        "bytes": 40,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F448",
+        "section_end_exclusive": "0x02F46C",
+        "executable": false,
+        "bytes": 36,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F46C",
+        "section_end_exclusive": "0x02F490",
+        "executable": false,
+        "bytes": 36,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F490",
+        "section_end_exclusive": "0x02F4B4",
+        "executable": false,
+        "bytes": 36,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F4B4",
+        "section_end_exclusive": "0x02F4D8",
+        "executable": true,
+        "bytes": 36,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F4D8",
+        "section_end_exclusive": "0x02F4FC",
+        "executable": true,
+        "bytes": 36,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F4FC",
+        "section_end_exclusive": "0x02F520",
+        "executable": true,
+        "bytes": 36,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F520",
+        "section_end_exclusive": "0x02F544",
+        "executable": true,
+        "bytes": 36,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F544",
+        "section_end_exclusive": "0x02F568",
+        "executable": true,
+        "bytes": 36,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F568",
+        "section_end_exclusive": "0x02F58C",
+        "executable": true,
+        "bytes": 36,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F58C",
+        "section_end_exclusive": "0x02F5B0",
+        "executable": true,
+        "bytes": 36,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F5B0",
+        "section_end_exclusive": "0x02F5D4",
+        "executable": true,
+        "bytes": 36,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F5D4",
+        "section_end_exclusive": "0x02F5F8",
+        "executable": false,
+        "bytes": 36,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F5F8",
+        "section_end_exclusive": "0x02F618",
+        "executable": false,
+        "bytes": 32,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F618",
+        "section_end_exclusive": "0x02F638",
+        "executable": false,
+        "bytes": 32,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F638",
+        "section_end_exclusive": "0x02F658",
+        "executable": false,
+        "bytes": 32,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F658",
+        "section_end_exclusive": "0x02F678",
+        "executable": true,
+        "bytes": 32,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F678",
+        "section_end_exclusive": "0x02F698",
+        "executable": true,
+        "bytes": 32,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F698",
+        "section_end_exclusive": "0x02F6B8",
+        "executable": true,
+        "bytes": 32,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F6B8",
+        "section_end_exclusive": "0x02F6D8",
+        "executable": true,
+        "bytes": 32,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F6D8",
+        "section_end_exclusive": "0x02F6F8",
+        "executable": true,
+        "bytes": 32,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F6F8",
+        "section_end_exclusive": "0x02F718",
+        "executable": true,
+        "bytes": 32,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F718",
+        "section_end_exclusive": "0x02F736",
+        "executable": false,
+        "bytes": 30,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F736",
+        "section_end_exclusive": "0x02F754",
+        "executable": false,
+        "bytes": 30,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F754",
+        "section_end_exclusive": "0x02F770",
+        "executable": false,
+        "bytes": 28,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F770",
+        "section_end_exclusive": "0x02F78C",
+        "executable": false,
+        "bytes": 28,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F78C",
+        "section_end_exclusive": "0x02F7A8",
+        "executable": true,
+        "bytes": 28,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F7A8",
+        "section_end_exclusive": "0x02F7C4",
+        "executable": true,
+        "bytes": 28,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F7C4",
+        "section_end_exclusive": "0x02F7E0",
+        "executable": true,
+        "bytes": 28,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F7E0",
+        "section_end_exclusive": "0x02F7FC",
+        "executable": true,
+        "bytes": 28,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F7FC",
+        "section_end_exclusive": "0x02F818",
+        "executable": true,
+        "bytes": 28,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F818",
+        "section_end_exclusive": "0x02F834",
+        "executable": true,
+        "bytes": 28,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F834",
+        "section_end_exclusive": "0x02F850",
+        "executable": true,
+        "bytes": 28,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F850",
+        "section_end_exclusive": "0x02F86C",
+        "executable": true,
+        "bytes": 28,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F86C",
+        "section_end_exclusive": "0x02F888",
+        "executable": false,
+        "bytes": 28,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F888",
+        "section_end_exclusive": "0x02F8A0",
+        "executable": false,
+        "bytes": 24,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F8A0",
+        "section_end_exclusive": "0x02F8B8",
+        "executable": false,
+        "bytes": 24,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F8B8",
+        "section_end_exclusive": "0x02F8D0",
+        "executable": false,
+        "bytes": 24,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F8D0",
+        "section_end_exclusive": "0x02F8E8",
+        "executable": false,
+        "bytes": 24,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F8E8",
+        "section_end_exclusive": "0x02F900",
+        "executable": true,
+        "bytes": 24,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F900",
+        "section_end_exclusive": "0x02F918",
+        "executable": true,
+        "bytes": 24,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F918",
+        "section_end_exclusive": "0x02F930",
+        "executable": true,
+        "bytes": 24,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F930",
+        "section_end_exclusive": "0x02F946",
+        "executable": false,
+        "bytes": 22,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F948",
+        "section_end_exclusive": "0x02F95C",
+        "executable": false,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F95C",
+        "section_end_exclusive": "0x02F970",
+        "executable": false,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F970",
+        "section_end_exclusive": "0x02F984",
+        "executable": false,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F984",
+        "section_end_exclusive": "0x02F998",
+        "executable": false,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F998",
+        "section_end_exclusive": "0x02F9AC",
+        "executable": true,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F9AC",
+        "section_end_exclusive": "0x02F9C0",
+        "executable": true,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F9C0",
+        "section_end_exclusive": "0x02F9D4",
+        "executable": true,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F9D4",
+        "section_end_exclusive": "0x02F9E8",
+        "executable": true,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F9E8",
+        "section_end_exclusive": "0x02F9FC",
+        "executable": true,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02F9FC",
+        "section_end_exclusive": "0x02FA10",
+        "executable": true,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FA10",
+        "section_end_exclusive": "0x02FA24",
+        "executable": true,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FA24",
+        "section_end_exclusive": "0x02FA38",
+        "executable": true,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FA38",
+        "section_end_exclusive": "0x02FA4C",
+        "executable": true,
+        "bytes": 20,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FA4C",
+        "section_end_exclusive": "0x02FA5C",
+        "executable": false,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FA5C",
+        "section_end_exclusive": "0x02FA6C",
+        "executable": false,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FA6C",
+        "section_end_exclusive": "0x02FA7C",
+        "executable": false,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FA7C",
+        "section_end_exclusive": "0x02FA8C",
+        "executable": false,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FA8C",
+        "section_end_exclusive": "0x02FA9C",
+        "executable": false,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FA9C",
+        "section_end_exclusive": "0x02FAAC",
+        "executable": false,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FAAC",
+        "section_end_exclusive": "0x02FABC",
+        "executable": false,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FABC",
+        "section_end_exclusive": "0x02FACC",
+        "executable": false,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FACC",
+        "section_end_exclusive": "0x02FADC",
+        "executable": false,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FADC",
+        "section_end_exclusive": "0x02FAEC",
+        "executable": true,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FAEC",
+        "section_end_exclusive": "0x02FAFC",
+        "executable": true,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FAFC",
+        "section_end_exclusive": "0x02FB0C",
+        "executable": true,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FB0C",
+        "section_end_exclusive": "0x02FB1C",
+        "executable": true,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FB1C",
+        "section_end_exclusive": "0x02FB2C",
+        "executable": true,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FB2C",
+        "section_end_exclusive": "0x02FB3C",
+        "executable": true,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FB3C",
+        "section_end_exclusive": "0x02FB4C",
+        "executable": false,
+        "bytes": 16,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FB4C",
+        "section_end_exclusive": "0x02FB58",
+        "executable": false,
+        "bytes": 12,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FB58",
+        "section_end_exclusive": "0x02FB64",
+        "executable": false,
+        "bytes": 12,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FB64",
+        "section_end_exclusive": "0x02FB70",
+        "executable": false,
+        "bytes": 12,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FB70",
+        "section_end_exclusive": "0x02FB7C",
+        "executable": false,
+        "bytes": 12,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FB7C",
+        "section_end_exclusive": "0x02FB88",
+        "executable": false,
+        "bytes": 12,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FB88",
+        "section_end_exclusive": "0x02FB94",
+        "executable": false,
+        "bytes": 12,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FB94",
+        "section_end_exclusive": "0x02FBA0",
+        "executable": false,
+        "bytes": 12,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FBA0",
+        "section_end_exclusive": "0x02FBAC",
+        "executable": false,
+        "bytes": 12,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FBAC",
+        "section_end_exclusive": "0x02FBB8",
+        "executable": true,
+        "bytes": 12,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FBB8",
+        "section_end_exclusive": "0x02FBC4",
+        "executable": true,
+        "bytes": 12,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FBC4",
+        "section_end_exclusive": "0x02FBD0",
+        "executable": false,
+        "bytes": 12,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FBD0",
+        "section_end_exclusive": "0x02FBD8",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FBD8",
+        "section_end_exclusive": "0x02FBE0",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FBE0",
+        "section_end_exclusive": "0x02FBE8",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FBE8",
+        "section_end_exclusive": "0x02FBF0",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FBF0",
+        "section_end_exclusive": "0x02FBF8",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FBF8",
+        "section_end_exclusive": "0x02FC00",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC00",
+        "section_end_exclusive": "0x02FC08",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC08",
+        "section_end_exclusive": "0x02FC10",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC10",
+        "section_end_exclusive": "0x02FC18",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC18",
+        "section_end_exclusive": "0x02FC20",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC20",
+        "section_end_exclusive": "0x02FC28",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC28",
+        "section_end_exclusive": "0x02FC30",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC30",
+        "section_end_exclusive": "0x02FC38",
+        "executable": false,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC38",
+        "section_end_exclusive": "0x02FC40",
+        "executable": true,
+        "bytes": 8,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC40",
+        "section_end_exclusive": "0x02FC44",
+        "executable": false,
+        "bytes": 4,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC44",
+        "section_end_exclusive": "0x02FC48",
+        "executable": false,
+        "bytes": 4,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC48",
+        "section_end_exclusive": "0x02FC4C",
+        "executable": false,
+        "bytes": 4,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC4C",
+        "section_end_exclusive": "0x02FC50",
+        "executable": false,
+        "bytes": 4,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC50",
+        "section_end_exclusive": "0x02FC54",
+        "executable": false,
+        "bytes": 4,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC54",
+        "section_end_exclusive": "0x02FC58",
+        "executable": true,
+        "bytes": 4,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC58",
+        "section_end_exclusive": "0x02FC5C",
+        "executable": true,
+        "bytes": 4,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC5C",
+        "section_end_exclusive": "0x02FC60",
+        "executable": true,
+        "bytes": 4,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC60",
+        "section_end_exclusive": "0x02FC64",
+        "executable": true,
+        "bytes": 4,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC64",
+        "section_end_exclusive": "0x02FC68",
+        "executable": true,
+        "bytes": 4,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x02FC68",
+        "section_end_exclusive": "0x02FC6C",
+        "executable": false,
+        "bytes": 4,
+        "overlapping_s_banks": [
+          "0x2F"
+        ]
+      },
+      {
+        "section_start": "0x07C118",
+        "section_end_exclusive": "0x07C714",
+        "executable": true,
+        "bytes": 1532,
+        "overlapping_s_banks": [
+          "0x7C"
+        ]
+      },
+      {
+        "section_start": "0x07C714",
+        "section_end_exclusive": "0x07CCE0",
+        "executable": true,
+        "bytes": 1484,
+        "overlapping_s_banks": [
+          "0x7C"
+        ]
+      },
+      {
+        "section_start": "0x07CCE0",
+        "section_end_exclusive": "0x07D278",
+        "executable": true,
+        "bytes": 1432,
+        "overlapping_s_banks": [
+          "0x7C",
+          "0x7D"
+        ]
+      },
+      {
+        "section_start": "0x07D278",
+        "section_end_exclusive": "0x07D7D0",
+        "executable": true,
+        "bytes": 1368,
+        "overlapping_s_banks": [
+          "0x7D"
+        ]
+      },
+      {
+        "section_start": "0x07D7D0",
+        "section_end_exclusive": "0x07DD04",
+        "executable": true,
+        "bytes": 1332,
+        "overlapping_s_banks": [
+          "0x7D"
+        ]
+      },
+      {
+        "section_start": "0x07DD04",
+        "section_end_exclusive": "0x07E210",
+        "executable": true,
+        "bytes": 1292,
+        "overlapping_s_banks": [
+          "0x7D",
+          "0x7E"
+        ]
+      },
+      {
+        "section_start": "0x07E210",
+        "section_end_exclusive": "0x07E6D8",
+        "executable": true,
+        "bytes": 1224,
+        "overlapping_s_banks": [
+          "0x7E"
+        ]
+      },
+      {
+        "section_start": "0x07E6D8",
+        "section_end_exclusive": "0x07EB7C",
+        "executable": true,
+        "bytes": 1188,
+        "overlapping_s_banks": [
+          "0x7E"
+        ]
+      },
+      {
+        "section_start": "0x07EB7C",
+        "section_end_exclusive": "0x07EFC8",
+        "executable": true,
+        "bytes": 1100,
+        "overlapping_s_banks": [
+          "0x7E"
+        ]
+      },
+      {
+        "section_start": "0x07EFC8",
+        "section_end_exclusive": "0x07F3E8",
+        "executable": true,
+        "bytes": 1056,
+        "overlapping_s_banks": [
+          "0x7E",
+          "0x7F"
+        ]
+      },
+      {
+        "section_start": "0x07F3E8",
+        "section_end_exclusive": "0x07F7A0",
+        "executable": true,
+        "bytes": 952,
+        "overlapping_s_banks": [
+          "0x7F"
+        ]
+      },
+      {
+        "section_start": "0x07F7A0",
+        "section_end_exclusive": "0x07FB3C",
+        "executable": true,
+        "bytes": 924,
+        "overlapping_s_banks": [
+          "0x7F"
+        ]
+      },
+      {
+        "section_start": "0x07FB3C",
+        "section_end_exclusive": "0x07FE6C",
+        "executable": true,
+        "bytes": 816,
+        "overlapping_s_banks": [
+          "0x7F"
+        ]
+      },
+      {
+        "section_start": "0x07FE6C",
+        "section_end_exclusive": "0x07FFFC",
+        "executable": true,
+        "bytes": 400,
+        "overlapping_s_banks": [
+          "0x7F"
+        ]
+      }
+    ],
+    "physical_remapping_verified": false,
+    "external_service_admission_verified": false
+  }
+}
