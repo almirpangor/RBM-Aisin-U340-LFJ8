@@ -1,13 +1,13 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:43:49+00:00**. Изменение № **296**.
+Обновлено UTC: **2026-11-20T17:44:14+00:00**. Изменение № **297**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
 Задача и пересекающиеся файлы удерживаются в состояниях «Выполняется», «Ожидает» и «На проверке».
 Давняя отметка не освобождается автоматически. Возобновившийся чат обязан проверить свой claim_id.
 
-Каталог задач взят из main 320b72e41aa4a85815f2db8942f88f7050abb3f0.
+Каталог задач взят из main 48e51c80bac085fe67f60e1b399328879916dd28.
 
 | Задача | Ход работы | Чат | Ветка | Обновление UTC | Что делает / результат |
 | --- | --- | --- | --- | --- | --- |
@@ -17,7 +17,7 @@
 | TOY-03 — Независимые разрешающие сигналы диапазона | Работа завершена | Codex TOY-03 — квалификация независимых входов \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/toy03-range-freshness-01a1f9c7 | 2026-11-20T17:37:42+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit e7264c651d3fafe77e4bbff78e5a8fd8aa4e25ee |
 | TOY-04 — Полная последовательность переключений | Работа завершена | Codex — переключения Toyota под нагрузкой \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy04-loaded-map-32e6ac79 | 2026-11-20T17:43:29+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 08b06eb14f7ccb6f46b3589f7f0131e143d529d8 |
 | TOY-05 — Обучение и сохранение адаптаций | Работа завершена | Codex — восстановление адаптаций Toyota \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy05-safe-restore-32e6ac79 | 2026-11-20T17:42:29+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 8d6a6f1f62d70c827531f672c98d309e708df595 |
-| TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — давление SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-pressure-fea1b366 | 2026-11-20T17:09:39+00:00 | 05DC5E → 05DCE8 → 055C5E: R3 2520 сочетаний, 5 шагов, 6 отказов PASS. ПК 35/71, M32R 20 сценариев и 3 отказа PASS. Прежняя раскладка переполняется; модель с переносом часов фаз: 336/300 Б, 17 компонентов PASS. Отчёт verification/project-audit/toy06-slu-pressure.md. Планировщик, реальная компоновка и SLU открыты. / commit ff3f49cf2fe324d9ee4fe253cd621f496af7459f |
+| TOY-06 — Блокировка гидротрансформатора SLU | Работа завершена | Codex TOY-06 — давление SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-pressure-fea1b366 | 2026-11-20T17:44:14+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit ff3f49cf2fe324d9ee4fe253cd621f496af7459f |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Работа завершена | Codex CAN-01 FullCAN coherence \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-rx-coherence-1120-c7e4 | 2026-11-20T17:40:45+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 6820992a15300275c3dd9c98398151e661a42925 |
 | CAN-02 — Общий диспетчер CAN13 | Работа завершена | Codex CAN-02 telemetry submission \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can02-telemetry-submit-1120-c7e4 | 2026-11-20T17:43:49+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit a45c2f67a80a5f7e0d939816cfb12551fd6edd96 |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Работа завершена | Codex CAN-03 reset generation \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can03-epoch-1120-c7e4 | 2026-11-20T17:37:21+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 6fc5a51975cd6bbbdf5bc4985d5d61b811435b6b |
@@ -148,16 +148,6 @@
 - targets/lfj8/check_h03_toyota_stack.py
 - verification/project-audit/toy01-gp-transfer-size.md
 
-### TOY-06
-
-Чат: Codex TOY-06 — давление SLU. Claim ID: a8e9ff099358496bacacf60bfcc8aa84.
-
-- targets/lfj8/check_toyota_slu.py
-- targets/lfj8/lfj8_h03_slu.c
-- targets/lfj8/lfj8_h03_slu.h
-- targets/lfj8/test_lfj8_h03_slu_secondary.c
-- verification/project-audit/toy06-slu-pressure.md
-
 ### VSS-01
 
 Чат: Codex VSS-01. Claim ID: 698c00d00af84972b5562bc8498c8628.
@@ -178,6 +168,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:44:14+00:00 | TOY-06 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:43:49+00:00 | CAN-02 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T17:43:29+00:00 | TOY-04 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T17:43:09+00:00 | MODE-01 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
@@ -207,4 +198,3 @@
 | 2026-11-20T17:07:56+00:00 | TOY-06 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:07:08+00:00 | DTC-02 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T17:06:35+00:00 | VSS-01 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T17:06:16+00:00 | DTC-01 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
