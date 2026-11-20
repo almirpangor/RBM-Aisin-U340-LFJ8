@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 408,
+  "sequence": 409,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -111,8 +111,8 @@
       "stage": "in_progress",
       "claim_id": "ba6497ac9d4a4fb380b163c8abb7d2d2",
       "claimed_at": "2026-11-20T18:35:39+00:00",
-      "updated_at": "2026-11-20T18:35:39+00:00",
-      "note": "Подключаю снимок S51/S83/ATF и жизненный цикл эпохи к штатному foreground. Проверю врезки и контекст IRQ в M32R.",
+      "updated_at": "2026-11-20T18:40:34+00:00",
+      "note": "Фиксация общей эпохи в штатном foreground и два OEM IRQ через RTE прошли первый прогон M32R. Повторяю проверки размещения и общий набор.",
       "result": null
     },
     "H03-04": {
@@ -3836,9 +3836,17 @@
       "action": "review",
       "claim_id": "001fe3e513b645ef9370cb6af6d76bc2",
       "at": "2026-11-20T18:40:13+00:00"
+    },
+    {
+      "operation_id": "e3918175cd76435a8f8b1d2193ef1ded",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "ba6497ac9d4a4fb380b163c8abb7d2d2",
+      "at": "2026-11-20T18:40:34+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:40:13+00:00",
+  "updated_at": "2026-11-20T18:40:34+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
