@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 30,
+  "sequence": 31,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -190,8 +190,8 @@
       "stage": "in_progress",
       "claim_id": "39e9816a3049466a955d4f49cf740da4",
       "claimed_at": "2026-11-20T15:56:36+00:00",
-      "updated_at": "2026-11-20T15:56:36+00:00",
-      "note": "Cross-check the LFJ8 1AE encoder against the Bosch native Chery receiver model, including qualification and loss of validity.",
+      "updated_at": "2026-11-20T15:57:48+00:00",
+      "note": "Round-trip harness implemented with the pinned R3 qualifier. Running host build and regression checks.",
       "result": null
     }
   },
@@ -435,9 +435,17 @@
       "action": "resume",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "at": "2026-11-20T15:57:32+00:00"
+    },
+    {
+      "operation_id": "758e96903177497296e6b4d2f4ea8515",
+      "task": "CAN-05",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "39e9816a3049466a955d4f49cf740da4",
+      "at": "2026-11-20T15:57:48+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:57:32+00:00",
+  "updated_at": "2026-11-20T15:57:48+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {

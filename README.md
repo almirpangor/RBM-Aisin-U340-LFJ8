@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T15:57:32+00:00**. Изменение № **30**.
+Обновлено UTC: **2026-11-20T15:57:48+00:00**. Изменение № **31**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -22,7 +22,7 @@
 | CAN-02 — Общий диспетчер CAN13 | Свободна | — | — | — | — |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex — CAN0 H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can-03-h03-01a1f99f | 2026-11-20T15:50:27+00:00 | Сведено с main 264f249. 16 прогонов lifecycle, 12 TX gate и project_status --check PASS. Протокол CANHacker добавлен. Штатная привязка и аппаратная приёмка открыты. / commit 507ba30e1a3e68c727b137ef209d1a45333591ad |
 | CAN-04 — Запрос снижения момента по RB | Свободна | — | — | — | — |
-| CAN-05 — Полнота штатного обмена Chery | Выполняется | Codex CAN-05 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/u340-1120-c7e4 | 2026-11-20T15:56:36+00:00 | Cross-check the LFJ8 1AE encoder against the Bosch native Chery receiver model, including qualification and loss of validity. |
+| CAN-05 — Полнота штатного обмена Chery | Выполняется | Codex CAN-05 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/u340-1120-c7e4 | 2026-11-20T15:57:48+00:00 | Round-trip harness implemented with the pinned R3 qualifier. Running host build and regression checks. |
 | ECU-01 — Проверочная сборка Bosch E4M3 | Свободна | — | — | — | — |
 | ECU-02 — Калибровка момента и работа двигателя | Свободна | — | — | — | — |
 | H03-01 — Выбранная основа 9E1C и карта подключения | Свободна | — | — | — | — |
@@ -131,6 +131,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T15:57:48+00:00 | CAN-05 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T15:57:32+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T15:57:27+00:00 | H03-02 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T15:56:49+00:00 | DTC-04 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -160,4 +161,3 @@
 | 2026-11-20T15:39:41+00:00 | DTC-02 | claim | codex-dtc02-01a1f76d-20261120 |
 | 2026-11-20T15:37:39+00:00 | ORG-01 | complete | codex-coordination-27a510e |
 | 2026-11-20T15:35:56+00:00 | ORG-01 | review | codex-coordination-27a510e |
-| 2026-11-20T15:30:42+00:00 | ORG-01 | claim | codex-coordination-27a510e |
