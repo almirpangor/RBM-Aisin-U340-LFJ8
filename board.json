@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 537,
+  "sequence": 538,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -132,12 +132,12 @@
         "tests/test_h03_service_placement.py",
         "verification/project-audit/h03-04-service-placement.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
       "claimed_at": "2026-11-20T19:45:11+00:00",
-      "updated_at": "2026-11-20T19:50:20+00:00",
-      "note": "Адресный линк связал пять переходов. Добавляю повтор прямого писателя и ADC0 на уже размещённых байтах.",
-      "result": null
+      "updated_at": "2026-11-20T19:55:21+00:00",
+      "note": "В двухоконный адресный ELF включены четыре обёртки защиты и выключение Virtual Flash. Точные байты прошли 27 сценариев записи, 28 закрытия и 512 проверок Virtual Flash. Для приёмки нужны установка ниже 0x8000, окончательная карта RAM/Flash/IRQ и оборудование. Отчёт verification/project-audit/h03-04-service-placement.md.",
+      "result": "423ff76125dcbd1587fecdfedcf51577023b18f9"
     },
     "DTC-04": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -4884,9 +4884,17 @@
       "action": "claim",
       "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
       "at": "2026-11-20T19:55:14+00:00"
+    },
+    {
+      "operation_id": "143c70da3f974d2a989a62470a520e5b",
+      "task": "H03-04",
+      "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "action": "review",
+      "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
+      "at": "2026-11-20T19:55:21+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:55:14+00:00",
+  "updated_at": "2026-11-20T19:55:21+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
