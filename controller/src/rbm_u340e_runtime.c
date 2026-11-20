@@ -295,8 +295,12 @@ int rbm_u340e_runtime_snapshot_gears(const RbmU340eRuntime *runtime, FactoryGear
     return refresh_shared(&runtime->gp, work);
 }
 
-int rbm_u340e_runtime_gears_outputs(RbmU340eRuntime *runtime, FactoryGearState *work,
-                                    FactoryGearWrites *writes)
+/* Entry generated in the verified, staged Toyota copy by controller/build.py. */
+int rbm_factory_gears_outputs_step(FactoryGearState *work, FactoryGearWrites *writes,
+                                   uint8_t requested_gear);
+
+int rbm_u340e_runtime_gears_outputs_with_request(RbmU340eRuntime *runtime, FactoryGearState *work,
+                                                 FactoryGearWrites *writes, uint8_t requested_gear)
 {
     if (!writes || (runtime && overlaps(runtime, sizeof *runtime, writes, sizeof *writes)) ||
         (work && overlaps(work, sizeof *work, writes, sizeof *writes))) {
@@ -310,7 +314,7 @@ int rbm_u340e_runtime_gears_outputs(RbmU340eRuntime *runtime, FactoryGearState *
     }
 
     FactoryGearWrites proposal;
-    if (!factory_gears_outputs_step(work, &proposal)) {
+    if (!rbm_factory_gears_outputs_step(work, &proposal, requested_gear)) {
         return 0;
     }
 
@@ -323,6 +327,12 @@ int rbm_u340e_runtime_gears_outputs(RbmU340eRuntime *runtime, FactoryGearState *
     pack_private(runtime->gear_private, work);
     *writes = proposal;
     return 1;
+}
+
+int rbm_u340e_runtime_gears_outputs(RbmU340eRuntime *runtime, FactoryGearState *work,
+                                    FactoryGearWrites *writes)
+{
+    return rbm_u340e_runtime_gears_outputs_with_request(runtime, work, writes, 0u);
 }
 
 enum {
