@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 622,
+  "sequence": 623,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -594,12 +594,12 @@
         "verification/project-audit/2026-11-21-h03-dma-admission.json",
         "verification/project-audit/rel02-h03-dma-admission.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "856a2771e4554202bb2db5c8d2c3f93d",
       "claimed_at": "2026-11-20T20:32:09+00:00",
-      "updated_at": "2026-11-20T20:32:09+00:00",
-      "note": "Продолжение 8af2346 на актуальной main. Проверяю живые настройки DMA и защищённые адреса перед допуском RAM; целевые режимы и прочие писатели подтверждаются отдельно. Сданные порции и чужие резервы сохранены.",
-      "result": null,
+      "updated_at": "2026-11-20T20:43:17+00:00",
+      "note": "Нативная проверка десяти DMA-каналов в холодном допуске RAM H03. M32R: 97142 байта, 5214 номинальный остаток. Адресный ELF H03-04: 27 писателей, 28 закрытий сеанса и 512 Virtual Flash. Остаются привязка приложения и датчиков, доказательство последующего владения DMA/SBI/IRQ, запись нижней Flash через PCM Flash; это порция REL-02.",
+      "result": "8ce841939a365433161c7e1fe5c51f9c0ca3a27b",
       "based_on_reviews": [
         "3fd1870717ff4cc684af517ec9f56903"
       ]
@@ -6135,9 +6135,39 @@
           "d9e48d584c644fbf9f3cde053b8b8c41"
         ]
       }
+    },
+    {
+      "operation_id": "2704443970384747b135fab34fcf03c0",
+      "task": "REL-02",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "856a2771e4554202bb2db5c8d2c3f93d",
+      "at": "2026-11-20T20:43:17+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex REL-02 H03 DMA admission",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_owner.h",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "verification/project-audit/2026-11-21-h03-dma-admission.json",
+          "verification/project-audit/rel02-h03-dma-admission.md"
+        ],
+        "stage": "review",
+        "claim_id": "856a2771e4554202bb2db5c8d2c3f93d",
+        "claimed_at": "2026-11-20T20:32:09+00:00",
+        "updated_at": "2026-11-20T20:43:17+00:00",
+        "note": "Нативная проверка десяти DMA-каналов в холодном допуске RAM H03. M32R: 97142 байта, 5214 номинальный остаток. Адресный ELF H03-04: 27 писателей, 28 закрытий сеанса и 512 Virtual Flash. Остаются привязка приложения и датчиков, доказательство последующего владения DMA/SBI/IRQ, запись нижней Flash через PCM Flash; это порция REL-02.",
+        "result": "8ce841939a365433161c7e1fe5c51f9c0ca3a27b",
+        "based_on_reviews": [
+          "3fd1870717ff4cc684af517ec9f56903"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:42:57+00:00",
+  "updated_at": "2026-11-20T20:43:17+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
@@ -7209,6 +7239,30 @@
       ],
       "task": "H03-03",
       "submitted_at": "2026-11-20T20:41:45+00:00"
+    },
+    "856a2771e4554202bb2db5c8d2c3f93d": {
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex REL-02 H03 DMA admission",
+      "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+      "files": [
+        "targets/lfj8/check_h03_ram_owner.py",
+        "targets/lfj8/lfj8_h03_ram_owner.c",
+        "targets/lfj8/lfj8_h03_ram_owner.h",
+        "targets/lfj8/test_lfj8_h03_ram_owner.c",
+        "verification/project-audit/2026-11-21-h03-dma-admission.json",
+        "verification/project-audit/rel02-h03-dma-admission.md"
+      ],
+      "stage": "review",
+      "claim_id": "856a2771e4554202bb2db5c8d2c3f93d",
+      "claimed_at": "2026-11-20T20:32:09+00:00",
+      "updated_at": "2026-11-20T20:43:17+00:00",
+      "note": "Нативная проверка десяти DMA-каналов в холодном допуске RAM H03. M32R: 97142 байта, 5214 номинальный остаток. Адресный ELF H03-04: 27 писателей, 28 закрытий сеанса и 512 Virtual Flash. Остаются привязка приложения и датчиков, доказательство последующего владения DMA/SBI/IRQ, запись нижней Flash через PCM Flash; это порция REL-02.",
+      "result": "8ce841939a365433161c7e1fe5c51f9c0ca3a27b",
+      "based_on_reviews": [
+        "3fd1870717ff4cc684af517ec9f56903"
+      ],
+      "task": "REL-02",
+      "submitted_at": "2026-11-20T20:43:17+00:00"
     }
   }
 }
