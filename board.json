@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 413,
+  "sequence": 414,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -60,8 +60,8 @@
       "stage": "in_progress",
       "claim_id": "941f259113e042a39db21686bc935bc8",
       "claimed_at": "2026-11-20T18:34:34+00:00",
-      "updated_at": "2026-11-20T18:34:34+00:00",
-      "note": "Integrate the REL-02 monitor protection candidate with cold start and native CAN recovery barriers. Replay original receive-enable sites and measure linked Flash/RAM without touching shared owner files.",
+      "updated_at": "2026-11-20T18:42:53+00:00",
+      "note": "Cold and both runtime permits passed exact H03; parked recovery clone removes the early broad enable at 0x0012B0. Aggregate retains 161 roots, 93416 Flash bytes, known sections fit padding only, 9 unresolved bindings. Finalizing audit and review.",
       "result": null
     },
     "TOY-03": {
@@ -3873,9 +3873,17 @@
       "action": "claim",
       "claim_id": "f9f139056ba24b4a88ede7ceaeb63df1",
       "at": "2026-11-20T18:42:41+00:00"
+    },
+    {
+      "operation_id": "3df62d4691e94690a0705d108c1b84d9",
+      "task": "CAN-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "heartbeat",
+      "claim_id": "941f259113e042a39db21686bc935bc8",
+      "at": "2026-11-20T18:42:53+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:42:41+00:00",
+  "updated_at": "2026-11-20T18:42:53+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
