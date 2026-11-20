@@ -1,4 +1,24 @@
-# Переносимый тракт VSS и CAN Chery
+# Привязка к TCM LFJ8-18-9E1C
+
+Активная цель — H03 `LFJ8-T-D.bin`. Начинать с [карточек задач и критериев](../../docs/project-map.md), затем переходить к нужному модулю.
+
+| Подсистема | Основные файлы | Задачи |
+| --- | --- | --- |
+| Рабочие стадии Toyota | [lfj8_h03_cycle.c](lfj8_h03_cycle.c), [lfj8_h03_cycle.h](lfj8_h03_cycle.h) | TOY-02…06, H03-03 |
+| События, штатные вызовы и выдача | [lfj8_h03_phase_clock.c](lfj8_h03_phase_clock.c), [h03_phase_release_hook.S](h03_phase_release_hook.S), [h03_native_hooks.S](h03_native_hooks.S), [lfj8_h03_takeover.c](lfj8_h03_takeover.c) | H03-03/04/05 |
+| S51/S83, передача, ATF | [lfj8_donor_io.c](lfj8_donor_io.c), [lfj8_gear_observer.c](lfj8_gear_observer.c), [lfj8_h03_atf.c](lfj8_h03_atf.c) | H03-02, VSS-02 |
+| Селектор и режимы | [lfj8_selector_adc.c](lfj8_selector_adc.c), [lfj8_range_control.c](lfj8_range_control.c) | MODE-01…03 |
+| Форматы и отправка CAN | [lfj8_bridge.c](lfj8_bridge.c), [lfj8_chery_tx.c](lfj8_chery_tx.c) | CAN-01/05, VSS-01 |
+| Общий CAN13 | [lfj8_h03_can13.c](lfj8_h03_can13.c) | CAN-02/03 |
+| Приём и квалификация двигателя | [lfj8_h03_engine_rx.c](lfj8_h03_engine_rx.c), [lfj8_h03_engine_feed.c](lfj8_h03_engine_feed.c), [ta2005_engine_qualifier.c](ta2005_engine_qualifier.c) | CAN-01, TOY-02 |
+| Запрос момента | [lfj8_h03_torque.c](lfj8_h03_torque.c), [lfj8_h03_torque_can.c](lfj8_h03_torque_can.c) | CAN-04/05, ECU-02 |
+| Диагностика на CAN0 | [lfj8_h03_dtc_can.c](lfj8_h03_dtc_can.c) | DTC-01/02 |
+| Выходы и SLT | [lfj8_h03_outputs.c](lfj8_h03_outputs.c), [lfj8_h03_outputs.h](lfj8_h03_outputs.h) | H03-05, TOY-06 |
+| Память и адресная компоновка | [check_h03_link.py](check_h03_link.py), check_h03_ram_*, check_h03_flash_*, audit_h03_irq_stack.py | H03-04, REL-01 |
+
+Тесты `test_*.c` проверяют компоненты, `check_*.py` — сборку и выбранные исходные инструкции. Процедуры `*_fixture.*` задают испытательное окружение и не являются окончательным целевым приложением. В `lfj8_h03_cycle` ещё не подключены все входы, режимы, SLU и полный ритм. Критерии завершения и точные настройки перечислены в карточках.
+
+## Общий тракт и исторические профили
 
 В каталоге находятся расчёт скорости, упаковка кадров Chery, логические команды двух реле и проверка для ПК. Общая часть используется транспортом [S05 SuperH](../pcm-s05/native/s05_chery.c). Отдельный модуль M32R воспроизводит наблюдаемые аппаратные точки Mazda LFJ8-18-9E1B. У каждого профиля свой аппаратный слой.
 

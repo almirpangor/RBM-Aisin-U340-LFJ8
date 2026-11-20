@@ -23,8 +23,11 @@ def verify(donor_repo: Path, input_images: dict[str, Path]) -> bool:
     registry = json.loads((ROOT / "data/sources.json").read_text(encoding="utf-8"))
     spec = registry["specification"]
     checks = [checked_file(spec, (ROOT / spec["path"]).read_bytes())]
-    for entry in registry["firmware"]:
-        source = entry["repository"]
+    # H03 is the active 9E1C input. S05/S06 are historical research donors.
+    entries = [*registry["firmware"],
+               *(entry for entry in registry["supporting_materials"] if entry["id"] == "H03")]
+    for entry in entries:
+        source = entry.get("repository")
         if source is None:
             local_path = input_images.get(entry["id"])
             if local_path is None:
@@ -48,10 +51,17 @@ def verify(donor_repo: Path, input_images: dict[str, Path]) -> bool:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--donor-repo", required=True, type=Path, help="Local Git clone of R1")
-    parser.add_argument("--pcm-image", "--lfj8", required=True, type=Path, help="Path to the supplied S05 PCM image")
+    parser.add_argument("--base-9e1c", type=Path, help="Active H03 input LFJ8-T-D.bin")
+    parser.add_argument("--pcm-image", "--lfj8", type=Path, help="Optional historical S05 PCM image")
     parser.add_argument("--tcm-donor", type=Path, help="Path to the approved S06 9E1B donor")
     args = parser.parse_args()
-    input_images = {"S05": args.pcm_image}
+    if args.base_9e1c is None and args.pcm_image is None:
+        parser.error("Supply --base-9e1c for the active target, or --pcm-image for a historical check")
+    input_images = {}
+    if args.base_9e1c is not None:
+        input_images["H03"] = args.base_9e1c
+    if args.pcm_image is not None:
+        input_images["S05"] = args.pcm_image
     if args.tcm_donor is not None:
         input_images["S06"] = args.tcm_donor
     try:
