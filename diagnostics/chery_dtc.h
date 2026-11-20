@@ -26,11 +26,20 @@ typedef struct {
     uint8_t permission_bits;
 } CheryDtcSession;
 
+typedef struct {
+    /* Return true only after the empty history is durably published and
+     * verified. Run under the serialized diagnostic owner and leave live
+     * DTC state untouched. Resolve uncertain writes before later saves. */
+    bool (*commit_empty)(void *context);
+    void *context;
+} CheryDtcClearStore;
+
 typedef enum {
     CHERY_DTC_REPLIED,
     CHERY_DTC_UNHANDLED,
     CHERY_DTC_SHORT_BUFFER,
-    CHERY_DTC_INVALID_ARGUMENT
+    CHERY_DTC_INVALID_ARGUMENT,
+    CHERY_DTC_STORAGE_FAILURE
 } CheryDtcResult;
 
 void chery_dtc_init(CheryDtcState *state);
@@ -51,6 +60,20 @@ CheryDtcResult chery_dtc_respond(
     uint8_t *response,
     size_t response_capacity,
     size_t *response_length
+);
+
+/* For an authorized clear, commit before changing RAM or exposing a reply.
+ * A configured store without a successful commit yields STORAGE_FAILURE
+ * and zero response length. NULL selects the existing RAM-only behavior. */
+CheryDtcResult chery_dtc_respond_with_store(
+    CheryDtcState *state,
+    CheryDtcSession session,
+    const uint8_t *request,
+    size_t request_length,
+    uint8_t *response,
+    size_t response_capacity,
+    size_t *response_length,
+    const CheryDtcClearStore *store
 );
 
 #endif

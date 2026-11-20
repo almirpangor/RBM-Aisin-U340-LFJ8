@@ -33,4 +33,14 @@ CheryDtcResult chery_dtc_can_format_reply(
     CheryDtcCanReply *reply
 );
 
+/* Like format_reply, with the optional durable-clear contract above.
+ * Storage failure leaves reply->count at zero. */
+CheryDtcResult chery_dtc_can_format_reply_with_store(
+    CheryDtcState *state,
+    CheryDtcSession session,
+    const CheryDtcCanFrame *request,
+    CheryDtcCanReply *reply,
+    const CheryDtcClearStore *store
+);
+
 #endif
