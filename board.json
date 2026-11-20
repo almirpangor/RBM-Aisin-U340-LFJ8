@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 769,
+  "sequence": 770,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -170,12 +170,12 @@
         "targets/lfj8/lfj8_h03_nvm_native.h",
         "verification/project-audit/dtc04-native-restore-bank-gate.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "324aa1b41a8843369de598a9518ffb4f",
       "claimed_at": "2026-11-20T23:10:30+00:00",
-      "updated_at": "2026-11-20T23:10:30+00:00",
-      "note": "Сохраняю сданный native restore и проверяю его отказ по каждому биту включения FELBANK/FESBANK до чтения и перед доверием слоту, даже при FCNT1=0. Без назначения блоков и без записи; DTC-01/02 и TOY-05 не затрагиваю.",
-      "result": null,
+      "updated_at": "2026-11-20T23:14:40+00:00",
+      "note": "Читатель холодного журнала отклоняет каждый из четырёх сигналов разрешения FELBANK/FESBANK до и после чтения слота даже при FCNT1=0. ПК/M32R, GDB с включением FESBANK1 после чтения, 22 native и BasicCAN 18+18 прошли. Объект 444 байта, без статической RAM. Остаются назначенные блоки с владением, подключение на холодном старте, физический драйвер записи, износ и проверка на блоке. Отчёт verification/project-audit/dtc04-native-restore-bank-gate.md.",
+      "result": "456abca6b0dda9bf8f542f1fbe90653246959443",
       "based_on_reviews": [
         "e72d13fcb2254ca89fd0736136b11462",
         "eb973761003948398f33f495758fde06"
@@ -10538,9 +10538,38 @@
           "96f93fae25924717a50bf354ff863f44"
         ]
       }
+    },
+    {
+      "operation_id": "e9743a365d4a454eb8f8b17b92c660f1",
+      "task": "DTC-04",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "review",
+      "claim_id": "324aa1b41a8843369de598a9518ffb4f",
+      "at": "2026-11-20T23:14:40+00:00",
+      "record": {
+        "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "label": "Codex DTC-04 — проверка физического чтения журнала",
+        "branch": "codex/dtc04-native-restore-bank-gate-922b7b11",
+        "files": [
+          "targets/lfj8/h03_nvm_native_fixture.c",
+          "targets/lfj8/lfj8_h03_nvm_native.c",
+          "targets/lfj8/lfj8_h03_nvm_native.h",
+          "verification/project-audit/dtc04-native-restore-bank-gate.md"
+        ],
+        "stage": "review",
+        "claim_id": "324aa1b41a8843369de598a9518ffb4f",
+        "claimed_at": "2026-11-20T23:10:30+00:00",
+        "updated_at": "2026-11-20T23:14:40+00:00",
+        "note": "Читатель холодного журнала отклоняет каждый из четырёх сигналов разрешения FELBANK/FESBANK до и после чтения слота даже при FCNT1=0. ПК/M32R, GDB с включением FESBANK1 после чтения, 22 native и BasicCAN 18+18 прошли. Объект 444 байта, без статической RAM. Остаются назначенные блоки с владением, подключение на холодном старте, физический драйвер записи, износ и проверка на блоке. Отчёт verification/project-audit/dtc04-native-restore-bank-gate.md.",
+        "result": "456abca6b0dda9bf8f542f1fbe90653246959443",
+        "based_on_reviews": [
+          "e72d13fcb2254ca89fd0736136b11462",
+          "eb973761003948398f33f495758fde06"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T23:14:14+00:00",
+  "updated_at": "2026-11-20T23:14:40+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -12594,6 +12623,29 @@
       ],
       "task": "H03-03",
       "submitted_at": "2026-11-20T23:14:14+00:00"
+    },
+    "324aa1b41a8843369de598a9518ffb4f": {
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "label": "Codex DTC-04 — проверка физического чтения журнала",
+      "branch": "codex/dtc04-native-restore-bank-gate-922b7b11",
+      "files": [
+        "targets/lfj8/h03_nvm_native_fixture.c",
+        "targets/lfj8/lfj8_h03_nvm_native.c",
+        "targets/lfj8/lfj8_h03_nvm_native.h",
+        "verification/project-audit/dtc04-native-restore-bank-gate.md"
+      ],
+      "stage": "review",
+      "claim_id": "324aa1b41a8843369de598a9518ffb4f",
+      "claimed_at": "2026-11-20T23:10:30+00:00",
+      "updated_at": "2026-11-20T23:14:40+00:00",
+      "note": "Читатель холодного журнала отклоняет каждый из четырёх сигналов разрешения FELBANK/FESBANK до и после чтения слота даже при FCNT1=0. ПК/M32R, GDB с включением FESBANK1 после чтения, 22 native и BasicCAN 18+18 прошли. Объект 444 байта, без статической RAM. Остаются назначенные блоки с владением, подключение на холодном старте, физический драйвер записи, износ и проверка на блоке. Отчёт verification/project-audit/dtc04-native-restore-bank-gate.md.",
+      "result": "456abca6b0dda9bf8f542f1fbe90653246959443",
+      "based_on_reviews": [
+        "e72d13fcb2254ca89fd0736136b11462",
+        "eb973761003948398f33f495758fde06"
+      ],
+      "task": "DTC-04",
+      "submitted_at": "2026-11-20T23:14:40+00:00"
     }
   }
 }
