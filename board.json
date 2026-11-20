@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 26,
+  "sequence": 27,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -171,6 +171,22 @@
       "updated_at": "2026-11-20T15:55:29+00:00",
       "note": "Добавлен захват метки AN1 в момент защищённого чтения OEM. M32R build и check_h03_link PASS, включая гонку с новым отсчётом с тем же кодом. Штатные точки вызова и физическая тарировка открыты.",
       "result": "ced3c86de36fca6e77812025e15595dd67a3fa93"
+    },
+    "CAN-05": {
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "label": "Codex CAN-05",
+      "branch": "codex/u340-1120-c7e4",
+      "files": [
+        "targets/bosch/test_chery_1ae_roundtrip.c",
+        "tests/test_chery_1ae_roundtrip.py",
+        "verification/project-audit/can05-1ae-roundtrip.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "39e9816a3049466a955d4f49cf740da4",
+      "claimed_at": "2026-11-20T15:56:36+00:00",
+      "updated_at": "2026-11-20T15:56:36+00:00",
+      "note": "Cross-check the LFJ8 1AE encoder against the Bosch native Chery receiver model, including qualification and loss of validity.",
+      "result": null
     }
   },
   "events": [
@@ -381,9 +397,17 @@
       "action": "review",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "at": "2026-11-20T15:56:16+00:00"
+    },
+    {
+      "operation_id": "49e47bc23b434c10bb1fbedfefddd11d",
+      "task": "CAN-05",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "claim",
+      "claim_id": "39e9816a3049466a955d4f49cf740da4",
+      "at": "2026-11-20T15:56:36+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:56:16+00:00",
+  "updated_at": "2026-11-20T15:56:36+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {

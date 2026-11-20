@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T15:56:16+00:00**. Изменение № **26**.
+Обновлено UTC: **2026-11-20T15:56:36+00:00**. Изменение № **27**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -22,7 +22,7 @@
 | CAN-02 — Общий диспетчер CAN13 | Свободна | — | — | — | — |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex — CAN0 H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can-03-h03-01a1f99f | 2026-11-20T15:50:27+00:00 | Сведено с main 264f249. 16 прогонов lifecycle, 12 TX gate и project_status --check PASS. Протокол CANHacker добавлен. Штатная привязка и аппаратная приёмка открыты. / commit 507ba30e1a3e68c727b137ef209d1a45333591ad |
 | CAN-04 — Запрос снижения момента по RB | Свободна | — | — | — | — |
-| CAN-05 — Полнота штатного обмена Chery | Свободна | — | — | — | — |
+| CAN-05 — Полнота штатного обмена Chery | Выполняется | Codex CAN-05 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/u340-1120-c7e4 | 2026-11-20T15:56:36+00:00 | Cross-check the LFJ8 1AE encoder against the Bosch native Chery receiver model, including qualification and loss of validity. |
 | ECU-01 — Проверочная сборка Bosch E4M3 | Свободна | — | — | — | — |
 | ECU-02 — Калибровка момента и работа двигателя | Свободна | — | — | — | — |
 | H03-01 — Выбранная основа 9E1C и карта подключения | Свободна | — | — | — | — |
@@ -58,6 +58,14 @@
 - targets/lfj8/h03_can_lifecycle_test.S
 - verification/e4m3-can-9e1c/h03-can-lifecycle.json
 - verification/project-audit/2026-11-20-dtc02-queue.json
+
+### CAN-05
+
+Чат: Codex CAN-05. Claim ID: 39e9816a3049466a955d4f49cf740da4.
+
+- targets/bosch/test_chery_1ae_roundtrip.c
+- tests/test_chery_1ae_roundtrip.py
+- verification/project-audit/can05-1ae-roundtrip.md
 
 ### DTC-04
 
@@ -117,6 +125,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T15:56:36+00:00 | CAN-05 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T15:56:16+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T15:55:29+00:00 | H03-02 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T15:55:12+00:00 | H03-04 | heartbeat | codex-h03-04-01a1f76d-20261120 |
