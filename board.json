@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 208,
+  "sequence": 209,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -531,6 +531,21 @@
       "updated_at": "2026-11-20T16:43:47+00:00",
       "note": "Проверка pinned Git объектов R1–R4 добавлена. SOURCES: ТЗ, S01–S04, H03 и четыре ревизии PASS; два теста, совместимая команда R1 и отказ для неверного клона проверены. Отчёт verification/project-audit/src01-donor-pins.md; снимок для интегратора.",
       "result": "72f71983154edb4dcc7f0b3dc931bebfdb0d9b6d"
+    },
+    "AUD-01": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex AUD-01",
+      "branch": "codex/aud01-pinned-replay-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "targets/bosch/replay_e4m3_torque.py",
+        "verification/project-audit/aud01-pinned-replay.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "69a90e88e1b54af298f0f4e5760e308f",
+      "claimed_at": "2026-11-20T16:45:11+00:00",
+      "updated_at": "2026-11-20T16:45:11+00:00",
+      "note": "Привязываю не только историческую трассу E4M3, но и инструменты ST10 к закреплённому Git-коммиту. Проверю из клона без checkout.",
+      "result": null
     }
   },
   "events": [
@@ -2197,9 +2212,17 @@
       "action": "heartbeat",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "at": "2026-11-20T16:45:02+00:00"
+    },
+    {
+      "operation_id": "cd1dacb80a1a4e249ac612dd9d22b1e1",
+      "task": "AUD-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "69a90e88e1b54af298f0f4e5760e308f",
+      "at": "2026-11-20T16:45:11+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:45:02+00:00",
+  "updated_at": "2026-11-20T16:45:11+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
