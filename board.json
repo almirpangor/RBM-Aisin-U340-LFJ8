@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 741,
+  "sequence": 742,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -507,8 +507,8 @@
       "stage": "in_progress",
       "claim_id": "f5473c81a3ba401488716ecc40b63255",
       "claimed_at": "2026-11-20T22:43:52+00:00",
-      "updated_at": "2026-11-20T22:43:52+00:00",
-      "note": "Независимый остаток VSS-02: проверяю согласованность парных отсчётов с окном чтения и привязываю профиль sensor_config к конкретному файлу замеров. Нативные файлы H03-02 не трогаю.",
+      "updated_at": "2026-11-20T22:46:14+00:00",
+      "note": "Генератор проверяет SHA и фактические скобки TML0/TML1. Девять тестов прошли; повторяю сборку M32R, проверку штатного запуска и допуск профиля у компоновщика.",
       "result": null,
       "based_on_reviews": [
         "8b0ce759514b4c68b04d002b192f50ff"
@@ -9663,9 +9663,36 @@
           "5bb09a6c858e41d7a7b760ee40373d75"
         ]
       }
+    },
+    {
+      "operation_id": "d5f99be13381461d9666d3331bdfa031",
+      "task": "VSS-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "heartbeat",
+      "claim_id": "f5473c81a3ba401488716ecc40b63255",
+      "at": "2026-11-20T22:46:14+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex VSS-02 — парный профиль TML0/TML1",
+        "branch": "codex/vss02-runtime-counter-01a1f9c7",
+        "files": [
+          "targets/lfj8/check_h03_sensor_config.py",
+          "tests/test_h03_sensor_config.py",
+          "verification/project-audit/vss02-paired-calibration.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "f5473c81a3ba401488716ecc40b63255",
+        "claimed_at": "2026-11-20T22:43:52+00:00",
+        "updated_at": "2026-11-20T22:46:14+00:00",
+        "note": "Генератор проверяет SHA и фактические скобки TML0/TML1. Девять тестов прошли; повторяю сборку M32R, проверку штатного запуска и допуск профиля у компоновщика.",
+        "result": null,
+        "based_on_reviews": [
+          "8b0ce759514b4c68b04d002b192f50ff"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:45:52+00:00",
+  "updated_at": "2026-11-20T22:46:14+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
