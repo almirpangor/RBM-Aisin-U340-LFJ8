@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 50,
+  "sequence": 51,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -38,8 +38,8 @@
       "stage": "in_progress",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:00:26+00:00",
-      "note": "Прогон штатного RX14/15 H03: момент очистки TRFIN, содержимое копии, потеря или перезапись и сохранение OEM-маршрута. Только изолированный прогон.",
+      "updated_at": "2026-11-20T16:04:54+00:00",
+      "note": "Штатный RX14/15 исполняется в M32R. Воспроизведены повтор копирования и потеря согласованности статуса при замене между чтением MSC и очисткой TRFIN. Уточняю проверки OEM-маршрутов и сохраняю доказательства.",
       "result": null
     },
     "CAN-03": {
@@ -654,10 +654,18 @@
       "action": "heartbeat",
       "claim_id": "04163e758d304ae28f99c09cf17d8d25",
       "at": "2026-11-20T16:04:41+00:00"
+    },
+    {
+      "operation_id": "e5e0b6a67ce9410586b8aae8a94dbabf",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:04:54+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:04:41+00:00",
-  "main_commit": "9fa9c8aa18cd88543ba464f98fc8f7fc6a21a7d1",
+  "updated_at": "2026-11-20T16:04:54+00:00",
+  "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
       "id": "ORG-01",
