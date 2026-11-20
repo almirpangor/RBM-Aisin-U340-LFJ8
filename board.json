@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 16,
+  "sequence": 17,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -91,12 +91,12 @@
       "files": [
         "tools/package_workset.py"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "38bcfd017d9a4719a6054450645d79ab",
       "claimed_at": "2026-11-20T15:50:42+00:00",
-      "updated_at": "2026-11-20T15:50:42+00:00",
-      "note": "Добавляю проверку комплекта из двух целевых BIN и сверяю доступность сборок.",
-      "result": null
+      "updated_at": "2026-11-20T15:51:56+00:00",
+      "note": "Проверка комплекта двух BIN опубликована. Детерминированность ZIP, проверка хешей и отказ на некорректных входах пройдены. H03 собирается в объект ELF; Bosch BIN проходит модель со статусом OFFLINE_ONLY. Целевых BIN нет.",
+      "result": "b174397fe79ebdb0d0749bcee31fe7f198435a28"
     },
     "H03-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -242,9 +242,17 @@
       "action": "claim",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "at": "2026-11-20T15:51:48+00:00"
+    },
+    {
+      "operation_id": "e1b3e0e1e55b40588905669e5f53ede7",
+      "task": "REL-01",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "38bcfd017d9a4719a6054450645d79ab",
+      "at": "2026-11-20T15:51:56+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:51:48+00:00",
+  "updated_at": "2026-11-20T15:51:56+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
