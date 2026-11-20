@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 423,
+  "sequence": 424,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -408,21 +408,21 @@
       "result": "79fc4e071100a977eda10a412a23ac682d5be672"
     },
     "H03-05": {
-      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
-      "label": "Codex — целевой inhibit H03",
-      "branch": "codex/h03-02-atf-01a1f9a2",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex H03-05 CAN revoke and output inhibit",
+      "branch": "codex/h03-05-can-revoke-bindings-01a1f99f",
       "files": [
-        "docs/lfj8-slt-calibration.md",
-        "targets/lfj8/check_h03_slt_fault.py",
-        "targets/lfj8/lfj8_h03_output_inhibit.c",
-        "targets/lfj8/lfj8_h03_output_inhibit.h"
+        "targets/lfj8/check_h03_can_monitor_revoke.py",
+        "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+        "verification/project-audit/2026-11-20-h03-can-revoke-bindings.json",
+        "verification/project-audit/h03-05-can-revoke-bindings.md"
       ],
-      "stage": "done",
-      "claim_id": "8ca3ba1785c84f3189ca9a9ecbb4b228",
-      "claimed_at": "2026-11-20T18:01:03+00:00",
-      "updated_at": "2026-11-20T18:39:09+00:00",
-      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
-      "result": "c0e68fe2fc43a86df71cf122d228af63b7c29fed"
+      "stage": "in_progress",
+      "claim_id": "8618b77e068c469baa54217bf3b2f9f2",
+      "claimed_at": "2026-11-20T18:47:57+00:00",
+      "updated_at": "2026-11-20T18:47:57+00:00",
+      "note": "Bind native CAN recovery to the existing CAN owner and commissioned inhibit contract. Resolve typed storage aliases in the layout model and recheck release blockers without touching reserved application or RAM files.",
+      "result": null
     },
     "MODE-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -3953,9 +3953,17 @@
       "action": "review",
       "claim_id": "7ace3d79f2284f379601029d5ac4f737",
       "at": "2026-11-20T18:46:58+00:00"
+    },
+    {
+      "operation_id": "ee0687f710e3443791ed87b1b4399767",
+      "task": "H03-05",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "8618b77e068c469baa54217bf3b2f9f2",
+      "at": "2026-11-20T18:47:57+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:46:58+00:00",
+  "updated_at": "2026-11-20T18:47:57+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {

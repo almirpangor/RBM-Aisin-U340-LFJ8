@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:46:58+00:00**. Изменение № **423**.
+Обновлено UTC: **2026-11-20T18:47:57+00:00**. Изменение № **424**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -29,7 +29,7 @@
 | H03-02 — S51, S83 и температура ATF | Свободна для продолжения | Предыдущий: Codex — штатные события датчиков H03 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-02-sensor-events-mwp5rm2ofhaxjfi9dss | 2026-11-20T18:36:31+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit c354bf9f0ceb130ac03d525c6889f3d277dc7666 |
 | H03-03 — Единое расписание и запуск приложения H03 | На проверке | Codex H03-02/H03-03 — снимок в foreground \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-03-sensor-foreground-mwp5rm2ofhaxjfi9dss | 2026-11-20T18:43:07+00:00 | Снимок S51/S83/ATF в штатном foreground, владелец эпохи приложение. M32R 38 сценариев и 80 IRQ/RTE, 17 native, 18 компонентных, 37 этапов ПК. Полная компоновка FAIL_BINDINGS, стенд открыт. Отчёт h03-03-sensor-foreground.md. / commit 391a5514f65fddb1041cfd7b7ee8018c10110c30 |
 | H03-04 — Память, стек и сервисные пути | Выполняется | Основной чат — защита памяти \[codex-integration-01a1f76d-20261120\] | codex/integration-01a1f76d-20261120 | 2026-11-20T18:39:50+00:00 | После принятой компоновки беру следующий независимый остаток: защита RAM от прямой и уже принятой отложенной сервисной записи. Новые native wrappers/guard, исходный H03 в M32R и отрицательные проверки. Платформенные binding файлы других чатов не меняю. |
-| H03-05 — SLT, силовые выходы и реакция на отказ | Свободна для продолжения | Предыдущий: Codex — целевой inhibit H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-02-atf-01a1f9a2 | 2026-11-20T18:39:09+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit c0e68fe2fc43a86df71cf122d228af63b7c29fed |
+| H03-05 — SLT, силовые выходы и реакция на отказ | Выполняется | Codex H03-05 CAN revoke and output inhibit \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/h03-05-can-revoke-bindings-01a1f99f | 2026-11-20T18:47:57+00:00 | Bind native CAN recovery to the existing CAN owner and commissioned inhibit contract. Resolve typed storage aliases in the layout model and recheck release blockers without touching reserved application or RAM files. |
 | IO-01 — Два дополнительных реле | Отложена владельцем | — | — | — | — |
 | VSS-01 — Точный расчёт VSS и скорость по CAN | На проверке | Чат CAN — остановка и первый фронт S51 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/vss01-standstill-guard-1120-c7e4 | 2026-11-20T18:44:13+00:00 | Устранён ложный ноль скорости 0x1AE после первого фронта S51. Регрессия на ПК и M32R, общий ПК 37/113, M32R 18 компонентных, 6 проверок по адресам и Bosch PASS_OFFLINE_ONLY. Отчёт verification/project-audit/vss01-standstill-guard.md. Физический источник подтверждения остановки и калибровка S51 открыты. / commit 79fc4e071100a977eda10a412a23ac682d5be672 |
 | VSS-02 — Кинематика и параметры реальной скорости | Свободна для продолжения | Предыдущий: Codex — общий снимок S51/S83/ATF \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss02-common-sensor-mwp5rm2ofhaxjfi9dss | 2026-11-20T18:39:34+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit 5cfe81106f0401ebbd4cabb2fce1b8d00929aead |
@@ -57,7 +57,7 @@
 | --- | --- | --- | --- |
 | [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#h03-03) | На проверке | Определить семь перечисленных привязок, единственные состояния, initialize/take_toyota/service_phase и исходные часы/снимки; объединить нативные обёртки. | Чат запуска H03 |
 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#can-03) | На проверке | Связать готового CAN owner и RX target с общим временем/запуском; установить setup/TX gate, проверить потерю/возврат допуска. | Чат CAN |
-| [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#h03-05) | Свободна для продолжения | Подключить готовый inhibit в application_binding; квалифицировать полярность и ток–давление отдельно от трасс регистров. | Чат силовых выходов |
+| [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#h03-05) | Выполняется | Подключить готовый inhibit в application_binding; квалифицировать полярность и ток–давление отдельно от трасс регистров. | Чат силовых выходов |
 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#vss-02) | Свободна для продолжения | Связать sensor_target/config с H03-03, установить подтверждённые частоты/тайм-ауты и критерий остановки. | Чат датчиков |
 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#toy-04) | На проверке | Замкнуть оставшиеся стадии полного цикла, R и ручные запросы; затем подключить SLU SECONDARY и назначить одного владельца таймера в TOY-06. | Чат переключений Toyota |
 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#mode-02) | На проверке | Связать физические AN2/Tiptronic/OD и независимые разрешения с общей заявкой; продолжить независимые входы TOY-03. | Чат селектора и кнопок |
@@ -108,7 +108,7 @@
 </details>
 
 <details>
-<summary>H03-05 — SLT, силовые выходы и реакция на отказ: Свободна для продолжения</summary>
+<summary>H03-05 — SLT, силовые выходы и реакция на отказ: Выполняется</summary>
 
 **Сделано.** Целевой inhibit отзывает D/E/F и Pressure A, очищает оба банка команд; нативные проверки переходов прошли. Физическая калибровка остаётся открытой.
 
@@ -118,7 +118,7 @@
 
 **Рекомендуемый чат.** Чат силовых выходов — 01a1f9a2-d0ae-78d3-86f1-21b27426fd3f.
 
-**Исполнитель сейчас.** Задача не занята.
+**Сейчас выполняет.** Codex H03-05 CAN revoke and output inhibit — codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51.
 
 **Критерий приёмки.** Измеренные таблицы в допустимой области питания/ATF, реакция каждого выхода и гидравлики на отказ, отсутствие старой команды после восстановления.
 
@@ -628,6 +628,15 @@
 - verification/project-audit/h03-04-service-guard.md
 - verification/project-audit/service-guard/
 
+### H03-05
+
+Чат: Codex H03-05 CAN revoke and output inhibit. Claim ID: 8618b77e068c469baa54217bf3b2f9f2.
+
+- targets/lfj8/check_h03_can_monitor_revoke.py
+- targets/lfj8/lfj8_h03_can_monitor_revoke.c
+- verification/project-audit/2026-11-20-h03-can-revoke-bindings.json
+- verification/project-audit/h03-05-can-revoke-bindings.md
+
 ### MODE-02
 
 Чат: Codex MODE-02 — квалификация сырых входов кнопок. Claim ID: d5aa9e367a344b3f8dbadc189b368dbd.
@@ -708,6 +717,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:47:57+00:00 | H03-05 | claim | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:46:58+00:00 | DTC-02 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T18:46:22+00:00 | TOY-06 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T18:45:27+00:00 | CAN-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
@@ -737,4 +747,3 @@
 | 2026-11-20T18:37:51+00:00 | ORG-01 | complete | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T18:37:31+00:00 | CAN-05 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T18:37:08+00:00 | H03-04 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
-| 2026-11-20T18:36:55+00:00 | TOY-02 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
