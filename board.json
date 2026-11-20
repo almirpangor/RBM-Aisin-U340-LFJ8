@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 512,
+  "sequence": 513,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -167,8 +167,8 @@
       "stage": "in_progress",
       "claim_id": "15e6e783e4d74a5b9c000d3658becff0",
       "claimed_at": "2026-11-20T19:37:59+00:00",
-      "updated_at": "2026-11-20T19:37:59+00:00",
-      "note": "Включаю нативные обёртки S51/S83 и ATF в общую M32R-компоновку: закреплённые слова OEM, продолжения, расчёт BRA и проверка адресов ELF. Параметры датчиков и целевой binding остаются внешними зависимостями.",
+      "updated_at": "2026-11-20T19:42:09+00:00",
+      "note": "Девять врезок включены в общую компоновку. Линк обёрток подтвердил OEM-продолжения, M32R S51/S83 и 11 пар ATF прошли. Проверяю полный набор на main.",
       "result": null
     },
     "CAN-05": {
@@ -4672,9 +4672,17 @@
       "action": "claim",
       "claim_id": "6ce2dadd9393441586bcbbbeb50614e0",
       "at": "2026-11-20T19:41:53+00:00"
+    },
+    {
+      "operation_id": "33ae82e0cb684702877e81c308a7ea58",
+      "task": "H03-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "15e6e783e4d74a5b9c000d3658becff0",
+      "at": "2026-11-20T19:42:09+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:41:53+00:00",
+  "updated_at": "2026-11-20T19:42:09+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
