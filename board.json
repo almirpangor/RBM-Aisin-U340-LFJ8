@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 31,
+  "sequence": 32,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -192,6 +192,21 @@
       "claimed_at": "2026-11-20T15:56:36+00:00",
       "updated_at": "2026-11-20T15:57:48+00:00",
       "note": "Round-trip harness implemented with the pinned R3 qualifier. Running host build and regression checks.",
+      "result": null
+    },
+    "DTC-03": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex DTC-03",
+      "branch": "codex/dtc03-table-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "tests/test_chery_dtc_table.py",
+        "verification/project-audit/dtc03-table.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "b8f5993a9046405492ff005c31e01675",
+      "claimed_at": "2026-11-20T15:57:52+00:00",
+      "updated_at": "2026-11-20T15:57:52+00:00",
+      "note": "Сверка всех 96 индексов, слов и статусов таблицы Chery с извлечением S03. Без активации неподтверждённых мониторов.",
       "result": null
     }
   },
@@ -443,9 +458,17 @@
       "action": "heartbeat",
       "claim_id": "39e9816a3049466a955d4f49cf740da4",
       "at": "2026-11-20T15:57:48+00:00"
+    },
+    {
+      "operation_id": "7e7ca4c4f3354211a1b374b3a79ccc0a",
+      "task": "DTC-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "b8f5993a9046405492ff005c31e01675",
+      "at": "2026-11-20T15:57:52+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:57:48+00:00",
+  "updated_at": "2026-11-20T15:57:52+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
