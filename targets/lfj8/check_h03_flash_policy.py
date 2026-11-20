@@ -8,7 +8,7 @@ import re
 import subprocess
 from tempfile import TemporaryDirectory
 
-from check_h03_link import identify_h03
+from check_h03_link import elf_info, identify_h03
 
 
 START, LIMIT = 0x020000, 0x030000
@@ -18,6 +18,7 @@ READBACK, READBACK_DONE = 0x004554, 0x004588
 SUM_VALUE, SUM_CURSOR = 0x8048E0, 0x806AC8
 VIRTUAL_CONFIG, VIRTUAL_CONFIG_DONE = 0x003550, 0x0035B4
 VIRTUAL_SELECT, FCNT1, FESBANK1 = 0x808DB0, 0x8007E2, 0x8007F2
+VIRTUAL_S_PAGE_BYTES = 0x1000
 
 LAYOUT = """
 ENTRY(_start)
@@ -114,7 +115,40 @@ def reference_candidates(rom):
     return counts
 
 
-def check(base, compiler):
+def check_placement(elf, flash_bytes, banks):
+    identity, sections = elf_info(elf, 2)
+    if identity["relocations"]:
+        raise ValueError("ELF placement requires resolved relocations")
+    if not sections:
+        raise ValueError("ELF placement requires allocated sections")
+    collisions = []
+    for start, size, flags in sections:
+        end = start + size
+        flash_end = min(end, flash_bytes)
+        if start >= flash_end:
+            continue
+        first_page = start // VIRTUAL_S_PAGE_BYTES
+        last_page = (flash_end - 1) // VIRTUAL_S_PAGE_BYTES
+        overlapping = [bank for bank in range(first_page, last_page + 1) if bank in banks]
+        if overlapping:
+            collisions.append({
+                "section_start": f"0x{start:06X}", "section_end_exclusive": f"0x{end:06X}",
+                "executable": bool(flags & 4), "bytes": size,
+                "overlapping_s_banks": [f"0x{bank:02X}" for bank in overlapping],
+            })
+    return {
+        "elf_sha256": identity["sha256"],
+        "scope": "allocated ELF sections intersecting internal Flash",
+        "observed_selector_entry": f"0x{VIRTUAL_CONFIG:06X}",
+        "s_banks_replayed": len(banks),
+        "overlaps_stock_selector_pages": bool(collisions),
+        "collisions": collisions,
+        "physical_remapping_verified": False,
+        "external_service_admission_verified": False,
+    }
+
+
+def check(base, compiler, placement_elf=None):
     identity = identify_h03(base)
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
@@ -181,14 +215,17 @@ def check(base, compiler):
             if pc < 0x100000 or (total, cursor) != (expected, len(rom)):
                 raise ValueError(f"Unexpected H03 diagnostic sum {total:#x} at cursor {cursor:#x}")
 
-        for bank in (0x20, 0x2F):
+        banks = tuple(range(len(rom) // VIRTUAL_S_PAGE_BYTES)) if placement_elf else (0x20, 0x2F)
+        selected_banks = set()
+        for bank in banks:
             memory = (("unsigned int", 0x809F9C, 0x809F9C), ("unsigned short", VIRTUAL_SELECT, bank))
             pc, *_, control, selection = replay(run, work, gdb, hex(VIRTUAL_CONFIG), (hex(VIRTUAL_CONFIG_DONE),),
                                                 memory=memory, initial_r0=0x807000)
             if (pc, control, selection) != (VIRTUAL_CONFIG_DONE, 1, 0x8000 | bank):
                 raise ValueError(f"Unexpected virtual Flash register shadow for bank {bank:#x}")
+            selected_banks.add(bank)
 
-    return {
+    report = {
         "base": identity,
         "compiler": version,
         "sector": [f"0x{START:06X}", f"0x{LIMIT:06X}"],
@@ -198,7 +235,7 @@ def check(base, compiler):
         "erase_parser": [{"start": f"0x{start:06X}", "end": f"0x{end:06X}", "allowed": allowed}
                          for start, end, allowed in erase_cases],
         "readback_equality_and_mismatch_verified": True,
-        "virtual_flash_selector_register_shadow_cases": ["0x8020", "0x802F"],
+        "virtual_flash_selector_register_shadow_cases": [f"0x{0x8000 | bank:04X}" for bank in banks],
         "raw_reference_candidates_outside_the_sector": reference_candidates(rom),
         "stock_diagnostic_sum": f"0x{stock_sum:04X}",
         "diagnostic_sum_after_simulated_sector_change": f"0x{changed_sum:04X}",
@@ -206,6 +243,9 @@ def check(base, compiler):
         "physical_erase_or_write_executed": False,
         "programmer_compatibility_verified": False,
     }
+    if placement_elf:
+        report["placement"] = check_placement(placement_elf, len(rom), selected_banks)
+    return report
 
 
 def main():
@@ -213,16 +253,22 @@ def main():
     parser.add_argument("--base", required=True, type=Path)
     parser.add_argument("--gcc", required=True, type=Path)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--placement-elf", type=Path,
+                        help="Check all stock S-bank selections against an addressed H03 application ELF")
     args = parser.parse_args()
     try:
-        if args.out and (args.out.resolve() == args.base.resolve() or
-                         (args.out.exists() and args.out.samefile(args.base))):
-            raise ValueError("The report and the H03 base must use different files")
-        report = json.dumps(check(args.base, args.gcc.resolve()), indent=2) + "\n"
+        inputs = [path for path in (args.base, args.placement_elf) if path]
+        if args.out and any(args.out.resolve() == path.resolve() or
+                            (args.out.exists() and args.out.samefile(path)) for path in inputs):
+            raise ValueError("The report and input files must use different paths")
+        result = check(args.base, args.gcc.resolve(), args.placement_elf)
+        report = json.dumps(result, indent=2) + "\n"
         if args.out:
             args.out.parent.mkdir(parents=True, exist_ok=True)
             args.out.write_text(report, encoding="utf-8")
         print(report, end="")
+        if args.placement_elf and result["placement"]["overlaps_stock_selector_pages"]:
+            parser.exit(2, "ELF sections overlap pages selectable by the stock H03 Virtual Flash routine\n")
     except subprocess.CalledProcessError as error:
         message = error.stderr or error.stdout or str(error).encode()
         parser.exit(1, message.decode(errors="replace") + "\n")
