@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 552,
+  "sequence": 553,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -337,12 +337,12 @@
         "targets/lfj8/test_lfj8_h03_cycle.c",
         "verification/project-audit/toy04-manual-cycle.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "b9fb1580e7e9432789190f01cd0a1f06",
       "claimed_at": "2026-11-20T19:46:52+00:00",
-      "updated_at": "2026-11-20T19:48:27+00:00",
-      "note": "Для ручной заявки нужен вход между factory_request_stage и первым защитным этапом Toyota. Добавляю его при подготовке проверенной копии донора, сохраняя неизменным vendor. MODE-02 подключит подтверждённый источник через уже используемый Lfj8H03CycleInput.",
-      "result": null
+      "updated_at": "2026-11-20T19:59:40+00:00",
+      "note": "Ручная цель подключена в MAIN перед защитами Toyota и проходит выдержки, S1/S2 и гидравлику. 41 этап ПК, 120 тестов с отдельной проверкой S03, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Отчёт verification/project-audit/toy04-manual-cycle.md. Открыты источник и срок удержания цели MODE-02/03, целевая привязка H03-03 и аппаратная приёмка; выпуск пары BIN открыт.",
+      "result": "c7b0568cde39ddc27e71432e5028db9c9a351e16"
     },
     "CAN-02": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -5005,9 +5005,17 @@
       "action": "heartbeat",
       "claim_id": "1f0ef50b040d4c8ca2e5a05fd7501d40",
       "at": "2026-11-20T19:59:07+00:00"
+    },
+    {
+      "operation_id": "b4937431a00940e4bd3614bc4e8d13fb",
+      "task": "TOY-04",
+      "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+      "action": "review",
+      "claim_id": "b9fb1580e7e9432789190f01cd0a1f06",
+      "at": "2026-11-20T19:59:40+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:59:07+00:00",
+  "updated_at": "2026-11-20T19:59:40+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
