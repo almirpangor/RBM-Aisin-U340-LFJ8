@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 120,
+  "sequence": 121,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -143,11 +143,11 @@
         "tools/build_pc_checks.py",
         "verification/project-audit/dtc04-journal.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "b714560b3e9a4abba849b7ea649a1622",
       "claimed_at": "2026-11-20T15:53:33+00:00",
-      "updated_at": "2026-11-20T15:56:49+00:00",
-      "note": "Журнал DTC опубликован. ПК: 35 шагов и 59 тестов PASS. Модель: прерывание записи и очистка; H03 NVM, порядок подтверждения и стенд открыты. Доказательства: verification/project-audit/dtc04-journal.md. Общий снимок и реестр переданы интегратору.",
+      "updated_at": "2026-11-20T16:23:48+00:00",
+      "note": "Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена.",
       "result": "4ef63cb5d0a93d31c2db76411890d31593783f2e"
     },
     "H03-02": {
@@ -1393,9 +1393,17 @@
       "action": "heartbeat",
       "claim_id": "a1532b4af90d4794aec52c99f7b434a2",
       "at": "2026-11-20T16:23:36+00:00"
+    },
+    {
+      "operation_id": "9b4f82aac2564a3aa16cedbf7c51a2b9",
+      "task": "DTC-04",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "b714560b3e9a4abba849b7ea649a1622",
+      "at": "2026-11-20T16:23:48+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:23:36+00:00",
+  "updated_at": "2026-11-20T16:23:48+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
