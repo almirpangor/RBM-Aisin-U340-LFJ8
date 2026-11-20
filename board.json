@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 496,
+  "sequence": 497,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -52,12 +52,12 @@
       "files": [
         "targets/lfj8/check_h03_can_monitor_startup.py"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "2ec8aacec9a4492593f09b24555a5f0f",
       "claimed_at": "2026-11-20T19:32:51+00:00",
-      "updated_at": "2026-11-20T19:32:51+00:00",
-      "note": "Оформляю принятие переданной порции 89d0ed8 вместе с проверенным исправлением кириллического пути из ae393e8; работа была зарезервирована ORG-01.",
-      "result": null
+      "updated_at": "2026-11-20T19:33:07+00:00",
+      "note": "Приняты нативные входы CAN-03 и исправлен путь компоновки; код/релокации исходного и встроенного ассемблера совпали, общая проверка прошла.",
+      "result": "ae393e852fd8e110892c6725f219f3e43585d33c"
     },
     "TOY-03": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -4523,9 +4523,17 @@
       "action": "claim",
       "claim_id": "2ec8aacec9a4492593f09b24555a5f0f",
       "at": "2026-11-20T19:32:51+00:00"
+    },
+    {
+      "operation_id": "3574bf26aca14156ae4f7d2d63bdf6c9",
+      "task": "CAN-03",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "review",
+      "claim_id": "2ec8aacec9a4492593f09b24555a5f0f",
+      "at": "2026-11-20T19:33:07+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:32:51+00:00",
+  "updated_at": "2026-11-20T19:33:07+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
