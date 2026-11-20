@@ -16,6 +16,7 @@ RAW_LIMIT = 51200  # Original S02 Q7 calculation wraps a 16-bit word here.
 SPEED_ORIGIN, SPEED_LIMIT = 0x66000, 0x66800
 CALIBRATION = 0xB8441
 OUTPUT = "E4M3_CHERY_SPEED_OFFLINE_ONLY.bin"
+TX_OUTPUT = "E4M3_CHERY_RPM_ECT_SPEED_OFFLINE_ONLY.bin"
 INIT_SPEED = 39
 
 
@@ -23,13 +24,17 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def assemble_speed(diag, torque):
+def assemble_speed(diag, torque, transmitter=None):
     a = diag.Asm(SPEED_ORIGIN, SPEED_LIMIT)
     arbitration = 0x8000 | (CAN_ID << 2)
 
     a.label("reset")
     for address in (AGE, PHASE, DEFER, BUSY):
         a.zero(address)
+    if transmitter:
+        from tx import COOLANT_LAST, DEFER as TX_DEFER, PREFER_COOLANT, RPM_LAST
+        for address in (RPM_LAST, COOLANT_LAST, TX_DEFER, PREFER_COOLANT):
+            a.zero(address)
     a.extp(0x3C)
     a.zero(SPEED)
     a.raw("db00", "RETS")
@@ -52,7 +57,10 @@ def assemble_speed(diag, torque):
     a.imm(4, 0)
     a.raw("db00", "RETS")
     a.label("can_enable")
-    a.imm(4, 1)
+    if transmitter:
+        a.emit(diag.far(0xDA, transmitter.labels["configure"]), "CALLS engine signals configure")
+    else:
+        a.imm(4, 1)
     a.raw("db00", "RETS")
 
     a.label("tick")
@@ -76,6 +84,12 @@ def assemble_speed(diag, torque):
     a.st(DEFER, 4)
     a.branch(0, "free")
     a.label("idle")
+    if transmitter:
+        # E4 must see a ready IF1 between otherwise independent transactions;
+        # its hardware-stall counter is reset by its own ready branch.
+        a.ld(4, torque.BUSY_COUNT)
+        a.cmp(4, 0)
+        a.branch(3, "free")
     for address, mask in ((diag.DIAG_PHASE, 0xF), (torque.PHASE, 0xFFFF), (0xEF10, 0x8000)):
         a.ld(4, address)
         a.andi(4, mask)
@@ -173,7 +187,10 @@ def assemble_speed(diag, torque):
     a.imm(4, 1)
     a.raw("db00", "RETS")
     a.label("free")
-    a.imm(4, 0)
+    if transmitter:
+        a.emit(diag.far(0xDA, transmitter.labels["tick"]), "CALLS engine signals tick")
+    else:
+        a.imm(4, 0)
     a.raw("db00", "RETS")
     return a, a.finish()
 
@@ -203,7 +220,7 @@ def revised_wrapper(diag, labels):
     return namespace["assemble"](torque=True)
 
 
-def build(engine, s04):
+def build(engine, s04, *, with_engine_signals_tx=False):
     if digest(s04) != S04_SHA:
         raise ValueError("S04 SHA-256 does not match the pinned E4M3 image")
     sys.path.insert(0, str(engine / "tools"))
@@ -218,19 +235,33 @@ def build(engine, s04):
         raise ValueError("Pinned upstream build failed to reproduce S04")
     if not (torque.START_CALL_AGE < AGE < PHASE < DEFER < BUSY < torque.RAM_END):
         raise ValueError("Upstream torque state conflicts with the reserved receiver state")
-    speed, speed_code = assemble_speed(diag, torque)
+    tx_part, tx_code = None, b""
+    if with_engine_signals_tx:
+        from tx import assemble
+        for start, end in ((0x02519E, 0x0251A2), (0x030DC8, 0x030FA4),
+                           (0x052A50, 0x052A6E), (0x0539D2, 0x0539D6), (0x093E90, 0x093E94)):
+            span = slice(diag.offset(start), diag.offset(end))
+            if s04[span] != base[span]:
+                raise ValueError(f"E4M3 native producer differs from REV8 at {start:#x}")
+        tx_part, tx_code = assemble(diag, torque)
+    speed, speed_code = assemble_speed(diag, torque, tx_part)
     wrapper, wrapper_code = revised_wrapper(diag, speed.labels)
     output = bytearray(s04)
     allowed = set()
     regions = {}
-    for name, cpu, code in (
+    sections = [
         ("wrapper", wrapper.origin, wrapper_code),
         ("speed_receiver", speed.origin, speed_code),
         ("speed_selector", CALIBRATION, b"\x20"),
-    ):
+    ]
+    if tx_part:
+        sections.append(("engine_signals_tx", tx_part.origin, tx_code))
+    for name, cpu, code in sections:
         off = diag.offset(cpu)
-        if name == "speed_receiver" and any(byte != 255 for byte in s04[off:off + len(code)]):
-            raise ValueError("Receiver flash region overlaps existing contents")
+        if name in ("speed_receiver", "engine_signals_tx") and any(
+            byte != 255 for byte in s04[off:off + len(code)]
+        ):
+            raise ValueError(f"{name} flash region overlaps existing contents")
         if name == "wrapper":
             if any(byte != 255 for byte in s04[off + len(old_wrapper.data):off + len(code)]):
                 raise ValueError("CAN wrapper expansion overlaps existing contents")
@@ -270,6 +301,15 @@ def build(engine, s04):
         "panel_output_implemented": False,
         "speed_receiver_symbols": {name: hex(address) for name, address in speed.labels.items()},
     }
+    if tx_part:
+        from tx import COOLANT, RPM
+        manifest["diagnostic_signals_tx"] = [
+            {"can_id": hex(x.identifier), "object": x.object_number, "period_t4_ticks": x.period}
+            for x in (RPM, COOLANT)
+        ]
+        manifest["engine_signals_tx_symbols"] = {name: hex(address) for name, address in tx_part.labels.items()}
+        speed.rows += tx_part.rows
+        speed.labels.update({"engine_signals_" + name: address for name, address in tx_part.labels.items()})
     return bytes(output), manifest, wrapper, speed
 
 
@@ -278,13 +318,16 @@ def main():
     parser.add_argument("--engine", required=True, type=Path, help="Pinned R4 development/E4M3/engine")
     parser.add_argument("--s04", required=True, type=Path)
     parser.add_argument("--outdir", required=True, type=Path)
+    parser.add_argument("--with-engine-signals-tx", action="store_true")
     args = parser.parse_args()
-    image, manifest, wrapper, speed = build(args.engine.resolve(), args.s04.read_bytes())
+    image, manifest, wrapper, speed = build(
+        args.engine.resolve(), args.s04.read_bytes(), with_engine_signals_tx=args.with_engine_signals_tx
+    )
     try:
         args.outdir.mkdir(parents=True)
     except FileExistsError:
         parser.error("Use a new output directory")
-    (args.outdir / OUTPUT).write_bytes(image)
+    (args.outdir / (TX_OUTPUT if args.with_engine_signals_tx else OUTPUT)).write_bytes(image)
     (args.outdir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     with (args.outdir / "candidate.asm").open("w", encoding="utf-8") as stream:
         for part in (wrapper, speed):

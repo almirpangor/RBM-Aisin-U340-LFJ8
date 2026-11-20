@@ -1,4 +1,5 @@
 #include "s05_chery.h"
+#include "ta2005_chery_inputs.h"
 
 typedef struct {
     uint8_t accepts;
@@ -99,6 +100,25 @@ int s05_chery_check(void)
         s05_chery_poll(&transport, 44u, &inputs, submit, &channel) != LFJ8_DUE_300 ||
         channel.last_payload[3] != 0xffu) {
         return 8;
+    }
+    static const uint8_t rpm[8] = {0x12u, 0xc0u, 0xffu, 0xffu, 0u, 0xffu};
+    static const uint8_t coolant[8] = {0xb4u, 0xffu, 0xffu, 0xffu, 0xffu, 0xffu, 0xffu, 0xffu};
+    Ta2005CheryInputs receiver;
+    Ta2005CherySnapshot snapshot;
+    const uint32_t received_at = UINT32_MAX;
+    uint32_t now = 0;
+    ta2005_chery_inputs_reset(&receiver);
+    if (!ta2005_chery_inputs_receive(&receiver, 0x0fau, 8u, rpm, &received_at) ||
+        !ta2005_chery_inputs_receive(&receiver, 0x278u, 8u, coolant, &now) ||
+        ta2005_chery_inputs_snapshot(&receiver, &now, 5u, &snapshot) !=
+            (TA2005_CHERY_SPEED | TA2005_CHERY_COOLANT) ||
+        snapshot.speed_fad8 != 9600u || snapshot.coolant_f9e9 != 137u) {
+        return 9;
+    }
+    now = 4;
+    if (ta2005_chery_inputs_snapshot(&receiver, &now, 5u, &snapshot) != TA2005_CHERY_COOLANT ||
+        snapshot.speed_fad8 != UINT16_MAX) {
+        return 10;
     }
     return 0;
 }

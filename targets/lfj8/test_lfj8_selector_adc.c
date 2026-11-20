@@ -1,0 +1,141 @@
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#include <assert.h>
+#include <stddef.h>
+
+#include "lfj8_selector_adc.h"
+#include "rbm_u340e.h"
+
+typedef struct {
+    uint16_t hardware_raw;
+    unsigned depth;
+    unsigned reads;
+} Fixture;
+
+static uint32_t enter(void *context)
+{
+    Fixture *fixture = context;
+    assert(fixture->depth++ == 0u);
+    return 0x5Au;
+}
+
+static void leave(void *context, uint32_t saved_state)
+{
+    Fixture *fixture = context;
+    assert(saved_state == 0x5Au && fixture->depth-- == 1u);
+}
+
+static uint16_t read16(void *context, uint32_t address)
+{
+    Fixture *fixture = context;
+    assert(fixture->depth == 1u && address == 0x804BC6u);
+    ++fixture->reads;
+    return fixture->hardware_raw;
+}
+
+static Lfj8RegisterIo register_io(Fixture *fixture)
+{
+    const Lfj8RegisterIo io = {
+        .context = fixture,
+        .read16 = read16,
+        .enter = enter,
+        .leave = leave,
+    };
+    return io;
+}
+
+static void expect(Lfj8SelectorAdcReading reading, Lfj8SelectorAdcEvent event, uint16_t raw)
+{
+    assert(reading.event == event && reading.raw == raw);
+}
+
+static void verify_publication_contract(void)
+{
+    volatile Lfj8SelectorAdc mailbox;
+    Fixture fixture = {.hardware_raw = 512u};
+    const Lfj8RegisterIo io = register_io(&fixture);
+
+    lfj8_selector_adc_init(&mailbox);
+    expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_NONE, UINT16_MAX);
+    assert(fixture.reads == 0u);
+
+    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+    expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_VALUE, 512u);
+    expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_NONE, UINT16_MAX);
+    assert(fixture.reads == 1u);
+
+    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 0u);
+    expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_INVALID, UINT16_MAX);
+    assert(fixture.reads == 1u);
+
+    lfj8_selector_adc_publish(&mailbox, &io, 1023u);
+    expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_VALUE, 1023u);
+    lfj8_selector_adc_publish(&mailbox, &io, 1024u);
+    expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_INVALID, UINT16_MAX);
+    lfj8_selector_adc_publish(&mailbox, &io, 0u);
+    expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_VALUE, 0u);
+
+    lfj8_selector_adc_publish(&mailbox, &io, 347u);
+    lfj8_selector_adc_publish(&mailbox, &io, UINT16_MAX);
+    lfj8_selector_adc_publish(&mailbox, &io, 347u);
+    expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_OVERRUN, UINT16_MAX);
+    expect(lfj8_selector_adc_take(&mailbox, &io), LFJ8_SELECTOR_ADC_NONE, UINT16_MAX);
+    assert(fixture.reads == 1u && fixture.depth == 0u);
+}
+
+static uint8_t consume(volatile Lfj8SelectorAdc *mailbox, const Lfj8RegisterIo *io,
+                       RbmU340eSelectorInput *decoder, uint8_t position)
+{
+    const Lfj8SelectorAdcReading reading = lfj8_selector_adc_take(mailbox, io);
+    return reading.event == LFJ8_SELECTOR_ADC_NONE
+               ? position : rbm_u340e_selector_sample(decoder, reading.raw);
+}
+
+static void verify_four_distinct_events(void)
+{
+    volatile Lfj8SelectorAdc mailbox;
+    RbmU340eSelectorInput decoder = {0};
+    Fixture fixture = {.hardware_raw = 347u};
+    const Lfj8RegisterIo io = register_io(&fixture);
+    uint8_t position = RBM_U340E_SELECTOR_UNKNOWN;
+
+    lfj8_selector_adc_init(&mailbox);
+    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+    for (unsigned poll = 0u; poll < 8u; ++poll) {
+        position = consume(&mailbox, &io, &decoder, position);
+        assert(position == RBM_U340E_SELECTOR_UNKNOWN);
+    }
+    for (unsigned event = 0u; event < 2u; ++event) {
+        lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+        position = consume(&mailbox, &io, &decoder, position);
+        assert(position == RBM_U340E_SELECTOR_UNKNOWN);
+    }
+    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+    position = consume(&mailbox, &io, &decoder, position);
+    assert(position == RBM_U340E_SELECTOR_2);
+    assert(consume(&mailbox, &io, &decoder, position) == RBM_U340E_SELECTOR_2);
+
+    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+    position = consume(&mailbox, &io, &decoder, position);
+    assert(position == RBM_U340E_SELECTOR_UNKNOWN);
+    for (unsigned event = 0u; event < 3u; ++event) {
+        lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+        position = consume(&mailbox, &io, &decoder, position);
+        assert(position == RBM_U340E_SELECTOR_UNKNOWN);
+    }
+    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 1u);
+    position = consume(&mailbox, &io, &decoder, position);
+    assert(position == RBM_U340E_SELECTOR_2);
+
+    lfj8_selector_adc_publish_9e1b(&mailbox, &io, 0u);
+    assert(consume(&mailbox, &io, &decoder, position) == RBM_U340E_SELECTOR_UNKNOWN);
+    assert(fixture.reads == 10u && fixture.depth == 0u);
+}
+
+void verify_lfj8_selector_adc(void)
+{
+    verify_publication_contract();
+    verify_four_distinct_events();
+}

@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "lfj8_chery_tx.h"
+#include "ta2005_chery_inputs.h"
 
 typedef struct {
     uint32_t freshness;
@@ -283,6 +284,60 @@ static void test_pipeline(void)
     assert(tx.pending == 0u && tx.counter_f8e4 == 0u && f.submissions == 3u);
 }
 
+static void test_engine_receive(void)
+{
+    Ta2005CheryInputs receiver;
+    Ta2005CherySnapshot snapshot;
+    uint8_t frame[8] = {0};
+    uint32_t received_at = UINT32_MAX - 1u;
+    uint32_t now = 2u;
+    ta2005_chery_inputs_reset(&receiver);
+    assert(ta2005_chery_inputs_snapshot(&receiver, &now, 5, &snapshot) == 0);
+
+    for (unsigned int raw = 0; raw <= UINT16_MAX; ++raw) {
+        frame[0] = (uint8_t)(raw >> 8);
+        frame[1] = (uint8_t)raw;
+        assert(ta2005_chery_inputs_receive(&receiver, 0x0fau, 8, frame, &received_at) ==
+               TA2005_CHERY_SPEED);
+        const unsigned int expected = raw == UINT16_MAX ? UINT16_MAX :
+            (raw > 32767u ? 65534u : raw * 2u);
+        const unsigned int valid = ta2005_chery_inputs_snapshot(&receiver, &now, 5, &snapshot);
+        assert(valid == (raw == UINT16_MAX ? 0u : TA2005_CHERY_SPEED));
+        assert(snapshot.speed_fad8 == expected);
+    }
+
+    for (unsigned int raw = 0; raw <= UINT8_MAX; ++raw) {
+        frame[0] = (uint8_t)raw;
+        assert(ta2005_chery_inputs_receive(&receiver, 0x278u, 8, frame, &received_at) ==
+               TA2005_CHERY_COOLANT);
+        const unsigned int expected = raw == UINT8_MAX ? UINT8_MAX : raw * 3u / 4u + 2u;
+        const unsigned int valid = ta2005_chery_inputs_snapshot(&receiver, &now, 5, &snapshot);
+        assert(valid == (raw == UINT8_MAX ? 0u : TA2005_CHERY_COOLANT));
+        assert(snapshot.coolant_f9e9 == expected);
+    }
+
+    const uint8_t rpm[8] = {0x12u, 0xc0u, 0xffu, 0xffu, 0u, 0xffu};
+    const uint8_t coolant[8] = {0xb4u, 0xffu, 0xffu, 0xffu, 0xffu, 0xffu, 0xffu, 0xffu};
+    received_at = 1;
+    assert(ta2005_chery_inputs_receive(&receiver, 0xfau, 8, rpm, &received_at));
+    received_at = 2;
+    assert(!ta2005_chery_inputs_receive(&receiver, 0x278u, 7, coolant, &received_at));
+    assert(!ta2005_chery_inputs_receive(&receiver, 0x270u, 8, coolant, &received_at));
+    assert(ta2005_chery_inputs_snapshot(&receiver, &now, 5, &snapshot) == TA2005_CHERY_SPEED);
+    assert(ta2005_chery_inputs_receive(&receiver, 0x278u, 8, coolant, &received_at));
+    received_at = UINT32_MAX;
+    assert(!ta2005_chery_inputs_receive(&receiver, 0x0fau, 8, frame, &received_at));
+    assert(ta2005_chery_inputs_snapshot(&receiver, &now, 5, &snapshot) ==
+           (TA2005_CHERY_SPEED | TA2005_CHERY_COOLANT));
+    assert(snapshot.speed_fad8 == 9600u && snapshot.coolant_f9e9 == 137u);
+    now = 6;
+    assert(ta2005_chery_inputs_snapshot(&receiver, &now, 5, &snapshot) == TA2005_CHERY_COOLANT);
+    now = 7;
+    assert(ta2005_chery_inputs_snapshot(&receiver, &now, 5, &snapshot) == 0);
+    ta2005_chery_inputs_reset(&receiver);
+    assert(ta2005_chery_inputs_snapshot(&receiver, &received_at, 5, &snapshot) == 0);
+}
+
 int main(void)
 {
     test_speed();
@@ -291,6 +346,7 @@ int main(void)
     test_donor_io();
     test_raw_capture();
     test_pipeline();
-    puts("LFJ8 host: VSS, Chery encoders, relays, schedule, CAN0 and integrated pipeline passed");
+    test_engine_receive();
+    puts("LFJ8 host: VSS, Chery TX, RPM/ECT RX, relays, schedule, CAN0 and integrated pipeline passed");
     return 0;
 }

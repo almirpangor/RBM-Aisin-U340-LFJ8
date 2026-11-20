@@ -41,7 +41,8 @@ def build(gcc: Path, go: Path, output: Path) -> None:
     with tempfile.TemporaryDirectory(prefix="s05-check-", dir=HERE) as temporary:
         work = Path(temporary).relative_to(HERE)
         objects = []
-        for source in (Path("check.c"), Path("s05_chery.c"), BRIDGE / "lfj8_bridge.c"):
+        for source in (Path("check.c"), Path("s05_chery.c"), BRIDGE / "lfj8_bridge.c",
+                       BRIDGE / "ta2005_chery_inputs.c"):
             obj = work / f"{source.stem}.o"
             run(gcc, *FLAGS, "-I", BRIDGE, "-c", source, "-o", obj)
             objects.append(obj)

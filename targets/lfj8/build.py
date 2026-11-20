@@ -12,9 +12,9 @@ import tempfile
 
 
 ROOT = Path(__file__).resolve().parent
-CORE = ["lfj8_bridge.c"]
+CORE = ["lfj8_bridge.c", "ta2005_chery_inputs.c"]
 S05_ADAPTER = ["../pcm-s05/native/s05_chery.c"]
-DONOR_ADAPTER = ["lfj8_donor_io.c", "lfj8_chery_tx.c"]
+DONOR_ADAPTER = ["lfj8_donor_io.c", "lfj8_chery_tx.c", "lfj8_selector_adc.c"]
 WARNINGS = ["-Wall", "-Wextra", "-Werror", "-Wconversion", "-Wsign-conversion"]
 FREESTANDING = [
     "-Os", "-std=c99", "-ffreestanding", "-fno-builtin", "-fno-common",
@@ -130,7 +130,8 @@ def main():
         parser.error("Supply at least one compiler with --zig, --m32r-cc or --sh-cc")
 
     sources = [*CORE, *DONOR_ADAPTER, "host_check.c", "build.py",
-               "lfj8_bridge.h", "lfj8_donor_io.h", "lfj8_chery_tx.h"]
+               "lfj8_bridge.h", "lfj8_donor_io.h", "lfj8_chery_tx.h", "lfj8_selector_adc.h",
+               "ta2005_chery_inputs.h"]
     manifest = {"sources": {name: summary(ROOT / name) for name in sources}, "artifacts": {}}
     if args.sh_cc:
         s05_files = [*S05_ADAPTER, "../pcm-s05/native/s05_chery.h"]

@@ -50,6 +50,13 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
             "-o", str(diagnostic_can_check),
         ])
         run("Кадры диагностики Chery CAN", [str(diagnostic_can_check)])
+        diagnostic_link_check = output / f"chery_dtc_link_test{suffix}"
+        run("Сборка транспорта диагностики Chery C0", [
+            *driver, *common_flags, "-pedantic", "diagnostics/chery_dtc.c",
+            "diagnostics/chery_dtc_can.c", "diagnostics/chery_dtc_link.c",
+            "diagnostics/test_chery_dtc_link.c", "-o", str(diagnostic_link_check),
+        ])
+        run("Сеанс Chery C0, сегментация и тайм-ауты", [str(diagnostic_link_check)])
         panel_check = output / f"panel_pulse_test{suffix}"
         run("Сборка расчёта импульсов панели", [*driver, *common_flags,
                                                "targets/panel/panel_pulse.c",

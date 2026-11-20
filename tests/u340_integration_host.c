@@ -1,9 +1,13 @@
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "lfj8_bridge.h"
 #include "panel_pulse.h"
 #include "rbm_u340e.h"
+#include "ta2005_chery_inputs.h"
+
+void verify_lfj8_selector_adc(void);
 
 static RbmU340eOutput sample_buttons(RbmU340eController *controller,
     RbmU340eInput *input, uint8_t buttons)
@@ -21,8 +25,37 @@ static void print_payload(const uint8_t frame[8])
     }
 }
 
-int main(void)
+static void parse_payload(const char *hex, uint8_t frame[8])
 {
+    assert(strlen(hex) == 16);
+    for (unsigned int index = 0; index < 8; ++index) {
+        unsigned int byte;
+        int read = 0;
+        assert(sscanf(hex + 2 * index, "%2x%n", &byte, &read) == 1 && read == 2);
+        frame[index] = (uint8_t)byte;
+    }
+}
+
+int main(int argc, char **argv)
+{
+    verify_lfj8_selector_adc();
+    assert(argc == 1 || argc == 3);
+    uint8_t rpm_frame[8] = {0x12, 0xc0, 0xff, 0xff, 0x00, 0xff, 0x00, 0x00};
+    uint8_t coolant_frame[8] = {0xb4, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+    if (argc == 3) {
+        parse_payload(argv[1], rpm_frame);
+        parse_payload(argv[2], coolant_frame);
+    }
+    Ta2005CheryInputs engine_receiver;
+    Ta2005CherySnapshot engine_inputs;
+    const uint32_t tick = 0;
+    ta2005_chery_inputs_reset(&engine_receiver);
+    assert(ta2005_chery_inputs_receive(&engine_receiver, 0x0fa, 8, rpm_frame, &tick));
+    assert(ta2005_chery_inputs_receive(&engine_receiver, 0x278, 8, coolant_frame, &tick));
+    assert(ta2005_chery_inputs_snapshot(&engine_receiver, &tick, 5, &engine_inputs) ==
+           (TA2005_CHERY_SPEED | TA2005_CHERY_COOLANT));
+    assert(engine_inputs.speed_fad8 == 9600 && engine_inputs.coolant_f9e9 == 137);
+
     const RbmU340ePolicy policy = {
         .manual_selectors = 1u << RBM_U340E_SELECTOR_D,
         .overdrive_limit_modes = RBM_U340E_OVERDRIVE_TIPTRONIC,
@@ -89,7 +122,9 @@ int main(void)
     print_payload(speed_frame);
     printf("\",\"0x300\":\"");
     print_payload(atf_frame);
-    printf("\",\"panel_input_speed_q7\":%u,\"panel_period_ticks_1mhz\":%lu}\n",
-           speed_q7, (unsigned long)pulse.period_field);
+    printf("\",\"panel_input_speed_q7\":%u,\"panel_period_ticks_1mhz\":%lu,"
+           "\"tc_rx_rpm_q3\":%u,\"tc_rx_coolant_plus_50\":%u,\"selector_adc_events\":\"PASS\"}\n",
+           speed_q7, (unsigned long)pulse.period_field,
+           (unsigned int)engine_inputs.speed_fad8, (unsigned int)engine_inputs.coolant_f9e9);
     return 0;
 }

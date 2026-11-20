@@ -55,6 +55,8 @@ python -B -m model.run_integrated --cc zig
 python -B -m model.run_integrated --cc zig --bosch-engine PATH_TO_PINNED_ENGINE_TOOLS --bosch-s04 PATH_TO_S04 --bosch-image PATH_TO_BOSCH_CANDIDATE
 ```
 
+Проверка встречного направления принимает `--bosch-tx-image` и `--bosch-tx-report`. Из отчёта `targets/bosch/verify_tx.py` она берёт машинные кадры `0x0FA` и `0x278`, сверяет SHA-256 с BIN и передаёт эти данные в собранный приёмник TCM. Сценарий на 1200 об/мин и 87 °C проверяет независимое декодирование. [Сборка и проверка Bosch](../docs/bosch-integration.md)
+
 Сценарий проверяет логику реле в R/L/D, Auto/Tiptronic, запросы `+`/`−` и Overdrive. Для заданных условий захвата VSS C-мост формирует `0x1AE` со скоростью 14,40 км/ч и `0x300` с температурой ATF 84 °C. После штатного квантования модель ECM выдаёт 14,25 км/ч. Тест сверяет это значение с моделью кандидата Bosch, если переданы три пути. Номинал 6000 имп./км даёт 23,75 Гц. Независимый C-модуль рассчитывает период 42 105 тактов для тестового таймера 1 МГц. Работу выходного драйвера и показания физической панели проверяют по плану приёмки. [План испытаний](../docs/verification.md)
 
 [can-owners]: https://github.com/almirpangor/Chery-TA2005-U340E/blob/7585de6945b4b6b3ef381c6062070a5f417cf588/docs/GW_CAN1_CHERY_FIELDS_OWNERS_RU.md
