@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 603,
+  "sequence": 604,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -579,24 +579,25 @@
     },
     "REL-02": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
-      "label": "Codex REL-02 H03 native RAM owner",
+      "label": "Codex REL-02 H03 DMA admission",
       "branch": "codex/rel02-h03-ram-owner-01a1f99f",
       "files": [
         "targets/lfj8/check_h03_ram_owner.py",
         "targets/lfj8/lfj8_h03_ram_owner.c",
         "targets/lfj8/lfj8_h03_ram_owner.h",
         "targets/lfj8/test_lfj8_h03_ram_owner.c",
-        "verification/project-audit/2026-11-21-h03-ram-owner.json",
-        "verification/project-audit/2026-11-21-h03-stack-admission.json",
-        "verification/project-audit/rel02-h03-ram-owner.md",
-        "verification/project-audit/rel02-h03-stack-admission.md"
+        "verification/project-audit/2026-11-21-h03-dma-admission.json",
+        "verification/project-audit/rel02-h03-dma-admission.md"
       ],
-      "stage": "review",
-      "claim_id": "3fd1870717ff4cc684af517ec9f56903",
-      "claimed_at": "2026-11-20T20:00:42+00:00",
-      "updated_at": "2026-11-20T20:20:04+00:00",
-      "note": "Нативный ram_owned проверяет живые SPI и курсор PSW. В точной ветви SBI наблюдались 40+4 байта; DMA0/1 подтверждён на штатной инициализации. Отбор штатной записи повторно показывает границу 0x8000. Совместный состав 96658 байт, окончательные привязки и аппаратная приёмка открыты.",
-      "result": "8af2346d908aab149ccf6c18a025e6f5880b8b35"
+      "stage": "in_progress",
+      "claim_id": "856a2771e4554202bb2db5c8d2c3f93d",
+      "claimed_at": "2026-11-20T20:32:09+00:00",
+      "updated_at": "2026-11-20T20:32:09+00:00",
+      "note": "Продолжение 8af2346 на актуальной main. Проверяю живые настройки DMA и защищённые адреса перед допуском RAM; целевые режимы и прочие писатели подтверждаются отдельно. Сданные порции и чужие резервы сохранены.",
+      "result": null,
+      "based_on_reviews": [
+        "3fd1870717ff4cc684af517ec9f56903"
+      ]
     }
   },
   "events": [
@@ -5574,9 +5575,39 @@
           "6293ebe446574c9ab1fce23fa806e922"
         ]
       }
+    },
+    {
+      "operation_id": "cd8e66a16d9d44b5a33f2c0d3c4d0324",
+      "task": "REL-02",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "856a2771e4554202bb2db5c8d2c3f93d",
+      "at": "2026-11-20T20:32:09+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex REL-02 H03 DMA admission",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_owner.h",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "verification/project-audit/2026-11-21-h03-dma-admission.json",
+          "verification/project-audit/rel02-h03-dma-admission.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "856a2771e4554202bb2db5c8d2c3f93d",
+        "claimed_at": "2026-11-20T20:32:09+00:00",
+        "updated_at": "2026-11-20T20:32:09+00:00",
+        "note": "Продолжение 8af2346 на актуальной main. Проверяю живые настройки DMA и защищённые адреса перед допуском RAM; целевые режимы и прочие писатели подтверждаются отдельно. Сданные порции и чужие резервы сохранены.",
+        "result": null,
+        "based_on_reviews": [
+          "3fd1870717ff4cc684af517ec9f56903"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:31:55+00:00",
+  "updated_at": "2026-11-20T20:32:09+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
