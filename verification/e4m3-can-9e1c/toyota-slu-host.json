@@ -1,0 +1,21 @@
+{
+  "status": "PASS_DONOR_SLU_HOST_REFERENCE_ONLY",
+  "s01_sha256": "a3cd723e7e21bf547ca4c17ec49a1e098d203773547dba4d7af21991a2cbead1",
+  "r3_commit": "7585de6945b4b6b3ef381c6062070a5f417cf588",
+  "entry": "055C5E",
+  "local_host_checks": {
+    "normal_u16_commands": 65536,
+    "force_resume_cases": 3,
+    "donor_period_register": 4000
+  },
+  "upstream_055c5e_oracle_cases": 69636,
+  "upstream_secondary_slu_chain_cases": 3072,
+  "upstream_secondary_slu_chain_call_boundaries": 15360,
+  "upstream_proof_sha256": {
+    "research/results/TOYOTA_OUTPUT_ANALOG_VERIFICATION.json": "7f7b784415f57d1fdcfd0365a9de9302eae0cbcd636bcd37e23ceaa5567d2e6f",
+    "research/results/C167_SECONDARY_SLU_CHAIN_PROBE.json": "b887677f31568e399c057bf74ce168c78c812a5190dd949404f3fdd4ec380c9c"
+  },
+  "h03_scheduler_or_snapshot_bound": false,
+  "h03_physical_channel_current_or_failure_bound": false,
+  "ready_for_flash": false
+}

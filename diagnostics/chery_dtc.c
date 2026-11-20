@@ -178,6 +178,7 @@ CheryDtcResult chery_dtc_respond(
     }
     if (clear) {
         chery_dtc_init(state);
+        state->clear_pending = true;
     }
     memcpy(response, reply, length);
     return CHERY_DTC_REPLIED;

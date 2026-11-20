@@ -26,7 +26,8 @@ class Monitor(ct.Structure):
 
 
 class Dtc(ct.Structure):
-    _fields_ = [("history", U8 * 12), ("current", U8 * 12), ("slots", U8 * 5)]
+    _fields_ = [("history", U8 * 12), ("current", U8 * 12), ("slots", U8 * 5),
+                ("clear_pending", BOOL)]
 
 
 class Snapshot(ct.Structure):

@@ -50,7 +50,8 @@ static void check_shift(const Lfj8H03MainResult *result, unsigned s1, unsigned s
     assert(result->shift.writes[1].channel == 1u && result->shift.writes[1].value == s2);
 }
 
-static void test_range(uint8_t initial_selector)
+static void test_range(uint8_t initial_selector, uint8_t forward_selector,
+                       uint8_t expected_range_flags, uint8_t expected_gear)
 {
     RbmU340eRuntime runtime = {0};
     Lfj8H03Cycle cycle;
@@ -73,11 +74,13 @@ static void test_range(uint8_t initial_selector)
     assert((cycle.request_1120 & 3u) == 3u && input.event < 20u);
 
     input.range_5722 = 1u;
-    input.selector = RBM_U340E_SELECTOR_D;
+    input.selector = forward_selector;
     next_main(&cycle, &runtime, &input, &work, &result);
+    assert((read_gp(&runtime, -7252, 1u) & 6u) == expected_range_flags);
+    assert((read_gp(&runtime, -4845, 1u) & 6u) == expected_range_flags);
     assert(read_gp(&runtime, -4830, 1u) & 1u);
     assert(read_gp(&runtime, -7134, 2u) > 0u);
-    check_shift(&result, 1u, 0u);
+    check_shift(&result, 1u, forward_selector == RBM_U340E_SELECTOR_L);
     for (unsigned i = 0; result.gear_4848 != 0u && i < 255u; ++i) {
         next_main(&cycle, &runtime, &input, &work, &result);
     }
@@ -87,11 +90,16 @@ static void test_range(uint8_t initial_selector)
     assert(factory_hydraulics_set(&runtime.gp, -4548, 1u, 22u));
     assert(factory_hydraulics_set(&runtime.gp, -4549, 1u, 22u));
     assert(factory_hydraulics_set(&runtime.gp, -7154, 2u, 6400u));
-    for (unsigned i = 0; result.gear_4848 == 0u && i < 255u; ++i) {
+    for (unsigned i = 0; i < 255u; ++i) {
         next_main(&cycle, &runtime, &input, &work, &result);
+        if (expected_gear == 0u) {
+            assert(result.gear_4852 == 0u && result.gear_4848 == 0u);
+        } else if (result.gear_4848 == expected_gear) {
+            break;
+        }
     }
-    assert(result.gear_4852 == 1u && result.gear_4848 == 1u);
-    check_shift(&result, 1u, 0u);
+    assert(result.gear_4852 == expected_gear && result.gear_4848 == expected_gear);
+    check_shift(&result, 1u, expected_gear == 0u);
 
     const RbmU340eRuntime last_good = runtime;
     const uint16_t ticks = cycle.scheduler.producer_count;
@@ -105,8 +113,10 @@ static void test_range(uint8_t initial_selector)
 
 int main(void)
 {
-    test_range(RBM_U340E_SELECTOR_P);
-    test_range(RBM_U340E_SELECTOR_N);
-    puts("H03 Toyota event and logical output cycle: P/N to D, 1->2, rollover and lost event passed.");
+    test_range(RBM_U340E_SELECTOR_P, RBM_U340E_SELECTOR_D, 0u, 1u);
+    test_range(RBM_U340E_SELECTOR_N, RBM_U340E_SELECTOR_D, 0u, 1u);
+    test_range(RBM_U340E_SELECTOR_N, RBM_U340E_SELECTOR_2, 2u, 1u);
+    test_range(RBM_U340E_SELECTOR_N, RBM_U340E_SELECTOR_L, 4u, 0u);
+    puts("H03 Toyota cycle: P/N to D, 1->2, ranges 2/L, rollover and lost event passed.");
     return 0;
 }

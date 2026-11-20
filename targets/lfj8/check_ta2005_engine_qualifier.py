@@ -52,6 +52,20 @@ def seed_oracle(oracle, seed):
         oracle.write(address, value, width)
 
 
+def verify_clear_prefix(oracle):
+    """Execute the original reset loop before its unrelated SFR operations."""
+    seed_oracle(oracle, (9600, 101, 201, 15))
+    oracle.run(0x0652FC, stop=0x065314)
+    assert all(oracle.read(address, 1) == 0 for address in (0xE04C, 0xE020, 0xE02A, 0xE026))
+    assert oracle.read(0xFA62) == 9600 and oracle.read(0xFD16) == 4
+    return {
+        "entry": "0x0652FC",
+        "stop_before": "0x065314",
+        "cleared": ["E04C", "E020", "E02A", "E026"],
+        "retained": ["FA62", "FD16.2"],
+    }
+
+
 def evaluate_oracle(oracle, raw_speed, raw_coolant, usable, fd10, fallback, e026, bus, can):
     for address, value, width in (
         (0xFAD8, raw_speed if usable & 1 else 65535, 2),
@@ -149,9 +163,11 @@ def main():
     parser.add_argument("--run-with", type=Path, help="Optional runner, e.g. m32r-elf-run")
     args = parser.parse_args()
     oracle, sources = native_oracle(args)
+    clear_prefix = verify_clear_prefix(oracle)
     result = compare_program(oracle, [str(args.run_with)] if args.run_with else [], args.test.resolve())
     print(json.dumps({"status": "PASS_OFFLINE_ONLY", "physical_hardware_tested": False,
-                      "inputs": sources, **result}, indent=2))
+                      "inputs": sources, **result, "native_diagnostic_clear_prefix": clear_prefix},
+                     indent=2))
 
 
 if __name__ == "__main__":

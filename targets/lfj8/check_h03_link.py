@@ -60,7 +60,8 @@ DTC_ROOTS = (
     "chery_model_monitor_init", "chery_model_monitor_task2",
 )
 CAN_EXTENSION_FILES = ("lfj8_h03_torque.c", "lfj8_h03_dtc_can.c",
-                       "lfj8_h03_torque_can.c", "ta2005_engine_qualifier.c", "lfj8_h03_cycle.c")
+                       "lfj8_h03_torque_can.c", "ta2005_engine_qualifier.c", "lfj8_h03_cycle.c",
+                       "lfj8_h03_phase_clock.c", "lfj8_h03_engine_feed.c", "lfj8_h03_can13.c")
 CAN_EXTENSION_ROOTS = (
     "lfj8_h03_torque_demand", "lfj8_h03_torque_init", "lfj8_h03_torque_poll",
     "lfj8_h03_torque_tx_done", "lfj8_h03_torque_receive", "lfj8_h03_torque_applied",
@@ -69,6 +70,8 @@ CAN_EXTENSION_ROOTS = (
     "ta2005_engine_qualifier_init", "ta2005_engine_qualifier_task2",
     "lfj8_h03_cycle_init", "lfj8_h03_cycle_tick", "lfj8_h03_cycle_slt_inputs",
     "lfj8_h03_cycle_prepare_outputs",
+    "lfj8_h03_phase_clock_init", "lfj8_h03_phase_clock_release", "lfj8_h03_phase_clock_take",
+    "lfj8_h03_engine_feed_task2", "lfj8_h03_can13_init", "lfj8_h03_can13_poll",
 )
 S01_LINK_TABLES = (
     ("learning_001C3C", 800, "8276650f90e31262d21eca82fd06ce04c9ed0456b74c9456cebf2b11b0b9fd5b"),
@@ -157,7 +160,8 @@ SECTIONS {{
   .can_extension {TAIL_START:#x} : {{
     {extension_input}
     *(.text.lfj8_h03_can0_torque_* .text.pause_torque_listener .text.torque_slot_available)
-    *(.text.lfj8_h03_can0_diag_* .text.slot13_status)
+    *(.text.lfj8_h03_can0_diag_* .text.lfj8_h03_can0_telemetry_status
+      .text.lfj8_h03_can0_slot13_timestamp .text.slot13_status)
     *(.text.rbm_u340e_runtime_secondary_load_qualify .text.rbm_u340e_hydraulics_control_main_workspace)
   }}
   .text {FLASH_START:#x} : {{ *(.text .text.*) }}
@@ -220,7 +224,8 @@ def stage_test(stage, engine_payloads):
                   diagnostics / "test_chery_dtc_link.c"]
     can_extension = [HERE / name for name in (*CAN_EXTENSION_FILES, "test_lfj8_h03_torque.c",
                     "test_lfj8_h03_dtc_can.c", "test_lfj8_h03_torque_can.c",
-                    "test_ta2005_engine_qualifier.c", "test_lfj8_h03_cycle.c")]
+                    "test_ta2005_engine_qualifier.c", "test_lfj8_h03_cycle.c", "test_lfj8_h03_phase_clock.c",
+                    "test_lfj8_h03_engine_feed.c", "test_lfj8_h03_can13.c")]
     for item in (*sources, *headers, *dtc_inputs, *can_extension, HERE / "host_check.c", HERE / "test_lfj8_h03_atf.c",
                  HERE / "test_lfj8_h03_mmio.c", HERE / "test_lfj8_gear_observer.c",
                  HERE / "lfj8_h03_outputs.c", HERE / "test_lfj8_h03_outputs.c",
@@ -241,7 +246,7 @@ def stage_test(stage, engine_payloads):
     return [item.name for item in sources]
 
 
-def check(base, bridge, controller, compiler, simulator_output, bosch_trace=None):
+def check(base, bridge, controller, compiler, simulator_output, bosch_trace=None, address_model_output=None):
     report = {"source": identify_h03(base), "artifact_kind": "address_model_and_cpu_test"}
     engine_payloads = ()
     if bosch_trace is not None:
@@ -417,6 +422,12 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
             ("h03_engine_qualifier", "test_ta2005_engine_qualifier.c", ("combined.o", "ta2005_engine_qualifier.o")),
             ("h03_cycle", "test_lfj8_h03_cycle.c",
              ("combined.o", "takeover.o", "lfj8_h03_torque.o", "lfj8_h03_cycle.o")),
+            ("h03_phase_clock", "test_lfj8_h03_phase_clock.c", ("lfj8_h03_phase_clock.o",)),
+            ("h03_engine_feed", "test_lfj8_h03_engine_feed.c",
+             ("combined.o", "chery_dtc.o", "ta2005_engine_qualifier.o", "lfj8_h03_engine_feed.o")),
+            ("h03_can13", "test_lfj8_h03_can13.c",
+             ("combined.o", *dtc_objects, "lfj8_h03_torque.o", "lfj8_h03_torque_can.o",
+              "lfj8_h03_dtc_can.o", "lfj8_h03_can13.o")),
         ]
         for name, source, object_files in component_tests:
             elf = f"{name}.elf"
@@ -430,6 +441,12 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
             shutil.copyfile(stage / "sim.elf", simulator_output)
             report["simulator_elf"] = {
                 "file": simulator_output.name, **elf_info(stage / "sim.elf", 2)[0],
+            }
+        if address_model_output is not None:
+            address_model_output.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(stage / "split.elf", address_model_output)
+            report["split_address_model"]["elf"] = {
+                "file": address_model_output.name, "sha256": sha256(address_model_output.read_bytes()).hexdigest(),
             }
 
     report.update({
@@ -446,6 +463,7 @@ def main():
     for argument in ("base", "bridge", "controller", "gcc", "out"):
         parser.add_argument(f"--{argument}", required=True, type=Path)
     parser.add_argument("--sim-out", type=Path, help="optional simulator ELF with the test fixture")
+    parser.add_argument("--address-model-out", type=Path, help="optional ELF with the two checked address windows")
     parser.add_argument("--bosch-trace", type=Path, help="optional round-trip JSON from model.run_integrated")
     args = parser.parse_args()
     input_paths = {path.resolve() for path in (args.base, args.bridge, args.controller, args.gcc)}
@@ -453,11 +471,15 @@ def main():
         input_paths.add(args.bosch_trace.resolve())
     if args.out.suffix.lower() != ".json" or args.out.resolve() in input_paths:
         parser.error("--out must be a separate JSON report")
-    if args.sim_out is not None and (args.sim_out.suffix.lower() != ".elf" or
-            args.sim_out.resolve() in input_paths | {args.out.resolve()}):
-        parser.error("--sim-out must be a separate simulator ELF")
+    paths_in_use = input_paths | {args.out.resolve()}
+    for name, destination in (("--sim-out", args.sim_out), ("--address-model-out", args.address_model_out)):
+        if destination is not None:
+            if destination.suffix.lower() != ".elf" or destination.resolve() in paths_in_use:
+                parser.error(f"{name} must be a separate ELF")
+            paths_in_use.add(destination.resolve())
     try:
-        report = check(args.base, args.bridge, args.controller, args.gcc.resolve(), args.sim_out, args.bosch_trace)
+        report = check(args.base, args.bridge, args.controller, args.gcc.resolve(), args.sim_out,
+                       args.bosch_trace, args.address_model_out)
         report_text = json.dumps(report, indent=2) + "\n"
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(report_text, encoding="utf-8")

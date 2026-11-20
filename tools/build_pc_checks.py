@@ -109,6 +109,17 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
             "-o", str(torque_io_check),
         ])
         run("Передача запроса и приём статуса момента в CAN0", [str(torque_io_check)])
+        can13_check = controller_dir / f"lfj8_h03_can13_test{suffix}"
+        run("Сборка управления CAN13 H03", [
+            *driver, *common_flags, "-pedantic", "-I", "targets/lfj8", "-I", "diagnostics",
+            "-I", "controller/vendor/toyota/include",
+            "diagnostics/chery_dtc.c", "diagnostics/chery_dtc_can.c", "diagnostics/chery_dtc_link.c",
+            "targets/lfj8/lfj8_bridge.c", "targets/lfj8/lfj8_donor_io.c", "targets/lfj8/lfj8_chery_tx.c",
+            "targets/lfj8/lfj8_h03_torque.c", "targets/lfj8/lfj8_h03_torque_can.c",
+            "targets/lfj8/lfj8_h03_dtc_can.c", "targets/lfj8/lfj8_h03_can13.c",
+            "targets/lfj8/test_lfj8_h03_can13.c", str(library), *runtime_link, "-o", str(can13_check),
+        ])
+        run("Передача CAN13 между моментом, диагностикой и скоростью", [str(can13_check)])
         engine_check = output / f"ta2005_engine_qualifier_test{suffix}"
         run("Сборка квалификации оборотов и температуры TA2005", [
             *driver, *common_flags, "-pedantic", "-I", "controller/include",
@@ -117,6 +128,16 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
             "-o", str(engine_check),
         ])
         run("Отказ и восстановление оборотов и температуры", [str(engine_check)])
+        engine_feed_check = output / f"lfj8_h03_engine_feed_test{suffix}"
+        run("Сборка тракта оборотов, ОЖ и диагностических кодов", [
+            *driver, *common_flags, "-pedantic", "-I", "diagnostics", "-I", "controller/include",
+            "-I", "controller/vendor/toyota/include", "diagnostics/chery_dtc.c",
+            "targets/lfj8/lfj8_bridge.c", "targets/lfj8/lfj8_donor_io.c",
+            "targets/lfj8/ta2005_chery_inputs.c", "targets/lfj8/ta2005_engine_qualifier.c",
+            "targets/lfj8/lfj8_h03_engine_rx.c", "targets/lfj8/lfj8_h03_engine_feed.c",
+            "targets/lfj8/test_lfj8_h03_engine_feed.c", "-o", str(engine_feed_check),
+        ])
+        run("Обороты и ОЖ, активные DTC, история и очистка", [str(engine_feed_check)])
         cycle_check = controller_dir / f"lfj8_h03_cycle_test{suffix}"
         run("Сборка цикла Toyota с адаптером H03", [
             *driver, *common_flags, "-pedantic", "-I", "controller/include",
@@ -126,6 +147,12 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
             str(library), *runtime_link, "-o", str(cycle_check),
         ])
         run("Цикл включения D, переключение и потеря события", [str(cycle_check)])
+        phase_clock_check = output / f"lfj8_h03_phase_clock_test{suffix}"
+        run("Сборка контроля тактов H03", [
+            *driver, *common_flags, "-pedantic", "targets/lfj8/lfj8_h03_phase_clock.c",
+            "targets/lfj8/test_lfj8_h03_phase_clock.c", "-o", str(phase_clock_check),
+        ])
+        run("Очередность, пропуск и давность тактов H03", [str(phase_clock_check)])
         run("Тесты модели", [*python, "-m", "unittest", "discover", "-s", "tests", "-v"])
         integrated = [*python, "-m", "model.run_integrated", "--cc", resolved]
         if bosch is not None:

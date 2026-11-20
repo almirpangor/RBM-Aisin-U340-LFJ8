@@ -18,6 +18,9 @@ typedef struct {
     uint16_t last_can_tick;
     uint16_t max_age_ticks;
     uint16_t max_poll_gap_us;
+    uint8_t clock_running;
+    /* Sticky until the feed owner invalidates any retained engine values. */
+    uint8_t discontinuity;
     Lfj8H03EngineRxPhase phase;
 } Lfj8H03EngineRx;
 

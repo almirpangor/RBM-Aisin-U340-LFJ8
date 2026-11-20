@@ -16,6 +16,9 @@ typedef struct {
     uint8_t history[CHERY_DTC_BITMAP_BYTES];
     uint8_t current[CHERY_DTC_BITMAP_BYTES];
     uint8_t snapshot_index[CHERY_DTC_SNAPSHOT_COUNT];
+    /* Set on accepted 14 FF 00. The single monitor owner consumes this
+     * event and resets the debouncers before running another sample. */
+    bool clear_pending;
 } CheryDtcState;
 
 typedef struct {

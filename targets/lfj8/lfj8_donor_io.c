@@ -627,3 +627,26 @@ Lfj8CanTxStatus lfj8_h03_can0_torque_status(const Lfj8RegisterIo *io, uint8_t tx
     io->leave(io->context, saved_state);
     return result;
 }
+
+int lfj8_h03_can0_slot13_timestamp(const Lfj8RegisterIo *io, uint16_t *timestamp)
+{
+    const uint32_t saved_state = io->enter(io->context);
+    const int available = torque_slot_available(io) == LFJ8_CAN_READY;
+    *timestamp = available ? io->read16(io->context, LFJ8_CAN0_TSTMP) : 0u;
+    io->leave(io->context, saved_state);
+    return available;
+}
+
+Lfj8CanTxStatus lfj8_h03_can0_telemetry_status(const Lfj8RegisterIo *io,
+                                            uint16_t id, uint8_t cancel)
+{
+    if (id != LFJ8_CAN_1AE && id != LFJ8_CAN_300) {
+        return LFJ8_CAN_TX_UNAVAILABLE;
+    }
+    uint16_t finished_at;
+    const uint32_t saved_state = io->enter(io->context);
+    const Lfj8CanTxStatus result = h03_can0_tx13_polling(io) ?
+        slot13_status(io, id, cancel, &finished_at) : LFJ8_CAN_TX_UNAVAILABLE;
+    io->leave(io->context, saved_state);
+    return result;
+}

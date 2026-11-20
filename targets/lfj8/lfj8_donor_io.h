@@ -139,6 +139,13 @@ Lfj8CanResult lfj8_h03_can0_torque_submit(const Lfj8RegisterIo *io, uint8_t tx13
 Lfj8CanTxStatus lfj8_h03_can0_torque_status(const Lfj8RegisterIo *io, uint8_t tx13_owned,
                                          uint8_t cancel, uint16_t *finished_at);
 
+/* For one exclusive H03 broker which has blocked the OEM writer. Read the
+ * timestamp only while the slot IRQ is masked and the frame format standard.
+ * Poll telemetry completion only for a submission the broker owns. */
+int lfj8_h03_can0_slot13_timestamp(const Lfj8RegisterIo *io, uint16_t *timestamp);
+Lfj8CanTxStatus lfj8_h03_can0_telemetry_status(const Lfj8RegisterIo *io,
+                                            uint16_t id, uint8_t cancel);
+
 /* Poll a caller-owned 32176 FullCAN slot (0..13) configured to receive standard data frames.
  * The hardware timestamp stays in the CAN counter's 16-bit clock domain.
  * A lost message or a receive during the copy invalidates the copy. */

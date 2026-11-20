@@ -11,6 +11,8 @@ static void reset_rx(Lfj8H03EngineRx *rx)
     rx->last_clock_advance_us = 0u;
     rx->last_can_tick = 0u;
     rx->time_ticks = 0u;
+    rx->clock_running = 0u;
+    rx->discontinuity = 1u;
 }
 
 int lfj8_h03_engine_rx_init(Lfj8H03EngineRx *rx, uint16_t max_age_ticks,
@@ -124,6 +126,7 @@ static unsigned poll_rx(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
     }
     if (delta != 0u) {
         rx->last_clock_advance_us = now_us;
+        rx->clock_running = 1u;
     }
     rx->last_can_tick = tick;
     rx->time_ticks += delta;
