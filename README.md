@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:56:05+00:00**. Изменение № **435**.
+Обновлено UTC: **2026-11-20T18:56:53+00:00**. Изменение № **436**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -32,7 +32,7 @@
 | H03-05 — SLT, силовые выходы и реакция на отказ | На проверке | Codex H03-05 CAN revoke and output inhibit \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/h03-05-can-revoke-bindings-01a1f99f | 2026-11-20T18:54:35+00:00 | Результат опубликован поверх CAN-03 и REL-02. Отзыв CAN, запрет выходов и девять привязок полей RAM подтверждены в M32R. В компоновке остались rbm_h03_application_binding и rbm_h03_sensor_config. В отчёте есть результаты и условия для итоговой линковки, PCM Flash и стенда. / commit df043312dba7646d04e59b21a984bc411da20029 |
 | IO-01 — Два дополнительных реле | Отложена владельцем | — | — | — | — |
 | VSS-01 — Точный расчёт VSS и скорость по CAN | На проверке | Чат CAN — остановка и первый фронт S51 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/vss01-standstill-guard-1120-c7e4 | 2026-11-20T18:44:13+00:00 | Устранён ложный ноль скорости 0x1AE после первого фронта S51. Регрессия на ПК и M32R, общий ПК 37/113, M32R 18 компонентных, 6 проверок по адресам и Bosch PASS_OFFLINE_ONLY. Отчёт verification/project-audit/vss01-standstill-guard.md. Физический источник подтверждения остановки и калибровка S51 открыты. / commit 79fc4e071100a977eda10a412a23ac682d5be672 |
-| VSS-02 — Кинематика и параметры реальной скорости | Свободна для продолжения | Предыдущий: Codex — общий снимок S51/S83/ATF \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss02-common-sensor-mwp5rm2ofhaxjfi9dss | 2026-11-20T18:39:34+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit 5cfe81106f0401ebbd4cabb2fce1b8d00929aead |
+| VSS-02 — Кинематика и параметры реальной скорости | Выполняется | Codex VSS-02 H03 sensor binding \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/vss02-h03-sensor-config-01a1f99f | 2026-11-20T18:56:53+00:00 | Проверяю происхождение настроек S51/S83/ATF на точном H03 и повторяю анализ компоновки после H03-04 и H03-05. |
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
 | MODE-01 — Логика шести положений и кнопок | Свободна для продолжения | Предыдущий: Codex MODE-01 — восстановление кнопок после отказа входа \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode01-button-rebaseline-01a1f9c7 | 2026-11-20T17:43:09+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 6bbc342ce3f6a2a60a9b58f23044e7a6a02fbd31 |
 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | На проверке | Codex MODE-02 — квалификация сырых входов кнопок \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode02-p1data-capture-01a1f9c7 | 2026-11-20T18:44:53+00:00 | Передаю декодер кнопок и исправление карты P1DATA. 512 сочетаний ПК/M32R, 256 байтов штатного H03 и обе проекции, 37 шагов ПК/113 Python, 18 групп M32R и 6 проверок размещённого кода прошли. Отчёт verification/project-audit/mode02-h03-button-capture.md. Остались физическая карта и OD, вызов из foreground H03-03 и прохождение заявки через гидравлику. / commit 3e74c38af4a0084b334b2bc1a8b7b8a9dc35507d |
@@ -58,7 +58,7 @@
 | [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#h03-03) | На проверке | Определить семь перечисленных привязок, единственные состояния, initialize/take_toyota/service_phase и исходные часы/снимки; объединить нативные обёртки. | Чат запуска H03 |
 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#can-03) | На проверке | Связать готового CAN owner и RX target с общим временем/запуском; установить setup/TX gate, проверить потерю/возврат допуска. | Чат CAN |
 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#h03-05) | На проверке | Подключить готовый inhibit в application_binding; квалифицировать полярность и ток–давление отдельно от трасс регистров. | Чат силовых выходов |
-| [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#vss-02) | Свободна для продолжения | Связать sensor_target/config с H03-03, установить подтверждённые частоты/тайм-ауты и критерий остановки. | Чат датчиков |
+| [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#vss-02) | Выполняется | Связать sensor_target/config с H03-03, установить подтверждённые частоты/тайм-ауты и критерий остановки. | Чат датчиков |
 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#toy-04) | На проверке | Замкнуть оставшиеся стадии полного цикла, R и ручные запросы; затем подключить SLU SECONDARY и назначить одного владельца таймера в TOY-06. | Чат переключений Toyota |
 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#mode-02) | На проверке | Связать физические AN2/Tiptronic/OD и независимые разрешения с общей заявкой; продолжить независимые входы TOY-03. | Чат селектора и кнопок |
 | [DTC-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#dtc-02) | На проверке | Привязать единственный DTC target и IRQ pointer, время/поколение; включить проверенные нижние обёртки в окончательный образ. | Чат диагностики |
@@ -127,7 +127,7 @@
 </details>
 
 <details>
-<summary>VSS-02 — Кинематика и параметры реальной скорости: Свободна для продолжения</summary>
+<summary>VSS-02 — Кинематика и параметры реальной скорости: Выполняется</summary>
 
 **Сделано.** Общий снимок S51/S83/ATF и эпоха таймера проверены при потере, остановке, wrap и сбросе. Физические частоты и кинематика ещё не измерены.
 
@@ -137,7 +137,7 @@
 
 **Рекомендуемый чат.** Чат датчиков — 01a1f9a8-7b61-7763-adaa-0e3e11d1dbf4.
 
-**Исполнитель сейчас.** Задача не занята.
+**Сейчас выполняет.** Codex VSS-02 H03 sensor binding — codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51.
 
 **Критерий приёмки.** Скорость совпадает с эталоном в согласованном диапазоне, потеря импульсов отличается от остановки.
 
@@ -731,10 +731,19 @@
 - targets/lfj8/lfj8_donor_io.h
 - verification/project-audit/vss01-standstill-guard.md
 
+### VSS-02
+
+Чат: Codex VSS-02 H03 sensor binding. Claim ID: aca1f05a2e5746a0b71ab9ad1476a5ba.
+
+- targets/lfj8/check_h03_sensor_config.py
+- verification/project-audit/2026-11-20-h03-sensor-config.json
+- verification/project-audit/vss02-h03-sensor-config.md
+
 ## Последние события
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:56:53+00:00 | VSS-02 | claim | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:56:05+00:00 | CAN-02 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T18:55:44+00:00 | MODE-03 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T18:55:09+00:00 | H03-04 | complete | codex-integration-01a1f76d-20261120 |
@@ -764,4 +773,3 @@
 | 2026-11-20T18:40:34+00:00 | H03-03 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T18:40:13+00:00 | CAN-04 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T18:40:01+00:00 | MODE-02 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
-| 2026-11-20T18:39:50+00:00 | H03-04 | claim | codex-integration-01a1f76d-20261120 |

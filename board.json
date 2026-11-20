@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 435,
+  "sequence": 436,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -460,21 +460,20 @@
       "result": "84380128b8db2e0a6b24b297dd40aa020598e3ce"
     },
     "VSS-02": {
-      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
-      "label": "Codex — общий снимок S51/S83/ATF",
-      "branch": "codex/vss02-common-sensor-mwp5rm2ofhaxjfi9dss",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex VSS-02 H03 sensor binding",
+      "branch": "codex/vss02-h03-sensor-config-01a1f99f",
       "files": [
-        "targets/lfj8/lfj8_h03_sensor_feed.c",
-        "targets/lfj8/lfj8_h03_sensor_feed.h",
-        "targets/lfj8/test_lfj8_h03_sensor_feed.c",
-        "verification/project-audit/vss02-common-sensor.md"
+        "targets/lfj8/check_h03_sensor_config.py",
+        "verification/project-audit/2026-11-20-h03-sensor-config.json",
+        "verification/project-audit/vss02-h03-sensor-config.md"
       ],
-      "stage": "done",
-      "claim_id": "da83556f0097488ba39c6ee642e4a002",
-      "claimed_at": "2026-11-20T18:01:39+00:00",
-      "updated_at": "2026-11-20T18:39:34+00:00",
-      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
-      "result": "5cfe81106f0401ebbd4cabb2fce1b8d00929aead"
+      "stage": "in_progress",
+      "claim_id": "aca1f05a2e5746a0b71ab9ad1476a5ba",
+      "claimed_at": "2026-11-20T18:56:53+00:00",
+      "updated_at": "2026-11-20T18:56:53+00:00",
+      "note": "Проверяю происхождение настроек S51/S83/ATF на точном H03 и повторяю анализ компоновки после H03-04 и H03-05.",
+      "result": null
     },
     "TOY-01": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -4052,9 +4051,17 @@
       "action": "heartbeat",
       "claim_id": "a9db7d810e7b460fb52e5042ad8e2450",
       "at": "2026-11-20T18:56:05+00:00"
+    },
+    {
+      "operation_id": "ef311e0c402b42c896f69d3ec50fa117",
+      "task": "VSS-02",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "aca1f05a2e5746a0b71ab9ad1476a5ba",
+      "at": "2026-11-20T18:56:53+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:56:05+00:00",
+  "updated_at": "2026-11-20T18:56:53+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
