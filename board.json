@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 86,
+  "sequence": 87,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -299,12 +299,12 @@
         "tests/test_u340.py",
         "verification/project-audit/mode01-shift-conflict.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
       "claimed_at": "2026-11-20T16:11:44+00:00",
-      "updated_at": "2026-11-20T16:13:40+00:00",
-      "note": "Reproduced staggered plus/minus overlap on the original C controller and Python model. Fixed both, including no delayed request on release. Running PC and M32R checks.",
-      "result": null
+      "updated_at": "2026-11-20T16:14:42+00:00",
+      "note": "Staggered Tiptronic plus/minus overlap now blocks manual requests. Original C/Python regressions reproduced. PC 33 steps/66 tests plus dedicated C regression PASS; M32R build, 17 components and dedicated regression PASS. Evidence verification/project-audit/mode01-shift-conflict.md. Integrator to record the audit; physical input and hydraulic execution remain open.",
+      "result": "ed33ea93653f7bcbc2c6f13736fe1424335085e6"
     },
     "TOY-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -1026,9 +1026,17 @@
       "action": "heartbeat",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "at": "2026-11-20T16:14:25+00:00"
+    },
+    {
+      "operation_id": "c6c4512877d5487288c0307de7b5c412",
+      "task": "MODE-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
+      "at": "2026-11-20T16:14:42+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:14:25+00:00",
+  "updated_at": "2026-11-20T16:14:42+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
