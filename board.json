@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 150,
+  "sequence": 151,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -188,8 +188,8 @@
       "stage": "in_progress",
       "claim_id": "8bc1c70042a844479c03009561a5e586",
       "claimed_at": "2026-11-20T16:28:26+00:00",
-      "updated_at": "2026-11-20T16:28:26+00:00",
-      "note": "Add capture-time admission and expiry to the 1AE operand receiver. Verify delayed and out-of-order frames do not renew a lease or rearm after revocation. Existing immediate receiver remains supported.",
+      "updated_at": "2026-11-20T16:30:41+00:00",
+      "note": "Direct receiver tests and all 65536 LFJ8 to Bosch operand pairs pass. Queued frames use capture time; expiry and withdrawal barriers covered. Running PC and Bosch checks.",
       "result": null
     },
     "DTC-03": {
@@ -1687,9 +1687,17 @@
       "action": "review",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "at": "2026-11-20T16:30:29+00:00"
+    },
+    {
+      "operation_id": "028f1bd1ee4148a79f2685678b4c3afa",
+      "task": "CAN-05",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "8bc1c70042a844479c03009561a5e586",
+      "at": "2026-11-20T16:30:41+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:30:29+00:00",
+  "updated_at": "2026-11-20T16:30:41+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
