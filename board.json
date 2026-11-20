@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 597,
+  "sequence": 598,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -17,11 +17,11 @@
         "verification/project-audit/2026-11-21-coordination-review.json",
         "verification/project-audit/review-continuations/"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "306818fa765b49debcd6e61e0420d8f9",
       "claimed_at": "2026-11-20T20:16:50+00:00",
-      "updated_at": "2026-11-20T20:27:34+00:00",
-      "note": "Review освобождает продолжение; сданные SHA сохранены отдельно. 129 Python-проверок, включая 29 проверок координации; перенос без потери чужих записей.",
+      "updated_at": "2026-11-20T20:27:53+00:00",
+      "note": "Исправление координации включено в main: review не удерживает задачу, новая работа не теряет сданные результаты.",
       "result": "20bf48d15b27608a39876bc96aacae68c705863a"
     },
     "DTC-02": {
@@ -5380,9 +5380,41 @@
         "note": "Review освобождает продолжение; сданные SHA сохранены отдельно. 129 Python-проверок, включая 29 проверок координации; перенос без потери чужих записей.",
         "result": "20bf48d15b27608a39876bc96aacae68c705863a"
       }
+    },
+    {
+      "operation_id": "review-release-complete-20261121-20bf48d",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "complete",
+      "claim_id": "306818fa765b49debcd6e61e0420d8f9",
+      "at": "2026-11-20T20:27:53+00:00",
+      "record": {
+        "owner": "codex-integration-01a1f76d-20261120",
+        "label": "Основной чат — свободное продолжение review",
+        "branch": "codex/integration-01a1f76d-20261120",
+        "files": [
+          "AGENTS.md",
+          "README.md",
+          "data/project-tasks.json",
+          "docs/multi-chat.md",
+          "docs/project-map.md",
+          "tests/test_task_coordination.py",
+          "tools/task_coordination.py",
+          "verification/project-audit/2026-11-21-coordination-review.json",
+          "verification/project-audit/review-continuations/"
+        ],
+        "stage": "done",
+        "claim_id": "306818fa765b49debcd6e61e0420d8f9",
+        "claimed_at": "2026-11-20T20:16:50+00:00",
+        "updated_at": "2026-11-20T20:27:53+00:00",
+        "note": "Исправление координации включено в main: review не удерживает задачу, новая работа не теряет сданные результаты.",
+        "result": "20bf48d15b27608a39876bc96aacae68c705863a",
+        "task": "ORG-01",
+        "submitted_at": "2026-11-20T20:27:34+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:27:34+00:00",
+  "updated_at": "2026-11-20T20:27:53+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
@@ -6356,11 +6388,11 @@
         "verification/project-audit/2026-11-21-coordination-review.json",
         "verification/project-audit/review-continuations/"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "306818fa765b49debcd6e61e0420d8f9",
       "claimed_at": "2026-11-20T20:16:50+00:00",
-      "updated_at": "2026-11-20T20:27:34+00:00",
-      "note": "Review освобождает продолжение; сданные SHA сохранены отдельно. 129 Python-проверок, включая 29 проверок координации; перенос без потери чужих записей.",
+      "updated_at": "2026-11-20T20:27:53+00:00",
+      "note": "Исправление координации включено в main: review не удерживает задачу, новая работа не теряет сданные результаты.",
       "result": "20bf48d15b27608a39876bc96aacae68c705863a",
       "task": "ORG-01",
       "submitted_at": "2026-11-20T20:27:34+00:00"
