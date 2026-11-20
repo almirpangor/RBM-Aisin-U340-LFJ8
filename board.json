@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 255,
+  "sequence": 256,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -383,8 +383,8 @@
       "stage": "in_progress",
       "claim_id": "57db4a43b5754a71a19f9ab77e4c69f4",
       "claimed_at": "2026-11-20T17:00:49+00:00",
-      "updated_at": "2026-11-20T17:00:49+00:00",
-      "note": "Делаю доступный для модели Chery снимок того же task 2 с признаком запрета по CAN. Проверю независимые поля, timeout и BusOff на ПК и M32R.",
+      "updated_at": "2026-11-20T17:02:27+00:00",
+      "note": "Выдача общего RX-снимка реализована. Проверяю на ПК и M32R независимые байты, один опрос, границу давности, BusOff и повторный запуск.",
       "result": null
     },
     "VSS-01": {
@@ -2607,9 +2607,17 @@
       "action": "claim",
       "claim_id": "7dfd6790e36a47d2a1e356338ffe82e8",
       "at": "2026-11-20T17:01:37+00:00"
+    },
+    {
+      "operation_id": "db6955c1a7ee4e20a1c8234ce7e8760b",
+      "task": "DTC-01",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "heartbeat",
+      "claim_id": "57db4a43b5754a71a19f9ab77e4c69f4",
+      "at": "2026-11-20T17:02:27+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:01:37+00:00",
+  "updated_at": "2026-11-20T17:02:27+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
