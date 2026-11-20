@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 746,
+  "sequence": 747,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -121,12 +121,12 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/h03-03-platform-layout.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "96f93fae25924717a50bf354ff863f44",
       "claimed_at": "2026-11-20T22:39:35+00:00",
-      "updated_at": "2026-11-20T22:41:07+00:00",
-      "note": "Общий сборщик удерживает оба callback и 356 байт нового модуля, защищённый H03 размещается в модели. Проверяю неподменённый typed RAM и занятость CAN-03.",
-      "result": null,
+      "updated_at": "2026-11-20T22:48:16+00:00",
+      "note": "Общий компоновщик включает H03 platform и умеет связать 16 байт из typed RAM. M32R прошёл по кандидатным адресам Flash и RAM, 22 native, 8 components, 6 размещённых групп и 44 H03-теста. Поле RAM ещё не добавлено в инвентарь, файл удерживает CAN-03. Рабочая компоновка ожидает остальные поставщики и подтверждённый профиль.",
+      "result": "10acac98126b170bc836cbe897a2685497e833c5",
       "based_on_reviews": [
         "43d58327bd434219b328d74d652d3be9",
         "8b0ce759514b4c68b04d002b192f50ff"
@@ -9815,9 +9815,37 @@
           "cda1c6bb3edf45bd993ee765cf29e055"
         ]
       }
+    },
+    {
+      "operation_id": "5f8556092f9f40479a040aea3109272e",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "96f93fae25924717a50bf354ff863f44",
+      "at": "2026-11-20T22:48:16+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex H03-03 — общая компоновка Toyota",
+        "branch": "codex/h03-03-platform-layout-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "tests/test_h03_layout.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-03-platform-layout.md"
+        ],
+        "stage": "review",
+        "claim_id": "96f93fae25924717a50bf354ff863f44",
+        "claimed_at": "2026-11-20T22:39:35+00:00",
+        "updated_at": "2026-11-20T22:48:16+00:00",
+        "note": "Общий компоновщик включает H03 platform и умеет связать 16 байт из typed RAM. M32R прошёл по кандидатным адресам Flash и RAM, 22 native, 8 components, 6 размещённых групп и 44 H03-теста. Поле RAM ещё не добавлено в инвентарь, файл удерживает CAN-03. Рабочая компоновка ожидает остальные поставщики и подтверждённый профиль.",
+        "result": "10acac98126b170bc836cbe897a2685497e833c5",
+        "based_on_reviews": [
+          "43d58327bd434219b328d74d652d3be9",
+          "8b0ce759514b4c68b04d002b192f50ff"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:48:03+00:00",
+  "updated_at": "2026-11-20T22:48:16+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -11658,6 +11686,28 @@
       ],
       "task": "H03-04",
       "submitted_at": "2026-11-20T22:47:20+00:00"
+    },
+    "96f93fae25924717a50bf354ff863f44": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex H03-03 — общая компоновка Toyota",
+      "branch": "codex/h03-03-platform-layout-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "tests/test_h03_layout.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/h03-03-platform-layout.md"
+      ],
+      "stage": "review",
+      "claim_id": "96f93fae25924717a50bf354ff863f44",
+      "claimed_at": "2026-11-20T22:39:35+00:00",
+      "updated_at": "2026-11-20T22:48:16+00:00",
+      "note": "Общий компоновщик включает H03 platform и умеет связать 16 байт из typed RAM. M32R прошёл по кандидатным адресам Flash и RAM, 22 native, 8 components, 6 размещённых групп и 44 H03-теста. Поле RAM ещё не добавлено в инвентарь, файл удерживает CAN-03. Рабочая компоновка ожидает остальные поставщики и подтверждённый профиль.",
+      "result": "10acac98126b170bc836cbe897a2685497e833c5",
+      "based_on_reviews": [
+        "43d58327bd434219b328d74d652d3be9",
+        "8b0ce759514b4c68b04d002b192f50ff"
+      ],
+      "task": "H03-03",
+      "submitted_at": "2026-11-20T22:48:16+00:00"
     }
   }
 }
