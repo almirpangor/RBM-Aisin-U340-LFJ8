@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 72,
+  "sequence": 73,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -280,6 +280,24 @@
       "claimed_at": "2026-11-20T16:09:14+00:00",
       "updated_at": "2026-11-20T16:09:14+00:00",
       "note": "Проверяю программное снятие текущего RB-запроса при отключении или изменении действующего профиля. Целевые калибровки не назначаю.",
+      "result": null
+    },
+    "MODE-01": {
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "label": "Codex MODE-01",
+      "branch": "codex/mode01-1120-c7e4",
+      "files": [
+        "controller/src/rbm_u340e.c",
+        "controller/tests/test_shift_buttons.c",
+        "model/u340.py",
+        "tests/test_u340.py",
+        "verification/project-audit/mode01-shift-conflict.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
+      "claimed_at": "2026-11-20T16:11:44+00:00",
+      "updated_at": "2026-11-20T16:11:44+00:00",
+      "note": "Reproduce and fix Tiptronic accepting an opposite shift while the other key is still held. Align C and Python models; leave MODE-02 hardware input and its files to their owner.",
       "result": null
     }
   },
@@ -859,9 +877,17 @@
       "action": "review",
       "claim_id": "2b87aa66de244cf9b30a828391ad9001",
       "at": "2026-11-20T16:10:33+00:00"
+    },
+    {
+      "operation_id": "df98d152b3f34e8da3194c1df4821f6d",
+      "task": "MODE-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "claim",
+      "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
+      "at": "2026-11-20T16:11:44+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:10:33+00:00",
+  "updated_at": "2026-11-20T16:11:44+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
