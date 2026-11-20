@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:43:29+00:00**. Изменение № **295**.
+Обновлено UTC: **2026-11-20T17:43:49+00:00**. Изменение № **296**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -19,7 +19,7 @@
 | TOY-05 — Обучение и сохранение адаптаций | Работа завершена | Codex — восстановление адаптаций Toyota \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy05-safe-restore-32e6ac79 | 2026-11-20T17:42:29+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 8d6a6f1f62d70c827531f672c98d309e708df595 |
 | TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — давление SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-pressure-fea1b366 | 2026-11-20T17:09:39+00:00 | 05DC5E → 05DCE8 → 055C5E: R3 2520 сочетаний, 5 шагов, 6 отказов PASS. ПК 35/71, M32R 20 сценариев и 3 отказа PASS. Прежняя раскладка переполняется; модель с переносом часов фаз: 336/300 Б, 17 компонентов PASS. Отчёт verification/project-audit/toy06-slu-pressure.md. Планировщик, реальная компоновка и SLU открыты. / commit ff3f49cf2fe324d9ee4fe253cd621f496af7459f |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Работа завершена | Codex CAN-01 FullCAN coherence \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-rx-coherence-1120-c7e4 | 2026-11-20T17:40:45+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 6820992a15300275c3dd9c98398151e661a42925 |
-| CAN-02 — Общий диспетчер CAN13 | На проверке | Codex CAN-02 telemetry submission \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can02-telemetry-submit-1120-c7e4 | 2026-11-20T17:10:59+00:00 | На main b2ca79d проверены совместно точные коммиты CAN-01…05, затем добавлены DTC-02 f38da53 и H03-03 7888441. Без конфликтов. В обоих вариантах ПК 35 шагов/71 тест, M32R 17 компонентов. CAN0 16 сценариев, 0x1AE 65536 пар, Bosch PASS_OFFLINE_ONLY. В расширенной комбинации 18 сравнений BasicCAN и 22 сценария ожидания H03, запас ROM модели 1176/1272 байта. Отзыв TX13 при BusOff из текущего review принят моделью. Рабочая привязка IRQ, RAM, Virtual Flash и стенд открыты. / commit a45c2f67a80a5f7e0d939816cfb12551fd6edd96 |
+| CAN-02 — Общий диспетчер CAN13 | Работа завершена | Codex CAN-02 telemetry submission \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can02-telemetry-submit-1120-c7e4 | 2026-11-20T17:43:49+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit a45c2f67a80a5f7e0d939816cfb12551fd6edd96 |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Работа завершена | Codex CAN-03 reset generation \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can03-epoch-1120-c7e4 | 2026-11-20T17:37:21+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 6fc5a51975cd6bbbdf5bc4985d5d61b811435b6b |
 | CAN-04 — Запрос снижения момента по RB | Работа завершена | Codex CAN-04 TX loss \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can04-tx-loss-1120-c7e4 | 2026-11-20T17:42:49+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit e02095c6b8d294dacd71db21ea36f970019d0790 |
 | CAN-05 — Полнота штатного обмена Chery | Работа завершена | Codex CAN-05 RX age \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can05-rx-age-1120-c7e4 | 2026-11-20T17:39:43+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 82947a42cfb33ef5350af1ce98e39055ba6a1508 |
@@ -54,16 +54,6 @@
 
 - targets/bosch/replay_e4m3_torque.py
 - verification/project-audit/aud01-pinned-replay.md
-
-### CAN-02
-
-Чат: Codex CAN-02 telemetry submission. Claim ID: 90cda8d0e88e47969f50d8225f329437.
-
-- targets/lfj8/lfj8_chery_tx.c
-- targets/lfj8/lfj8_chery_tx.h
-- targets/lfj8/lfj8_h03_can13.c
-- targets/lfj8/test_lfj8_h03_can13.c
-- verification/project-audit/can02-telemetry-submit.md
 
 ### DTC-01
 
@@ -188,6 +178,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:43:49+00:00 | CAN-02 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T17:43:29+00:00 | TOY-04 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T17:43:09+00:00 | MODE-01 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T17:42:49+00:00 | CAN-04 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
@@ -217,4 +208,3 @@
 | 2026-11-20T17:07:08+00:00 | DTC-02 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T17:06:35+00:00 | VSS-01 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:06:16+00:00 | DTC-01 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
-| 2026-11-20T17:05:57+00:00 | MODE-01 | review | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
