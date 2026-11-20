@@ -19,6 +19,10 @@ S05_ADAPTER = ["../pcm-s05/native/s05_chery.c"]
 DONOR_ADAPTER = ["lfj8_donor_io.c", "lfj8_chery_tx.c", "lfj8_selector_adc.c"]
 H03_ATF = "lfj8_h03_atf.c"
 H03_ATF_TEST = "test_lfj8_h03_atf.c"
+H03_ENGINE_RX = "lfj8_h03_engine_rx.c"
+H03_MMIO = "lfj8_h03_mmio.c"
+H03_GEAR = "lfj8_gear_observer.c"
+H03_GEAR_TEST = "test_lfj8_gear_observer.c"
 WARNINGS = ["-Wall", "-Wextra", "-Werror", "-Wconversion", "-Wsign-conversion"]
 FREESTANDING = [
     "-Os", "-std=c99", "-ffreestanding", "-fno-builtin", "-fno-common",
@@ -74,7 +78,7 @@ def publish(file, destination):
 def build_host(zig, work):
     output = work / "lfj8_host_check.exe"
     command(zig, "cc", "-std=c11", "-O2", *WARNINGS, "-o", output,
-            "host_check.c", *CORE, *DONOR_ADAPTER)
+            "host_check.c", *CORE, *DONOR_ADAPTER, H03_ENGINE_RX)
     result = command(output)
     print(result)
     atf_test = work / "lfj8_h03_atf_check.exe"
@@ -82,10 +86,15 @@ def build_host(zig, work):
             H03_ATF_TEST, H03_ATF, "lfj8_bridge.c")
     atf_result = command(atf_test)
     print(atf_result)
+    gear_test = work / "lfj8_h03_gear_check.exe"
+    command(zig, "cc", "-std=c11", "-O2", *WARNINGS, "-o", gear_test, H03_GEAR_TEST, H03_GEAR)
+    gear_result = command(gear_test)
+    print(gear_result)
     return output, {
         "compiler": f"Zig {command(zig, 'version')}",
         "host_test": result,
         "h03_atf_test": atf_result,
+        "h03_gear_test": gear_result,
     }
 
 
@@ -96,7 +105,7 @@ def build_embedded(compiler, work, architecture, sh_cpu, use_9e1c_base=False):
             raise ValueError(f"Expected M32R compiler. Detected {triple}")
         sources = CORE + DONOR_ADAPTER
         if use_9e1c_base:
-            sources.append(H03_ATF)
+            sources.extend((H03_ATF, H03_ENGINE_RX, H03_MMIO, H03_GEAR))
         target_flags = ["-m32r", "-mmodel=medium", "-msdata=none"]
         assembler_flags = ["-Wa,-EB"]
         output_name = "lfj8_9e1c_m32r.o" if use_9e1c_base else "lfj8_m32r.o"
@@ -167,7 +176,9 @@ def main():
     if args.base_9e1c and not args.m32r_cc:
         parser.error("--base-9e1c requires --m32r-cc")
 
-    sources = [*CORE, *DONOR_ADAPTER, H03_ATF, H03_ATF_TEST, "lfj8_h03_atf.h", "host_check.c", "build.py",
+    sources = [*CORE, *DONOR_ADAPTER, H03_ATF, H03_ATF_TEST, H03_ENGINE_RX, H03_MMIO, H03_GEAR, H03_GEAR_TEST,
+               "lfj8_h03_atf.h", "lfj8_h03_engine_rx.h", "lfj8_h03_mmio.h", "lfj8_gear_observer.h",
+               "host_check.c", "build.py",
                "lfj8_bridge.h", "lfj8_donor_io.h", "lfj8_chery_tx.h", "lfj8_selector_adc.h",
                "ta2005_chery_inputs.h"]
     manifest = {"sources": {name: summary(ROOT / name) for name in sources}, "artifacts": {}}

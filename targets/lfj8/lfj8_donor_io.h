@@ -27,6 +27,16 @@ typedef struct {
 
 typedef Lfj8RawCapture Lfj8RawVss;
 
+typedef struct {
+    Lfj8CaptureSnapshot vss;
+    Lfj8CaptureSnapshot nt;
+    uint32_t now_tml0;
+    uint32_t vss_at_tml0;
+    uint32_t nt_at_tml0;
+    uint32_t nt_edge_tml1;
+    uint16_t nt_alignment_error_ticks;
+} Lfj8CapturePair;
+
 typedef enum {
     LFJ8_CAN_SUBMITTED,
     LFJ8_CAN_SLOT_BUSY,
@@ -90,6 +100,13 @@ void lfj8_9e1c_raw_nt_after_capture_store(volatile Lfj8RawCapture *nt,
 Lfj8CaptureSnapshot lfj8_9e1c_raw_nt_snapshot(volatile Lfj8RawCapture *nt,
                                             const Lfj8RegisterIo *io, uint32_t timeout_ticks);
 
+/* Use on H03 where TML0 and TML1 run from the same clock bus. Convert both
+ * edge times to the TML0 epoch and reject an excessively wide counter read. */
+int lfj8_h03_capture_pair(volatile Lfj8RawVss *vss, volatile Lfj8RawCapture *nt,
+                          const Lfj8RegisterIo *io, uint32_t vss_timeout_ticks,
+                          uint32_t nt_timeout_ticks, uint16_t max_read_span_ticks,
+                          Lfj8CapturePair *pair);
+
 /* Submission only. The owner checks completion separately. */
 Lfj8CanResult lfj8_can0_slot13_submit(const Lfj8RegisterIo *io, uint8_t slot13_owned,
                                      uint16_t id, const uint8_t payload[8]);
@@ -108,5 +125,9 @@ enum {
 /* Run after stock CAN initialization or reinitialization in approved H03,
  * with exclusive polling ownership of both confirmed idle slots. */
 int lfj8_h03_can0_arm_engine_rx(const Lfj8RegisterIo *io, uint8_t slots_owned);
+
+/* Read the 16-bit CAN0 clock when the H03 owner is operational (state 6 or 7)
+ * and the controller runs in the one-count-per-bit mode. */
+int lfj8_h03_can0_read_timestamp(const Lfj8RegisterIo *io, uint16_t *timestamp);
 
 #endif

@@ -16,11 +16,13 @@
 #define LFJ8_CAN0_CNT UINT32_C(0x801000)
 #define LFJ8_CAN0_STAT UINT32_C(0x801002)
 #define LFJ8_CAN0_EXTID UINT32_C(0x801004)
+#define LFJ8_CAN0_TSTMP UINT32_C(0x801008)
 #define LFJ8_CAN0_EXTID_IDE13 UINT16_C(0x0004)
 #define LFJ8_CAN0_SLIMK UINT32_C(0x801010)
 #define LFJ8_CAN0_GMSKS0 UINT32_C(0x801028)
 #define LFJ8_CAN0_GMSKS1 UINT32_C(0x801029)
 #define LFJ8_CAN0_ENGINE_SLOT_BITS UINT16_C(0x0018)
+#define LFJ8_H03_CAN0_OEM_STATE UINT32_C(0x806AE6)
 #define LFJ8_CAN0_SLOT_CNT UINT32_C(0x801050)
 #define LFJ8_CAN0_SLOT_DATA UINT32_C(0x801100)
 #define LFJ8_CAN0_SLOT13_CNT UINT32_C(0x80105D)
@@ -30,6 +32,8 @@
 #define LFJ8_CAN0_SLOT13_DATA UINT32_C(0x8011D6)
 
 enum {
+    CAN_CNT_TSR = 0x0400,
+    CAN_CNT_TSP = 0x0300,
     CAN_CNT_FRST = 0x0010,
     CAN_CNT_LBM = 0x0002,
     CAN_CNT_RST = 0x0001,
@@ -102,13 +106,10 @@ static void raw_capture_edge(volatile Lfj8RawCapture *capture, uint32_t captured
     capture->primed = 1u;
 }
 
-static Lfj8CaptureSnapshot raw_capture_snapshot(volatile Lfj8RawCapture *capture,
-                                                const Lfj8RegisterIo *io, uint32_t timer_address,
-                                                uint32_t timeout_ticks)
+static Lfj8CaptureSnapshot raw_capture_at(volatile Lfj8RawCapture *capture,
+                                         uint32_t now, uint32_t timeout_ticks)
 {
     Lfj8CaptureSnapshot snapshot = {0u, 1u, LFJ8_VSS_UNAVAILABLE};
-    const uint32_t saved_state = io->enter(io->context);
-    const uint32_t now = io->read32(io->context, timer_address);
 
     if (capture->primed != 0u) {
         if (timeout_ticks == 0u || now - capture->last_edge > timeout_ticks) {
@@ -118,6 +119,16 @@ static Lfj8CaptureSnapshot raw_capture_snapshot(volatile Lfj8RawCapture *capture
             snapshot.state = LFJ8_VSS_VALID;
         }
     }
+    return snapshot;
+}
+
+static Lfj8CaptureSnapshot raw_capture_snapshot(volatile Lfj8RawCapture *capture,
+                                                const Lfj8RegisterIo *io, uint32_t timer_address,
+                                                uint32_t timeout_ticks)
+{
+    const uint32_t saved_state = io->enter(io->context);
+    const Lfj8CaptureSnapshot snapshot =
+        raw_capture_at(capture, io->read32(io->context, timer_address), timeout_ticks);
     io->leave(io->context, saved_state);
     return snapshot;
 }
@@ -179,6 +190,43 @@ Lfj8CaptureSnapshot lfj8_9e1c_raw_nt_snapshot(volatile Lfj8RawCapture *nt,
     return raw_capture_snapshot(nt, io, LFJ8_9E1C_NT_TIMER_NOW, timeout_ticks);
 }
 
+int lfj8_h03_capture_pair(volatile Lfj8RawVss *vss, volatile Lfj8RawCapture *nt,
+                          const Lfj8RegisterIo *io, uint32_t vss_timeout_ticks,
+                          uint32_t nt_timeout_ticks, uint16_t max_read_span_ticks,
+                          Lfj8CapturePair *pair)
+{
+    pair->vss = (Lfj8CaptureSnapshot){0u, 1u, LFJ8_VSS_UNAVAILABLE};
+    pair->nt = (Lfj8CaptureSnapshot){0u, 1u, LFJ8_VSS_UNAVAILABLE};
+    pair->now_tml0 = 0u;
+    pair->vss_at_tml0 = 0u;
+    pair->nt_at_tml0 = 0u;
+    pair->nt_edge_tml1 = 0u;
+    pair->nt_alignment_error_ticks = 0u;
+
+    const uint32_t saved = io->enter(io->context);
+    const uint32_t before = io->read32(io->context, LFJ8_VSS_TIMER_NOW);
+    const uint32_t nt_now = io->read32(io->context, LFJ8_9E1C_NT_TIMER_NOW);
+    const uint32_t after = io->read32(io->context, LFJ8_VSS_TIMER_NOW);
+    const uint32_t span = after - before;
+    const int coherent = span <= max_read_span_ticks;
+    pair->now_tml0 = after;
+    if (coherent) {
+        pair->now_tml0 = before + span / 2u;
+        pair->vss = raw_capture_at(vss, pair->now_tml0, vss_timeout_ticks);
+        pair->nt = raw_capture_at(nt, nt_now, nt_timeout_ticks);
+        if (pair->vss.state == LFJ8_VSS_VALID) {
+            pair->vss_at_tml0 = vss->last_edge;
+        }
+        if (pair->nt.state == LFJ8_VSS_VALID) {
+            pair->nt_edge_tml1 = nt->last_edge;
+            pair->nt_at_tml0 = pair->now_tml0 - (nt_now - pair->nt_edge_tml1);
+            pair->nt_alignment_error_ticks = (uint16_t)((span + 1u) / 2u);
+        }
+    }
+    io->leave(io->context, saved);
+    return coherent;
+}
+
 static uint8_t can0_available(const Lfj8RegisterIo *io)
 {
     /* On the 32176, BasicCAN is confined to slots 14 and 15. */
@@ -187,6 +235,17 @@ static uint8_t can0_available(const Lfj8RegisterIo *io)
            (io->read16(io->context, LFJ8_CAN0_STAT) &
             (CAN_STAT_BOS | CAN_STAT_LBS | CAN_STAT_CRS)) == 0u &&
            (io->read8(io->context, LFJ8_CAN0_MODE) & 3u) == 0u;
+}
+
+int lfj8_h03_can0_read_timestamp(const Lfj8RegisterIo *io, uint16_t *timestamp)
+{
+    const uint32_t saved_state = io->enter(io->context);
+    const uint8_t state = io->read8(io->context, LFJ8_H03_CAN0_OEM_STATE);
+    const int running = (state == 6u || state == 7u) && can0_available(io) &&
+        (io->read16(io->context, LFJ8_CAN0_CNT) & (CAN_CNT_TSR | CAN_CNT_TSP)) == 0u;
+    *timestamp = running ? io->read16(io->context, LFJ8_CAN0_TSTMP) : 0u;
+    io->leave(io->context, saved_state);
+    return running;
 }
 
 static Lfj8CanRxResult receive8(const Lfj8RegisterIo *io, uint8_t slot, Lfj8CanData8 *frame)

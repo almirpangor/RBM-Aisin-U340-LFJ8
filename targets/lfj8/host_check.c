@@ -7,12 +7,14 @@
 #include <string.h>
 
 #include "lfj8_chery_tx.h"
+#include "lfj8_h03_engine_rx.h"
 #include "ta2005_chery_inputs.h"
 
 typedef struct {
     uint32_t freshness;
     uint32_t interval;
     uint32_t capture_timer;
+    uint32_t capture_timer_read_step;
     uint32_t captured_ticks;
     uint32_t nt_timer;
     uint32_t nt_captured_ticks;
@@ -23,8 +25,11 @@ typedef struct {
     uint16_t formats;
     uint16_t slot_interrupts;
     uint16_t rx_timestamp;
+    uint16_t coolant_timestamp;
+    uint16_t can_timestamp;
     uint8_t slot_control;
     uint8_t can_mode;
+    uint8_t stock_can_state;
     uint8_t last_sid[2];
     uint8_t last_dlc;
     uint8_t last_data[8];
@@ -36,6 +41,9 @@ typedef struct {
     uint8_t mask_sid[2];
     uint8_t coolant_control;
     uint8_t coolant_sid[2];
+    uint8_t coolant_after;
+    uint8_t coolant_dlc;
+    uint8_t coolant_data[8];
     uint8_t coolant_arm_fails;
     unsigned lock_count;
     unsigned lock_depth;
@@ -48,35 +56,38 @@ typedef struct {
 static uint32_t lock(void *context)
 {
     Fixture *f = context;
-    assert(f->lock_depth++ == 0u);
     ++f->lock_count;
-    return 42u;
+    return f->lock_depth++;
 }
 
 static void unlock(void *context, uint32_t state)
 {
     Fixture *f = context;
-    assert(state == 42u);
-    assert(f->lock_depth-- == 1u);
+    assert(f->lock_depth != 0u && --f->lock_depth == state);
 }
 
 static uint8_t read8(void *context, uint32_t address)
 {
     Fixture *f = context;
-    assert(f->lock_depth == 1u);
+    assert(f->lock_depth != 0u);
     switch (address) {
     case 0x80105Du: return f->slot_control;
     case 0x801018u: return f->can_mode;
+    case 0x806AE6u: return f->stock_can_state;
     case 0x801028u:
     case 0x801029u: return f->mask_sid[address - 0x801028u];
     case 0x80105Bu: return f->rx_control;
     case 0x80105Cu: return f->coolant_control;
     case 0x8011C0u:
     case 0x8011C1u: return f->coolant_sid[address - 0x8011C0u];
+    case 0x8011C5u: return f->coolant_dlc;
     case 0x8011B0u:
     case 0x8011B1u: return f->rx_sid[address - 0x8011B0u];
     case 0x8011B5u: return f->rx_dlc;
     default:
+        if (address >= 0x8011C6u && address <= 0x8011CDu) {
+            return f->coolant_data[address - 0x8011C6u];
+        }
         assert(address >= 0x8011B6u && address <= 0x8011BDu);
         return f->rx_data[address - 0x8011B6u];
     }
@@ -85,13 +96,15 @@ static uint8_t read8(void *context, uint32_t address)
 static uint16_t read16(void *context, uint32_t address)
 {
     Fixture *f = context;
-    assert(f->lock_depth == 1u);
+    assert(f->lock_depth != 0u);
     switch (address) {
     case 0x801000u: return f->can_control;
     case 0x801002u: return f->can_status;
     case 0x801004u: return f->formats;
+    case 0x801008u: return f->can_timestamp;
     case 0x801010u: return f->slot_interrupts;
     case 0x8011BEu: return f->rx_timestamp;
+    case 0x8011CEu: return f->coolant_timestamp;
     case 0x8061C4u:
         assert(f->use_9e1c_vss_map == 0u);
         return f->edge_count;
@@ -107,9 +120,13 @@ static uint16_t read16(void *context, uint32_t address)
 static uint32_t read32(void *context, uint32_t address)
 {
     Fixture *f = context;
-    assert(f->lock_depth == 1u);
+    assert(f->lock_depth != 0u);
     switch (address) {
-    case 0x8003E0u: return f->capture_timer;
+    case 0x8003E0u: {
+        const uint32_t now = f->capture_timer;
+        f->capture_timer += f->capture_timer_read_step;
+        return now;
+    }
     case 0x800FE0u: return f->nt_timer;
     case 0x8048BCu: return f->nt_captured_ticks;
     case 0x804EC4u: return f->freshness;
@@ -129,7 +146,7 @@ static uint32_t read32(void *context, uint32_t address)
 static void write8(void *context, uint32_t address, uint8_t value)
 {
     Fixture *f = context;
-    assert(f->lock_depth == 1u);
+    assert(f->lock_depth != 0u);
     ++f->writes;
     switch (address) {
     case 0x80105Bu:
@@ -137,8 +154,9 @@ static void write8(void *context, uint32_t address, uint8_t value)
         f->rx_control = value == 0x4eu ? (uint8_t)(f->rx_after | (f->rx_control & 4u)) : value;
         break;
     case 0x80105Cu:
-        assert(value == 0x40u || value == 0u);
-        f->coolant_control = f->coolant_arm_fails ? 0u : value;
+        assert(value == 0x4eu || value == 0x40u || value == 0u);
+        f->coolant_control = value == 0x4eu ? (uint8_t)(f->coolant_after | (f->coolant_control & 4u))
+                                          : (f->coolant_arm_fails ? 0u : value);
         break;
     case 0x8011B0u:
     case 0x8011B1u:
@@ -268,6 +286,107 @@ static void test_can_receive(void)
     assert(ta2005_chery_inputs_snapshot(&engine, &now, 100u, &snapshot) ==
            (TA2005_CHERY_SPEED | TA2005_CHERY_COOLANT));
     assert(snapshot.coolant_f9e9 == 137u);
+}
+
+static void test_engine_can_lifecycle(void)
+{
+    Fixture f = {
+        .mask_sid = {0x1fu, 0x3fu},
+        .rx_after = 0x40u,
+        .coolant_after = 0x40u,
+        .rx_dlc = 8u,
+        .coolant_dlc = 8u,
+        .rx_data = {0x12u, 0xc0u},
+        .coolant_data = {0xb4u},
+        .stock_can_state = 4u,
+        .can_timestamp = 0xfffau,
+    };
+    const Lfj8RegisterIo io = {&f, read8, read16, read32, write8, lock, unlock};
+    const unsigned both = TA2005_CHERY_SPEED | TA2005_CHERY_COOLANT;
+    const uint32_t start = UINT32_MAX - 30u;
+    Lfj8H03EngineRx rx;
+    Ta2005CherySnapshot sample;
+    assert(!lfj8_h03_engine_rx_init(&rx, 100u, 30001u));
+    assert(lfj8_h03_engine_rx_init(&rx, 100u, 1000u));
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, start, 1u, &sample) == 0u && f.writes == 0u);
+    f.stock_can_state = 6u;
+    f.can_status = 0x4000u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, start, 1u, &sample) == 0u && f.writes == 0u);
+    f.can_status = 0;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, start, 1u, &sample) == 0u);
+    assert(rx.phase == LFJ8_H03_RX_ACTIVE && f.rx_control == 0x40u && f.coolant_control == 0x40u);
+
+    f.rx_control = 0x41u;
+    f.rx_timestamp = 0xfffeu;
+    f.coolant_control = 0x41u;
+    f.coolant_timestamp = 1u;
+    f.can_timestamp = 4u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 20u, 1u, &sample) == both);
+    assert(sample.speed_fad8 == 9600u && sample.coolant_f9e9 == 137u && rx.time_ticks == 10u);
+
+    f.rx_control = 0x45u;
+    f.can_timestamp = 10u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 32u, 1u, &sample) == TA2005_CHERY_COOLANT);
+    assert(sample.speed_fad8 == UINT16_MAX && f.rx_control == 0x40u);
+    f.rx_control = 0x41u;
+    f.rx_timestamp = 14u;
+    f.can_timestamp = 14u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 40u, 1u, &sample) == both);
+
+    /* Catch a complete OEM recovery even if the foreground never saw BusOff. */
+    f.rx_control = 0;
+    f.coolant_control = 0;
+    f.can_timestamp = 0;
+    f.stock_can_state = 7u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 50u, 1u, &sample) == 0u);
+    assert(rx.phase == LFJ8_H03_RX_WAIT_FOR_OEM);
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 60u, 1u, &sample) == 0u);
+    assert(rx.phase == LFJ8_H03_RX_ACTIVE && f.rx_control == 0x40u && f.coolant_control == 0x40u);
+
+    /* A skipped poll can leave a frame older than the whole 16-bit clock.
+     * Its low stamp alone looks current, so require drainage and a new frame. */
+    f.rx_control = 0x41u;
+    f.rx_timestamp = 19u;
+    f.can_timestamp = 20u;
+    const uint32_t resumed = start + 132000u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed, 1u, &sample) == 0u);
+    assert(rx.phase == LFJ8_H03_RX_DRAIN_PENDING && f.rx_control == 0x41u);
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 10u, 1u, &sample) == 0u);
+    assert(rx.phase == LFJ8_H03_RX_DRAIN_PENDING && f.rx_control == 0x40u);
+    f.can_timestamp = 25u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 20u, 1u, &sample) == 0u);
+    assert(rx.phase == LFJ8_H03_RX_ACTIVE);
+    f.rx_control = 0x41u;
+    f.rx_timestamp = 30u;
+    f.can_timestamp = 30u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 30u, 1u, &sample) == TA2005_CHERY_SPEED);
+    assert(sample.speed_fad8 == 9600u);
+    f.can_timestamp = 130u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 230u, 1u, &sample) == 0u);
+    assert(sample.speed_fad8 == UINT16_MAX && sample.coolant_f9e9 == UINT8_MAX);
+    f.can_status = 0x4000u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 231u, 1u, &sample) == 0u);
+    assert(rx.phase == LFJ8_H03_RX_WAIT_FOR_OEM && f.lock_depth == 0u);
+}
+
+static void test_capture_pair(void)
+{
+    Fixture f = {.capture_timer = UINT32_MAX - 1u, .capture_timer_read_step = 4u, .nt_timer = 25u};
+    const Lfj8RegisterIo io = {&f, read8, read16, read32, write8, lock, unlock};
+    volatile Lfj8RawVss vss = {.last_edge = UINT32_MAX - 11u, .interval_ticks = 80u, .primed = 1u};
+    volatile Lfj8RawCapture nt = {.last_edge = 20u, .interval_ticks = 20u, .primed = 1u};
+    Lfj8CapturePair pair;
+    assert(lfj8_h03_capture_pair(&vss, &nt, &io, 100u, 100u, 4u, &pair));
+    assert(pair.now_tml0 == 0u && pair.vss_at_tml0 == UINT32_MAX - 11u);
+    assert(pair.nt_at_tml0 == UINT32_MAX - 4u && pair.nt_edge_tml1 == 20u);
+    assert(pair.nt_alignment_error_ticks == 2u);
+    assert(pair.vss.state == LFJ8_VSS_VALID && pair.nt.state == LFJ8_VSS_VALID);
+    assert(!lfj8_h03_capture_pair(&vss, &nt, &io, 100u, 100u, 3u, &pair));
+    assert(pair.now_tml0 == 10u && pair.nt.state == LFJ8_VSS_UNAVAILABLE);
+    f.nt_timer = 121u;
+    assert(lfj8_h03_capture_pair(&vss, &nt, &io, 100u, 100u, 4u, &pair));
+    assert(pair.nt.state == LFJ8_VSS_UNAVAILABLE && pair.vss.state == LFJ8_VSS_VALID);
+    assert(f.lock_depth == 0u);
 }
 
 static void test_speed(void)
@@ -597,11 +716,13 @@ int main(void)
     test_donor_io();
     test_can_receive_assignment();
     test_can_receive();
+    test_engine_can_lifecycle();
+    test_capture_pair();
     test_raw_capture();
     test_9e1c_capture();
     test_9e1c_nt_capture();
     test_pipeline();
     test_engine_receive();
-    puts("LFJ8 host: S51, S83, Chery TX, CAN0 RX/TX, RPM/ECT, relays and schedule passed");
+    puts("LFJ8 I/O: S51, S83, Chery TX, CAN0 RX/TX and recovery, RPM/ECT, relays and schedule passed");
     return 0;
 }

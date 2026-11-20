@@ -76,7 +76,9 @@ def stage_test(stage):
         ROOT / "targets/panel/panel_pulse.c",
     ]
     headers = [*HERE.glob("*.h"), ROOT / "targets/panel/panel_pulse.h"]
-    for item in (*sources, *headers, HERE / "host_check.c", HERE / "test_lfj8_h03_atf.c"):
+    for item in (*sources, *headers, HERE / "host_check.c", HERE / "test_lfj8_h03_atf.c",
+                 HERE / "test_lfj8_h03_mmio.c", HERE / "test_lfj8_gear_observer.c",
+                 HERE / "lfj8_h03_outputs.c", HERE / "test_lfj8_h03_outputs.c"):
         shutil.copyfile(item, stage / item.name)
     (stage / "sim_crt.c").write_text(
         "int integration_test(int argc, char **argv);\n"
@@ -118,8 +120,11 @@ def check(base, bridge, controller, compiler, simulator_output):
         run(compiler, *TARGET, *flags, "-ffreestanding", "-fno-builtin", "-c", range_source,
             "-o", "range.o")
         report["inputs"]["range.o"] = elf_info(stage / "range.o", 1)[0]
+        run(compiler, *TARGET, *flags, "-ffreestanding", "-fno-builtin", "-c", "lfj8_h03_outputs.c",
+            "-o", "output-plan.o")
+        report["inputs"]["output-plan.o"] = elf_info(stage / "output-plan.o", 1)[0]
         libraries = ["-fno-use-linker-plugin", "-nostdlib", *LIBRARIES]
-        run(compiler, *TARGET, "-r", "bridge.o", "controller.o", "range.o", *libraries,
+        run(compiler, *TARGET, "-r", "bridge.o", "controller.o", "range.o", "output-plan.o", *libraries,
             "-o", "combined.o")
         if run(nm, "-u", "combined.o"):
             raise ValueError("Combined object has unresolved link symbols")
@@ -168,10 +173,17 @@ ASSERT(ADDR(.rodata) + SIZEOF(.rodata) <= {FLASH_END:#x}, "Address-model ROM ove
             "void __init(void) {}\nvoid __fini(void) {}\n", encoding="ascii",
         )
         report["emulated_components"] = {}
-        for name, source in (("lfj8_io", "host_check.c"), ("h03_atf", "test_lfj8_h03_atf.c")):
+        component_tests = [
+            ("lfj8_io", "host_check.c", "bridge.o"),
+            ("h03_atf", "test_lfj8_h03_atf.c", "bridge.o"),
+            ("h03_mmio", "test_lfj8_h03_mmio.c", "bridge.o"),
+            ("gear_observer", "test_lfj8_gear_observer.c", "bridge.o"),
+            ("h03_output_plan", "test_lfj8_h03_outputs.c", "combined.o"),
+        ]
+        for name, source, object_file in component_tests:
             elf = f"{name}.elf"
             run(compiler, *TARGET, *flags, "-nostartfiles", crt, source, "component_crt.c",
-                "bridge.o", "-Wl,-e,_start", "-Wl,--start-group", "-lc", "-lgloss", "-lgcc",
+                object_file, "-Wl,-e,_start", "-Wl,--start-group", "-lc", "-lgloss", "-lgcc",
                 "-Wl,--end-group", "-o", elf)
             report["emulated_components"][name] = run(simulator, elf)
         if simulator_output is not None:
