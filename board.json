@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 63,
+  "sequence": 64,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -35,12 +35,12 @@
         "targets/lfj8/check_h03_dtc_basiccan.py",
         "verification/project-audit/dtc02-basiccan.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:06:24+00:00",
-      "note": "15 сценариев штатного RX14/15 прошли в M32R. Сравнены два окна перезаписи, 3 штатных маршрута и копирование без TRFIN. Перепроверяю на свежем main, готовлю отчёт для интегратора.",
-      "result": null
+      "updated_at": "2026-11-20T16:08:34+00:00",
+      "note": "Опубликованы 15 прогонов OEM RX14/15, перезапись и штатные маршруты. ПК 33 шага/65 тестов, M32R link 17 и изоляция сервиса 16 — PASS. Отчёт verification/project-audit/dtc02-basiccan.md. Снимок аудита и карточка переданы интегратору. Нативная привязка, foreground и стенд открыты.",
+      "result": "345d9490df4d8c177ab4d5eaff32224cf3f4f2c5"
     },
     "CAN-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -776,9 +776,17 @@
       "action": "review",
       "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
       "at": "2026-11-20T16:08:24+00:00"
+    },
+    {
+      "operation_id": "543e869ad3004fd0abe2722d3f590a4a",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:08:34+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:08:24+00:00",
+  "updated_at": "2026-11-20T16:08:34+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
