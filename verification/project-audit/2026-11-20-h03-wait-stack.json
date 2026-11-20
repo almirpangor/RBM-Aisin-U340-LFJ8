@@ -230,7 +230,8 @@
     "targets/lfj8/lfj8_h03_phase_startup.h": "7acba95ed9220ec399418d22232b59e3b7cd694bf0cd5d0f13e3cd97cb59d6e5",
     "targets/lfj8/check_h03_phase_boot.py": "2e5f16e60441fb82ad0bb3bd11446c3a2627105ea52f6b6645960cf760df2e1c",
     "targets/lfj8/h03_phase_boot_fixture.c": "3c4b517f4ab8b74a53f2e8323065466ec4ee8e81fb04f86b5d42bb1113fb12e0",
-    "targets/lfj8/h03_phase_startup_hook.S": "8426297fda3d58b75826773de50096de4ff36fe83d9030930f7e79bd3217ea08"
+    "targets/lfj8/h03_phase_startup_hook.S": "8426297fda3d58b75826773de50096de4ff36fe83d9030930f7e79bd3217ea08",
+    "targets/lfj8/check_h03_vflash_lockout.py": "1d93f82c9d4d4bab81672e2e2e7ceffa23fac522e6bf6e6e052ec61c840df5d0"
   },
   "evidence_sha256": {
     ".github/workflows/project-checks.yml": "6c98ced782463fe13630ee073ca17481468a42acdc14b78d40f498dc6048a767",
@@ -264,7 +265,8 @@
     "verification/project-audit/sources.txt": "1a5d35501c1e3267ffe263b04eff4fa298d0993b5187aa87dcd2c9791101cb7c",
     "verification/project-audit/status-guard-checks.json": "56200f7c2138efb251e71926f61ab9207d858d90160130ad8991a56a0cd8a26a",
     "verification/project-audit/2026-11-20-h03-storage.json": "47a0b6177b05ea93bd9d4b656edcb032baa0ba82442fa12aed978e5f58a9662e",
-    "verification/e4m3-can-9e1c/h03-phase-boot.json": "390cf930223a977f0963c1f7007be60afbc2b210b954040464a5ba051b966603"
+    "verification/e4m3-can-9e1c/h03-phase-boot.json": "390cf930223a977f0963c1f7007be60afbc2b210b954040464a5ba051b966603",
+    "verification/e4m3-can-9e1c/h03-vflash-lockout.json": "0d9821078887a5ed6a3d934a16cc74031878506c93842ed94a6975a387a9d296"
   },
   "previous_audit": "verification/project-audit/2026-11-20-h03-storage.json",
   "scope": "H03 phase wait hook timing gate, wrapper and test callback stack, simulator fault response",
@@ -627,5 +629,41 @@
       "verifier_exit_code": 2
     },
     "limits": "Storage and link address models plus OEM instructions in M32R. Hardware, external service admission and physical remapping were not exercised. No release BIN."
+  },
+  "virtual_flash_lockout_followup": {
+    "simulation_patch": {
+      "site": "0x003568",
+      "stock_word": "B810000B",
+      "branch_word": "FF00000B",
+      "destination": "0x003594",
+      "resident_code_and_data_added": false
+    },
+    "tested_cases": 512,
+    "control_cases": 12,
+    "stock_reset_dispatch": {
+      "valid_markers": "0x008100",
+      "bad_start_marker": "0x0047D8",
+      "bad_end_marker": "0x0047D8"
+    },
+    "native_update_start_addresses": [
+      {
+        "address": "0x003568",
+        "accepted": false
+      },
+      {
+        "address": "0x007FFF",
+        "accepted": false
+      },
+      {
+        "address": "0x008000",
+        "accepted": true
+      }
+    ],
+    "owner_programmer": "PCM Flash, exact profile and lower-sector write coverage unspecified",
+    "limits": [
+      "Native selector and internal monitor activation branch; MMIO is backed by simulator RAM.",
+      "This bench-only change disables Virtual Flash, not the monitor's direct or deferred RAM writes.",
+      "No external programmer profiles, physical remapping or recovery writes were tested."
+    ]
   }
 }
