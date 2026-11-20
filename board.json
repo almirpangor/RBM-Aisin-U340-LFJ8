@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 527,
+  "sequence": 528,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -126,6 +126,7 @@
       "files": [
         "targets/lfj8/check_h03_link.py",
         "targets/lfj8/check_h03_service_guard.py",
+        "targets/lfj8/check_h03_service_writes.py",
         "targets/lfj8/check_h03_vflash_lockout.py",
         "targets/lfj8/lfj8_h03_service_placement.py",
         "tests/test_h03_service_placement.py",
@@ -134,8 +135,8 @@
       "stage": "in_progress",
       "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
       "claimed_at": "2026-11-20T19:45:11+00:00",
-      "updated_at": "2026-11-20T19:45:11+00:00",
-      "note": "Подключаю четыре проверенные точки защиты записи и штатное выключение Virtual Flash к адресному составу H03; сверяю карту диапазонов, исходные слова и исполнение. Владение памятью и выпуск остаются предметом отдельной приёмки.",
+      "updated_at": "2026-11-20T19:50:20+00:00",
+      "note": "Адресный линк связал пять переходов. Добавляю повтор прямого писателя и ADC0 на уже размещённых байтах.",
       "result": null
     },
     "DTC-04": {
@@ -4799,9 +4800,17 @@
       "action": "review",
       "claim_id": "6293ebe446574c9ab1fce23fa806e922",
       "at": "2026-11-20T19:49:51+00:00"
+    },
+    {
+      "operation_id": "72901a1092ac4db6b8ec223453b96c98",
+      "task": "H03-04",
+      "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "action": "heartbeat",
+      "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
+      "at": "2026-11-20T19:50:20+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:49:51+00:00",
+  "updated_at": "2026-11-20T19:50:20+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
