@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:47:57+00:00**. Изменение № **307**.
+Обновлено UTC: **2026-11-20T17:48:17+00:00**. Изменение № **308**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -38,7 +38,7 @@
 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | Работа завершена | Codex MODE-02 — публикация ADC H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode02-h03-selector-01a1f9c7 | 2026-11-20T17:42:09+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit f92fde84f590460d713dee020ee5ddc6ccd089e4 |
 | MODE-03 — Окончательная политика режимов | Работа завершена | Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T17:45:40+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit dd4fdbc2862093359df9329d7e6e9ab211d13940 |
 | SRC-01 — Реестр происхождения и контроль исходников | Работа завершена | Codex SRC-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/src01-donor-pins-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:47:57+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 72f71983154edb4dcc7f0b3dc931bebfdb0d9b6d |
-| AUD-01 — Программный аудит истории E4M3 | На проверке | Codex AUD-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/aud01-pinned-replay-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:47:07+00:00 | Трасса и инструменты из одного R4. Два повтора без checkout совпали с сохранёнными отчётами; 3256 CRC и 26 команд в каждом. Ordinary BOSCH и SOURCES PASS. Отчёт verification/project-audit/aud01-pinned-replay.md; стенд ECU-02 открыт. / commit 6748075bd8cda69a0b6c2b9d6e2a471a00463434 |
+| AUD-01 — Программный аудит истории E4M3 | Работа завершена | Codex AUD-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/aud01-pinned-replay-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:48:17+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 6748075bd8cda69a0b6c2b9d6e2a471a00463434 |
 | DTC-01 — Прикладной сеанс и статусы Chery | Работа завершена | Codex — снимок полей модели Chery в H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc01-shared-engine-snapshot-32e6ac79 | 2026-11-20T17:44:35+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 6cdb95e861728cffbc7635d0d9f366a1d0fd51a4 |
 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Работа завершена | Codex — штатный RX BasicCAN H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T17:37:01+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit f38da53a7796dd1c71f7fe39e206f1334c6b9071 |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Работа завершена | Codex DTC-03 — монитор цепи ATF H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-atf-monitor-01a1f9c7 | 2026-11-20T17:40:03+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit d487840ba2505064c7f281305a10813cbdf3b695 |
@@ -47,13 +47,6 @@
 | REL-02 — Приёмка новой связки на оборудовании | На проверке | Codex REL-02 — проверка записи CAN \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/rel-02-can-trace-fea1b366 | 2026-11-20T17:00:17+00:00 | Программная подготовка REL-02: офлайн-разбор TRC и проверка периодических ID по заданным допускам. Python 77/77; R1 25261 запись, четыре перехода, ожидаемый отказ по отсутствующим ID. Доказательства verification/project-audit/rel02-can-trace.md. Общий аудит обновляет интегратор. Для приёмки нужны измерения новой пары H03/E4M3. / commit 2ebae711ad169cf22528a0a7297d8d3b210d4e0a |
 
 ## Зарезервированные файлы
-
-### AUD-01
-
-Чат: Codex AUD-01. Claim ID: 69a90e88e1b54af298f0f4e5760e308f.
-
-- targets/bosch/replay_e4m3_torque.py
-- verification/project-audit/aud01-pinned-replay.md
 
 ### ORG-01
 
@@ -83,6 +76,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:48:17+00:00 | AUD-01 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:47:57+00:00 | SRC-01 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:47:37+00:00 | H03-01 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:47:17+00:00 | ECU-02 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
@@ -112,4 +106,3 @@
 | 2026-11-20T17:37:42+00:00 | TOY-03 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T17:37:21+00:00 | CAN-03 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T17:37:01+00:00 | DTC-02 | complete | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
-| 2026-11-20T17:36:11+00:00 | ORG-01 | heartbeat | codex-integration-01a1f76d-20261120 |
