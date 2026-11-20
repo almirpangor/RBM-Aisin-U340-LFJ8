@@ -15,6 +15,7 @@ enum {
 
 static const uint8_t session[] = {2, 0x10, 0x86};
 static const uint8_t read_dtc[] = {3, 0x17, 0xff, 0};
+static const uint8_t clear_dtc[] = {3, 0x14, 0xff, 0};
 static const uint8_t flow_control[] = {0x30, 0, 0};
 
 typedef struct {
@@ -446,17 +447,23 @@ static Lfj8H03Can13Result target_test_poll(void *context, Lfj8H03Can13 *broker,
     return result;
 }
 
-static Lfj8H03Can13Result poll_target(Fixture *f, Lfj8H03DtcTarget *target, uint32_t now_us)
+static Lfj8H03Can13Result poll_target_at(Fixture *f, Lfj8H03DtcTarget *target,
+                                        uint32_t now_us, uint32_t t6_tick)
 {
     f->now_us = now_us;
     Lfj8H03Can13Input input = {
-        .generation = 1234, .now_us = 5678, .diagnostic_tick = now_us / 100u,
+        .generation = 1234, .now_us = 5678, .diagnostic_tick = t6_tick,
         .owns_slot13 = 0, .dtc = &f->dtc,
     };
     const Lfj8H03Can13Result result = lfj8_h03_dtc_target_poll(target, &input, true);
     assert(!f->locked && input.generation == 1234 && input.now_us == now_us);
     assert(input.owns_slot13 == 0 && input.received == NULL);
     return result;
+}
+
+static Lfj8H03Can13Result poll_target(Fixture *f, Lfj8H03DtcTarget *target, uint32_t now_us)
+{
+    return poll_target_at(f, target, now_us, now_us / 100u);
 }
 
 static void test_target_transport_and_reset(void)
@@ -544,12 +551,124 @@ static void test_target_clock_pair_and_unbind(void)
     f.clock_span_us = 5;
     assert(!poll_target(&f, &target, UINT32_MAX).diagnostic_consumed && f.sent == 0);
     f.clock_span_us = 0;
-    assert(poll_target(&f, &target, 0).diagnostic_consumed);
+    assert(poll_target_at(&f, &target, 0, UINT32_MAX / 100u).diagnostic_consumed);
     assert_reply(&f, 1, 2);
     lfj8_h03_dtc_target_unbind();
     Lfj8H03Can13Input input = {.dtc = &f.dtc, .owns_slot13 = 1};
     rbm_h03_dtc_rx_observe(14);
     assert(!lfj8_h03_dtc_target_poll(&target, &input, true).available && target.queue.count == 0);
+}
+
+static void observe_target(Fixture *f, uint8_t slot, uint32_t arrived_at, uint32_t now_us,
+                           const uint8_t *frame, uint8_t length)
+{
+    prepare_rx(f, slot, arrived_at, frame, length);
+    f->now_us = now_us;
+    rbm_h03_dtc_rx_observe(slot);
+    assert(f->rx_control[slot - 14u] == 0x41u);
+    f->rx_control[slot - 14u] = 0x40u;
+}
+
+static void open_target_session(Fixture *f, Lfj8H03DtcTarget *target, uint32_t tick)
+{
+    assert(poll_target_at(f, target, 10, tick).available);
+    observe_target(f, 14, 20, 22, session, sizeof(session));
+    assert(poll_target_at(f, target, 24, tick).diagnostic_consumed);
+    assert_reply(f, 1, 2);
+}
+
+static void test_target_session_expiry_and_rx_boundary(void)
+{
+    Fixture f;
+    Lfj8H03DtcTarget target;
+    init(&f, 7);
+    const Lfj8H03DtcCanOwnerOps owner = {target_test_epoch, target_test_poll, &f};
+    assert(lfj8_h03_dtc_target_init(&target, &f.broker, &f.io, &owner, target_clock, 4));
+    assert(chery_dtc_store_snapshot(&f.dtc, 0, 0x10));
+    assert(chery_dtc_set_current(&f.dtc, 0x10, true));
+    const CheryDtcState before = f.dtc;
+    const uint32_t first_release = UINT32_C(0xffffff40);
+    open_target_session(&f, &target, first_release - 1);
+    complete_tx(&f, 26);
+    poll_target_at(&f, &target, 28, first_release - 1);
+
+    for (unsigned i = 0; i < 8u; ++i) {
+        const uint32_t release = first_release + 128u * i;
+        const uint32_t us = 48u + 40u * i;
+        poll_target_at(&f, &target, us, release - 1u);
+        assert(f.broker.diagnostic.link.session_steps_left == 9u - i);
+        poll_target_at(&f, &target, us + 2u, release);
+        poll_target_at(&f, &target, us + 4u, release);
+        assert(f.broker.diagnostic.link.session_steps_left == 8u - i);
+    }
+    observe_target(&f, 14, 504, 506, clear_dtc, sizeof(clear_dtc));
+    observe_target(&f, 15, 506, 508, session, sizeof(session));
+    assert(target.queue.count == 2u);
+    const uint32_t deadline = first_release + 8u * 128u;
+    assert(!poll_target_at(&f, &target, 512, deadline).diagnostic_consumed);
+    assert(target.queue.count == 0u && f.sent == 1u && target.queue.generation == 7u);
+    assert(f.broker.diagnostic.link.session.mode_bits == 0x9fu);
+    assert(f.broker.diagnostic.link.session.permission_bits == 0x11u);
+    assert(memcmp(&f.dtc, &before, sizeof(before)) == 0);
+
+    /* An IRQ that had not observed its hardware slot cannot restore the
+     * old frame. Include CAN timestamp wrap and an equal timestamp. */
+    observe_target(&f, 14, 510, 514, session, sizeof(session));
+    observe_target(&f, 15, 512, 516, session, sizeof(session));
+    assert(target.queue.count == 0u && target.queue.rejected == 2u);
+    observe_target(&f, 15, 518, 520, session, sizeof(session));
+    assert(target.queue.count == 1u);
+    assert(poll_target_at(&f, &target, 522, deadline).diagnostic_consumed);
+    assert_reply(&f, 2u, 2u);
+    assert(f.broker.diagnostic.link.session_steps_left == 9u);
+    lfj8_h03_dtc_target_unbind();
+}
+
+static void test_target_session_clock_loss(void)
+{
+    Fixture f;
+    Lfj8H03DtcTarget target;
+    init(&f, 7);
+    const Lfj8H03DtcCanOwnerOps owner = {target_test_epoch, target_test_poll, &f};
+    assert(lfj8_h03_dtc_target_init(&target, &f.broker, &f.io, &owner, target_clock, 4));
+    open_target_session(&f, &target, 63);
+    complete_tx(&f, 26);
+    poll_target_at(&f, &target, 28, 63);
+    /* Four releases accumulated in one readiness bit. */
+    poll_target_at(&f, &target, 40, 448);
+    assert(f.broker.diagnostic.link.session_steps_left == 8u);
+    observe_target(&f, 15, 42, 44, clear_dtc, sizeof(clear_dtc));
+    assert(target.queue.count == 1u);
+    poll_target_at(&f, &target, 46, 16);
+    assert(target.queue.count == 0u && f.sent == 1u);
+    assert(f.broker.diagnostic.link.session.mode_bits == 0x9fu);
+
+    /* A new, drained CAN generation starts without the old RX boundary. */
+    f.generation++;
+    poll_target_at(&f, &target, 46, 16);
+    observe_target(&f, 14, 46, 48, session, sizeof(session));
+    assert(poll_target_at(&f, &target, 50, 16).diagnostic_consumed);
+    assert_reply(&f, 2u, 2u);
+    lfj8_h03_dtc_target_unbind();
+}
+
+static void test_target_session_expiry_drains_tx(void)
+{
+    Fixture f;
+    Lfj8H03DtcTarget target;
+    init(&f, 7);
+    const Lfj8H03DtcCanOwnerOps owner = {target_test_epoch, target_test_poll, &f};
+    assert(lfj8_h03_dtc_target_init(&target, &f.broker, &f.io, &owner, target_clock, 4));
+    open_target_session(&f, &target, 63);
+    /* Start this boundary test with a submitted reply and one step left. */
+    for (unsigned i = 0; i < 8u; ++i) {
+        assert(!lfj8_h03_dtc_can_session_step(&f.broker.diagnostic));
+    }
+    observe_target(&f, 15, 26, 28, session, sizeof(session));
+    assert(!poll_target_at(&f, &target, 30, 64).diagnostic_consumed);
+    assert(f.sent == 1u && f.tx_control == 0u);
+    assert(target.queue.count == 0u && f.broker.diagnostic.link.session.mode_bits == 0x9fu);
+    lfj8_h03_dtc_target_unbind();
 }
 
 int main(void)
@@ -564,9 +683,13 @@ int main(void)
     test_dispatch_marks_one_attempt();
     test_target_transport_and_reset();
     test_target_clock_pair_and_unbind();
+    test_target_session_expiry_and_rx_boundary();
+    test_target_session_clock_loss();
+    test_target_session_expiry_drains_tx();
     puts("PASS H03 DTC foreground: FIFO/FC, CAN generation, busy wrap, IRQ between peek and consume");
     puts("PASS BasicCAN pair: timestamp order, rollover, tie, loss, FIFO capacity, bus-off");
     puts("PASS BasicCAN dispatch markers: one attempt, generation, next dispatch");
     puts("PASS H03 DTC target: bound IRQ, FC, reset, bounded clocks and unbind");
+    puts("PASS H03 C0 session: nine releases, coalescing, T6/CAN wrap, RX boundary and TX drain");
     return 0;
 }

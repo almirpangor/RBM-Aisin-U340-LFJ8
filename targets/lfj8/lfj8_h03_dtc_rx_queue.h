@@ -24,11 +24,14 @@ typedef struct {
     uint32_t expired;
     uint32_t rejected;
     uint32_t overflow;
+    uint32_t session_boundary_us;
     uint16_t max_age_bits;
     uint16_t bit_time_us;
+    uint16_t session_boundary_can;
     uint8_t head;
     uint8_t count;
     bool initialized;
+    bool session_boundary_active;
 } Lfj8H03DtcRxQueue;
 
 typedef struct {
@@ -55,6 +58,12 @@ bool lfj8_h03_dtc_rx_queue_init(Lfj8H03DtcRxQueue *queue, uint32_t generation,
  * producer generations cannot reset the queue implicitly. */
 bool lfj8_h03_dtc_rx_queue_reset(Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io,
                                 uint32_t generation);
+
+/* Discard staged RX without touching CAN hardware or its owner generation.
+ * A paired timestamp also excludes frames at or before the boundary that
+ * the IRQ has yet to copy. Without paired clocks the owner withdraws RX. */
+void lfj8_h03_dtc_rx_queue_end_session(Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io,
+                                      uint32_t now_us, const uint16_t *can_now);
 
 /* Native RX must supply a coherent stable 16-byte COPY, its pre-clear MSC
  * control and matching EXTID. This function does not read/clear hardware.
