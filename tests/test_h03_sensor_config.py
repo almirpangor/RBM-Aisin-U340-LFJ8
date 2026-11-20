@@ -91,6 +91,8 @@ class SensorConfigTests(unittest.TestCase):
         self.assertFalse(report["hardware_verified"])
         self.assertIsNone(report["flashable_image"])
         self.assertIn("const Lfj8H03SensorFeedConfig rbm_h03_sensor_config", source)
+        self.assertIn("int rbm_h03_target_clock_ready(void *context)", source)
+        self.assertIn("return lfj8_h03_sensor_clock_registers_match();", source)
         for field, limit in PROFILE["limits"].items():
             width = 16 if field == "max_read_span_ticks" else 32
             self.assertIn(f".{field} = UINT{width}_C({limit})", source)
