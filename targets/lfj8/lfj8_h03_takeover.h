@@ -28,7 +28,7 @@ typedef struct {
     uint8_t shift_mask;
     uint8_t shift_before;
     uint8_t have_generation;
-    uint8_t pending;
+    uint8_t pending; /* Private preparation state. Only apply consumes a ready plan. */
 } Lfj8H03Takeover;
 
 /* Install once with stable ops and I/O storage. Callbacks run under the I/O
@@ -72,8 +72,9 @@ int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation);
 
 /* Revoke on a fault event under the same exclusion used for apply.
  * The caller must already hold it across the latch store and this call.
- * This covers an OEM flag that may be cleared before apply.
- * Keep the generation consumed and invoke the commissioned inhibit callback.
+ * This covers an OEM flag that may be cleared before apply. A revoke
+ * from within arbitration also cancels that preparation. Keep the
+ * generation consumed and invoke the commissioned inhibit callback.
  * For the native fault hooks the linker binds rbm_h03_takeover_state to the
  * existing takeover object. Initialize that object before exposing the hooks. */
 void lfj8_h03_takeover_revoke_locked(Lfj8H03Takeover *state);
