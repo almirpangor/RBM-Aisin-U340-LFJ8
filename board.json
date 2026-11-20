@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 282,
+  "sequence": 283,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -116,11 +116,11 @@
         "verification/e4m3-can-9e1c/h03-vflash-lockout.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "claimed_at": "2026-11-20T16:18:01+00:00",
-      "updated_at": "2026-11-20T17:11:59+00:00",
-      "note": "Virtual Flash: проверена штатная ветвь выключения, 512 сценариев M32R и проверки сброса PASS. Родной обновитель отклоняет адрес 003568. Владелец будет писать через PCM Flash, точное покрытие диапазона не подтверждено. Изоляция RAM и стендовые BIN открыты.",
+      "updated_at": "2026-11-20T17:38:22+00:00",
+      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
       "result": "abaa51c3e09d017366e05906cafd1fe3de32515c"
     },
     "H03-04": {
@@ -2826,9 +2826,17 @@
       "action": "complete",
       "claim_id": "76adb69439704129b7ae37eeace39df2",
       "at": "2026-11-20T17:38:02+00:00"
+    },
+    {
+      "operation_id": "e4ceaf9b68094924888bc12076510b0f",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "at": "2026-11-20T17:38:22+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:38:02+00:00",
+  "updated_at": "2026-11-20T17:38:22+00:00",
   "main_commit": "320b72e41aa4a85815f2db8942f88f7050abb3f0",
   "catalog": [
     {
