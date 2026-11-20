@@ -20,6 +20,7 @@ void chery_dtc_link_end_session(CheryDtcLink *link)
     if (link != NULL) {
         discard_reply(link);
         link->session = (CheryDtcSession){0x9Fu, 0x11u};
+        link->session_steps_left = 0;
     }
 }
 
@@ -112,6 +113,8 @@ CheryDtcLinkResult chery_dtc_link_receive_with_store(
     if (link->session.mode_bits == 0x9Fu) {
         link->session = (CheryDtcSession){0x90u, 0x01u};
     }
+    /* S03 reloads F9F1 at the dispatcher tail even on a negative result. */
+    link->session_steps_left = CHERY_DTC_LINK_SESSION_STEPS;
 
     if (length == 2u && received->data[1] == 0x10u && received->data[2] == 0x86u) {
         link->session.permission_bits = 0x08u;
