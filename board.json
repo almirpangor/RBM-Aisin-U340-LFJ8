@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 151,
+  "sequence": 152,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -449,12 +449,12 @@
         "tools/check_vss_measurements.py",
         "verification/project-audit/vss02-measurement-check.md"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
       "claimed_at": "2026-11-20T16:24:53+00:00",
-      "updated_at": "2026-11-20T16:28:50+00:00",
-      "note": "Добавлена офлайн-проверка измерений S51/0x1AE с независимым эталоном, контрольным байтом, остановкой и потерей импульсов. 8 новых тестов, PC 35 шагов, M32R 17 компонентов PASS. Реальные измерения открыты. Отчёт verification/project-audit/vss02-measurement-check.md.",
-      "result": "bd4285ae245c6125acee70acf5b9265b9c4df145"
+      "updated_at": "2026-11-20T16:30:47+00:00",
+      "note": "Уточняю VSS-02 по найденному расчёту машины: Z1=25, мосты 37/8, окружность 3,53 м. Проверяю расчёт и происхождение.",
+      "result": null
     },
     "TOY-01": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -1695,9 +1695,17 @@
       "action": "heartbeat",
       "claim_id": "8bc1c70042a844479c03009561a5e586",
       "at": "2026-11-20T16:30:41+00:00"
+    },
+    {
+      "operation_id": "dea0aa4205154071b7029fba3e6d9554",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "resume",
+      "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
+      "at": "2026-11-20T16:30:47+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:30:41+00:00",
+  "updated_at": "2026-11-20T16:30:47+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {

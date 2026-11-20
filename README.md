@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:30:41+00:00**. Изменение № **151**.
+Обновлено UTC: **2026-11-20T16:30:47+00:00**. Изменение № **152**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -32,7 +32,7 @@
 | H03-05 — SLT, силовые выходы и реакция на отказ | Выполняется | Codex — штатное отключение SLT \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-05-p0745-01a1f9a2 | 2026-11-20T16:29:13+00:00 | Замеряю SP и шаги M32R от CLRPSW до восстановления PSW на входе без владельца и с активным отзывом. |
 | IO-01 — Два дополнительных реле | Отложена владельцем | — | — | — | — |
 | VSS-01 — Точный расчёт VSS и скорость по CAN | На проверке | Codex VSS-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss01-exact-arithmetic-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:22:43+00:00 | Точная VSS арифметика устраняет промежуточное переполнение. 25 000 сравнений, PC 33 шага/65 тестов, M32R 17 компонентов, Bosch C7FF/C800/FFFF PASS по ожидаемому поведению. Параметры VSS-02 и стенд открыты. Отчёт verification/project-audit/vss01-exact-arithmetic.md. / commit d05896bcac7b731f8d3f85b9aaebd3394e32473c |
-| VSS-02 — Кинематика и параметры реальной скорости | На проверке | Codex VSS-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss02-measurement-check-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:28:50+00:00 | Добавлена офлайн-проверка измерений S51/0x1AE с независимым эталоном, контрольным байтом, остановкой и потерей импульсов. 8 новых тестов, PC 35 шагов, M32R 17 компонентов PASS. Реальные измерения открыты. Отчёт verification/project-audit/vss02-measurement-check.md. / commit bd4285ae245c6125acee70acf5b9265b9c4df145 |
+| VSS-02 — Кинематика и параметры реальной скорости | Выполняется | Codex VSS-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss02-measurement-check-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:30:47+00:00 | Уточняю VSS-02 по найденному расчёту машины: Z1=25, мосты 37/8, окружность 3,53 м. Проверяю расчёт и происхождение. |
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
 | MODE-01 — Логика шести положений и кнопок | На проверке | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:14:42+00:00 | Staggered Tiptronic plus/minus overlap now blocks manual requests. Original C/Python regressions reproduced. PC 33 steps/66 tests plus dedicated C regression PASS; M32R build, 17 components and dedicated regression PASS. Evidence verification/project-audit/mode01-shift-conflict.md. Integrator to record the audit; physical input and hydraulic execution remain open. / commit ed33ea93653f7bcbc2c6f13736fe1424335085e6 |
 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | Выполняется | Codex MODE-02 — публикация ADC H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode02-h03-selector-01a1f9c7 | 2026-11-20T16:28:17+00:00 | Подключаю публикацию отсчёта селектора к проверенному пути ADC0 AN2 H03. Отдельная проверка штатных инструкций и M32R; без назначения физических кнопок. |
@@ -255,6 +255,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:30:47+00:00 | VSS-02 | resume | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:30:41+00:00 | CAN-05 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:30:29+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:30:25+00:00 | ECU-02 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
@@ -284,4 +285,3 @@
 | 2026-11-20T16:24:42+00:00 | H03-04 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:24:18+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:24:11+00:00 | H03-05 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
-| 2026-11-20T16:24:03+00:00 | MODE-03 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
