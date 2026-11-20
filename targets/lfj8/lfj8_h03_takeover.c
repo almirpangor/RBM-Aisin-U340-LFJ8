@@ -10,6 +10,8 @@
 #define H03_STARTUP_COUNT UINT32_C(0x80621A)
 #define SERIAL_HALF_RANGE UINT32_C(0x80000000)
 
+enum { TAKEOVER_READY = 1, TAKEOVER_PREPARING };
+
 static const uint32_t shift_final[] = {0x8063D7, 0x8063DA, 0x8063DD};
 static const uint32_t pwm_proposal[] = {0x804F6C, 0x804F78, 0x804F84, 0x804F94};
 static const uint32_t pwm_final[] = {0x804F74, 0x804F80, 0x804F8C, 0x804F9C};
@@ -142,13 +144,20 @@ static int prepare(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *plan,
                 state->shift_mask = shift_mask;
                 state->pressure_word = plan->pressure_binary32;
                 publish_proposals(state);
+                state->pending = TAKEOVER_PREPARING;
                 ops->arbitrate(context);
-                state->pending = (uint8_t)(matching_commands(state) && qualified(state) &&
-                    read_shift_levels(io) == before);
+                const int ready = state->pending == TAKEOVER_PREPARING &&
+                    matching_commands(state) && qualified(state) && read_shift_levels(io) == before;
+                if (state->pending != TAKEOVER_PREPARING) {
+                    /* A nested fault already withdrew authority under this lock. */
+                    io->leave(context, saved);
+                    return 0;
+                }
+                state->pending = ready ? TAKEOVER_READY : 0u;
             }
         }
     }
-    const int accepted = state->pending;
+    const int accepted = state->pending == TAKEOVER_READY;
     if (!accepted) {
         ops->inhibit(context);
     }
@@ -177,9 +186,9 @@ int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation)
     const Lfj8RegisterIo *const io = ops->io;
     void *const context = io->context;
     const uint32_t saved = io->enter(context);
-    const int pending = state->pending;
+    const int ready = state->pending == TAKEOVER_READY;
     state->pending = 0;
-    const int accepted = pending && generation == state->generation &&
+    const int accepted = ready && generation == state->generation &&
         qualified(state) && matching_commands(state) && read_shift_levels(io) == state->shift_before;
     if (accepted) {
         ops->apply(context);

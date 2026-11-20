@@ -23,6 +23,7 @@ enum {
 typedef struct {
     uint8_t ram[LIMIT - BASE];
     uint32_t now;
+    Lfj8H03Takeover *revoke_in_arbitration;
     unsigned arbitration_delay, publications, arbitrations, applies, inhibits;
     uint8_t locked, permitted, disturbed, p3, fcnt1;
 } Fixture;
@@ -119,6 +120,12 @@ static void arbitrate(void *c)
     }
     if (f->disturbed) {
         *cell(f, shift_out[0]) ^= 1u;
+    }
+    if (f->revoke_in_arbitration) {
+        uint8_t *const driver_fault = cell(f, 0x8063AF);
+        *driver_fault = 1u;
+        lfj8_h03_takeover_revoke_locked(f->revoke_in_arbitration);
+        *driver_fault = 0u;
     }
     f->now += f->arbitration_delay;
     f->publications = 0;
@@ -339,6 +346,22 @@ int main(void)
     lfj8_h03_phase_clock_release(&phase, fixture.now);
     assert(!lfj8_h03_takeover_prepare(&state, &plan, 4u, 6u, fixture.now));
     assert(!fixture.locked);
-    puts("H03 takeover: proposals, P3 replay, service guards and native phase expiry PASS");
+    ops.phase_clock = NULL;
+    assert(lfj8_h03_takeover_init(&state, &ops, 8u));
+    fixture.revoke_in_arbitration = &state;
+    const unsigned prior_applies = fixture.applies;
+    const unsigned prior_inhibits = fixture.inhibits;
+    const unsigned prior_arbitrations = fixture.arbitrations;
+    assert(!lfj8_h03_takeover_prepare_plan(&state, &plan, UINT32_MAX, fixture.now));
+    assert(fixture.arbitrations == prior_arbitrations + 1u &&
+           fixture.inhibits == prior_inhibits + 1u && !state.pending && !fixture.locked);
+    assert(!lfj8_h03_takeover_apply(&state, UINT32_MAX));
+    assert(fixture.applies == prior_applies && fixture.inhibits == prior_inhibits + 2u);
+    fixture.revoke_in_arbitration = NULL;
+    assert(!lfj8_h03_takeover_prepare_plan(&state, &plan, UINT32_MAX, fixture.now));
+    assert(lfj8_h03_takeover_prepare_plan(&state, &plan, 0u, fixture.now));
+    assert(lfj8_h03_takeover_apply(&state, 0u));
+    assert(fixture.applies == prior_applies + 1u && !state.pending && !fixture.locked);
+    puts("H03 takeover: proposals, P3 replay, service guards, native phase expiry and arbitration revocation PASS");
     return 0;
 }
