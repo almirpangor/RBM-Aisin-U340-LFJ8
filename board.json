@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 173,
+  "sequence": 174,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -116,12 +116,12 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "claimed_at": "2026-11-20T16:18:01+00:00",
-      "updated_at": "2026-11-20T16:33:25+00:00",
-      "note": "Подключаю проверку фазы к MMIO TML0CT и штатному целевому enter/leave PSW в M32R.",
-      "result": "92ee061ae1ea515652fcb04dc2ea5448a6150363"
+      "updated_at": "2026-11-20T16:36:12+00:00",
+      "note": "Целевой читатель TML0CT и реальный enter/leave PSW. 14 сценариев, сборки M32R, split-link/replay Bosch, 17 компонентов, 65 Python-тестов и реестр PASS. При объединении нужен активный снимок интегратора; аппаратное время и inhibit ещё открыты.",
+      "result": "5eea6c5a18636830a3fe38ae9f997a3bb73d38d1"
     },
     "H03-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -1875,9 +1875,17 @@
       "action": "review",
       "claim_id": "c8de734571c443c3b11766566ad20891",
       "at": "2026-11-20T16:35:57+00:00"
+    },
+    {
+      "operation_id": "1664ec0bdfcc481b8e113769055bcb32",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "at": "2026-11-20T16:36:12+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:35:57+00:00",
+  "updated_at": "2026-11-20T16:36:12+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
