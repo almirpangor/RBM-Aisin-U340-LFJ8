@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 104,
+  "sequence": 105,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -371,12 +371,12 @@
         "targets/lfj8/test_lfj8_h03_dtc_can.c",
         "verification/project-audit/dtc01-session-lease.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "8ca0999c579843d5a6c858b0ba44f0b2",
       "claimed_at": "2026-11-20T16:16:49+00:00",
-      "updated_at": "2026-11-20T16:18:17+00:00",
-      "note": "Both original failures reproduced on host: foreign TRFIN reported reserved, and BusOff allowed regrant without a new generation. Corrected session/lease handling, targeted PC test PASS. Running PC and M32R suites.",
-      "result": null
+      "updated_at": "2026-11-20T16:19:32+00:00",
+      "note": "Foreign TX13 completion and BusOff now close DTC session and revoke in-flight ownership until a new CAN generation. Both failures reproduced; PC 33 steps / 65 tests and M32R 17 components PASS. Evidence verification/project-audit/dtc01-session-lease.md. Integrator to record the audit; scanner and hardware open.",
+      "result": "79d853bcd09a13b733907eccc3e1ea6dfe642db7"
     },
     "VSS-01": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -1227,9 +1227,17 @@
       "action": "review",
       "claim_id": "66ff2c9c89284dcaba9ce91746f4bde4",
       "at": "2026-11-20T16:19:02+00:00"
+    },
+    {
+      "operation_id": "b310c9e9c2d042b0a892b86657de0f0a",
+      "task": "DTC-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "8ca0999c579843d5a6c858b0ba44f0b2",
+      "at": "2026-11-20T16:19:32+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:19:02+00:00",
+  "updated_at": "2026-11-20T16:19:32+00:00",
   "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {
