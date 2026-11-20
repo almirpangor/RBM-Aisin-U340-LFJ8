@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 7,
+  "sequence": 8,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -71,6 +71,20 @@
       "updated_at": "2026-11-20T15:46:14+00:00",
       "note": "16 прогонов lifecycle и 12 TX gate прошли. OEM очищает MSC13 при сохранении SLIMK в модели RAM. Общий снимок аудита зарезервирован DTC-02, интегратору обновить хеши двух проверенных файлов и добавить отчёт. Нативная привязка и аппаратные замеры открыты.",
       "result": "c46e9b5cf857a95757aef1025f599e41972eaf64"
+    },
+    "TOY-03": {
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "label": "Codex TOY-03",
+      "branch": "codex/toy-03-range-01a1f9a2",
+      "files": [
+        "docs/lfj8-h03-input-paths.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "f014bd3c6bba42f5bb7e5fa23c121d0d",
+      "claimed_at": "2026-11-20T15:47:02+00:00",
+      "updated_at": "2026-11-20T15:47:02+00:00",
+      "note": "Сверяю независимость входов диапазона, потребителей GP и сценарии стендовой приёмки.",
+      "result": null
     }
   },
   "events": [
@@ -129,9 +143,17 @@
       "action": "heartbeat",
       "claim_id": "ed274f83f44345a3b9d759cf44aa6541",
       "at": "2026-11-20T15:46:30+00:00"
+    },
+    {
+      "operation_id": "56b9b51a0deb4c5ea4b9b75a049217b7",
+      "task": "TOY-03",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "claim",
+      "claim_id": "f014bd3c6bba42f5bb7e5fa23c121d0d",
+      "at": "2026-11-20T15:47:02+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:46:30+00:00",
+  "updated_at": "2026-11-20T15:47:02+00:00",
   "main_commit": "2875ed80264fd7714d44047f849e2df4b04123ef",
   "catalog": [
     {
