@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 73,
+  "sequence": 74,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -95,12 +95,12 @@
         "verification/project-audit/2026-11-20-h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
       "claimed_at": "2026-11-20T16:04:02+00:00",
-      "updated_at": "2026-11-20T16:09:33+00:00",
-      "note": "Сокращаю стек ожидания, измеряю глубину в M32R и обновляю снимок после интеграции H03-04.",
-      "result": "ff8b5164cdbf5121db9e788b975921699960d524"
+      "updated_at": "2026-11-20T16:11:52+00:00",
+      "note": "Совмещено с H03-04 a52ab8c. В M32R измерены 8 байт при ожидании и 64 байта до callback. 8 сценариев, контроль лишнего слова, 65 тестов и реестр PASS. Стек callback/IRQ и аппаратный inhibit открыты.",
+      "result": "895e031ad2decca9c3d833c683539876fd467a3f"
     },
     "H03-04": {
       "owner": "codex-h03-04-01a1f76d-20261120",
@@ -885,9 +885,17 @@
       "action": "claim",
       "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
       "at": "2026-11-20T16:11:44+00:00"
+    },
+    {
+      "operation_id": "de715c798cc44c5a936c8d828785bb6d",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
+      "at": "2026-11-20T16:11:52+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:11:44+00:00",
+  "updated_at": "2026-11-20T16:11:52+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
