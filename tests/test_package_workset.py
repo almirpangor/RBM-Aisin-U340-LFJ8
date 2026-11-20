@@ -8,6 +8,7 @@ from unittest.mock import patch
 from zipfile import ZipFile
 
 from tools import package_workset
+from tools.inspect_lfj8_tcm import IDENTITY_OFFSET
 
 
 class FirmwarePairTests(unittest.TestCase):
@@ -16,10 +17,20 @@ class FirmwarePairTests(unittest.TestCase):
         self.addCleanup(directory.cleanup)
         self.root = Path(directory.name)
         self.commit = "a" * 40
+        self.sources = {"firmware": [], "supporting_materials": []}
+        self.bosch_audit = {"files": {}}
         self.source_files = {"README.md": b"Synthetic workset test"}
         self.artifacts = []
         for role, size in package_workset.FIRMWARE_SIZES.items():
-            content = role.encode("ascii").ljust(size, b"\x00")
+            content = bytearray(size)
+            if role == "tcm_h03":
+                metadata = b"LFJ8\x0018\x009E1\x00C\x00LFJ8TC000LFXA0A0\x00SW-LFJ8TC000.HEX\x00"
+                content[IDENTITY_OFFSET:IDENTITY_OFFSET + len(metadata)] = metadata
+                content[0x8000:0x8002] = b"\x5a\xa5"
+                content[-2:] = b"\xa5\x5a"
+            else:
+                tag = b"ME7.9.71/720/4415EN.2/"
+                content[0xA844A:0xA844A + len(tag)] = tag
             file = f"{role}.bin"
             (self.root / file).write_bytes(content)
             self.artifacts.append({
@@ -34,6 +45,8 @@ class FirmwarePairTests(unittest.TestCase):
             })
 
     def package(self, output, *, firmware_pair=True):
+        self.source_files["data/sources.json"] = json.dumps(self.sources).encode()
+        self.source_files["data/e4m3-diff.json"] = json.dumps(self.bosch_audit).encode()
         record = self.root / "record.json"
         record.write_text(json.dumps({"source_commit": self.commit, "artifacts": self.artifacts}),
                           encoding="utf-8")
@@ -104,6 +117,49 @@ class FirmwarePairTests(unittest.TestCase):
             "bosch_sha256": "a" * 64,
         }).encode()
         self.package(self.root / "pair.zip")
+
+    def test_registered_inputs_are_rejected_even_when_renamed(self):
+        for key, artifact, source_id in (("supporting_materials", self.artifacts[0], "H03"),
+                                         ("firmware", self.artifacts[1], "S04")):
+            with self.subTest(source=source_id):
+                output = self.root / f"pair-{source_id}.zip"
+                self.sources[key] = [{"id": source_id, "sha256": artifact["sha256"]}]
+                with self.assertRaisesRegex(ValueError, source_id):
+                    self.package(output)
+                self.sources[key].clear()
+                self.assertFalse(output.exists())
+        self.package(self.root / "evidence.zip", firmware_pair=False)
+
+    def test_older_bosch_audit_image_is_rejected(self):
+        self.bosch_audit["files"]["E4M2"] = {"sha256": self.artifacts[1]["sha256"]}
+        output = self.root / "pair.zip"
+        with self.assertRaisesRegex(ValueError, "E4M2"):
+            self.package(output)
+        self.assertFalse(output.exists())
+
+    def test_wrong_identity_or_boot_marker_is_rejected_at_full_size(self):
+        cases = (
+            (0, IDENTITY_OFFSET + len(b"LFJ8\x0018\x009E1\x00"), b"B", "9E1C"),
+            (0, 0x8000, b"\x00", "0x008000"),
+            (0, 0x7FFFE, b"\x00", "0x07FFFE"),
+            (1, 0xA844A, b"\x00", r"ME7\.9\.71"),
+        )
+        for index, offset, replacement, error in cases:
+            with self.subTest(offset=offset):
+                output = self.root / f"pair-{offset}.zip"
+                artifact = self.artifacts[index]
+                path = self.root / artifact["file"]
+                original = path.read_bytes()
+                changed = original[:offset] + replacement + original[offset + len(replacement):]
+                path.write_bytes(changed)
+                artifact["sha256"] = sha256(changed).hexdigest()
+                try:
+                    with self.assertRaisesRegex(ValueError, error):
+                        self.package(output)
+                    self.assertFalse(output.exists())
+                finally:
+                    path.write_bytes(original)
+                    artifact["sha256"] = sha256(original).hexdigest()
 
     def test_distinct_candidate_is_deterministic(self):
         self.source_files["verification/other_OFFLINE_ONLY.bin"] = b"another artifact"

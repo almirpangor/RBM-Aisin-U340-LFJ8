@@ -9,9 +9,18 @@ import re
 import subprocess
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
+if __package__:
+    from .inspect_lfj8_tcm import H03_PART_NUMBER, IMAGE_SIZE, inspect
+else:
+    from inspect_lfj8_tcm import H03_PART_NUMBER, IMAGE_SIZE, inspect
+
 
 ROOT = Path(__file__).resolve().parents[1]
-FIRMWARE_SIZES = {"tcm_h03": 524_288, "ecu_e4m3": 851_968}
+FIRMWARE_SIZES = {"tcm_h03": IMAGE_SIZE, "ecu_e4m3": 851_968}
+H03_BOOT_MARKERS = {0x008000: b"\x5a\xa5", 0x07FFFE: b"\xa5\x5a"}
+# This platform identifier is present in the pinned S04 and the derived Bosch builds.
+BOSCH_ID_OFFSET = 0x0A844A
+BOSCH_ID = b"ME7.9.71/720/4415EN.2/"
 
 
 def git(*arguments: str) -> bytes:
@@ -67,7 +76,18 @@ def offline_firmware_hashes(source: ZipFile) -> set[str]:
     return hashes
 
 
-def verify_firmware_pair(produced: list[tuple[dict, bytes]], offline_hashes: set[str]) -> None:
+def reference_firmware_hashes(source: ZipFile) -> dict[str, str]:
+    # Read the records at source_commit, using the same snapshot as the archived code.
+    registry = json.loads(source.read("data/sources.json"))
+    audit = json.loads(source.read("data/e4m3-diff.json"))
+    hashes = {entry["sha256"]: name for name, entry in audit["files"].items()}
+    hashes.update((entry["sha256"], entry["id"])
+                  for entry in (*registry["firmware"], *registry["supporting_materials"]))
+    return hashes
+
+
+def verify_firmware_pair(produced: list[tuple[dict, bytes]], offline_hashes: set[str],
+                         reference_hashes: dict[str, str]) -> None:
     firmware = [(item, content) for item, content in produced
                 if PurePosixPath(item["path"]).suffix.lower() == ".bin"
                 or item["role"] in FIRMWARE_SIZES]
@@ -83,6 +103,17 @@ def verify_firmware_pair(produced: list[tuple[dict, bytes]], offline_hashes: set
             raise ValueError(f"Проверочный образ или ELF не подходит для комплекта BIN: {role}")
         if item["sha256"] in offline_hashes:
             raise ValueError(f"Образ {role} совпадает по SHA-256 с проверочным OFFLINE_ONLY")
+        reference = reference_hashes.get(item["sha256"])
+        if reference is not None:
+            raise ValueError(f"Образ {role} совпадает по SHA-256 с исходником {reference}")
+        if role == "tcm_h03":
+            if not inspect(content, H03_PART_NUMBER)["matches_expected_id"]:
+                raise ValueError(f"В образе {role} отсутствует штатный идентификатор {H03_PART_NUMBER}")
+            for offset, marker in H03_BOOT_MARKERS.items():
+                if not content.startswith(marker, offset):
+                    raise ValueError(f"Неверный маркер запуска H03 по адресу 0x{offset:06X}")
+        elif not content.startswith(BOSCH_ID, BOSCH_ID_OFFSET):
+            raise ValueError(f"В образе {role} отсутствует идентификатор {BOSCH_ID.decode('ascii')}")
         if (item.get("build_verified") is not True or item.get("model_verified") is not True
                 or type(item.get("hardware_verified")) is not bool):
             raise ValueError(f"Требуются подтверждения сборки и модели и отдельный статус стенда: {role}")
@@ -111,7 +142,7 @@ def create_workset(record_path: Path, output: Path, *, firmware_pair: bool = Fal
             for build_manifest in sorted(build_manifests):
                 if build_manifest.is_file():
                     offline_hashes.update(offline_report_hashes(json.loads(build_manifest.read_bytes())))
-            verify_firmware_pair(produced, offline_hashes)
+            verify_firmware_pair(produced, offline_hashes, reference_firmware_hashes(source))
         manifest = {key: value for key, value in record.items() if key != "artifacts"}
         manifest["source_commit"] = commit
         manifest["files"] = []
@@ -148,7 +179,7 @@ def main() -> None:
     parser.add_argument("output", type=Path, help="Путь к новому ZIP")
     parser.add_argument(
         "--firmware-pair", action="store_true",
-        help="Проверить наличие BIN ролей tcm_h03 и ecu_e4m3 и статусы их проверок",
+        help="Проверить два целевых BIN, их идентификаторы и статусы проверок",
     )
     arguments = parser.parse_args()
     try:
