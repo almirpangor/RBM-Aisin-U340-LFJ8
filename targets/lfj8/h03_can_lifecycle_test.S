@@ -1,4 +1,4 @@
-    .equ SNAPSHOT_BYTES, 140
+    .equ SNAPSHOT_BYTES, 172
 
 /* Addresses below are simulated RAM or ROM. No device interface is linked. */
 
@@ -30,6 +30,17 @@ _start:
     stb r1,@r0
     addi r0,#1
     stb r1,@r0
+    ld24 r0,#0x80105e
+    ldi r1,#0x41
+    stb r1,@r0
+    ldi r1,#0x45
+    stb r1,@(1,r0)
+    ld24 r0,#h03_can13_grant
+    ldi r1,#1
+    stb r1,@r0
+    ld24 r0,#h03_can0_generation
+    ldi r1,#TEST_GENERATION
+    st r1,@r0
     ld24 lr,#test_done
     push lr
     bra test_site
@@ -85,11 +96,30 @@ oem_config:
     st r1,@(\offset,r0)
     .endm
 
+    .macro word_to_snapshot address,offset
+    ld24 r1,#\address
+    ld r1,@r1
+    st r1,@(\offset,r0)
+    .endm
+
     .section .test_code,"ax",@progbits
+    .p2align 2
+    .global h03_oem_can0_setup
+h03_oem_can0_setup:
+    /* Read the owner shadows just before executing the original routine. */
+    push r0
+    push r1
+    ld24 r0,#snapshot
+    byte_to_snapshot h03_can13_grant,140
+    word_to_snapshot h03_can0_generation,144
+    pop r1
+    pop r0
+    bra oem_config
+
     .p2align 2
 test_wrapper:
     push lr
-    bl oem_config
+    bl h03_can0_setup_hook
     /* This observer uses r0/r1 and leaves CR0 and ACC alone. */
     push r0
     push r1
@@ -105,6 +135,8 @@ test_wrapper:
     st r1,@(120,r0)
     half_to_snapshot 0x801010,132
     byte_to_snapshot 0x80105d,136
+    byte_to_snapshot 0x80105e,156
+    byte_to_snapshot 0x80105f,160
     pop r1
     pop r0
     pop lr
@@ -137,6 +169,10 @@ test_done:
 
     half_to_snapshot 0x801010,124
     byte_to_snapshot 0x80105d,128
+    byte_to_snapshot h03_can13_grant,148
+    word_to_snapshot h03_can0_generation,152
+    byte_to_snapshot 0x80105e,164
+    byte_to_snapshot 0x80105f,168
 
     /* Escape the binary snapshot as ASCII for the simulator stdout. */
     ld24 r1,#snapshot
@@ -176,3 +212,11 @@ hex_buffer:
     .space 2*SNAPSHOT_BYTES
 hex_digits:
     .ascii "0123456789abcdef"
+
+    .p2align 2
+    .global h03_can0_generation
+h03_can0_generation:
+    .long 0
+    .global h03_can13_grant
+h03_can13_grant:
+    .byte 0
