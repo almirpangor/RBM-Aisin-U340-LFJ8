@@ -86,6 +86,13 @@ enum {
     P2709 = 0x8063C4,
     P13DATA = 0x80070D,
     P3DATA = 0x800703,
+    SCHEDULER_MODE = 0x804887,
+    EVENT_SUSPENDED = 0x80801C,
+    SERVICE_FLAGS = 0x808580,
+    CHECKSUM_REMAINING = 0x808DA4,
+    COPY_REMAINING = 0x808DA8,
+    FCNT1 = 0x8007E2,
+    FESBANK1 = 0x8007F2,
     CLEAR_REQUEST = 0x80637C,
     P10DATA = 0x80070A,
     P10SEL = 0x80074A,
@@ -179,6 +186,66 @@ static unsigned fault_count(void)
 {
     return (RAM8(P0745) != 0u) + (RAM8(P0768) != 0u) +
         (RAM8(P0773) != 0u) + (RAM8(P2709) != 0u);
+}
+
+static int check_stock_monitor_gate(void)
+{
+    static const struct {
+        uint8_t session, suspended, fcnt1;
+        uint16_t bank;
+        uint32_t checksum, copy;
+    } cases[] = {
+        {0x00, 0, 0, 0, 0, 0},
+        {0x20, 0, 1, 0x8020, 0, 0},
+        {0x10, 0, 1, 0x802F, 7, 0},
+        {0x10, 0, 0, 0, 0, 11},
+        {0x20, 1, 1, 0x8020, 0, 0},
+    };
+    static const uint8_t modes[] = {0u, 4u};
+    void (*gate)(void) = (void (*)(void))(uintptr_t)0x0403C0;
+    for (unsigned i = 0; i < sizeof(cases) / sizeof(cases[0]); ++i) {
+        for (unsigned j = 0; j < sizeof(modes) / sizeof(modes[0]); ++j) {
+            RAM8(P0745) = 0;
+            RAM8(P0768) = 0;
+            RAM8(P0773) = 0;
+            RAM8(P2709) = 0;
+            RAM8(P13DATA) = 14u;
+            RAM8(0x8063D7) = 0;
+            RAM8(0x8063DA) = 0;
+            RAM8(0x8063DD) = 0;
+            RAM32(VOLTAGE_VBAT) = TWELVE_VOLTS;
+            RAM32(CURRENT_REQUEST) = ONE_AMP;
+            RAM16(ADC0_AN3) = 0;
+            RAM32(REMAINING) = ONE_MONITOR_STEP;
+            RAM32(0x804E7C) = ONE_MONITOR_STEP;
+            RAM32(0x804E80) = ONE_MONITOR_STEP;
+            RAM32(0x804E84) = ONE_MONITOR_STEP;
+            RAM8(SCHEDULER_MODE) = modes[j];
+            RAM8(SERVICE_FLAGS) = cases[i].session;
+            RAM8(EVENT_SUSPENDED) = cases[i].suspended;
+            RAM8(FCNT1) = cases[i].fcnt1;
+            RAM16(FESBANK1) = cases[i].bank;
+            RAM32(CHECKSUM_REMAINING) = cases[i].checksum;
+            RAM32(COPY_REMAINING) = cases[i].copy;
+            gate();
+            if (fault_count() != (modes[j] == 4u ? 0u : 4u) ||
+                RAM8(SERVICE_FLAGS) != cases[i].session ||
+                RAM8(EVENT_SUSPENDED) != cases[i].suspended ||
+                RAM8(FCNT1) != cases[i].fcnt1 || RAM16(FESBANK1) != cases[i].bank ||
+                RAM32(CHECKSUM_REMAINING) != cases[i].checksum ||
+                RAM32(COPY_REMAINING) != cases[i].copy) {
+                return 37u + 2u * i + j;
+            }
+        }
+    }
+    RAM8(SCHEDULER_MODE) = 0;
+    RAM8(SERVICE_FLAGS) = 0;
+    RAM8(EVENT_SUSPENDED) = 0;
+    RAM8(FCNT1) = 0;
+    RAM16(FESBANK1) = 0;
+    RAM32(CHECKSUM_REMAINING) = 0;
+    RAM32(COPY_REMAINING) = 0;
+    return 0;
 }
 
 static void write_word(void *context, uint32_t address, uint32_t value)
@@ -356,6 +423,10 @@ int main(void)
     if (result) {
         return result;
     }
+    const int gate_result = check_stock_monitor_gate();
+    if (gate_result) {
+        return gate_result;
+    }
     static const uint32_t latches[] = {P0745, P0768, P0773, P2709};
     static const uint8_t bad_feedback[] = {0u, 8u, 4u, 2u};
     for (unsigned i = 0; i < sizeof(latches) / sizeof(latches[0]); ++i) {
@@ -393,6 +464,10 @@ SCENARIOS += tuple(
                   "latch_revokes_only_with_hook", "old_generation_after_clear",
                   "duplicate_rejected_and_next_generation_applied")
 )
+SERVICE_CASES = ("idle", "active_virtual_flash", "closed_virtual_flash_pending_checksum",
+                 "closed_pending_copy", "active_suspended_virtual_flash")
+SCENARIOS += tuple(f"monitor_gate_{service}_mode_{mode}"
+                   for service in SERVICE_CASES for mode in (0, 4))
 
 
 def probe_fault_hook(run, work, debugger, latch, *, active=True):
@@ -532,6 +607,13 @@ def check(base, compiler):
         "latch_hook_revokes_old_generation_and_invokes_inhibit": True,
         "latch_hook_probe": hook_probe,
         "discrete_latch_hook_probes": discrete_probes,
+        "stock_monitor_service_gate": {
+            "entry": "0x0403C0",
+            "condition_sets": list(SERVICE_CASES),
+            "mode_0_sets_all_four_flags": True,
+            "mode_4_skips_monitor": True,
+            "actual_flash_remapping_emulated": False,
+        },
         "hardware_executed": False,
         "target_image_emitted": False,
     }
