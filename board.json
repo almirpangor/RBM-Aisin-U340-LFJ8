@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 78,
+  "sequence": 79,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -302,6 +302,21 @@
       "claimed_at": "2026-11-20T16:11:44+00:00",
       "updated_at": "2026-11-20T16:11:44+00:00",
       "note": "Reproduce and fix Tiptronic accepting an opposite shift while the other key is still held. Align C and Python models; leave MODE-02 hardware input and its files to their owner.",
+      "result": null
+    },
+    "TOY-04": {
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex — цикл переключений Toyota",
+      "branch": "codex/toy04-cycle-32e6ac79",
+      "files": [
+        "targets/lfj8/test_lfj8_h03_cycle.c",
+        "verification/project-audit/toy04-upper-gears.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "66ff2c9c89284dcaba9ce91746f4bde4",
+      "claimed_at": "2026-11-20T16:12:39+00:00",
+      "updated_at": "2026-11-20T16:12:39+00:00",
+      "note": "Проверяю 2→3, 3→4 и обратные переходы в существующем цикле FAST/SECONDARY/MAIN. Фиксирую донорские состояния и отсутствующие звенья отдельно от аппаратной реализации.",
       "result": null
     }
   },
@@ -929,9 +944,17 @@
       "action": "review",
       "claim_id": "2bd31f54ff254c59802d402cf6dabb9b",
       "at": "2026-11-20T16:12:31+00:00"
+    },
+    {
+      "operation_id": "b587ce4becdc442597ad7fb2a263de3e",
+      "task": "TOY-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "66ff2c9c89284dcaba9ce91746f4bde4",
+      "at": "2026-11-20T16:12:39+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:12:31+00:00",
+  "updated_at": "2026-11-20T16:12:39+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
