@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:00:17+00:00**. Изменение № **251**.
+Обновлено UTC: **2026-11-20T17:00:34+00:00**. Изменение № **252**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -40,7 +40,7 @@
 | SRC-01 — Реестр происхождения и контроль исходников | На проверке | Codex SRC-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/src01-donor-pins-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:43:47+00:00 | Проверка pinned Git объектов R1–R4 добавлена. SOURCES: ТЗ, S01–S04, H03 и четыре ревизии PASS; два теста, совместимая команда R1 и отказ для неверного клона проверены. Отчёт verification/project-audit/src01-donor-pins.md; снимок для интегратора. / commit 72f71983154edb4dcc7f0b3dc931bebfdb0d9b6d |
 | AUD-01 — Программный аудит истории E4M3 | На проверке | Codex AUD-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/aud01-pinned-replay-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:47:07+00:00 | Трасса и инструменты из одного R4. Два повтора без checkout совпали с сохранёнными отчётами; 3256 CRC и 26 команд в каждом. Ordinary BOSCH и SOURCES PASS. Отчёт verification/project-audit/aud01-pinned-replay.md; стенд ECU-02 открыт. / commit 6748075bd8cda69a0b6c2b9d6e2a471a00463434 |
 | DTC-01 — Прикладной сеанс и статусы Chery | Работа завершена | Codex DTC-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/dtc01-1120-c7e4 | 2026-11-20T16:30:54+00:00 | Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте. / commit 79d853bcd09a13b733907eccc3e1ea6dfe642db7 |
-| DTC-02 — Штатный приём BasicCAN для диагностического сеанса | На проверке | Codex — штатный RX BasicCAN H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T16:58:23+00:00 | Парный захват и послотовый повтор H03 вместе проверены в 18 сравнениях M32R и двух отрицательных контролях. ПК 35 шагов и 71 тест, M32R 17 компонентных прогонов. Стек от входа CAN0 в модели 256 байт. Целевая привязка ниже 0x008000, RAM, часы и стенд открыты. Отчёт dtc02-native-paired-rx.md. / commit 4fb2794766535ae5efd2e351b0de3daea152853e |
+| DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Выполняется | Codex — штатный RX BasicCAN H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T17:00:34+00:00 | Проверяю исполняемую компоновку обеих RX-точек ниже границы приложения, включая штатный обход callbacks в режиме программирования. |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | На проверке | Codex DTC-03 — монитор цепи ATF H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-atf-monitor-01a1f9c7 | 2026-11-20T16:47:24+00:00 | Передаю интегратору адаптер штатного статуса ATF H03. Код встроен в перемещаемый мост, 20 сценариев и 2 отрицательные проверки M32R, ПК 35 шагов/71 тест, H03 link 17 компонентов PASS. Отчёт verification/project-audit/dtc03-h03-atf-monitor.md. Четыре файла кода внести в общий аудит при приёмке и выполнить complete после публикации main. Штатный вызов, отображение P0710 и стенд открыты. / commit d487840ba2505064c7f281305a10813cbdf3b695 |
 | DTC-04 — Хранение DTC после выключения питания | На проверке | Codex — подтверждение долговечной очистки DTC \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-durable-clear-32e6ac79 | 2026-11-20T16:43:22+00:00 | Передаю интегратору. При настроенном backend 54 FF 00 выдаётся только после подтверждения пустого журнала. При отказе сохраняется RAM, TX не ставится. 30 прерываний и повтор PASS, PC 35 шагов/71 тест, M32R журнал и 17 компонентов PASS. Отчёт dtc04-durable-clear.md. Носитель и подключение H03 открыты. / commit acd7d12c2e65cbb521331b175365aa2ae8ffc343 |
 | REL-01 — Два целевых BIN и воспроизводимый комплект | На проверке | Codex REL-01 binary identity \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/rel01-bin-identity-1120-c7e4 | 2026-11-20T16:50:31+00:00 | Reject known OFFLINE_ONLY firmware in paired worksets by SHA-256. Two real renamed Bosch artifacts rejected; accepted evidence packaging remains. SOURCES and PC 35 steps/74 tests PASS. Evidence verification/project-audit/rel01-offline-identity.md. Target pair still open. / commit 3fda923bffc63005e8c2372b22e5197f8d4b7db1 |
@@ -116,6 +116,7 @@
 - verification/project-audit/dtc02-basiccan-order.md
 - verification/project-audit/dtc02-basiccan.md
 - verification/project-audit/dtc02-foreground.md
+- verification/project-audit/dtc02-h03-rx-binding.md
 - verification/project-audit/dtc02-native-paired-rx.md
 - verification/project-audit/dtc02-native-rx-hook.md
 - verification/project-audit/dtc02-preclear-capture.md
@@ -322,6 +323,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:00:34+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T17:00:17+00:00 | REL-02 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:00:11+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:59:29+00:00 | REL-02 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -351,4 +353,3 @@
 | 2026-11-20T16:49:33+00:00 | H03-05 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:49:11+00:00 | TOY-02 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:48:47+00:00 | H03-05 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
-| 2026-11-20T16:48:41+00:00 | REL-01 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
