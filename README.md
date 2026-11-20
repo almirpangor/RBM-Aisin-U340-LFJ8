@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:48:09+00:00**. Изменение № **425**.
+Обновлено UTC: **2026-11-20T18:48:50+00:00**. Изменение № **426**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -28,7 +28,7 @@
 | H03-01 — Выбранная основа 9E1C и карта подключения | Закрыта по текущему объёму | Предыдущий: Codex H03-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-01-base-guard-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:47:37+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit cf488af90f0e7beca13fe3c02599cd4854f3668e |
 | H03-02 — S51, S83 и температура ATF | Свободна для продолжения | Предыдущий: Codex — штатные события датчиков H03 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-02-sensor-events-mwp5rm2ofhaxjfi9dss | 2026-11-20T18:36:31+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit c354bf9f0ceb130ac03d525c6889f3d277dc7666 |
 | H03-03 — Единое расписание и запуск приложения H03 | На проверке | Codex H03-02/H03-03 — снимок в foreground \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-03-sensor-foreground-mwp5rm2ofhaxjfi9dss | 2026-11-20T18:43:07+00:00 | Снимок S51/S83/ATF в штатном foreground, владелец эпохи приложение. M32R 38 сценариев и 80 IRQ/RTE, 17 native, 18 компонентных, 37 этапов ПК. Полная компоновка FAIL_BINDINGS, стенд открыт. Отчёт h03-03-sensor-foreground.md. / commit 391a5514f65fddb1041cfd7b7ee8018c10110c30 |
-| H03-04 — Память, стек и сервисные пути | Выполняется | Основной чат — защита памяти \[codex-integration-01a1f76d-20261120\] | codex/integration-01a1f76d-20261120 | 2026-11-20T18:39:50+00:00 | После принятой компоновки беру следующий независимый остаток: защита RAM от прямой и уже принятой отложенной сервисной записи. Новые native wrappers/guard, исходный H03 в M32R и отрицательные проверки. Платформенные binding файлы других чатов не меняю. |
+| H03-04 — Память, стек и сервисные пути | Выполняется | Основной чат — защита памяти \[codex-integration-01a1f76d-20261120\] | codex/integration-01a1f76d-20261120 | 2026-11-20T18:48:50+00:00 | Два писателя защищены в M32R: 240 сценариев, 20 отрицательных/граничных утверждений. 352 байта с модельной таблицей, 0 новой RAM. Резервирую общую сборку, чтобы новый C guard вошёл в учёт. Политика SBI/DMA/Virtual Flash и окончательное размещение открыты. |
 | H03-05 — SLT, силовые выходы и реакция на отказ | Выполняется | Codex H03-05 CAN revoke and output inhibit \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/h03-05-can-revoke-bindings-01a1f99f | 2026-11-20T18:47:57+00:00 | Bind native CAN recovery to the existing CAN owner and commissioned inhibit contract. Resolve typed storage aliases in the layout model and recheck release blockers without touching reserved application or RAM files. |
 | IO-01 — Два дополнительных реле | Отложена владельцем | — | — | — | — |
 | VSS-01 — Точный расчёт VSS и скорость по CAN | На проверке | Чат CAN — остановка и первый фронт S51 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/vss01-standstill-guard-1120-c7e4 | 2026-11-20T18:44:13+00:00 | Устранён ложный ноль скорости 0x1AE после первого фронта S51. Регрессия на ПК и M32R, общий ПК 37/113, M32R 18 компонентных, 6 проверок по адресам и Bosch PASS_OFFLINE_ONLY. Отчёт verification/project-audit/vss01-standstill-guard.md. Физический источник подтверждения остановки и калибровка S51 открыты. / commit 79fc4e071100a977eda10a412a23ac682d5be672 |
@@ -624,6 +624,7 @@
 - targets/lfj8/h03_service_guard_hooks.S
 - targets/lfj8/lfj8_h03_service_guard.c
 - targets/lfj8/lfj8_h03_service_guard.h
+- tools/check_h03_image_layout.py
 - verification/project-audit/2026-11-20-service-guard.json
 - verification/project-audit/h03-04-service-guard.md
 - verification/project-audit/service-guard/
@@ -717,6 +718,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:48:50+00:00 | H03-04 | heartbeat | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T18:48:09+00:00 | TOY-06 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T18:47:57+00:00 | H03-05 | claim | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:46:58+00:00 | DTC-02 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
@@ -746,4 +748,3 @@
 | 2026-11-20T18:38:24+00:00 | CAN-02 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:38:10+00:00 | DTC-04 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T18:37:51+00:00 | ORG-01 | complete | codex-integration-01a1f76d-20261120 |
-| 2026-11-20T18:37:31+00:00 | CAN-05 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
