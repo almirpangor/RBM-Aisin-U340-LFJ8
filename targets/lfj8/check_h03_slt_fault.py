@@ -1,4 +1,4 @@
-"""Exercise H03 Pressure A and D/E/F fault latches in the M32R simulator."""
+"""Exercise H03 output fault latches and the inhibit callback on M32R."""
 
 import argparse
 from hashlib import sha256
@@ -65,6 +65,7 @@ h03_shift_f_fault_resume = 0x0342e4;
 FIXTURE = """
 #include <stdint.h>
 #include "lfj8_h03_mmio.h"
+#include "lfj8_h03_output_inhibit.h"
 #include "lfj8_h03_takeover.h"
 
 #define RAM8(a) (*(volatile uint8_t *)(uintptr_t)(a))
@@ -181,6 +182,28 @@ static unsigned delivered;
 static unsigned fault_notifications;
 static uint32_t notification_ie;
 static uint32_t watched_latch = P0745;
+static uint32_t now = 100;
+static int can_qualified = 1;
+
+static int owned_commands_zero(void)
+{
+    return RAM8(0x8063D5) == 0u && RAM8(0x8063D7) == 0u &&
+        RAM8(0x8063D8) == 0u && RAM8(0x8063DA) == 0u &&
+        RAM8(0x8063DB) == 0u && RAM8(0x8063DD) == 0u &&
+        RAM32(PRESSURE_PROPOSAL) == 0u && RAM32(CURRENT_REQUEST) == 0u;
+}
+
+static int low_outputs(void)
+{
+    return RAM8(P3DATA) == 0x15u && RAM8(P10DATA) == 0xf2u &&
+        RAM8(P10SEL) == 0xa0u && RAM16(PWM_WIDTH) == 1u &&
+        RAM16(TIO4RL1) == 2998u && RAM16(TIO4RL0) == 0u;
+}
+
+static const Lfj8H03OutputPlan plan = {
+    .pressure_mailbox = PRESSURE_PROPOSAL, .pressure_binary32 = ONE_AMP,
+    .pressure_request_ma = 1000u, .toyota_compare = 400u,
+};
 
 static unsigned fault_count(void)
 {
@@ -257,13 +280,13 @@ static void write_word(void *context, uint32_t address, uint32_t value)
 static uint32_t clock_ticks(void *context)
 {
     (void)context;
-    return 100;
+    return now;
 }
 
 static int qualified(void *context)
 {
     (void)context;
-    return 1;
+    return can_qualified;
 }
 
 static void arbitrate(void *context)
@@ -281,7 +304,6 @@ static void apply(void *context)
 
 static void inhibit(void *context)
 {
-    (void)context;
     ++inhibits;
     if (RAM8(watched_latch)) {
         uint32_t psw;
@@ -289,6 +311,7 @@ static void inhibit(void *context)
         ++fault_notifications;
         notification_ie |= psw & 0x40u;
     }
+    lfj8_h03_output_inhibit_locked(context);
 }
 
 static int check_revocation(uint32_t latch, uint8_t bad_feedback)
@@ -297,10 +320,6 @@ static int check_revocation(uint32_t latch, uint8_t bad_feedback)
         .io = &lfj8_h03_mmio, .write32 = write_word, .clock_ticks = clock_ticks,
         .qualified = qualified, .arbitrate = arbitrate, .apply = apply, .inhibit = inhibit,
         .isolated_pwm_mask = LFJ8_H03_ALL_SPARE_PWM_ISOLATED,
-    };
-    const Lfj8H03OutputPlan plan = {
-        .pressure_mailbox = PRESSURE_PROPOSAL, .pressure_binary32 = ONE_AMP,
-        .pressure_request_ma = 1000u, .toyota_compare = 400u,
     };
     Lfj8H03Takeover *state = &rbm_h03_takeover_state;
     void (*clear)(void) = (void (*)(void))(uintptr_t)0x071FF4;
@@ -315,8 +334,13 @@ static int check_revocation(uint32_t latch, uint8_t bad_feedback)
     clear();
     RAM8(CLEAR_REQUEST) = 0u;
     RAM16(STARTUP_COUNT) = 3u;
-    RAM8(P3DATA) = 0;
+    RAM8(P3DATA) = 0x15u;
     RAM8(P13DATA) = 0;
+    RAM8(P10DATA) = 0xf3u;
+    RAM8(P10SEL) = 0xa1u;
+    RAM16(PWM_WIDTH) = 1000u;
+    RAM16(TIO4RL1) = 1999u;
+    RAM16(TIO4RL0) = 999u;
     RAM16(ADC0_AN3) = 307u << 6;
     RAM32(VOLTAGE_VBAT) = TWELVE_VOLTS;
     if (!lfj8_h03_takeover_init(state, &ops, 10) ||
@@ -329,12 +353,14 @@ static int check_revocation(uint32_t latch, uint8_t bad_feedback)
     for (unsigned i = 0; i < (pressure ? 19u : 9u); ++i) {
         monitor();
     }
-    if (fault_count() || !state->pending || inhibits) {
+    if (fault_count() || !state->pending || inhibits || RAM8(P10SEL) != 0xa1u) {
         return 18;
     }
     monitor();
     if (RAM8(latch) != 1u || fault_count() != 1u || state->pending != 1u - H03_SLT_FAULT_HOOK ||
-        fault_notifications != H03_SLT_FAULT_HOOK || notification_ie != 0u) {
+        fault_notifications != H03_SLT_FAULT_HOOK || notification_ie != 0u ||
+        (H03_SLT_FAULT_HOOK ? (!low_outputs() || !owned_commands_zero()) :
+                             (RAM8(P10SEL) != 0xa1u || RAM32(CURRENT_REQUEST) != ONE_AMP))) {
         return 19;
     }
 
@@ -348,6 +374,83 @@ static int check_revocation(uint32_t latch, uint8_t bad_feedback)
         !lfj8_h03_takeover_prepare_plan(state, &plan, 2, 100) ||
         !lfj8_h03_takeover_apply(state, 2) || delivered != 2u - H03_SLT_FAULT_HOOK) {
         return 21;
+    }
+    return 0;
+}
+
+enum { LOST_CAN, LOST_PHASE, SERVICE_HANDOFF };
+
+static int check_lost_authority(unsigned cause)
+{
+    static Lfj8H03PhaseClock phase;
+    static const Lfj8H03TakeoverOps ops = {
+        .io = &lfj8_h03_mmio, .write32 = write_word, .clock_ticks = clock_ticks,
+        .qualified = qualified, .arbitrate = arbitrate, .apply = apply,
+        .inhibit = lfj8_h03_output_inhibit_locked, .phase_clock = &phase,
+        .isolated_pwm_mask = LFJ8_H03_ALL_SPARE_PWM_ISOLATED,
+    };
+    Lfj8H03Takeover *state = &rbm_h03_takeover_state;
+    Lfj8H03PhaseEvent event;
+    const int base = 47u + 4u * cause;
+
+    now = 100u;
+    delivered = 0;
+    RAM8(CLEAR_REQUEST) = 0;
+    RAM8(P3DATA) = 0xf5u;
+    RAM8(P10DATA) = 0xf3u;
+    RAM8(P10SEL) = 0xa0u;
+    if (!lfj8_h03_phase_clock_init(&phase, 90u, 10u, 10u, 2u) ||
+        !lfj8_h03_takeover_init(state, &ops, 10u)) {
+        return base;
+    }
+    lfj8_h03_phase_clock_release(&phase, now);
+    if (lfj8_h03_takeover_take_phase(state, &event) != LFJ8_H03_PHASE_EVENT ||
+        !lfj8_h03_takeover_prepare_plan(state, &plan, 1u, now) ||
+        !lfj8_h03_takeover_apply(state, 1u) ||
+        !lfj8_h03_takeover_prepare_plan(state, &plan, 2u, now) ||
+        RAM8(P3DATA) != 0xf5u || RAM8(P10SEL) != 0xa1u ||
+        RAM16(TIO4RL1) != 1999u || RAM16(TIO4RL0) != 999u) {
+        return base;
+    }
+
+    const uint8_t p0_before = RAM8(0x800700);
+    const uint8_t p9_before = RAM8(0x800709);
+    const uint8_t p9sel_before = RAM8(0x800749);
+    if (cause == LOST_CAN) {
+        can_qualified = 0;
+        if (lfj8_h03_takeover_apply(state, 2u)) {
+            return base + 1;
+        }
+    } else if (cause == LOST_PHASE) {
+        now = 111u;
+        if (lfj8_h03_takeover_check_phase(state) != LFJ8_H03_PHASE_FAULT) {
+            return base + 1;
+        }
+    } else {
+        const uint32_t saved = ops.io->enter(ops.io->context);
+        lfj8_h03_takeover_revoke_locked(state);
+        RAM8(SCHEDULER_MODE) = 4;
+        RAM8(EVENT_SUSPENDED) = 1;
+        ops.io->leave(ops.io->context, saved);
+    }
+    if (state->pending || delivered != 1u || !owned_commands_zero() || !low_outputs() ||
+        RAM8(0x800700) != p0_before || RAM8(0x800709) != p9_before ||
+        RAM8(0x800749) != p9sel_before || fault_count()) {
+        return base + 2;
+    }
+
+    can_qualified = 1;
+    RAM8(SCHEDULER_MODE) = 0;
+    RAM8(EVENT_SUSPENDED) = 0;
+    arbitrate(0);
+    if (!owned_commands_zero() || lfj8_h03_takeover_apply(state, 2u) ||
+        delivered != 1u || !low_outputs()) {
+        return base + 3;
+    }
+    if (cause == LOST_PHASE &&
+        (lfj8_h03_takeover_check_phase(state) != LFJ8_H03_PHASE_FAULT ||
+         lfj8_h03_takeover_prepare_plan(state, &plan, 3u, now))) {
+        return 59;
     }
     return 0;
 }
@@ -435,6 +538,12 @@ int main(void)
             return rejected + 5u * i;
         }
     }
+    for (unsigned cause = LOST_CAN; cause <= SERVICE_HANDOFF; ++cause) {
+        const int rejected = check_lost_authority(cause);
+        if (rejected) {
+            return rejected;
+        }
+    }
     return 0;
 }
 """
@@ -468,6 +577,12 @@ SERVICE_CASES = ("idle", "active_virtual_flash", "closed_virtual_flash_pending_c
                  "closed_pending_copy", "active_suspended_virtual_flash")
 SCENARIOS += tuple(f"monitor_gate_{service}_mode_{mode}"
                    for service in SERVICE_CASES for mode in (0, 4))
+SCENARIOS += tuple(
+    f"inhibit_{cause}_{stage}"
+    for cause in ("can", "phase_timeout", "service_handoff")
+    for stage in ("active_outputs", "authority_lost", "revoked_and_low", "old_generation_rejected")
+)
+SCENARIOS += ("inhibit_phase_timeout_stays_latched",)
 
 
 def probe_fault_hook(run, work, debugger, latch, *, active=True):
@@ -525,6 +640,53 @@ printf "LATCH %08x %08x\\n", $r0, *(unsigned char*){flag:#x}
             "mask_through_restore_steps": mask_end - mask_start}
 
 
+def probe_inhibit_order(run, work, debugger):
+    registers = (
+        (0x800703, "char"), (0x8048CC, "short"), (0x80070A, "char"), (0x80074A, "char"),
+        (0x800344, "short"), (0x800346, "short"),
+    )
+    capture = "\n".join(f"set $v{i} = *(unsigned {size}*){addr:#x}"
+                        for i, (addr, size) in enumerate(registers))
+    observe = "\n".join(
+        f"""  set $next = *(unsigned {size}*){addr:#x}
+  if $next != $v{i}
+    printf "CHANGE {addr:#08x} %d\\n", $next
+    set $v{i} = $next
+  end"""
+        for i, (addr, size) in enumerate(registers)
+    )
+    script = work / "probe-inhibit.gdb"
+    script.write_text(f"""
+set confirm off
+set pagination off
+target sim --memory-size 16M
+load
+break *lfj8_h03_output_inhibit_locked if *(unsigned char*)0x800703 == 0xf5
+run
+set $return = $lr
+set $steps = 0
+set $ie = $psw & 0x40
+{capture}
+while $pc != $return && $steps < 256
+  stepi
+{observe}
+  set $ie = $ie | ($psw & 0x40)
+  set $steps = $steps + 1
+end
+printf "INHIBIT %d %d\\n", $pc == $return, $ie
+""", encoding="ascii")
+    log = run(debugger, "--batch", "-nx", "-x", script.name, "fixture.elf")
+    observed = [(int(address, 16), int(value))
+                for address, value in re.findall(rb"^CHANGE (0x[0-9a-f]+) (\d+)\r?$", log, re.M)]
+    expected = [(0x800703, 0x75), (0x800703, 0x35), (0x800703, 0x15),
+                (0x8048CC, 0), (0x80070A, 0xF2), (0x80074A, 0xA0),
+                (0x8048CC, 1), (0x800344, 2998), (0x800346, 0)]
+    if (observed != expected or
+            re.search(rb"^INHIBIT 1 0\r?$", log, re.M) is None):
+        raise ValueError(f"Unexpected inhibit sequence: {observed!r}, {log[-320:]!r}")
+    return [{"address": f"{address:#08x}", "value": value} for address, value in observed]
+
+
 def check(base, compiler):
     identity = identify_h03(base)
     rom = base.read_bytes()
@@ -559,7 +721,8 @@ def check(base, compiler):
                 f"-DH03_SLT_FAULT_HOOK={hooked}", f"-I{here}", f"-I{root / 'controller/include'}",
                 f"-I{root / 'controller/vendor/toyota/include'}",
                 "fixture.S", "fixture.c", here / "h03_slt_fault_hook.S", here / "lfj8_h03_takeover.c",
-                here / "lfj8_h03_outputs.c", here / "lfj8_h03_mmio.c", "-lc", "-lgcc",
+                here / "lfj8_h03_outputs.c", here / "lfj8_h03_mmio.c",
+                here / "lfj8_h03_output_inhibit.c", here / "lfj8_h03_phase_clock.c", "-lc", "-lgcc",
                 "-o", "fixture.elf")
             run(objcopy, "-j", ".stock", "-O", "binary", "fixture.elf", "linked-stock.bin")
             linked = (work / "linked-stock.bin").read_bytes()
@@ -582,11 +745,12 @@ def check(base, compiler):
         debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
         slt_latch = LATCHES[-1]
         hook_probe = {"owner_uninitialized": probe_fault_hook(run, work, debugger, slt_latch, active=False),
-                      "active_revoke_with_test_inhibit": probe_fault_hook(run, work, debugger, slt_latch)}
+                      "active_revoke_with_native_inhibit": probe_fault_hook(run, work, debugger, slt_latch)}
         discrete_probes = {
             latch[1]: probe_fault_hook(run, work, debugger, latch)
             for latch in LATCHES[:-1]
         }
+        inhibit_order = probe_inhibit_order(run, work, debugger)
 
     return {
         "base": identity,
@@ -607,6 +771,15 @@ def check(base, compiler):
         "latch_hook_revokes_old_generation_and_invokes_inhibit": True,
         "latch_hook_probe": hook_probe,
         "discrete_latch_hook_probes": discrete_probes,
+        "native_inhibit": {
+            "entry": "lfj8_h03_output_inhibit_locked",
+            "sources": ["output_fault_latch", "lost_can_qualification_at_apply",
+                        "phase_timeout_while_waiting", "revoke_before_service_handoff"],
+            "masked_register_sequence": inhibit_order,
+            "retired_proposals_and_final_commands": ["D", "E", "F", "Pressure A"],
+            "port_0_and_port_9_preserved": True,
+            "service_event_publisher_remains_to_be_bound": True,
+        },
         "stock_monitor_service_gate": {
             "entry": "0x0403C0",
             "condition_sets": list(SERVICE_CASES),
