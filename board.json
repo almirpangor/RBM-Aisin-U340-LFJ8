@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 389,
+  "sequence": 390,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -290,13 +290,14 @@
         "targets/lfj8/lfj8_h03_torque.c",
         "targets/lfj8/lfj8_h03_torque.h",
         "targets/lfj8/test_lfj8_h03_torque.c",
+        "targets/lfj8/verify_h03_torque.py",
         "verification/project-audit/can04-progress-deadline.md"
       ],
       "stage": "in_progress",
       "claim_id": "001fe3e513b645ef9370cb6af6d76bc2",
       "claimed_at": "2026-11-20T18:33:48+00:00",
-      "updated_at": "2026-11-20T18:33:48+00:00",
-      "note": "Проверяю гонку порядка RX → poll на границе 60 мс: запоздалый 0x5E9 не должен возобновлять снижение. Транспорт CAN13, калибровки и файлы других резервов не затрагиваю.",
+      "updated_at": "2026-11-20T18:35:52+00:00",
+      "note": "Ошибка ровно в 60 мс воспроизведена до правки. Срок проверяется по времени захвата перед обновлением состояния. Добавляю сценарий задержанного ответа модели Bosch в verify_h03_torque.py.",
       "result": null
     },
     "MODE-01": {
@@ -3680,9 +3681,17 @@
       "action": "claim",
       "claim_id": "ba6497ac9d4a4fb380b163c8abb7d2d2",
       "at": "2026-11-20T18:35:39+00:00"
+    },
+    {
+      "operation_id": "08449d7131eb4696aa5842fbc29f359b",
+      "task": "CAN-04",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "heartbeat",
+      "claim_id": "001fe3e513b645ef9370cb6af6d76bc2",
+      "at": "2026-11-20T18:35:52+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:35:39+00:00",
+  "updated_at": "2026-11-20T18:35:52+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
