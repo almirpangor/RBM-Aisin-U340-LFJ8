@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:48:17+00:00**. Изменение № **308**.
+Обновлено UTC: **2026-11-20T17:48:37+00:00**. Изменение № **309**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -44,7 +44,7 @@
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Работа завершена | Codex DTC-03 — монитор цепи ATF H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-atf-monitor-01a1f9c7 | 2026-11-20T17:40:03+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit d487840ba2505064c7f281305a10813cbdf3b695 |
 | DTC-04 — Хранение DTC после выключения питания | Работа завершена | Codex — подтверждение долговечной очистки DTC \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-durable-clear-32e6ac79 | 2026-11-20T17:39:02+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit acd7d12c2e65cbb521331b175365aa2ae8ffc343 |
 | REL-01 — Два целевых BIN и воспроизводимый комплект | Работа завершена | Codex REL-01 binary identity \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/rel01-bin-identity-1120-c7e4 | 2026-11-20T17:38:02+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 3fda923bffc63005e8c2372b22e5197f8d4b7db1 |
-| REL-02 — Приёмка новой связки на оборудовании | На проверке | Codex REL-02 — проверка записи CAN \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/rel-02-can-trace-fea1b366 | 2026-11-20T17:00:17+00:00 | Программная подготовка REL-02: офлайн-разбор TRC и проверка периодических ID по заданным допускам. Python 77/77; R1 25261 запись, четыре перехода, ожидаемый отказ по отсутствующим ID. Доказательства verification/project-audit/rel02-can-trace.md. Общий аудит обновляет интегратор. Для приёмки нужны измерения новой пары H03/E4M3. / commit 2ebae711ad169cf22528a0a7297d8d3b210d4e0a |
+| REL-02 — Приёмка новой связки на оборудовании | Работа завершена | Codex REL-02 — проверка записи CAN \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/rel-02-can-trace-fea1b366 | 2026-11-20T17:48:37+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 2ebae711ad169cf22528a0a7297d8d3b210d4e0a |
 
 ## Зарезервированные файлы
 
@@ -64,18 +64,11 @@
 - verification/project-audit/2026-11-20-integration-3.json
 - verification/project-audit/integration-3/
 
-### REL-02
-
-Чат: Codex REL-02 — проверка записи CAN. Claim ID: 9df078bb4f93459f8e1b8d34220dd825.
-
-- tests/test_bench_can_trace.py
-- tools/check_bench_can_trace.py
-- verification/project-audit/rel02-can-trace.md
-
 ## Последние события
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:48:37+00:00 | REL-02 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:48:17+00:00 | AUD-01 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:47:57+00:00 | SRC-01 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:47:37+00:00 | H03-01 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -105,4 +98,3 @@
 | 2026-11-20T17:38:02+00:00 | REL-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T17:37:42+00:00 | TOY-03 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T17:37:21+00:00 | CAN-03 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
-| 2026-11-20T17:37:01+00:00 | DTC-02 | complete | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
