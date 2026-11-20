@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 372,
+  "sequence": 373,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -291,8 +291,8 @@
       "stage": "in_progress",
       "claim_id": "94acefd328f147ea988bf6d03a41c5f7",
       "claimed_at": "2026-11-20T18:25:22+00:00",
-      "updated_at": "2026-11-20T18:25:22+00:00",
-      "note": "Определяю снимок коррекций по исходному V850 Toyota S01 при холодной инициализации и сбросе. Отдельно проверяю поля, оставляемые донором, и привязку к запуску runtime без назначения NVM.",
+      "updated_at": "2026-11-20T18:29:23+00:00",
+      "note": "Все 34 поля сопоставлены с дескрипторами S01: ROM возвращает ноль для холодного fallback. Добавлен явный снимок S01. Запускаю сверку переноса R3, восстановления с валидной записью и сборки M32R.",
       "result": null
     },
     "CAN-04": {
@@ -3556,9 +3556,17 @@
       "action": "heartbeat",
       "claim_id": "e050fbd1bb5d4d14a3f58aac59b8cf86",
       "at": "2026-11-20T18:29:08+00:00"
+    },
+    {
+      "operation_id": "f1a08fe1d7734b4ba5a474a38abc7c78",
+      "task": "TOY-05",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "heartbeat",
+      "claim_id": "94acefd328f147ea988bf6d03a41c5f7",
+      "at": "2026-11-20T18:29:23+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:29:08+00:00",
+  "updated_at": "2026-11-20T18:29:23+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
