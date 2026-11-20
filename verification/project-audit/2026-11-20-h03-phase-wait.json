@@ -260,9 +260,8 @@
     "tools/verify_chery_ecm_schedule.py": "e0f51f17be438fd4f8f9d55f0e85f6b2272b89ce335d7db1c3e3f06ccba1f411",
     "tools/verify_mazda_pcm_can.py": "9c8b96ed226e0619b8ab3b564644312d9bcc43a9da09e7a4e197e5baf2700da4",
     "tools/verify_sources.py": "405a4f27d83b7d6ce9f8fbd5ba6eb27ff0532053a54c16c9533e72a6d2abfb3c",
-    "targets/lfj8/check_h03_phase_wait.py": "90ff991e8b3ab94c5722949e8f8b66366dcf16f4881cb7b953858e1c8a75ab64",
-    "targets/lfj8/h03_phase_wait_hook.S": "0f2bd67c88bee7518800518a94a3de397879522d7aa670f6db996ba5a2995405",
-    "targets/lfj8/h03_phase_wait_fixture.c": "e135f9527bfdc531b11ad085a88c6be5560ac6f54b1a282aef9ad8d5678e15d6"
+    "targets/lfj8/check_h03_phase_wait.py": "59e781b28a72bb47ca9a42246436967a0e17eda3aaacbe7198ff96bb2b002382",
+    "targets/lfj8/h03_phase_wait_hook.S": "1dd8ba6c377048461d0f6488a0f93cdc8db0b334bfcac47ed1ecc5cadabf26f8"
   },
   "evidence_sha256": {
     ".github/workflows/project-checks.yml": "6c98ced782463fe13630ee073ca17481468a42acdc14b78d40f498dc6048a767",
@@ -290,22 +289,13 @@
     "verification/project-audit/source-guard-checks.json": "279bf820b80330e2c2a611a76e4cf5f119eaed478a24aa3e6497ea1294d6d742",
     "verification/project-audit/sources.txt": "1a5d35501c1e3267ffe263b04eff4fa298d0993b5187aa87dcd2c9791101cb7c",
     "verification/project-audit/status-guard-checks.json": "56200f7c2138efb251e71926f61ab9207d858d90160130ad8991a56a0cd8a26a",
-    "verification/e4m3-can-9e1c/h03-phase-wait.json": "afb0c15f672c65e2f3236a0892baa0fc5b48616e65b46bd5c4786aef2449e171"
+    "verification/e4m3-can-9e1c/h03-phase-wait.json": "0b05ea399b21356770bb04113273a02c5eeec7e0623cdeadfb103c200f10f233"
   },
   "h03_phase_wait_followup": {
     "preceding_snapshot": "verification/project-audit/2026-11-20-dtc02-queue.json",
-    "scope": "Experimental foreground wait hook with the C phase watchdog in M32R",
-    "repeated_checks": [
-      "Six wait-hook cases: ready, delayed and stalled publication, with both carry values",
-      "H03 foreground ABI and phase publication simulator regressions",
-      "Temporary negative control: omitting pending-command revocation fails the stalled fixture",
-      "59 Python unit tests"
-    ],
-    "limits": "Clock, OEM phase flag and inhibit are simulated. Physical timing and production integration remain open.",
-    "changed_fixtures": [
-      "targets/lfj8/check_h03_phase_wait.py",
-      "targets/lfj8/h03_phase_wait_fixture.c"
-    ]
+    "scope": "Experimental foreground wait hook and M32R fixture",
+    "repeated_checks": "Four scenarios with ready and delayed phase flag and both carry values",
+    "limits": "Mock callback and simulated flag; no production integration or physical timing"
   },
   "h03_phase_watchdog_followup": {
     "changed_code_and_tests": [
@@ -335,17 +325,5 @@
       }
     },
     "limits": "New watchdog API exercised by the M32R component test. The wait hook and hardware inhibit are not linked to the production image."
-  },
-  "h03_phase_wait_rate_followup": {
-    "changed_hook_and_fixtures": [
-      "targets/lfj8/check_h03_phase_wait.py",
-      "targets/lfj8/h03_phase_wait_fixture.c",
-      "targets/lfj8/h03_phase_wait_hook.S"
-    ],
-    "repeated_checks": [
-      "Eight M32R runs: ready, delayed across wrap, stopped publisher, early OEM flag, both carry values",
-      "Temporary negative control: replacing the interval branch by an unconditional branch is detected"
-    ],
-    "limits": "Simulated clock and inhibit; the 72-byte wrapper frame stays live throughout the wait. Production timing and stack qualification remain open."
   }
 }

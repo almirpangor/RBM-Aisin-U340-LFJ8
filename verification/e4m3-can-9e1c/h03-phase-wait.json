@@ -83,6 +83,10 @@
   ],
   "test_poll_interval_ticks": 2,
   "extra_persistent_ram_bytes": 0,
+  "wrapper_stack_bytes": {
+    "waiting": 8,
+    "at_callback_entry": 64
+  },
   "scope": "Real C phase clock and takeover check; synthetic clock, OEM flag and inhibit.",
   "hardware_executed": false,
   "flashable_image": null

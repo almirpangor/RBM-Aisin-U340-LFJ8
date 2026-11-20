@@ -9,7 +9,7 @@
     "engine": "GW4G15 / Bosch ME7.9.71 E4M3"
   },
   "release_ready": false,
-  "audit": "verification/project-audit/2026-11-20-h03-storage.json",
+  "audit": "verification/project-audit/2026-11-20-h03-wait-stack.json",
   "status_labels": {
     "closed": "Завершено в указанном объёме",
     "model": "Проверено программно",

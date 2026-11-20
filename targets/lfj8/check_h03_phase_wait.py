@@ -32,6 +32,8 @@ entry_initialized:
     mvtaclo r2
     ldi r2,#0x40+CARRY
     mvtc r2,psw
+    ld24 r2,#0x234567
+    ld24 r8,#0x13579b
     bra phase_wait_site
 
     .section .wait,"ax"
@@ -63,6 +65,10 @@ rbm_h03_phase_wait_callback:
     jmp lr
 
 check_return:
+    ld24 r3,#0x234567
+    bne r2,r3,fail
+    ld24 r3,#0x13579b
+    bne r8,r3,fail
     mvfc r3,psw
     and3 r3,r3,#1
     ldi r2,#CARRY
@@ -117,9 +123,14 @@ set confirm off
 target sim --memory-size 16M
 load
 set $samples = 0
+set $callbacks = 0
 break *rbm_h03_phase_wait_tick_sample
 commands
   silent
+  if $sp != 0x9ffff4
+    printf "UNEXPECTED WAIT SP %x\\n", $sp
+    quit
+  end
   set $samples = $samples + 1
   if $samples > 32
     printf "TICK DRIVER LIMIT\\n"
@@ -133,9 +144,19 @@ commands
   end
   continue
 end
+break *rbm_h03_phase_wait_callback
+commands
+  silent
+  if $sp != 0x9fffbc
+    printf "UNEXPECTED CALLBACK SP %x\\n", $sp
+    quit
+  end
+  set $callbacks = $callbacks + 1
+  continue
+end
 tbreak *fixture_exit
 run
-printf "RESULT %d %d\\n", $r1, $samples
+printf "RESULT %d %d %d\\n", $r1, $samples, $callbacks
 """
 
 
@@ -179,7 +200,7 @@ def check(base, compiler):
                      "-x", "tick-driver.gdb", "fixture.elf"],
                     cwd=work, check=True, capture_output=True, timeout=15,
                 ).stdout
-                if f"RESULT 0 {samples}".encode("ascii") not in output.splitlines():
+                if f"RESULT 0 {samples} {calls}".encode("ascii") not in output.splitlines():
                     raise ValueError(f"Wait fixture failed ({name}, carry={carry}): "
                                      + output[-1200:].decode(errors="replace"))
                 results.append({"scenario": name, "initial_carry": carry, "callback_calls": calls,
@@ -189,6 +210,7 @@ def check(base, compiler):
     return {"base": identity, "wait": f"0x{WAIT:06X}", "stock_clear": f"0x{CLEAR:06X}",
             "native_continuation": f"0x{CONTINUE:06X}", "cases": results,
             "test_poll_interval_ticks": POLL_INTERVAL, "extra_persistent_ram_bytes": 0,
+            "wrapper_stack_bytes": {"waiting": 8, "at_callback_entry": 64},
             "scope": "Real C phase clock and takeover check; synthetic clock, OEM flag and inhibit.",
             "hardware_executed": False, "flashable_image": None}
 
