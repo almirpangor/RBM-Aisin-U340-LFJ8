@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 183,
+  "sequence": 184,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -69,8 +69,8 @@
       "stage": "in_progress",
       "claim_id": "0b028669dc7e44b69526dde8046610db",
       "claimed_at": "2026-11-20T16:36:31+00:00",
-      "updated_at": "2026-11-20T16:36:31+00:00",
-      "note": "Exercise a native call-site wrapper for both H03 OEM CAN setup calls: drop the TX13 grant before setup, advance the generation after it returns, preserve OEM context. Simulator addresses only.",
+      "updated_at": "2026-11-20T16:38:56+00:00",
+      "note": "Both OEM CAN setup call sites verified with the new hook, 16 M32R runs including generation wrap. BasicCAN control flags retained in RAM shadow; release must drain/verify separately. Running linked M32R and TX gate checks.",
       "result": null
     },
     "TOY-03": {
@@ -1973,9 +1973,17 @@
       "action": "claim",
       "claim_id": "125a9fc02e0b4315aa93ce8efbe1bda1",
       "at": "2026-11-20T16:38:48+00:00"
+    },
+    {
+      "operation_id": "909dda5fb1e946398d2261c3b9fa26b9",
+      "task": "CAN-03",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "0b028669dc7e44b69526dde8046610db",
+      "at": "2026-11-20T16:38:56+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:38:48+00:00",
+  "updated_at": "2026-11-20T16:38:56+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
