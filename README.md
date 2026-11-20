@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:01:51+00:00**. Изменение № **318**.
+Обновлено UTC: **2026-11-20T18:03:02+00:00**. Изменение № **319**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -27,7 +27,7 @@
 | ECU-02 — Калибровка момента и работа двигателя | Свободна для продолжения | Предыдущий: Codex — обороты и отпускание момента Bosch \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/ecu02-torque-rpm-32e6ac79 | 2026-11-20T17:47:17+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 06eacf1ff4f42e423886b4b25b849ead054ac924 |
 | H03-01 — Выбранная основа 9E1C и карта подключения | Закрыта по текущему объёму | Предыдущий: Codex H03-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-01-base-guard-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:47:37+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit cf488af90f0e7beca13fe3c02599cd4854f3668e |
 | H03-02 — S51, S83 и температура ATF | Свободна для продолжения | Предыдущий: Codex — привязка ATF H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-02-atf-01a1f9a2 | 2026-11-20T17:39:23+00:00 | Предыдущая порция принята. Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit f8535218156ba32282a6e299e256a77ef0ae752d |
-| H03-03 — Единое расписание и запуск приложения H03 | Выполняется | Codex H03 application owner \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/h03-03-foreground-01a1f99f | 2026-11-20T18:01:25+00:00 | Implement the H03 application owner and connect native reset, phase publication, bounded wait and full cycle in the M32R check. |
+| H03-03 — Единое расписание и запуск приложения H03 | Выполняется | Codex H03 application owner \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/h03-03-foreground-01a1f99f | 2026-11-20T18:03:02+00:00 | Confirmed the 0x008100 cold gate, 0x00814C time record and 0x00816C stock input call. Reserve the two application wrappers. |
 | H03-04 — Память, стек и сервисные пути | Свободна для продолжения | Предыдущий: Codex — сервисные границы RAM H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/h03-service-spans-32e6ac79 | 2026-11-20T17:38:42+00:00 | Предыдущая порция принята. Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit e4ac4b09967f7edf86cf2c1911218ba34e260b24 |
 | H03-05 — SLT, силовые выходы и реакция на отказ | Выполняется | Codex — целевой inhibit H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-02-atf-01a1f9a2 | 2026-11-20T18:01:03+00:00 | Связываю отзыв допуска с подтверждёнными штатными путями D/E/F и Pressure A. Проверю маски и порядок MMIO, отказ, CAN, остановку фаз и сервисный переход на M32R. |
 | IO-01 — Два дополнительных реле | Отложена владельцем | — | — | — | — |
@@ -554,10 +554,10 @@
 
 - docs/lfj8-h03-control-cycle.md
 - targets/lfj8/check_h03_phase_boot.py
+- targets/lfj8/h03_application_hooks.S
 - targets/lfj8/h03_phase_boot_fixture.c
 - targets/lfj8/lfj8_h03_application.c
 - targets/lfj8/lfj8_h03_application.h
-- targets/lfj8/test_lfj8_h03_application.c
 - verification/project-audit/2026-11-20-h03-application-owner.json
 - verification/project-audit/h03-03-application-owner.md
 
@@ -583,6 +583,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:03:02+00:00 | H03-03 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:01:51+00:00 | CAN-03 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T18:01:39+00:00 | VSS-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T18:01:25+00:00 | H03-03 | claim | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
@@ -612,4 +613,3 @@
 | 2026-11-20T17:42:29+00:00 | TOY-05 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T17:42:09+00:00 | MODE-02 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T17:40:45+00:00 | CAN-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
-| 2026-11-20T17:40:25+00:00 | TOY-02 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |

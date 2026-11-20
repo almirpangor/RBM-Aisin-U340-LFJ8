@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 318,
+  "sequence": 319,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -123,18 +123,18 @@
       "files": [
         "docs/lfj8-h03-control-cycle.md",
         "targets/lfj8/check_h03_phase_boot.py",
+        "targets/lfj8/h03_application_hooks.S",
         "targets/lfj8/h03_phase_boot_fixture.c",
         "targets/lfj8/lfj8_h03_application.c",
         "targets/lfj8/lfj8_h03_application.h",
-        "targets/lfj8/test_lfj8_h03_application.c",
         "verification/project-audit/2026-11-20-h03-application-owner.json",
         "verification/project-audit/h03-03-application-owner.md"
       ],
       "stage": "in_progress",
       "claim_id": "dde35120f1f04f6b9be6619a41ccbc33",
       "claimed_at": "2026-11-20T18:01:25+00:00",
-      "updated_at": "2026-11-20T18:01:25+00:00",
-      "note": "Implement the H03 application owner and connect native reset, phase publication, bounded wait and full cycle in the M32R check.",
+      "updated_at": "2026-11-20T18:03:02+00:00",
+      "note": "Confirmed the 0x008100 cold gate, 0x00814C time record and 0x00816C stock input call. Reserve the two application wrappers.",
       "result": null
     },
     "H03-04": {
@@ -3125,9 +3125,17 @@
       "action": "claim",
       "claim_id": "dcf0c14e62c842e1a210b316e85b93fa",
       "at": "2026-11-20T18:01:51+00:00"
+    },
+    {
+      "operation_id": "5dc3538b49d54d9ea63537e64c739402",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "heartbeat",
+      "claim_id": "dde35120f1f04f6b9be6619a41ccbc33",
+      "at": "2026-11-20T18:03:02+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:01:51+00:00",
+  "updated_at": "2026-11-20T18:03:02+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
