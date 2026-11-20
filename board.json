@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 384,
+  "sequence": 385,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -50,30 +50,23 @@
       "result": "0a71a1ca6b8f84e246248eb6378166dddb9eeed3"
     },
     "CAN-03": {
-      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Чат CAN — владелец поколения CAN0",
-      "branch": "codex/can03-generation-rx-1120-c7e4",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex CAN-03 monitor admission",
+      "branch": "codex/can03-h03-monitor-startup-01a1f99f",
       "files": [
-        "targets/lfj8/check_h03_can_lifecycle.py",
-        "targets/lfj8/check_h03_can_owner.py",
-        "targets/lfj8/check_h03_torque_tx_gate.py",
-        "targets/lfj8/h03_can0_setup_hook.S",
-        "targets/lfj8/h03_can13_tx_gate.S",
-        "targets/lfj8/h03_can_lifecycle_test.S",
-        "targets/lfj8/h03_torque_tx_gate_fixture.S",
-        "targets/lfj8/lfj8_donor_io.c",
-        "targets/lfj8/lfj8_donor_io.h",
-        "targets/lfj8/lfj8_h03_can_owner.c",
-        "targets/lfj8/lfj8_h03_can_owner.h",
-        "targets/lfj8/test_lfj8_h03_can_owner.c",
-        "verification/project-audit/can03-owner-recovery.md"
+        "targets/lfj8/check_h03_can_monitor_startup.py",
+        "targets/lfj8/h03_can_monitor_startup_hooks.S",
+        "targets/lfj8/lfj8_h03_can_monitor_startup.c",
+        "targets/lfj8/lfj8_h03_can_monitor_startup.h",
+        "verification/project-audit/2026-11-20-h03-can-monitor-startup.json",
+        "verification/project-audit/can03-h03-monitor-startup.md"
       ],
-      "stage": "done",
-      "claim_id": "dcf0c14e62c842e1a210b316e85b93fa",
-      "claimed_at": "2026-11-20T18:01:51+00:00",
-      "updated_at": "2026-11-20T18:32:03+00:00",
-      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
-      "result": "720bb64de67d2b64dcb9134796cf193df2951ecd"
+      "stage": "in_progress",
+      "claim_id": "941f259113e042a39db21686bc935bc8",
+      "claimed_at": "2026-11-20T18:34:34+00:00",
+      "updated_at": "2026-11-20T18:34:34+00:00",
+      "note": "Integrate the REL-02 monitor protection candidate with cold start and native CAN recovery barriers. Replay original receive-enable sites and measure linked Flash/RAM without touching shared owner files.",
+      "result": null
     },
     "TOY-03": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -3650,9 +3643,17 @@
       "action": "review",
       "claim_id": "7247550aeb1e414987b6eb6a1a7b27bd",
       "at": "2026-11-20T18:34:06+00:00"
+    },
+    {
+      "operation_id": "ead57501f95e4895a2580af89f1afce0",
+      "task": "CAN-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "941f259113e042a39db21686bc935bc8",
+      "at": "2026-11-20T18:34:34+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:34:06+00:00",
+  "updated_at": "2026-11-20T18:34:34+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
