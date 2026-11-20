@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:47:24+00:00**. Изменение № **218**.
+Обновлено UTC: **2026-11-20T16:47:37+00:00**. Изменение № **219**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -43,7 +43,7 @@
 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | На проверке | Codex — штатный RX BasicCAN H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T16:47:15+00:00 | Парный выбор RX14/15 по общей CAN-метке: ранний кадр первым, при равенстве RX15. Сеанс 10 86 перед 17 FF 00 через CAN13 и семь групп ПК/M32R PASS. ПК 35/71, M32R link 17, OEM 15 пар. Очередь 172 байта. Доказательства verification/project-audit/dtc02-basiccan-order.md. Штатная привязка, полный стек и стенд открыты. / commit de7fc1060b4cb1ff1918a544932424b93a1d6b7d |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | На проверке | Codex DTC-03 — монитор цепи ATF H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-atf-monitor-01a1f9c7 | 2026-11-20T16:47:24+00:00 | Передаю интегратору адаптер штатного статуса ATF H03. Код встроен в перемещаемый мост, 20 сценариев и 2 отрицательные проверки M32R, ПК 35 шагов/71 тест, H03 link 17 компонентов PASS. Отчёт verification/project-audit/dtc03-h03-atf-monitor.md. Четыре файла кода внести в общий аудит при приёмке и выполнить complete после публикации main. Штатный вызов, отображение P0710 и стенд открыты. / commit d487840ba2505064c7f281305a10813cbdf3b695 |
 | DTC-04 — Хранение DTC после выключения питания | На проверке | Codex — подтверждение долговечной очистки DTC \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-durable-clear-32e6ac79 | 2026-11-20T16:43:22+00:00 | Передаю интегратору. При настроенном backend 54 FF 00 выдаётся только после подтверждения пустого журнала. При отказе сохраняется RAM, TX не ставится. 30 прерываний и повтор PASS, PC 35 шагов/71 тест, M32R журнал и 17 компонентов PASS. Отчёт dtc04-durable-clear.md. Носитель и подключение H03 открыты. / commit acd7d12c2e65cbb521331b175365aa2ae8ffc343 |
-| REL-01 — Два целевых BIN и воспроизводимый комплект | Работа завершена | Codex — комплект двух BIN \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/rel-01-pair-01a1f9a2 | 2026-11-20T16:23:09+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit b174397fe79ebdb0d0749bcee31fe7f198435a28 |
+| REL-01 — Два целевых BIN и воспроизводимый комплект | Выполняется | Codex REL-01 binary identity \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/rel01-bin-identity-1120-c7e4 | 2026-11-20T16:47:37+00:00 | Prevent packaging a renamed known OFFLINE_ONLY BIN by checking content against archived files and verification manifests of the pinned source commit. Preserve non-release archives and verification status semantics. |
 | REL-02 — Приёмка новой связки на оборудовании | Свободна | — | — | — | — |
 
 ## Зарезервированные файлы
@@ -214,6 +214,14 @@
 - controller/tests/test_mode_policy.c
 - verification/project-audit/mode03-policy-matrix.md
 
+### REL-01
+
+Чат: Codex REL-01 binary identity. Claim ID: 76adb69439704129b7ae37eeace39df2.
+
+- tests/test_package_workset.py
+- tools/package_workset.py
+- verification/project-audit/rel01-offline-identity.md
+
 ### SRC-01
 
 Чат: Codex SRC-01. Claim ID: abd55696a19e48a1aaf3a4b0e23f7414.
@@ -276,6 +284,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:47:37+00:00 | REL-01 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:47:24+00:00 | DTC-03 | review | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T16:47:15+00:00 | DTC-02 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T16:47:07+00:00 | AUD-01 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -305,4 +314,3 @@
 | 2026-11-20T16:40:44+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:40:32+00:00 | DTC-04 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:40:16+00:00 | H03-01 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T16:40:03+00:00 | TOY-06 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
