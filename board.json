@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 1,
+  "sequence": 2,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -20,12 +20,12 @@
         "tools/task_coordination.py",
         "verification/project-audit/"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "640a773925544cfd8486c913f6839c07",
       "claimed_at": "2026-11-20T15:30:42+00:00",
-      "updated_at": "2026-11-20T15:30:42+00:00",
-      "note": "Публикую аудит и настраиваю общий учёт задач, занятости файлов и проверки нескольких чатов.",
-      "result": null
+      "updated_at": "2026-11-20T15:35:56+00:00",
+      "note": "Опубликованы карта задач, общий учёт чатов, инструкция и проверки. Локально пройдены 59 тестов; проверяю GitHub Actions.",
+      "result": "2875ed80264fd7714d44047f849e2df4b04123ef"
     }
   },
   "events": [
@@ -36,10 +36,18 @@
       "action": "claim",
       "claim_id": "640a773925544cfd8486c913f6839c07",
       "at": "2026-11-20T15:30:42+00:00"
+    },
+    {
+      "operation_id": "9562726ad6914a4e92d561d07b53f8e0",
+      "task": "ORG-01",
+      "owner": "codex-coordination-27a510e",
+      "action": "review",
+      "claim_id": "640a773925544cfd8486c913f6839c07",
+      "at": "2026-11-20T15:35:56+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:30:42+00:00",
-  "main_commit": "27a510e17771a541ac6ecd27f4c4856a8c965ca6",
+  "updated_at": "2026-11-20T15:35:56+00:00",
+  "main_commit": "2875ed80264fd7714d44047f849e2df4b04123ef",
   "catalog": [
     {
       "id": "ORG-01",
