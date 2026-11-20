@@ -23,7 +23,9 @@ typedef struct {
     uint32_t last_edge;
     uint32_t interval_ticks;
     uint8_t primed;
-} Lfj8RawVss;
+} Lfj8RawCapture;
+
+typedef Lfj8RawCapture Lfj8RawVss;
 
 typedef enum {
     LFJ8_CAN_SUBMITTED,
@@ -61,6 +63,16 @@ void lfj8_9e1c_raw_vss_after_capture_store(volatile Lfj8RawVss *vss,
 Lfj8CaptureSnapshot lfj8_raw_vss_snapshot(volatile Lfj8RawVss *vss,
                                          const Lfj8RegisterIo *io,
                                          uint32_t timeout_ticks);
+
+void lfj8_9e1c_raw_nt_init(volatile Lfj8RawCapture *nt);
+/* Call once after the H03 S83 store at 0x00AA70 with its producer lock held.
+ * Run the normal OEM update and interrupt acknowledgement as usual. */
+void lfj8_9e1c_raw_nt_after_capture_store(volatile Lfj8RawCapture *nt,
+                                        const Lfj8RegisterIo *io, uint32_t timeout_ticks);
+/* One S83 edge interval in TML1CT ticks. Confirm the physical edges per
+ * revolution and timer frequency separately before converting to RPM. */
+Lfj8CaptureSnapshot lfj8_9e1c_raw_nt_snapshot(volatile Lfj8RawCapture *nt,
+                                            const Lfj8RegisterIo *io, uint32_t timeout_ticks);
 
 /* Submission only. The owner checks completion separately. */
 Lfj8CanResult lfj8_can0_slot13_submit(const Lfj8RegisterIo *io, uint8_t slot13_owned,

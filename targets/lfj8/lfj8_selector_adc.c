@@ -5,12 +5,14 @@
 
 void lfj8_selector_adc_init(volatile Lfj8SelectorAdc *adc)
 {
+    adc->pending_us = 0;
     adc->pending_raw = UINT16_MAX;
     adc->pending_event = LFJ8_SELECTOR_ADC_NONE;
 }
 
-static void publish_locked(volatile Lfj8SelectorAdc *adc, uint16_t raw)
+static void publish_locked(volatile Lfj8SelectorAdc *adc, uint16_t raw, uint32_t captured_us)
 {
+    adc->pending_us = captured_us;
     if (adc->pending_event != LFJ8_SELECTOR_ADC_NONE) {
         adc->pending_raw = UINT16_MAX;
         adc->pending_event = LFJ8_SELECTOR_ADC_OVERRUN;
@@ -24,33 +26,33 @@ static void publish_locked(volatile Lfj8SelectorAdc *adc, uint16_t raw)
 }
 
 void lfj8_selector_adc_publish(volatile Lfj8SelectorAdc *adc,
-                               const Lfj8RegisterIo *io, uint16_t raw)
+                               const Lfj8RegisterIo *io, uint16_t raw, uint32_t captured_us)
 {
     const uint32_t saved_state = io->enter(io->context);
-    publish_locked(adc, raw);
+    publish_locked(adc, raw, captured_us);
     io->leave(io->context, saved_state);
 }
 
 static void publish_stock_sample(volatile Lfj8SelectorAdc *adc,
-                                 const Lfj8RegisterIo *io, uint8_t valid)
+                                 const Lfj8RegisterIo *io, uint8_t valid, uint32_t captured_us)
 {
     const uint32_t saved_state = io->enter(io->context);
     const uint16_t raw = valid ? io->read16(io->context, LFJ8_SELECTOR_RAW_ADDRESS)
                                : UINT16_MAX;
-    publish_locked(adc, raw);
+    publish_locked(adc, raw, captured_us);
     io->leave(io->context, saved_state);
 }
 
 void lfj8_selector_adc_publish_9e1b(volatile Lfj8SelectorAdc *adc,
-                                    const Lfj8RegisterIo *io, uint8_t valid)
+                                    const Lfj8RegisterIo *io, uint8_t valid, uint32_t captured_us)
 {
-    publish_stock_sample(adc, io, valid);
+    publish_stock_sample(adc, io, valid, captured_us);
 }
 
 void lfj8_selector_adc_publish_9e1c(volatile Lfj8SelectorAdc *adc,
-                                    const Lfj8RegisterIo *io, uint8_t valid)
+                                    const Lfj8RegisterIo *io, uint8_t valid, uint32_t captured_us)
 {
-    publish_stock_sample(adc, io, valid);
+    publish_stock_sample(adc, io, valid, captured_us);
 }
 
 Lfj8SelectorAdcReading lfj8_selector_adc_take(volatile Lfj8SelectorAdc *adc,
@@ -58,6 +60,7 @@ Lfj8SelectorAdcReading lfj8_selector_adc_take(volatile Lfj8SelectorAdc *adc,
 {
     Lfj8SelectorAdcReading reading;
     const uint32_t saved_state = io->enter(io->context);
+    reading.captured_us = adc->pending_us;
     reading.raw = adc->pending_raw;
     reading.event = adc->pending_event;
     lfj8_selector_adc_init(adc);

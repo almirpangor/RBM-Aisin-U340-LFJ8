@@ -38,6 +38,7 @@ def run_c_scenario(compiler: str, engine_vectors: tuple[str, ...] = ()) -> dict:
             "-I", str(lfj8), "-I", str(panel),
             str(controller / "src" / "rbm_u340e.c"), *sources, str(lfj8 / "lfj8_bridge.c"),
             str(lfj8 / "ta2005_chery_inputs.c"), str(lfj8 / "lfj8_selector_adc.c"),
+            str(lfj8 / "lfj8_range_control.c"),
             str(lfj8 / "test_lfj8_selector_adc.c"),
             str(panel / "panel_pulse.c"), str(ROOT / "tests" / "u340_integration_host.c"),
             "-o", str(exe),

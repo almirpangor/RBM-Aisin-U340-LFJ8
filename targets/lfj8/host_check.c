@@ -15,6 +15,8 @@ typedef struct {
     uint32_t formats;
     uint32_t capture_timer;
     uint32_t captured_ticks;
+    uint32_t nt_timer;
+    uint32_t nt_captured_ticks;
     uint16_t edge_count;
     uint16_t pulse_count;
     uint16_t can_control;
@@ -81,6 +83,8 @@ static uint32_t read32(void *context, uint32_t address)
     switch (address) {
     case 0x80101Cu: return f->formats;
     case 0x8003E0u: return f->capture_timer;
+    case 0x800FE0u: return f->nt_timer;
+    case 0x8048BCu: return f->nt_captured_ticks;
     case 0x804EC4u: return f->freshness;
     case 0x8048B8u:
         assert(f->use_9e1c_vss_map != 0u);
@@ -318,6 +322,35 @@ static void test_9e1c_capture(void)
     assert(f.submissions == 1u && f.lock_depth == 0u);
 }
 
+static void test_9e1c_nt_capture(void)
+{
+    Fixture f = {0};
+    const Lfj8RegisterIo io = {&f, read8, read16, read32, write8, lock, unlock};
+    volatile Lfj8RawCapture tracker;
+    const uint32_t expiry = 50000u;
+    lfj8_9e1c_raw_nt_init(&tracker);
+
+    f.nt_captured_ticks = UINT32_MAX - 99u;
+    f.nt_timer = f.nt_captured_ticks;
+    uint32_t saved_state = lock(&f);
+    lfj8_9e1c_raw_nt_after_capture_store(&tracker, &io, expiry);
+    lfj8_9e1c_raw_nt_after_capture_store(&tracker, &io, expiry);
+    unlock(&f, saved_state);
+    assert(lfj8_9e1c_raw_nt_snapshot(&tracker, &io, expiry).state == LFJ8_VSS_UNAVAILABLE);
+
+    f.nt_captured_ticks = 300u;
+    f.nt_timer = 301u;
+    saved_state = lock(&f);
+    lfj8_9e1c_raw_nt_after_capture_store(&tracker, &io, expiry);
+    unlock(&f, saved_state);
+    const Lfj8CaptureSnapshot sample = lfj8_9e1c_raw_nt_snapshot(&tracker, &io, expiry);
+    assert(sample.state == LFJ8_VSS_VALID && sample.interval_ticks == 400u && sample.pulse_window == 1u);
+
+    f.nt_timer = f.nt_captured_ticks + expiry + 1u;
+    assert(lfj8_9e1c_raw_nt_snapshot(&tracker, &io, expiry).state == LFJ8_VSS_UNAVAILABLE);
+    assert(f.writes == 0u && f.lock_depth == 0u);
+}
+
 static void test_pipeline(void)
 {
     Fixture f = {0};
@@ -420,8 +453,9 @@ int main(void)
     test_donor_io();
     test_raw_capture();
     test_9e1c_capture();
+    test_9e1c_nt_capture();
     test_pipeline();
     test_engine_receive();
-    puts("LFJ8 host: VSS, Chery TX, RPM/ECT RX, relays, schedule, CAN0 and integrated pipeline passed");
+    puts("LFJ8 host: S51, S83, Chery TX, RPM/ECT RX, relays, schedule and CAN0 passed");
     return 0;
 }

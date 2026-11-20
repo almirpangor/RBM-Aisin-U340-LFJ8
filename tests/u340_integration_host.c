@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "lfj8_bridge.h"
+#include "lfj8_range_control.h"
 #include "panel_pulse.h"
 #include "rbm_u340e.h"
 #include "ta2005_chery_inputs.h"
@@ -36,9 +37,64 @@ static void parse_payload(const char *hex, uint8_t frame[8])
     }
 }
 
+static void check_selector_clock(void)
+{
+    const RbmU340ePolicy policy = {.initial_mode = RBM_U340E_AUTO, .initial_overdrive_enabled = 1};
+    const RbmU340eInput input = {
+        .selector = RBM_U340E_SELECTOR_R,
+        .actual_gear = 2,
+        .allowed_gears = 0x0f,
+        .auto_request_valid = 1,
+    };
+    Lfj8SelectorAdcReading low = {.raw = 194, .event = LFJ8_SELECTOR_ADC_VALUE};
+    Lfj8SelectorAdcReading reverse = {.raw = 812, .event = LFJ8_SELECTOR_ADC_VALUE};
+    const Lfj8SelectorAdcReading no_event = {.event = LFJ8_SELECTOR_ADC_NONE};
+    Lfj8SelectorAdcReading overrun = {.event = LFJ8_SELECTOR_ADC_OVERRUN};
+    const uint32_t start = UINT32_MAX - 10000u;
+    const uint32_t max_age = 15000;
+    RbmU340eOutput output;
+    Lfj8RangeControl control = {0};
+    assert(!lfj8_range_control_init(&control, &policy, 0));
+    assert(lfj8_range_control_init(&control, &policy, max_age));
+    for (unsigned index = 0; index < 4; ++index) {
+        const uint32_t at = start + index * 5000u;
+        low.captured_us = at;
+        assert(lfj8_range_control_step(&control, low, at, &input, &output));
+        if (index < 3) {
+            assert(!output.relay_mask && !output.requested_gear);
+            assert(lfj8_range_control_step(&control, low, at, &input, &output));
+            assert(!output.relay_mask && !output.requested_gear);
+        }
+    }
+    const uint32_t last = start + 15000u;
+    assert(output.relay_mask == RBM_U340E_RELAY_AUXILIARY && output.requested_gear == 1);
+    reverse.captured_us = last - 5000u;
+    assert(lfj8_range_control_step(&control, reverse, last + 1, &input, &output));
+    assert(output.relay_mask == RBM_U340E_RELAY_AUXILIARY);
+    reverse.captured_us = last + 2u;
+    assert(lfj8_range_control_step(&control, reverse, last + 1, &input, &output));
+    assert(output.relay_mask == RBM_U340E_RELAY_AUXILIARY);
+    assert(lfj8_range_control_step(&control, no_event, last + max_age - 1, &input, &output));
+    assert(output.relay_mask == RBM_U340E_RELAY_AUXILIARY);
+    assert(lfj8_range_control_step(&control, low, last + max_age, &input, &output));
+    assert(!output.relay_mask && !output.requested_gear);
+
+    for (unsigned index = 0; index < 4; ++index) {
+        const uint32_t at = last + max_age + index * 5000u;
+        reverse.captured_us = at;
+        assert(lfj8_range_control_step(&control, reverse, at, &input, &output));
+        assert(output.relay_mask == (index == 3 ? 3u : 0u));
+    }
+    const uint32_t lost = last + max_age + 20000u;
+    overrun.captured_us = lost;
+    assert(lfj8_range_control_step(&control, overrun, lost, &input, &output));
+    assert(!output.relay_mask && !output.requested_gear);
+}
+
 int main(int argc, char **argv)
 {
     verify_lfj8_selector_adc();
+    check_selector_clock();
     assert(argc == 1 || argc == 3);
     uint8_t rpm_frame[8] = {0x12, 0xc0, 0xff, 0xff, 0x00, 0xff, 0x00, 0x00};
     uint8_t coolant_frame[8] = {0xb4, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
@@ -123,7 +179,8 @@ int main(int argc, char **argv)
     printf("\",\"0x300\":\"");
     print_payload(atf_frame);
     printf("\",\"panel_input_speed_q7\":%u,\"panel_period_ticks_1mhz\":%lu,"
-           "\"tc_rx_rpm_q3\":%u,\"tc_rx_coolant_plus_50\":%u,\"selector_adc_events\":\"PASS\"}\n",
+           "\"tc_rx_rpm_q3\":%u,\"tc_rx_coolant_plus_50\":%u,"
+           "\"selector_adc_events\":\"PASS\",\"selector_timeout\":\"PASS\"}\n",
            speed_q7, (unsigned long)pulse.period_field,
            (unsigned int)engine_inputs.speed_fad8, (unsigned int)engine_inputs.coolant_f9e9);
     return 0;

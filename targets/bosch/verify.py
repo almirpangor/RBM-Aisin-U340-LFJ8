@@ -28,13 +28,16 @@ def receive(machine, raw, **kwargs):
     calls(machine, 8)
 
 
-def build_native_model(image, path):
-    if digest(path.read_bytes()) != VM_SHA:
+def build_native_model(image, path, *, packed=True):
+    if digest(path.read_bytes().replace(b"\r\n", b"\n")) != VM_SHA:
         raise ValueError("C167 model must match the pinned R3 source")
     spec = importlib.util.spec_from_file_location("pinned_c167_subset", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    rom = {p + (0x10000 if p >= 0x8000 else 0): byte for p, byte in enumerate(image)}
+    if packed:
+        rom = {p + (0x10000 if p >= 0x8000 else 0): byte for p, byte in enumerate(image)}
+    else:
+        rom = {p: byte for p, byte in enumerate(image) if not 0xE000 <= p <= 0xFFFF}
     return module.C167(rom, dpp=(0x2E, 0x2F, 0x3C, 3))
 
 

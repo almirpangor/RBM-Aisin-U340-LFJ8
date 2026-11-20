@@ -10,6 +10,8 @@
 #define LFJ8_9E1C_VSS_CAPTURED_TICKS UINT32_C(0x8048B8)
 #define LFJ8_VSS_FRESHNESS UINT32_C(0x804EC4)
 #define LFJ8_VSS_TIMER_NOW UINT32_C(0x8003E0)
+#define LFJ8_9E1C_NT_CAPTURED_TICKS UINT32_C(0x8048BC)
+#define LFJ8_9E1C_NT_TIMER_NOW UINT32_C(0x800FE0)
 #define LFJ8_CAN0_MODE UINT32_C(0x801018)
 #define LFJ8_CAN0_CNT UINT32_C(0x801000)
 #define LFJ8_CAN0_STAT UINT32_C(0x801002)
@@ -69,40 +71,40 @@ Lfj8CaptureSnapshot lfj8_9e1c_capture_snapshot(const Lfj8RegisterIo *io)
                             LFJ8_9E1C_VSS_EDGES_TO_LOCK);
 }
 
-static void raw_vss_init(volatile Lfj8RawVss *vss)
+static void raw_capture_init(volatile Lfj8RawCapture *capture)
 {
-    vss->last_edge = 0u;
-    vss->interval_ticks = 0u;
-    vss->primed = 0u;
+    capture->last_edge = 0u;
+    capture->interval_ticks = 0u;
+    capture->primed = 0u;
 }
 
-static void raw_vss_edge(volatile Lfj8RawVss *vss, uint32_t captured_ticks,
-                         uint32_t timeout_ticks)
+static void raw_capture_edge(volatile Lfj8RawCapture *capture, uint32_t captured_ticks,
+                             uint32_t timeout_ticks)
 {
-    if (vss->primed != 0u) {
-        const uint32_t elapsed = captured_ticks - vss->last_edge;
+    if (capture->primed != 0u) {
+        const uint32_t elapsed = captured_ticks - capture->last_edge;
         if (elapsed == 0u) {
             return;
         }
-        vss->interval_ticks = elapsed <= timeout_ticks ? elapsed : 0u;
+        capture->interval_ticks = elapsed <= timeout_ticks ? elapsed : 0u;
     }
-    vss->last_edge = captured_ticks;
-    vss->primed = 1u;
+    capture->last_edge = captured_ticks;
+    capture->primed = 1u;
 }
 
-Lfj8CaptureSnapshot lfj8_raw_vss_snapshot(volatile Lfj8RawVss *vss,
-                                         const Lfj8RegisterIo *io,
-                                         uint32_t timeout_ticks)
+static Lfj8CaptureSnapshot raw_capture_snapshot(volatile Lfj8RawCapture *capture,
+                                                const Lfj8RegisterIo *io, uint32_t timer_address,
+                                                uint32_t timeout_ticks)
 {
     Lfj8CaptureSnapshot snapshot = {0u, 1u, LFJ8_VSS_UNAVAILABLE};
     const uint32_t saved_state = io->enter(io->context);
-    const uint32_t now = io->read32(io->context, LFJ8_VSS_TIMER_NOW);
+    const uint32_t now = io->read32(io->context, timer_address);
 
-    if (vss->primed != 0u) {
-        if (timeout_ticks == 0u || now - vss->last_edge > timeout_ticks) {
-            raw_vss_init(vss);
-        } else if (vss->interval_ticks != 0u && vss->interval_ticks <= timeout_ticks) {
-            snapshot.interval_ticks = vss->interval_ticks;
+    if (capture->primed != 0u) {
+        if (timeout_ticks == 0u || now - capture->last_edge > timeout_ticks) {
+            raw_capture_init(capture);
+        } else if (capture->interval_ticks != 0u && capture->interval_ticks <= timeout_ticks) {
+            snapshot.interval_ticks = capture->interval_ticks;
             snapshot.state = LFJ8_VSS_VALID;
         }
     }
@@ -110,15 +112,22 @@ Lfj8CaptureSnapshot lfj8_raw_vss_snapshot(volatile Lfj8RawVss *vss,
     return snapshot;
 }
 
+Lfj8CaptureSnapshot lfj8_raw_vss_snapshot(volatile Lfj8RawVss *vss,
+                                         const Lfj8RegisterIo *io,
+                                         uint32_t timeout_ticks)
+{
+    return raw_capture_snapshot(vss, io, LFJ8_VSS_TIMER_NOW, timeout_ticks);
+}
+
 void lfj8_9e1b_raw_vss_init(volatile Lfj8RawVss *vss)
 {
-    raw_vss_init(vss);
+    raw_capture_init(vss);
 }
 
 void lfj8_9e1b_raw_vss_edge(volatile Lfj8RawVss *vss, uint32_t captured_ticks,
                            uint32_t timeout_ticks)
 {
-    raw_vss_edge(vss, captured_ticks, timeout_ticks);
+    raw_capture_edge(vss, captured_ticks, timeout_ticks);
 }
 
 Lfj8CaptureSnapshot lfj8_9e1b_raw_vss_snapshot(volatile Lfj8RawVss *vss,
@@ -130,7 +139,7 @@ Lfj8CaptureSnapshot lfj8_9e1b_raw_vss_snapshot(volatile Lfj8RawVss *vss,
 
 void lfj8_9e1c_raw_vss_init(volatile Lfj8RawVss *vss)
 {
-    raw_vss_init(vss);
+    raw_capture_init(vss);
 }
 
 void lfj8_9e1c_raw_vss_after_capture_store(volatile Lfj8RawVss *vss,
@@ -139,7 +148,25 @@ void lfj8_9e1c_raw_vss_after_capture_store(volatile Lfj8RawVss *vss,
 {
     const uint32_t captured_ticks = io->read32(io->context, LFJ8_9E1C_VSS_CAPTURED_TICKS);
 
-    raw_vss_edge(vss, captured_ticks, timeout_ticks);
+    raw_capture_edge(vss, captured_ticks, timeout_ticks);
+}
+
+void lfj8_9e1c_raw_nt_init(volatile Lfj8RawCapture *nt)
+{
+    raw_capture_init(nt);
+}
+
+void lfj8_9e1c_raw_nt_after_capture_store(volatile Lfj8RawCapture *nt,
+                                        const Lfj8RegisterIo *io, uint32_t timeout_ticks)
+{
+    const uint32_t captured_ticks = io->read32(io->context, LFJ8_9E1C_NT_CAPTURED_TICKS);
+    raw_capture_edge(nt, captured_ticks, timeout_ticks);
+}
+
+Lfj8CaptureSnapshot lfj8_9e1c_raw_nt_snapshot(volatile Lfj8RawCapture *nt,
+                                            const Lfj8RegisterIo *io, uint32_t timeout_ticks)
+{
+    return raw_capture_snapshot(nt, io, LFJ8_9E1C_NT_TIMER_NOW, timeout_ticks);
 }
 
 static uint8_t can0_available(const Lfj8RegisterIo *io)
