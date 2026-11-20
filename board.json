@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 48,
+  "sequence": 49,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -100,12 +100,12 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-phase-wait.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
       "claimed_at": "2026-11-20T16:04:02+00:00",
-      "updated_at": "2026-11-20T16:04:02+00:00",
-      "note": "Отдельный результат поверх принятого 9fa9c8a: обёртка 008150 и реальный контроль фазы вместе в M32R.",
-      "result": null
+      "updated_at": "2026-11-20T16:04:31+00:00",
+      "note": "Обёртка 008150 вызывает реальную проверку фазы в M32R. 6 сценариев, отрицательная проверка, 59 Python-тестов и реестр PASS. Реальное время, inhibit, измерения IRQ и целевой BIN открыты.",
+      "result": "40d391b8eeb33e9e04f13cff5b59908527f6b144"
     },
     "H03-04": {
       "owner": "codex-h03-04-01a1f76d-20261120",
@@ -637,9 +637,17 @@
       "action": "claim",
       "claim_id": "2b87aa66de244cf9b30a828391ad9001",
       "at": "2026-11-20T16:04:25+00:00"
+    },
+    {
+      "operation_id": "7a30a453d4e845a1adfe722f1babf06c",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
+      "at": "2026-11-20T16:04:31+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:04:25+00:00",
+  "updated_at": "2026-11-20T16:04:31+00:00",
   "main_commit": "9fa9c8aa18cd88543ba464f98fc8f7fc6a21a7d1",
   "catalog": [
     {
