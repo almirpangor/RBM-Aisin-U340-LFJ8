@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 629,
+  "sequence": 630,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -268,12 +268,12 @@
         "targets/lfj8/test_lfj8_h03_input_binding.c",
         "verification/project-audit/mode02-h03-sample-lifecycle.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "7b928a7629294ca3950e08c3c64055a4",
       "claimed_at": "2026-11-20T20:33:07+00:00",
-      "updated_at": "2026-11-20T20:37:18+00:00",
-      "note": "Нативный захват закрыт при неактивном приложении; восемь сравнений M32R сохранили штатный AN2. Раздельная квалификация и заявка прошли на ПК; повторяю M32R и компоновку.",
-      "result": null,
+      "updated_at": "2026-11-20T20:48:58+00:00",
+      "note": "Native AN2/P1DATA уважает допуск RAM. Приём на фазе H03 отделён от заявки Toyota, прежний вызов сохранён. Прошли 41 этап ПК/129 тестов, 8 сравнений AN2, 8 компонентных групп, остальные нативные с повтором phase-boot и 6 размещённых. Foreground занят CAN-01; открыты его привязка, карта/OD и ручная цель. Отчёт mode02-h03-sample-lifecycle.md.",
+      "result": "5c5175c0742daa4139cb02ae8076309d80c9447b",
       "based_on_reviews": [
         "81b1f36f00b14bd49f57ba12c0f60bd1",
         "cd210c0631df4fefa66ec640bb83c6ad"
@@ -6340,9 +6340,43 @@
           "f6547625e0dd48c180162a7963424191"
         ]
       }
+    },
+    {
+      "operation_id": "e71bdd6c21fb45b48d0b97c7f106c76e",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "review",
+      "claim_id": "7b928a7629294ca3950e08c3c64055a4",
+      "at": "2026-11-20T20:48:58+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex MODE-02 — приём снимка AN2/P1DATA по фазе",
+        "branch": "codex/mode02-phase-sample-lifecycle-01a1f9c7",
+        "files": [
+          "targets/lfj8/check_h03_selector_adc.py",
+          "targets/lfj8/h03_selector_adc_fixture.c",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/lfj8_h03_input_binding.h",
+          "targets/lfj8/lfj8_h03_input_target.c",
+          "targets/lfj8/lfj8_range_control.c",
+          "targets/lfj8/lfj8_range_control.h",
+          "targets/lfj8/test_lfj8_h03_input_binding.c",
+          "verification/project-audit/mode02-h03-sample-lifecycle.md"
+        ],
+        "stage": "review",
+        "claim_id": "7b928a7629294ca3950e08c3c64055a4",
+        "claimed_at": "2026-11-20T20:33:07+00:00",
+        "updated_at": "2026-11-20T20:48:58+00:00",
+        "note": "Native AN2/P1DATA уважает допуск RAM. Приём на фазе H03 отделён от заявки Toyota, прежний вызов сохранён. Прошли 41 этап ПК/129 тестов, 8 сравнений AN2, 8 компонентных групп, остальные нативные с повтором phase-boot и 6 размещённых. Foreground занят CAN-01; открыты его привязка, карта/OD и ручная цель. Отчёт mode02-h03-sample-lifecycle.md.",
+        "result": "5c5175c0742daa4139cb02ae8076309d80c9447b",
+        "based_on_reviews": [
+          "81b1f36f00b14bd49f57ba12c0f60bd1",
+          "cd210c0631df4fefa66ec640bb83c6ad"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:48:45+00:00",
+  "updated_at": "2026-11-20T20:48:58+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
@@ -7485,6 +7519,34 @@
       ],
       "task": "DTC-01",
       "submitted_at": "2026-11-20T20:48:45+00:00"
+    },
+    "7b928a7629294ca3950e08c3c64055a4": {
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "label": "Codex MODE-02 — приём снимка AN2/P1DATA по фазе",
+      "branch": "codex/mode02-phase-sample-lifecycle-01a1f9c7",
+      "files": [
+        "targets/lfj8/check_h03_selector_adc.py",
+        "targets/lfj8/h03_selector_adc_fixture.c",
+        "targets/lfj8/lfj8_h03_input_binding.c",
+        "targets/lfj8/lfj8_h03_input_binding.h",
+        "targets/lfj8/lfj8_h03_input_target.c",
+        "targets/lfj8/lfj8_range_control.c",
+        "targets/lfj8/lfj8_range_control.h",
+        "targets/lfj8/test_lfj8_h03_input_binding.c",
+        "verification/project-audit/mode02-h03-sample-lifecycle.md"
+      ],
+      "stage": "review",
+      "claim_id": "7b928a7629294ca3950e08c3c64055a4",
+      "claimed_at": "2026-11-20T20:33:07+00:00",
+      "updated_at": "2026-11-20T20:48:58+00:00",
+      "note": "Native AN2/P1DATA уважает допуск RAM. Приём на фазе H03 отделён от заявки Toyota, прежний вызов сохранён. Прошли 41 этап ПК/129 тестов, 8 сравнений AN2, 8 компонентных групп, остальные нативные с повтором phase-boot и 6 размещённых. Foreground занят CAN-01; открыты его привязка, карта/OD и ручная цель. Отчёт mode02-h03-sample-lifecycle.md.",
+      "result": "5c5175c0742daa4139cb02ae8076309d80c9447b",
+      "based_on_reviews": [
+        "81b1f36f00b14bd49f57ba12c0f60bd1",
+        "cd210c0631df4fefa66ec640bb83c6ad"
+      ],
+      "task": "MODE-02",
+      "submitted_at": "2026-11-20T20:48:58+00:00"
     }
   }
 }
