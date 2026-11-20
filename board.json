@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 716,
+  "sequence": 717,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -223,12 +223,12 @@
         "targets/lfj8/test_lfj8_h03_cycle_load.c",
         "verification/project-audit/toy02-h03-load-evidence.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "4f0440768829471386bb278580bee3f8",
       "claimed_at": "2026-11-20T21:51:53+00:00",
-      "updated_at": "2026-11-20T21:59:52+00:00",
-      "note": "Прошли компонентные M32R, 62 сценария штатного запуска и 6 прогонов размещённого ядра. Измерен прирост 224 байта Flash. Повторный аудит показал ноль парных отсчётов Bosch/S01. Завершается общий ПК.",
-      "result": null,
+      "updated_at": "2026-11-20T22:02:54+00:00",
+      "note": "Квалификация трёх групп нагрузки включена до публикации GP и такта Toyota. Потеря метаданных, просрочка и старый epoch отзывают цикл. ПК 41/179, M32R 8 компонентных, 62 запуска и 6 размещённых. Flash +224, RAM прежняя. Нет парных Bosch/S01 для поставщика rbm_h03_target_take_toyota. Отчёт toy02-h03-load-evidence.md.",
+      "result": "f1f622d93c3e0ae143cb41ba83813160d7b3063a",
       "based_on_reviews": []
     },
     "CAN-01": {
@@ -8930,9 +8930,36 @@
         "result": "1c0942de670d6ebd1245370d8f351c065dbc230f",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "e3ebd0ed4f264874ae23aa65f54513f1",
+      "task": "TOY-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "review",
+      "claim_id": "4f0440768829471386bb278580bee3f8",
+      "at": "2026-11-20T22:02:54+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex TOY-02 — допуск нагрузки в H03",
+        "branch": "codex/toy02-load-evidence-01a1f9c7",
+        "files": [
+          "targets/lfj8/lfj8_h03_cycle.c",
+          "targets/lfj8/lfj8_h03_cycle.h",
+          "targets/lfj8/test_lfj8_h03_cycle.c",
+          "targets/lfj8/test_lfj8_h03_cycle_load.c",
+          "verification/project-audit/toy02-h03-load-evidence.md"
+        ],
+        "stage": "review",
+        "claim_id": "4f0440768829471386bb278580bee3f8",
+        "claimed_at": "2026-11-20T21:51:53+00:00",
+        "updated_at": "2026-11-20T22:02:54+00:00",
+        "note": "Квалификация трёх групп нагрузки включена до публикации GP и такта Toyota. Потеря метаданных, просрочка и старый epoch отзывают цикл. ПК 41/179, M32R 8 компонентных, 62 запуска и 6 размещённых. Flash +224, RAM прежняя. Нет парных Bosch/S01 для поставщика rbm_h03_target_take_toyota. Отчёт toy02-h03-load-evidence.md.",
+        "result": "f1f622d93c3e0ae143cb41ba83813160d7b3063a",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:02:06+00:00",
+  "updated_at": "2026-11-20T22:02:54+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -10579,6 +10606,27 @@
       "based_on_reviews": [],
       "task": "H03-03",
       "submitted_at": "2026-11-20T22:02:06+00:00"
+    },
+    "4f0440768829471386bb278580bee3f8": {
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "label": "Codex TOY-02 — допуск нагрузки в H03",
+      "branch": "codex/toy02-load-evidence-01a1f9c7",
+      "files": [
+        "targets/lfj8/lfj8_h03_cycle.c",
+        "targets/lfj8/lfj8_h03_cycle.h",
+        "targets/lfj8/test_lfj8_h03_cycle.c",
+        "targets/lfj8/test_lfj8_h03_cycle_load.c",
+        "verification/project-audit/toy02-h03-load-evidence.md"
+      ],
+      "stage": "review",
+      "claim_id": "4f0440768829471386bb278580bee3f8",
+      "claimed_at": "2026-11-20T21:51:53+00:00",
+      "updated_at": "2026-11-20T22:02:54+00:00",
+      "note": "Квалификация трёх групп нагрузки включена до публикации GP и такта Toyota. Потеря метаданных, просрочка и старый epoch отзывают цикл. ПК 41/179, M32R 8 компонентных, 62 запуска и 6 размещённых. Flash +224, RAM прежняя. Нет парных Bosch/S01 для поставщика rbm_h03_target_take_toyota. Отчёт toy02-h03-load-evidence.md.",
+      "result": "f1f622d93c3e0ae143cb41ba83813160d7b3063a",
+      "based_on_reviews": [],
+      "task": "TOY-02",
+      "submitted_at": "2026-11-20T22:02:54+00:00"
     }
   }
 }
