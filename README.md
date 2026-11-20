@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:08:03+00:00**. Изменение № **331**.
+Обновлено UTC: **2026-11-20T18:08:50+00:00**. Изменение № **332**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -20,7 +20,7 @@
 | TOY-06 — Блокировка гидротрансформатора SLU | Выполняется | Codex TOY-06 — SLU в SECONDARY \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-secondary-schedule-fea1b366 | 2026-11-20T18:04:06+00:00 | Новый резерв после приёма предыдущей порции. Связываю численную цепочку SLU с SECONDARY на квалифицированном снимке, проверяю владельца GP−4735 и вывод команды в типизированную границу. Нативные файлы во владении H03-03 не затрагиваю. |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Свободна для продолжения | Предыдущий: Codex CAN-01 FullCAN coherence \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-rx-coherence-1120-c7e4 | 2026-11-20T17:40:45+00:00 | Предыдущая порция принята. Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 6820992a15300275c3dd9c98398151e661a42925 |
 | CAN-02 — Общий диспетчер CAN13 | Свободна для продолжения | Предыдущий: Codex CAN-02 telemetry submission \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can02-telemetry-submit-1120-c7e4 | 2026-11-20T17:43:49+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit a45c2f67a80a5f7e0d939816cfb12551fd6edd96 |
-| CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Выполняется | Чат CAN — владелец поколения CAN0 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can03-generation-rx-1120-c7e4 | 2026-11-20T18:05:28+00:00 | Gate 0x00C34C and OEM setup now use the shared h03_can_owner symbol; native runs pass. H03-03 supplies native-ready and paired clocks, DTC-02 may use lfj8_h03_can_owner_rx_epoch() before capture. Testing RX drain and same-generation fault lockout. |
+| CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Чат CAN — владелец поколения CAN0 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can03-generation-rx-1120-c7e4 | 2026-11-20T18:08:50+00:00 | Единый h03_can_owner для setup и OEM TX gate, дренаж BasicCAN и отзыв CAN13. ПК 37/102, M32R 18 компонентов, native 17, components 5 и целевой тест PASS. Для H03-03: owner_poll с парой часов. Для DTC-02: rx_epoch перед захватом. Expanded: +556 байт, второе окно превышено на 2232. Отчёт verification/project-audit/can03-owner-recovery.md. Привязка RAM/IRQ и стенд открыты. / commit 720bb64de67d2b64dcb9134796cf193df2951ecd |
 | CAN-04 — Запрос снижения момента по RB | Свободна для продолжения | Предыдущий: Codex CAN-04 TX loss \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can04-tx-loss-1120-c7e4 | 2026-11-20T17:42:49+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit e02095c6b8d294dacd71db21ea36f970019d0790 |
 | CAN-05 — Полнота штатного обмена Chery | Свободна для продолжения | Предыдущий: Codex CAN-05 RX age \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can05-rx-age-1120-c7e4 | 2026-11-20T17:39:43+00:00 | Предыдущая порция принята. Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 82947a42cfb33ef5350af1ce98e39055ba6a1508 |
 | ECU-01 — Проверочная сборка Bosch E4M3 | Свободна для продолжения | Предыдущий: Codex ECU-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/ecu01-1120-c7e4 | 2026-11-20T17:46:01+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 84380128b8db2e0a6b24b297dd40aa020598e3ce |
@@ -56,7 +56,7 @@
 | Задача | Сейчас | Следующий шаг | Кому удобно продолжить |
 | --- | --- | --- | --- |
 | [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#h03-03) | Выполняется | Связать штатный запуск, часы и обработчики с одним владельцем приложения; довести события до общего цикла. | Чат запуска H03 |
-| [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#can-03) | Выполняется | Подключить реальное владение CAN0: общее время, смена поколения, отзыв TX и очистка старых кадров после сбоя. | Чат CAN |
+| [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#can-03) | На проверке | Подключить реальное владение CAN0: общее время, смена поколения, отзыв TX и очистка старых кадров после сбоя. | Чат CAN |
 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#h03-05) | На проверке | Связать потерю допуска со штатным отключением выходов и проверить порядок записей. Недостающие ток–давление и полярность оставить отдельными измерениями. | Чат силовых выходов |
 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#vss-02) | На проверке | Подключить единый снимок S51/S83/ATF с общим временем; затем продолжить H03-02. Отделить остановку, потерю импульсов и сброс счётчика. | Чат датчиков |
 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/e24ae2ca05677df9e3a2326e43b9cbc6c67e23db/docs/project-map.md#toy-04) | Свободна для продолжения | Замкнуть оставшиеся стадии полного цикла, R и ручные запросы; затем подключить SLU SECONDARY и назначить одного владельца таймера в TOY-06. | Чат переключений Toyota |
@@ -89,7 +89,7 @@
 </details>
 
 <details>
-<summary>CAN-03 — Штатный запуск, IRQ и восстановление CAN0: Выполняется</summary>
+<summary>CAN-03 — Штатный запуск, IRQ и восстановление CAN0: На проверке</summary>
 
 **Сделано.** Нативный setup отзывает разрешение TX13 до штатного вызова и меняет поколение после возврата. 16 сценариев и запрет передачи проверены; владелец и очистка RX открыты.
 
@@ -656,6 +656,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:08:50+00:00 | CAN-03 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T18:08:03+00:00 | H03-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T18:07:39+00:00 | H03-03 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:07:03+00:00 | H03-04 | claim | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
@@ -685,4 +686,3 @@
 | 2026-11-20T17:47:17+00:00 | ECU-02 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T17:46:57+00:00 | TOY-01 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:46:37+00:00 | VSS-02 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T17:46:01+00:00 | ECU-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
