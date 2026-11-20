@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 167,
+  "sequence": 168,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -320,11 +320,11 @@
         "targets/lfj8/test_lfj8_h03_cycle.c",
         "verification/project-audit/toy04-upper-gears.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "66ff2c9c89284dcaba9ce91746f4bde4",
       "claimed_at": "2026-11-20T16:12:39+00:00",
-      "updated_at": "2026-11-20T16:19:02+00:00",
-      "note": "Передаю интегратору. 12 точек D в двух профилях ОЖ: 2→3, 3→4, понижения, холодный запрет 4-й и потеря события до выдачи — PASS. ПК 33 шага/65 тестов, M32R 17 компонентов, NATIVE 16+15. Отчёт toy04-upper-gears.md содержит хеш для общего аудита. Под нагрузкой, в R и на оборудовании не проверено.",
+      "updated_at": "2026-11-20T16:34:19+00:00",
+      "note": "Порция с переходами D принята в опубликованную main b2ca79d. Резерв освобождаю. Полный гидравлический цикл, измерения, нагрузка и R остаются открыты.",
       "result": "439188ac7049314db5c94d261f8e9570092d514b"
     },
     "CAN-02": {
@@ -1827,9 +1827,17 @@
       "action": "review",
       "claim_id": "8bc1c70042a844479c03009561a5e586",
       "at": "2026-11-20T16:34:04+00:00"
+    },
+    {
+      "operation_id": "b94290ec64fd46dfa7f9375d8b39ae74",
+      "task": "TOY-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "66ff2c9c89284dcaba9ce91746f4bde4",
+      "at": "2026-11-20T16:34:19+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:34:04+00:00",
+  "updated_at": "2026-11-20T16:34:19+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
