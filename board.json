@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 11,
+  "sequence": 12,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -56,20 +56,18 @@
       "label": "Codex — CAN0 H03",
       "branch": "codex/can-03-h03-01a1f99f",
       "files": [
+        "docs/lfj8-9e1c-minimum-bench.md",
         "docs/lfj8-h03-torque.md",
         "targets/lfj8/check_h03_can_lifecycle.py",
-        "targets/lfj8/check_h03_torque_tx_gate.py",
         "targets/lfj8/h03_can_lifecycle_test.S",
-        "targets/lfj8/lfj8_donor_io.c",
-        "targets/lfj8/lfj8_h03_can13.c",
-        "targets/lfj8/lfj8_h03_can13.h",
-        "verification/e4m3-can-9e1c/h03-can-lifecycle.json"
+        "verification/e4m3-can-9e1c/h03-can-lifecycle.json",
+        "verification/project-audit/2026-11-20.json"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
       "claimed_at": "2026-11-20T15:44:32+00:00",
-      "updated_at": "2026-11-20T15:46:14+00:00",
-      "note": "16 прогонов lifecycle и 12 TX gate прошли. OEM очищает MSC13 при сохранении SLIMK в модели RAM. Общий снимок аудита зарезервирован DTC-02, интегратору обновить хеши двух проверенных файлов и добавить отчёт. Нативная привязка и аппаратные замеры открыты.",
+      "updated_at": "2026-11-20T15:49:11+00:00",
+      "note": "Готовлю воспроизводимую проверку CAN-03 и критерии приёмки двух BIN через CANHacker.",
       "result": "c46e9b5cf857a95757aef1025f599e41972eaf64"
     },
     "TOY-03": {
@@ -175,9 +173,17 @@
       "action": "review",
       "claim_id": "f014bd3c6bba42f5bb7e5fa23c121d0d",
       "at": "2026-11-20T15:48:28+00:00"
+    },
+    {
+      "operation_id": "c4b0e78cd5414390961a79dfd77d8911",
+      "task": "CAN-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "resume",
+      "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
+      "at": "2026-11-20T15:49:11+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:48:28+00:00",
+  "updated_at": "2026-11-20T15:49:11+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
