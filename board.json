@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 446,
+  "sequence": 447,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -333,12 +333,12 @@
         "targets/lfj8/test_lfj8_h03_can13.c",
         "verification/project-audit/can02-torque-submit.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "a9db7d810e7b460fb52e5042ad8e2450",
       "claimed_at": "2026-11-20T18:54:52+00:00",
-      "updated_at": "2026-11-20T18:58:05+00:00",
-      "note": "Два сценария CAN13 прошли. Сборка M32R и адресная модель H03 прошли; ожидаю завершения полного набора ПК и готовлю доказательства.",
-      "result": null
+      "updated_at": "2026-11-20T19:00:23+00:00",
+      "note": "Адаптер отзывает владение CAN13 и подтверждение момента в том же опросе при ошибке отправки, SLOT_BUSY допускает повтор. ПК 37 шагов и 113 тестов, M32R 18 компонентов, native 17 и components 6, prefix-candidate PASS. Доказательства verification/project-audit/can02-torque-submit.md. Аппаратные окна и владение требуют проверки.",
+      "result": "9ad7feedbace41a44cccab0f2ead94b1d5a7425f"
     },
     "TOY-06": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -4131,9 +4131,17 @@
       "action": "heartbeat",
       "claim_id": "15ef4cba9c9a49b1acc46893d21aabad",
       "at": "2026-11-20T19:00:03+00:00"
+    },
+    {
+      "operation_id": "a70e9e60fdc24a918a9eddc35b944743",
+      "task": "CAN-02",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "a9db7d810e7b460fb52e5042ad8e2450",
+      "at": "2026-11-20T19:00:23+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:00:03+00:00",
+  "updated_at": "2026-11-20T19:00:23+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
