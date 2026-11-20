@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 567,
+  "sequence": 568,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -505,19 +505,21 @@
       "result": "c53aaf01d85f38f3fded16ae2c75ef52009f5bd9"
     },
     "ECU-02": {
-      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
-      "label": "Codex ECU-02 — отпускание RB при потере связи",
-      "branch": "codex/ecu02-rb-lease-fea1b366",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex ECU-02 — граница допуска момента Bosch",
+      "branch": "codex/ecu02-torque-permit-boundary-7bd19ea4",
       "files": [
-        "targets/bosch/verify_e4m3_torque_rpm.py",
-        "verification/project-audit/ecu02-rb-lease-timeout.md"
+        "targets/bosch/chery_torque_rx.c",
+        "targets/bosch/chery_torque_rx.h",
+        "targets/bosch/test_chery_torque_rx.c",
+        "verification/project-audit/ecu02-torque-permit-boundary.md"
       ],
-      "stage": "done",
-      "claim_id": "af75614181e6438cbed6652ba8147606",
-      "claimed_at": "2026-11-20T19:04:27+00:00",
-      "updated_at": "2026-11-20T19:28:14+00:00",
-      "note": "Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены.",
-      "result": "2b25504819fbf1873f038101e6e56c62320be144"
+      "stage": "in_progress",
+      "claim_id": "911be787c7444bcf9186a8d6c9f55e1b",
+      "claimed_at": "2026-11-20T20:04:50+00:00",
+      "updated_at": "2026-11-20T20:04:50+00:00",
+      "note": "Проверяю отзыв квалификации при точном совпадении метки 0x1AE с границей снятия допуска. После восстановления в том же поколении квалифицирую только кадры строго после границы. Машинные файлы CAN-05 не меняю.",
+      "result": null
     },
     "H03-01": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -5121,9 +5123,17 @@
       "action": "review",
       "claim_id": "25f1a0e7da1d41bba388e0e989f02e36",
       "at": "2026-11-20T20:04:23+00:00"
+    },
+    {
+      "operation_id": "f10815bb180843e0be6fe5cb0d3c75eb",
+      "task": "ECU-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "911be787c7444bcf9186a8d6c9f55e1b",
+      "at": "2026-11-20T20:04:50+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:04:23+00:00",
+  "updated_at": "2026-11-20T20:04:50+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
