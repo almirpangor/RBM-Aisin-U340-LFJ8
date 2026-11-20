@@ -235,6 +235,36 @@ uint16_t lfj8_h03_dtc_rx_queue_capture_pending(
     return queued;
 }
 
+uint16_t lfj8_h03_dtc_rx_dispatch_begin(
+    Lfj8H03DtcRxDispatch *dispatch, Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io,
+    uint16_t pending, uint32_t generation, uint32_t now_us, uint16_t can_now)
+{
+    const uint16_t both = LFJ8_H03_DTC_RX14_PENDING | LFJ8_H03_DTC_RX15_PENDING;
+    dispatch->generation = generation;
+    dispatch->paired_slots = 0;
+    if ((pending & both) == both) {
+        dispatch->paired_slots = lfj8_h03_dtc_rx_queue_capture_pending(
+            queue, io, pending, generation, now_us, can_now);
+    }
+    return dispatch->paired_slots;
+}
+
+bool lfj8_h03_dtc_rx_dispatch_skip_paired(Lfj8H03DtcRxDispatch *dispatch,
+                                       uint8_t slot, uint32_t generation)
+{
+    if (dispatch->generation != generation) {
+        dispatch->paired_slots = 0;
+        return false;
+    }
+    if (slot < 14u || slot > 15u) {
+        return false;
+    }
+    const uint16_t bit = (uint16_t)(UINT16_C(0x8000) >> slot);
+    const bool paired = (dispatch->paired_slots & bit) != 0u;
+    dispatch->paired_slots &= (uint16_t)~bit;
+    return paired;
+}
+
 bool lfj8_h03_dtc_rx_queue_peek(Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io,
                                uint32_t generation, uint32_t now_us,
                                uint16_t can_now, Lfj8H03DtcRxDelivery *delivery)

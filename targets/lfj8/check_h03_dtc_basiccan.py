@@ -21,6 +21,8 @@ COPY = 0x808526
 HOOK_SITE = 0x001534
 HOOK_RESUME = HOOK_SITE + 4
 HOOK_STOCK = bytes.fromhex("80c800ff")
+DISPATCH_SITE = 0x004738
+DISPATCH_STOCK = bytes.fromhex("fefff32e")
 MVTACHI_R0 = 0x5070
 STACK_PROBE_BYTES = 512
 STACK_PATTERN = 0xA55AA55A
@@ -36,6 +38,7 @@ SECTIONS {
   .bss : { *(.bss*) *(COMMON) }
   /DISCARD/ : { *(.note*) *(.comment) }
   h03_dtc_rx_resume = 0x001538;
+  h03_dtc_rx_entry = 0x0013F0;
 }
 """
 FIXTURE = """
@@ -83,6 +86,7 @@ class Overwrite(NamedTuple):
     frame: bytes
     control: int
     during_copy: bool
+    before_attempt: bool = False
 
 
 class Case(NamedTuple):
@@ -92,6 +96,8 @@ class Case(NamedTuple):
     extended: int = 0
     overwrite: Overwrite | None = None
     deliveries: tuple[bytes, ...] = ()
+    paired_slots: int = 0
+    paired_deliveries: tuple[bytes, ...] | None = None
 
 
 def slot_mask(slot):
@@ -125,7 +131,8 @@ def bytes_at(address, count):
     return [f"*(unsigned char*){address + offset:#x}" for offset in range(count)]
 
 
-def simulate(run, work, debugger, case, *, compare_hook=False, hook_branch=None, high_probe=False):
+def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
+             compare_dispatch=False, high_probe=False):
     pending = sum(slot_mask(slot) for slot in case.slots)
     commands = [
         "set confirm off", "target sim --memory-size 16M", "load",
@@ -148,13 +155,18 @@ def simulate(run, work, debugger, case, *, compare_hook=False, hook_branch=None,
             "end",
         ]
         commands += at(f"*{HOOK_RESUME:#x}", trace("context", *REGISTERS))
-    if hook_branch is not None:
-        commands.append(f"set {{unsigned int}}{HOOK_SITE:#x} = {hook_branch:#x}")
+    if compare_dispatch:
+        commands += at("*0x0013f0", trace("dispatch_entry", *REGISTERS))
+    if patches:
+        commands += [f"set {{unsigned int}}{site:#x} = {word:#x}" for site, word in patches.items()]
     if high_probe:
         commands.append("set fixture_rx_high_probe = 1")
-        if hook_branch is not None:
+        if patches:
             commands += at("*rbm_h03_dtc_rx_restore_high",
                            trace("restore_high", "$r0", "*(unsigned short*)$pc"))
+            if compare_dispatch:
+                commands += at("*rbm_h03_dtc_rx_dispatch_restore_high",
+                               trace("restore_high", "$r0", "*(unsigned short*)$pc"))
     commands += at("*0x152c", f"set $slist_before = *(unsigned short*){SLIST:#x}")
     # CAN0SLIST has write-zero-to-clear bits; plain simulator RAM does not.
     commands += at(
@@ -165,7 +177,7 @@ def simulate(run, work, debugger, case, *, compare_hook=False, hook_branch=None,
 
     inject = []
     if case.overwrite:
-        slot, raw, control, during_copy = case.overwrite
+        slot, raw, control, during_copy, before_attempt = case.overwrite
         inject = [
             "set $injected = 1",
             trace("overwrite", "$r8"),
@@ -178,6 +190,9 @@ def simulate(run, work, debugger, case, *, compare_hook=False, hook_branch=None,
                 f"*0x3cf4 if $lr == 0x1564 && $r3 == 8 && $r8 == {slot} && !$injected",
                 *inject,
             )
+            inject = []
+        elif before_attempt:
+            commands += at(f"*{HOOK_SITE:#x} if $r8 == {slot} && !$injected", *inject)
             inject = []
         else:
             inject = [f"if $r8 == {slot} && !$injected", *inject, "end"]
@@ -202,6 +217,10 @@ def simulate(run, work, debugger, case, *, compare_hook=False, hook_branch=None,
     ]
     if compare_hook:
         received = "fixture_rx_queue.entries[$entry].delivery.received"
+        dispatch_trace = []
+        if compare_dispatch:
+            dispatch_trace.append(trace("dispatch", "fixture_rx_begins", "fixture_rx_paired_mask",
+                                        "fixture_rx_skips"))
         commands += [
             trace("accumulator", "$r1", "$r2"),
             "set $probe = $stack_floor",
@@ -211,6 +230,7 @@ def simulate(run, work, debugger, case, *, compare_hook=False, hook_branch=None,
             trace("stack", "$sp - $probe"),
             trace("observer", "fixture_rx_calls", "fixture_rx_irq_enabled",
                   "fixture_rx_queue.count", "fixture_rx_queue.rejected"),
+            *dispatch_trace,
             "set $entry = 0",
             "while $entry < fixture_rx_queue.count && $entry < 4",
             trace("delivery", f"{received}.generation", f"{received}.can_timestamp",
@@ -243,7 +263,7 @@ def ack(slot, pending):
     return [("ack", slot, pending, 0xFFFF ^ slot_mask(slot))]
 
 
-def cases():
+def cases(with_dispatch=False):
     session = raw_slot(0x732, 8, "0210860000000000", 0x1234)
     flow = raw_slot(0x732, 3, "300000", 0x1300)
     yield Case("no_slot_interrupt", {}, [])
@@ -253,7 +273,7 @@ def cases():
                deliveries=(flow,))
     yield Case("both_slots_pending", {14: (session, 0x41), 15: (flow, 0x41)}, [
         *ack(15, 3), *attempt(15, flow), *ack(14, 2), *attempt(14, session),
-    ], deliveries=(flow, session))
+    ], deliveries=(flow, session), paired_slots=3, paired_deliveries=(session, flow))
     for name, raw, control, extended in (
         ("foreign_id", raw_slot(0x733, 8, "021086", 0x1234), 0x41, 0),
         ("lost_before_read", session, 0x45, 0),
@@ -285,10 +305,30 @@ def cases():
         *ack(15, 1), *attempt(15, short), ("lookup_match", 2),
     ])
 
+    if with_dispatch:
+        read = raw_slot(0x732, 4, "0317ff00", 0x1310)
+        yield Case("paired_retry_new_frame", {14: (session, 0x41), 15: (flow, 0x41)}, [
+            *ack(15, 3), *attempt(15, flow, replacement=read, during_copy=True),
+            *attempt(15, read), *ack(14, 3), *attempt(14, session),
+        ], overwrite=Overwrite(15, read, 0x41, during_copy=True),
+                   paired_slots=3, paired_deliveries=(session, flow, read))
+        yield Case("paired_overwrite_before_ack", {14: (session, 0x41), 15: (flow, 0x41)}, [
+            *ack(15, 3), ("overwrite", 15), *attempt(15, read, 0x45),
+            *ack(14, 3), *attempt(14, session),
+        ], overwrite=Overwrite(15, read, 0x45, during_copy=False, before_attempt=True),
+                   paired_slots=3, paired_deliveries=(session, flow))
+        yield Case("paired_only_one_eligible", {14: (session, 0x45), 15: (flow, 0x41)}, [
+            *ack(15, 3), *attempt(15, flow), *ack(14, 2), *attempt(14, session, 0x45),
+        ], paired_slots=1, paired_deliveries=(flow,))
 
-def build_hook_fixture(run, work, gcc, rom):
-    if rom[HOOK_SITE:HOOK_RESUME] != HOOK_STOCK:
-        raise ValueError("The H03 instruction before the MSC read differs")
+
+def build_hook_fixture(run, work, gcc, rom, with_dispatch=False):
+    sites = [(HOOK_SITE, HOOK_STOCK, "rbm_h03_dtc_rx_hook", 0xFF000000)]
+    if with_dispatch:
+        sites.append((DISPATCH_SITE, DISPATCH_STOCK, "rbm_h03_dtc_rx_dispatch_hook", 0xFE000000))
+    for site, instruction, _, _ in sites:
+        if rom[site:site + 4] != instruction:
+            raise ValueError(f"The H03 instruction at {site:#x} differs")
     sources = ("h03_dtc_rx_hook.S", "h03_dtc_rx_hook_fixture.c",
                "lfj8_h03_dtc_rx_queue.c", "lfj8_h03_dtc_can.c")
     for name in sources:
@@ -297,25 +337,39 @@ def build_hook_fixture(run, work, gcc, rom):
         for path in directory.glob("*.h"):
             shutil.copyfile(path, work / path.name)
     (work / "fixture.ld").write_text(HOOK_LAYOUT, encoding="ascii")
+    defines = ["-DRBM_DTC_RX_HOOK_FIXTURE"]
+    roots = []
+    if with_dispatch:
+        defines.append("-DRBM_DTC_RX_DISPATCH_FIXTURE")
+        roots.append("-Wl,--undefined=rbm_h03_dtc_rx_dispatch_hook")
     run(gcc, *TARGET, "-Os", "-g", "-std=c11", "-ffunction-sections", "-fdata-sections",
-        "-DRBM_DTC_RX_HOOK_FIXTURE", "-nostdlib", "-I.", "-Wl,--gc-sections,-T,fixture.ld",
+        *defines, *roots, "-nostdlib", "-I.", "-Wl,--gc-sections,-T,fixture.ld",
         "fixture.S", *sources, "-Wl,--start-group", "-lc", "-lgcc", "-Wl,--end-group", "-o", "fixture.elf")
     nm = gcc.with_name(f"m32r-elf-nm{gcc.suffix}")
-    for line in run(nm, "--defined-only", "fixture.elf").decode().splitlines():
-        words = line.split()
-        if words[-1:] == ["rbm_h03_dtc_rx_hook"]:
-            target = int(words[0], 16)
-            displacement = target - HOOK_SITE
-            if target < 0x101000 or displacement % 4 or not 0 <= displacement < (1 << 25):
-                raise ValueError("The RX hook branch does not target the simulator fixture area")
-            return 0xFF000000 | (displacement // 4)
-    raise ValueError("The RX hook symbol is missing from the simulator ELF")
+    symbols = {word[2]: int(word[0], 16) for word in
+               (line.split() for line in run(nm, "--defined-only", "fixture.elf").decode().splitlines())
+               if len(word) == 3}
+    patches = {}
+    for site, _, symbol, opcode in sites:
+        target = symbols.get(symbol, 0)
+        displacement = target - site
+        if target < 0x101000 or displacement % 4 or not 0 <= displacement < (1 << 25):
+            raise ValueError(f"The branch to {symbol} does not target the simulator fixture area")
+        patches[site] = opcode | (displacement // 4)
+    return patches
 
 
-def expected_observation(case):
+def expected_observation(case, with_dispatch=False):
     attempts = sum(event[0] == "pre_clear" for event in case.expected)
-    queued = [("observer", attempts, 0, len(case.deliveries), attempts - len(case.deliveries))]
-    for raw in case.deliveries:
+    deliveries = case.deliveries
+    rejected = attempts - len(deliveries)
+    if with_dispatch and case.paired_deliveries is not None:
+        deliveries = case.paired_deliveries
+        rejected = attempts + 2 - case.paired_slots.bit_count() - len(deliveries)
+    queued = [("observer", attempts, 0, len(deliveries), rejected)]
+    if with_dispatch:
+        queued.append(("dispatch", int(bool(case.slots)), case.paired_slots, case.paired_slots.bit_count()))
+    for raw in deliveries:
         dlc = raw[5] & 0xf
         data = raw[6:6 + dlc].ljust(8, b"\x00")
         queued.append(("delivery", 7, int.from_bytes(raw[14:], "big"), 0x732, dlc, *data))
@@ -333,15 +387,18 @@ def split_stack_observation(events):
     return [row for row in events if row[0] != "stack"], depths[0]
 
 
-def compare_high_word(run, work, debugger, case, branch):
-    stock = simulate(run, work, debugger, case, compare_hook=True, high_probe=True)
-    wrapped = simulate(run, work, debugger, case, compare_hook=True, hook_branch=branch, high_probe=True)
+def compare_high_word(run, work, debugger, case, patches, with_dispatch=False):
+    stock = simulate(run, work, debugger, case, compare_hook=True,
+                     compare_dispatch=with_dispatch, high_probe=True)
+    wrapped = simulate(run, work, debugger, case, compare_hook=True, patches=patches,
+                       compare_dispatch=with_dispatch, high_probe=True)
     original = next(row[1] for row in stock if row[0] == "accumulator")
     returned = next(row[1] for row in wrapped if row[0] == "accumulator")
     operand = [row for row in wrapped if row[0] == "restore_high"]
-    if not original or operand != [("restore_high", original, MVTACHI_R0)] or returned != original:
+    restores = 2 if with_dispatch else 1
+    if not original or operand != [("restore_high", original, MVTACHI_R0)] * restores or returned != original:
         raise ValueError(f"Unexpected high accumulator restore: {original:#x}, {operand}, {returned:#x}")
-    observer_events = ("restore_high", "stack", "observer", "delivery")
+    observer_events = ("restore_high", "stack", "observer", "delivery", "dispatch")
     if ([row for row in stock if row[0] not in observer_events] !=
             [row for row in wrapped if row[0] not in observer_events]):
         raise ValueError("The high accumulator probe changed the OEM path or context")
@@ -349,7 +406,8 @@ def compare_high_word(run, work, debugger, case, branch):
             "returned": f"0x{returned:08X}"}
 
 
-def check(base, gcc, with_rx_hook=False):
+def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False):
+    with_rx_hook = with_rx_hook or with_rx_dispatch
     identity = identify_h03(base)
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
@@ -367,40 +425,47 @@ def check(base, gcc, with_rx_hook=False):
         version = run(gcc, "--version").decode().splitlines()[0]
         (work / "h03.dat").write_bytes(rom)
         (work / "fixture.S").write_text(FIXTURE, encoding="ascii")
-        branch = None
+        patches = {}
         if with_rx_hook:
-            branch = build_hook_fixture(run, work, gcc, rom)
+            patches = build_hook_fixture(run, work, gcc, rom, with_rx_dispatch)
         else:
             (work / "fixture.ld").write_text(LAYOUT, encoding="ascii")
             run(gcc, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,fixture.ld", "fixture.S", "-o", "fixture.elf")
         results = {}
         hook_cases = {}
-        for case in cases():
-            stock = simulate(run, work, debugger, case, compare_hook=with_rx_hook)
+        for case in cases(with_rx_dispatch):
+            stock = simulate(run, work, debugger, case, compare_hook=with_rx_hook,
+                             compare_dispatch=with_rx_dispatch)
             if with_rx_hook:
                 stock, stock_depth = split_stack_observation(stock)
-            actual = [event for event in stock if event[0] not in ("observer", "context", "accumulator")]
+            observer_events = ("observer", "context", "accumulator", "dispatch", "dispatch_entry")
+            actual = [event for event in stock if event[0] not in observer_events]
             pending = slot_mask(case.overwrite.slot) if case.overwrite else 0
             expected = [*case.expected, ("return", 1, 0x9FFFFC, 8, 9, 10, pending)]
             if actual != expected:
                 raise ValueError(f"{case.name}:\nexpected {expected}\nobserved {actual}")
             results[case.name] = render_events(actual)
             if with_rx_hook:
-                if stock[-1] != ("observer", 0, 0, 0, 0):
+                empty = [("observer", 0, 0, 0, 0)]
+                if with_rx_dispatch:
+                    empty.append(("dispatch", 0, 0, 0))
+                if stock[-len(empty):] != empty:
                     raise ValueError(f"{case.name}: the unmodified H03 called the observer")
-                wrapped = simulate(run, work, debugger, case, compare_hook=True, hook_branch=branch)
+                wrapped = simulate(run, work, debugger, case, compare_hook=True, patches=patches,
+                                   compare_dispatch=with_rx_dispatch)
                 wrapped, wrapped_depth = split_stack_observation(wrapped)
-                expected_hook = [*stock[:-1], *expected_observation(case)]
+                expected_tail = expected_observation(case, with_rx_dispatch)
+                expected_hook = [*stock[:-len(empty)], *expected_tail]
                 if wrapped != expected_hook:
                     raise ValueError(f"{case.name}, with hook:\nexpected {expected_hook}\nobserved {wrapped}")
                 hook_cases[case.name] = {
-                    "observer_and_deliveries": render_events(wrapped[-(1 + len(case.deliveries)):]),
+                    "observer_and_deliveries": render_events(wrapped[-len(expected_tail):]),
                     "stock_stack_bytes_written": stock_depth,
                     "hook_stack_bytes_written": wrapped_depth,
                 }
         if with_rx_hook:
             single_rx = next(case for case in cases() if case.name == "rx14_session")
-            high_word = compare_high_word(run, work, debugger, single_rx, branch)
+            high_word = compare_high_word(run, work, debugger, single_rx, patches, with_rx_dispatch)
     result = {
         "base": identity,
         "compiler": version,
@@ -420,6 +485,9 @@ def check(base, gcc, with_rx_hook=False):
             "all_observations": hook_cases,
             "high_accumulator_probe": high_word,
         }
+    if with_rx_dispatch:
+        result["simulator_hook"]["dispatch_site"] = f"0x{DISPATCH_SITE:06X}"
+        result["simulator_hook"]["dispatch_entry"] = "0x0013F0"
     return result
 
 
@@ -428,18 +496,22 @@ def main():
     parser.add_argument("--base", required=True, type=Path)
     parser.add_argument("--gcc", required=True, type=Path)
     parser.add_argument("--out", type=Path)
-    parser.add_argument("--with-rx-hook", action="store_true",
-                        help="Also compare the isolated RX hook against the original instructions")
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--with-rx-hook", action="store_true",
+                       help="Also compare the isolated RX hook against the original instructions")
+    modes.add_argument("--with-rx-dispatch", action="store_true",
+                       help="Compare the ordered pair and per-attempt hooks together")
     args = parser.parse_args()
     if args.out and (args.out.suffix.lower() != ".json" or args.out.resolve() == args.base.resolve()):
         parser.error("--out must be a separate JSON report")
     try:
-        result = check(args.base, args.gcc.resolve(), args.with_rx_hook)
+        result = check(args.base, args.gcc.resolve(), args.with_rx_hook,
+                       with_rx_dispatch=args.with_rx_dispatch)
         if args.out:
             args.out.parent.mkdir(parents=True, exist_ok=True)
             args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
         print(f"PASS: {result['executed_cases']} H03 BasicCAN RX cases (M32R CPU simulator)")
-        if args.with_rx_hook:
+        if args.with_rx_hook or args.with_rx_dispatch:
             print(f"PASS: {result['simulator_hook']['paired_cases']} stock/hook comparisons")
             print("PASS: high accumulator operand, instruction and return probe")
     except subprocess.CalledProcessError as error:

@@ -31,6 +31,11 @@ typedef struct {
     bool initialized;
 } Lfj8H03DtcRxQueue;
 
+typedef struct {
+    uint32_t generation;
+    uint16_t paired_slots;
+} Lfj8H03DtcRxDispatch;
+
 typedef enum {
     LFJ8_H03_DTC_RX_NOT_READY,
     LFJ8_H03_DTC_RX_REJECTED,
@@ -82,6 +87,21 @@ Lfj8H03DtcRxPublish lfj8_h03_dtc_rx_queue_capture_basic(
 uint16_t lfj8_h03_dtc_rx_queue_capture_pending(
     Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io, uint16_t pending,
     uint32_t generation, uint32_t now_us, uint16_t can_now);
+
+/* One state per serialized OEM RX dispatch. Call begin before the first
+ * slot attempt, with the original CAN0SLIST and before any TRFIN clear.
+ * Captures the initial pair only if both RX bits are set.
+ *
+ * Then call skip_paired before every OEM attempt, including retries. It
+ * consumes the marker on the first attempt for a published slot. The OEM
+ * must remain the only code acknowledging TRFIN during this dispatch.
+ * A replacement before that first acknowledgement sets ML and is not
+ * eligible. A later OEM retry proceeds through the normal slot observer. */
+uint16_t lfj8_h03_dtc_rx_dispatch_begin(
+    Lfj8H03DtcRxDispatch *dispatch, Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io,
+    uint16_t pending, uint32_t generation, uint32_t now_us, uint16_t can_now);
+bool lfj8_h03_dtc_rx_dispatch_skip_paired(Lfj8H03DtcRxDispatch *dispatch,
+                                       uint8_t slot, uint32_t generation);
 
 /* Call before EVERY broker poll, even while it is busy. This returns a
  * COPY, leaving the head queued. Expiry uses both CAN bits and monotonic

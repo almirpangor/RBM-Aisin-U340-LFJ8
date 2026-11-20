@@ -383,6 +383,32 @@ static void test_batch_capacity_and_bus_off(void)
     assert(capture_pending(&f, BOTH_RX, 44) == 0 && f.queue.count == 0 && f.queue.rejected == 2);
 }
 
+static void test_dispatch_marks_one_attempt(void)
+{
+    Fixture f;
+    init(&f, 7);
+    Lfj8H03DtcRxDispatch dispatch;
+    prepare_rx(&f, 14, 20, session, sizeof(session));
+    prepare_rx(&f, 15, 22, read_dtc, sizeof(read_dtc));
+    assert(lfj8_h03_dtc_rx_dispatch_begin(&dispatch, &f.queue, &f.io, BOTH_RX,
+                                         7, 24, can_tick(24)) == BOTH_RX);
+    assert(!lfj8_h03_dtc_rx_dispatch_skip_paired(&dispatch, 13, 7));
+    assert(lfj8_h03_dtc_rx_dispatch_skip_paired(&dispatch, 15, 7));
+    assert(!lfj8_h03_dtc_rx_dispatch_skip_paired(&dispatch, 15, 7));
+    assert(!lfj8_h03_dtc_rx_dispatch_skip_paired(&dispatch, 14, 8));
+    assert(!lfj8_h03_dtc_rx_dispatch_skip_paired(&dispatch, 14, 7));
+    take_service(&f, 26, 0x10);
+    take_service(&f, 26, 0x17);
+
+    prepare_rx(&f, 14, 26, session, sizeof(session));
+    prepare_rx(&f, 15, 28, read_dtc, sizeof(read_dtc));
+    assert(lfj8_h03_dtc_rx_dispatch_begin(&dispatch, &f.queue, &f.io, BOTH_RX,
+                                         7, 30, can_tick(30)) == BOTH_RX);
+    assert(lfj8_h03_dtc_rx_dispatch_begin(&dispatch, &f.queue, &f.io, LFJ8_H03_DTC_RX14_PENDING,
+                                         7, 32, can_tick(32)) == 0);
+    assert(!lfj8_h03_dtc_rx_dispatch_skip_paired(&dispatch, 14, 7) && f.queue.count == 2);
+}
+
 int main(void)
 {
     test_fifo_busy_and_flow_control();
@@ -392,7 +418,9 @@ int main(void)
     test_batch_wrap_and_tie();
     test_batch_rejects_loss_and_stale_samples();
     test_batch_capacity_and_bus_off();
+    test_dispatch_marks_one_attempt();
     puts("PASS H03 DTC foreground: FIFO/FC, CAN generation, busy wrap, IRQ between peek and consume");
     puts("PASS BasicCAN pair: timestamp order, rollover, tie, loss, FIFO capacity, bus-off");
+    puts("PASS BasicCAN dispatch markers: one attempt, generation, next dispatch");
     return 0;
 }
