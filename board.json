@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 347,
+  "sequence": 348,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -93,20 +93,20 @@
       "result": "e7264c651d3fafe77e4bbff78e5a8fd8aa4e25ee"
     },
     "REL-01": {
-      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Codex REL-01 binary identity",
-      "branch": "codex/rel01-bin-identity-1120-c7e4",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex REL-01 H03 service preflight",
+      "branch": "codex/rel01-h03-service-preflight-01a1f99f",
       "files": [
-        "tests/test_package_workset.py",
-        "tools/package_workset.py",
-        "verification/project-audit/rel01-offline-identity.md"
+        "targets/lfj8/check_h03_service_writes.py",
+        "verification/project-audit/2026-11-20-h03-service-writes.json",
+        "verification/project-audit/rel01-h03-service-preflight.md"
       ],
-      "stage": "done",
-      "claim_id": "76adb69439704129b7ae37eeace39df2",
-      "claimed_at": "2026-11-20T16:47:37+00:00",
-      "updated_at": "2026-11-20T17:38:02+00:00",
-      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
-      "result": "3fda923bffc63005e8c2372b22e5197f8d4b7db1"
+      "stage": "in_progress",
+      "claim_id": "728ac0bbf9a84b04bfdc5f0fce5a6b1b",
+      "claimed_at": "2026-11-20T18:14:59+00:00",
+      "updated_at": "2026-11-20T18:14:59+00:00",
+      "note": "Independently test stock direct and deferred service writes against the H03 RAM address model and qualify the Virtual Flash/PCM Flash limits before packaging.",
+      "result": null
     },
     "H03-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -3349,9 +3349,17 @@
       "action": "claim",
       "claim_id": "80dd331a4841414ab2e1eea82dfb693b",
       "at": "2026-11-20T18:14:54+00:00"
+    },
+    {
+      "operation_id": "44eaf184ee204e8a8d00102c0cc26267",
+      "task": "REL-01",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "728ac0bbf9a84b04bfdc5f0fce5a6b1b",
+      "at": "2026-11-20T18:14:59+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:14:54+00:00",
+  "updated_at": "2026-11-20T18:14:59+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
