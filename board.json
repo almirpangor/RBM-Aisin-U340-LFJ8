@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 40,
+  "sequence": 41,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -183,12 +183,12 @@
         "tests/test_chery_1ae_roundtrip.py",
         "verification/project-audit/can05-1ae-roundtrip.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "39e9816a3049466a955d4f49cf740da4",
       "claimed_at": "2026-11-20T15:56:36+00:00",
-      "updated_at": "2026-11-20T15:57:48+00:00",
-      "note": "Round-trip harness implemented with the pinned R3 qualifier. Running host build and regression checks.",
-      "result": null
+      "updated_at": "2026-11-20T16:01:03+00:00",
+      "note": "Host 1AE round trip: 65536 operand pairs and validity transitions PASS. PC 33 steps / 59 tests PASS. Bosch compact build and ST10 model PASS OFFLINE_ONLY. Evidence can05-1ae-roundtrip.md; integrator to record the two new test files in the active audit. Native integration and hardware open.",
+      "result": "20247416c28972443bc2992d06d9706566c677d3"
     },
     "DTC-03": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -526,9 +526,17 @@
       "action": "resume",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "at": "2026-11-20T16:00:49+00:00"
+    },
+    {
+      "operation_id": "c00b5d0437844dea8fef8ae79633dac4",
+      "task": "CAN-05",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "39e9816a3049466a955d4f49cf740da4",
+      "at": "2026-11-20T16:01:03+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:00:49+00:00",
+  "updated_at": "2026-11-20T16:01:03+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
