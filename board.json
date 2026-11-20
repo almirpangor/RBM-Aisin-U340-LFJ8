@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 548,
+  "sequence": 549,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -416,8 +416,8 @@
       "stage": "in_progress",
       "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
       "claimed_at": "2026-11-20T19:55:14+00:00",
-      "updated_at": "2026-11-20T19:56:43+00:00",
-      "note": "Добавляю проверку полного пути через CAN owner и брокер, без живого чтения S51.",
+      "updated_at": "2026-11-20T19:58:14+00:00",
+      "note": "Доказан отказ прежнего брокера без живого трекера, новая ветвь передаёт захват S51 и проверяет его давность. Идут повторные проверки ПК и M32R.",
       "result": null
     },
     "H03-05": {
@@ -4973,9 +4973,17 @@
       "action": "review",
       "claim_id": "c4e3a3e369f14884b8a200b72aacab5e",
       "at": "2026-11-20T19:57:54+00:00"
+    },
+    {
+      "operation_id": "cadccf2e5d5c4206a408a731c960aa7c",
+      "task": "VSS-01",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "heartbeat",
+      "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
+      "at": "2026-11-20T19:58:14+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:57:54+00:00",
+  "updated_at": "2026-11-20T19:58:14+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
