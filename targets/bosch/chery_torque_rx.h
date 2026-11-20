@@ -57,6 +57,7 @@ typedef struct {
     bool synchronized;
     bool have_order_floor;
     bool have_can_generation;
+    bool order_floor_exclusive;
 } BoschCheryTorqueRx;
 
 typedef struct {
@@ -69,6 +70,8 @@ typedef struct {
 /* Serialize all operations on an instance, including generation updates.
  * Set a measured lease (1..INT32_MAX) in the same wrapping tick units as now.
  * upstream_permit covers bus health, engine readiness and all external gates.
+ * A withdrawal excludes captures at or before that tick in the same
+ * generation. Only later captures can start a new sequence.
  */
 bool bosch_chery_torque_init(BoschCheryTorqueRx *rx, uint32_t lease_ticks);
 /* Immediate delivery: capture and service occur at the same tick. */

@@ -45,9 +45,11 @@ BoschCheryTorqueSample bosch_chery_torque_snapshot(BoschCheryTorqueRx *rx,
         revoke(rx);
     }
     if (!upstream_permit) {
-        /* Reject backlog captured before the observed permit withdrawal. */
+        /* A capture from the withdrawal tick has no proven order relative
+         * to the gate closing. It cannot seed a new request sequence. */
         rx->order_floor_tick = now;
         rx->have_order_floor = true;
+        rx->order_floor_exclusive = true;
     } else if (rx->have_order_floor && now - rx->order_floor_tick >= rx->lease_ticks) {
         rx->have_order_floor = false;
     }
@@ -64,12 +66,15 @@ static BoschCheryTorqueResult receive(BoschCheryTorqueRx *rx, const BoschCheryTo
         return BOSCH_CHERY_TORQUE_BLOCKED;
     }
     const uint32_t age = now - captured_at;
-    if (!capture_is_current || age >= rx->lease_ticks ||
-        (rx->have_order_floor && age > now - rx->order_floor_tick)) {
+    const uint32_t floor_age = now - rx->order_floor_tick;
+    const bool before_floor = rx->have_order_floor &&
+        (rx->order_floor_exclusive ? age >= floor_age : age > floor_age);
+    if (!capture_is_current || age >= rx->lease_ticks || before_floor) {
         return BOSCH_CHERY_TORQUE_STALE;
     }
     rx->order_floor_tick = captured_at;
     rx->have_order_floor = true;
+    rx->order_floor_exclusive = false;
     if (frame->extended || frame->remote || frame->fd || frame->lost || frame->dlc != 8) {
         revoke(rx);
         return BOSCH_CHERY_TORQUE_MALFORMED;
