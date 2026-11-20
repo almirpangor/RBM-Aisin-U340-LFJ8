@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 711,
+  "sequence": 712,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -488,12 +488,12 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/vss02-h03-clock-binding.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "8b0ce759514b4c68b04d002b192f50ff",
       "claimed_at": "2026-11-20T21:52:15+00:00",
-      "updated_at": "2026-11-20T21:56:23+00:00",
-      "note": "Реальный callback из генератора прошёл нативную модель запуска и foreground M32R, включая отзыв часов и повторный старт. Проверяю фактическую компоновку с парными входами.",
-      "result": null,
+      "updated_at": "2026-11-20T22:01:03+00:00",
+      "note": "Связал target_clock_ready и sensor_config с startup/foreground H03 через проверенный парный профиль. ПК 41/179, M32R startup/foreground, 22 native и 8 компонентов PASS. В адресной модели разрешены два символа, +32 байта Flash, RAM прежняя. Открыты реальные замеры и восемь других привязок.",
+      "result": "007f28ea1e3fd2eee46c17e3e22092711e228937",
       "based_on_reviews": []
     },
     "TOY-01": {
@@ -8789,9 +8789,37 @@
         "result": "bec09c304b92c50becf8c39b91097288ed9af442",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "757eaea254b54cfd9ca60c218fc17cec",
+      "task": "VSS-02",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "8b0ce759514b4c68b04d002b192f50ff",
+      "at": "2026-11-20T22:01:03+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex VSS-02 — целевой допуск часов H03",
+        "branch": "codex/vss02-h03-clock-binding-32e6ac79",
+        "files": [
+          "targets/lfj8/check_h03_application_binding.py",
+          "targets/lfj8/check_h03_sensor_config.py",
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "tests/test_h03_sensor_config.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/vss02-h03-clock-binding.md"
+        ],
+        "stage": "review",
+        "claim_id": "8b0ce759514b4c68b04d002b192f50ff",
+        "claimed_at": "2026-11-20T21:52:15+00:00",
+        "updated_at": "2026-11-20T22:01:03+00:00",
+        "note": "Связал target_clock_ready и sensor_config с startup/foreground H03 через проверенный парный профиль. ПК 41/179, M32R startup/foreground, 22 native и 8 компонентов PASS. В адресной модели разрешены два символа, +32 байта Flash, RAM прежняя. Открыты реальные замеры и восемь других привязок.",
+        "result": "007f28ea1e3fd2eee46c17e3e22092711e228937",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:00:51+00:00",
+  "updated_at": "2026-11-20T22:01:03+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -10348,6 +10376,28 @@
       "based_on_reviews": [],
       "task": "H03-04",
       "submitted_at": "2026-11-20T22:00:51+00:00"
+    },
+    "8b0ce759514b4c68b04d002b192f50ff": {
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex VSS-02 — целевой допуск часов H03",
+      "branch": "codex/vss02-h03-clock-binding-32e6ac79",
+      "files": [
+        "targets/lfj8/check_h03_application_binding.py",
+        "targets/lfj8/check_h03_sensor_config.py",
+        "targets/lfj8/h03_application_binding_fixture.c",
+        "tests/test_h03_sensor_config.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/vss02-h03-clock-binding.md"
+      ],
+      "stage": "review",
+      "claim_id": "8b0ce759514b4c68b04d002b192f50ff",
+      "claimed_at": "2026-11-20T21:52:15+00:00",
+      "updated_at": "2026-11-20T22:01:03+00:00",
+      "note": "Связал target_clock_ready и sensor_config с startup/foreground H03 через проверенный парный профиль. ПК 41/179, M32R startup/foreground, 22 native и 8 компонентов PASS. В адресной модели разрешены два символа, +32 байта Flash, RAM прежняя. Открыты реальные замеры и восемь других привязок.",
+      "result": "007f28ea1e3fd2eee46c17e3e22092711e228937",
+      "based_on_reviews": [],
+      "task": "VSS-02",
+      "submitted_at": "2026-11-20T22:01:03+00:00"
     }
   }
 }
