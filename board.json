@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 704,
+  "sequence": 705,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -112,8 +112,8 @@
       "stage": "in_progress",
       "claim_id": "43d58327bd434219b328d74d652d3be9",
       "claimed_at": "2026-11-20T21:54:45+00:00",
-      "updated_at": "2026-11-20T21:54:45+00:00",
-      "note": "Подключаю штатный TML0 и состояние выпуска Toyota к целевым callbacks запуска и foreground. Общие файлы MODE-02, VSS-02 и CAN-03 не меняю.",
+      "updated_at": "2026-11-20T21:57:30+00:00",
+      "note": "Подключены штатные callbacks, проверка владельца RAM и единая шкала TML0; гоняю M32R lifecycle и отказы.",
       "result": null,
       "based_on_reviews": []
     },
@@ -8612,9 +8612,36 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "90c962d84428489b915318801f94cd16",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "43d58327bd434219b328d74d652d3be9",
+      "at": "2026-11-20T21:57:30+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex H03-03 — целевые запуск и выпуск Toyota",
+        "branch": "codex/h03-03-platform-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/check_h03_target_platform.py",
+          "targets/lfj8/lfj8_h03_target_platform.c",
+          "targets/lfj8/lfj8_h03_target_platform.h",
+          "targets/lfj8/test_lfj8_h03_target_platform.c",
+          "verification/project-audit/h03-03-target-platform.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "43d58327bd434219b328d74d652d3be9",
+        "claimed_at": "2026-11-20T21:54:45+00:00",
+        "updated_at": "2026-11-20T21:57:30+00:00",
+        "note": "Подключены штатные callbacks, проверка владельца RAM и единая шкала TML0; гоняю M32R lifecycle и отказы.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:56:37+00:00",
+  "updated_at": "2026-11-20T21:57:30+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
