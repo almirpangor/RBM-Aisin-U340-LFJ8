@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 13,
+  "sequence": 14,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -63,12 +63,12 @@
         "verification/e4m3-can-9e1c/h03-can-lifecycle.json",
         "verification/project-audit/2026-11-20-dtc02-queue.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
       "claimed_at": "2026-11-20T15:44:32+00:00",
-      "updated_at": "2026-11-20T15:49:41+00:00",
-      "note": "Обновляю активный снимок по повторным прогонам CAN-03 и протокол CANHacker.",
-      "result": "c46e9b5cf857a95757aef1025f599e41972eaf64"
+      "updated_at": "2026-11-20T15:50:27+00:00",
+      "note": "Сведено с main 264f249. 16 прогонов lifecycle, 12 TX gate и project_status --check PASS. Протокол CANHacker добавлен. Штатная привязка и аппаратная приёмка открыты.",
+      "result": "507ba30e1a3e68c727b137ef209d1a45333591ad"
     },
     "TOY-03": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -189,9 +189,17 @@
       "action": "heartbeat",
       "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
       "at": "2026-11-20T15:49:41+00:00"
+    },
+    {
+      "operation_id": "519b2cfa1bc24015b914d3aa5f31073b",
+      "task": "CAN-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
+      "at": "2026-11-20T15:50:27+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:49:41+00:00",
+  "updated_at": "2026-11-20T15:50:27+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
