@@ -4,6 +4,50 @@
 #define BUTTON_MASK (RBM_U340E_BUTTON_MODE | RBM_U340E_BUTTON_UP | \
                      RBM_U340E_BUTTON_DOWN | RBM_U340E_BUTTON_OVERDRIVE)
 
+static int valid_range_bit(const Lfj8H03RangeBit *sample, uint32_t generation,
+                           uint32_t age_us, uint32_t max_age_us)
+{
+    return sample->generation == generation && sample->valid == 1u &&
+        sample->asserted <= 1u && max_age_us < HALF_CLOCK && age_us < max_age_us;
+}
+
+int lfj8_h03_range_snapshot(const Lfj8H03RangeInputs *inputs, const Lfj8H03RangeAgeLimits *limits,
+                            uint32_t generation, uint32_t now_us, Lfj8H03RangeSnapshot *out)
+{
+    if (!out) {
+        return 0;
+    }
+    *out = (Lfj8H03RangeSnapshot){0};
+    if (!inputs || !limits) {
+        return 0;
+    }
+
+    const Lfj8H03RangeBit *inhibit = &inputs->inhibit_5250_2;
+    uint32_t oldest_age_us = now_us - inhibit->captured_us;
+    if (!valid_range_bit(inhibit, generation, oldest_age_us, limits->inhibit_5250_2_us)) {
+        return 0;
+    }
+
+    uint8_t range = 0;
+    for (unsigned bit = 0; bit < 4u; ++bit) {
+        const Lfj8H03RangeBit *sample = &inputs->range_5722[bit];
+        const uint32_t age_us = now_us - sample->captured_us;
+        if (!valid_range_bit(sample, generation, age_us, limits->range_5722_us[bit])) {
+            return 0;
+        }
+        range |= (uint8_t)(sample->asserted << bit);
+        if (age_us > oldest_age_us) {
+            oldest_age_us = age_us;
+        }
+    }
+    *out = (Lfj8H03RangeSnapshot){
+        .oldest_us = now_us - oldest_age_us,
+        .range_5722 = range,
+        .inhibit_5250 = (uint8_t)(inhibit->asserted << 2),
+    };
+    return 1;
+}
+
 int lfj8_range_control_init(Lfj8RangeControl *control, const RbmU340ePolicy *policy,
                             uint32_t max_age_us)
 {

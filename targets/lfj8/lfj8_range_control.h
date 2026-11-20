@@ -15,6 +15,40 @@ typedef struct {
 
 typedef struct {
     uint32_t captured_us;
+    uint32_t generation;
+    uint8_t asserted; /* Normalized to the polarity of the Toyota operand. */
+    uint8_t valid;    /* Exactly 1 after source-specific qualification. */
+} Lfj8H03RangeBit;
+
+typedef struct {
+    Lfj8H03RangeBit range_5722[4]; /* One independently qualified input per bit. */
+    Lfj8H03RangeBit inhibit_5250_2; /* Independently qualified engine input. */
+} Lfj8H03RangeInputs;
+
+typedef struct {
+    uint32_t range_5722_us[4];
+    uint32_t inhibit_5250_2_us;
+} Lfj8H03RangeAgeLimits;
+
+typedef struct {
+    uint32_t oldest_us; /* Oldest capture used to produce the two operands. */
+    uint8_t range_5722;
+    uint8_t inhibit_5250;
+} Lfj8H03RangeSnapshot;
+
+/* Assemble the range operands from a coherent caller-owned copy. The channels
+ * have their own verified producers independent of the selector decoder.
+ * Use the same wrapping clock and acquisition generation for all inputs.
+ * Restart acquisition with a new generation on clock reset or a gap of at
+ * least half the clock range. Age limits are positive, exclusive and below
+ * half the clock range. Failure clears out. The caller also qualifies the
+ * selector and the remaining operands before publishing a cycle snapshot.
+ */
+int lfj8_h03_range_snapshot(const Lfj8H03RangeInputs *inputs, const Lfj8H03RangeAgeLimits *limits,
+                            uint32_t generation, uint32_t now_us, Lfj8H03RangeSnapshot *out);
+
+typedef struct {
+    uint32_t captured_us;
     uint8_t pressed; /* Active-high RBM_U340E_BUTTON_* bits after board mapping. */
     uint8_t valid; /* Exactly 1 for a fresh, coherent snapshot. */
 } Lfj8ButtonReading;
