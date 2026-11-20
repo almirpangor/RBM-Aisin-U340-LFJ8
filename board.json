@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 270,
+  "sequence": 271,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -114,14 +114,16 @@
       "label": "Codex — foreground H03",
       "branch": "codex/h03-03-foreground-01a1f99f",
       "files": [
-        "docs/lfj8-9e1c-minimum-bench.md",
+        "docs/lfj8-h03-service-isolation.md",
+        "targets/lfj8/check_h03_vflash_lockout.py",
+        "verification/e4m3-can-9e1c/h03-vflash-lockout.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "claimed_at": "2026-11-20T16:18:01+00:00",
-      "updated_at": "2026-11-20T17:03:30+00:00",
-      "note": "Повтор: 2396 байт RAM, 11 интервалов допуска, 46 сценариев выходов PASS. Актуальный двухоконный ELF отклонён проверкой Virtual Flash. Протокол CANHacker уточнён. Открыты сервисная изоляция, владение RAM, аппаратная реакция и оба BIN.",
+      "updated_at": "2026-11-20T17:08:40+00:00",
+      "note": "Проверяю адресную блокировку Virtual Flash через штатную ветвь выключения. Выход — модель и отчёт, без записи блока.",
       "result": "78884418f09e106efc1063fd858f83e09be29c52"
     },
     "H03-04": {
@@ -2731,9 +2733,17 @@
       "action": "heartbeat",
       "claim_id": "a8e9ff099358496bacacf60bfcc8aa84",
       "at": "2026-11-20T17:07:56+00:00"
+    },
+    {
+      "operation_id": "ccd454006a294471a3bcd6702bd25c56",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "resume",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "at": "2026-11-20T17:08:40+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:07:56+00:00",
+  "updated_at": "2026-11-20T17:08:40+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
