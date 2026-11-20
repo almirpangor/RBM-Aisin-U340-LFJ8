@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 391,
+  "sequence": 392,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -164,11 +164,11 @@
         "targets/lfj8/lfj8_h03_sensor_target.h",
         "verification/project-audit/h03-02-sensor-events.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "02b9e231450d4f81b9517ac724b155ed",
       "claimed_at": "2026-11-20T18:08:03+00:00",
-      "updated_at": "2026-11-20T18:13:42+00:00",
-      "note": "AA0C/AA70 + foreground и владелец эпохи реализованы. M32R: 2 ELF, базовые 18 компонентов и 17 native PASS. Зависимость 5cfe811, стыковка с приложением H03-03 и стенд открыты. Отчёт verification/project-audit/h03-02-sensor-events.md.",
+      "updated_at": "2026-11-20T18:36:31+00:00",
+      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
       "result": "c354bf9f0ceb130ac03d525c6889f3d277dc7666"
     },
     "CAN-05": {
@@ -3697,9 +3697,17 @@
       "action": "review",
       "claim_id": "69ac904b985641cea43c72eba859a273",
       "at": "2026-11-20T18:35:59+00:00"
+    },
+    {
+      "operation_id": "ae07e8e8388042aea919bcb5d58b401d",
+      "task": "H03-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "02b9e231450d4f81b9517ac724b155ed",
+      "at": "2026-11-20T18:36:31+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:35:59+00:00",
+  "updated_at": "2026-11-20T18:36:31+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
