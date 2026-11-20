@@ -75,8 +75,15 @@ void lfj8_range_control_sample_selector(Lfj8RangeControl *control, Lfj8SelectorA
         control->sampled = 0;
         control->selector = rbm_u340e_selector_sample(&control->filter, UINT16_MAX);
     }
-    if (reading.event == LFJ8_SELECTOR_ADC_NONE ||
-        now_us - reading.captured_us >= control->max_age_us) {
+    if (reading.event == LFJ8_SELECTOR_ADC_NONE) {
+        return;
+    }
+    const int has_value = reading.event == LFJ8_SELECTOR_ADC_VALUE;
+    if (!has_value) {
+        /* A reported fault invalidates the range even without a usable timestamp. */
+        control->selector = rbm_u340e_selector_sample(&control->filter, UINT16_MAX);
+    }
+    if (now_us - reading.captured_us >= control->max_age_us) {
         return;
     }
     const uint32_t since_last = reading.captured_us - control->last_sample_us;
@@ -84,8 +91,9 @@ void lfj8_range_control_sample_selector(Lfj8RangeControl *control, Lfj8SelectorA
         return;
     }
 
-    const uint16_t raw = reading.event == LFJ8_SELECTOR_ADC_VALUE ? reading.raw : UINT16_MAX;
-    control->selector = rbm_u340e_selector_sample(&control->filter, raw);
+    if (has_value) {
+        control->selector = rbm_u340e_selector_sample(&control->filter, reading.raw);
+    }
     control->last_sample_us = reading.captured_us;
     control->sampled = 1;
 }
