@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 23,
+  "sequence": 24,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -124,6 +124,7 @@
       "branch": "codex/h03-04-storage-01a1f76d",
       "files": [
         "docs/lfj8-h03-ram-audit.md",
+        "targets/lfj8/check_h03_ram_candidate.py",
         "targets/lfj8/check_h03_storage.py",
         "targets/lfj8/h03_storage_layout.c",
         "targets/lfj8/lfj8_h03_storage.h",
@@ -133,8 +134,8 @@
       "stage": "in_progress",
       "claim_id": "83b9428ce0f2463f92341fea12156d66",
       "claimed_at": "2026-11-20T15:53:30+00:00",
-      "updated_at": "2026-11-20T15:53:30+00:00",
-      "note": "Собираю актуальную карту состояний и рабочего буфера ABI M32R: Toyota, CAN13, DTC, очередь и датчики. Проверяю объём, выравнивание и доступные окна RAM.",
+      "updated_at": "2026-11-20T15:55:12+00:00",
+      "note": "Полный набор состояний раскладываю на раздельные блоки; расширяю существующий прогон шести OEM-инициализаций для проверки вычисленной границы второго окна, сохраняя прежние значения по умолчанию.",
       "result": null
     },
     "DTC-04": {
@@ -356,9 +357,17 @@
       "action": "heartbeat",
       "claim_id": "b714560b3e9a4abba849b7ea649a1622",
       "at": "2026-11-20T15:54:58+00:00"
+    },
+    {
+      "operation_id": "c84678ca1dcc4f7481b333f39f3320a7",
+      "task": "H03-04",
+      "owner": "codex-h03-04-01a1f76d-20261120",
+      "action": "heartbeat",
+      "claim_id": "83b9428ce0f2463f92341fea12156d66",
+      "at": "2026-11-20T15:55:12+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:54:58+00:00",
+  "updated_at": "2026-11-20T15:55:12+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
