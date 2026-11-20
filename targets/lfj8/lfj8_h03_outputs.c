@@ -5,28 +5,28 @@ enum {
     LFJ8_H03_COMPARE_MIN = 400,
     LFJ8_H03_COMPARE_MAX = 4000,
     LFJ8_H03_LPS_MAX_MA = 1000,
-    LFJ8_H03_D_BLOCK = 1 << LFJ8_H03_SHIFT_D,
-    LFJ8_H03_E_BLOCK = 1 << LFJ8_H03_SHIFT_E,
-    LFJ8_H03_F_BLOCK = 1 << LFJ8_H03_SHIFT_F,
-    LFJ8_H03_PRESSURE_BLOCK = 1 << 3,
+    LFJ8_H03_D_BIT = 1 << LFJ8_H03_SHIFT_D,
+    LFJ8_H03_E_BIT = 1 << LFJ8_H03_SHIFT_E,
+    LFJ8_H03_F_BIT = 1 << LFJ8_H03_SHIFT_F,
+    LFJ8_H03_D_MAILBOX = 0x8063D5,
+    LFJ8_H03_E_MAILBOX = 0x8063D8,
+    LFJ8_H03_F_MAILBOX = 0x8063DB,
 };
 
 static const uint32_t strategy_mailbox[] = {
-    UINT32_C(0x8063D5), UINT32_C(0x8063D8), UINT32_C(0x8063DB),
+    LFJ8_H03_D_MAILBOX, LFJ8_H03_E_MAILBOX, LFJ8_H03_F_MAILBOX,
 };
 
-static uint8_t blocked_channels(const Lfj8H03OemOutputState *oem)
+static int outputs_blocked(const Lfj8H03OemOutputState *oem, unsigned affected)
 {
     if (oem->force_zero_a || oem->force_zero_b || oem->force_fallback_a ||
-        oem->force_fallback_b) {
-        return LFJ8_H03_D_BLOCK | LFJ8_H03_E_BLOCK | LFJ8_H03_F_BLOCK |
-            LFJ8_H03_PRESSURE_BLOCK;
+        oem->force_fallback_b || oem->pressure_fault || oem->service_pressure) {
+        return 1;
     }
-    return (uint8_t)(
-        ((oem->d_fault || oem->service_d || oem->discrete_inhibit) ? LFJ8_H03_D_BLOCK : 0) |
-        ((oem->e_fault || oem->service_e || oem->discrete_inhibit) ? LFJ8_H03_E_BLOCK : 0) |
-        ((oem->f_fault || oem->service_f || oem->discrete_inhibit) ? LFJ8_H03_F_BLOCK : 0) |
-        ((oem->pressure_fault || oem->service_pressure) ? LFJ8_H03_PRESSURE_BLOCK : 0));
+    return (affected && oem->discrete_inhibit) ||
+        ((affected & LFJ8_H03_D_BIT) && (oem->d_fault || oem->service_d)) ||
+        ((affected & LFJ8_H03_E_BIT) && (oem->e_fault || oem->service_e)) ||
+        ((affected & LFJ8_H03_F_BIT) && (oem->f_fault || oem->service_f));
 }
 
 static int binding_is_valid(const Lfj8H03OutputBinding *binding)
@@ -79,19 +79,6 @@ static int pressure_for_compare(const Lfj8H03SltCalibration *calibration,
     return 1;
 }
 
-static void clear_plan(Lfj8H03OutputPlan *plan)
-{
-    for (size_t i = 0; i < sizeof(plan->discrete) / sizeof(plan->discrete[0]); ++i) {
-        plan->discrete[i].mailbox = 0u;
-        plan->discrete[i].on = 0u;
-    }
-    plan->discrete_count = 0u;
-    plan->pressure_mailbox = 0u;
-    plan->pressure_binary32 = 0u;
-    plan->pressure_request_ma = 0u;
-    plan->toyota_compare = 0u;
-}
-
 static uint32_t amps_binary32(uint16_t milliamps)
 {
     if (milliamps == 0u) {
@@ -119,29 +106,30 @@ int lfj8_h03_output_plan_resolve(const Lfj8H03OutputPlan *plan, uint8_t before, 
         plan->discrete_count > sizeof(plan->discrete) / sizeof(plan->discrete[0])) {
         return 0;
     }
-    size_t previous_transition = 0;
+    unsigned next_transition = LFJ8_H03_D_BIT;
     uint8_t levels = before;
-    uint8_t changed = 0;
-    for (size_t i = 0; i < plan->discrete_count; ++i) {
-        const Lfj8H03DiscreteCommand command = plan->discrete[i];
-        size_t channel = 0;
-        while (channel < sizeof(strategy_mailbox) / sizeof(strategy_mailbox[0]) &&
-               strategy_mailbox[channel] != command.mailbox) {
-            ++channel;
+    const Lfj8H03DiscreteCommand *end = plan->discrete + plan->discrete_count;
+    for (const Lfj8H03DiscreteCommand *slot = plan->discrete; slot < end; ++slot) {
+        const Lfj8H03DiscreteCommand command = *slot;
+        unsigned bit;
+        switch (command.mailbox) {
+        case LFJ8_H03_D_MAILBOX: bit = LFJ8_H03_D_BIT; break;
+        case LFJ8_H03_E_MAILBOX: bit = LFJ8_H03_E_BIT; break;
+        case LFJ8_H03_F_MAILBOX: bit = LFJ8_H03_F_BIT; break;
+        default: return 0;
         }
-        if (channel == sizeof(strategy_mailbox) / sizeof(strategy_mailbox[0]) || command.on > 1u) {
+        if (command.on > 1u) {
             return 0;
         }
-        const unsigned bit = 1u << channel;
         if ((levels & bit) == (command.on ? bit : 0u)) {
             continue;
         }
-        if (channel < previous_transition || (changed & bit) != 0u) {
+        /* Each edge must advance to a later D/E/F channel in the OEM pass. */
+        if (bit < next_transition) {
             return 0;
         }
-        changed |= (uint8_t)bit;
         levels ^= (uint8_t)bit;
-        previous_transition = channel;
+        next_transition = bit << 1;
     }
     *after = levels;
     return 1;
@@ -159,12 +147,12 @@ Lfj8H03OutputResult lfj8_h03_plan_outputs(const RbmU340eHydraulicOutput *request
     Lfj8H03OutputPlan *plan)
 {
     uint8_t resolved_channel[sizeof(plan->discrete) / sizeof(plan->discrete[0])];
-    uint8_t affected = LFJ8_H03_PRESSURE_BLOCK;
+    unsigned affected = 0;
 
     if (!plan) {
         return LFJ8_H03_OUTPUT_INVALID;
     }
-    clear_plan(plan);
+    *plan = (Lfj8H03OutputPlan){.discrete_count = 0};
     if (!request || !binding || !oem || oem->current != 1u || !binding_is_valid(binding) ||
         request->write_count > sizeof(resolved_channel) ||
         request->slt_result.selected_7244 < 0 ||
@@ -186,10 +174,10 @@ Lfj8H03OutputResult lfj8_h03_plan_outputs(const RbmU340eHydraulicOutput *request
         default: return LFJ8_H03_OUTPUT_INVALID;
         }
         resolved_channel[i] = (uint8_t)channel;
-        affected |= (uint8_t)(1u << (unsigned)channel);
+        affected |= 1u << (unsigned)channel;
     }
 
-    if ((blocked_channels(oem) & affected) != 0u) {
+    if (outputs_blocked(oem, affected)) {
         return LFJ8_H03_OUTPUT_OEM_OVERRIDE;
     }
 
