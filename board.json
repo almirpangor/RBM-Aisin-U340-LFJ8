@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 524,
+  "sequence": 525,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -112,12 +112,12 @@
         "verification/project-audit/2026-11-21-h03-native-input-lifecycle.json",
         "verification/project-audit/h03-03-native-input-lifecycle.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "c7107b9bc8974c67b7113c75529f935c",
       "claimed_at": "2026-11-20T19:39:33+00:00",
-      "updated_at": "2026-11-20T19:42:35+00:00",
-      "note": "Целевые callbacks S51/S83 и ATF связаны с допуском приложения. Точные врезки S51/S83 и реальная проверка допуска прошли в M32R для чужой RAM и остановленного приложения. Идут общие нативные проверки, компоненты и компоновка.",
-      "result": null
+      "updated_at": "2026-11-20T19:48:44+00:00",
+      "note": "Целевые S51/S83 и ATF используют штатный допуск приложения до обращения к RAM. 22 нативные группы с отдельным повтором 38 сценариев запуска, 8 дополнительных групп и компоновка проверены. 94830 байт, две привязки открыты. Готовых BIN нет.",
+      "result": "5c7511783f687d73f60d7633d7acfc7389412d76"
     },
     "H03-04": {
       "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
@@ -4775,9 +4775,17 @@
       "action": "heartbeat",
       "claim_id": "b9fb1580e7e9432789190f01cd0a1f06",
       "at": "2026-11-20T19:48:27+00:00"
+    },
+    {
+      "operation_id": "202e5fd8b5ba4418a8bded14104e267b",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "c7107b9bc8974c67b7113c75529f935c",
+      "at": "2026-11-20T19:48:44+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:48:27+00:00",
+  "updated_at": "2026-11-20T19:48:44+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
