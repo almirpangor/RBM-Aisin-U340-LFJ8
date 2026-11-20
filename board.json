@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 107,
+  "sequence": 108,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -392,6 +392,21 @@
       "claimed_at": "2026-11-20T16:18:46+00:00",
       "updated_at": "2026-11-20T16:20:30+00:00",
       "note": "Переполнение на исходном коде воспроизведено. Переносимая арифметика исправлена, 25 000 сравнений с целочисленным эталоном на ПК прошли. Идут M32R и Bosch.",
+      "result": null
+    },
+    "H03-05": {
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "label": "Codex — штатное отключение SLT",
+      "branch": "codex/h03-05-p0745-01a1f9a2",
+      "files": [
+        "docs/lfj8-slt-calibration.md",
+        "targets/lfj8/check_h03_slt_fault.py"
+      ],
+      "stage": "in_progress",
+      "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
+      "claimed_at": "2026-11-20T16:20:38+00:00",
+      "updated_at": "2026-11-20T16:20:38+00:00",
+      "note": "Исполняю цепь P0745 → арбитраж → применение Pressure A в M32R, проверяю сохранение старого PWM до применения.",
       "result": null
     }
   },
@@ -1251,9 +1266,17 @@
       "action": "heartbeat",
       "claim_id": "698c00d00af84972b5562bc8498c8628",
       "at": "2026-11-20T16:20:30+00:00"
+    },
+    {
+      "operation_id": "7e23f66cf13e4162bc32b9ea540b9d44",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "claim",
+      "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
+      "at": "2026-11-20T16:20:38+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:20:30+00:00",
+  "updated_at": "2026-11-20T16:20:38+00:00",
   "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {
