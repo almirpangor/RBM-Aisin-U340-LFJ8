@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 528,
+  "sequence": 529,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -264,12 +264,12 @@
         "targets/lfj8/test_lfj8_h03_input_binding.c",
         "verification/project-audit/mode02-native-an2-p1.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
       "claimed_at": "2026-11-20T19:39:27+00:00",
-      "updated_at": "2026-11-20T19:46:18+00:00",
-      "note": "Захват, декодирование, повторная квалификация и инвентарь RAM прошли. Общая модель содержит 95070 байт известных секций, из неопределённых символов по-прежнему остались application_binding и sensor_config. Завершаю общую регрессию.",
-      "result": null
+      "updated_at": "2026-11-20T19:50:46+00:00",
+      "note": "Штатный callback AN2 захватывает P1DATA с общей меткой; готовый потребитель применяет явно заданную карту. Шесть пар H03, 41 шаг ПК/120 тестов, 22 нативные группы M32R прошли. RAM 2692; известный Flash 95070. Остаются rbm_h03_application_binding, rbm_h03_sensor_config, измеренная карта/OD и выдача через гидравлику. Отчёт verification/project-audit/mode02-native-an2-p1.md.",
+      "result": "17a65270968bf01097cab53482f094188c0b4aef"
     },
     "TOY-05": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -4808,9 +4808,17 @@
       "action": "heartbeat",
       "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
       "at": "2026-11-20T19:50:20+00:00"
+    },
+    {
+      "operation_id": "205b20fd7c344cc0ba3839a83f64a6ba",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "review",
+      "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
+      "at": "2026-11-20T19:50:46+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:50:20+00:00",
+  "updated_at": "2026-11-20T19:50:46+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
