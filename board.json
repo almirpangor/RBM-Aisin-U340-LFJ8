@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 725,
+  "sequence": 726,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -110,22 +110,23 @@
     },
     "H03-03": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
-      "label": "Codex H03-03 — целевые запуск и выпуск Toyota",
-      "branch": "codex/h03-03-platform-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex H03-03 — общая компоновка Toyota",
+      "branch": "codex/h03-03-platform-layout-mwp5rm2ofhaxjfi9dss",
       "files": [
-        "targets/lfj8/check_h03_target_platform.py",
-        "targets/lfj8/lfj8_h03_target_platform.c",
-        "targets/lfj8/lfj8_h03_target_platform.h",
-        "targets/lfj8/test_lfj8_h03_target_platform.c",
-        "verification/project-audit/h03-03-target-platform.md"
+        "tests/test_h03_layout.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/h03-03-platform-layout.md"
       ],
-      "stage": "review",
-      "claim_id": "43d58327bd434219b328d74d652d3be9",
-      "claimed_at": "2026-11-20T21:54:45+00:00",
-      "updated_at": "2026-11-20T22:02:06+00:00",
-      "note": "Штатные target_initialize и target_take_toyota связаны с application binding и TML0 в M32R. Сборка, 62 сценария boot и 96 IRQ прошли. Для общей сборки остаются 16 байт typed RAM, общий список модуля и подтверждённые времена и поставщики входов. Аппаратной проверки не было.",
-      "result": "1c0942de670d6ebd1245370d8f351c065dbc230f",
-      "based_on_reviews": []
+      "stage": "in_progress",
+      "claim_id": "96f93fae25924717a50bf354ff863f44",
+      "claimed_at": "2026-11-20T22:39:35+00:00",
+      "updated_at": "2026-11-20T22:39:35+00:00",
+      "note": "Интегрирую H03 platform в свободный компоновщик и проверяю привязку typed RAM. Инвентарь и lifecycle-файлы пока закреплены за CAN-03; чужие резервы не меняю.",
+      "result": null,
+      "based_on_reviews": [
+        "43d58327bd434219b328d74d652d3be9",
+        "8b0ce759514b4c68b04d002b192f50ff"
+      ]
     },
     "H03-04": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -9197,9 +9198,37 @@
           "9436326dc3784bbe994f50e6dce8e9c0"
         ]
       }
+    },
+    {
+      "operation_id": "12338e211204457fbfaf28269dbc1ef9",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "96f93fae25924717a50bf354ff863f44",
+      "at": "2026-11-20T22:39:35+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex H03-03 — общая компоновка Toyota",
+        "branch": "codex/h03-03-platform-layout-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "tests/test_h03_layout.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-03-platform-layout.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "96f93fae25924717a50bf354ff863f44",
+        "claimed_at": "2026-11-20T22:39:35+00:00",
+        "updated_at": "2026-11-20T22:39:35+00:00",
+        "note": "Интегрирую H03 platform в свободный компоновщик и проверяю привязку typed RAM. Инвентарь и lifecycle-файлы пока закреплены за CAN-03; чужие резервы не меняю.",
+        "result": null,
+        "based_on_reviews": [
+          "43d58327bd434219b328d74d652d3be9",
+          "8b0ce759514b4c68b04d002b192f50ff"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:38:33+00:00",
+  "updated_at": "2026-11-20T22:39:35+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
