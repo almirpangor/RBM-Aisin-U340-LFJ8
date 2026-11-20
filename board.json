@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 378,
+  "sequence": 379,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -395,8 +395,8 @@
       "stage": "in_progress",
       "claim_id": "69ac904b985641cea43c72eba859a273",
       "claimed_at": "2026-11-20T18:25:00+00:00",
-      "updated_at": "2026-11-20T18:27:37+00:00",
-      "note": "S03: найден отдельный F9F1 и исходный reload AB3B=9. Проверяю исполнение границы и штатный teardown ответа H03 при этом событии.",
+      "updated_at": "2026-11-20T18:32:28+00:00",
+      "note": "Исходный C167 подтвердил reload 9, фазы задачи 12 и возврат 9F/11 с сохранением истории. Реализованы таймер и безопасный отзыв TX13. ПК 37/102, M32R 18, совместный прогон с DTC-02/CAN-03 PASS. Готовлю публикацию.",
       "result": null
     },
     "VSS-01": {
@@ -3601,9 +3601,17 @@
       "action": "complete",
       "claim_id": "dcf0c14e62c842e1a210b316e85b93fa",
       "at": "2026-11-20T18:32:03+00:00"
+    },
+    {
+      "operation_id": "d2c1f282d79f48ff8d56f1c03cfd40fb",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "69ac904b985641cea43c72eba859a273",
+      "at": "2026-11-20T18:32:28+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:32:03+00:00",
+  "updated_at": "2026-11-20T18:32:28+00:00",
   "main_commit": "f36613136fffce586a2736c1ea043794784c5c6f",
   "catalog": [
     {
