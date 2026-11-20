@@ -43,13 +43,20 @@ typedef struct {
 } BoschCheryTorqueSample;
 
 typedef struct {
+    uint32_t tick;
+    uint32_t generation;
+} BoschCheryTorqueCapture;
+
+typedef struct {
     CheryRequestQualification qualification;
     BoschCheryTorqueSample sample;
     uint32_t lease_ticks;
     uint32_t last_qualified_tick;
     uint32_t order_floor_tick;
+    uint32_t can_generation;
     bool synchronized;
     bool have_order_floor;
+    bool have_can_generation;
 } BoschCheryTorqueRx;
 
 typedef struct {
@@ -59,19 +66,32 @@ typedef struct {
     uint8_t reduction_q8;
 } BoschCheryTorqueCalibration;
 
-/* Call receive/snapshot/lookup in the same serialized service context. Set a
- * measured lease (1..INT32_MAX) in the same monotonic wrapping tick units as now.
+/* Serialize all operations on an instance, including generation updates.
+ * Set a measured lease (1..INT32_MAX) in the same wrapping tick units as now.
  * upstream_permit covers bus health, engine readiness and all external gates.
  */
 bool bosch_chery_torque_init(BoschCheryTorqueRx *rx, uint32_t lease_ticks);
 /* Immediate delivery: capture and service occur at the same tick. */
 BoschCheryTorqueResult bosch_chery_torque_receive(BoschCheryTorqueRx *rx,
     const BoschCheryTorqueFrame *frame, uint32_t now, bool upstream_permit);
-/* For queued delivery, pass the coherent frame capture tick and current
- * service tick. The caller tracks clock generations and orders equal-tick
- * captures. An operand expires one lease after capture. */
+/* Use this entry when the caller has already checked that the capture
+ * belongs to the current generation. An operand expires one lease after
+ * capture, so pass the original capture tick. */
 BoschCheryTorqueResult bosch_chery_torque_receive_captured(BoschCheryTorqueRx *rx,
     const BoschCheryTorqueFrame *frame, uint32_t captured_at, uint32_t now, bool upstream_permit);
+
+/* Set the active generation from the CAN/clock owner before servicing its
+ * queue or exposing a snapshot. Establishing or changing it clears the
+ * sequence, operands and capture order, while the configured lease is kept.
+ * Repeating the current generation is idempotent. */
+void bosch_chery_torque_set_generation(BoschCheryTorqueRx *rx, uint32_t generation);
+
+/* Pass the tick and generation recorded with the frame by the producer.
+ * The consumer supplies now in the current generation and orders captures
+ * with equal ticks. A frame cannot establish or change the active generation. */
+BoschCheryTorqueResult bosch_chery_torque_receive_queued(BoschCheryTorqueRx *rx,
+    const BoschCheryTorqueFrame *frame, BoschCheryTorqueCapture capture, uint32_t now,
+    bool upstream_permit);
 BoschCheryTorqueSample bosch_chery_torque_snapshot(BoschCheryTorqueRx *rx,
     uint32_t now, bool upstream_permit);
 

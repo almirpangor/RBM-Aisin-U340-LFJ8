@@ -25,6 +25,16 @@ bool bosch_chery_torque_init(BoschCheryTorqueRx *rx, uint32_t lease_ticks) {
     return true;
 }
 
+void bosch_chery_torque_set_generation(BoschCheryTorqueRx *rx, uint32_t generation) {
+    if (rx != NULL && (!rx->have_can_generation || rx->can_generation != generation)) {
+        *rx = (BoschCheryTorqueRx){
+            .lease_ticks = rx->lease_ticks,
+            .can_generation = generation,
+            .have_can_generation = true,
+        };
+    }
+}
+
 BoschCheryTorqueSample bosch_chery_torque_snapshot(BoschCheryTorqueRx *rx,
         uint32_t now, bool upstream_permit) {
     if (rx == NULL) {
@@ -44,13 +54,8 @@ BoschCheryTorqueSample bosch_chery_torque_snapshot(BoschCheryTorqueRx *rx,
     return rx->sample;
 }
 
-BoschCheryTorqueResult bosch_chery_torque_receive(BoschCheryTorqueRx *rx,
-        const BoschCheryTorqueFrame *frame, uint32_t now, bool upstream_permit) {
-    return bosch_chery_torque_receive_captured(rx, frame, now, now, upstream_permit);
-}
-
-BoschCheryTorqueResult bosch_chery_torque_receive_captured(BoschCheryTorqueRx *rx,
-        const BoschCheryTorqueFrame *frame, uint32_t captured_at, uint32_t now, bool upstream_permit) {
+static BoschCheryTorqueResult receive(BoschCheryTorqueRx *rx, const BoschCheryTorqueFrame *frame,
+        uint32_t captured_at, uint32_t now, bool upstream_permit, bool capture_is_current) {
     (void)bosch_chery_torque_snapshot(rx, now, upstream_permit);
     if (frame == NULL || frame->id != BOSCH_CHERY_TORQUE_CAN_ID) {
         return BOSCH_CHERY_TORQUE_IGNORED;
@@ -59,7 +64,7 @@ BoschCheryTorqueResult bosch_chery_torque_receive_captured(BoschCheryTorqueRx *r
         return BOSCH_CHERY_TORQUE_BLOCKED;
     }
     const uint32_t age = now - captured_at;
-    if (age >= rx->lease_ticks ||
+    if (!capture_is_current || age >= rx->lease_ticks ||
         (rx->have_order_floor && age > now - rx->order_floor_tick)) {
         return BOSCH_CHERY_TORQUE_STALE;
     }
@@ -105,6 +110,24 @@ BoschCheryTorqueResult bosch_chery_torque_receive_captured(BoschCheryTorqueRx *r
     }
     return rx->sample.valid_channels != 0 ? BOSCH_CHERY_TORQUE_ACCEPTED :
                                           BOSCH_CHERY_TORQUE_UNQUALIFIED;
+}
+
+BoschCheryTorqueResult bosch_chery_torque_receive(BoschCheryTorqueRx *rx,
+        const BoschCheryTorqueFrame *frame, uint32_t now, bool upstream_permit) {
+    return receive(rx, frame, now, now, upstream_permit, true);
+}
+
+BoschCheryTorqueResult bosch_chery_torque_receive_captured(BoschCheryTorqueRx *rx,
+        const BoschCheryTorqueFrame *frame, uint32_t captured_at, uint32_t now, bool upstream_permit) {
+    return receive(rx, frame, captured_at, now, upstream_permit, true);
+}
+
+BoschCheryTorqueResult bosch_chery_torque_receive_queued(BoschCheryTorqueRx *rx,
+        const BoschCheryTorqueFrame *frame, BoschCheryTorqueCapture capture, uint32_t now,
+        bool upstream_permit) {
+    const bool current = rx != NULL && rx->have_can_generation &&
+                         capture.generation == rx->can_generation;
+    return receive(rx, frame, capture.tick, now, upstream_permit, current);
 }
 
 bool bosch_chery_torque_lookup_q8(BoschCheryTorqueRx *rx, uint32_t now,
