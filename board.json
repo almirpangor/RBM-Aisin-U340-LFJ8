@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 193,
+  "sequence": 194,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -204,13 +204,15 @@
       "branch": "codex/dtc03-atf-monitor-01a1f9c7",
       "files": [
         "targets/lfj8/check_h03_atf_fault.py",
+        "targets/lfj8/lfj8_h03_atf_fault.c",
+        "targets/lfj8/lfj8_h03_atf_fault.h",
         "verification/project-audit/dtc03-h03-atf-monitor.md"
       ],
       "stage": "in_progress",
       "claim_id": "d048f56f20764374915133ea2b7bbcde",
       "claimed_at": "2026-11-20T16:39:32+00:00",
-      "updated_at": "2026-11-20T16:39:32+00:00",
-      "note": "Отдельная порция: воспроизвожу штатный монитор цепи ATF H03, раздельно подтверждаю границы, выдержки, флаги и восстановление P0712/P0713. Сопоставление с Chery P0710 только по подтверждённой семантике.",
+      "updated_at": "2026-11-20T16:41:02+00:00",
+      "note": "Найдены отдельные таймеры и защёлки нижнего/верхнего сигнала AN1, общий флаг и выдержка восстановления. Резервирую отдельный read-only адаптер снимка, чтобы сохранить причины раздельно и отсеять незавершённую оценку.",
       "result": null
     },
     "TOY-02": {
@@ -2055,9 +2057,17 @@
       "action": "resume",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "at": "2026-11-20T16:40:57+00:00"
+    },
+    {
+      "operation_id": "bcd1e20cfe164e95bee7b020f8aa4934",
+      "task": "DTC-03",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "heartbeat",
+      "claim_id": "d048f56f20764374915133ea2b7bbcde",
+      "at": "2026-11-20T16:41:02+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:40:57+00:00",
+  "updated_at": "2026-11-20T16:41:02+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
