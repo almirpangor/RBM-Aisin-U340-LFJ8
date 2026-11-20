@@ -3,7 +3,14 @@
 #include "lfj8_h03_dtc_target.h"
 #include "lfj8_h03_mmio.h"
 #ifdef RBM_DTC_RX_CAN_OWNER_FIXTURE
+#include "lfj8_h03_atf_target.h"
 #include "lfj8_h03_can_owner.h"
+#include "lfj8_h03_dtc_native.h"
+
+Lfj8H03CanOwner h03_can_owner;
+volatile uint8_t rbm_h03_tml0_1mhz_qualified;
+uint8_t fixture_native_bound;
+volatile uint8_t fixture_rebind;
 #endif
 
 Lfj8H03DtcTarget fixture_target;
@@ -13,24 +20,14 @@ static Lfj8H03Can13 broker;
 static CheryDtcState dtc;
 
 #ifdef RBM_DTC_RX_CAN_OWNER_FIXTURE
-static Lfj8H03CanOwner owner;
-
-static bool rx_epoch(void *context, uint32_t *generation)
+/* Qualify the actual native register check in simulator-backed MMIO. */
+static void fixture_qualify_clock(void)
 {
-    return lfj8_h03_can_owner_rx_epoch(context, generation);
-}
-
-static Lfj8H03Can13Result poll_owner(void *context, Lfj8H03Can13 *can13, Lfj8H03DtcRxQueue *queue,
-                                     const Lfj8RegisterIo *io, Lfj8H03Can13Input *input,
-                                     const uint16_t *can_now, bool native_ready)
-{
-    return lfj8_h03_can_owner_poll(context, can13, queue, io, input, can_now, native_ready);
-}
-
-static void owner_setup_completed(void)
-{
-    lfj8_h03_can_owner_init(&owner);
-    owner.setup_generation = 7; /* The model supplies the native setup notification. */
+    const Lfj8RegisterIo *const io = &lfj8_h03_mmio;
+    io->write8(io->context, 0x800203, 9);
+    io->write8(io->context, 0x8003eb, 1);
+    io->write8(io->context, 0x800feb, 0x31);
+    rbm_h03_tml0_1mhz_qualified = 1u;
 }
 #else
 static uint32_t owner;
@@ -55,9 +52,8 @@ static void owner_setup_completed(void)
 {
     owner = 7;
 }
-#endif
-
 static const Lfj8H03DtcCanOwnerOps owner_ops = {rx_epoch, poll_owner, &owner};
+#endif
 
 void fixture_rx_init(void)
 {
@@ -65,19 +61,41 @@ void fixture_rx_init(void)
         .torque_receive_age_bits = 4000, .diagnostic_receive_age_bits = 1024,
         .max_poll_gap_us = 5000, .bit_time_us = 2,
     };
-    lfj8_h03_dtc_target_unbind();
     chery_dtc_init(&dtc);
-    if (lfj8_h03_can13_init(&broker, &config, 0) &&
-        lfj8_h03_dtc_target_init(&fixture_target, &broker, &lfj8_h03_mmio, &owner_ops,
+    if (!lfj8_h03_can13_init(&broker, &config, 0)) {
+        return;
+    }
+#ifdef RBM_DTC_RX_CAN_OWNER_FIXTURE
+    lfj8_h03_dtc_native_cold_init();
+    if (lfj8_h03_dtc_native_bind(&fixture_target, &broker, 4)) {
+        /* Clock qualification must precede the IRQ binding. */
+        return;
+    }
+    h03_can_owner.setup_generation = 7; /* The model supplies the setup notification. */
+    fixture_qualify_clock();
+    fixture_native_bound = lfj8_h03_dtc_native_bind(&fixture_target, &broker, 4);
+#else
+    lfj8_h03_dtc_target_unbind();
+    if (lfj8_h03_dtc_target_init(&fixture_target, &broker, &lfj8_h03_mmio, &owner_ops,
                                 lfj8_h03_tml0ct_m32r, 4)) {
         owner_setup_completed();
     }
+#endif
 }
 
 void fixture_rx_foreground(void)
 {
     Lfj8H03Can13Input input = {.diagnostic_tick = 10, .owns_slot13 = 1, .dtc = &dtc};
+#ifdef RBM_DTC_RX_CAN_OWNER_FIXTURE
+    if (fixture_rebind) {
+        fixture_rebind = 0u;
+        lfj8_h03_dtc_native_unbind();
+        fixture_native_bound = lfj8_h03_dtc_native_bind(&fixture_target, &broker, 4);
+    }
+    fixture_foreground_result = lfj8_h03_dtc_native_poll(&fixture_target, &input, true);
+#else
     fixture_foreground_result = lfj8_h03_dtc_target_poll(&fixture_target, &input, true);
+#endif
 }
 
 #else

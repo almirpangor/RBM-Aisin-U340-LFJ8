@@ -201,14 +201,14 @@ def bytes_at(address, count):
     return [f"*(unsigned char*){address + offset:#x}" for offset in range(count)]
 
 
-def run_probe(run, work, debugger, commands):
+def run_probe(run, work, debugger, commands, elf="fixture.elf"):
     (work / "probe.gdb").write_text("\n".join(commands) + "\n", encoding="ascii")
-    return run(debugger, "--batch", "-nx", "-x", "probe.gdb", "fixture.elf").decode(errors="replace")
+    return run(debugger, "--batch", "-nx", "-x", "probe.gdb", elf).decode(errors="replace")
 
 
 def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
              compare_dispatch=False, high_probe=False, setup=(), target=False, foreground=False,
-             reset_owner=False):
+             reset_owner=False, warm_rebind=False):
     pending = sum(slot_mask(slot) for slot in case.slots)
     commands = [
         "set confirm off", "target sim --memory-size 16M", "load",
@@ -252,7 +252,8 @@ def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
         commands += at(f"*{HOOK_RESUME:#x}", trace("context", *REGISTERS))
     if compare_dispatch:
         commands += at("*0x0013f0", trace("dispatch_entry", *REGISTERS))
-    if patches:
+    linked = patches and (work / "fixture-patched.elf").is_file()
+    if patches and not linked:
         commands += [f"set {{unsigned int}}{site:#x} = {word:#x}" for site, word in patches.items()]
     if high_probe:
         commands.append("set fixture_rx_high_probe = 1")
@@ -344,9 +345,19 @@ def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
                   "fixture_foreground_result.diagnostic_consumed", "fixture_target.queue.count",
                   "*(unsigned char*)0x80105d", *bytes_at(0x8011d0, 14)),
         ]
+    if warm_rebind:
+        commands += [
+            "set fixture_rebind = 1",
+            f"set {{unsigned short}}{SLIST:#x} = 0",
+            f"set {{unsigned char}}{MSC + 13:#x} = 0",
+            "tbreak *fixture_target_done", "continue",
+            trace("warm_rebind", "fixture_native_bound", "h03_can_owner.setup_generation",
+                  "h03_can_owner.grant", "fixture_target.queue.count",
+                  "fixture_foreground_result.available", f"*(unsigned char*){MSC + 13:#x}"),
+        ]
     if reset_owner:
         commands += [
-            "set owner.grant = 0", "set owner.setup_generation = 8",
+            "set h03_can_owner.grant = 0", "set h03_can_owner.setup_generation = 8",
             f"set {{unsigned short}}{SLIST:#x} = 0",
             f"set {{unsigned char}}{MSC + 13:#x} = 0",
             f"set {{unsigned char}}{MSC + 14:#x} = 0x40",
@@ -354,12 +365,13 @@ def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
             "set {unsigned short}0x801008 = 0x1402",
             "set {unsigned int}0x8003e0 = 5004",
             "tbreak *fixture_target_done", "continue",
-            trace("new_generation", "owner.grant", "fixture_target.queue.generation",
+            trace("new_generation", "h03_can_owner.grant", "fixture_target.queue.generation",
                   "fixture_target.queue.count", "fixture_foreground_result.diagnostic_consumed",
                   "*(unsigned char*)0x80105d", "broker.diagnostic.link.session.mode_bits"),
         ]
     events = []
-    for line in run_probe(run, work, debugger, commands).splitlines():
+    elf = "fixture-patched.elf" if linked else "fixture.elf"
+    for line in run_probe(run, work, debugger, commands, elf).splitlines():
         if line.startswith("RX "):
             _, name, *fields = line.split()
             events.append((name, *(int(field, 16) for field in fields)))
@@ -457,7 +469,7 @@ def link_resident_target(run, work, gcc, compile_flags, sources, libraries):
     # The indirect epoch adapter has local linkage. Keeping it as a
     # separate root avoids pulling the foreground via the const ops table.
     (work / "closure.ld").write_text(
-        "SECTIONS { .text.rx_epoch : { KEEP(*(.text.rx_epoch)) } }\n", encoding="ascii")
+        "SECTIONS { .text.native_rx_epoch : { KEEP(*(.text.native_rx_epoch)) } }\n", encoding="ascii")
     roots = tuple(f"-Wl,--undefined={root}" for root in RX_RESIDENT_ROOTS)
     objcopy = gcc.with_name(f"m32r-elf-objcopy{gcc.suffix}")
     closure_objects = []
@@ -472,14 +484,25 @@ def link_resident_target(run, work, gcc, compile_flags, sources, libraries):
     if missing != {"h03_dtc_rx_entry", "h03_dtc_rx_resume"}:
         raise ValueError(f"Unexpected resident RX references: {sorted(missing)}")
     sections = {s["name"]: s["size"] for s in alloc_sections(closure) if s["type"] != 8}
-    if ".text.rx_epoch" not in sections:
+    if ".text.native_rx_epoch" not in sections:
         raise ValueError("Resident RX epoch adapter was not linked")
     (work / "rx-sections.ld").write_text(
         "".join(f"rx_input_{index}_start = .;\n*(\"{section}\")\nrx_input_{index}_end = .;\n"
                 for index, section in enumerate(sections)), encoding="ascii")
     shutil.copyfile(HERE / "h03_dtc_rx_resident.ld", work / "fixture.ld")
-    run(gcc, *TARGET, "-nostdlib", "-Wl,--gc-sections,-T,fixture.ld",
-        *roots, *objects, *libraries, "-o", "fixture.elf")
+    link_flags = (*TARGET, "-nostdlib", "-Wl,--gc-sections,-T,fixture.ld", *roots)
+    run(gcc, *link_flags, *objects, *libraries, "-o", "fixture.elf")
+    low = (
+        f'.incbin "h03.dat",0,{HOOK_SITE:#x}\n'
+        '    bra.l rbm_h03_dtc_rx_hook\n'
+        f'    .incbin "h03.dat",{HOOK_RESUME:#x},{DISPATCH_SITE - HOOK_RESUME:#x}\n'
+        '    bl.l rbm_h03_dtc_rx_dispatch_hook\n'
+        f'    .incbin "h03.dat",{DISPATCH_SITE + 4:#x},{RESIDENT_START - DISPATCH_SITE - 4:#x}'
+    )
+    patched = FIXTURE.replace('.incbin "h03.dat",0,0x6000', low)
+    (work / "fixture-patched.S").write_text(patched, encoding="ascii")
+    run(gcc, *TARGET, *compile_flags, "-c", "fixture-patched.S", "-o", "fixture-patched.o")
+    run(gcc, *link_flags, "fixture-patched.o", *objects[1:], *libraries, "-o", "fixture-patched.elf")
     return sections
 
 
@@ -505,7 +528,8 @@ def verify_resident_target(path, symbols, end, sections, rom):
             raise ValueError(f"Resident RX input section missing from final link: {section}")
 
     local_names = (*RX_RESIDENT_ROOTS, "rbm_h03_dtc_rx_begin", "rbm_h03_dtc_rx_observe",
-                   "lfj8_h03_can_owner_rx_epoch", "rx_epoch", "owner_ops")
+                   "lfj8_h03_can_owner_rx_epoch", "native_rx_epoch", "native_owner_ops",
+                   "lfj8_h03_sensor_clock_ready_locked", "lfj8_h03_sensor_clock_registers_match")
     if any(not RESIDENT_START <= symbols.get(name, 0) < end for name in local_names):
         raise ValueError("A required RX symbol is not resident")
 
@@ -514,9 +538,10 @@ def verify_resident_target(path, symbols, end, sections, rom):
         raw = resident["data"][start:start + 4 * count]
         return tuple(int.from_bytes(raw[offset:offset + 4], "big") for offset in range(0, len(raw), 4))
 
-    epoch, poll, context = words("owner_ops", 3)
-    if (epoch, poll, context) != (symbols["rx_epoch"], symbols["poll_owner"], symbols["owner"]):
-        raise ValueError("The linked CAN-owner operations do not match the fixture binding")
+    epoch, poll, context = words("native_owner_ops", 3)
+    if (epoch, poll, context) != (symbols["native_rx_epoch"], symbols["native_poll_owner"],
+                                  symbols["h03_can_owner"]):
+        raise ValueError("The linked CAN-owner operations do not match the native binding")
     foreground = linked[".text"]
     upper_start = foreground["address"]
     upper_end = max(linked[name]["address"] + linked[name]["size"]
@@ -526,7 +551,7 @@ def verify_resident_target(path, symbols, end, sections, rom):
     bss = linked[".bss"]
     if (bss["type"] != 8 or bss["address"] < upper_end or
             any(not bss["address"] <= symbols[name] < bss["address"] + bss["size"]
-                for name in ("irq_target", "fixture_target", "owner"))):
+                for name in ("irq_target", "fixture_target", "h03_can_owner", "rbm_h03_tml0_1mhz_qualified"))):
         raise ValueError("The fixture RX binding uses storage outside simulator BSS")
     mmio = words("lfj8_h03_mmio", 7)
     if len(mmio) != 7 or mmio[0] != 0 or any(not RESIDENT_START <= addr < end for addr in mmio[1:]):
@@ -541,6 +566,20 @@ def verify_resident_target(path, symbols, end, sections, rom):
         "fixture_irq_pointer": f"0x{symbols['irq_target']:06X}",
         "resident_sector_sha256": sha256(resident["data"]).hexdigest(),
     }
+
+
+def verify_linked_rx_words(work, rom, patches):
+    def loadable(name):
+        return {s["name"]: (s["address"], s["data"])
+                for s in alloc_sections(read_elf(work / name, 2))}
+
+    stock = loadable("fixture.elf")
+    expected = bytearray(rom[:RESIDENT_START])
+    for site, word in patches.items():
+        expected[site:site + 4] = word.to_bytes(4, "big")
+    stock[".oem_low"] = (0, bytes(expected))
+    if loadable("fixture-patched.elf") != stock:
+        raise ValueError("Resident RX link changed bytes outside its two validated branches")
 
 
 def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False, target=False,
@@ -581,7 +620,9 @@ def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False,
     if can_owner_dir:
         for name in ("lfj8_h03_can_owner.c", "lfj8_h03_can_owner.h", "lfj8_donor_io.c", "lfj8_donor_io.h"):
             shutil.copyfile(can_owner_dir / name, work / name)
-        sources += ("lfj8_h03_can_owner.c",)
+        for name in ("lfj8_h03_dtc_native.c", "lfj8_h03_atf_tml0.c"):
+            shutil.copyfile(HERE / name, work / name)
+        sources += ("lfj8_h03_can_owner.c", "lfj8_h03_dtc_native.c", "lfj8_h03_atf_tml0.c")
         defines.append("-DRBM_DTC_RX_CAN_OWNER_FIXTURE")
     if resident:
         if int.from_bytes(rom[CAN0_IRQ_TABLE_WORD:CAN0_IRQ_TABLE_WORD + 4], "big") != CAN0_IRQ_ENTRY:
@@ -616,7 +657,11 @@ def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False,
         if not minimum <= target < limit or displacement % 4 or not 0 <= displacement < (1 << 25):
             raise ValueError(f"The branch to {symbol} does not target the simulator fixture area")
         patches[site] = opcode | (displacement // 4)
-    binding = verify_resident_target(work / "fixture.elf", symbols, limit, sections, rom) if resident_target else None
+    binding = None
+    if resident_target:
+        verify_linked_rx_words(work, rom, patches)
+        binding = verify_resident_target(work / "fixture.elf", symbols, limit, sections, rom)
+        binding["rx_branches_resolved_by_linker"] = True
     return patches, limit, binding
 
 
@@ -808,13 +853,34 @@ def check_target_foreground(run, work, debugger, patches, with_can_owner=False):
     result = {"request_id": "0x732", "reply_id": f"0x{can_id:03X}", "reply": bytes(slot[6:14]).hex(),
               "consumed": True, "tx13_submission": True, "oem_bypass_comparisons": list(bypass)}
     if with_can_owner:
+        bad_clock = simulate(
+            run, work, debugger, case, compare_hook=True, patches=patches, compare_dispatch=True,
+            target=True, foreground=True, setup=("set {unsigned char}0x8003eb = 0",),
+        )
+        queue_after_loss = [row for row in bad_clock if row[0] == "target_queue"]
+        tx_after_loss = [row[1:5] for row in bad_clock if row[0] == "foreground"]
+        excluded = {"stack", "target_queue", "delivery", "foreground"}
+        if (queue_after_loss != [("target_queue", 0, 0)] or tx_after_loss != [(0, 0, 0, 0x40)] or
+                [row for row in bad_clock if row[0] not in excluded] !=
+                [row for row in trace_events if row[0] not in excluded]):
+            raise ValueError(f"Loss of native clock changed OEM RX or admitted DTC: {queue_after_loss}, {tx_after_loss}")
         both = next(case for case in cases(True) if case.name == "both_slots_pending")
         events = simulate(run, work, debugger, both, compare_hook=True, patches=patches,
                           compare_dispatch=True, target=True, foreground=True, reset_owner=True)
+        warm = simulate(run, work, debugger, both, compare_hook=True, patches=patches,
+                        compare_dispatch=True, target=True, foreground=True,
+                        reset_owner=True, warm_rebind=True)
+        warm_step = [row for row in warm if row[0] == "warm_rebind"]
+        warm_next = [row for row in warm if row[0] == "new_generation"]
+        if (warm_step != [("warm_rebind", 1, 7, 0, 0, 0, 0)] or
+                [row[1:5] for row in warm_next] != [(1, 8, 0, 0)]):
+            raise ValueError(f"Rebinding admitted the old epoch or lost the new one: {warm_step}, {warm_next}")
         before = [row[1:5] for row in events if row[0] == "foreground"]
         after = [row for row in events if row[0] == "new_generation"]
         if before != [(1, 1, 1, 0x80)] or after != [("new_generation", 1, 8, 0, 0, 0x40, 0x9F)]:
             raise ValueError(f"The old queue or diagnostic session survived CAN reset: {before}, {after}")
+        result["native_clock_mismatch_rejects_rx_and_tx"] = True
+        result["native_warm_rebind_requires_new_generation"] = True
         result["native_owner_restart"] = {
             "new_generation": 8, "old_frames_retained": 0, "default_session_mode": "0x9F",
             "post_reset_tx13_submission": False,
