@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 148,
+  "sequence": 149,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -469,6 +469,21 @@
       "claimed_at": "2026-11-20T16:28:35+00:00",
       "updated_at": "2026-11-20T16:28:35+00:00",
       "note": "Сокращаю Flash переносимой карты GP Toyota: кодирую порядок байтов в свободных битах смещения, сохраняю проверку всех полей на ПК и M32R и сравниваю компоновку.",
+      "result": null
+    },
+    "ECU-02": {
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex — обороты и отпускание момента Bosch",
+      "branch": "codex/ecu02-torque-rpm-32e6ac79",
+      "files": [
+        "targets/bosch/verify_e4m3_torque_rpm.py",
+        "verification/project-audit/ecu02-torque-rpm-guard.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "c8de734571c443c3b11766566ad20891",
+      "claimed_at": "2026-11-20T16:30:25+00:00",
+      "updated_at": "2026-11-20T16:30:25+00:00",
+      "note": "Проверяю границы допуска оборотов и потерю допуска на точном компактном E4M3 в ST10 через CAN и штатные ветви момента. Без назначения калибровок и аппаратного пуска.",
       "result": null
     }
   },
@@ -1656,9 +1671,17 @@
       "action": "complete",
       "claim_id": "9575e38186c74fb9bb027e3985074fd3",
       "at": "2026-11-20T16:30:09+00:00"
+    },
+    {
+      "operation_id": "9d79dfca7a2547bfbef3ba4d0b46357e",
+      "task": "ECU-02",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "c8de734571c443c3b11766566ad20891",
+      "at": "2026-11-20T16:30:25+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:30:09+00:00",
+  "updated_at": "2026-11-20T16:30:25+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
