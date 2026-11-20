@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 166,
+  "sequence": 167,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -188,12 +188,12 @@
         "targets/bosch/test_chery_torque_rx.c",
         "verification/project-audit/can05-rx-age.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "8bc1c70042a844479c03009561a5e586",
       "claimed_at": "2026-11-20T16:28:26+00:00",
-      "updated_at": "2026-11-20T16:30:41+00:00",
-      "note": "Direct receiver tests and all 65536 LFJ8 to Bosch operand pairs pass. Queued frames use capture time; expiry and withdrawal barriers covered. Running PC and Bosch checks.",
-      "result": null
+      "updated_at": "2026-11-20T16:34:04+00:00",
+      "note": "Capture-time expiry and ordering for queued 1AE operands. Targeted receiver and all 65536 round-trip vectors PASS, 35 PC steps / 70 tests with S03 rerun, existing ST10 image PASS_OFFLINE_ONLY. Evidence verification/project-audit/can05-rx-age.md. Native capture and calibration remain open.",
+      "result": "82947a42cfb33ef5350af1ce98e39055ba6a1508"
     },
     "DTC-03": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -1819,9 +1819,17 @@
       "action": "resume",
       "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
       "at": "2026-11-20T16:33:58+00:00"
+    },
+    {
+      "operation_id": "6d71bf4eb3964ccc86b89290f76af158",
+      "task": "CAN-05",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "8bc1c70042a844479c03009561a5e586",
+      "at": "2026-11-20T16:34:04+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:33:58+00:00",
+  "updated_at": "2026-11-20T16:34:04+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
