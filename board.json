@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 145,
+  "sequence": 146,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -22,12 +22,12 @@
         "verification/project-audit/integration-2/",
         "verification/project-audit/integration/"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "claimed_at": "2026-11-20T16:10:26+00:00",
-      "updated_at": "2026-11-20T16:22:32+00:00",
-      "note": "Первая интеграция 952658b в main, CI PASS. Беру следующую опубликованную порцию CAN-02/04, DTC-01, MODE-01, TOY-04/05/06: совместная проверка и обновление карты.",
-      "result": null
+      "updated_at": "2026-11-20T16:29:27+00:00",
+      "note": "Вторая интеграция опубликована: 71 тест без пропусков, 17 компонентов M32R, кнопки, адаптации, SLU и диалог момента на побайтно восстановленном ordinary Bosch. Аудит 229 исходников / 57 доказательств. Рабочие BIN и аппаратные пункты открыты.",
+      "result": "b2ca79d006426a9839d64e8553cd81bf71953fe9"
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -1632,9 +1632,17 @@
       "action": "resume",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "at": "2026-11-20T16:29:22+00:00"
+    },
+    {
+      "operation_id": "57377fd56d844f7b95307373bb3a45e0",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "review",
+      "claim_id": "68c8347a91944cb3929878ea53cc9204",
+      "at": "2026-11-20T16:29:27+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:29:22+00:00",
+  "updated_at": "2026-11-20T16:29:27+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
