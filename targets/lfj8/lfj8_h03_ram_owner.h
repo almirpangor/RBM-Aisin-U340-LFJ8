@@ -1,0 +1,23 @@
+#ifndef RBM_LFJ8_H03_RAM_OWNER_H
+#define RBM_LFJ8_H03_RAM_OWNER_H
+
+#include "lfj8_h03_service_guard.h"
+
+typedef struct {
+    Lfj8H03ServiceRange control, communication, workspace, dtc_irq_pointer;
+    Lfj8H03ServiceRange spi, psw;
+    uint32_t direct_hook, span_hook, copy_hook, close_hook;
+    void *platform;
+    int (*boot_and_other_writers_owned)(void *platform);
+} Lfj8H03RamOwner;
+
+/* Lfj8H03ApplicationBinding.ram_owned adapter. The platform passes a
+ * read-only linker-bound context and holds the native interrupt exclusion.
+ * The boot witness must already have a safe stack and verify that other
+ * writers (including SBI and DMA) and the initial IRQ ordering are covered.
+ * It must not inspect project RAM to decide whether RAM can be accessed.
+ * The caller must close the lifecycle gate before allowing a service owner
+ * or a different memory map. CAN may be parked while this probe runs. */
+int lfj8_h03_ram_owned(void *context);
+
+#endif
