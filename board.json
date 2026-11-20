@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 684,
+  "sequence": 685,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -312,11 +312,11 @@
         "verification/project-audit/toy05-s01-cold-state.json",
         "verification/project-audit/toy05-s01-cold-state.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "8ca6fc0e24e444f18f58aef003611472",
       "claimed_at": "2026-11-20T21:23:42+00:00",
-      "updated_at": "2026-11-20T21:33:26+00:00",
-      "note": "Сдана холодная проекция S01: 258 сравнений 828 байт, ПК/M32R, 6 размещённых групп и 172 теста PASS. Полная композиция 101460 байт, те же 10 unresolved; два рабочих BIN не выпущены.",
+      "updated_at": "2026-11-20T21:34:01+00:00",
+      "note": "Порция включена в main и проверена. Холодная процедура готова в указанном объёме; TOY-05 и выпуск остаются открытыми. Резерв освобождён для продолжения.",
       "result": "da6b13b337727866a654d7250caa62231889ade5",
       "based_on_reviews": []
     },
@@ -8037,9 +8037,46 @@
         "result": "da6b13b337727866a654d7250caa62231889ade5",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "4778b6a45e884bef9c6924c220f06b96",
+      "task": "TOY-05",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "complete",
+      "claim_id": "8ca6fc0e24e444f18f58aef003611472",
+      "at": "2026-11-20T21:34:01+00:00",
+      "record": {
+        "owner": "codex-integration-01a1f76d-20261120",
+        "label": "Codex integration — исходное состояние Toyota",
+        "branch": "codex/integration-01a1f76d-20261120",
+        "files": [
+          "README.md",
+          "controller/include/rbm_u340e_runtime.h",
+          "controller/src/rbm_u340e_runtime.c",
+          "controller/tests/test_runtime.c",
+          "data/project-tasks.json",
+          "docs/lfj8-h03-memory-layout.md",
+          "docs/project-map.md",
+          "docs/working-set.md",
+          "targets/lfj8/check_toyota_cold_init.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/startup-integration-20261121/",
+          "verification/project-audit/toy05-s01-cold-state.json",
+          "verification/project-audit/toy05-s01-cold-state.md"
+        ],
+        "stage": "done",
+        "claim_id": "8ca6fc0e24e444f18f58aef003611472",
+        "claimed_at": "2026-11-20T21:23:42+00:00",
+        "updated_at": "2026-11-20T21:34:01+00:00",
+        "note": "Порция включена в main и проверена. Холодная процедура готова в указанном объёме; TOY-05 и выпуск остаются открытыми. Резерв освобождён для продолжения.",
+        "result": "da6b13b337727866a654d7250caa62231889ade5",
+        "based_on_reviews": [],
+        "task": "TOY-05",
+        "submitted_at": "2026-11-20T21:33:26+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:33:26+00:00",
+  "updated_at": "2026-11-20T21:34:01+00:00",
   "main_commit": "da6b13b337727866a654d7250caa62231889ade5",
   "catalog": [
     {
@@ -9336,11 +9373,11 @@
         "verification/project-audit/toy05-s01-cold-state.json",
         "verification/project-audit/toy05-s01-cold-state.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "8ca6fc0e24e444f18f58aef003611472",
       "claimed_at": "2026-11-20T21:23:42+00:00",
-      "updated_at": "2026-11-20T21:33:26+00:00",
-      "note": "Сдана холодная проекция S01: 258 сравнений 828 байт, ПК/M32R, 6 размещённых групп и 172 теста PASS. Полная композиция 101460 байт, те же 10 unresolved; два рабочих BIN не выпущены.",
+      "updated_at": "2026-11-20T21:34:01+00:00",
+      "note": "Порция включена в main и проверена. Холодная процедура готова в указанном объёме; TOY-05 и выпуск остаются открытыми. Резерв освобождён для продолжения.",
       "result": "da6b13b337727866a654d7250caa62231889ade5",
       "based_on_reviews": [],
       "task": "TOY-05",
