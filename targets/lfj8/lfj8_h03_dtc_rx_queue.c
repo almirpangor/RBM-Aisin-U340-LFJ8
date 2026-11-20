@@ -1,5 +1,16 @@
 #include "lfj8_h03_dtc_rx_queue.h"
 
+#define CAN0_STAT UINT32_C(0x801002)
+#define CAN0_EXTID UINT32_C(0x801004)
+#define CAN0_SLOT_CONTROL UINT32_C(0x801050)
+#define CAN0_SLOT_DATA UINT32_C(0x801100)
+
+enum {
+    CAN0_STAT_BASIC = 0x0800,
+    CAN0_STAT_UNAVAILABLE = 0x4300, /* BOS | LBS | CRS */
+    CAN0_RX_COMPLETE = 0x41,       /* RR | TRFIN, without ML, TRSTAT or RA */
+};
+
 static bool ready(const Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io)
 {
     return queue && queue->initialized && io && io->enter && io->leave;
@@ -82,15 +93,10 @@ bool lfj8_h03_dtc_rx_queue_reset(Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo 
     return changed;
 }
 
-Lfj8H03DtcRxPublish lfj8_h03_dtc_rx_queue_publish(
-    Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io, const uint8_t slot[16],
-    uint8_t control, bool extended, uint32_t generation, uint32_t now_us,
-    uint16_t can_now)
+static Lfj8H03DtcRxPublish publish_locked(
+    Lfj8H03DtcRxQueue *queue, const uint8_t slot[16], uint8_t control,
+    bool extended, uint32_t generation, uint32_t now_us, uint16_t can_now)
 {
-    if (!ready(queue, io)) {
-        return LFJ8_H03_DTC_RX_NOT_READY;
-    }
-    const uint32_t saved = io->enter(io->context);
     Lfj8H03DtcReceive received;
     Lfj8H03DtcRxPublish result = LFJ8_H03_DTC_RX_REJECTED;
     if (generation != queue->generation ||
@@ -114,8 +120,149 @@ Lfj8H03DtcRxPublish lfj8_h03_dtc_rx_queue_publish(
             result = LFJ8_H03_DTC_RX_QUEUED;
         }
     }
+    return result;
+}
+
+Lfj8H03DtcRxPublish lfj8_h03_dtc_rx_queue_publish(
+    Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io, const uint8_t slot[16],
+    uint8_t control, bool extended, uint32_t generation, uint32_t now_us,
+    uint16_t can_now)
+{
+    if (!ready(queue, io)) {
+        return LFJ8_H03_DTC_RX_NOT_READY;
+    }
+    const uint32_t saved = io->enter(io->context);
+    const Lfj8H03DtcRxPublish result =
+        publish_locked(queue, slot, control, extended, generation, now_us, can_now);
     io->leave(io->context, saved);
     return result;
+}
+
+static bool basiccan_active(const Lfj8RegisterIo *io)
+{
+    const uint16_t status = io->read16(io->context, CAN0_STAT);
+    return (status & (CAN0_STAT_BASIC | CAN0_STAT_UNAVAILABLE)) == CAN0_STAT_BASIC;
+}
+
+static bool capture_basic(const Lfj8RegisterIo *io, uint8_t slot, uint8_t copy[16])
+{
+    if (slot < 14u || slot > 15u || !basiccan_active(io)) {
+        return false;
+    }
+    const uint32_t control = CAN0_SLOT_CONTROL + slot;
+    if (io->read8(io->context, control) != CAN0_RX_COMPLETE ||
+        (io->read16(io->context, CAN0_EXTID) & (UINT16_C(0x8000) >> slot)) != 0u) {
+        return false;
+    }
+
+    /* Leave TRFIN set for the OEM. An overwrite during the copy sets ML
+     * while TRFIN is set (Renesas 32176 §13.6.2, Fig. 13.6.2). */
+    const uint32_t data = CAN0_SLOT_DATA + (uint32_t)slot * 16u;
+    for (uint32_t offset = 0; offset < 16u; ++offset) {
+        copy[offset] = io->read8(io->context, data + offset);
+    }
+    return io->read8(io->context, control) == CAN0_RX_COMPLETE && basiccan_active(io);
+}
+
+Lfj8H03DtcRxPublish lfj8_h03_dtc_rx_queue_capture_basic(
+    Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io, uint8_t slot,
+    uint32_t generation, uint32_t now_us, uint16_t can_now)
+{
+    if (!ready(queue, io) || !io->read8 || !io->read16) {
+        return LFJ8_H03_DTC_RX_NOT_READY;
+    }
+    const uint32_t saved = io->enter(io->context);
+    uint8_t copy[16];
+    Lfj8H03DtcRxPublish result = LFJ8_H03_DTC_RX_REJECTED;
+    if (generation == queue->generation && capture_basic(io, slot, copy)) {
+        result = publish_locked(queue, copy, CAN0_RX_COMPLETE, false, generation, now_us, can_now);
+    } else {
+        increment(&queue->rejected);
+    }
+    io->leave(io->context, saved);
+    return result;
+}
+
+static uint16_t raw_age(const uint8_t copy[16], uint16_t can_now)
+{
+    const uint16_t timestamp = (uint16_t)((uint16_t)copy[14] << 8 | copy[15]);
+    return (uint16_t)(can_now - timestamp);
+}
+
+uint16_t lfj8_h03_dtc_rx_queue_capture_pending(
+    Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io, uint16_t pending,
+    uint32_t generation, uint32_t now_us, uint16_t can_now)
+{
+    const uint16_t both = LFJ8_H03_DTC_RX15_PENDING | LFJ8_H03_DTC_RX14_PENDING;
+    pending &= both;
+    if (!pending || !ready(queue, io) || !io->read8 || !io->read16) {
+        return 0;
+    }
+    const uint32_t saved = io->enter(io->context);
+    uint8_t copies[2][16]; /* Indexed by the CAN0SLIST bit: RX15, then RX14. */
+    uint16_t captured = 0;
+    if (generation == queue->generation) {
+        for (unsigned i = 0; i < 2; ++i) {
+            const uint16_t bit = (uint16_t)(1u << i);
+            if ((pending & bit) && capture_basic(io, (uint8_t)(15u - i), copies[i])) {
+                captured |= bit;
+            }
+        }
+        if (captured && !basiccan_active(io)) {
+            captured = 0;
+        }
+    }
+
+    /* Both copies use one clock sample. publish_locked rejects ages
+     * outside the queue budget, which is strictly below half a CAN wrap. */
+    const unsigned first = captured == both && raw_age(copies[1], can_now) > raw_age(copies[0], can_now)
+        ? 1u : 0u;
+    uint16_t queued = 0;
+    for (unsigned offset = 0; offset < 2; ++offset) {
+        const unsigned i = (first + offset) % 2u;
+        const uint16_t bit = (uint16_t)(1u << i);
+        if (!(pending & bit)) {
+            continue;
+        }
+        if (!(captured & bit)) {
+            increment(&queue->rejected);
+        } else if (publish_locked(queue, copies[i], CAN0_RX_COMPLETE, false,
+                                   generation, now_us, can_now) == LFJ8_H03_DTC_RX_QUEUED) {
+            queued |= bit;
+        }
+    }
+    io->leave(io->context, saved);
+    return queued;
+}
+
+uint16_t lfj8_h03_dtc_rx_dispatch_begin(
+    Lfj8H03DtcRxDispatch *dispatch, Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io,
+    uint16_t pending, uint32_t generation, uint32_t now_us, uint16_t can_now)
+{
+    const uint16_t both = LFJ8_H03_DTC_RX14_PENDING | LFJ8_H03_DTC_RX15_PENDING;
+    dispatch->generation = generation;
+    dispatch->paired_slots = 0;
+    if ((pending & both) == both) {
+        dispatch->paired_slots = lfj8_h03_dtc_rx_queue_capture_pending(
+            queue, io, pending, generation, now_us, can_now);
+    }
+    return dispatch->paired_slots;
+}
+
+bool lfj8_h03_dtc_rx_dispatch_skip_paired(Lfj8H03DtcRxDispatch *dispatch,
+                                       uint8_t slot, uint32_t generation)
+{
+    if (dispatch->generation != generation) {
+        dispatch->paired_slots = 0;
+        return false;
+    }
+    if (slot < 14u || slot > 15u) {
+        return false;
+    }
+    const uint16_t bit = (uint16_t)(UINT16_C(0x8000) >> slot);
+    const bool paired = (dispatch->paired_slots & bit) != 0u;
+    dispatch->paired_slots &= (uint16_t)~bit;
+    return paired;
 }
 
 bool lfj8_h03_dtc_rx_queue_peek(Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io,
