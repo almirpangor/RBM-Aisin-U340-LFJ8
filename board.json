@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 751,
+  "sequence": 752,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -301,12 +301,12 @@
         "controller/tests/test_controller.c",
         "verification/project-audit/toy05-qualified-startup-seed.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "6ce7588d41534bb3aae313663fe29f1a",
       "claimed_at": "2026-11-20T22:42:18+00:00",
-      "updated_at": "2026-11-20T22:43:12+00:00",
-      "note": "Собираю последовательность validated init → квалифицированная cold-проекция → чтение/восстановление адаптаций, с отдельными проверками старта на ПК и M32R.",
-      "result": null,
+      "updated_at": "2026-11-20T22:52:22+00:00",
+      "note": "В runtime реализован подготовленный/подтверждённый холодный старт: проверка снимка, проекция S01 до чтения NVM и восстановление. ПК/M32R, 258 сравнений R3, 62 старта H03 и шесть групп адресной сборки прошли. Точка штатного вызова у CAN-03; данные startup_gear/gp и квалификация cold/warm открыты. Отчёт verification/project-audit/toy05-qualified-startup-seed.md.",
+      "result": "ddb10371c24f683d84c9eba30118ed7428a9af6a",
       "based_on_reviews": [
         "ddeb80aa0d00427f9cdc2ac2b6ee7241"
       ]
@@ -9955,9 +9955,37 @@
           "cda1c6bb3edf45bd993ee765cf29e055"
         ]
       }
+    },
+    {
+      "operation_id": "861b16775f394ce498551eea6d2da78f",
+      "task": "TOY-05",
+      "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "action": "review",
+      "claim_id": "6ce7588d41534bb3aae313663fe29f1a",
+      "at": "2026-11-20T22:52:22+00:00",
+      "record": {
+        "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+        "label": "Codex TOY-05 — квалифицированный стартовый снимок",
+        "branch": "codex/toy05-startup-seed-01a1fa79",
+        "files": [
+          "controller/include/rbm_u340e_runtime.h",
+          "controller/src/rbm_u340e_runtime.c",
+          "controller/tests/test_controller.c",
+          "verification/project-audit/toy05-qualified-startup-seed.md"
+        ],
+        "stage": "review",
+        "claim_id": "6ce7588d41534bb3aae313663fe29f1a",
+        "claimed_at": "2026-11-20T22:42:18+00:00",
+        "updated_at": "2026-11-20T22:52:22+00:00",
+        "note": "В runtime реализован подготовленный/подтверждённый холодный старт: проверка снимка, проекция S01 до чтения NVM и восстановление. ПК/M32R, 258 сравнений R3, 62 старта H03 и шесть групп адресной сборки прошли. Точка штатного вызова у CAN-03; данные startup_gear/gp и квалификация cold/warm открыты. Отчёт verification/project-audit/toy05-qualified-startup-seed.md.",
+        "result": "ddb10371c24f683d84c9eba30118ed7428a9af6a",
+        "based_on_reviews": [
+          "ddeb80aa0d00427f9cdc2ac2b6ee7241"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:51:25+00:00",
+  "updated_at": "2026-11-20T22:52:22+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -11908,6 +11936,28 @@
       ],
       "task": "MODE-02",
       "submitted_at": "2026-11-20T22:51:25+00:00"
+    },
+    "6ce7588d41534bb3aae313663fe29f1a": {
+      "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "label": "Codex TOY-05 — квалифицированный стартовый снимок",
+      "branch": "codex/toy05-startup-seed-01a1fa79",
+      "files": [
+        "controller/include/rbm_u340e_runtime.h",
+        "controller/src/rbm_u340e_runtime.c",
+        "controller/tests/test_controller.c",
+        "verification/project-audit/toy05-qualified-startup-seed.md"
+      ],
+      "stage": "review",
+      "claim_id": "6ce7588d41534bb3aae313663fe29f1a",
+      "claimed_at": "2026-11-20T22:42:18+00:00",
+      "updated_at": "2026-11-20T22:52:22+00:00",
+      "note": "В runtime реализован подготовленный/подтверждённый холодный старт: проверка снимка, проекция S01 до чтения NVM и восстановление. ПК/M32R, 258 сравнений R3, 62 старта H03 и шесть групп адресной сборки прошли. Точка штатного вызова у CAN-03; данные startup_gear/gp и квалификация cold/warm открыты. Отчёт verification/project-audit/toy05-qualified-startup-seed.md.",
+      "result": "ddb10371c24f683d84c9eba30118ed7428a9af6a",
+      "based_on_reviews": [
+        "ddeb80aa0d00427f9cdc2ac2b6ee7241"
+      ],
+      "task": "TOY-05",
+      "submitted_at": "2026-11-20T22:52:22+00:00"
     }
   }
 }
