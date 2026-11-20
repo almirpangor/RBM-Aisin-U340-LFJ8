@@ -99,6 +99,13 @@ enum {
     P10SEL = 0x80074A,
     TIO4RL1 = 0x800344,
     TIO4RL0 = 0x800346,
+    P9DATA = 0x800709,
+    P9SEL = 0x800749,
+    TIO9_WIDTH = 0x8048CE,
+    TIO9RL1 = 0x800394,
+    TIO9RL0 = 0x800396,
+    TIO9_PROPOSAL = 0x8060F0,
+    TIO9_ROM_PROPOSAL = 0x0199C0,
 };
 
 enum {
@@ -378,6 +385,13 @@ static int check_revocation(uint32_t latch, uint8_t bad_feedback)
     return 0;
 }
 
+static int tio9_low(void)
+{
+    return RAM8(P9DATA) == 0xa4u && RAM8(P9SEL) == 0xb0u &&
+        RAM16(TIO9_WIDTH) == 1u && RAM16(TIO9RL1) == 248u && RAM16(TIO9RL0) == 0u &&
+        RAM32(TIO9_PROPOSAL) == 0u;
+}
+
 enum { LOST_CAN, LOST_PHASE, SERVICE_HANDOFF };
 
 static int check_lost_authority(unsigned cause)
@@ -399,6 +413,9 @@ static int check_lost_authority(unsigned cause)
     RAM8(P3DATA) = 0xf5u;
     RAM8(P10DATA) = 0xf3u;
     RAM8(P10SEL) = 0xa0u;
+    RAM8(P9DATA) = 0xa5u;
+    RAM8(P9SEL) = 0xb0u;
+    RAM32(TIO9_PROPOSAL) = RAM32(TIO9_ROM_PROPOSAL);
     if (!lfj8_h03_phase_clock_init(&phase, 90u, 10u, 10u, 2u) ||
         !lfj8_h03_takeover_init(state, &ops, 10u)) {
         return base;
@@ -409,13 +426,13 @@ static int check_lost_authority(unsigned cause)
         !lfj8_h03_takeover_apply(state, 1u) ||
         !lfj8_h03_takeover_prepare_plan(state, &plan, 2u, now) ||
         RAM8(P3DATA) != 0xf5u || RAM8(P10SEL) != 0xa1u ||
-        RAM16(TIO4RL1) != 1999u || RAM16(TIO4RL0) != 999u) {
+        RAM16(TIO4RL1) != 1999u || RAM16(TIO4RL0) != 999u ||
+        RAM8(P9DATA) != 0xa5u || RAM8(P9SEL) != 0xb1u ||
+        RAM16(TIO9_WIDTH) != 66u || RAM16(TIO9RL1) != 183u || RAM16(TIO9RL0) != 65u) {
         return base;
     }
 
     const uint8_t p0_before = RAM8(0x800700);
-    const uint8_t p9_before = RAM8(0x800709);
-    const uint8_t p9sel_before = RAM8(0x800749);
     if (cause == LOST_CAN) {
         can_qualified = 0;
         if (lfj8_h03_takeover_apply(state, 2u)) {
@@ -427,6 +444,15 @@ static int check_lost_authority(unsigned cause)
             return base + 1;
         }
     } else {
+        /* Preload the stock service-high GPIO case before the handoff. */
+        RAM8(SCHEDULER_MODE) = 4;
+        RAM16(TIO9_WIDTH) = 248u;
+        ((void (*)(void))(uintptr_t)0x00B4B4)();
+        RAM8(SCHEDULER_MODE) = 0;
+        if (RAM8(P9DATA) != 0xa5u || RAM8(P9SEL) != 0xb0u ||
+            RAM16(TIO9RL1) != 1u || RAM16(TIO9RL0) != 247u) {
+            return base + 1;
+        }
         const uint32_t saved = ops.io->enter(ops.io->context);
         lfj8_h03_takeover_revoke_locked(state);
         RAM8(SCHEDULER_MODE) = 4;
@@ -434,8 +460,7 @@ static int check_lost_authority(unsigned cause)
         ops.io->leave(ops.io->context, saved);
     }
     if (state->pending || delivered != 1u || !owned_commands_zero() || !low_outputs() ||
-        RAM8(0x800700) != p0_before || RAM8(0x800709) != p9_before ||
-        RAM8(0x800749) != p9sel_before || fault_count()) {
+        RAM8(0x800700) != p0_before || !tio9_low() || fault_count()) {
         return base + 2;
     }
 
@@ -443,8 +468,10 @@ static int check_lost_authority(unsigned cause)
     RAM8(SCHEDULER_MODE) = 0;
     RAM8(EVENT_SUSPENDED) = 0;
     arbitrate(0);
-    if (!owned_commands_zero() || lfj8_h03_takeover_apply(state, 2u) ||
-        delivered != 1u || !low_outputs()) {
+    /* Even a native re-apply cannot recover the discarded TIO9 proposal. */
+    ((void (*)(void))(uintptr_t)0x046900)();
+    if (!tio9_low() || !owned_commands_zero() || lfj8_h03_takeover_apply(state, 2u) ||
+        delivered != 1u || !low_outputs() || !tio9_low()) {
         return base + 3;
     }
     if (cause == LOST_PHASE &&
@@ -644,6 +671,8 @@ def probe_inhibit_order(run, work, debugger):
     registers = (
         (0x800703, "char"), (0x8048CC, "short"), (0x80070A, "char"), (0x80074A, "char"),
         (0x800344, "short"), (0x800346, "short"),
+        (0x8048CE, "short"), (0x800709, "char"), (0x800749, "char"),
+        (0x800394, "short"), (0x800396, "short"), (0x8060F0, "int"),
     )
     capture = "\n".join(f"set $v{i} = *(unsigned {size}*){addr:#x}"
                         for i, (addr, size) in enumerate(registers))
@@ -680,7 +709,9 @@ printf "INHIBIT %d %d\\n", $pc == $return, $ie
                 for address, value in re.findall(rb"^CHANGE (0x[0-9a-f]+) (\d+)\r?$", log, re.M)]
     expected = [(0x800703, 0x75), (0x800703, 0x35), (0x800703, 0x15),
                 (0x8048CC, 0), (0x80070A, 0xF2), (0x80074A, 0xA0),
-                (0x8048CC, 1), (0x800344, 2998), (0x800346, 0)]
+                (0x8048CC, 1), (0x800344, 2998), (0x800346, 0),
+                (0x8048CE, 0), (0x800709, 0xA4), (0x800749, 0xB0),
+                (0x8048CE, 1), (0x800394, 248), (0x800396, 0), (0x8060F0, 0)]
     if (observed != expected or
             re.search(rb"^INHIBIT 1 0\r?$", log, re.M) is None):
         raise ValueError(f"Unexpected inhibit sequence: {observed!r}, {log[-320:]!r}")
@@ -776,8 +807,9 @@ def check(base, compiler):
             "sources": ["output_fault_latch", "lost_can_qualification_at_apply",
                         "phase_timeout_while_waiting", "revoke_before_service_handoff"],
             "masked_register_sequence": inhibit_order,
-            "retired_proposals_and_final_commands": ["D", "E", "F", "Pressure A"],
-            "port_0_and_port_9_preserved": True,
+            "retired_proposals_and_final_commands": ["D", "E", "F", "Pressure A", "TIO9"],
+            "port_0_and_unrelated_port_9_bits_preserved": True,
+            "tio9_stays_low_on_oem_reapply_without_new_proposal": True,
             "service_event_publisher_remains_to_be_bound": True,
         },
         "stock_monitor_service_gate": {
