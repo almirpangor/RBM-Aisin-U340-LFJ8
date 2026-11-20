@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 35,
+  "sequence": 36,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -134,13 +134,15 @@
         "targets/lfj8/h03_storage_layout.c",
         "targets/lfj8/lfj8_h03_storage.h",
         "tests/test_h03_storage.py",
-        "verification/e4m3-can-9e1c/h03-storage.json"
+        "verification/e4m3-can-9e1c/h03-storage.json",
+        "verification/project-audit/2026-11-20-h03-storage.json",
+        "verification/project-audit/h03-storage-tests.txt"
       ],
       "stage": "in_progress",
       "claim_id": "83b9428ce0f2463f92341fea12156d66",
       "claimed_at": "2026-11-20T15:53:30+00:00",
-      "updated_at": "2026-11-20T15:55:12+00:00",
-      "note": "Полный набор состояний раскладываю на раздельные блоки; расширяю существующий прогон шести OEM-инициализаций для проверки вычисленной границы второго окна, сохраняя прежние значения по умолчанию.",
+      "updated_at": "2026-11-20T16:00:00+00:00",
+      "note": "Карта текущих состояний: 2324 байта. 6 OEM-прогонов расширенного окна и 65 Python-тестов PASS. Общий реестр занят интеграцией H03-03: готовлю отдельный снимок H03-04, не изменяя чужие зарезервированные файлы.",
       "result": null
     },
     "DTC-04": {
@@ -490,9 +492,17 @@
       "action": "review",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "at": "2026-11-20T15:59:46+00:00"
+    },
+    {
+      "operation_id": "0006bec9f25f4cf0b5d3df2f755d369f",
+      "task": "H03-04",
+      "owner": "codex-h03-04-01a1f76d-20261120",
+      "action": "heartbeat",
+      "claim_id": "83b9428ce0f2463f92341fea12156d66",
+      "at": "2026-11-20T16:00:00+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:59:46+00:00",
+  "updated_at": "2026-11-20T16:00:00+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
