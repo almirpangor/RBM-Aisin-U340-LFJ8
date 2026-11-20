@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 155,
+  "sequence": 156,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -302,11 +302,11 @@
         "tests/test_u340.py",
         "verification/project-audit/mode01-shift-conflict.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
       "claimed_at": "2026-11-20T16:11:44+00:00",
-      "updated_at": "2026-11-20T16:14:42+00:00",
-      "note": "Staggered Tiptronic plus/minus overlap now blocks manual requests. Original C/Python regressions reproduced. PC 33 steps/66 tests plus dedicated C regression PASS; M32R build, 17 components and dedicated regression PASS. Evidence verification/project-audit/mode01-shift-conflict.md. Integrator to record the audit; physical input and hydraulic execution remain open.",
+      "updated_at": "2026-11-20T16:31:25+00:00",
+      "note": "Reviewed shift-button conflict fix integrated in b2ca79d with PC/M32R evidence in integration-2. Released this reservation; hardware input and hydraulic execution remain open.",
       "result": "ed33ea93653f7bcbc2c6f13736fe1424335085e6"
     },
     "TOY-04": {
@@ -1728,9 +1728,17 @@
       "action": "heartbeat",
       "claim_id": "4b00bd7fdda2433d8439e95c7b0b1454",
       "at": "2026-11-20T16:31:17+00:00"
+    },
+    {
+      "operation_id": "956221d230854763a08324faef422a39",
+      "task": "MODE-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
+      "at": "2026-11-20T16:31:25+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:31:17+00:00",
+  "updated_at": "2026-11-20T16:31:25+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {

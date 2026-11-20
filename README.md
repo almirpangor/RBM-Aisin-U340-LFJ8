@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:31:17+00:00**. Изменение № **155**.
+Обновлено UTC: **2026-11-20T16:31:25+00:00**. Изменение № **156**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -34,7 +34,7 @@
 | VSS-01 — Точный расчёт VSS и скорость по CAN | На проверке | Codex VSS-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss01-exact-arithmetic-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:22:43+00:00 | Точная VSS арифметика устраняет промежуточное переполнение. 25 000 сравнений, PC 33 шага/65 тестов, M32R 17 компонентов, Bosch C7FF/C800/FFFF PASS по ожидаемому поведению. Параметры VSS-02 и стенд открыты. Отчёт verification/project-audit/vss01-exact-arithmetic.md. / commit d05896bcac7b731f8d3f85b9aaebd3394e32473c |
 | VSS-02 — Кинематика и параметры реальной скорости | Выполняется | Codex VSS-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss02-measurement-check-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:30:47+00:00 | Уточняю VSS-02 по найденному расчёту машины: Z1=25, мосты 37/8, окружность 3,53 м. Проверяю расчёт и происхождение. |
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
-| MODE-01 — Логика шести положений и кнопок | На проверке | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:14:42+00:00 | Staggered Tiptronic plus/minus overlap now blocks manual requests. Original C/Python regressions reproduced. PC 33 steps/66 tests plus dedicated C regression PASS; M32R build, 17 components and dedicated regression PASS. Evidence verification/project-audit/mode01-shift-conflict.md. Integrator to record the audit; physical input and hydraulic execution remain open. / commit ed33ea93653f7bcbc2c6f13736fe1424335085e6 |
+| MODE-01 — Логика шести положений и кнопок | Работа завершена | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:31:25+00:00 | Reviewed shift-button conflict fix integrated in b2ca79d with PC/M32R evidence in integration-2. Released this reservation; hardware input and hydraulic execution remain open. / commit ed33ea93653f7bcbc2c6f13736fe1424335085e6 |
 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | Выполняется | Codex MODE-02 — публикация ADC H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode02-h03-selector-01a1f9c7 | 2026-11-20T16:28:17+00:00 | Подключаю публикацию отсчёта селектора к проверенному пути ADC0 AN2 H03. Отдельная проверка штатных инструкций и M32R; без назначения физических кнопок. |
 | MODE-03 — Окончательная политика режимов | На проверке | Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T16:27:03+00:00 | Штатная матрица ПК: 128 конфигураций запуска и 501 760 сценариев заявок PASS. Все 35 шагов ПК прошли; донорский тест S03 повторён отдельно с проверенным входом. Интегратору: учесть новые файлы и отчёт verification/project-audit/mode03-policy-matrix.md в аудите. Политика выпуска и подключение к циклу H03 открыты. / commit dd4fdbc2862093359df9329d7e6e9ab211d13940 |
 | SRC-01 — Реестр происхождения и контроль исходников | Свободна | — | — | — | — |
@@ -151,16 +151,6 @@
 - targets/lfj8/lfj8_h03_takeover.h
 - targets/lfj8/test_lfj8_h03_takeover.c
 
-### MODE-01
-
-Чат: Codex MODE-01. Claim ID: 5a7d7e355e8042b7b3e05cdba92c350f.
-
-- controller/src/rbm_u340e.c
-- controller/tests/test_shift_buttons.c
-- model/u340.py
-- tests/test_u340.py
-- verification/project-audit/mode01-shift-conflict.md
-
 ### MODE-02
 
 Чат: Codex MODE-02 — публикация ADC H03. Claim ID: e02562d3b21f423d914c1c00a9c88077.
@@ -229,6 +219,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:31:25+00:00 | MODE-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:31:17+00:00 | TOY-01 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:31:04+00:00 | ORG-01 | complete | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T16:30:54+00:00 | DTC-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
@@ -258,4 +249,3 @@
 | 2026-11-20T16:25:38+00:00 | DTC-03 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:25:17+00:00 | MODE-02 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:25:01+00:00 | ECU-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
-| 2026-11-20T16:24:53+00:00 | VSS-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
