@@ -70,8 +70,12 @@ int lfj8_h03_takeover_prepare_plan(Lfj8H03Takeover *state, const Lfj8H03OutputPl
  * of either phase must skip the original OEM call after this function. */
 int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation);
 
-/* Foreground check with the same lock used for apply. Call while waiting for
- * the stock flag as well as when it is set. Revokes a staged command and
+/* Check while waiting for the stock flag. Fault revokes a staged command
+ * under the I/O lock. A fresh publication remains pending for take_phase. */
+Lfj8H03PhaseResult lfj8_h03_takeover_check_phase(Lfj8H03Takeover *state);
+
+/* Consume the foreground phase with the same lock used for apply.
+ * A fault revokes a staged command and
  * invokes the qualified failure response on a missing or invalid phase.
  * While recovering, reinitialize both the takeover and phase clock under
  * the owner lock with command authority withdrawn. */

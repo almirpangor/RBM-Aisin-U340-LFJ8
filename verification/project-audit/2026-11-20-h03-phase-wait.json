@@ -202,10 +202,10 @@
     "targets/lfj8/lfj8_h03_mmio.h": "e58bbf12ad250d127cfcf014088d17ecfaf3facefcf37a1aa1da5b28ac98c133",
     "targets/lfj8/lfj8_h03_outputs.c": "251783c76b96872d4d932c8742bc06a0e40d6bc0cd99a07c86e374d11e45a280",
     "targets/lfj8/lfj8_h03_outputs.h": "d5a894cfed0922172a9920c9cc35da16d2fc844dffadd8e8be1479ee682313bf",
-    "targets/lfj8/lfj8_h03_phase_clock.c": "fa5101cdfc3fe3050dee5f1a557d7f22b5e3a5057db7cd5de977beb451475b07",
-    "targets/lfj8/lfj8_h03_phase_clock.h": "85602b57e1200f8bdf6bf2dd1b8d054ed320d47a4e7b03e3f5d2a465c7b7f9de",
-    "targets/lfj8/lfj8_h03_takeover.c": "a170c0f5b86a885a08c193d9c21f7b21602773cc5905412a55de0243093a8929",
-    "targets/lfj8/lfj8_h03_takeover.h": "118bd73459431f33878bed48dd02f6a6e580bf20965c83aa53739e2bf63b0a6a",
+    "targets/lfj8/lfj8_h03_phase_clock.c": "1f4857f90fa639dfdcec7ddffd0ce5f3605b1aa1777a91a4215ca9a72720fc2b",
+    "targets/lfj8/lfj8_h03_phase_clock.h": "867996025e23d3205eec569019c8d7e4347f0a3b19b522b6b54bd154a1bfd96c",
+    "targets/lfj8/lfj8_h03_takeover.c": "1793359e5b3bf7086850901858cb28b993d1d8b290b31ba0671cf5b6acf62b94",
+    "targets/lfj8/lfj8_h03_takeover.h": "afde8097349980a9705148b4a90d3e067955318f034578fac38a890a8a123294",
     "targets/lfj8/lfj8_h03_torque.c": "72a18d63900faacaa6f75e093af985dd140ea06a7e7e96e8e30fb408bbb9a597",
     "targets/lfj8/lfj8_h03_torque.h": "d70b832366e2d04acd04850605a2674999dd89468c990ed8e2aa6a6ba68abe15",
     "targets/lfj8/lfj8_h03_torque_can.c": "d7e11a7eaeb4b8ad94432c38294fed00d575f1b33f2f68483e3f8c78c577fb8f",
@@ -228,7 +228,7 @@
     "targets/lfj8/test_lfj8_h03_mmio.c": "513d401b6da1dc12acc099c89071921d2799d2e46f0b24128c5fea595d1e8000",
     "targets/lfj8/test_lfj8_h03_outputs.c": "cc02db1227325fd7f859d5ad6d60a4a637cefbe1a7a147cfdf0dcf295ce17a3f",
     "targets/lfj8/test_lfj8_h03_phase_clock.c": "32940fc9bdda4eb19b0d949047d162146df1c0b571f0cfaa7012838ed69d8088",
-    "targets/lfj8/test_lfj8_h03_takeover.c": "5fd4f729730be65b7dcc016d551e56a534b06ed245ddbbb09977e5f6b97aad1f",
+    "targets/lfj8/test_lfj8_h03_takeover.c": "a6ba15ab25bb00b93dd6e904f9733c443deb42cb6ce7bdaab2a7acd81af41f0b",
     "targets/lfj8/test_lfj8_h03_torque.c": "85568c7b5bfe3086b01c579c74f380a75425cf87df3edb03f028dcd6244ef7c5",
     "targets/lfj8/test_lfj8_h03_torque_can.c": "052a05e2ca270f2db1db24bec84e1566e84b1539f8e69f4f8fbebe0bf11953ef",
     "targets/lfj8/test_lfj8_selector_adc.c": "124fa9d9d5d07eee2f07b9f64b1ec856cb002acecbe28c2cc2806efb81f15a81",
@@ -296,5 +296,34 @@
     "scope": "Experimental foreground wait hook and M32R fixture",
     "repeated_checks": "Four scenarios with ready and delayed phase flag and both carry values",
     "limits": "Mock callback and simulated flag; no production integration or physical timing"
+  },
+  "h03_phase_watchdog_followup": {
+    "changed_code_and_tests": [
+      "targets/lfj8/lfj8_h03_phase_clock.c",
+      "targets/lfj8/lfj8_h03_phase_clock.h",
+      "targets/lfj8/lfj8_h03_takeover.c",
+      "targets/lfj8/lfj8_h03_takeover.h",
+      "targets/lfj8/test_lfj8_h03_takeover.c"
+    ],
+    "repeated_checks": [
+      "M32R controller and bridge builds",
+      "H03 split-address model, ordinary Bosch trace replay and 17 M32R component tests"
+    ],
+    "takeover_test": "H03 takeover: proposals, P3 replay, service guards and native phase expiry PASS",
+    "split_address_model": {
+      "primary": {
+        "start": "0x020000",
+        "end_exclusive": "0x030000",
+        "rom_extent_bytes": 63844,
+        "window_margin_bytes": 1692
+      },
+      "can_extension": {
+        "start": "0x07C118",
+        "end_exclusive": "0x07FFFC",
+        "rom_extent_bytes": 14432,
+        "window_margin_bytes": 1668
+      }
+    },
+    "limits": "New watchdog API exercised by the M32R component test. The wait hook and hardware inhibit are not linked to the production image."
   }
 }

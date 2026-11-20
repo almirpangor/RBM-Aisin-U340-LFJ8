@@ -304,10 +304,13 @@ int main(void)
     fixture.now = 100u;
     assert(lfj8_h03_phase_clock_init(&phase, fixture.now, 8u, 12u, 2u));
     assert(lfj8_h03_takeover_init(&state, &ops, 32u));
+    assert(lfj8_h03_takeover_check_phase(&state) == LFJ8_H03_PHASE_WAIT);
     assert(lfj8_h03_takeover_take_phase(&state, &event) == LFJ8_H03_PHASE_WAIT);
     assert(!lfj8_h03_takeover_prepare(&state, &plan, 4u, 1u, fixture.now));
     ++fixture.now;
     lfj8_h03_phase_clock_release(&phase, fixture.now);
+    assert(lfj8_h03_takeover_check_phase(&state) == LFJ8_H03_PHASE_EVENT);
+    assert(lfj8_h03_takeover_check_phase(&state) == LFJ8_H03_PHASE_EVENT);
     assert(lfj8_h03_takeover_take_phase(&state, &event) == LFJ8_H03_PHASE_EVENT && event.sequence == 1u);
     assert(lfj8_h03_takeover_prepare(&state, &plan, 4u, 2u, fixture.now));
     fixture.now += 10u;
@@ -329,8 +332,8 @@ int main(void)
     assert(lfj8_h03_takeover_prepare(&state, &plan, 4u, 5u, fixture.now));
     fixture.now += 13u;
     const unsigned inhibits_before_timeout = fixture.inhibits;
-    assert(lfj8_h03_takeover_take_phase(&state, &event) == LFJ8_H03_PHASE_FAULT);
-    assert(!event.sequence && !event.released_at && !state.pending);
+    assert(lfj8_h03_takeover_check_phase(&state) == LFJ8_H03_PHASE_FAULT);
+    assert(phase.faulted && !state.pending);
     assert(fixture.inhibits == inhibits_before_timeout + 1u && fixture.applies == 6u);
     fixture.now += 10u;
     lfj8_h03_phase_clock_release(&phase, fixture.now);
