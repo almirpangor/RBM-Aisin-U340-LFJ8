@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 598,
+  "sequence": 599,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -430,20 +430,24 @@
       "result": "8e866f469975c07bf741fe3f1c00317ba6c21fcf"
     },
     "MODE-03": {
-      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Codex MODE-03 — переход режима с удержанной кнопкой передачи",
-      "branch": "codex/mode03-hold-transition-1121-c7e4",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex MODE-03 — допуск только после инициализации политики",
+      "branch": "codex/mode03-policy-init-admission-32e6ac79",
       "files": [
+        "controller/include/rbm_u340e.h",
         "controller/src/rbm_u340e.c",
         "controller/tests/test_mode_policy.c",
-        "verification/project-audit/mode03-held-shift-at-mode-edge.md"
+        "verification/project-audit/mode03-policy-init-gate.md"
       ],
-      "stage": "review",
-      "claim_id": "881583aa76814d4da3f768699f01ca29",
-      "claimed_at": "2026-11-20T20:07:21+00:00",
-      "updated_at": "2026-11-20T20:12:38+00:00",
-      "note": "Общий rbm_u340e_step подавляет заявки на фронте M при удерживаемых +/−. Регрессия воспроизведена на main; пройдены 256 переходов, 41 шаг ПК/120 тестов, 11+18 M32R, 6 размещённых проверок и штатная привязка входов на ПК/M32R. Стенд и профиль выпуска открыты.",
-      "result": "64dd049791651db334bbf279bf51880dfeaba93a"
+      "stage": "in_progress",
+      "claim_id": "1813d3172cb84949a9013f2851da5863",
+      "claimed_at": "2026-11-20T20:30:13+00:00",
+      "updated_at": "2026-11-20T20:30:13+00:00",
+      "note": "Продолжаю с 64dd049 и актуального main. Проверяю запуск общего контроллера до принятия политики и после отказа init. Введу явный допуск без назначения настроек выпуска.",
+      "result": null,
+      "based_on_reviews": [
+        "881583aa76814d4da3f768699f01ca29"
+      ]
     },
     "ECU-01": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -5412,9 +5416,37 @@
         "task": "ORG-01",
         "submitted_at": "2026-11-20T20:27:34+00:00"
       }
+    },
+    {
+      "operation_id": "9185e7d4cfd34b3fa265c928041cf077",
+      "task": "MODE-03",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "1813d3172cb84949a9013f2851da5863",
+      "at": "2026-11-20T20:30:13+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex MODE-03 — допуск только после инициализации политики",
+        "branch": "codex/mode03-policy-init-admission-32e6ac79",
+        "files": [
+          "controller/include/rbm_u340e.h",
+          "controller/src/rbm_u340e.c",
+          "controller/tests/test_mode_policy.c",
+          "verification/project-audit/mode03-policy-init-gate.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "1813d3172cb84949a9013f2851da5863",
+        "claimed_at": "2026-11-20T20:30:13+00:00",
+        "updated_at": "2026-11-20T20:30:13+00:00",
+        "note": "Продолжаю с 64dd049 и актуального main. Проверяю запуск общего контроллера до принятия политики и после отказа init. Введу явный допуск без назначения настроек выпуска.",
+        "result": null,
+        "based_on_reviews": [
+          "881583aa76814d4da3f768699f01ca29"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:27:53+00:00",
+  "updated_at": "2026-11-20T20:30:13+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
