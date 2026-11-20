@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 374,
+  "sequence": 375,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -489,12 +489,12 @@
         "controller/hydraulic_port.py",
         "verification/project-audit/toy01-gp-descriptor-size.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "a36532debaa64238a1ee2b84f37624a1",
       "claimed_at": "2026-11-20T18:26:38+00:00",
-      "updated_at": "2026-11-20T18:29:01+00:00",
-      "note": "M32R: девять таблиц 1168→888 Б. Расширенная модель экономит 220 Б в основном окне; отказ второго окна сохранён. Дополняю проверку старших битов GP и завершаю ПК, M32R, стек.",
-      "result": null
+      "updated_at": "2026-11-20T18:31:17+00:00",
+      "note": "Передаю на объединение. Трёхбайтовые дескрипторы GP: 1168→888 Б таблиц, −220 Б в основном окне с теми же 116 корнями. ПК 37 шагов/102 теста; 292 поля и 5 снимков ПК/M32R, потеря старших битов выявлена. M32R 18+17+5 прогонов PASS, стек 720 Б/37414 вызовов. Расширенное второе окно превышено на 1844 Б. Отчёт verification/project-audit/toy01-gp-descriptor-size.md.",
+      "result": "fc649df5f2dbbcc02da30583b47bf9a8b543c5f0"
     },
     "ECU-02": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -3569,9 +3569,17 @@
       "action": "claim",
       "claim_id": "c7748c04f5024bd6a2b2ff2914153463",
       "at": "2026-11-20T18:30:52+00:00"
+    },
+    {
+      "operation_id": "a68ff0023b084440ad01ac03af0e6dc8",
+      "task": "TOY-01",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "a36532debaa64238a1ee2b84f37624a1",
+      "at": "2026-11-20T18:31:17+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:30:52+00:00",
+  "updated_at": "2026-11-20T18:31:17+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
