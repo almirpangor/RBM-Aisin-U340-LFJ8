@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 737,
+  "sequence": 738,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -496,24 +496,23 @@
       "result": "d7c0edc021c5caf7f4c03723847a6dcdd6583a81"
     },
     "VSS-02": {
-      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex VSS-02 — целевой допуск часов H03",
-      "branch": "codex/vss02-h03-clock-binding-32e6ac79",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "label": "Codex VSS-02 — парный профиль TML0/TML1",
+      "branch": "codex/vss02-runtime-counter-01a1f9c7",
       "files": [
-        "targets/lfj8/check_h03_application_binding.py",
         "targets/lfj8/check_h03_sensor_config.py",
-        "targets/lfj8/h03_application_binding_fixture.c",
         "tests/test_h03_sensor_config.py",
-        "tools/check_h03_image_layout.py",
-        "verification/project-audit/vss02-h03-clock-binding.md"
+        "verification/project-audit/vss02-paired-calibration.md"
       ],
-      "stage": "review",
-      "claim_id": "8b0ce759514b4c68b04d002b192f50ff",
-      "claimed_at": "2026-11-20T21:52:15+00:00",
-      "updated_at": "2026-11-20T22:01:03+00:00",
-      "note": "Связал target_clock_ready и sensor_config с startup/foreground H03 через проверенный парный профиль. ПК 41/179, M32R startup/foreground, 22 native и 8 компонентов PASS. В адресной модели разрешены два символа, +32 байта Flash, RAM прежняя. Открыты реальные замеры и восемь других привязок.",
-      "result": "007f28ea1e3fd2eee46c17e3e22092711e228937",
-      "based_on_reviews": []
+      "stage": "in_progress",
+      "claim_id": "f5473c81a3ba401488716ecc40b63255",
+      "claimed_at": "2026-11-20T22:43:52+00:00",
+      "updated_at": "2026-11-20T22:43:52+00:00",
+      "note": "Независимый остаток VSS-02: проверяю согласованность парных отсчётов с окном чтения и привязываю профиль sensor_config к конкретному файлу замеров. Нативные файлы H03-02 не трогаю.",
+      "result": null,
+      "based_on_reviews": [
+        "8b0ce759514b4c68b04d002b192f50ff"
+      ]
     },
     "TOY-01": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -9553,9 +9552,36 @@
           "9436326dc3784bbe994f50e6dce8e9c0"
         ]
       }
+    },
+    {
+      "operation_id": "c74a5a0a766b4bd4872372256a1861a7",
+      "task": "VSS-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "f5473c81a3ba401488716ecc40b63255",
+      "at": "2026-11-20T22:43:52+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex VSS-02 — парный профиль TML0/TML1",
+        "branch": "codex/vss02-runtime-counter-01a1f9c7",
+        "files": [
+          "targets/lfj8/check_h03_sensor_config.py",
+          "tests/test_h03_sensor_config.py",
+          "verification/project-audit/vss02-paired-calibration.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "f5473c81a3ba401488716ecc40b63255",
+        "claimed_at": "2026-11-20T22:43:52+00:00",
+        "updated_at": "2026-11-20T22:43:52+00:00",
+        "note": "Независимый остаток VSS-02: проверяю согласованность парных отсчётов с окном чтения и привязываю профиль sensor_config к конкретному файлу замеров. Нативные файлы H03-02 не трогаю.",
+        "result": null,
+        "based_on_reviews": [
+          "8b0ce759514b4c68b04d002b192f50ff"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:43:26+00:00",
+  "updated_at": "2026-11-20T22:43:52+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
