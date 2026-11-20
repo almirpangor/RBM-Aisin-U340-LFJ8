@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 445,
+  "sequence": 446,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -164,8 +164,8 @@
       "stage": "in_progress",
       "claim_id": "15ef4cba9c9a49b1acc46893d21aabad",
       "claimed_at": "2026-11-20T18:57:46+00:00",
-      "updated_at": "2026-11-20T18:57:46+00:00",
-      "note": "Объединяю проверку конфигурации TML0/TML1 для S51/S83 и ATF. Проверяю отзыв общей эпохи при изменении часов и отсутствие устаревших выборок в M32R.",
+      "updated_at": "2026-11-20T19:00:03+00:00",
+      "note": "Дефект ATF при расхождении TML1CR воспроизведён на исходной реализации и исправлен. Нативные S51/S83/ATF прошли, продолжаю интеграционные проверки M32R.",
       "result": null
     },
     "CAN-05": {
@@ -4123,9 +4123,17 @@
       "action": "heartbeat",
       "claim_id": "aca1f05a2e5746a0b71ab9ad1476a5ba",
       "at": "2026-11-20T18:59:39+00:00"
+    },
+    {
+      "operation_id": "b0cd384a978044f79a1d3425921c7703",
+      "task": "H03-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "15ef4cba9c9a49b1acc46893d21aabad",
+      "at": "2026-11-20T19:00:03+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:59:39+00:00",
+  "updated_at": "2026-11-20T19:00:03+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
