@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 772,
+  "sequence": 773,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -75,8 +75,8 @@
       "stage": "in_progress",
       "claim_id": "4781e27fe7274496be65a8d2faf92977",
       "claimed_at": "2026-11-20T23:10:58+00:00",
-      "updated_at": "2026-11-20T23:12:45+00:00",
-      "note": "Развёл программный допуск и OEM-ограждение в существующем CAN owner. Добавляю точные файлы M32R-проверки обоих вызовов штатного писателя.",
+      "updated_at": "2026-11-20T23:16:42+00:00",
+      "note": "В M32R проходят реальный путь закрытия, команда 0x0F, ожидание readback и обе ветви OEM. Повторяю общую регрессию и измеряю Flash.",
       "result": null,
       "based_on_reviews": [
         "1b7a53b2c91c49d481c892507323d9d9",
@@ -10631,9 +10631,49 @@
           "ddeb80aa0d00427f9cdc2ac2b6ee7241"
         ]
       }
+    },
+    {
+      "operation_id": "229ab2fa54a842978c50d587e36c24d0",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "heartbeat",
+      "claim_id": "4781e27fe7274496be65a8d2faf92977",
+      "at": "2026-11-20T23:16:42+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — остановка TX13",
+        "branch": "codex/can03-tx13-shutdown-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/check_h03_torque_tx_gate.py",
+          "targets/lfj8/h03_can13_tx_gate.S",
+          "targets/lfj8/h03_torque_tx_gate_fixture.S",
+          "targets/lfj8/lfj8_donor_io.c",
+          "targets/lfj8/lfj8_donor_io.h",
+          "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+          "targets/lfj8/lfj8_h03_can_monitor_startup.h",
+          "targets/lfj8/lfj8_h03_can_owner.c",
+          "targets/lfj8/lfj8_h03_can_owner.h",
+          "targets/lfj8/lfj8_h03_target_service.c",
+          "targets/lfj8/lfj8_h03_target_service.h",
+          "targets/lfj8/test_lfj8_h03_can_owner.c",
+          "verification/project-audit/can03-tx13-shutdown.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "4781e27fe7274496be65a8d2faf92977",
+        "claimed_at": "2026-11-20T23:10:58+00:00",
+        "updated_at": "2026-11-20T23:16:42+00:00",
+        "note": "В M32R проходят реальный путь закрытия, команда 0x0F, ожидание readback и обе ветви OEM. Повторяю общую регрессию и измеряю Flash.",
+        "result": null,
+        "based_on_reviews": [
+          "1b7a53b2c91c49d481c892507323d9d9",
+          "2101184d356545bfa9a1e0bd6716a9ee",
+          "da533c7a58aa441b9ba639bc0ad0992e"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T23:15:24+00:00",
+  "updated_at": "2026-11-20T23:16:42+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
