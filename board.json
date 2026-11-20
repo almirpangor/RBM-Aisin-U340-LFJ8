@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 586,
+  "sequence": 587,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -443,12 +443,12 @@
         "controller/tests/test_mode_policy.c",
         "verification/project-audit/mode03-held-shift-at-mode-edge.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "881583aa76814d4da3f768699f01ca29",
       "claimed_at": "2026-11-20T20:07:21+00:00",
-      "updated_at": "2026-11-20T20:08:35+00:00",
-      "note": "На ae393e8 воспроизведена заявка Auto при нажатии M с удержанной +/−. Исправлен общий контроллер, добавлена проверка 256 переходов; запущены ПК и M32R.",
-      "result": null
+      "updated_at": "2026-11-20T20:12:38+00:00",
+      "note": "Общий rbm_u340e_step подавляет заявки на фронте M при удерживаемых +/−. Регрессия воспроизведена на main; пройдены 256 переходов, 41 шаг ПК/120 тестов, 11+18 M32R, 6 размещённых проверок и штатная привязка входов на ПК/M32R. Стенд и профиль выпуска открыты.",
+      "result": "64dd049791651db334bbf279bf51880dfeaba93a"
     },
     "ECU-01": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -5275,9 +5275,17 @@
       "action": "heartbeat",
       "claim_id": "5d801751d9964d70bb7719d4db03f597",
       "at": "2026-11-20T20:12:26+00:00"
+    },
+    {
+      "operation_id": "c3d122aee16b4d46a984b152cad7eeb0",
+      "task": "MODE-03",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "881583aa76814d4da3f768699f01ca29",
+      "at": "2026-11-20T20:12:38+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:12:26+00:00",
+  "updated_at": "2026-11-20T20:12:38+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
