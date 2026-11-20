@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 617,
+  "sequence": 618,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -57,12 +57,12 @@
         "targets/lfj8/lfj8_h03_can_monitor_startup.h",
         "verification/project-audit/can03-cold-owner.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
       "claimed_at": "2026-11-20T20:30:28+00:00",
-      "updated_at": "2026-11-20T20:33:29+00:00",
-      "note": "Регрессия на предыдущем SHA воспроизвела сохранённые generation=42/grant=1 после холодного разрешения. Инициализация подключена перед выходом из сброса; повторяю H03/ПК.",
-      "result": null,
+      "updated_at": "2026-11-20T20:38:24+00:00",
+      "note": "Холодный путь 008084 сбрасывает CAN owner только при доказанном владении RAM, пока CAN0/CAN1 в сбросе. Первое штатное разрешение публикует поколение 1; отказ RAM ведёт в 0047D8. ПК 41/129, нативная модель 22 группы PASS. Расширенная модель 94954 байта, остаются application_binding и sensor_config. Отчёт verification/project-audit/can03-cold-owner.md.",
+      "result": "4948b51c57475444dea954ef79f44835ab0899df",
       "based_on_reviews": [
         "ad997bd677c542c682cec961d4619193"
       ]
@@ -5989,9 +5989,39 @@
           "d06e51f28ad0459dbc4d456c75b56bb4"
         ]
       }
+    },
+    {
+      "operation_id": "82c2317cb5d444d6ab9f732c074ab094",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
+      "at": "2026-11-20T20:38:24+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — холодный сброс владельца CAN",
+        "branch": "codex/can03-cold-owner-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/check_h03_can_monitor_startup.py",
+          "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+          "targets/lfj8/lfj8_h03_can_monitor_startup.c",
+          "targets/lfj8/lfj8_h03_can_monitor_startup.h",
+          "verification/project-audit/can03-cold-owner.md"
+        ],
+        "stage": "review",
+        "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
+        "claimed_at": "2026-11-20T20:30:28+00:00",
+        "updated_at": "2026-11-20T20:38:24+00:00",
+        "note": "Холодный путь 008084 сбрасывает CAN owner только при доказанном владении RAM, пока CAN0/CAN1 в сбросе. Первое штатное разрешение публикует поколение 1; отказ RAM ведёт в 0047D8. ПК 41/129, нативная модель 22 группы PASS. Расширенная модель 94954 байта, остаются application_binding и sensor_config. Отчёт verification/project-audit/can03-cold-owner.md.",
+        "result": "4948b51c57475444dea954ef79f44835ab0899df",
+        "based_on_reviews": [
+          "ad997bd677c542c682cec961d4619193"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:38:04+00:00",
+  "updated_at": "2026-11-20T20:38:24+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
@@ -7016,6 +7046,30 @@
       ],
       "task": "AUD-01",
       "submitted_at": "2026-11-20T20:38:04+00:00"
+    },
+    "ef6ec9b39ec54c5fab41e021568c094f": {
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex CAN-03 — холодный сброс владельца CAN",
+      "branch": "codex/can03-cold-owner-fea1b366",
+      "files": [
+        "targets/lfj8/check_h03_can_monitor_revoke.py",
+        "targets/lfj8/check_h03_can_monitor_startup.py",
+        "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+        "targets/lfj8/lfj8_h03_can_monitor_startup.c",
+        "targets/lfj8/lfj8_h03_can_monitor_startup.h",
+        "verification/project-audit/can03-cold-owner.md"
+      ],
+      "stage": "review",
+      "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
+      "claimed_at": "2026-11-20T20:30:28+00:00",
+      "updated_at": "2026-11-20T20:38:24+00:00",
+      "note": "Холодный путь 008084 сбрасывает CAN owner только при доказанном владении RAM, пока CAN0/CAN1 в сбросе. Первое штатное разрешение публикует поколение 1; отказ RAM ведёт в 0047D8. ПК 41/129, нативная модель 22 группы PASS. Расширенная модель 94954 байта, остаются application_binding и sensor_config. Отчёт verification/project-audit/can03-cold-owner.md.",
+      "result": "4948b51c57475444dea954ef79f44835ab0899df",
+      "based_on_reviews": [
+        "ad997bd677c542c682cec961d4619193"
+      ],
+      "task": "CAN-03",
+      "submitted_at": "2026-11-20T20:38:24+00:00"
     }
   }
 }
