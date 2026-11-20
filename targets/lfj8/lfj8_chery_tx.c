@@ -9,10 +9,10 @@ void lfj8_chery_tx_init(Lfj8CheryTx *tx, uint32_t now_us, uint32_t period_1ae_us
     tx->counter_f8e4 = 0u;
 }
 
-uint8_t lfj8_chery_tx_poll(Lfj8CheryTx *tx, const Lfj8RegisterIo *io, uint32_t now_us,
-                          uint8_t slot13_owned, volatile Lfj8RawVss *vss,
-                          const Lfj8VehicleCalibration *cal,
-                          const Lfj8CheryTxInputs *inputs)
+Lfj8CanResult lfj8_chery_tx_poll_status(Lfj8CheryTx *tx, const Lfj8RegisterIo *io,
+                                       uint32_t now_us, uint8_t slot13_owned,
+                                       volatile Lfj8RawVss *vss, const Lfj8VehicleCalibration *cal,
+                                       const Lfj8CheryTxInputs *inputs, uint8_t *submitted)
 {
     const uint8_t due = lfj8_schedule_poll(&tx->schedule, now_us);
     uint8_t payload[8];
@@ -20,15 +20,16 @@ uint8_t lfj8_chery_tx_poll(Lfj8CheryTx *tx, const Lfj8RegisterIo *io, uint32_t n
     uint8_t next_counter = tx->counter_f8e4;
     uint16_t id;
 
+    *submitted = 0u;
     if (slot13_owned == 0u) {
         tx->pending = 0u;
         tx->last_submitted = 0u;
         tx->counter_f8e4 = 0u;
-        return 0u;
+        return LFJ8_CAN_SLOT_NOT_OWNED;
     }
     tx->pending |= due;
     if (tx->pending == 0u) {
-        return 0u;
+        return LFJ8_CAN_READY;
     }
 
     /* At most one pending frame per ID. Alternate if both are waiting. */
@@ -58,11 +59,22 @@ uint8_t lfj8_chery_tx_poll(Lfj8CheryTx *tx, const Lfj8RegisterIo *io, uint32_t n
         id = LFJ8_CAN_300;
     }
 
-    if (lfj8_can0_slot13_submit(io, slot13_owned, id, payload) != LFJ8_CAN_SUBMITTED) {
-        return 0u;
+    const Lfj8CanResult status = lfj8_can0_slot13_submit(io, slot13_owned, id, payload);
+    if (status == LFJ8_CAN_SUBMITTED) {
+        tx->counter_f8e4 = next_counter;
+        tx->pending &= (uint8_t)~selected;
+        tx->last_submitted = selected;
+        *submitted = selected;
     }
-    tx->counter_f8e4 = next_counter;
-    tx->pending &= (uint8_t)~selected;
-    tx->last_submitted = selected;
-    return selected;
+    return status;
+}
+
+uint8_t lfj8_chery_tx_poll(Lfj8CheryTx *tx, const Lfj8RegisterIo *io, uint32_t now_us,
+                          uint8_t slot13_owned, volatile Lfj8RawVss *vss,
+                          const Lfj8VehicleCalibration *cal,
+                          const Lfj8CheryTxInputs *inputs)
+{
+    uint8_t submitted;
+    lfj8_chery_tx_poll_status(tx, io, now_us, slot13_owned, vss, cal, inputs, &submitted);
+    return submitted;
 }

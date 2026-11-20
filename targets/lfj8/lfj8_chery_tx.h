@@ -32,6 +32,13 @@ typedef struct {
 void lfj8_chery_tx_init(Lfj8CheryTx *tx, uint32_t now_us, uint32_t period_1ae_us,
                        uint32_t period_300_us);
 
+/* Reports the driver's result and sets submitted to the admitted due-mask bit
+ * or zero. Returns LFJ8_CAN_READY when no frame is due. */
+Lfj8CanResult lfj8_chery_tx_poll_status(Lfj8CheryTx *tx, const Lfj8RegisterIo *io,
+                                       uint32_t now_us, uint8_t slot13_owned,
+                                       volatile Lfj8RawVss *vss, const Lfj8VehicleCalibration *cal,
+                                       const Lfj8CheryTxInputs *inputs, uint8_t *submitted);
+
 /* Returns a due-mask bit once a request has been accepted by slot 13, or zero. */
 uint8_t lfj8_chery_tx_poll(Lfj8CheryTx *tx, const Lfj8RegisterIo *io, uint32_t now_us,
                           uint8_t slot13_owned, volatile Lfj8RawVss *vss,
