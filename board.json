@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 481,
+  "sequence": 482,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -245,11 +245,11 @@
         "targets/lfj8/test_lfj8_h03_button_capture.c",
         "verification/project-audit/mode02-h03-button-capture.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "d5aa9e367a344b3f8dbadc189b368dbd",
       "claimed_at": "2026-11-20T18:36:48+00:00",
-      "updated_at": "2026-11-20T18:44:53+00:00",
-      "note": "Передаю декодер кнопок и исправление карты P1DATA. 512 сочетаний ПК/M32R, 256 байтов штатного H03 и обе проекции, 37 шагов ПК/113 Python, 18 групп M32R и 6 проверок размещённого кода прошли. Отчёт verification/project-audit/mode02-h03-button-capture.md. Остались физическая карта и OD, вызов из foreground H03-03 и прохождение заявки через гидравлику.",
+      "updated_at": "2026-11-20T19:27:07+00:00",
+      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
       "result": "3e74c38af4a0084b334b2bc1a8b7b8a9dc35507d"
     },
     "TOY-05": {
@@ -4408,9 +4408,17 @@
       "action": "complete",
       "claim_id": "a9fcda79bfd24244872059ac08ee0efd",
       "at": "2026-11-20T19:26:49+00:00"
+    },
+    {
+      "operation_id": "cd57d304aedf4608b40571701594b29b",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "complete",
+      "claim_id": "d5aa9e367a344b3f8dbadc189b368dbd",
+      "at": "2026-11-20T19:27:07+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:26:49+00:00",
+  "updated_at": "2026-11-20T19:27:07+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
