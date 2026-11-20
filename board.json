@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 119,
+  "sequence": 120,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -428,8 +428,8 @@
       "stage": "in_progress",
       "claim_id": "a1532b4af90d4794aec52c99f7b434a2",
       "claimed_at": "2026-11-20T16:21:57+00:00",
-      "updated_at": "2026-11-20T16:21:57+00:00",
-      "note": "Enforce complete, unique coverage of the 51 pinned E4M3 checksum records. Reproduce silent omission and verify the ordinary compact offline build remains byte-identical.",
+      "updated_at": "2026-11-20T16:23:36+00:00",
+      "note": "Reproduced an invalid 0xA7830 checksum with a 50-record report on the original build. Added exact offset coverage guard. Negative injection and focused tests pass; running normal builds and ST10 model.",
       "result": null
     }
   },
@@ -1385,9 +1385,17 @@
       "action": "complete",
       "claim_id": "38bcfd017d9a4719a6054450645d79ab",
       "at": "2026-11-20T16:23:09+00:00"
+    },
+    {
+      "operation_id": "14128808575048e6bd0a8117381f9bcf",
+      "task": "ECU-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "a1532b4af90d4794aec52c99f7b434a2",
+      "at": "2026-11-20T16:23:36+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:23:09+00:00",
+  "updated_at": "2026-11-20T16:23:36+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
