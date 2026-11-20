@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 182,
+  "sequence": 183,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -491,6 +491,22 @@
       "updated_at": "2026-11-20T16:35:57+00:00",
       "note": "Передаю интегратору. Точный обычный компактный образ E4M3 OFFLINE_ONLY: 4 границы RPM, 6 отзывов через air/fast/load, нулевой статус и защита старого токена PASS. Повтор 26 команд и сквозной диалог H03 с потерей статуса PASS. Отчёт ecu02-torque-rpm-guard.md. Аппаратный пуск и калибровки открыты.",
       "result": "06eacf1ff4f42e423886b4b25b849ead054ac924"
+    },
+    "H03-01": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex H03-01",
+      "branch": "codex/h03-01-base-guard-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "tests/test_inspect_lfj8_tcm.py",
+        "tools/inspect_lfj8_tcm.py",
+        "verification/project-audit/h03-01-base-guard.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "125a9fc02e0b4315aa93ce8efbe1bda1",
+      "claimed_at": "2026-11-20T16:38:48+00:00",
+      "updated_at": "2026-11-20T16:38:48+00:00",
+      "note": "Добавляю строгую идентификацию утверждённого H03 в существующую утилиту. Проверяю образ с тем же ID и изменённым содержимым, исторический режим сохраняется.",
+      "result": null
     }
   },
   "events": [
@@ -1949,9 +1965,17 @@
       "action": "resume",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "at": "2026-11-20T16:38:33+00:00"
+    },
+    {
+      "operation_id": "84757eae982f43c495fa751e0dbf072c",
+      "task": "H03-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "125a9fc02e0b4315aa93ce8efbe1bda1",
+      "at": "2026-11-20T16:38:48+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:38:33+00:00",
+  "updated_at": "2026-11-20T16:38:48+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
