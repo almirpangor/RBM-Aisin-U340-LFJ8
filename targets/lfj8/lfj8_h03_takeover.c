@@ -190,6 +190,16 @@ int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation)
     return accepted;
 }
 
+void lfj8_h03_takeover_revoke_locked(Lfj8H03Takeover *state)
+{
+    if (!state || !state->ops) {
+        return;
+    }
+    const Lfj8H03TakeoverOps *const ops = state->ops;
+    state->pending = 0;
+    ops->inhibit(ops->io->context);
+}
+
 static Lfj8H03PhaseResult check_phase(Lfj8H03Takeover *state, Lfj8H03PhaseEvent *event,
                                      int consume)
 {
