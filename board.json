@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 576,
+  "sequence": 577,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -213,21 +213,19 @@
       "result": "4ee5305412f0e5b1aa708e43cd9ee2e1fde0777c"
     },
     "TOY-02": {
-      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
-      "label": "Codex — происхождение нагрузки Bosch",
-      "branch": "codex/toy02-bosch-load-01a1f9a2",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "label": "Codex TOY-02 — нативный режим нагрузки",
+      "branch": "codex/toy02-bosch-load-mode-source-01a1f9c7",
       "files": [
         "targets/bosch/audit_toyota_load_producers.py",
-        "targets/bosch/audit_toyota_load_traces.py",
-        "verification/project-audit/toy02-bosch-load-producers.md",
-        "verification/project-audit/toy02-load-traces.md"
+        "verification/project-audit/toy02-bosch-load-mode-source.md"
       ],
-      "stage": "done",
-      "claim_id": "c7748c04f5024bd6a2b2ff2914153463",
-      "claimed_at": "2026-11-20T18:30:52+00:00",
-      "updated_at": "2026-11-20T19:25:26+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "7075df4b9274e38def3143c992860a7000013471"
+      "stage": "in_progress",
+      "claim_id": "e313f0457b4d468897a8179d3615ce3e",
+      "claimed_at": "2026-11-20T20:07:45+00:00",
+      "updated_at": "2026-11-20T20:07:45+00:00",
+      "note": "Прослеживаю нативные записи A88B.0 в S04 и входы выбора нагрузки в переходных состояниях; проверяю сохранение или смену ветви на исходных инструкциях.",
+      "result": null
     },
     "CAN-01": {
       "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
@@ -5192,9 +5190,17 @@
       "action": "review",
       "claim_id": "3fd1870717ff4cc684af517ec9f56903",
       "at": "2026-11-20T20:07:36+00:00"
+    },
+    {
+      "operation_id": "07ae226d50fc495abebeec54aa29b398",
+      "task": "TOY-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "e313f0457b4d468897a8179d3615ce3e",
+      "at": "2026-11-20T20:07:45+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:07:36+00:00",
+  "updated_at": "2026-11-20T20:07:45+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
