@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:22:25+00:00**. Изменение № **359**.
+Обновлено UTC: **2026-11-20T18:22:47+00:00**. Изменение № **360**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -44,7 +44,7 @@
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Выполняется | Codex DTC-03 — квалификация P0710 TA2005 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-ta2005-p0710-01a1f9c7 | 2026-11-20T18:22:25+00:00 | 6 920 сравнений S03 и отдельная оснастка ПК/M32R прошли. Общая проверка ПК завершена. Сверяю интеграционные результаты перед публикацией. |
 | DTC-04 — Хранение DTC после выключения питания | На проверке | Codex — геометрия NVM и backend DTC H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-h03-nvm-32e6ac79 | 2026-11-20T18:16:11+00:00 | Передаю интегратору геометрию 13 блоков H03, полусловный backend журнала и восстановление перед запуском. ПК 37 шагов и 102 теста, M32R 45 прерываний записи, 33 стирания и 256 битовых отказов, INTEGRATION3 native и components PASS. Expanded повторил дефицит 448 байт. Носитель, физический драйвер и штатный вызов открыты. Отчёт verification/project-audit/dtc04-h03-nvm.md. / commit e54b8051439965f4274969e46af534d4d98284db |
 | REL-01 — Два целевых BIN и воспроизводимый комплект | На проверке | Codex REL-01 H03 service preflight \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/rel01-h03-service-preflight-01a1f99f | 2026-11-20T18:20:19+00:00 | PASS 36 exact-ROM store cases and 512 overlay lockout cases. All 2532 RAM bytes pass stock admission; direct and deferred stores still write each block with the overlay disabled. Closing the session leaves a 257-byte copy in flight. Use measured RAM endpoints 806F78/809034/8093EC for integration; PCM Flash coverage below 008000 is unconfirmed. / commit 8a99dcb1a1ea1031e71c54c9281ff83651e7491d |
-| REL-02 — Приёмка новой связки на оборудовании | Свободна для продолжения | Предыдущий: Codex REL-02 — проверка записи CAN \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/rel-02-can-trace-fea1b366 | 2026-11-20T17:48:37+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 2ebae711ad169cf22528a0a7297d8d3b210d4e0a |
+| REL-02 — Приёмка новой связки на оборудовании | Выполняется | Codex REL-02 H03 application-only isolation \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/rel02-h03-application-isolation-01a1f99f | 2026-11-20T18:22:47+00:00 | Test the app-only H03 isolation boundary: cancel deferred writes and disable an existing map under exclusion, verify stock CAN can reopen the monitor, and replay warm reset under the application-entry overlay. |
 
 ## Что осталось доделать
 
@@ -438,13 +438,13 @@
 </details>
 
 <details>
-<summary>REL-02 — Приёмка новой связки на оборудовании: Свободна для продолжения</summary>
+<summary>REL-02 — Приёмка новой связки на оборудовании: Выполняется</summary>
 
 **Сделано.** Разбор CANHacker TRC проверяет четыре периодических ID, сроки, контроль и счётчик 0x1AE. Архив и отрицательные случаи проверены; испытаний новой пары не было.
 
 **Осталось доделать.** После подготовки соответствующего образа выполнить входы, CAN, момент, переключения, SLT/SLU, отказы, пуск и проверку сканером в режиме Chery.
 
-**Исполнитель сейчас.** Задача не занята.
+**Сейчас выполняет.** Codex REL-02 H03 application-only isolation — codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51.
 
 **Критерий приёмки.** Журналы содержат версии BIN, условия, измерения, допуски и результат. Программные тесты учитываются отдельно.
 
@@ -680,6 +680,16 @@
 - verification/project-audit/2026-11-20-h03-service-writes.json
 - verification/project-audit/rel01-h03-service-preflight.md
 
+### REL-02
+
+Чат: Codex REL-02 H03 application-only isolation. Claim ID: e050fbd1bb5d4d14a3f58aac59b8cf86.
+
+- targets/lfj8/check_h03_application_isolation.py
+- targets/lfj8/lfj8_h03_monitor_quiesce.c
+- targets/lfj8/lfj8_h03_monitor_quiesce.h
+- verification/project-audit/2026-11-20-h03-application-isolation.json
+- verification/project-audit/rel02-h03-application-isolation.md
+
 ### TOY-04
 
 Чат: Codex — размер планировщика выходов H03. Claim ID: 07e364700a914694bb6ff3542e87e98a.
@@ -715,6 +725,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:22:47+00:00 | REL-02 | claim | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:22:25+00:00 | DTC-03 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T18:21:58+00:00 | TOY-04 | claim | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:20:19+00:00 | REL-01 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
@@ -744,4 +755,3 @@
 | 2026-11-20T18:09:24+00:00 | ORG-01 | claim | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T18:08:50+00:00 | CAN-03 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T18:08:03+00:00 | H03-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T18:07:39+00:00 | H03-03 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |

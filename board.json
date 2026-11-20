@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 359,
+  "sequence": 360,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -556,20 +556,22 @@
       "result": "6748075bd8cda69a0b6c2b9d6e2a471a00463434"
     },
     "REL-02": {
-      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
-      "label": "Codex REL-02 — проверка записи CAN",
-      "branch": "codex/rel-02-can-trace-fea1b366",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex REL-02 H03 application-only isolation",
+      "branch": "codex/rel02-h03-application-isolation-01a1f99f",
       "files": [
-        "tests/test_bench_can_trace.py",
-        "tools/check_bench_can_trace.py",
-        "verification/project-audit/rel02-can-trace.md"
+        "targets/lfj8/check_h03_application_isolation.py",
+        "targets/lfj8/lfj8_h03_monitor_quiesce.c",
+        "targets/lfj8/lfj8_h03_monitor_quiesce.h",
+        "verification/project-audit/2026-11-20-h03-application-isolation.json",
+        "verification/project-audit/rel02-h03-application-isolation.md"
       ],
-      "stage": "done",
-      "claim_id": "9df078bb4f93459f8e1b8d34220dd825",
-      "claimed_at": "2026-11-20T16:54:37+00:00",
-      "updated_at": "2026-11-20T17:48:37+00:00",
-      "note": "袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md.",
-      "result": "2ebae711ad169cf22528a0a7297d8d3b210d4e0a"
+      "stage": "in_progress",
+      "claim_id": "e050fbd1bb5d4d14a3f58aac59b8cf86",
+      "claimed_at": "2026-11-20T18:22:47+00:00",
+      "updated_at": "2026-11-20T18:22:47+00:00",
+      "note": "Test the app-only H03 isolation boundary: cancel deferred writes and disable an existing map under exclusion, verify stock CAN can reopen the monitor, and replay warm reset under the application-entry overlay.",
+      "result": null
     }
   },
   "events": [
@@ -3444,9 +3446,17 @@
       "action": "heartbeat",
       "claim_id": "0c37e0c652cd4b8285cdd4458b796cef",
       "at": "2026-11-20T18:22:25+00:00"
+    },
+    {
+      "operation_id": "984172173153423c8c0a0056818402aa",
+      "task": "REL-02",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "e050fbd1bb5d4d14a3f58aac59b8cf86",
+      "at": "2026-11-20T18:22:47+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:22:25+00:00",
+  "updated_at": "2026-11-20T18:22:47+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
