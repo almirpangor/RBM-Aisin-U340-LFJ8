@@ -31,8 +31,8 @@
     pop lr
     .endm
 
-/* The wrapper must already be visible in Flash. Keep OEM RX running when
- * its programming flag is set or FCNT1 is outside normal read mode. */
+/* The wrapper must already be visible in Flash. Match the native CAN
+ * monitor's service/programming/Flash gate before consulting project RAM. */
     .macro bypass_rx_callback resume
     ld24 r0,#0x80801c
     ldub r0,@r0
@@ -40,6 +40,10 @@
     ld24 r0,#0x8007e2
     ldub r0,@r0
     bnez r0,\resume
+    ld24 r0,#0x804887
+    ldub r0,@r0
+    ldi r1,#4
+    beq r0,r1,\resume
     .endm
 
     .section .text.rbm_h03_dtc_rx_hook,"ax",@progbits
