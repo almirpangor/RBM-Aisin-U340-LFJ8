@@ -156,15 +156,23 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
         ])
         run("Обороты и ОЖ, активные DTC, история и очистка", [str(engine_feed_check)])
         cycle_check = controller_dir / f"lfj8_h03_cycle_test{suffix}"
-        run("Сборка цикла Toyota с адаптером H03", [
+        cycle_driver = [
             *driver, *common_flags, "-pedantic", "-I", "controller/include",
             "-I", "controller/vendor/toyota/include", "targets/lfj8/lfj8_h03_cycle.c",
             "targets/lfj8/lfj8_h03_torque.c", "targets/lfj8/lfj8_h03_takeover.c",
-            "targets/lfj8/lfj8_h03_phase_clock.c",
-            "targets/lfj8/lfj8_h03_outputs.c", "targets/lfj8/test_lfj8_h03_cycle.c",
+            "targets/lfj8/lfj8_h03_phase_clock.c", "targets/lfj8/lfj8_h03_outputs.c",
+        ]
+        run("Сборка цикла Toyota с адаптером H03", [
+            *cycle_driver, "targets/lfj8/test_lfj8_h03_cycle.c",
             str(library), *runtime_link, "-o", str(cycle_check),
         ])
         run("Цикл включения D, переключение и потеря события", [str(cycle_check)])
+        cycle_load_check = controller_dir / f"lfj8_h03_cycle_load_test{suffix}"
+        run("Сборка проверки допуска нагрузки в цикл H03", [
+            *cycle_driver, "targets/lfj8/test_lfj8_h03_cycle_load.c",
+            str(library), *runtime_link, "-o", str(cycle_load_check),
+        ])
+        run("Публикация нагрузки, давность и порядок событий H03", [str(cycle_load_check)])
         phase_clock_check = output / f"lfj8_h03_phase_clock_test{suffix}"
         run("Сборка контроля тактов H03", [
             *driver, *common_flags, "-pedantic", "targets/lfj8/lfj8_h03_phase_clock.c",
