@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 707,
+  "sequence": 708,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -226,8 +226,8 @@
       "stage": "in_progress",
       "claim_id": "4f0440768829471386bb278580bee3f8",
       "claimed_at": "2026-11-20T21:51:53+00:00",
-      "updated_at": "2026-11-20T21:53:41+00:00",
-      "note": "Проверка групп подключена до публикации GP. Добавляю регрессии и резервирую общий тест цикла для сохранения сборки позиционного инициализатора при расширении структуры.",
+      "updated_at": "2026-11-20T21:59:52+00:00",
+      "note": "Прошли компонентные M32R, 62 сценария штатного запуска и 6 прогонов размещённого ядра. Измерен прирост 224 байта Flash. Повторный аудит показал ноль парных отсчётов Bosch/S01. Завершается общий ПК.",
       "result": null,
       "based_on_reviews": []
     },
@@ -8692,9 +8692,36 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "5cb8b689b3854011afdb2f883a660130",
+      "task": "TOY-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "heartbeat",
+      "claim_id": "4f0440768829471386bb278580bee3f8",
+      "at": "2026-11-20T21:59:52+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex TOY-02 — допуск нагрузки в H03",
+        "branch": "codex/toy02-load-evidence-01a1f9c7",
+        "files": [
+          "targets/lfj8/lfj8_h03_cycle.c",
+          "targets/lfj8/lfj8_h03_cycle.h",
+          "targets/lfj8/test_lfj8_h03_cycle.c",
+          "targets/lfj8/test_lfj8_h03_cycle_load.c",
+          "verification/project-audit/toy02-h03-load-evidence.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "4f0440768829471386bb278580bee3f8",
+        "claimed_at": "2026-11-20T21:51:53+00:00",
+        "updated_at": "2026-11-20T21:59:52+00:00",
+        "note": "Прошли компонентные M32R, 62 сценария штатного запуска и 6 прогонов размещённого ядра. Измерен прирост 224 байта Flash. Повторный аудит показал ноль парных отсчётов Bosch/S01. Завершается общий ПК.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:59:19+00:00",
+  "updated_at": "2026-11-20T21:59:52+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
