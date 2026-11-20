@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 692,
+  "sequence": 693,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -148,21 +148,24 @@
       "result": "423ff76125dcbd1587fecdfedcf51577023b18f9"
     },
     "DTC-04": {
-      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
-      "label": "Codex DTC-04 — повтор записи после утраты журнала",
-      "branch": "codex/dtc04-retired-slot-retry-7bd19ea4",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "label": "Codex DTC-04 — запрет ложной очистки в H03",
+      "branch": "codex/target-continuation-922b7b11",
       "files": [
-        "targets/lfj8/lfj8_h03_nvm.c",
-        "targets/lfj8/lfj8_h03_nvm.h",
-        "targets/lfj8/test_lfj8_h03_nvm.c",
-        "verification/project-audit/dtc04-retired-slot-retry.md"
+        "targets/lfj8/check_h03_dtc_basiccan.py",
+        "targets/lfj8/lfj8_h03_dtc_can.c",
+        "targets/lfj8/lfj8_h03_dtc_can.h",
+        "targets/lfj8/lfj8_h03_dtc_native.c",
+        "targets/lfj8/lfj8_h03_dtc_native.h",
+        "verification/project-audit/dtc04-native-clear-admission.md"
       ],
-      "stage": "done",
-      "claim_id": "3118c56ba79c42ab952bbd17df49ca78",
-      "claimed_at": "2026-11-20T19:54:35+00:00",
-      "updated_at": "2026-11-20T21:14:43+00:00",
-      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
-      "result": "7f0c51ee5e1f7a3070eb774e57a8baf4b6b870af"
+      "stage": "in_progress",
+      "claim_id": "e72d13fcb2254ca89fd0736136b11462",
+      "claimed_at": "2026-11-20T21:52:52+00:00",
+      "updated_at": "2026-11-20T21:52:52+00:00",
+      "note": "Подключаю к реальной нативной CAN-привязке существующий отказ очистки при отсутствии подтверждённого NVM. Проверю запросы очистки и чтения от BasicCAN RX до TX13. Физические блоки и драйвер требуют H03-04.",
+      "result": null,
+      "based_on_reviews": []
     },
     "H03-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -8287,9 +8290,37 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "f3964757f06543a2b7930f298cf33812",
+      "task": "DTC-04",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "claim",
+      "claim_id": "e72d13fcb2254ca89fd0736136b11462",
+      "at": "2026-11-20T21:52:52+00:00",
+      "record": {
+        "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "label": "Codex DTC-04 — запрет ложной очистки в H03",
+        "branch": "codex/target-continuation-922b7b11",
+        "files": [
+          "targets/lfj8/check_h03_dtc_basiccan.py",
+          "targets/lfj8/lfj8_h03_dtc_can.c",
+          "targets/lfj8/lfj8_h03_dtc_can.h",
+          "targets/lfj8/lfj8_h03_dtc_native.c",
+          "targets/lfj8/lfj8_h03_dtc_native.h",
+          "verification/project-audit/dtc04-native-clear-admission.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "e72d13fcb2254ca89fd0736136b11462",
+        "claimed_at": "2026-11-20T21:52:52+00:00",
+        "updated_at": "2026-11-20T21:52:52+00:00",
+        "note": "Подключаю к реальной нативной CAN-привязке существующий отказ очистки при отсутствии подтверждённого NVM. Проверю запросы очистки и чтения от BasicCAN RX до TX13. Физические блоки и драйвер требуют H03-04.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:52:45+00:00",
+  "updated_at": "2026-11-20T21:52:52+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
