@@ -17,6 +17,7 @@ ARRAY_MEMBERS = {
     "FactoryTorque": {"targets", "queue", "captured7118", "captured7112", "count4703"},
 }
 TRANSFER_ROW = re.compile(r"\{(\d+),offsetof\((\w+),([^,)]+)\),(\d+)\}")
+TRANSFER_CHUNK_BYTES = 16
 
 
 def replace_once(text: str, before: str, after: str) -> str:
@@ -46,6 +47,10 @@ def write_port(vendor_src: Path, destination: Path) -> Path:
             f'_Static_assert(sizeof({element}) == 1 || sizeof({element}) == 2 || '
             f'sizeof({element}) == 4, "element width of {structure}.{member}");'
         )
+        assertions.append(
+            f'_Static_assert(offsetof({structure},{member}) + {length} <= 256, '
+            f'"native offset of {structure}.{member}");'
+        )
         element_widths[(position, structure, member, length)] = f"sizeof({element})"
 
     expected_arrays = {(structure, member) for structure, fields in ARRAY_MEMBERS.items() for member in fields}
@@ -55,7 +60,17 @@ def write_port(vendor_src: Path, destination: Path) -> Path:
     def encode_row(match: re.Match) -> str:
         position, structure, member, length = match.groups()
         width = element_widths[match.groups()]
-        return f"{{TRANSFER_POSITION({position}, {width}),offsetof({structure},{member}),{length}}}"
+        size = int(length)
+        offset = f"offsetof({structure},{member})"
+        # 16 is a multiple of every supported element width, so splitting
+        # an array never bisects an endian conversion.
+        entries = []
+        for start in range(0, size, TRANSFER_CHUNK_BYTES):
+            chunk = min(TRANSFER_CHUNK_BYTES, size - start)
+            entries.append(
+                f"TRANSFER_ENTRY({int(position) + start}, {offset} + {start}, {width}, {chunk})"
+            )
+        return ",\n    ".join(entries)
 
     extent = max(int(position) + int(length) for position, _, _, length in rows)
     assertions.append(f'_Static_assert({extent}u <= sizeof(((FactoryHydraulics *)0)->data), "GP map extent");')
@@ -76,12 +91,16 @@ def write_port(vendor_src: Path, destination: Path) -> Path:
     source = replace_once(
         source,
         "typedef struct { uint16_t pos;uint8_t member,bytes; } Transfer;",
-        """typedef struct { uint16_t packed_pos; uint8_t member, bytes; } Transfer;
-enum { TRANSFER_POS_BITS = 14, TRANSFER_POS_MASK = (1u << TRANSFER_POS_BITS) - 1u };
-/* The upper two bits carry the element's byte-reversal mask (0, 1 or 3). */
-#define TRANSFER_POSITION(pos, width) ((pos) | (((width) - 1u) << TRANSFER_POS_BITS))
-_Static_assert(sizeof(Transfer) == 4, "GP transfer descriptor size");
-_Static_assert(sizeof(((FactoryHydraulics *)0)->data) <= TRANSFER_POS_MASK + 1u, "GP offset width");""",
+        """typedef struct { uint8_t gp_low, member, shape; } Transfer;
+/* shape bits 1:0 are the upper GP offset, 3:2 the element reversal mask
+ * (0, 1 or 3) and 7:4 the number of copied bytes minus one. */
+enum { TRANSFER_GP_HIGH_MASK = 3u, TRANSFER_WIDTH_SHIFT = 2, TRANSFER_SIZE_SHIFT = 4 };
+#define TRANSFER_ENTRY(pos, member_offset, width, bytes) \\
+    { (uint8_t)(pos), (uint8_t)(member_offset), \\
+      (uint8_t)(((pos) >> 8) | (((width) - 1u) << TRANSFER_WIDTH_SHIFT) | \\
+                (((bytes) - 1u) << TRANSFER_SIZE_SHIFT)) }
+_Static_assert(sizeof(Transfer) == 3, "GP transfer descriptor size");
+_Static_assert(sizeof(((FactoryHydraulics *)0)->data) <= 1024, "GP offset width");""",
     )
     source = replace_once(
         source, '#include "hydraulic_mapping.h"', '#include "hydraulic_mapping_port.h"'
@@ -101,36 +120,47 @@ __attribute__((noinline)) static void transfer(FactoryHydraulics *s,void *object
  * entire record, is converted to the ABI's native order. */
 static inline unsigned transfer_offset(const Transfer *entry)
 {
-    return entry->packed_pos & TRANSFER_POS_MASK;
+    return ((entry->shape & TRANSFER_GP_HIGH_MASK) << 8) | entry->gp_low;
 }
 
-static unsigned native_byte(const Transfer *entry, unsigned byte)
+static inline unsigned transfer_bytes(const Transfer *entry)
+{
+    return (entry->shape >> TRANSFER_SIZE_SHIFT) + 1u;
+}
+
+static inline unsigned transfer_reversal_mask(const Transfer *entry)
 {
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-    byte ^= entry->packed_pos >> TRANSFER_POS_BITS;
+    return (entry->shape >> TRANSFER_WIDTH_SHIFT) & 3u;
+#else
+    (void)entry;
+    return 0u;
 #endif
-    return entry->member + byte;
 }
 
 static void read_member(const FactoryHydraulics *s, void *object, const Transfer *entry)
 {
-    uint8_t *native = object;
+    uint8_t *native = (uint8_t *)object + entry->member;
     const uint8_t *gp = s->data + transfer_offset(entry);
-    for (unsigned i = 0; i < entry->bytes; ++i) {
-        native[native_byte(entry, i)] = gp[i];
+    const unsigned mask = transfer_reversal_mask(entry);
+    const unsigned bytes = transfer_bytes(entry);
+    for (unsigned i = 0; i < bytes; ++i) {
+        native[i ^ mask] = gp[i];
     }
 }
 
 __attribute__((noinline)) static void transfer(FactoryHydraulics *s, void *object,
     const Transfer *map, unsigned count, int write)
 {
-    const uint8_t *native = object;
     for (unsigned i = 0; i < count; ++i) {
         const Transfer *entry = &map[i];
         if (write) {
             uint8_t *gp = s->data + transfer_offset(entry);
-            for (unsigned j = 0; j < entry->bytes; ++j) {
-                gp[j] = native[native_byte(entry, j)];
+            const uint8_t *native = (const uint8_t *)object + entry->member;
+            const unsigned mask = transfer_reversal_mask(entry);
+            const unsigned bytes = transfer_bytes(entry);
+            for (unsigned j = 0; j < bytes; ++j) {
+                gp[j] = native[j ^ mask];
             }
         } else {
             read_member(s, object, entry);
@@ -227,7 +257,7 @@ static void test_{structure}(FactoryHydraulics *state)
     for (unsigned i = 0; i < sizeof map_{structure} / sizeof map_{structure}[0]; ++i) {{
         const Transfer *entry = &map_{structure}[i];
         const unsigned offset = transfer_offset(entry);
-        for (unsigned j = 0; j < entry->bytes; ++j) {{
+        for (unsigned j = 0; j < transfer_bytes(entry); ++j) {{
             assert(encoded.data[offset + j] == state->data[offset + j]);
         }}
     }}
@@ -238,7 +268,8 @@ unsigned rbm_test_hydraulic_transfer(void)
 {
     FactoryHydraulics state;
     for (unsigned i = 0; i < sizeof state.data; ++i) {
-        state.data[i] = (uint8_t)(47u + 37u * i);
+        /* Distinct values at equal offsets across the three GP pages. */
+        state.data[i] = (uint8_t)(47u + 37u * i + 23u * (i >> 8));
     }
 """
     code += "".join(f"    test_{structure}(&state);\n" for structure in checks)
