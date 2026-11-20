@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 215,
+  "sequence": 216,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -540,12 +540,12 @@
         "targets/bosch/replay_e4m3_torque.py",
         "verification/project-audit/aud01-pinned-replay.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "69a90e88e1b54af298f0f4e5760e308f",
       "claimed_at": "2026-11-20T16:45:11+00:00",
-      "updated_at": "2026-11-20T16:46:11+00:00",
-      "note": "Воспроизведение из клона без checkout до правки падало. После правки 3256 CRC и 26 команд прошли на компактном образе. Проверяю ordinary профиль и SOURCES.",
-      "result": null
+      "updated_at": "2026-11-20T16:47:07+00:00",
+      "note": "Трасса и инструменты из одного R4. Два повтора без checkout совпали с сохранёнными отчётами; 3256 CRC и 26 команд в каждом. Ordinary BOSCH и SOURCES PASS. Отчёт verification/project-audit/aud01-pinned-replay.md; стенд ECU-02 открыт.",
+      "result": "6748075bd8cda69a0b6c2b9d6e2a471a00463434"
     }
   },
   "events": [
@@ -2268,9 +2268,17 @@
       "action": "review",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "at": "2026-11-20T16:46:58+00:00"
+    },
+    {
+      "operation_id": "09c8429424c04be982374e02ced6c5e0",
+      "task": "AUD-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "69a90e88e1b54af298f0f4e5760e308f",
+      "at": "2026-11-20T16:47:07+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:46:58+00:00",
+  "updated_at": "2026-11-20T16:47:07+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
