@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 10,
+  "sequence": 11,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -79,12 +79,12 @@
       "files": [
         "docs/lfj8-h03-input-paths.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "f014bd3c6bba42f5bb7e5fa23c121d0d",
       "claimed_at": "2026-11-20T15:47:02+00:00",
-      "updated_at": "2026-11-20T15:47:02+00:00",
-      "note": "Сверяю независимость входов диапазона, потребителей GP и сценарии стендовой приёмки.",
-      "result": null
+      "updated_at": "2026-11-20T15:48:28+00:00",
+      "note": "Карта битов Toyota, проверка вариантов проводки Mazda и сценарии стенда опубликованы. Проверка реестра и git diff --check PASS. Физические источники целевого жгута пока не подтверждены.",
+      "result": "dfc774eee013ba78c6679d3128f493f238f43000"
     }
   },
   "events": [
@@ -167,9 +167,17 @@
       "action": "complete",
       "claim_id": "ed274f83f44345a3b9d759cf44aa6541",
       "at": "2026-11-20T15:48:07+00:00"
+    },
+    {
+      "operation_id": "dd3fbbd5b9684759944f0b3982b02978",
+      "task": "TOY-03",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "f014bd3c6bba42f5bb7e5fa23c121d0d",
+      "at": "2026-11-20T15:48:28+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:48:07+00:00",
+  "updated_at": "2026-11-20T15:48:28+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
