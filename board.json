@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 602,
+  "sequence": 603,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -230,20 +230,25 @@
     },
     "CAN-01": {
       "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
-      "label": "Codex CAN-01 — целевой источник RPM и ОЖ",
+      "label": "Codex CAN-01 — запуск и foreground двигателя H03",
       "branch": "codex/can01-h03-engine-owner-b0157640",
       "files": [
-        "targets/lfj8/lfj8_h03_engine_feed.c",
-        "targets/lfj8/lfj8_h03_engine_feed.h",
-        "targets/lfj8/test_lfj8_h03_engine_feed.c",
-        "verification/project-audit/can01-h03-engine-owner.md"
+        "targets/lfj8/check_h03_phase_boot.py",
+        "targets/lfj8/h03_phase_boot_fixture.c",
+        "targets/lfj8/lfj8_h03_application.c",
+        "targets/lfj8/lfj8_h03_application.h",
+        "verification/project-audit/can01-h03-app-lifecycle.md"
       ],
-      "stage": "review",
-      "claim_id": "6293ebe446574c9ab1fce23fa806e922",
-      "claimed_at": "2026-11-20T19:39:57+00:00",
-      "updated_at": "2026-11-20T19:49:51+00:00",
-      "note": "CAN-01: поколение CAN0, общий допуск TML0 и Task 2 связаны в целевом адаптере. PC, 18 групп M32R, 16 CAN и 11 ATF проверок. Вызовы из rbm_h03_application_binding и измерения интервалов остаются. Отчёт: verification/project-audit/can01-h03-engine-owner.md.",
-      "result": "d2733790c28ebe1c1fb2bbdd32c4ca64d70ba9ed"
+      "stage": "in_progress",
+      "claim_id": "4cb1fd3d23724b58bd2c94a052794a65",
+      "claimed_at": "2026-11-20T20:31:55+00:00",
+      "updated_at": "2026-11-20T20:31:55+00:00",
+      "note": "Включены предыдущие CAN-01 и TOY-05. Подключаю запуск, опрос между релизами и квалификацию один раз на событие Task 2 в жизненный цикл приложения H03. Профиль и аппаратные интервалы остаются внешними входами.",
+      "result": null,
+      "based_on_reviews": [
+        "5fcdd962167d41129b445b4ea70a2c80",
+        "6293ebe446574c9ab1fce23fa806e922"
+      ]
     },
     "MODE-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -5539,9 +5544,39 @@
           "d06e51f28ad0459dbc4d456c75b56bb4"
         ]
       }
+    },
+    {
+      "operation_id": "a53ac536bf9647acae019ff609391777",
+      "task": "CAN-01",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "claim",
+      "claim_id": "4cb1fd3d23724b58bd2c94a052794a65",
+      "at": "2026-11-20T20:31:55+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex CAN-01 — запуск и foreground двигателя H03",
+        "branch": "codex/can01-h03-engine-owner-b0157640",
+        "files": [
+          "targets/lfj8/check_h03_phase_boot.py",
+          "targets/lfj8/h03_phase_boot_fixture.c",
+          "targets/lfj8/lfj8_h03_application.c",
+          "targets/lfj8/lfj8_h03_application.h",
+          "verification/project-audit/can01-h03-app-lifecycle.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "4cb1fd3d23724b58bd2c94a052794a65",
+        "claimed_at": "2026-11-20T20:31:55+00:00",
+        "updated_at": "2026-11-20T20:31:55+00:00",
+        "note": "Включены предыдущие CAN-01 и TOY-05. Подключаю запуск, опрос между релизами и квалификацию один раз на событие Task 2 в жизненный цикл приложения H03. Профиль и аппаратные интервалы остаются внешними входами.",
+        "result": null,
+        "based_on_reviews": [
+          "5fcdd962167d41129b445b4ea70a2c80",
+          "6293ebe446574c9ab1fce23fa806e922"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:31:26+00:00",
+  "updated_at": "2026-11-20T20:31:55+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
