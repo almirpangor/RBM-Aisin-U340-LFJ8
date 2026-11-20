@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 544,
+  "sequence": 545,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -421,21 +421,21 @@
       "result": null
     },
     "H03-05": {
-      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
-      "label": "Codex H03-05 CAN revoke and output inhibit",
-      "branch": "codex/h03-05-can-revoke-bindings-01a1f99f",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex H03-05 — сохранение отзыва во время подготовки",
+      "branch": "codex/h03-05-latched-revoke-during-prepare-32e6ac79",
       "files": [
-        "targets/lfj8/check_h03_can_monitor_revoke.py",
-        "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
-        "verification/project-audit/2026-11-20-h03-can-revoke-bindings.json",
-        "verification/project-audit/h03-05-can-revoke-bindings.md"
+        "targets/lfj8/lfj8_h03_takeover.c",
+        "targets/lfj8/lfj8_h03_takeover.h",
+        "targets/lfj8/test_lfj8_h03_takeover.c",
+        "verification/project-audit/h03-05-latch-revoke.md"
       ],
-      "stage": "done",
-      "claim_id": "8618b77e068c469baa54217bf3b2f9f2",
-      "claimed_at": "2026-11-20T18:47:57+00:00",
-      "updated_at": "2026-11-20T19:25:58+00:00",
-      "note": "Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены.",
-      "result": "df043312dba7646d04e59b21a984bc411da20029"
+      "stage": "in_progress",
+      "claim_id": "1f0ef50b040d4c8ca2e5a05fd7501d40",
+      "claimed_at": "2026-11-20T19:57:18+00:00",
+      "updated_at": "2026-11-20T19:57:18+00:00",
+      "note": "Проверяю штатный отзыв выхода из вложенного пути арбитрации. Готовность не должна восстанавливаться в том же prepare после исчезновения краткого отказа. Изменения не касаются физической карты и чужих привязок.",
+      "result": null
     },
     "MODE-03": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -4941,9 +4941,17 @@
       "action": "heartbeat",
       "claim_id": "7180472509b343958005e9c8aeaadc9c",
       "at": "2026-11-20T19:57:09+00:00"
+    },
+    {
+      "operation_id": "aa16f89ead1942b9b3784b79977a5400",
+      "task": "H03-05",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "1f0ef50b040d4c8ca2e5a05fd7501d40",
+      "at": "2026-11-20T19:57:18+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:57:09+00:00",
+  "updated_at": "2026-11-20T19:57:18+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
