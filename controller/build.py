@@ -14,7 +14,7 @@ from hydraulic_port import write_port
 
 CONTROLLER = Path(__file__).resolve().parent
 TOYOTA = CONTROLLER / "vendor" / "toyota"
-CONTROLLER_SOURCES = ("src/rbm_u340e.c", "src/rbm_u340e_runtime.c")
+CONTROLLER_SOURCES = ("src/rbm_u340e.c", "src/rbm_u340e_runtime.c", "src/rbm_u340e_scheduler.c")
 CONTROLLER_TESTS = ("tests/test_controller.c", "tests/test_runtime.c")
 
 

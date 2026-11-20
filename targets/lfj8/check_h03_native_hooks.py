@@ -13,6 +13,7 @@ from check_h03_link import identify_h03
 
 
 HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
 STRATEGY_SITE = 0x036F30
 COMMIT_SITE = 0x07C10C
 OEM_STRATEGY = 0x06FED4
@@ -21,18 +22,22 @@ OEM_COMMIT = 0x046900
 LAYOUT = """
 ENTRY(_start)
 SECTIONS {
-  .oem_before 0x000000 : { *(.oem_before) }
-  .strategy_site 0x036f30 : { *(.strategy_site) }
-  .oem_between 0x036f34 : { *(.oem_between) }
-  .commit_site 0x07c10c : { *(.commit_site) }
-  .oem_after 0x07c110 : { *(.oem_after) }
+  .oem_before 0x000000 : { KEEP(*(.oem_before)) }
+  .strategy_site 0x036f30 : { KEEP(*(.strategy_site)) }
+  .oem_between 0x036f34 : { KEEP(*(.oem_between)) }
+  .commit_site 0x07c10c : { KEEP(*(.commit_site)) }
+  .oem_after 0x07c110 : { KEEP(*(.oem_after)) }
   .fixture_start 0x100000 : { *(.fixture_start) }
   .text : { *(.text*) *(.rodata*) }
-  .bss : { *(.bss*) *(COMMON) }
+  .data : { *(.data*) }
+  .bss (NOLOAD) : { *(.bss*) *(COMMON) }
   /DISCARD/ : { *(.note*) *(.comment) }
   h03_stock_strategy = 0x06fed4;
   h03_stock_arbiter = 0x0717b8;
   h03_stock_commit = 0x046900;
+  h03_stock_phase3 = 0x046804;
+  h03_stock_phase2 = 0x04682c;
+  h03_stock_combined = 0x036ea4;
 }
 """
 
@@ -74,6 +79,67 @@ def simulate(run, work, gdb, site, decision, image):
             raise ValueError(f"Missing simulated state at {site:#x}: {log[-1500:].decode(errors='replace')}")
         states.append(tuple(int(value, 16) for value in state[1].split()))
     return states
+
+
+def check_full_phases(run, work, compiler, simulator, gdb, flags):
+    sources = (
+        "h03_full_phase_fixture.c", "lfj8_h03_takeover.c", "lfj8_h03_outputs.c",
+        "lfj8_h03_mmio.c",
+    )
+    for name in (*sources, *(header.name for header in HERE.glob("*.h"))):
+        shutil.copyfile(HERE / name, work / name)
+    shutil.copytree(ROOT / "controller/include", work / "controller")
+    shutil.copytree(ROOT / "controller/vendor/toyota/include", work / "toyota")
+
+    cases = {
+        "fresh_across_clock_wrap": "SCENARIO_NORMAL",
+        "expired_at_commit": "SCENARIO_TIMEOUT",
+        "pressure_fault_after_prepare": "SCENARIO_LATE_FAULT",
+        "final_byte_changed_after_prepare": "SCENARIO_FINAL_CHANGED",
+        "external_authority_lost": "SCENARIO_AUTHORITY_LOST",
+        "repeat_commit": "SCENARIO_REPEAT",
+        "startup_cutout": "SCENARIO_STARTUP_SKIP",
+        "stock_combined_entry": "SCENARIO_COMBINED_ENTRY",
+    }
+    stack_used = {}
+    for label, scenario in cases.items():
+        run(compiler, *flags, "-std=c11", "-Icontroller", "-Itoyota", "-ffixed-r13", "-DH03_FULL_PHASE_FIXTURE",
+            f"-DH03_PHASE_SCENARIO={scenario}", "-Wl,-T,fixture.ld", "h03_native_hooks.S",
+            "h03_native_hooks_fixture.S", *sources, "-ffunction-sections",
+            "-fdata-sections", "-Wl,--gc-sections,--undefined=rbm_h03_strategy_hook",
+            "-Wl,--undefined=rbm_h03_commit_hook", "-Wl,--start-group", "-lc", "-lgcc",
+            "-Wl,--end-group", "-o", "full-phase.elf")
+        try:
+            run(simulator, "--memory-size", "16M", "full-phase.elf")
+        except subprocess.CalledProcessError as error:
+            failure = run(
+                gdb, "--batch", "-nx", "-ex", "target sim --memory-size 16M", "-ex", "load",
+                "-ex", "break *h03_phase_fixture_exit", "-ex", "run",
+                "-ex", "x/2hu 0x800344", "-ex", "x/1xb 0x80074a",
+                "full-phase.elf",
+            ).decode(errors="replace")
+            raise ValueError(f"H03 scenario {label} failed, exit code {error.returncode}\n{failure}") from error
+        gdb_log = run(
+            gdb, "--batch", "-nx", "-ex", "target sim --memory-size 16M", "-ex", "load",
+            "-ex", "break *h03_phase_fixture_exit", "-ex", "run",
+            "-ex", 'printf "PHASE_RETURN %08x %08x\n", $sp, $r0',
+            "-ex", "dump binary memory stack.dat 0x9fc000 0x9ffffc",
+            "full-phase.elf",
+        )
+        if b"PHASE_RETURN 009ffffc 00000000" not in gdb_log:
+            raise ValueError(f"Incorrect stack pointer or result after scenario {label}: {gdb_log[-1000:]!r}")
+        stack = (work / "stack.dat").read_bytes()
+        pattern = bytes.fromhex("a55a6996")
+        if len(stack) != 0x3FFC or stack[:4] != pattern:
+            raise ValueError(f"Stack fixture guard was lost in {label}")
+        first_write = next((offset for offset in range(4, len(stack), 4)
+                            if stack[offset:offset + 4] != pattern), len(stack))
+        stack_used[label] = len(stack) - first_write
+    return {"cases": list(cases), "fixture_state_outside_h03_ram": True,
+            "observed_stack_bytes": stack_used,
+            "physical_inhibit_tested": False,
+            "stock_entries": ["0x046804", "0x04682C", "0x036EA4"],
+            "address_space": "GNU M32R test ELF with registers backed by simulator memory"}
 
 
 def check(base, compiler):
@@ -170,8 +236,11 @@ def check(base, compiler):
                     cases.append({"variant": variant, "hook": name, "decision": decision,
                                   "dispatch": f"0x{destination:06X}", "return": f"0x{site + 4:06X}"})
 
+        phase_program = check_full_phases(run, work, compiler, simulator, gdb, flags)
+
     return {
         "base": identity,
+        "phase_program_with_takeover": phase_program,
         "cases": cases,
         "wrapper_frame_bytes": 72,
         "psw_preserved_in_non_debugger_probes_with_carry": [0, 1],

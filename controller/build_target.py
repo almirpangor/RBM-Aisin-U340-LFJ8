@@ -122,7 +122,8 @@ def build(architecture: str, compiler: Path, destination: Path, sh_runner: Path 
             test_result = subprocess.check_output(
                 [simulator, test_elf.name], cwd=stage, env=environment, text=True, timeout=60,
             ).strip()
-            if "Controller tests passed:" not in test_result or "Toyota GP runtime:" not in test_result:
+            expected_checks = ("Controller tests passed:", "Toyota GP runtime:", "Toyota scheduler:")
+            if not all(check in test_result for check in expected_checks):
                 raise ValueError(f"M32R simulator did not finish the test: {test_result}")
             artifacts.append(test_elf)
         elif sh_runner is not None:

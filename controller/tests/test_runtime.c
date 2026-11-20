@@ -1,4 +1,5 @@
 #include "rbm_u340e_runtime.h"
+#include "rbm_u340e_scheduler.h"
 
 #undef NDEBUG
 #include <assert.h>
@@ -98,12 +99,157 @@ static void check_live_stages(void)
     assert(gear.driver5302[1] == 1 && gear.b4841 == 0);
 }
 
+static RbmU340eRelease publish_tick(RbmU340eScheduler *schedule)
+{
+    assert(rbm_u340e_schedule_timer_irq(schedule) == RBM_U340E_IRQ_PRODUCER);
+    const RbmU340eRelease released = rbm_u340e_schedule_producer_publish(schedule);
+    assert(released != RBM_U340E_RELEASE_INVALID);
+    assert(rbm_u340e_schedule_producer_done(schedule));
+    return released;
+}
+
+static void check_schedule_nominal(void)
+{
+    const RbmU340eRelease expected[] = {
+        RBM_U340E_RELEASE_NONE, RBM_U340E_RELEASE_NONE, RBM_U340E_RELEASE_FAST, RBM_U340E_RELEASE_NONE,
+        RBM_U340E_RELEASE_SECONDARY, RBM_U340E_RELEASE_NONE, RBM_U340E_RELEASE_FAST, RBM_U340E_RELEASE_NONE,
+        RBM_U340E_RELEASE_NONE, RBM_U340E_RELEASE_NONE, RBM_U340E_RELEASE_FAST, RBM_U340E_RELEASE_NONE,
+        RBM_U340E_RELEASE_SECONDARY, RBM_U340E_RELEASE_NONE, RBM_U340E_RELEASE_FAST, RBM_U340E_RELEASE_NONE,
+    };
+    RbmU340eScheduler schedule = {0};
+    FactoryHydraulics gp = {0};
+    assert(rbm_u340e_schedule_timer_irq(&schedule) == RBM_U340E_IRQ_BEFORE_INIT);
+    assert(schedule.irq_count == 1u && schedule.producer_count == 0u);
+    assert(rbm_u340e_schedule_producer_publish(&schedule) == RBM_U340E_RELEASE_INVALID);
+    rbm_u340e_schedule_finish_init(&schedule);
+    unsigned main_calls = 0;
+
+    for (unsigned i = 0; i < sizeof expected / sizeof expected[0]; ++i) {
+        assert(publish_tick(&schedule) == expected[i]);
+        if (expected[i] == RBM_U340E_RELEASE_FAST) {
+            assert(rbm_u340e_schedule_fast_claim(&schedule));
+            assert(rbm_u340e_schedule_fast_begin(&schedule, &gp));
+            assert(rbm_u340e_schedule_fast_end(&schedule, &gp));
+            assert(rbm_u340e_schedule_fast_done(&schedule));
+        } else if (expected[i] == RBM_U340E_RELEASE_SECONDARY) {
+            assert(!rbm_u340e_schedule_main_done(&schedule));
+            assert(rbm_u340e_schedule_secondary_claim(&schedule));
+            const RbmU340eSecondary done = rbm_u340e_schedule_secondary_done(&schedule);
+            if (i == 4u) {
+                assert(done == RBM_U340E_SECONDARY_RUN_MAIN && schedule.secondary_count == 0u);
+                assert(rbm_u340e_schedule_main_done(&schedule));
+                ++main_calls;
+            } else {
+                assert(done == RBM_U340E_SECONDARY_DONE);
+            }
+        }
+    }
+    assert(schedule.irq_count == 17u && schedule.producer_count == 16u);
+    assert(schedule.fast_count == 4u && schedule.secondary_count == 2u && main_calls == 1u);
+    assert(gp_value(&gp, 1060, 1u) == 4u);
+}
+
+static void check_fast_schedule(void)
+{
+    RbmU340eScheduler schedule = {.producer_count = 2u, .fast_count = UINT16_MAX};
+    FactoryHydraulics gp = {0};
+    assert(factory_hydraulics_set(&gp, 1060, 1u, 255u));
+    assert(factory_hydraulics_set(&gp, -4816, 1u, 253u));
+    assert(factory_hydraulics_set(&gp, -4771, 1u, 21u));
+    assert(factory_hydraulics_set(&gp, -4619, 1u, 35u));
+
+    rbm_u340e_schedule_finish_init(&schedule);
+    assert(!rbm_u340e_schedule_fast_begin(&schedule, &gp));
+    assert(!rbm_u340e_schedule_fast_end(&schedule, &gp));
+    assert(publish_tick(&schedule) == RBM_U340E_RELEASE_FAST);
+    while (schedule.producer_count < 6u) {
+        (void)publish_tick(&schedule);
+    }
+    assert(publish_tick(&schedule) == RBM_U340E_RELEASE_FAST_COALESCED);
+    assert(rbm_u340e_schedule_fast_claim(&schedule));
+    assert(!rbm_u340e_schedule_fast_done(&schedule));
+    assert(rbm_u340e_schedule_fast_begin(&schedule, &gp));
+    assert(!rbm_u340e_schedule_fast_begin(&schedule, &gp));
+    assert(gp_value(&gp, 1060, 1u) == 255u);
+    assert(gp_value(&gp, -4816, 1u) == 254u);
+    assert(gp_value(&gp, -4771, 1u) == 21u);
+    assert(gp_value(&gp, -4619, 1u) == 35u);
+    while (schedule.producer_count < 10u) {
+        (void)publish_tick(&schedule);
+    }
+    assert(publish_tick(&schedule) == RBM_U340E_RELEASE_FAST);
+    while (schedule.producer_count < 14u) {
+        (void)publish_tick(&schedule);
+    }
+    assert(publish_tick(&schedule) == RBM_U340E_RELEASE_FAST_COALESCED);
+    assert(!rbm_u340e_schedule_fast_claim(&schedule));
+
+    /* Toyota writes the phase saved at 05425C plus one at 054348. */
+    assert(factory_hydraulics_set(&gp, 1060, 1u, 17u));
+    assert(rbm_u340e_schedule_fast_end(&schedule, &gp));
+    assert(!rbm_u340e_schedule_fast_end(&schedule, &gp));
+    assert(gp_value(&gp, 1060, 1u) == 0u);
+    assert(schedule.fast_count == UINT16_MAX && schedule.fast_pending);
+    assert(rbm_u340e_schedule_fast_done(&schedule));
+    assert(schedule.fast_count == 0u);
+    assert(rbm_u340e_schedule_fast_claim(&schedule));
+    assert(!schedule.fast_pending);
+    assert(rbm_u340e_schedule_fast_begin(&schedule, &gp));
+    assert(gp_value(&gp, -4816, 1u) == 255u);
+    assert(gp_value(&gp, -4771, 1u) == 22u);
+}
+
+static void check_secondary_and_producer_overrun(void)
+{
+    RbmU340eScheduler schedule = {.irq_count = UINT16_MAX, .producer_count = UINT16_MAX};
+    rbm_u340e_schedule_finish_init(&schedule);
+    assert(publish_tick(&schedule) == RBM_U340E_RELEASE_NONE);
+    assert(schedule.irq_count == 0u && schedule.producer_count == 0u);
+    for (unsigned i = 0; i <= 36u; ++i) {
+        const RbmU340eRelease released = publish_tick(&schedule);
+        if (i == 4u || i == 36u) {
+            assert(released == RBM_U340E_RELEASE_SECONDARY);
+        } else if (i == 12u || i == 20u || i == 28u) {
+            assert(released == RBM_U340E_RELEASE_SECONDARY_DROPPED);
+        }
+        if (i == 12u) {
+            assert(rbm_u340e_schedule_secondary_claim(&schedule));
+        } else if (i == 20u) {
+            assert(rbm_u340e_schedule_secondary_done(&schedule) == RBM_U340E_SECONDARY_RUN_MAIN);
+            assert(schedule.secondary_count == 0u);
+            assert(!rbm_u340e_schedule_secondary_done(&schedule));
+        } else if (i == 28u) {
+            assert(rbm_u340e_schedule_main_done(&schedule));
+        } else if (i == 36u) {
+            assert(rbm_u340e_schedule_secondary_claim(&schedule));
+            assert(rbm_u340e_schedule_secondary_done(&schedule) == RBM_U340E_SECONDARY_DONE);
+        }
+    }
+    assert(schedule.secondary_count == 2u);
+
+    /* IRQ while task 2 is published but before termination is still late. */
+    assert(rbm_u340e_schedule_timer_irq(&schedule) == RBM_U340E_IRQ_PRODUCER);
+    assert(!rbm_u340e_schedule_producer_done(&schedule));
+    assert(rbm_u340e_schedule_producer_publish(&schedule) == RBM_U340E_RELEASE_NONE);
+    assert(rbm_u340e_schedule_producer_publish(&schedule) == RBM_U340E_RELEASE_INVALID);
+    assert(rbm_u340e_schedule_timer_irq(&schedule) == RBM_U340E_IRQ_PRODUCER_OVERRUN);
+    const uint16_t halted_count = schedule.irq_count;
+    assert(!rbm_u340e_schedule_producer_done(&schedule));
+    assert(!rbm_u340e_schedule_fast_claim(&schedule));
+    assert(rbm_u340e_schedule_timer_irq(&schedule) == RBM_U340E_IRQ_PRODUCER_OVERRUN);
+    assert(schedule.irq_count == halted_count);
+}
+
 void rbm_test_runtime(void)
 {
     check_initialization();
     check_live_stages();
+    check_schedule_nominal();
+    check_fast_schedule();
+    check_secondary_and_producer_overrun();
 #ifndef RBM_TEST_QUIET
     puts("Toyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.");
+    puts("Toyota scheduler: event release, FAST phase latch, busy drop and rollover passed.");
 #endif
 }
 

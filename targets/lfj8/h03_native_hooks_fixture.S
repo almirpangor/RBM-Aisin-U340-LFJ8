@@ -43,8 +43,29 @@ rbm_h03_commit_callback:
 
     .section .fixture_start,"ax",@progbits
     .global _start
+#ifndef H03_FULL_PHASE_FIXTURE
     .global fixture_ready
+#endif
 _start:
+#ifdef H03_FULL_PHASE_FIXTURE
+    ld24 sp,#0x9ffffc
+    ld24 r1,#0x9fc000
+    seth r0,#0xa55a
+    or3 r0,r0,#0x6996
+.Lseed_stack:
+    st r0,@r1
+    addi r1,#4
+    bne r1,sp,.Lseed_stack
+    ld24 fp,#0x808000
+    ldi r0,#0x40
+    mvtc r0,psw
+    bl h03_phase_fixture
+    .global h03_phase_fixture_exit
+h03_phase_fixture_exit:
+    mv r1,r0
+    ldi r0,#1
+    trap #0
+#else
     ld24 sp,#0x9ffffc
     ld24 r0,#0x809f9c
     st r0,@r0
@@ -80,6 +101,7 @@ fixture_ready:
 .Ltest_commit:
     pop r0
     bra fixture_commit_site_call
+#endif
 
     .section .strategy_site,"ax",@progbits
 fixture_strategy_site:
