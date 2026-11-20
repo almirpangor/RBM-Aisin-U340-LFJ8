@@ -7,7 +7,7 @@ SECTIONS {
   .resident_rx 0x006000 : {
     FILL(0xffffffff)
     INCLUDE rx-sections.ld
-    KEEP(*(.rodata.owner_ops))
+    KEEP(*(.rodata.native_owner_ops))
     rx_resident_end = .;
     . = 0x2000;
   }
