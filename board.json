@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 633,
+  "sequence": 634,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -57,12 +57,12 @@
         "targets/lfj8/lfj8_h03_can_target.h",
         "verification/project-audit/can03-dtc-shared-owner.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "ffff885e4aa646d3b41c030b6eda77cb",
       "claimed_at": "2026-11-20T20:43:58+00:00",
-      "updated_at": "2026-11-20T20:48:39+00:00",
-      "note": "Совместный M32R путь прошёл: старая IRQ-привязка снята на холодном входе, IRQ 0x732 и ответ foreground 0x722 используют один target и TML0. Повторяю нативный комплект и компоновку.",
-      "result": null,
+      "updated_at": "2026-11-20T20:52:18+00:00",
+      "note": "Холодный путь снимает старый IRQ target, нативный foreground использует тот же h03_can_owner, IRQ-очередь и TML0. 0x732→0x722, потеря квалификации, 18 сравнений BasicCAN, ПК 41/129 и все 22 native PASS. Нужны конечная привязка H03-03, T6 DTC-01 и размещение DTC-02. Отчёт verification/project-audit/can03-dtc-shared-owner.md.",
+      "result": "3b2e4d6ab163cf7f384ba94447f5fe6fb92950db",
       "based_on_reviews": [
         "ad997bd677c542c682cec961d4619193",
         "ef6ec9b39ec54c5fab41e021568c094f"
@@ -6455,9 +6455,40 @@
           "d9e48d584c644fbf9f3cde053b8b8c41"
         ]
       }
+    },
+    {
+      "operation_id": "d0be7e98fa9f4d8190558d4ce2811b12",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "ffff885e4aa646d3b41c030b6eda77cb",
+      "at": "2026-11-20T20:52:18+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — общая привязка DTC и CAN13",
+        "branch": "codex/can03-dtc-shared-owner-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+          "targets/lfj8/lfj8_h03_can_owner.h",
+          "targets/lfj8/lfj8_h03_can_target.c",
+          "targets/lfj8/lfj8_h03_can_target.h",
+          "verification/project-audit/can03-dtc-shared-owner.md"
+        ],
+        "stage": "review",
+        "claim_id": "ffff885e4aa646d3b41c030b6eda77cb",
+        "claimed_at": "2026-11-20T20:43:58+00:00",
+        "updated_at": "2026-11-20T20:52:18+00:00",
+        "note": "Холодный путь снимает старый IRQ target, нативный foreground использует тот же h03_can_owner, IRQ-очередь и TML0. 0x732→0x722, потеря квалификации, 18 сравнений BasicCAN, ПК 41/129 и все 22 native PASS. Нужны конечная привязка H03-03, T6 DTC-01 и размещение DTC-02. Отчёт verification/project-audit/can03-dtc-shared-owner.md.",
+        "result": "3b2e4d6ab163cf7f384ba94447f5fe6fb92950db",
+        "based_on_reviews": [
+          "ad997bd677c542c682cec961d4619193",
+          "ef6ec9b39ec54c5fab41e021568c094f"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:51:29+00:00",
+  "updated_at": "2026-11-20T20:52:18+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
@@ -7671,6 +7702,31 @@
       ],
       "task": "VSS-01",
       "submitted_at": "2026-11-20T20:51:29+00:00"
+    },
+    "ffff885e4aa646d3b41c030b6eda77cb": {
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex CAN-03 — общая привязка DTC и CAN13",
+      "branch": "codex/can03-dtc-shared-owner-fea1b366",
+      "files": [
+        "targets/lfj8/check_h03_can_monitor_revoke.py",
+        "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+        "targets/lfj8/lfj8_h03_can_owner.h",
+        "targets/lfj8/lfj8_h03_can_target.c",
+        "targets/lfj8/lfj8_h03_can_target.h",
+        "verification/project-audit/can03-dtc-shared-owner.md"
+      ],
+      "stage": "review",
+      "claim_id": "ffff885e4aa646d3b41c030b6eda77cb",
+      "claimed_at": "2026-11-20T20:43:58+00:00",
+      "updated_at": "2026-11-20T20:52:18+00:00",
+      "note": "Холодный путь снимает старый IRQ target, нативный foreground использует тот же h03_can_owner, IRQ-очередь и TML0. 0x732→0x722, потеря квалификации, 18 сравнений BasicCAN, ПК 41/129 и все 22 native PASS. Нужны конечная привязка H03-03, T6 DTC-01 и размещение DTC-02. Отчёт verification/project-audit/can03-dtc-shared-owner.md.",
+      "result": "3b2e4d6ab163cf7f384ba94447f5fe6fb92950db",
+      "based_on_reviews": [
+        "ad997bd677c542c682cec961d4619193",
+        "ef6ec9b39ec54c5fab41e021568c094f"
+      ],
+      "task": "CAN-03",
+      "submitted_at": "2026-11-20T20:52:18+00:00"
     }
   }
 }
