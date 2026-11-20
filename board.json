@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 534,
+  "sequence": 535,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -282,12 +282,12 @@
         "targets/lfj8/lfj8_h03_application.h",
         "verification/project-audit/toy05-h03-boot-restore.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "5fcdd962167d41129b445b4ea70a2c80",
       "claimed_at": "2026-11-20T19:37:42+00:00",
-      "updated_at": "2026-11-20T19:39:45+00:00",
-      "note": "Restore теперь выполняется в штатном startup callback после GP init и до допуска фаз. Добавлены 9 ветвей нативного запуска, включая повторный запуск, испорченную и сброшенную запись. Запущены M32R/ПК.",
-      "result": null
+      "updated_at": "2026-11-20T19:53:03+00:00",
+      "note": "Восстановление S01/UFL1 подключено к штатному старту H03 до допуска фаз. ПК 41/120, S01/R3 288, M32R 56 запусков (18 новых), 22 native, 18+8 компонентных, 6 размещённых. Отчёт toy05-h03-boot-restore.md. Физический NVM, штатный binding, запись и долговечный сброс ещё открыты.",
+      "result": "4311060a5ac2a4cdfdb2df42b5c5855db3878f69"
     },
     "CAN-04": {
       "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
@@ -4860,9 +4860,17 @@
       "action": "claim",
       "claim_id": "c4e3a3e369f14884b8a200b72aacab5e",
       "at": "2026-11-20T19:52:46+00:00"
+    },
+    {
+      "operation_id": "5d418a2ed3b24610be1fb8e795212d91",
+      "task": "TOY-05",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "5fcdd962167d41129b445b4ea70a2c80",
+      "at": "2026-11-20T19:53:03+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:52:46+00:00",
+  "updated_at": "2026-11-20T19:53:03+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
