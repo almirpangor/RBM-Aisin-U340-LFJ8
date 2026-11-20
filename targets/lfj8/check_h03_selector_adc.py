@@ -38,7 +38,7 @@ def run(directory, *command):
     return result.stdout
 
 
-def probe(directory, debugger, branch, sample, psw, captured_us, p1data, pending, clock_available):
+def probe(directory, debugger, branch, sample, psw, captured_us, p1data, pending, clock_available, running):
     register_format = " ".join(["%08x"] * len(REGISTERS))
     register_args = ", ".join(REGISTERS)
     commands = [
@@ -53,6 +53,7 @@ def probe(directory, debugger, branch, sample, psw, captured_us, p1data, pending
         f"set {{unsigned short}}((char*)&mock_adc_results + 4) = {(sample << 6) | 0x3F:#x}",
         f"set variable selector_fixture_captured_us = {captured_us:#x}",
         f"set variable selector_fixture_clock_available = {int(clock_available)}",
+        f"set variable selector_fixture_application_running = {int(running)}",
         "set variable rbm_h03_selector_adc_state.pending_raw = 65535",
         "set variable rbm_h03_selector_adc_state.pending_event = 0",
         f"set {{unsigned char}}{P1DATA:#x} = {p1data:#x}",
@@ -78,9 +79,9 @@ def probe(directory, debugger, branch, sample, psw, captured_us, p1data, pending
         f'printf "CONT {register_format}\\n", {register_args}',
         "tbreak *snapshot_return", "continue",
         f'printf "EXIT {register_format}\\n", {register_args}',
-        'printf "CALL %08x %08x %08x %08x %08x %08x\\n", selector_fixture_calls, '
+        'printf "CALL %08x %08x %08x %08x %08x %08x %08x\\n", selector_fixture_calls, '
         'selector_fixture_psw, selector_fixture_argument, selector_fixture_stock_word, '
-        'selector_fixture_an3_before, selector_fixture_callback_sp',
+        'selector_fixture_an3_before, selector_fixture_callback_sp, selector_fixture_clock_reads',
         'printf "MAIL %08x %08x %08x %08x %08x\\n", rbm_h03_selector_adc_state.pending_event, '
         'rbm_h03_selector_adc_state.pending_raw, rbm_h03_selector_adc_state.pending_us, '
         'rbm_h03_selector_adc_state.pending_p1_valid, rbm_h03_selector_adc_state.pending_p1data',
@@ -93,7 +94,7 @@ def probe(directory, debugger, branch, sample, psw, captured_us, p1data, pending
     if not re.search(r"^BOOT 6040$", log, re.M):
         raise ValueError("The fixture no longer starts with LDI r0,#0x40")
     result = {}
-    for key, words in (("CONT", 19), ("EXIT", 19), ("CALL", 6), ("MAIL", 5), ("RAM", 5)):
+    for key, words in (("CONT", 19), ("EXIT", 19), ("CALL", 7), ("MAIL", 5), ("RAM", 5)):
         match = re.search(rf"^{key} ((?:[0-9a-f]{{8}} ){{{words - 1}}}[0-9a-f]{{8}})$", log, re.M)
         if match is None:
             raise ValueError(f"The simulator did not record {key}: {log[-1800:]}")
@@ -133,7 +134,7 @@ def check(base, gcc):
                    "lfj8_selector_adc.c", "lfj8_h03_mmio.c")
         headers = ("lfj8_selector_adc.h", "lfj8_h03_mmio.h", "lfj8_h03_engine_rx.h",
                    "lfj8_donor_io.h", "ta2005_chery_inputs.h", "lfj8_h03_atf_target.h",
-                   "lfj8_h03_atf.h")
+                   "lfj8_h03_atf.h", "lfj8_h03_input_lifecycle.h")
         # Legacy Windows M32R GCC cannot open non-ASCII checkout paths.
         for name in (*sources, *headers):
             copyfile(HERE / name, directory / name)
@@ -154,15 +155,17 @@ def check(base, gcc):
         branch = 0xFF000000 | (displacement // 4 & 0xFFFFFF)
         debugger = gcc.with_name(f"m32r-elf-gdb{gcc.suffix}")
         cases = []
-        for sample, psw, captured_us, p1data, pending, clock_available in (
-            (0, 0x40, 0, 0x00, 0, True),
-            (347, 0x41, 101, 0xa5, 0, True),
-            (1023, 0x00, 0xFFFFFFFF, 0xff, 0, True),
-            (347, 0x01, 102, 0x5a, 1, True),
-            (347, 0x41, 103, 0xc3, 1, False),
-            (347, 0x40, 104, 0x3c, 4, True),
+        for arguments in (
+            (0, 0x40, 0, 0x00, 0, True, True),
+            (347, 0x41, 101, 0xa5, 0, True, True),
+            (1023, 0x00, 0xFFFFFFFF, 0xff, 0, True, True),
+            (347, 0x01, 102, 0x5a, 1, True, True),
+            (347, 0x41, 103, 0xc3, 1, False, True),
+            (347, 0x40, 104, 0x3c, 4, True, True),
+            (347, 0x40, 105, 0x3c, 0, True, False),
+            (347, 0x41, 106, 0xc3, 1, False, False),
         ):
-            arguments = (sample, psw, captured_us, p1data, pending, clock_available)
+            sample, psw, captured_us, p1data, pending, clock_available, running = arguments
             stock = probe(directory, debugger, None, *arguments)
             hooked = probe(directory, debugger, branch, *arguments)
             if any(stock[key] != hooked[key] for key in ("CONT", "EXIT", "RAM")):
@@ -173,13 +176,17 @@ def check(base, gcc):
             continuation_psw = stock["CONT"][16]
             if ((continuation_psw >> 8) & 0x41) != psw:
                 raise ValueError(f"Requested fixture PSW bits {psw:#x}, saw {continuation_psw:#x}")
-            count, callback_psw, argument, stored, prior_an3, callback_sp = hooked["CALL"]
+            count, callback_psw, argument, stored, prior_an3, callback_sp, time_reads = hooked["CALL"]
             if (any(stock["CALL"]) or callback_psw & 0x40 or
                     (count, argument, stored, prior_an3) != (1, sample, sample, AN3_SENTINEL)):
                 raise ValueError("The callback did not see one completed AN2 store with IRQs masked")
             if hooked["CONT"][15] - callback_sp != HOOK_FRAME_BYTES:
                 raise ValueError("Unexpected stack use at the selector callback entry")
-            if not clock_available or pending == 4:
+            if time_reads != int(running):
+                raise ValueError("An inactive application must not read the input clock")
+            if not running:
+                expected_mail, event = stock["MAIL"], "GATE_CLOSED"
+            elif not clock_available or pending == 4:
                 expected_mail, event = (4, 65535, 0, 0, 0), "CLOCK_LOST"
             elif pending:
                 expected_mail, event = (3, 65535, captured_us, 0, 0), "OVERRUN"
@@ -190,7 +197,9 @@ def check(base, gcc):
             cases.append({
                 "adc2_10bit": sample, "entry_ie": bool(psw & 0x40), "entry_c": bool(psw & 1),
                 "irq_masked_in_callback": True, "callback_count": 1,
-                "sample_us": captured_us if event != "CLOCK_LOST" else None, "mailbox_event": event,
+                "application_running": running, "clock_reads": time_reads,
+                "sample_us": captured_us if running and event != "CLOCK_LOST" else None,
+                "mailbox_event": event,
                 "p1data": p1data if event == "VALUE" else None,
                 "stock_cpu_and_ram_match": True,
             })

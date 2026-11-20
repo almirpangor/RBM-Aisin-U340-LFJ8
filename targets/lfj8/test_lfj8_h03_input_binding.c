@@ -364,6 +364,58 @@ static void test_p1_route(void)
     assert(f.p1_reads == before && !propose(&f) && !f.buttons.armed);
 }
 
+static void test_phase_capture(void)
+{
+    static const Lfj8H03ButtonMap map = {{
+        {LFJ8_H03_BUTTON_P1, 8, 1}, {LFJ8_H03_BUTTON_P1, 64, 0},
+        {LFJ8_H03_BUTTON_P1, 32, 0}, {0},
+    }};
+    const uint8_t released = 8u, up = released | 64u;
+    Fixture f;
+    init(&f);
+    f.binding.p1_button_map = &map;
+    f.sources.now_us = UINT32_MAX - 33u;
+    for (unsigned pass = 0; pass < 5u; ++pass) {
+        acquire_p1(&f, released);
+        assert(lfj8_h03_input_capture(&f.binding, NULL, f.sources.now_us) == (pass == 4u));
+        assert(!f.control.controller.buttons_seen);
+        assert(f.adc.pending_event == LFJ8_SELECTOR_ADC_NONE);
+    }
+    assert(lfj8_h03_input_propose_captured(&f.binding, &f.sources, &f.proposal));
+    assert(f.proposal.cycle.selector == RBM_U340E_SELECTOR_D && !f.proposal.driver.requested_gear);
+
+    for (unsigned pass = 0; pass < 2u; ++pass) {
+        acquire_p1(&f, up);
+        assert(lfj8_h03_input_capture(&f.binding, NULL, f.sources.now_us));
+        assert(f.control.controller.previous_buttons == 0u);
+    }
+    assert(f.buttons.stable == RBM_U340E_BUTTON_UP);
+    assert(f.buttons.last_sample_us == 1u); /* A capture crossed the wrap. */
+
+    acquire_p1(&f, released); /* The next mailbox belongs to the next H03 pass. */
+    assert(lfj8_h03_input_propose_captured(&f.binding, &f.sources, &f.proposal));
+    assert(f.proposal.driver.requested_gear == 3 && f.adc.pending_event == LFJ8_SELECTOR_ADC_VALUE);
+    assert(lfj8_h03_input_propose_captured(&f.binding, &f.sources, &f.proposal));
+    assert(!f.proposal.driver.requested_gear);
+    assert(lfj8_h03_input_capture(&f.binding, NULL, f.sources.now_us));
+
+    prepare_sources(&f, 0);
+    f.sources.buttons = NULL;
+    f.sources.now_us = f.control.last_sample_us + f.control.max_age_us;
+    assert(!lfj8_h03_input_propose_captured(&f.binding, &f.sources, &f.proposal));
+    assert(!f.proposal.cycle.qualified && !f.buttons.armed && !f.control.controller.buttons_seen);
+    assert(!lfj8_h03_input_capture(&f.binding, NULL, f.sources.now_us));
+
+    for (unsigned pass = 0; pass < 5u; ++pass) {
+        acquire_p1(&f, up);
+        assert(!lfj8_h03_input_capture(&f.binding, NULL, f.sources.now_us));
+    }
+    assert(!lfj8_h03_input_propose_captured(&f.binding, &f.sources, &f.proposal));
+    lfj8_selector_adc_clock_lost(&f.adc, &f.io);
+    assert(!lfj8_h03_input_capture(&f.binding, NULL, f.sources.now_us));
+    assert(!f.control.sampled && !f.buttons.armed);
+}
+
 int main(void)
 {
     test_six_positions();
@@ -372,6 +424,7 @@ int main(void)
     test_invalid_snapshots();
     test_adc_loss_and_recovery();
     test_p1_route();
-    puts("H03 input proposal: six ranges, debounce, conflict, Auto/OD, independent freshness, ADC/P1DATA pairing, loss and rearm PASS");
+    test_phase_capture();
+    puts("H03 input proposal: six ranges, mode/OD, split phase capture, freshness, ADC/P1DATA pairing, loss and rearm PASS");
     return 0;
 }
