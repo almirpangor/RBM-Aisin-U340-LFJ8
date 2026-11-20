@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 280,
+  "sequence": 281,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -83,11 +83,11 @@
         "tests/u340_integration_host.c",
         "verification/project-audit/toy03-range-freshness.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "8ab2489d68c04ca68447e7036ec190df",
       "claimed_at": "2026-11-20T16:51:17+00:00",
-      "updated_at": "2026-11-20T16:56:25+00:00",
-      "note": "Передаю интегратору квалификатор независимых GP−5722 и GP−5250.2. ПК 35 шагов/71 тест. M32R 32 сочетания, индивидуальная давность, смена поколения, полный link и 17 компонентов PASS. Отчёт verification/project-audit/toy03-range-freshness.md. При приёмке учесть 3 файла кода в аудите и выполнить complete после публикации main. Физические источники и вызов в штатном цикле открыты.",
+      "updated_at": "2026-11-20T17:37:42+00:00",
+      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
       "result": "e7264c651d3fafe77e4bbff78e5a8fd8aa4e25ee"
     },
     "REL-01": {
@@ -2810,9 +2810,17 @@
       "action": "complete",
       "claim_id": "0b028669dc7e44b69526dde8046610db",
       "at": "2026-11-20T17:37:21+00:00"
+    },
+    {
+      "operation_id": "9b9343ec421b4244ac7bf1c587049181",
+      "task": "TOY-03",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "complete",
+      "claim_id": "8ab2489d68c04ca68447e7036ec190df",
+      "at": "2026-11-20T17:37:42+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:37:21+00:00",
+  "updated_at": "2026-11-20T17:37:42+00:00",
   "main_commit": "320b72e41aa4a85815f2db8942f88f7050abb3f0",
   "catalog": [
     {
