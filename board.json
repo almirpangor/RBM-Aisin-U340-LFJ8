@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 689,
+  "sequence": 690,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -222,18 +222,21 @@
     },
     "TOY-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
-      "label": "Codex TOY-02 — нативный режим нагрузки",
-      "branch": "codex/toy02-bosch-load-mode-source-01a1f9c7",
+      "label": "Codex TOY-02 — допуск нагрузки в H03",
+      "branch": "codex/toy02-load-evidence-01a1f9c7",
       "files": [
-        "targets/bosch/audit_toyota_load_producers.py",
-        "verification/project-audit/toy02-bosch-load-mode-source.md"
+        "targets/lfj8/lfj8_h03_cycle.c",
+        "targets/lfj8/lfj8_h03_cycle.h",
+        "targets/lfj8/test_lfj8_h03_cycle_load.c",
+        "verification/project-audit/toy02-h03-load-evidence.md"
       ],
-      "stage": "done",
-      "claim_id": "e313f0457b4d468897a8179d3615ce3e",
-      "claimed_at": "2026-11-20T20:07:45+00:00",
-      "updated_at": "2026-11-20T21:14:43+00:00",
-      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
-      "result": "aee80b834830ebf84a5120862b9bd999864a616c"
+      "stage": "in_progress",
+      "claim_id": "4f0440768829471386bb278580bee3f8",
+      "claimed_at": "2026-11-20T21:51:53+00:00",
+      "updated_at": "2026-11-20T21:51:53+00:00",
+      "note": "Подключаю квалификацию возрастов и поколения для групп S01 MAIN, SECONDARY и режима нагрузки к штатной публикации GP и запрету при потере данных. Преобразование Bosch→GP без парных измерений не задаю.",
+      "result": null,
+      "based_on_reviews": []
     },
     "CAN-01": {
       "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
@@ -8198,9 +8201,35 @@
         "task": "ORG-01",
         "submitted_at": "2026-11-20T21:46:25+00:00"
       }
+    },
+    {
+      "operation_id": "c1976d94736e43f89619747485d9a61c",
+      "task": "TOY-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "4f0440768829471386bb278580bee3f8",
+      "at": "2026-11-20T21:51:53+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex TOY-02 — допуск нагрузки в H03",
+        "branch": "codex/toy02-load-evidence-01a1f9c7",
+        "files": [
+          "targets/lfj8/lfj8_h03_cycle.c",
+          "targets/lfj8/lfj8_h03_cycle.h",
+          "targets/lfj8/test_lfj8_h03_cycle_load.c",
+          "verification/project-audit/toy02-h03-load-evidence.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "4f0440768829471386bb278580bee3f8",
+        "claimed_at": "2026-11-20T21:51:53+00:00",
+        "updated_at": "2026-11-20T21:51:53+00:00",
+        "note": "Подключаю квалификацию возрастов и поколения для групп S01 MAIN, SECONDARY и режима нагрузки к штатной публикации GP и запрету при потере данных. Преобразование Bosch→GP без парных измерений не задаю.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:47:04+00:00",
+  "updated_at": "2026-11-20T21:51:53+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
