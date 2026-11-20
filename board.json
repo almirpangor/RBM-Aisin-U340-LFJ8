@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 147,
+  "sequence": 148,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -284,11 +284,11 @@
         "targets/lfj8/test_lfj8_h03_torque.c",
         "verification/project-audit/can04-torque-revocation.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "9575e38186c74fb9bb027e3985074fd3",
       "claimed_at": "2026-11-20T16:09:14+00:00",
-      "updated_at": "2026-11-20T16:13:07+00:00",
-      "note": "Снятие RB-запроса при отзыве профиля готово. ПК: 33 шага и 65 тестов PASS. M32R: 17 компонентных прогонов PASS. Bosch OFFLINE_ONLY: штатное снятие и потеря статуса PASS. Интегратору: обновить общий снимок и карточку по отчёту verification/project-audit/can04-torque-revocation.md, затем complete после принятия в main. Стенд и целевые калибровки открыты.",
+      "updated_at": "2026-11-20T16:30:09+00:00",
+      "note": "Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте.",
       "result": "0a3f6260d1bee66174df70712597fc868777e34b"
     },
     "MODE-01": {
@@ -1648,10 +1648,18 @@
       "action": "review",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "at": "2026-11-20T16:29:36+00:00"
+    },
+    {
+      "operation_id": "763aca4743584cdfa396c122db2e9b57",
+      "task": "CAN-04",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "9575e38186c74fb9bb027e3985074fd3",
+      "at": "2026-11-20T16:30:09+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:29:36+00:00",
-  "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
+  "updated_at": "2026-11-20T16:30:09+00:00",
+  "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
       "id": "ORG-01",
