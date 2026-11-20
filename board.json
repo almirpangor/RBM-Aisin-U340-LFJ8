@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 243,
+  "sequence": 244,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -256,12 +256,12 @@
         "targets/lfj8/lfj8_donor_io.c",
         "verification/project-audit/can01-rx-coherence.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "f0173bc6291a4dd2b8fc72ad0de8fffc",
       "claimed_at": "2026-11-20T16:52:48+00:00",
-      "updated_at": "2026-11-20T16:53:57+00:00",
-      "note": "Original host regression published a frame when RR disappeared while copying. Post-copy RR/EXTID checks now pass, including no interference from another slot and invalidated RPM feed. Running M32R, PC and Bosch regressions.",
-      "result": null
+      "updated_at": "2026-11-20T16:57:02+00:00",
+      "note": "Revalidate FullCAN RR and EXTID after the copy. Reproduced RR-loss bug. All 35 PC checks including 71 unit tests, 17 M32R components and Bosch PASS_OFFLINE_ONLY. Evidence verification/project-audit/can01-rx-coherence.md. OEM binding and hardware open.",
+      "result": "6820992a15300275c3dd9c98398151e661a42925"
     },
     "MODE-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -2520,9 +2520,17 @@
       "action": "heartbeat",
       "claim_id": "9df078bb4f93459f8e1b8d34220dd825",
       "at": "2026-11-20T16:56:57+00:00"
+    },
+    {
+      "operation_id": "fb28e069bed74290a18121f5066bb893",
+      "task": "CAN-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "f0173bc6291a4dd2b8fc72ad0de8fffc",
+      "at": "2026-11-20T16:57:02+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:56:57+00:00",
+  "updated_at": "2026-11-20T16:57:02+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
