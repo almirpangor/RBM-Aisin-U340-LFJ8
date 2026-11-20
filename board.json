@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 156,
+  "sequence": 157,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -401,12 +401,12 @@
         "targets/lfj8/lfj8_h03_takeover.h",
         "targets/lfj8/test_lfj8_h03_takeover.c"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "claimed_at": "2026-11-20T16:20:38+00:00",
-      "updated_at": "2026-11-20T16:29:13+00:00",
-      "note": "Замеряю SP и шаги M32R от CLRPSW до восстановления PSW на входе без владельца и с активным отзывом.",
-      "result": null
+      "updated_at": "2026-11-20T16:31:43+00:00",
+      "note": "Убрана вложенная блокировка P0745. M32R: 68→52 Б дополнительного стека и 70→47 шагов маскирования с тестовой реакцией; контекст, 20 условий и штатные фазы PASS. Целевой обработчик, измерения IRQ и силовое отключение открыты.",
+      "result": "1beb6de6170e6bd47aa040f08f4c46cd63ad1236"
     },
     "MODE-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -1736,9 +1736,17 @@
       "action": "complete",
       "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
       "at": "2026-11-20T16:31:25+00:00"
+    },
+    {
+      "operation_id": "1a785949b3204c2b8efa4c634ce3354a",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
+      "at": "2026-11-20T16:31:43+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:31:25+00:00",
+  "updated_at": "2026-11-20T16:31:43+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
