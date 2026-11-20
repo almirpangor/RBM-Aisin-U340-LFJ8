@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 82,
+  "sequence": 83,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -99,14 +99,13 @@
         "targets/lfj8/h03_phase_wait_fixture.c",
         "targets/lfj8/h03_phase_wait_hook.S",
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
-        "verification/project-audit/2026-11-20-h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
       "claimed_at": "2026-11-20T16:04:02+00:00",
-      "updated_at": "2026-11-20T16:11:52+00:00",
-      "note": "Совмещено с H03-04 a52ab8c. В M32R измерены 8 байт при ожидании и 64 байта до callback. 8 сценариев, контроль лишнего слова, 65 тестов и реестр PASS. Стек callback/IRQ и аппаратный inhibit открыты.",
+      "updated_at": "2026-11-20T16:13:29+00:00",
+      "note": "Измеряю изменённые слова пробного стека внутри проверки срока и тестового inhibit в M32R.",
       "result": "895e031ad2decca9c3d833c683539876fd467a3f"
     },
     "H03-04": {
@@ -979,9 +978,17 @@
       "action": "review",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T16:13:20+00:00"
+    },
+    {
+      "operation_id": "b7756823c37341fc932ed99cc5308d97",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "resume",
+      "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
+      "at": "2026-11-20T16:13:29+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:13:20+00:00",
+  "updated_at": "2026-11-20T16:13:29+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
