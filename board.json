@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 774,
+  "sequence": 775,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -464,12 +464,12 @@
         "targets/lfj8/lfj8_h03_output_inhibit.h",
         "verification/project-audit/h03-05-tio9-inhibit.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "fae2c834e65a428fb92e2fd73fc941d8",
       "claimed_at": "2026-11-20T23:10:09+00:00",
-      "updated_at": "2026-11-20T23:13:35+00:00",
-      "note": "Новый нативный запрет и проверка порядка регистров прошли. Уточняю тест штатной фазы 2 с реальным производителем TIO9 до commit.",
-      "result": null,
+      "updated_at": "2026-11-20T23:18:28+00:00",
+      "note": "Нативный callback отзыва снимает TIO9/P97 и сохранённую команду. Повторный OEM apply без новой команды удерживает P97 в GPIO low, свежая выдача фазы 2 сохранена. Пройдены 16 сценариев в каждой модели, 59 SLT, 18 OEM, 20 CAN, 22 native и 8 components. Отдельный адресный прогон с H03-04 bec09c3 прошёл. Физическая изоляция, калибровка, фаза 3 и стенд открыты. Отчёт verification/project-audit/h03-05-tio9-inhibit.md.",
+      "result": "07da572f89718e96da71d34f2cb0e8fa36f28156",
       "based_on_reviews": [
         "0e34802387f0414bb09f64f92e3dbdae",
         "77033e38e60445f2addf6c2c8e536996"
@@ -10701,9 +10701,40 @@
           "e2040f38c0804ea1ba66dc3a744de6a4"
         ]
       }
+    },
+    {
+      "operation_id": "456b75929ad847f7bbeca252589c041f",
+      "task": "H03-05",
+      "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "action": "review",
+      "claim_id": "fae2c834e65a428fb92e2fd73fc941d8",
+      "at": "2026-11-20T23:18:28+00:00",
+      "record": {
+        "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+        "label": "Codex H03-05 — снятие TIO9 в нативном отзыве",
+        "branch": "codex/h03-05-tio9-revoke-01a1fa79",
+        "files": [
+          "targets/lfj8/check_h03_slt_fault.py",
+          "targets/lfj8/check_h03_target_outputs.py",
+          "targets/lfj8/h03_target_outputs_fixture.c",
+          "targets/lfj8/lfj8_h03_output_inhibit.c",
+          "targets/lfj8/lfj8_h03_output_inhibit.h",
+          "verification/project-audit/h03-05-tio9-inhibit.md"
+        ],
+        "stage": "review",
+        "claim_id": "fae2c834e65a428fb92e2fd73fc941d8",
+        "claimed_at": "2026-11-20T23:10:09+00:00",
+        "updated_at": "2026-11-20T23:18:28+00:00",
+        "note": "Нативный callback отзыва снимает TIO9/P97 и сохранённую команду. Повторный OEM apply без новой команды удерживает P97 в GPIO low, свежая выдача фазы 2 сохранена. Пройдены 16 сценариев в каждой модели, 59 SLT, 18 OEM, 20 CAN, 22 native и 8 components. Отдельный адресный прогон с H03-04 bec09c3 прошёл. Физическая изоляция, калибровка, фаза 3 и стенд открыты. Отчёт verification/project-audit/h03-05-tio9-inhibit.md.",
+        "result": "07da572f89718e96da71d34f2cb0e8fa36f28156",
+        "based_on_reviews": [
+          "0e34802387f0414bb09f64f92e3dbdae",
+          "77033e38e60445f2addf6c2c8e536996"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T23:18:13+00:00",
+  "updated_at": "2026-11-20T23:18:28+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -12856,6 +12887,31 @@
       ],
       "task": "H03-04",
       "submitted_at": "2026-11-20T23:18:13+00:00"
+    },
+    "fae2c834e65a428fb92e2fd73fc941d8": {
+      "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "label": "Codex H03-05 — снятие TIO9 в нативном отзыве",
+      "branch": "codex/h03-05-tio9-revoke-01a1fa79",
+      "files": [
+        "targets/lfj8/check_h03_slt_fault.py",
+        "targets/lfj8/check_h03_target_outputs.py",
+        "targets/lfj8/h03_target_outputs_fixture.c",
+        "targets/lfj8/lfj8_h03_output_inhibit.c",
+        "targets/lfj8/lfj8_h03_output_inhibit.h",
+        "verification/project-audit/h03-05-tio9-inhibit.md"
+      ],
+      "stage": "review",
+      "claim_id": "fae2c834e65a428fb92e2fd73fc941d8",
+      "claimed_at": "2026-11-20T23:10:09+00:00",
+      "updated_at": "2026-11-20T23:18:28+00:00",
+      "note": "Нативный callback отзыва снимает TIO9/P97 и сохранённую команду. Повторный OEM apply без новой команды удерживает P97 в GPIO low, свежая выдача фазы 2 сохранена. Пройдены 16 сценариев в каждой модели, 59 SLT, 18 OEM, 20 CAN, 22 native и 8 components. Отдельный адресный прогон с H03-04 bec09c3 прошёл. Физическая изоляция, калибровка, фаза 3 и стенд открыты. Отчёт verification/project-audit/h03-05-tio9-inhibit.md.",
+      "result": "07da572f89718e96da71d34f2cb0e8fa36f28156",
+      "based_on_reviews": [
+        "0e34802387f0414bb09f64f92e3dbdae",
+        "77033e38e60445f2addf6c2c8e536996"
+      ],
+      "task": "H03-05",
+      "submitted_at": "2026-11-20T23:18:28+00:00"
     }
   }
 }
