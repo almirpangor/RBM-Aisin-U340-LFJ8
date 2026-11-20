@@ -5,39 +5,60 @@ static uint8_t flag(uint8_t value)
     return value != 0u;
 }
 
-static uint8_t multiply_u64_by_u32(uint64_t *value, uint32_t factor)
+typedef struct {
+    uint64_t low;
+    uint32_t high;
+} VssProduct;
+
+/* The complete numerator is below 2^89, and the denominator below 2^69.
+ * All positive intermediate products fit in the same 96-bit representation. */
+static VssProduct multiply_u96_by_u32(VssProduct value, uint32_t factor)
 {
-    const uint64_t low = (uint64_t)(uint32_t)*value * factor;
-    const uint64_t high = (uint64_t)(uint32_t)(*value >> 32) * factor + (low >> 32);
-    if (high > UINT32_MAX) {
-        return 0u;
-    }
-    *value = (high << 32) | (uint32_t)low;
-    return 1u;
+    const uint64_t low = (uint64_t)(uint32_t)value.low * factor;
+    const uint64_t middle = (value.low >> 32) * factor + (low >> 32);
+    return (VssProduct){
+        .low = (middle << 32) | (uint32_t)low,
+        .high = value.high * factor + (uint32_t)(middle >> 32),
+    };
 }
 
-/* Quotient bound permits dividers on targets with no native 64-bit division. */
-static uint16_t speed_quotient(uint64_t numerator, uint64_t denominator)
+static uint8_t product_le(VssProduct left, VssProduct right)
+{
+    return left.high < right.high || (left.high == right.high && left.low <= right.low);
+}
+
+static VssProduct product_half(VssProduct value)
+{
+    return (VssProduct){
+        .low = (value.low >> 1) | ((uint64_t)(value.high & 1u) << 63),
+        .high = value.high >> 1,
+    };
+}
+
+/* Quotient bound permits dividers on targets with no native wide division. */
+static uint16_t speed_quotient(VssProduct numerator, VssProduct denominator)
 {
     uint32_t bit = 1u;
     uint32_t quotient = 0u;
-
-    if (numerator < denominator) {
+    if (!product_le(denominator, numerator)) {
         return 0u;
     }
-    while (denominator <= (numerator >> 1)) {
+    const VssProduct half = product_half(numerator);
+    while (product_le(denominator, half)) {
         if (bit >= LFJ8_SPEED_WRAP / 2u) {
             return LFJ8_SPEED_UNAVAILABLE;
         }
-        denominator <<= 1;
+        denominator.high = (denominator.high << 1) | (uint32_t)(denominator.low >> 63);
+        denominator.low <<= 1;
         bit <<= 1;
     }
     do {
-        if (numerator >= denominator) {
-            numerator -= denominator;
+        if (product_le(denominator, numerator)) {
+            numerator.high -= denominator.high + (numerator.low < denominator.low);
+            numerator.low -= denominator.low;
             quotient |= bit;
         }
-        denominator >>= 1;
+        denominator = product_half(denominator);
         bit >>= 1;
     } while (bit != 0u);
     return quotient < LFJ8_SPEED_WRAP ? (uint16_t)quotient : LFJ8_SPEED_UNAVAILABLE;
@@ -47,9 +68,6 @@ uint16_t lfj8_vss_raw_1ae(uint32_t ticks, uint8_t pulse_count, uint32_t tick_hz,
                         uint32_t wheel_um, uint16_t wheel_num, uint16_t wheel_den,
                         uint8_t capture_state)
 {
-    uint64_t numerator;
-    uint64_t denominator;
-
     if (tick_hz == 0u || wheel_um == 0u || wheel_num == 0u || wheel_den == 0u) {
         return LFJ8_SPEED_UNAVAILABLE;
     }
@@ -62,17 +80,11 @@ uint16_t lfj8_vss_raw_1ae(uint32_t ticks, uint8_t pulse_count, uint32_t tick_hz,
     }
 
     /* 360 * (22 / 100) * (1 / 1000000) == 99 / 1250000. */
-    numerator = UINT64_C(99) * pulse_count;
-    if (!multiply_u64_by_u32(&numerator, tick_hz) ||
-        !multiply_u64_by_u32(&numerator, wheel_um) ||
-        !multiply_u64_by_u32(&numerator, wheel_num)) {
-        return LFJ8_SPEED_UNAVAILABLE;
-    }
-    denominator = (uint64_t)ticks * wheel_den;
-    if (!multiply_u64_by_u32(&denominator, UINT32_C(1250000))) {
-        /* A denominator greater than UINT64_MAX exceeds any accepted numerator. */
-        return 0u;
-    }
+    VssProduct numerator = {.low = UINT64_C(99) * pulse_count * tick_hz};
+    numerator = multiply_u96_by_u32(numerator, wheel_um);
+    numerator = multiply_u96_by_u32(numerator, wheel_num);
+    const VssProduct denominator =
+        multiply_u96_by_u32((VssProduct){.low = (uint64_t)ticks * wheel_den}, UINT32_C(1250000));
     return speed_quotient(numerator, denominator);
 }
 
