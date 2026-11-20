@@ -9,7 +9,7 @@
     "engine": "GW4G15 / Bosch ME7.9.71 E4M3"
   },
   "release_ready": false,
-  "audit": "verification/project-audit/2026-11-20-collaboration.json",
+  "audit": "verification/project-audit/2026-11-20-dtc02-queue.json",
   "status_labels": {
     "closed": "Завершено в указанном объёме",
     "model": "Проверено программно",
@@ -127,15 +127,14 @@
       "title": "Полный набор проверок на компьютере",
       "command": "python -B tools/build_pc_checks.py --cc $zig --out local/pc-checks",
       "reports": [
-        "verification/project-audit/PC-CHECKS.json"
+        "verification/project-audit/dtc02-PC-CHECKS.json"
       ]
     },
     "M32R": {
       "title": "Сборка и модель M32R",
       "command": "python -B controller/build_target.py m32r --cc $m32rGcc --out local/audit/controller\npython -B targets/lfj8/build.py --output local/audit/bridge --m32r-cc $m32rGcc --base-9e1c $h03\npython -B targets/lfj8/check_h03_link.py --base $h03 --gcc $m32rGcc --bridge local/audit/bridge/lfj8_9e1c_m32r.o --controller local/audit/controller/rbm_u340e_m32r_be.o --out local/audit/h03-link.json --bosch-trace verification/e4m3-can-9e1c/ordinary-model/round-trip.json",
       "reports": [
-        "verification/e4m3-can-9e1c/h03-link.json",
-        "verification/e4m3-can-9e1c/ordinary-model/h03-link.json"
+        "verification/project-audit/dtc02-h03-link.json"
       ]
     },
     "PHASE": {
@@ -1036,15 +1035,18 @@
       ],
       "title": "Штатный приём BasicCAN для диагностического сеанса",
       "status": "open",
-      "current": "Декодер снимка и диспетчер проверены на модели. Вход 0x732 найден в штатном BasicCAN H03.",
-      "remaining": "Исследовать и реализовать когерентный захват статуса/DLC/данных до очистки TRFIN, передачу очереди и фильтр поколения. Сохранить штатную диагностику.",
+      "current": "Декодер и диспетчер проверены на модели. Добавлена очередь на 4 кадра (172 байта M32R): FIFO, переполнение без перезаписи, исходная давность + время хранения, сброс поколения и подтверждение конкретной записи. Проверены ПК и M32R. Штатный перехват RX ещё не подключён.",
+      "remaining": "Исследовать и реализовать когерентный захват статуса/DLC/данных в штатном RX14/15 до очистки TRFIN. Подключить очередь к foreground и поколению владельца CAN; сохранить штатную диагностику ниже 0x008000.",
       "acceptance": "Прогон оригинального пути RX с потерей/перезаписью и ложными кадрами. Учтена граница приложения 0x008000.",
       "code": [
         "targets/lfj8/lfj8_h03_dtc_can.c",
         "targets/lfj8/lfj8_h03_can13.c",
-        "targets/lfj8/test_lfj8_h03_dtc_can.c"
+        "targets/lfj8/test_lfj8_h03_dtc_can.c",
+        "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
+        "targets/lfj8/lfj8_h03_dtc_rx_queue.h",
+        "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c"
       ],
-      "settings": "RX14/15 0x001500–0x0016F4, копия 0x808526, разбор около 0x001578. Прямой перехват затрагивает область ниже приложения.",
+      "settings": "RX14/15 0x001500–0x0016F4, копия 0x808526, разбор около 0x001578. Прямой перехват затрагивает область ниже приложения. Очередь: max_age_bits < 32768 и не больше бюджета CAN13, bit_time_us из настройки шины; непрерывное время микросекунд. Конкретное размещение RAM открыто.",
       "checks": [
         "PC",
         "M32R"

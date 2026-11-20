@@ -644,15 +644,15 @@
 
 **Требуется разработка** · ТЗ §5, §11
 
-**Сделано.** Декодер снимка и диспетчер проверены на модели. Вход 0x732 найден в штатном BasicCAN H03.
+**Сделано.** Декодер и диспетчер проверены на модели. Добавлена очередь на 4 кадра (172 байта M32R): FIFO, переполнение без перезаписи, исходная давность + время хранения, сброс поколения и подтверждение конкретной записи. Проверены ПК и M32R. Штатный перехват RX ещё не подключён.
 
-**Осталось.** Исследовать и реализовать когерентный захват статуса/DLC/данных до очистки TRFIN, передачу очереди и фильтр поколения. Сохранить штатную диагностику.
+**Осталось.** Исследовать и реализовать когерентный захват статуса/DLC/данных в штатном RX14/15 до очистки TRFIN. Подключить очередь к foreground и поколению владельца CAN; сохранить штатную диагностику ниже 0x008000.
 
 **Критерий результата.** Прогон оригинального пути RX с потерей/перезаписью и ложными кадрами. Учтена граница приложения 0x008000.
 
-**Код.** [targets/lfj8/lfj8_h03_dtc_can.c](../targets/lfj8/lfj8_h03_dtc_can.c) · [targets/lfj8/lfj8_h03_can13.c](../targets/lfj8/lfj8_h03_can13.c) · [targets/lfj8/test_lfj8_h03_dtc_can.c](../targets/lfj8/test_lfj8_h03_dtc_can.c)
+**Код.** [targets/lfj8/lfj8_h03_dtc_can.c](../targets/lfj8/lfj8_h03_dtc_can.c) · [targets/lfj8/lfj8_h03_can13.c](../targets/lfj8/lfj8_h03_can13.c) · [targets/lfj8/test_lfj8_h03_dtc_can.c](../targets/lfj8/test_lfj8_h03_dtc_can.c) · [targets/lfj8/lfj8_h03_dtc_rx_queue.c](../targets/lfj8/lfj8_h03_dtc_rx_queue.c) · [targets/lfj8/lfj8_h03_dtc_rx_queue.h](../targets/lfj8/lfj8_h03_dtc_rx_queue.h) · [targets/lfj8/test_lfj8_h03_dtc_rx_queue.c](../targets/lfj8/test_lfj8_h03_dtc_rx_queue.c)
 
-**Что настраивать.** RX14/15 0x001500–0x0016F4, копия 0x808526, разбор около 0x001578. Прямой перехват затрагивает область ниже приложения.
+**Что настраивать.** RX14/15 0x001500–0x0016F4, копия 0x808526, разбор около 0x001578. Прямой перехват затрагивает область ниже приложения. Очередь: max_age_bits < 32768 и не больше бюджета CAN13, bit_time_us из настройки шины; непрерывное время микросекунд. Конкретное размещение RAM открыто.
 
 **Проверки.** [PC](#check-pc) · [M32R](#check-m32r)
 
@@ -764,7 +764,7 @@ python -B tools/verify_sources.py --donor-repo .sources/R1 --base-9e1c $h03
 python -B tools/build_pc_checks.py --cc $zig --out local/pc-checks
 ```
 
-**Последний сохранённый результат.** [PC-CHECKS.json](../verification/project-audit/PC-CHECKS.json)
+**Последний сохранённый результат.** [dtc02-PC-CHECKS.json](../verification/project-audit/dtc02-PC-CHECKS.json)
 
 <a id="check-m32r"></a>
 ### M32R — Сборка и модель M32R
@@ -775,7 +775,7 @@ python -B targets/lfj8/build.py --output local/audit/bridge --m32r-cc $m32rGcc -
 python -B targets/lfj8/check_h03_link.py --base $h03 --gcc $m32rGcc --bridge local/audit/bridge/lfj8_9e1c_m32r.o --controller local/audit/controller/rbm_u340e_m32r_be.o --out local/audit/h03-link.json --bosch-trace verification/e4m3-can-9e1c/ordinary-model/round-trip.json
 ```
 
-**Последний сохранённый результат.** [h03-link.json](../verification/e4m3-can-9e1c/h03-link.json) · [h03-link.json](../verification/e4m3-can-9e1c/ordinary-model/h03-link.json)
+**Последний сохранённый результат.** [dtc02-h03-link.json](../verification/project-audit/dtc02-h03-link.json)
 
 <a id="check-phase"></a>
 ### PHASE — Штатная публикация и потери событий

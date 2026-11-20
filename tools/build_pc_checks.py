@@ -90,6 +90,15 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
             "-o", str(dtc_io_check),
         ])
         run("Диагностика H03 с подтверждением передачи CAN", [str(dtc_io_check)])
+        dtc_rx_check = output / f"lfj8_h03_dtc_rx_queue_test{suffix}"
+        run("Сборка очереди приёма диагностики H03", [
+            *driver, *common_flags, "-pedantic", "-I", "diagnostics", "-I", "targets/lfj8",
+            "diagnostics/chery_dtc.c", "diagnostics/chery_dtc_can.c", "diagnostics/chery_dtc_link.c",
+            "targets/lfj8/lfj8_bridge.c", "targets/lfj8/lfj8_donor_io.c",
+            "targets/lfj8/lfj8_h03_dtc_can.c", "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
+            "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c", "-o", str(dtc_rx_check),
+        ])
+        run("Очередь DTC: переполнение, давность и сброс CAN", [str(dtc_rx_check)])
         controller_dir = output / "controller"
         library_by_platform = {"win32": "rbm_u340e.dll", "darwin": "librbm_u340e.dylib"}
         library = controller_dir / library_by_platform.get(sys.platform, "librbm_u340e.so")
