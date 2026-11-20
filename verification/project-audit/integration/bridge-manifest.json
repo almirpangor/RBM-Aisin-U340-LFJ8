@@ -1,0 +1,135 @@
+{
+  "sources": {
+    "lfj8_bridge.c": {
+      "bytes": 5894,
+      "sha256": "3ed3d873f7705a30daa86c6d5ce0088420f53fd139f0f3ff978e5732d1826ff8"
+    },
+    "ta2005_chery_inputs.c": {
+      "bytes": 3301,
+      "sha256": "65247084bec5a93f9d059e08a9fc3308180c41db74cf6c2dd2ad8b4db3f4d427"
+    },
+    "lfj8_donor_io.c": {
+      "bytes": 26046,
+      "sha256": "497da3536f7d581b3cce0e788362c556ac66a01cb76255a8b664b3ee7f38c0d5"
+    },
+    "lfj8_chery_tx.c": {
+      "bytes": 2491,
+      "sha256": "81e285f12b80008cf92ba801e224d745c88328b03bed9b789712528ccebead43"
+    },
+    "lfj8_selector_adc.c": {
+      "bytes": 2551,
+      "sha256": "a56d1bf8d5518ce5a589ffe7e711be8389e15d5fb652bffd111fccc847cb6c20"
+    },
+    "lfj8_h03_atf.c": {
+      "bytes": 6401,
+      "sha256": "028c68bc40ecfd6bc62d60f751d92008fc9004dcb88112ebda62966f40688b22"
+    },
+    "test_lfj8_h03_atf.c": {
+      "bytes": 11140,
+      "sha256": "07cb566fd1cbc9c40d234c7f138eda8642c5ddce5adb56bc853ce2eea97e7af8"
+    },
+    "lfj8_h03_engine_rx.c": {
+      "bytes": 5531,
+      "sha256": "a2d6bf6fd688fc14e42ed265fed4077f12c0b67792baad53fd341507e68179b2"
+    },
+    "lfj8_h03_mmio.c": {
+      "bytes": 1578,
+      "sha256": "21785b4801bc6cbc6c0adac30858d50966b8fd0fa602c7882abe2cb6e07e5623"
+    },
+    "lfj8_gear_observer.c": {
+      "bytes": 7177,
+      "sha256": "f498af482aecdaa1d9ffa77f7d9730313903f206db5346f5c930fde9e723ae55"
+    },
+    "test_lfj8_gear_observer.c": {
+      "bytes": 9340,
+      "sha256": "6db0bf74b29d0ca948cfeeae5ea3457ee939d44ca1515e9eb35bffc81d2dfe79"
+    },
+    "lfj8_h03_atf.h": {
+      "bytes": 3106,
+      "sha256": "b6101591715a4d8cc5f224a733d44d298ef102a8b53f1f61580d242dfe0ed9c3"
+    },
+    "lfj8_h03_engine_rx.h": {
+      "bytes": 1963,
+      "sha256": "03d6bffb988090d5fd519c744389512c02947f37f174b4e2ac68e9cc998073d9"
+    },
+    "lfj8_h03_mmio.h": {
+      "bytes": 524,
+      "sha256": "d426eed142fb1827746c07a3d8391c46709333e6b978656089326abe4387607a"
+    },
+    "lfj8_gear_observer.h": {
+      "bytes": 2660,
+      "sha256": "0274eb03d5ef0d565f75db615c3bc03aa0391952c20fa8f7123b983f3e02ab1b"
+    },
+    "host_check.c": {
+      "bytes": 33424,
+      "sha256": "f6cccc453e41205df4b36ee57030ce4d7af0450e087171aac4d95d0a39817437"
+    },
+    "build.py": {
+      "bytes": 9470,
+      "sha256": "e06756722c7f9323c1d72a1274aa6d081b90cc83cedfea36252e2c9d22c7fca4"
+    },
+    "lfj8_bridge.h": {
+      "bytes": 2101,
+      "sha256": "84468b462ad9209d0a0a52386e92b478990e2b795abc7c4571f7c8a576a0f20f"
+    },
+    "lfj8_donor_io.h": {
+      "bytes": 7678,
+      "sha256": "d00c34ceb66965943d7606c1161e53e0ba21921449bae1b95912fd6fd7f671e9"
+    },
+    "lfj8_chery_tx.h": {
+      "bytes": 1170,
+      "sha256": "5e1f21b1c0c3c20b8249d638f2a67f567a44c2fe31c70af2d6e6772bcbcd0cfc"
+    },
+    "lfj8_selector_adc.h": {
+      "bytes": 2238,
+      "sha256": "17621e6d1274068b47cfb25d6728dc6c38a9b6ef399be299a7ee2e6be6e5f930"
+    },
+    "ta2005_chery_inputs.h": {
+      "bytes": 1772,
+      "sha256": "5062868f88c5b68112635084ea1e224657e51f1754fd9f6565b20182a2fb3ecf"
+    }
+  },
+  "artifacts": {
+    "lfj8_9e1c_m32r.o": {
+      "bytes": 27228,
+      "sha256": "c92795ced64e0920b640583d7e6eb463e59017981416b397f8a2250e3b69f3fa",
+      "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+      "triple": "m32r-elf",
+      "target_flags": [
+        "-m32r",
+        "-mmodel=medium",
+        "-msdata=none"
+      ],
+      "elf": {
+        "class": 32,
+        "endian": "big",
+        "type": "REL",
+        "machine": 88,
+        "flags": "0x0",
+        "entry": 0
+      },
+      "sources": [
+        "lfj8_bridge.c",
+        "ta2005_chery_inputs.c",
+        "lfj8_donor_io.c",
+        "lfj8_chery_tx.c",
+        "lfj8_selector_adc.c",
+        "lfj8_h03_atf.c",
+        "lfj8_h03_engine_rx.c",
+        "lfj8_h03_mmio.c",
+        "lfj8_gear_observer.c"
+      ],
+      "undefined_symbols": []
+    }
+  },
+  "m32r_base": {
+    "source_id": "H03",
+    "name": "LFJ8-T-D.bin",
+    "embedded_id": "LFJ8-18-9E1C",
+    "software": "LFJ8TC000LFXA0A0",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544",
+    "target_id": "LFJ8-18-9E1C",
+    "target_hardware_tested": false
+  }
+}

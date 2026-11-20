@@ -146,7 +146,7 @@ class TaskBoard:
         private_ref = "refs/rbm-coordination/" + uuid.uuid4().hex
         try:
             self.git("fetch", "--quiet", "--no-tags", "--no-write-fetch-head",
-                     self.remote, f"{remote_ref}:{private_ref}")
+                     "--refmap=", self.remote, f"{remote_ref}:{private_ref}")
             return self.git("rev-parse", private_ref).stdout.decode().strip()
         finally:
             self.git("update-ref", "-d", private_ref, check=False)
@@ -267,10 +267,18 @@ class TaskBoard:
                     self.ensure_published(result, record["branch"])
                     record.update(stage="review", result=result)
                 elif action == "complete":
+                    if previous["stage"] != "review" or result != previous.get("result"):
+                        raise Conflict("Complete only the exact result currently under review")
                     self.ensure_published(result, self.main)
                     record.update(stage="done", result=result)
                 elif action in {"resume", "block", "release"}:
                     record["stage"] = {"resume": "in_progress", "block": "blocked", "release": "released"}[action]
+                    if action != "release":
+                        record["result"] = None
+                elif (action == "heartbeat" and files is not None and
+                      files != previous["files"] and previous["stage"] == "review"):
+                    # New work invalidates the previous review, but keeps the reservation.
+                    record.update(stage="in_progress", result=None)
                 record["updated_at"] = now
             if record["stage"] in ACTIVE:
                 for other_id, other in board["claims"].items():
