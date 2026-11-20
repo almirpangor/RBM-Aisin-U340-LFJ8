@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 522,
+  "sequence": 523,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -41,12 +41,12 @@
         "targets/lfj8/lfj8_h03_dtc_native.h",
         "verification/project-audit/dtc02-h03-native-owner.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "0580560d4a0e442cb07862988bd40b0f",
       "claimed_at": "2026-11-20T19:40:29+00:00",
-      "updated_at": "2026-11-20T19:47:28+00:00",
-      "note": "Пройдены 18 сравнений связанного RX и проверки отказа часов и смены поколения. В отчёте зафиксированы переходы, 3376 байт нижнего кода и зависимости для запуска H03.",
-      "result": null
+      "updated_at": "2026-11-20T19:48:02+00:00",
+      "note": "Проверенный коммит: нижний IRQ H03 и foreground CAN13 используют h03_can_owner и TML0. 18 сравнений M32R, отказы часов, тёплая перепривязка, новое поколение и запись 0x722 прошли. В отчёте указаны вызовы для rbm_h03_application_binding, требуемые T6/native_ready, RAM и итоговая компоновка. Готовность BIN открыта.",
+      "result": "ed5fd7118b1f4296a952a5811a9364d682e6b7a9"
     },
     "CAN-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -4758,9 +4758,17 @@
       "action": "heartbeat",
       "claim_id": "f6547625e0dd48c180162a7963424191",
       "at": "2026-11-20T19:47:53+00:00"
+    },
+    {
+      "operation_id": "1c72eac8585543a6b2bbe692515c569a",
+      "task": "DTC-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "0580560d4a0e442cb07862988bd40b0f",
+      "at": "2026-11-20T19:48:02+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:47:53+00:00",
+  "updated_at": "2026-11-20T19:48:02+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
