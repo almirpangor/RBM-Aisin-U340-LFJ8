@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 471,
+  "sequence": 472,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -139,11 +139,11 @@
         "targets/lfj8/test_lfj8_h03_nvm.c",
         "verification/project-audit/dtc04-retired-history.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "649f9eb04dd24d0ea547f2886878f0b0",
       "claimed_at": "2026-11-20T18:38:10+00:00",
-      "updated_at": "2026-11-20T18:45:07+00:00",
-      "note": "Пустая запись и исключение старого слота подтверждаются до ответа 54 FF 00. Модель носителя на ПК/M32R, 37 шагов ПК и сборка/эмуляция M32R прошли. Отчёт verification/project-audit/dtc04-retired-history.md. Физический носитель, запуск и стенд остаются открыты.",
+      "updated_at": "2026-11-20T19:24:07+00:00",
+      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
       "result": "3f5f8730ab544fc9fb0185138b97b6956e04c377"
     },
     "H03-02": {
@@ -4328,9 +4328,17 @@
       "action": "complete",
       "claim_id": "4f246c72de0f49dc90a87bed827a9df1",
       "at": "2026-11-20T19:23:47+00:00"
+    },
+    {
+      "operation_id": "495cba815ecf4adf9d510233a1a7b6c5",
+      "task": "DTC-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "649f9eb04dd24d0ea547f2886878f0b0",
+      "at": "2026-11-20T19:24:07+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:23:47+00:00",
+  "updated_at": "2026-11-20T19:24:07+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
