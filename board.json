@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 224,
+  "sequence": 225,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -420,7 +420,7 @@
       "stage": "in_progress",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "claimed_at": "2026-11-20T16:20:38+00:00",
-      "updated_at": "2026-11-20T16:48:47+00:00",
+      "updated_at": "2026-11-20T16:49:33+00:00",
       "note": "Проверяю внутреннюю ветвь активации Virtual Flash после диспетчера и применяю результат к допуску ELF. Физический транспорт не задействую.",
       "result": null
     },
@@ -2343,9 +2343,17 @@
       "action": "heartbeat",
       "claim_id": "1377d30e649940088e8dccd1a6fae0cf",
       "at": "2026-11-20T16:49:11+00:00"
+    },
+    {
+      "operation_id": "390082d353b349fc87d5a94ec57cdeed",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "resume",
+      "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
+      "at": "2026-11-20T16:49:33+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:49:11+00:00",
+  "updated_at": "2026-11-20T16:49:33+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
