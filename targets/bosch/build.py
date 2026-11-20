@@ -33,6 +33,31 @@ def checksum_records(diag, image):
     return records
 
 
+def section_offsets(image_size, offset, sections, torque_span):
+    occupied = [(torque_span.start, torque_span.stop, "native torque code")]
+    occupied.extend((start, start + 16, "E4M3 checksum record")
+                    for start in sorted(CHECKSUM_RECORD_OFFSETS))
+    offsets = []
+    for name, cpu, code in sections:
+        if not code:
+            raise ValueError(f"{name} section is empty")
+        try:
+            start = offset(cpu)
+            last = offset(cpu + len(code) - 1)
+        except ValueError as error:
+            raise ValueError(f"{name} section extends outside mapped flash") from error
+        end = start + len(code)
+        if not (0 <= start < end <= image_size and last == end - 1):
+            raise ValueError(f"{name} section extends outside contiguous image bytes")
+        for other_start, other_end, other_name in occupied:
+            if start < other_end and other_start < end:
+                raise ValueError(f"{name} section overlaps {other_name} at file offset "
+                                 f"{max(start, other_start):#x}")
+        occupied.append((start, end, name))
+        offsets.append(start)
+    return offsets
+
+
 def assemble_speed(diag, torque, transmitter=None):
     a = diag.Asm(SPEED_ORIGIN, SPEED_LIMIT)
     arbitration = 0x8000 | (CAN_ID << 2)
@@ -274,8 +299,10 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fie
     ]
     if tx_part:
         sections.append(("engine_signals_tx", tx_part.origin, tx_code))
-    for name, cpu, code in sections:
-        off = diag.offset(cpu)
+    torque_start = diag.offset(old_torque.origin)
+    torque_span = slice(torque_start, torque_start + len(old_torque.data))
+    offsets = section_offsets(len(s04), diag.offset, sections, torque_span)
+    for (name, cpu, code), off in zip(sections, offsets, strict=True):
         if name in ("speed_receiver", "engine_signals_tx") and any(
             byte != 255 for byte in s04[off:off + len(code)]
         ):
@@ -299,8 +326,7 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fie
     records = checksum_records(diag, output)
     if not all(record["valid"] for record in records):
         raise ValueError("Bosch checksum records failed after rebuild")
-    ta = diag.offset(old_torque.origin)
-    if output[ta:ta + len(old_torque.data)] != s04[ta:ta + len(old_torque.data)]:
+    if output[torque_span] != s04[torque_span]:
         raise ValueError("Existing E4 torque machine code changed")
     changed = {i for i, (old, new) in enumerate(zip(s04, output, strict=True)) if old != new}
     if not changed <= allowed:
