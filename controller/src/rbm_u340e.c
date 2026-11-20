@@ -139,10 +139,15 @@ int rbm_u340e_step(RbmU340eController *controller, const RbmU340eInput *input,
         return 0;
     }
     *output = (RbmU340eOutput){0};
-    if (!controller || !input || controller->mode > RBM_U340E_TIPTRONIC ||
+    if (!controller) {
+        return 0;
+    }
+    if (!input || controller->mode > RBM_U340E_TIPTRONIC ||
         input->selector > RBM_U340E_SELECTOR_L || input->actual_gear > 4 ||
         (input->allowed_gears & ~GEAR_MASK) || (input->stable_buttons & ~BUTTON_MASK) ||
         input->buttons_valid > 1 || input->auto_request_valid > 1 || input->shifting > 1) {
+        /* The next valid button sample establishes a new edge baseline. */
+        controller->buttons_seen = 0;
         return 0;
     }
 
