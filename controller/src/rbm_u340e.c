@@ -10,6 +10,38 @@ enum {
     OVERDRIVE_MODE_MASK = RBM_U340E_OVERDRIVE_AUTO | RBM_U340E_OVERDRIVE_TIPTRONIC
 };
 
+uint8_t rbm_u340e_selector_sample(RbmU340eSelectorInput *state, uint16_t adc)
+{
+    static const uint16_t limits[][2] = {
+        [RBM_U340E_SELECTOR_P] = {889, 980},
+        [RBM_U340E_SELECTOR_R] = {784, 857},
+        [RBM_U340E_SELECTOR_N] = {624, 717},
+        [RBM_U340E_SELECTOR_D] = {456, 544},
+        [RBM_U340E_SELECTOR_2] = {301, 377},
+        [RBM_U340E_SELECTOR_L] = {164, 224},
+    };
+    if (!state) {
+        return RBM_U340E_SELECTOR_UNKNOWN;
+    }
+
+    uint8_t range = RBM_U340E_SELECTOR_UNKNOWN;
+    for (uint8_t position = RBM_U340E_SELECTOR_P; position <= RBM_U340E_SELECTOR_L; ++position) {
+        if (adc >= limits[position][0] && adc < limits[position][1]) {
+            range = position;
+            break;
+        }
+    }
+    if (range == RBM_U340E_SELECTOR_UNKNOWN) {
+        *state = (RbmU340eSelectorInput){0};
+    } else if (range != state->candidate) {
+        state->candidate = range;
+        state->samples = 1;
+    } else if (state->samples < 4) {
+        ++state->samples;
+    }
+    return state->samples == 4 ? range : RBM_U340E_SELECTOR_UNKNOWN;
+}
+
 int rbm_u340e_init(RbmU340eController *controller, const RbmU340ePolicy *policy)
 {
     if (!controller || !policy || policy->initial_mode > RBM_U340E_TIPTRONIC ||
@@ -57,9 +89,14 @@ static uint8_t relay_commands(uint8_t selector)
 static uint8_t propose_gear(const RbmU340eController *controller,
     const RbmU340eInput *input, uint8_t rising, RbmU340eOutput *output)
 {
+    static const uint8_t range_mask[] = {
+        [RBM_U340E_SELECTOR_D] = GEAR_MASK,
+        [RBM_U340E_SELECTOR_2] = 0x03,
+        [RBM_U340E_SELECTOR_L] = 0x01,
+    };
+    const unsigned allowed = input->allowed_gears & range_mask[input->selector];
     const unsigned selector_bit = 1u << input->selector;
-    if (!(selector_bit & RBM_U340E_FORWARD_SELECTORS) || input->shifting ||
-        !input->actual_gear || !input->allowed_gears) {
+    if (input->shifting || !input->actual_gear || !allowed) {
         return 0;
     }
 
@@ -89,7 +126,7 @@ static uint8_t propose_gear(const RbmU340eController *controller,
     }
 
     if (gear < 1 || gear > 4 || (overdrive_limited && gear == 4) ||
-        !(input->allowed_gears & (1u << (gear - 1)))) {
+        !(allowed & (1u << (gear - 1)))) {
         return 0;
     }
     return (uint8_t)gear;

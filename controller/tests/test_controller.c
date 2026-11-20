@@ -136,6 +136,77 @@ static void check_output_path(void)
     assert(!output.write_count && memcmp(&state, &before, sizeof(state)) == 0);
 }
 
+static void check_analog_selector(void)
+{
+    const struct {
+        uint16_t low;
+        uint16_t high;
+        uint8_t position;
+    } windows[] = {
+        {889, 979, RBM_U340E_SELECTOR_P},
+        {784, 856, RBM_U340E_SELECTOR_R},
+        {624, 716, RBM_U340E_SELECTOR_N},
+        {456, 543, RBM_U340E_SELECTOR_D},
+        {301, 376, RBM_U340E_SELECTOR_2},
+        {164, 223, RBM_U340E_SELECTOR_L},
+    };
+    RbmU340eSelectorInput selector = {0};
+    for (unsigned int i = 0; i < sizeof(windows) / sizeof(windows[0]); ++i) {
+        const uint16_t low = windows[i].low;
+        const uint16_t high = windows[i].high;
+        for (unsigned int sample_index = 0; sample_index < 3; ++sample_index) {
+            assert(rbm_u340e_selector_sample(&selector, low) == RBM_U340E_SELECTOR_UNKNOWN);
+        }
+        assert(rbm_u340e_selector_sample(&selector, high) == windows[i].position);
+        assert(rbm_u340e_selector_sample(&selector, high) == windows[i].position);
+        for (unsigned int sample_index = 0; sample_index < 4; ++sample_index) {
+            assert(rbm_u340e_selector_sample(&selector, high + 1) == RBM_U340E_SELECTOR_UNKNOWN);
+            assert(rbm_u340e_selector_sample(&selector, low - 1) == RBM_U340E_SELECTOR_UNKNOWN);
+        }
+    }
+
+    RbmU340eController controller;
+    const RbmU340ePolicy policy = {.initial_mode = RBM_U340E_AUTO, .initial_overdrive_enabled = 1};
+    assert(rbm_u340e_init(&controller, &policy));
+    RbmU340eInput input = {.actual_gear = 2, .allowed_gears = 0x0f, .auto_request_valid = 1};
+    input.auto_request.speed_4549 = 254;
+
+    for (unsigned int i = 0; i < 4; ++i) {
+        input.selector = rbm_u340e_selector_sample(&selector, 347);
+    }
+    assert(input.selector == RBM_U340E_SELECTOR_2);
+    RbmU340eOutput range2 = sample(&controller, &input, 0);
+    assert(range2.auto_request_valid && range2.auto_request.index_4854 == 3);
+    assert(!range2.requested_gear && !range2.relay_mask);
+
+    input.auto_request.speed_4549 = 0;
+    assert(sample(&controller, &input, 0).requested_gear == 1);
+    for (unsigned int i = 0; i < 3; ++i) {
+        input.selector = rbm_u340e_selector_sample(&selector, 194);
+        RbmU340eOutput transition = sample(&controller, &input, 0);
+        assert(!transition.requested_gear && !transition.relay_mask);
+    }
+    input.selector = rbm_u340e_selector_sample(&selector, 194);
+    assert(input.selector == RBM_U340E_SELECTOR_L);
+    RbmU340eOutput low_range = sample(&controller, &input, 0);
+    assert(low_range.requested_gear == 1 && low_range.relay_mask == RBM_U340E_RELAY_AUXILIARY);
+    input.allowed_gears = 0x02;
+    assert(!sample(&controller, &input, 0).requested_gear);
+    input.allowed_gears = 0x0f;
+
+    const uint16_t unavailable[] = {0, 1023, UINT16_MAX};
+    for (unsigned int i = 0; i < sizeof(unavailable) / sizeof(unavailable[0]); ++i) {
+        input.selector = rbm_u340e_selector_sample(&selector, unavailable[i]);
+        assert(input.selector == RBM_U340E_SELECTOR_UNKNOWN);
+        const RbmU340eOutput fault = sample(&controller, &input, 0);
+        assert(!fault.requested_gear && !fault.relay_mask);
+        for (unsigned int recovery = 0; recovery < 3; ++recovery) {
+            assert(rbm_u340e_selector_sample(&selector, 194) == RBM_U340E_SELECTOR_UNKNOWN);
+        }
+        assert(rbm_u340e_selector_sample(&selector, 194) == RBM_U340E_SELECTOR_L);
+    }
+}
+
 static uint32_t fixture_hash(const FactoryHydraulics *state)
 {
     uint32_t hash = 2166136261u;
@@ -186,6 +257,7 @@ unsigned rbm_test_hydraulic_transfer(void);
 int main(void)
 {
     check_driver_controls();
+    check_analog_selector();
     check_output_path();
     check_hydraulic_cycle();
 #ifdef RBM_TEST_TRANSFERS
@@ -196,7 +268,7 @@ int main(void)
 #endif
 #endif
 #ifndef RBM_TEST_QUIET
-    puts("Controller tests passed: selector, relays, Auto, Tiptronic, OD, S1/S2, ST, SLT and rejection.");
+    puts("Controller tests passed: six ADC ranges, relays, Auto, Tiptronic, OD, S1/S2, ST and SLT.");
 #endif
     return 0;
 }

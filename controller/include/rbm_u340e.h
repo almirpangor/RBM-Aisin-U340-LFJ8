@@ -26,6 +26,16 @@ enum {
         (1u << RBM_U340E_SELECTOR_2) | (1u << RBM_U340E_SELECTOR_L)
 };
 
+typedef struct {
+    uint8_t candidate;
+    uint8_t samples;
+} RbmU340eSelectorInput;
+
+/* Zero-initialize the state. Call once per scheduled ADC sample.
+ * Input code is 0..1023 on the 5 V scale. Pass UINT16_MAX if the sample
+ * is unavailable. Four consecutive samples in one window qualify a range. */
+uint8_t rbm_u340e_selector_sample(RbmU340eSelectorInput *state, uint16_t adc);
+
 enum {
     RBM_U340E_BUTTON_MODE = 1u << 0,
     RBM_U340E_BUTTON_UP = 1u << 1,
