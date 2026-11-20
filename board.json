@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 125,
+  "sequence": 126,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -434,6 +434,22 @@
       "claimed_at": "2026-11-20T16:21:57+00:00",
       "updated_at": "2026-11-20T16:23:36+00:00",
       "note": "Reproduced an invalid 0xA7830 checksum with a 50-record report on the original build. Added exact offset coverage guard. Negative injection and focused tests pass; running normal builds and ST10 model.",
+      "result": null
+    },
+    "VSS-02": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex VSS-02",
+      "branch": "codex/vss02-measurement-check-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "tests/test_vss_measurements.py",
+        "tools/check_vss_measurements.py",
+        "verification/project-audit/vss02-measurement-check.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
+      "claimed_at": "2026-11-20T16:24:53+00:00",
+      "updated_at": "2026-11-20T16:24:53+00:00",
+      "note": "Офлайн-проверка измеренных параметров S51, эталонной скорости и 0x1AE. Явно различаю неподвижность и потерю импульсов, значения калибровок не подставляю.",
       "result": null
     }
   },
@@ -1437,9 +1453,17 @@
       "action": "heartbeat",
       "claim_id": "a16c78536102430583d910e97b8385d3",
       "at": "2026-11-20T16:24:42+00:00"
+    },
+    {
+      "operation_id": "d254ee2151594945b38f64162878ed06",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
+      "at": "2026-11-20T16:24:53+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:24:42+00:00",
+  "updated_at": "2026-11-20T16:24:53+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {

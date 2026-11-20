@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:24:42+00:00**. Изменение № **125**.
+Обновлено UTC: **2026-11-20T16:24:53+00:00**. Изменение № **126**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -32,7 +32,7 @@
 | H03-05 — SLT, силовые выходы и реакция на отказ | Выполняется | Codex — штатное отключение SLT \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-05-p0745-01a1f9a2 | 2026-11-20T16:24:11+00:00 | Отзываю подготовленную команду непосредственно при защёлкивании P0745. Проверю повтор после очистки флага. / commit bf4720ec65f4f5e8f32ce3368c873fd865e1ae41 |
 | IO-01 — Два дополнительных реле | Отложена владельцем | — | — | — | — |
 | VSS-01 — Точный расчёт VSS и скорость по CAN | На проверке | Codex VSS-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss01-exact-arithmetic-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:22:43+00:00 | Точная VSS арифметика устраняет промежуточное переполнение. 25 000 сравнений, PC 33 шага/65 тестов, M32R 17 компонентов, Bosch C7FF/C800/FFFF PASS по ожидаемому поведению. Параметры VSS-02 и стенд открыты. Отчёт verification/project-audit/vss01-exact-arithmetic.md. / commit d05896bcac7b731f8d3f85b9aaebd3394e32473c |
-| VSS-02 — Кинематика и параметры реальной скорости | Свободна | — | — | — | — |
+| VSS-02 — Кинематика и параметры реальной скорости | Выполняется | Codex VSS-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss02-measurement-check-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:24:53+00:00 | Офлайн-проверка измеренных параметров S51, эталонной скорости и 0x1AE. Явно различаю неподвижность и потерю импульсов, значения калибровок не подставляю. |
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
 | MODE-01 — Логика шести положений и кнопок | На проверке | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:14:42+00:00 | Staggered Tiptronic plus/minus overlap now blocks manual requests. Original C/Python regressions reproduced. PC 33 steps/66 tests plus dedicated C regression PASS; M32R build, 17 components and dedicated regression PASS. Evidence verification/project-audit/mode01-shift-conflict.md. Integrator to record the audit; physical input and hydraulic execution remain open. / commit ed33ea93653f7bcbc2c6f13736fe1424335085e6 |
 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | На проверке | Codex — входы Tiptronic H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/u340-32e6ac79 | 2026-11-20T16:10:33+00:00 | Передаю интегратору. ПК 33 шага / 65 тестов PASS, M32R сборка с H03, сквозной прогон с трассой Bosch и 17 компонентов PASS. Отчёт mode02-button-input.md содержит хеши для общего аудита. Подключение к расписанию H03, измерение входов и полный гидравлический цикл остаются открытыми. / commit 53c5f27e40f4ed48fd5873d002a0ab315f448bcf |
@@ -260,10 +260,19 @@
 - targets/lfj8/test_lfj8_vss_arithmetic.c
 - verification/project-audit/vss01-exact-arithmetic.md
 
+### VSS-02
+
+Чат: Codex VSS-02. Claim ID: 6514c671a5e342f0bf87a0fcd4a383c0.
+
+- tests/test_vss_measurements.py
+- tools/check_vss_measurements.py
+- verification/project-audit/vss02-measurement-check.md
+
 ## Последние события
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:24:53+00:00 | VSS-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:24:42+00:00 | H03-04 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:24:18+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:24:11+00:00 | H03-05 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
@@ -293,4 +302,3 @@
 | 2026-11-20T16:18:01+00:00 | H03-03 | claim | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:17:43+00:00 | ORG-01 | heartbeat | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T16:17:33+00:00 | DTC-02 | resume | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
-| 2026-11-20T16:17:17+00:00 | H03-03 | complete | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
