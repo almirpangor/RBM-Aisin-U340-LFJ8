@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:21:49+00:00**. Изменение № **112**.
+Обновлено UTC: **2026-11-20T16:21:57+00:00**. Изменение № **113**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -23,7 +23,7 @@
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex — CAN0 H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can-03-h03-01a1f99f | 2026-11-20T15:50:27+00:00 | Сведено с main 264f249. 16 прогонов lifecycle, 12 TX gate и project_status --check PASS. Протокол CANHacker добавлен. Штатная привязка и аппаратная приёмка открыты. / commit 507ba30e1a3e68c727b137ef209d1a45333591ad |
 | CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 — снятие RB-запроса \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-torque-fea1b366 | 2026-11-20T16:13:07+00:00 | Снятие RB-запроса при отзыве профиля готово. ПК: 33 шага и 65 тестов PASS. M32R: 17 компонентных прогонов PASS. Bosch OFFLINE_ONLY: штатное снятие и потеря статуса PASS. Интегратору: обновить общий снимок и карточку по отчёту verification/project-audit/can04-torque-revocation.md, затем complete после принятия в main. Стенд и целевые калибровки открыты. / commit 0a3f6260d1bee66174df70712597fc868777e34b |
 | CAN-05 — Полнота штатного обмена Chery | На проверке | Codex CAN-05 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/u340-1120-c7e4 | 2026-11-20T16:01:03+00:00 | Host 1AE round trip: 65536 operand pairs and validity transitions PASS. PC 33 steps / 59 tests PASS. Bosch compact build and ST10 model PASS OFFLINE_ONLY. Evidence can05-1ae-roundtrip.md; integrator to record the two new test files in the active audit. Native integration and hardware open. / commit 20247416c28972443bc2992d06d9706566c677d3 |
-| ECU-01 — Проверочная сборка Bosch E4M3 | Свободна | — | — | — | — |
+| ECU-01 — Проверочная сборка Bosch E4M3 | Выполняется | Codex ECU-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/ecu01-1120-c7e4 | 2026-11-20T16:21:57+00:00 | Enforce complete, unique coverage of the 51 pinned E4M3 checksum records. Reproduce silent omission and verify the ordinary compact offline build remains byte-identical. |
 | ECU-02 — Калибровка момента и работа двигателя | Свободна | — | — | — | — |
 | H03-01 — Выбранная основа 9E1C и карта подключения | Свободна | — | — | — | — |
 | H03-02 — S51, S83 и температура ATF | На проверке | Codex — привязка ATF H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-02-atf-01a1f9a2 | 2026-11-20T16:18:28+00:00 | Добавлен условный поставщик TML0: PRS1=9, Clock Bus 1 и внешнее подтверждение физического 1 МГц. M32R: 11 пар и 3 отрицательных проверки PASS; стек 92/120/72 байта. Физические 1 МГц, размещение и IRQ остаются. / commit a376f561dacb33793b7bb65e57a2ea18fdcea08d |
@@ -133,6 +133,14 @@
 - diagnostics/test_chery_dtc_journal.c
 - tools/build_pc_checks.py
 - verification/project-audit/dtc04-journal.md
+
+### ECU-01
+
+Чат: Codex ECU-01. Claim ID: a1532b4af90d4794aec52c99f7b434a2.
+
+- targets/bosch/build.py
+- tests/test_bosch_build_integrity.py
+- verification/project-audit/ecu01-checksum-coverage.md
 
 ### H03-02
 
@@ -272,6 +280,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:21:57+00:00 | ECU-01 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:21:49+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T16:21:43+00:00 | MODE-03 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:21:14+00:00 | ORG-01 | review | codex-integration-01a1f76d-20261120 |
@@ -301,4 +310,3 @@
 | 2026-11-20T16:14:25+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T16:13:59+00:00 | CAN-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:13:40+00:00 | MODE-01 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
-| 2026-11-20T16:13:29+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |

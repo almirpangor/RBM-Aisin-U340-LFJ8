@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 112,
+  "sequence": 113,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -412,6 +412,22 @@
       "claimed_at": "2026-11-20T16:21:43+00:00",
       "updated_at": "2026-11-20T16:21:43+00:00",
       "note": "Проверяю программную матрицу параметров Auto, Tiptronic и Overdrive, запреты положения/подтверждения передачи и поведение при повторной инициализации. Эксплуатационные значения остаются открытыми.",
+      "result": null
+    },
+    "ECU-01": {
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "label": "Codex ECU-01",
+      "branch": "codex/ecu01-1120-c7e4",
+      "files": [
+        "targets/bosch/build.py",
+        "tests/test_bosch_build_integrity.py",
+        "verification/project-audit/ecu01-checksum-coverage.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "a1532b4af90d4794aec52c99f7b434a2",
+      "claimed_at": "2026-11-20T16:21:57+00:00",
+      "updated_at": "2026-11-20T16:21:57+00:00",
+      "note": "Enforce complete, unique coverage of the 51 pinned E4M3 checksum records. Reproduce silent omission and verify the ordinary compact offline build remains byte-identical.",
       "result": null
     }
   },
@@ -1311,9 +1327,17 @@
       "action": "heartbeat",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "at": "2026-11-20T16:21:49+00:00"
+    },
+    {
+      "operation_id": "62d77d346b1c4bcf873925496738b8a8",
+      "task": "ECU-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "claim",
+      "claim_id": "a1532b4af90d4794aec52c99f7b434a2",
+      "at": "2026-11-20T16:21:57+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:21:49+00:00",
+  "updated_at": "2026-11-20T16:21:57+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
