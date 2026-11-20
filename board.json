@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 349,
+  "sequence": 350,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -155,12 +155,12 @@
         "targets/lfj8/test_lfj8_h03_nvm.c",
         "verification/project-audit/dtc04-h03-nvm.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "df8ec9e7df1a4383b71e3070e9462547",
       "claimed_at": "2026-11-20T18:06:13+00:00",
-      "updated_at": "2026-11-20T18:10:27+00:00",
-      "note": "Сопоставлены 13 блоков H03 с M32176F4. Программный журнал записывает тело и маркер отдельными полусловами. Запущены проверки границ, прерываний и восстановления без физической записи.",
-      "result": null
+      "updated_at": "2026-11-20T18:16:11+00:00",
+      "note": "Передаю интегратору геометрию 13 блоков H03, полусловный backend журнала и восстановление перед запуском. ПК 37 шагов и 102 теста, M32R 45 прерываний записи, 33 стирания и 256 битовых отказов, INTEGRATION3 native и components PASS. Expanded повторил дефицит 448 байт. Носитель, физический драйвер и штатный вызов открыты. Отчёт verification/project-audit/dtc04-h03-nvm.md.",
+      "result": "e54b8051439965f4274969e46af534d4d98284db"
     },
     "H03-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -3365,9 +3365,17 @@
       "action": "review",
       "claim_id": "2b42f17a3d734aa29534d7fcee10f2ea",
       "at": "2026-11-20T18:15:57+00:00"
+    },
+    {
+      "operation_id": "4c52d2acef78499fa70541aca7ed7dae",
+      "task": "DTC-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "df8ec9e7df1a4383b71e3070e9462547",
+      "at": "2026-11-20T18:16:11+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:15:57+00:00",
+  "updated_at": "2026-11-20T18:16:11+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
