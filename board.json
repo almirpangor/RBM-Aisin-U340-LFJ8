@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 472,
+  "sequence": 473,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -158,11 +158,11 @@
         "targets/lfj8/lfj8_h03_sensor_target.c",
         "verification/project-audit/h03-02-shared-clock.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "15ef4cba9c9a49b1acc46893d21aabad",
       "claimed_at": "2026-11-20T18:57:46+00:00",
-      "updated_at": "2026-11-20T19:02:49+00:00",
-      "note": "S51/S83/ATF используют единый допуск. PASS: регрессия отзыва в M32R, 11 пар ATF, 17 native, совместно с H03-03 38 сценариев и 80 IRQ/RTE. Полная компоновка FAIL_BINDINGS. Отчёт h03-02-shared-clock.md.",
+      "updated_at": "2026-11-20T19:24:27+00:00",
+      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
       "result": "5b195f4a2ac6d48862f063e957e07b6ef77db971"
     },
     "CAN-05": {
@@ -4336,9 +4336,17 @@
       "action": "complete",
       "claim_id": "649f9eb04dd24d0ea547f2886878f0b0",
       "at": "2026-11-20T19:24:07+00:00"
+    },
+    {
+      "operation_id": "62e15ff0f355416c8823f7203fe75d2b",
+      "task": "H03-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "15ef4cba9c9a49b1acc46893d21aabad",
+      "at": "2026-11-20T19:24:27+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:24:07+00:00",
+  "updated_at": "2026-11-20T19:24:27+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
