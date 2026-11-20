@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:09:33+00:00**. Изменение № **68**.
+Обновлено UTC: **2026-11-20T16:09:48+00:00**. Изменение № **69**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -16,7 +16,7 @@
 | TOY-02 — Подтверждённая нагрузка двигателя для Toyota | На проверке | Codex TOY-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy02-load-feed-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:06:58+00:00 | Публикация квалифицированной нагрузки в GP проверена. PC 33 шага/59 тестов, M32R и 17 компонентов, три профиля SIGNALS PASS. Источники GW, бюджет возраста и допуск H03 открыты. Отчёт verification/project-audit/toy02-load-feed.md, общий снимок для интегратора. / commit ff7f42b48d58831a8d7a396711042fc45685acd3 |
 | TOY-03 — Независимые разрешающие сигналы диапазона | На проверке | Codex TOY-03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/toy-03-range-01a1f9a2 | 2026-11-20T15:48:28+00:00 | Карта битов Toyota, проверка вариантов проводки Mazda и сценарии стенда опубликованы. Проверка реестра и git diff --check PASS. Физические источники целевого жгута пока не подтверждены. / commit dfc774eee013ba78c6679d3128f493f238f43000 |
 | TOY-04 — Полная последовательность переключений | Свободна | — | — | — | — |
-| TOY-05 — Обучение и сохранение адаптаций | Выполняется | Codex TOY-05 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy05-adaptation-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:08:20+00:00 | Проверка донорского формата адаптаций в модели двух страниц: перезапуск, обрыв, повреждение, пределы и сброс. |
+| TOY-05 — Обучение и сохранение адаптаций | Выполняется | Codex TOY-05 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy05-adaptation-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:09:48+00:00 | Симулятор M32R подтвердил 96 прерываний и 768 одиночных повреждений. Зафиксирован откат на предыдущий слот при порче записи сброса. Идут PC и H03 link. |
 | TOY-06 — Блокировка гидротрансформатора SLU | Свободна | — | — | — | — |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Codex CAN-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-1120-c7e4 | 2026-11-20T16:07:46+00:00 | CAN RX epoch guard; reproduced old startup and drain race, fixed regressions on host and M32R. PC 33 steps/59 tests, M32R 17 components and Bosch OFFLINE_ONLY PASS. Evidence verification/project-audit/can01-rx-epoch.md. Integrator to update the shared audit; OEM startup and hardware timing remain open. / commit ca268743dfe173f93121d6b9148e0951932cfc9d |
 | CAN-02 — Общий диспетчер CAN13 | Свободна | — | — | — | — |
@@ -177,6 +177,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:09:48+00:00 | TOY-05 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:09:33+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:09:22+00:00 | H03-02 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:09:14+00:00 | CAN-04 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -206,4 +207,3 @@
 | 2026-11-20T16:01:53+00:00 | TOY-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:01:03+00:00 | CAN-05 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:00:49+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
-| 2026-11-20T16:00:34+00:00 | H03-02 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
