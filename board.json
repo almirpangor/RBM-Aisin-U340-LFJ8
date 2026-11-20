@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 91,
+  "sequence": 92,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -34,12 +34,12 @@
         "verification/project-audit/dtc02-basiccan.md",
         "verification/project-audit/dtc02-preclear-capture.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:14:25+00:00",
-      "note": "Модуль захвата RX14/15 добавлен к очереди. Проверки перезаписи на всех 16 границах чтения, нативный OEM-прогон и регрессии ПК/M32R.",
-      "result": "345d9490df4d8c177ab4d5eaff32224cf3f4f2c5"
+      "updated_at": "2026-11-20T16:15:44+00:00",
+      "note": "RX14/15: добавлен захват до очистки TRFIN с проверкой MSC и поколения, только чтение CAN0. Перезапись на 16 границах, ПК 33 шага/65 тестов, M32R 17 компонентов и оригинальный H03 15 сценариев — PASS. Доказательства verification/project-audit/dtc02-preclear-capture.md. Привязка ниже 0x008000, foreground и стенд открыты. Общий снимок и карточка переданы интегратору.",
+      "result": "a4f93e544a290886df65d8245ea6a91b0c7a4d4d"
     },
     "CAN-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -1084,9 +1084,17 @@
       "action": "resume",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T16:15:36+00:00"
+    },
+    {
+      "operation_id": "cbb66b58f4ad418e8260b869207069ab",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:15:44+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:15:36+00:00",
+  "updated_at": "2026-11-20T16:15:44+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
