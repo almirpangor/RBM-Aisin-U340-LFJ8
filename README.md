@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:00:34+00:00**. Изменение № **252**.
+Обновлено UTC: **2026-11-20T17:00:49+00:00**. Изменение № **253**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -39,7 +39,7 @@
 | MODE-03 — Окончательная политика режимов | На проверке | Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T16:27:03+00:00 | Штатная матрица ПК: 128 конфигураций запуска и 501 760 сценариев заявок PASS. Все 35 шагов ПК прошли; донорский тест S03 повторён отдельно с проверенным входом. Интегратору: учесть новые файлы и отчёт verification/project-audit/mode03-policy-matrix.md в аудите. Политика выпуска и подключение к циклу H03 открыты. / commit dd4fdbc2862093359df9329d7e6e9ab211d13940 |
 | SRC-01 — Реестр происхождения и контроль исходников | На проверке | Codex SRC-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/src01-donor-pins-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:43:47+00:00 | Проверка pinned Git объектов R1–R4 добавлена. SOURCES: ТЗ, S01–S04, H03 и четыре ревизии PASS; два теста, совместимая команда R1 и отказ для неверного клона проверены. Отчёт verification/project-audit/src01-donor-pins.md; снимок для интегратора. / commit 72f71983154edb4dcc7f0b3dc931bebfdb0d9b6d |
 | AUD-01 — Программный аудит истории E4M3 | На проверке | Codex AUD-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/aud01-pinned-replay-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:47:07+00:00 | Трасса и инструменты из одного R4. Два повтора без checkout совпали с сохранёнными отчётами; 3256 CRC и 26 команд в каждом. Ordinary BOSCH и SOURCES PASS. Отчёт verification/project-audit/aud01-pinned-replay.md; стенд ECU-02 открыт. / commit 6748075bd8cda69a0b6c2b9d6e2a471a00463434 |
-| DTC-01 — Прикладной сеанс и статусы Chery | Работа завершена | Codex DTC-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/dtc01-1120-c7e4 | 2026-11-20T16:30:54+00:00 | Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте. / commit 79d853bcd09a13b733907eccc3e1ea6dfe642db7 |
+| DTC-01 — Прикладной сеанс и статусы Chery | Выполняется | Codex — снимок полей модели Chery в H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc01-shared-engine-snapshot-32e6ac79 | 2026-11-20T17:00:49+00:00 | Делаю доступный для модели Chery снимок того же task 2 с признаком запрета по CAN. Проверю независимые поля, timeout и BusOff на ПК и M32R. |
 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Выполняется | Codex — штатный RX BasicCAN H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T17:00:34+00:00 | Проверяю исполняемую компоновку обеих RX-точек ниже границы приложения, включая штатный обход callbacks в режиме программирования. |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | На проверке | Codex DTC-03 — монитор цепи ATF H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-atf-monitor-01a1f9c7 | 2026-11-20T16:47:24+00:00 | Передаю интегратору адаптер штатного статуса ATF H03. Код встроен в перемещаемый мост, 20 сценариев и 2 отрицательные проверки M32R, ПК 35 шагов/71 тест, H03 link 17 компонентов PASS. Отчёт verification/project-audit/dtc03-h03-atf-monitor.md. Четыре файла кода внести в общий аудит при приёмке и выполнить complete после публикации main. Штатный вызов, отображение P0710 и стенд открыты. / commit d487840ba2505064c7f281305a10813cbdf3b695 |
 | DTC-04 — Хранение DTC после выключения питания | На проверке | Codex — подтверждение долговечной очистки DTC \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-durable-clear-32e6ac79 | 2026-11-20T16:43:22+00:00 | Передаю интегратору. При настроенном backend 54 FF 00 выдаётся только после подтверждения пустого журнала. При отказе сохраняется RAM, TX не ставится. 30 прерываний и повтор PASS, PC 35 шагов/71 тест, M32R журнал и 17 компонентов PASS. Отчёт dtc04-durable-clear.md. Носитель и подключение H03 открыты. / commit acd7d12c2e65cbb521331b175365aa2ae8ffc343 |
@@ -98,6 +98,15 @@
 - targets/bosch/chery_torque_rx.h
 - targets/bosch/test_chery_torque_rx.c
 - verification/project-audit/can05-rx-age.md
+
+### DTC-01
+
+Чат: Codex — снимок полей модели Chery в H03. Claim ID: 57db4a43b5754a71a19f9ab77e4c69f4.
+
+- targets/lfj8/lfj8_h03_engine_feed.c
+- targets/lfj8/lfj8_h03_engine_feed.h
+- targets/lfj8/test_lfj8_h03_engine_feed.c
+- verification/project-audit/dtc01-shared-engine-snapshot.md
 
 ### DTC-02
 
@@ -323,6 +332,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:00:49+00:00 | DTC-01 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T17:00:34+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T17:00:17+00:00 | REL-02 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:00:11+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
@@ -352,4 +362,3 @@
 | 2026-11-20T16:50:12+00:00 | TOY-04 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:49:33+00:00 | H03-05 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:49:11+00:00 | TOY-02 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-20T16:48:47+00:00 | H03-05 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
