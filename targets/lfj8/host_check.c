@@ -747,6 +747,58 @@ static void test_pipeline(void)
     assert(tx.pending == 0u && tx.counter_f8e4 == 0u && f.submissions == 3u);
 }
 
+static void test_standstill_during_s51_restart(void)
+{
+    Fixture f = {.use_9e1c_vss_map = 1u};
+    const Lfj8RegisterIo io = {&f, read8, read16, read32, write8, lock, unlock};
+    Lfj8VehicleCalibration cal = {1000000u, 500000u, 2000000u, 1u, 1u};
+    Lfj8CheryTxInputs inputs = {.stopped = 1u};
+    Lfj8CheryTx tx;
+    volatile Lfj8RawVss vss;
+    lfj8_9e1c_raw_vss_init(&vss);
+    lfj8_chery_tx_init(&tx, 0u, 10u, 0u);
+
+    /* A confirmed standstill can be sent before S51 observes any edges. */
+    assert(lfj8_chery_tx_poll(&tx, &io, 10u, 1u, &vss, &cal, &inputs) == LFJ8_DUE_1AE);
+    assert(f.last_data[6] == 0u && f.last_data[7] == 0u);
+
+    f.captured_ticks = UINT32_MAX - 1500u;
+    f.capture_timer = f.captured_ticks + 1u;
+    uint32_t saved = lock(&f);
+    lfj8_9e1c_raw_vss_after_capture_store(&vss, &io, cal.vss_timeout_ticks);
+    unlock(&f, saved);
+    f.slot_control = 0x81u;
+    assert(lfj8_chery_tx_poll(&tx, &io, 20u, 1u, &vss, &cal, &inputs) == LFJ8_DUE_1AE);
+    assert(f.last_data[6] == 0xffu && f.last_data[7] == 0xffu);
+
+    /* The next edge crosses the clock wrap and completes the interval. */
+    f.captured_ticks += 26400u;
+    f.capture_timer = f.captured_ticks;
+    saved = lock(&f);
+    lfj8_9e1c_raw_vss_after_capture_store(&vss, &io, cal.vss_timeout_ticks);
+    unlock(&f, saved);
+    f.slot_control = 0x81u;
+    assert(lfj8_chery_tx_poll(&tx, &io, 30u, 1u, &vss, &cal, &inputs) == LFJ8_DUE_1AE);
+    assert(f.last_data[6] == 0x17u && f.last_data[7] == 0x70u);
+
+    inputs.stopped = 0u;
+    f.capture_timer = f.captured_ticks + cal.vss_timeout_ticks + 1u;
+    f.slot_control = 0x81u;
+    assert(lfj8_chery_tx_poll(&tx, &io, 40u, 1u, &vss, &cal, &inputs) == LFJ8_DUE_1AE);
+    assert(f.last_data[6] == 0xffu && f.last_data[7] == 0xffu);
+
+    inputs.stopped = 2u;
+    f.slot_control = 0x81u;
+    assert(lfj8_chery_tx_poll(&tx, &io, 50u, 1u, &vss, &cal, &inputs) == LFJ8_DUE_1AE);
+    assert(f.last_data[6] == 0xffu && f.last_data[7] == 0xffu);
+
+    inputs.stopped = 1u;
+    cal.vss_timeout_ticks = 0u;
+    f.slot_control = 0x81u;
+    assert(lfj8_chery_tx_poll(&tx, &io, 60u, 1u, &vss, &cal, &inputs) == LFJ8_DUE_1AE);
+    assert(f.last_data[6] == 0xffu && f.last_data[7] == 0xffu);
+}
+
 static void test_engine_receive(void)
 {
     Ta2005CheryInputs receiver;
@@ -826,6 +878,7 @@ int main(void)
     test_9e1c_capture();
     test_9e1c_nt_capture();
     test_pipeline();
+    test_standstill_during_s51_restart();
     test_engine_receive();
     puts("LFJ8 I/O: S51, S83, Chery TX, CAN0 RX/TX and recovery, RPM/ECT, relays and schedule passed");
     return 0;

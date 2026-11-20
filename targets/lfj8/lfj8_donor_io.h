@@ -91,6 +91,12 @@ Lfj8CaptureSnapshot lfj8_raw_vss_snapshot(volatile Lfj8RawVss *vss,
                                          const Lfj8RegisterIo *io,
                                          uint32_t timeout_ticks);
 
+/* An independent, current standstill confirmation (exactly 1) may publish
+ * STOPPED only when no recent S51 edge is present in the same snapshot. */
+Lfj8CaptureSnapshot lfj8_raw_vss_snapshot_with_standstill(
+    volatile Lfj8RawVss *vss, const Lfj8RegisterIo *io, uint32_t timeout_ticks,
+    uint8_t standstill_confirmed);
+
 void lfj8_9e1c_raw_nt_init(volatile Lfj8RawCapture *nt);
 /* Call once after the H03 S83 store at 0x00AA70 with its producer lock held.
  * Run the normal OEM update and interrupt acknowledgement as usual. */
