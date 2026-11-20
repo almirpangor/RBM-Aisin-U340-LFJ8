@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 190,
+  "sequence": 191,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -154,8 +154,8 @@
       "stage": "in_progress",
       "claim_id": "08c2265b7b3d431fb60bc73ce5c54109",
       "claimed_at": "2026-11-20T16:38:27+00:00",
-      "updated_at": "2026-11-20T16:38:27+00:00",
-      "note": "Добавляю программную цепочку 14 FF 00: ответ 54 FF 00 только после подтверждения записи пустого журнала; при ошибке сохраняется RAM и ответ не ставится в TX. NVM H03 остаётся открыта.",
+      "updated_at": "2026-11-20T16:40:32+00:00",
+      "note": "Путь с backend проходит от PDU до CAN-сеанса. Добавлены сценарии запрета TX при отказе, повтор и 30 границ до публикации маркера. Запущены PC и M32R.",
       "result": null
     },
     "H03-02": {
@@ -2030,9 +2030,17 @@
       "action": "review",
       "claim_id": "125a9fc02e0b4315aa93ce8efbe1bda1",
       "at": "2026-11-20T16:40:16+00:00"
+    },
+    {
+      "operation_id": "311fde5b9315415491d64b27f41572fc",
+      "task": "DTC-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "heartbeat",
+      "claim_id": "08c2265b7b3d431fb60bc73ce5c54109",
+      "at": "2026-11-20T16:40:32+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:40:16+00:00",
+  "updated_at": "2026-11-20T16:40:32+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
