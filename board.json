@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 355,
+  "sequence": 356,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -348,12 +348,12 @@
         "targets/lfj8/lfj8_h03_can13.c",
         "verification/project-audit/can02-broker-flash-size.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "80dd331a4841414ab2e1eea82dfb693b",
       "claimed_at": "2026-11-20T18:14:54+00:00",
-      "updated_at": "2026-11-20T18:18:48+00:00",
-      "note": "Сокращение диспетчера экономит 48 байт в расширенной модели. Прогон small с двумя объектами в основном окне поместил все прежние 116 входов, проверяю сочетание с H03-04/H03-05. Сервис и штатный цикл остаются у исполнителей.",
-      "result": null
+      "updated_at": "2026-11-20T18:19:59+00:00",
+      "note": "CAN13 экономит 48 байт. В expanded medium с 4ecfdd9 дефицит 268 байт. Expanded small с переносом объектов torque_can и dtc_can, H03-04 и обработчиком H03-05 в основном окне: 117 точек, запас 120/140 байт, 0 релокаций, 18 тестов M32R, тест CAN13 на ПК. Рецепт в can02-broker-flash-size.md; привязка штатного цикла и проверка устройства открыты.",
+      "result": "9cd6fb79735af38f699a39e655d414a45966376e"
     },
     "TOY-06": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -3412,9 +3412,17 @@
       "action": "heartbeat",
       "claim_id": "80dd331a4841414ab2e1eea82dfb693b",
       "at": "2026-11-20T18:18:48+00:00"
+    },
+    {
+      "operation_id": "1f807eda46334777847d06b22194d7b6",
+      "task": "CAN-02",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "80dd331a4841414ab2e1eea82dfb693b",
+      "at": "2026-11-20T18:19:59+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:18:48+00:00",
+  "updated_at": "2026-11-20T18:19:59+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
