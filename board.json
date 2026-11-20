@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 62,
+  "sequence": 63,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -101,12 +101,12 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-phase-wait.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
       "claimed_at": "2026-11-20T16:04:02+00:00",
-      "updated_at": "2026-11-20T16:06:05+00:00",
-      "note": "Проверяю ограничение частоты watchdog по меткам времени в цикле ожидания без новой постоянной RAM.",
-      "result": "40d391b8eeb33e9e04f13cff5b59908527f6b144"
+      "updated_at": "2026-11-20T16:08:24+00:00",
+      "note": "Ограничение watchdog по счётчику без новой постоянной RAM. 8 M32R, контроль без ограничения и реестр ветки PASS. При объединении обновить активный снимок H03-04. Целевые таймер, inhibit и замеры IRQ открыты.",
+      "result": "ff8b5164cdbf5121db9e788b975921699960d524"
     },
     "H03-04": {
       "owner": "codex-h03-04-01a1f76d-20261120",
@@ -768,9 +768,17 @@
       "action": "claim",
       "claim_id": "2bd31f54ff254c59802d402cf6dabb9b",
       "at": "2026-11-20T16:08:20+00:00"
+    },
+    {
+      "operation_id": "034ec8ebf3b54eafb6e227abc5015376",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
+      "at": "2026-11-20T16:08:24+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:08:20+00:00",
+  "updated_at": "2026-11-20T16:08:24+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
