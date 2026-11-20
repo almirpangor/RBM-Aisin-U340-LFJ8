@@ -6,18 +6,23 @@ import gzip
 import json
 from pathlib import Path
 import subprocess
+from tempfile import TemporaryDirectory
+from zipfile import ZipFile
 
 from build import build, digest
 from verify import SPEED_PHYS
 
 
 R4 = "dc6b4f08a24e648d3d0dab986c1765abb6fd294a"
+ENGINE_PATH = "development/E4M3/engine"
 TRACE = "development/E4R4/evidence/E4M3_G4_BENCH_TEST2_20261014/input_trace.trc.gz"
 TRACE_SHA = "aa0580a56bcad633406595a7ad98e7d7043d6d6dd762121d3922fe28c1e0353f"
 
 
 def recorded_requests(repo, crc8):
-    data = gzip.decompress(subprocess.check_output(["git", "-C", str(repo), "show", f"{R4}:{TRACE}"]))
+    data = gzip.decompress(subprocess.check_output(
+        ["git", "--no-replace-objects", "-C", str(repo), "show", f"{R4}:{TRACE}"],
+    ))
     if digest(data) != TRACE_SHA:
         raise ValueError("Different bench trace")
     commands = deque()
@@ -57,7 +62,21 @@ def recorded_requests(repo, crc8):
 
 
 def replay(repo, image):
-    engine = (repo / "development/E4M3/engine").resolve()
+    # Run the trace and ST10 tools from the same immutable R4 input.
+    with TemporaryDirectory(prefix="rbm-e4m3-replay-") as directory:
+        workspace = Path(directory).resolve()
+        archive = workspace / "engine.zip"
+        subprocess.run(
+            ["git", "--no-replace-objects", "-C", str(repo), "archive",
+             "--format=zip", "-o", str(archive), R4, ENGINE_PATH],
+            check=True,
+        )
+        with ZipFile(archive) as bundle:
+            bundle.extractall(workspace)
+        return replay_with_engine(repo, workspace / ENGINE_PATH, image)
+
+
+def replay_with_engine(repo, engine, image):
     base = (engine / "firmware/GW4G15_REV8_CAN_TORQUE_E4_BENCH.bin").read_bytes()
     rebuilt, manifest, _, _ = build(engine, base, with_engine_signals_tx=True)
     if rebuilt != image:
@@ -107,7 +126,7 @@ def replay(repo, image):
     for statuses in seen.values():
         assert any(s[3] == 32 and s[1] & 0x70 == 0x70 for s in statuses)
         assert statuses[-1][3] == 0 and all(s[6] != 6 for s in statuses)
-    return {"trace_sha256": TRACE_SHA, "bosch_sha256": manifest["sha256"],
+    return {"r4_commit": R4, "trace_sha256": TRACE_SHA, "bosch_sha256": manifest["sha256"],
             "bench_frames_crc_checked": checked, "recorded_commands_replayed": count,
             "bench_ack_full_zero_ms": timings,
             "tokens_reaching_q8_32_mask_7_then_zero": list(seen),
