@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 574,
+  "sequence": 575,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -434,23 +434,20 @@
       "result": "8e866f469975c07bf741fe3f1c00317ba6c21fcf"
     },
     "MODE-03": {
-      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex MODE-03 — единое подавление конфликтующих заявок",
-      "branch": "codex/mode03-unified-conflict-32e6ac79",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "label": "Codex MODE-03 — переход режима с удержанной кнопкой передачи",
+      "branch": "codex/mode03-hold-transition-1121-c7e4",
       "files": [
-        "controller/include/rbm_u340e.h",
         "controller/src/rbm_u340e.c",
         "controller/tests/test_mode_policy.c",
-        "targets/lfj8/lfj8_h03_input_binding.c",
-        "targets/lfj8/test_lfj8_h03_input_binding.c",
-        "verification/project-audit/mode03-conflict-policy.md"
+        "verification/project-audit/mode03-held-shift-at-mode-edge.md"
       ],
-      "stage": "done",
-      "claim_id": "b49a1451f0334d85925f428bba02510d",
-      "claimed_at": "2026-11-20T18:55:44+00:00",
-      "updated_at": "2026-11-20T19:26:16+00:00",
-      "note": "Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены.",
-      "result": "671a63edbaf189ff048edd0d5f5e22e94ea0c440"
+      "stage": "in_progress",
+      "claim_id": "881583aa76814d4da3f768699f01ca29",
+      "claimed_at": "2026-11-20T20:07:21+00:00",
+      "updated_at": "2026-11-20T20:07:21+00:00",
+      "note": "Проверяю переход Tiptronic↔Auto при ранее удержанной +/−. Подавляю заявку в такте конфликтующего фронта M, сохраняю настроенные режим/OD. Файлы H03 в чужих резервах не меняю.",
+      "result": null
     },
     "ECU-01": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -5179,9 +5176,17 @@
       "action": "claim",
       "claim_id": "31b87bf2ede54a3fa81c666e3bdd72ab",
       "at": "2026-11-20T20:07:11+00:00"
+    },
+    {
+      "operation_id": "f685bbcf8e8e43888d341fac72aaaa5e",
+      "task": "MODE-03",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "claim",
+      "claim_id": "881583aa76814d4da3f768699f01ca29",
+      "at": "2026-11-20T20:07:21+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:07:11+00:00",
+  "updated_at": "2026-11-20T20:07:21+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
