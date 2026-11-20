@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 458,
+  "sequence": 459,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -441,12 +441,12 @@
         "tests/test_bosch_build_integrity.py",
         "verification/project-audit/ecu01-bosch-section-layout.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "a9fcda79bfd24244872059ac08ee0efd",
       "claimed_at": "2026-11-20T19:01:29+00:00",
-      "updated_at": "2026-11-20T19:01:29+00:00",
-      "note": "Добавляю проверку физических диапазонов сборщика Bosch перед записью секций: коллизии, выход за образ и пересечение защищённых областей. Побайтно проверяю все профили на S04, без изменения CAN-05 или упаковщика REL-01.",
-      "result": null
+      "updated_at": "2026-11-20T19:05:48+00:00",
+      "note": "Сборщик Bosch отклоняет перекрытие секций, выход из непрерывного Flash и запись поверх кода момента или таблицы целостности. Реальная сборка отвергла тестовую коллизию. Все 8 профилей совпали побайтно, 51 запись на каждом, ST10 PASS_OFFLINE_ONLY, ПК 37 шагов и 117 тестов. Отчёт ecu01-bosch-section-layout.md. Окончательный профиль ждёт CAN-05/ECU-02 и выпуска REL-01.",
+      "result": "7fa849a631f1ba25e4fb7680008a7c2aca57399a"
     },
     "VSS-02": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -4224,9 +4224,17 @@
       "action": "claim",
       "claim_id": "af75614181e6438cbed6652ba8147606",
       "at": "2026-11-20T19:04:27+00:00"
+    },
+    {
+      "operation_id": "25373e870e5845f9bfb259e573120d94",
+      "task": "ECU-01",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "a9fcda79bfd24244872059ac08ee0efd",
+      "at": "2026-11-20T19:05:48+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:04:27+00:00",
+  "updated_at": "2026-11-20T19:05:48+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {

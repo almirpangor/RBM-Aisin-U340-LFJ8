@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T19:04:27+00:00**. Изменение № **458**.
+Обновлено UTC: **2026-11-20T19:05:48+00:00**. Изменение № **459**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -23,7 +23,7 @@
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex CAN-03 monitor admission \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can03-h03-monitor-startup-01a1f99f | 2026-11-20T18:45:27+00:00 | 12 H03 CPU guard cases plus original early-enable control PASS. Native cold path and both permits install filters and drain before reception; parked recovery avoids the 0x0012B0 opening. New veneers above 0x008000, 161 roots and 93324 known Flash bytes; 11688-byte deficit in old windows and 8 missing bindings in extended plan. No flashable pair. / commit 89d0ed83d5e9c84a2834a95fb1bf01a8e67aae59 |
 | CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 — срок подтверждения момента \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-progress-deadline-fea1b366 | 2026-11-20T18:40:13+00:00 | Передаю на объединение. Статус в срок захвата ≥60 мс и на конце импульса не подтверждает момент. 6 границ + срок импульса, ПК 37 шагов/113 тестов, M32R 18 компонентов и 17 штатных групп. Два ST10 OFFLINE_ONLY: раньше 3 REFRESH, теперь CANCEL в 460 мс, ноль при 510. Prefix ELF +48 Б, запас 868. Отчёт verification/project-audit/can04-progress-deadline.md. Реальные метки и калибровка открыты. / commit 07fc25af65515ddd77b680b37423ddbce80f4d55 |
 | CAN-05 — Полнота штатного обмена Chery | На проверке | Codex CAN-05 — часы Bosch для 0x1AE \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/can05-st10-rx-clock-7bd19ea4 | 2026-11-20T19:03:09+00:00 | ST10/C_CAN: штатный T4 018BFC, пустой опрос 06611E, IF1 066174. 75 проверок T4, 9 приёмов, 5 отказов и 3 восстановления. Bosch OFFLINE_ONLY воспроизведён, ПК 37 шагов, 113 unittest с отдельным прогоном S03, 65536 пар 0x1AE. Остались машинный производитель, RAM, реальные окна и подключение потребителя. Отчёт can05-st10-rx-clock.md. / commit f8fe149c4bc99eb33eca239d85436b0adc29ab1f |
-| ECU-01 — Проверочная сборка Bosch E4M3 | Выполняется | Codex ECU-01 — размещение секций Bosch \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/ecu01-bosch-layout-01a1f9a2 | 2026-11-20T19:01:29+00:00 | Добавляю проверку физических диапазонов сборщика Bosch перед записью секций: коллизии, выход за образ и пересечение защищённых областей. Побайтно проверяю все профили на S04, без изменения CAN-05 или упаковщика REL-01. |
+| ECU-01 — Проверочная сборка Bosch E4M3 | На проверке | Codex ECU-01 — размещение секций Bosch \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/ecu01-bosch-layout-01a1f9a2 | 2026-11-20T19:05:48+00:00 | Сборщик Bosch отклоняет перекрытие секций, выход из непрерывного Flash и запись поверх кода момента или таблицы целостности. Реальная сборка отвергла тестовую коллизию. Все 8 профилей совпали побайтно, 51 запись на каждом, ST10 PASS_OFFLINE_ONLY, ПК 37 шагов и 117 тестов. Отчёт ecu01-bosch-section-layout.md. Окончательный профиль ждёт CAN-05/ECU-02 и выпуска REL-01. / commit 7fa849a631f1ba25e4fb7680008a7c2aca57399a |
 | ECU-02 — Калибровка момента и работа двигателя | Выполняется | Codex ECU-02 — отпускание RB при потере связи \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/ecu02-rb-lease-fea1b366 | 2026-11-20T19:04:27+00:00 | Проверка истечения аренды диалога RB после потери REFRESH на точном проверочном Bosch, включая снятие команды на трёх нативных путях. |
 | H03-01 — Выбранная основа 9E1C и карта подключения | Закрыта по текущему объёму | Предыдущий: Codex H03-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-01-base-guard-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:47:37+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit cf488af90f0e7beca13fe3c02599cd4854f3668e |
 | H03-02 — S51, S83 и температура ATF | На проверке | Codex H03-02 — единый допуск часов датчиков \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-02-shared-clock-mwp5rm2ofhaxjfi9dss | 2026-11-20T19:02:49+00:00 | S51/S83/ATF используют единый допуск. PASS: регрессия отзыва в M32R, 11 пар ATF, 17 native, совместно с H03-03 38 сценариев и 80 IRQ/RTE. Полная компоновка FAIL_BINDINGS. Отчёт h03-02-shared-clock.md. / commit 5b195f4a2ac6d48862f063e957e07b6ef77db971 |
@@ -363,7 +363,7 @@
 </details>
 
 <details>
-<summary>ECU-01 — Проверочная сборка Bosch E4M3: Выполняется</summary>
+<summary>ECU-01 — Проверочная сборка Bosch E4M3: На проверке</summary>
 
 **Сделано.** Сверяются все 51 точная запись целостности E4M3. Ordinary образ восстановлен побайтно; ST10, обмен и историческая трасса повторены. Статус OFFLINE_ONLY.
 
@@ -793,6 +793,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T19:05:48+00:00 | ECU-01 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T19:04:27+00:00 | ECU-02 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T19:04:12+00:00 | MODE-01 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T19:03:58+00:00 | H03-04 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
@@ -822,4 +823,3 @@
 | 2026-11-20T18:54:59+00:00 | CAN-05 | claim | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T18:54:52+00:00 | CAN-02 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T18:54:35+00:00 | H03-05 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
-| 2026-11-20T18:54:16+00:00 | H03-04 | review | codex-integration-01a1f76d-20261120 |
