@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 134,
+  "sequence": 135,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -413,12 +413,12 @@
         "controller/tests/test_mode_policy.c",
         "verification/project-audit/mode03-policy-matrix.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "b0a3618e8676435c94101b0abb236b6a",
       "claimed_at": "2026-11-20T16:21:43+00:00",
-      "updated_at": "2026-11-20T16:24:03+00:00",
-      "note": "Матрица добавлена в штатную сборку ПК. Проверяю все 128 конфигураций запуска и заявки по четырём донорским передачам, положениям, маскам и запретам.",
-      "result": null
+      "updated_at": "2026-11-20T16:27:03+00:00",
+      "note": "Штатная матрица ПК: 128 конфигураций запуска и 501 760 сценариев заявок PASS. Все 35 шагов ПК прошли; донорский тест S03 повторён отдельно с проверенным входом. Интегратору: учесть новые файлы и отчёт verification/project-audit/mode03-policy-matrix.md в аудите. Политика выпуска и подключение к циклу H03 открыты.",
+      "result": "dd4fdbc2862093359df9329d7e6e9ab211d13940"
     },
     "ECU-01": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -1525,9 +1525,17 @@
       "action": "review",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "at": "2026-11-20T16:26:43+00:00"
+    },
+    {
+      "operation_id": "109d8df5c8eb4f4c891c720e35daf788",
+      "task": "MODE-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "b0a3618e8676435c94101b0abb236b6a",
+      "at": "2026-11-20T16:27:03+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:26:43+00:00",
+  "updated_at": "2026-11-20T16:27:03+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {

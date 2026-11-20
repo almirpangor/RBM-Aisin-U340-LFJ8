@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:26:43+00:00**. Изменение № **134**.
+Обновлено UTC: **2026-11-20T16:27:03+00:00**. Изменение № **135**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -36,7 +36,7 @@
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
 | MODE-01 — Логика шести положений и кнопок | На проверке | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:14:42+00:00 | Staggered Tiptronic plus/minus overlap now blocks manual requests. Original C/Python regressions reproduced. PC 33 steps/66 tests plus dedicated C regression PASS; M32R build, 17 components and dedicated regression PASS. Evidence verification/project-audit/mode01-shift-conflict.md. Integrator to record the audit; physical input and hydraulic execution remain open. / commit ed33ea93653f7bcbc2c6f13736fe1424335085e6 |
 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | Работа завершена | Codex — входы Tiptronic H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/u340-32e6ac79 | 2026-11-20T16:25:17+00:00 | Порция MODE-02 принята в опубликованную main 952658b. Программный фильтр и отчёт включены, резерв освобождаю. Физические входы и привязка к циклу H03 остаются за рамками принятой порции. / commit 53c5f27e40f4ed48fd5873d002a0ab315f448bcf |
-| MODE-03 — Окончательная политика режимов | Выполняется | Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T16:24:03+00:00 | Матрица добавлена в штатную сборку ПК. Проверяю все 128 конфигураций запуска и заявки по четырём донорским передачам, положениям, маскам и запретам. |
+| MODE-03 — Окончательная политика режимов | На проверке | Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T16:27:03+00:00 | Штатная матрица ПК: 128 конфигураций запуска и 501 760 сценариев заявок PASS. Все 35 шагов ПК прошли; донорский тест S03 повторён отдельно с проверенным входом. Интегратору: учесть новые файлы и отчёт verification/project-audit/mode03-policy-matrix.md в аудите. Политика выпуска и подключение к циклу H03 открыты. / commit dd4fdbc2862093359df9329d7e6e9ab211d13940 |
 | SRC-01 — Реестр происхождения и контроль исходников | Свободна | — | — | — | — |
 | AUD-01 — Программный аудит истории E4M3 | Свободна | — | — | — | — |
 | DTC-01 — Прикладной сеанс и статусы Chery | На проверке | Codex DTC-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/dtc01-1120-c7e4 | 2026-11-20T16:19:32+00:00 | Foreign TX13 completion and BusOff now close DTC session and revoke in-flight ownership until a new CAN generation. Both failures reproduced; PC 33 steps / 65 tests and M32R 17 components PASS. Evidence verification/project-audit/dtc01-session-lease.md. Integrator to record the audit; scanner and hardware open. / commit 79d853bcd09a13b733907eccc3e1ea6dfe642db7 |
@@ -239,6 +239,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:27:03+00:00 | MODE-03 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:26:43+00:00 | DTC-02 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T16:26:30+00:00 | CAN-05 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:26:21+00:00 | VSS-02 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -268,4 +269,3 @@
 | 2026-11-20T16:20:38+00:00 | H03-05 | claim | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:20:30+00:00 | VSS-01 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:19:43+00:00 | TOY-06 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-20T16:19:32+00:00 | DTC-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
