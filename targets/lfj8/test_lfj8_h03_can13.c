@@ -27,6 +27,7 @@ typedef struct {
     bool grant;
     bool demand;
     bool queued;
+    bool busy_on_listener_pause;
     bool bus_off_before_tx_request;
     unsigned sent;
     unsigned aborts;
@@ -100,6 +101,9 @@ static void write8(void *context, uint32_t address, uint8_t value)
     } else if (value == 0x4e) {
         assert(f->control & 0x40u);
         f->control = 0x40;
+    } else if (value == 0u && f->control == 0x40u && f->busy_on_listener_pause) {
+        /* An asynchronous receive started before the listener could stop. */
+        f->control = 0x42u;
     } else {
         assert(!(f->control & 2u) && (value == 0u || value == 0x40u || value == 0x80u));
         f->control = value;
@@ -303,6 +307,62 @@ static void test_bus_off_during_telemetry_submission(void)
     assert(poll(&f, 2700).available && f.control == 0x40 && !f.broker.lease_lost);
 }
 
+static void test_bus_off_during_torque_refresh(void)
+{
+    Fixture f;
+    init(&f, 0, 0);
+    start_torque(&f);
+    finish(&f, 900);
+    poll(&f, 1000);
+    torque_status(&f, 1400, 0x72, 1, 32, 1);
+    assert(poll(&f, 1500).available && f.broker.torque.request.full_reduction);
+    assert(poll(&f, 8000).available);
+    assert(poll(&f, 16000).available);
+
+    f.bus_off_before_tx_request = true;
+    const Lfj8H03Can13Result result = poll(&f, 20500);
+    assert(f.stat == 0x4000u && active_id(&f) == LFJ8_TORQUE_REQUEST_ID);
+    assert(f.slot[7] == 2u && f.sent == 1u && f.control == 0u);
+    assert(!result.available && f.broker.lease_lost && f.broker.torque.lease_lost);
+    assert(!f.broker.torque.request.full_reduction && !f.broker.torque.request.have_status);
+    assert(!f.broker.torque.request.pending && f.broker.torque.request.tx_seq == 1u);
+    assert(f.broker.torque.request.phase == LFJ8_TORQUE_RELEASING);
+
+    f.bus_off_before_tx_request = false;
+    f.stat = 0;
+    const unsigned writes = f.writes;
+    assert(!poll(&f, 20600).available && f.writes == writes);
+    ++f.generation;
+    assert(poll(&f, 20700).available && f.control == 0x40 && !f.broker.lease_lost);
+    assert(poll(&f, 20800).available && f.sent == 1u && !f.broker.torque.request.have_status);
+    f.demand = false;
+    torque_status(&f, 20900, 0, 0, 0, 0);
+    assert(poll(&f, 21000).available && f.broker.torque.request.have_status);
+    f.demand = true;
+    assert(poll(&f, 21100).available && f.sent == 2u && f.slot[7] == 1u && f.slot[8] == 1u);
+}
+
+static void test_torque_retries_when_listener_is_busy(void)
+{
+    Fixture f;
+    init(&f, 0, 0);
+    assert(poll(&f, 0).available);
+    poll(&f, 100);
+    torque_status(&f, 120, 0, 0, 0, 0);
+    poll(&f, 300);
+
+    f.demand = true;
+    f.busy_on_listener_pause = true;
+    assert(poll(&f, 500).available && f.control == 0x42u);
+    assert(!f.broker.lease_lost && !f.broker.torque.lease_lost);
+    assert(f.sent == 0u && !f.broker.torque.request.pending && f.broker.torque.request.tx_seq == 0u);
+
+    f.busy_on_listener_pause = false;
+    f.control = 0x40u;
+    assert(poll(&f, 600).available && f.sent == 1u && f.broker.torque.request.pending);
+    assert(active_id(&f) == LFJ8_TORQUE_REQUEST_ID && f.slot[7] == 1u && f.slot[8] == 1u);
+}
+
 static void test_diagnostic_flow_and_status_handoff(void)
 {
     Fixture f;
@@ -408,6 +468,8 @@ int main(void)
     test_torque_priority_and_cancel();
     test_telemetry_loan_expires_before_slot_is_idle();
     test_bus_off_during_telemetry_submission();
+    test_bus_off_during_torque_refresh();
+    test_torque_retries_when_listener_is_busy();
     test_diagnostic_flow_and_status_handoff();
     test_timeout_and_generation();
     test_receive_lease_loss_requires_generation();
