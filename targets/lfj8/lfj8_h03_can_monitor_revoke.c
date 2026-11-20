@@ -1,6 +1,7 @@
 #include "lfj8_h03_can_monitor_startup.h"
 #include "lfj8_h03_application.h"
 #include "lfj8_h03_can_owner.h"
+#include "lfj8_h03_dtc_native.h"
 
 #define H03_FCNT1 UINT32_C(0x8007E2)
 #define H03_SERVICE_MODE UINT32_C(0x804887)
@@ -15,7 +16,8 @@ int rbm_h03_can_monitor_cold_owner_init_locked(void)
     if (!app->ram_owned || app->ram_owned(app->takeover_ops->io->context) != 1) {
         return 0;
     }
-    lfj8_h03_can_owner_init(&h03_can_owner);
+    /* Cold ownership covers both the CAN owner and the resident IRQ pointer. */
+    lfj8_h03_dtc_native_cold_init();
     return 1;
 }
 
@@ -33,6 +35,7 @@ void rbm_h03_can_monitor_revoke_locked(void)
     }
 
     /* A failed setup must leave this generation revoked. */
+    h03_can_owner.setup_permitted = false;
     h03_can_owner.grant = 0u;
     app->main->valid = 0u;
     rbm_h03_fast_output.valid = 0u;
@@ -59,5 +62,6 @@ void rbm_h03_can_monitor_publish_setup_locked(void)
     const Lfj8RegisterIo *const io = app->takeover_ops->io;
     if (app->ram_owned(io->context) == 1 && h03_can_owner.initialized && h03_can_owner.grant == 0u) {
         ++h03_can_owner.setup_generation;
+        h03_can_owner.setup_permitted = true;
     }
 }
