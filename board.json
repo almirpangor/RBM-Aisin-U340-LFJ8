@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 366,
+  "sequence": 367,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -483,19 +483,18 @@
     },
     "TOY-01": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
-      "label": "Codex TOY-01 — карта переносов GP",
-      "branch": "codex/toy-01-gp-transfer-fea1b366",
+      "label": "Codex TOY-01 — размер дескрипторов GP",
+      "branch": "codex/toy-01-gp-descriptor-size-fea1b366",
       "files": [
         "controller/hydraulic_port.py",
-        "targets/lfj8/check_h03_toyota_stack.py",
-        "verification/project-audit/toy01-gp-transfer-size.md"
+        "verification/project-audit/toy01-gp-descriptor-size.md"
       ],
-      "stage": "done",
-      "claim_id": "4b00bd7fdda2433d8439e95c7b0b1454",
-      "claimed_at": "2026-11-20T16:28:35+00:00",
-      "updated_at": "2026-11-20T17:46:57+00:00",
-      "note": "袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md.",
-      "result": "8fdce1692a27f0bdf5dcbe0c03d962ab4e87ed39"
+      "stage": "in_progress",
+      "claim_id": "a36532debaa64238a1ee2b84f37624a1",
+      "claimed_at": "2026-11-20T18:26:38+00:00",
+      "updated_at": "2026-11-20T18:26:38+00:00",
+      "note": "TOY-05 держит runtime.c; беру независимый участок в hydraulic_port.py. Уменьшаю сгенерированные дескрипторы GP до трёх байт с полной проверкой переносов, размера и стека. vendor, runtime и общую раскладку не затрагиваю.",
+      "result": null
     },
     "ECU-02": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -3506,9 +3505,17 @@
       "action": "review",
       "claim_id": "0c37e0c652cd4b8285cdd4458b796cef",
       "at": "2026-11-20T18:25:56+00:00"
+    },
+    {
+      "operation_id": "eecfb5cfa7fe4a648a8f95b572b66635",
+      "task": "TOY-01",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "a36532debaa64238a1ee2b84f37624a1",
+      "at": "2026-11-20T18:26:38+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:25:56+00:00",
+  "updated_at": "2026-11-20T18:26:38+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
