@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 712,
+  "sequence": 713,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -207,8 +207,8 @@
       "stage": "in_progress",
       "claim_id": "3f58920fee114fad9045abc0e99a8a9b",
       "claimed_at": "2026-11-20T21:58:07+00:00",
-      "updated_at": "2026-11-20T21:58:07+00:00",
-      "note": "Подключаю отзыв отметок времени H03 к штатному пути AN1 → P0710 → CAN. Проверю отзыв между OEM и foreground, поведение на сбросе и отсутствие ложных current/history без квалификации часов.",
+      "updated_at": "2026-11-20T22:01:26+00:00",
+      "note": "Подключил rbm_h03_atf_now_us к приёму и публикации P0710. M32R прошёл 20 OEM и 20 целевых сценариев; проверяю сборку и совместимость с main.",
       "result": null,
       "based_on_reviews": []
     },
@@ -8817,9 +8817,36 @@
         "result": "007f28ea1e3fd2eee46c17e3e22092711e228937",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "58ad7b6d96eb459e96a27c011b25feb6",
+      "task": "DTC-03",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "3f58920fee114fad9045abc0e99a8a9b",
+      "at": "2026-11-20T22:01:26+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-03 — допуск времени P0710",
+        "branch": "codex/dtc03-atf-clock-admission-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_atf_fault.py",
+          "targets/lfj8/h03_atf_fault_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_dtc_target.c",
+          "targets/lfj8/lfj8_h03_dtc_target.h",
+          "verification/project-audit/dtc03-atf-clock-admission.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "3f58920fee114fad9045abc0e99a8a9b",
+        "claimed_at": "2026-11-20T21:58:07+00:00",
+        "updated_at": "2026-11-20T22:01:26+00:00",
+        "note": "Подключил rbm_h03_atf_now_us к приёму и публикации P0710. M32R прошёл 20 OEM и 20 целевых сценариев; проверяю сборку и совместимость с main.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:01:03+00:00",
+  "updated_at": "2026-11-20T22:01:26+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
