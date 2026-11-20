@@ -135,6 +135,82 @@ static void fixture_map(void)
     };
 }
 
+static const uint32_t dma_registers[] = {
+    0x800410u, 0x800420u, 0x800430u, 0x800440u, 0x800450u,
+    0x800418u, 0x800428u, 0x800438u, 0x800448u, 0x800458u,
+};
+
+static void set_dma(unsigned channel, uint8_t control, uint8_t count, uint16_t destination)
+{
+    const uint32_t reg = dma_registers[channel];
+    BYTE(reg) = control;
+    BYTE(reg + 1u) = count;
+    HALF(reg + 4u) = destination;
+}
+
+static void verify_dma(void)
+{
+    set_dma(0, 0x79u, 5u, 0x6aceu);
+    set_dma(1, 0x39u, 5u, 0x6adau);
+    set_dma(3, 0x5eu, 255u, 0x0113u);
+    set_dma(4, 0x6du, 255u, 0x683bu);
+    require_cold_gate(1);
+
+    /* The same modes can already be partway through their native buffers. */
+    set_dma(0, 0x39u, 0u, 0x6ad8u);
+    set_dma(4, 0x2du, 0u, 0x693au);
+    require_cold_gate(1);
+    assert(BYTE(0x800410u) == 0x39u && HALF(0x800414u) == 0x6ad8u);
+
+    set_dma(0, 0x39u, 1u, 0x6ad8u);
+    require_cold_gate(0);
+    set_dma(0, 0x39u, 0u, 0x6ad7u);
+    require_cold_gate(0);
+    set_dma(0, 0xf9u, 0u, 0x6ad8u);
+    require_cold_gate(0);
+    set_dma(0, 0x79u, 0u, 0x6b40u);
+    require_cold_gate(0);
+    /* One accepted request may still run after TENL was cleared. */
+    set_dma(0, 0x71u, 255u, 0x6ad8u);
+    require_cold_gate(1);
+    set_dma(0, 0x71u, 0u, 0x6b40u);
+    require_cold_gate(0);
+    set_dma(0, 0x31u, 0u, 0x6b40u);
+    require_cold_gate(1);
+
+    set_dma(3, 0x5eu, 0u, 0x0434u);
+    require_cold_gate(0); /* Could reprogram another DMA channel. */
+    set_dma(3, 0x00u, 0u, 0u);
+    set_dma(4, 0x6du, 1u, 0x693au);
+    require_cold_gate(0);
+    set_dma(4, 0x6cu, 0u, 0x683au);
+    require_cold_gate(0);
+    set_dma(4, 0x00u, 0u, 0u);
+
+    for (unsigned channel = 0; channel < 10u; ++channel) {
+        if (channel == 0u || channel == 1u || channel == 3u || channel == 4u) {
+            continue;
+        }
+        set_dma(channel, 0x08u, 0u, 0x6aceu);
+        require_cold_gate(0);
+        set_dma(channel, 0x40u, 0u, 0x6aceu);
+        require_cold_gate(0);
+        set_dma(channel, 0x00u, 0u, 0u);
+    }
+
+    for (unsigned i = POLICY.count; i > 0u; --i) {
+        POLICY.ranges[i] = POLICY.ranges[i - 1u];
+    }
+    ++POLICY.count;
+    POLICY.ranges[0] = (Lfj8H03ServiceRange){0x806aceu, 0x806adau};
+    set_dma(0, 0x79u, 5u, 0x6aceu);
+    require_cold_gate(0);
+    set_dma(0, 0x00u, 0u, 0u);
+    set_dma(1, 0x00u, 0u, 0u);
+    fixture_map();
+    require_cold_gate(1);
+}
+
 int main(void)
 {
     __asm__ volatile ("setpsw #0x40" ::: "memory", "cc");
@@ -258,6 +334,7 @@ int main(void)
     require_cold_gate(0);
     fixture_map();
     require_cold_gate(1);
-    puts("H03 RAM owner: cold gate, native service words and live stacks PASS");
+    verify_dma();
+    puts("H03 RAM owner: cold gate, native service words, live stacks and DMA PASS");
     return 0;
 }

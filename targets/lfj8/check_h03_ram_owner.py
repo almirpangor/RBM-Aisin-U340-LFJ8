@@ -11,6 +11,7 @@ from tempfile import TemporaryDirectory
 
 from check_h03_can_monitor_revoke import aggregate_placement, aliases_for
 from check_h03_link import HERE, ROOT, TARGET, identify_h03
+from check_h03_toyota_source import RELEASE_ROOTS, simulate as simulate_toyota
 
 
 SITES = {"DIRECT": 0x002924, "SPAN": 0x00294C, "COPY": 0x002D1C,
@@ -133,7 +134,7 @@ def simulate(base, compiler):
             "-Wl,--start-group", "-lc", "-lgloss", "-lgcc", "-Wl,--end-group", "-o", elf)
         simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")
         result = run(simulator, "--memory-size=16M", elf)
-        if result != "H03 RAM owner: cold gate, native service words and live stacks PASS":
+        if result != "H03 RAM owner: cold gate, native service words, live stacks and DMA PASS":
             raise ValueError(f"Unexpected M32R result: {result}")
         return result
 
@@ -147,16 +148,22 @@ def check(args):
     _, aliases = aliases_for(args.base, compiler, args.storage_report)
     result = simulate(args.base, compiler)
     sbi = probe_sbi(args.base, compiler)
+    toyota = simulate_toyota(compiler, args.bridge.resolve())
     old_modules = layout.BINDING_MODULES
+    old_roots = layout.EXTRA_ROOTS
     layout.BINDING_MODULES += ("lfj8_h03_ram_owner.c",)
+    layout.EXTRA_ROOTS += RELEASE_ROOTS
     try:
         placement = aggregate_placement(args, aliases)
     finally:
         layout.BINDING_MODULES = old_modules
+        layout.EXTRA_ROOTS = old_roots
     return {
         "base": identity,
         "m32r": result,
         "stock_sbi": sbi,
+        "toyota_m32r": toyota,
+        "live_dma_model_tested": True,
         "stock_hook_sites_checked": [f"0x{address:06X}" for address in SITES.values()],
         "linked_service_veneers_and_real_cold_gate": True,
         "external_writers_qualification_supplied_by_fixture": True,
