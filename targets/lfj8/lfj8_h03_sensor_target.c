@@ -1,5 +1,6 @@
 #include "lfj8_h03_sensor_target.h"
 #include "lfj8_h03_atf_target.h"
+#include "lfj8_h03_input_lifecycle.h"
 #include "lfj8_h03_mmio.h"
 
 static void revoke_locked(void)
@@ -38,7 +39,7 @@ int rbm_h03_sensor_clock_rebase(uint8_t physical_1mhz)
 
 void rbm_h03_s51_capture_callback(void)
 {
-    if (clock_ready_locked() == 1u) {
+    if (lfj8_h03_application_running_locked() && clock_ready_locked() == 1u) {
         lfj8_9e1c_raw_vss_after_capture_store(&rbm_h03_sensor_state.s51, &lfj8_h03_mmio,
                                             rbm_h03_sensor_config.s51_timeout_ticks);
     }
@@ -46,7 +47,7 @@ void rbm_h03_s51_capture_callback(void)
 
 void rbm_h03_s83_capture_callback(void)
 {
-    if (clock_ready_locked() == 1u) {
+    if (lfj8_h03_application_running_locked() && clock_ready_locked() == 1u) {
         lfj8_9e1c_raw_nt_after_capture_store(&rbm_h03_sensor_state.s83, &lfj8_h03_mmio,
                                            rbm_h03_sensor_config.s83_timeout_ticks);
     }

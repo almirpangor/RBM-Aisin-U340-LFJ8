@@ -125,7 +125,7 @@ def observation(output, name):
     return tuple(int(field, 16) for field in match[1].split())
 
 
-def run_case(run, work, gdb, case, lockout):
+def run_case(run, work, gdb, case, lockout, *, lockout_installed=False):
     width = max(case.count, 1)
     scratch_start = case.address - 1
     scratch_end = case.address + width + 1
@@ -154,7 +154,7 @@ def run_case(run, work, gdb, case, lockout):
     commands = ["set confirm off", "target sim --memory-size 16M", "load",
                 "tbreak *fixture_ready", "run"]
     commands.extend(assignment(kind, hex(address), value) for kind, address, value in seed)
-    if lockout:
+    if lockout and not lockout_installed:
         commands.append(assignment("unsigned int", hex(SITE), DISABLE_BRANCH))
     commands.extend(assignment("unsigned int", f"((char*)&fixture_arguments+{index * 4})", value)
                     for index, value in enumerate(arguments))
