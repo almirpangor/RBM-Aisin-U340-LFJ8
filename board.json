@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 169,
+  "sequence": 170,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -336,11 +336,11 @@
         "targets/lfj8/test_lfj8_h03_can13.c",
         "verification/project-audit/can02-loan-timeout.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "c53be951e4c44833aea3f77adecbd92b",
       "claimed_at": "2026-11-20T16:13:59+00:00",
-      "updated_at": "2026-11-20T16:16:53+00:00",
-      "note": "Просроченная телеметрия отзывает подтверждение момента до освобождения CAN13. Регрессия воспроизведена, затем PC 33 шага/65 тестов и H03 link/17 компонентов PASS. Окна 0x5E9 и время отмены остаются в CAN-03. Отчёт verification/project-audit/can02-loan-timeout.md.",
+      "updated_at": "2026-11-20T16:34:59+00:00",
+      "note": "Принято в опубликованную main b2ca79d после независимых и общих проверок. Аудит integration-2 содержит результаты и ограничения. Технические остатки ТЗ остаются открытыми.",
       "result": "b48b4e50878c8173a40d65134213fbb8fdc37aa1"
     },
     "TOY-06": {
@@ -1843,9 +1843,17 @@
       "action": "complete",
       "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
       "at": "2026-11-20T16:34:39+00:00"
+    },
+    {
+      "operation_id": "721a9a071f6844609d09750a85f30fa0",
+      "task": "CAN-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "c53be951e4c44833aea3f77adecbd92b",
+      "at": "2026-11-20T16:34:59+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:34:39+00:00",
+  "updated_at": "2026-11-20T16:34:59+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
