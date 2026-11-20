@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 708,
+  "sequence": 709,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -37,12 +37,12 @@
         "targets/lfj8/h03_dtc_rx_hook.S",
         "verification/project-audit/dtc02-lower-service-gate.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "5bb09a6c858e41d7a7b760ee40373d75",
       "claimed_at": "2026-11-20T21:56:37+00:00",
-      "updated_at": "2026-11-20T21:56:37+00:00",
-      "note": "Независимая часть нижнего RX: обе обёртки DTC сохраняют штатный BasicCAN и не обращаются к целевому состоянию при OEM сервисном режиме 0x804887=4. Проверю обе врезки на закреплённых H03 байтах, не меняя занятый проверочный скрипт и компоновщик.",
-      "result": null,
+      "updated_at": "2026-11-20T22:00:11+00:00",
+      "note": "Обе нижние обёртки DTC обходят проектный RX при сервисном режиме 0x804887=4; OEM BasicCAN и повторы сохранены. 4 целевых, 18 родных сравнений, 3 прежних обхода и 4 теста размещения прошли; запрос 0x732 дошёл до 0x722. +24 байта, RAM без новых объектов. Остаются установка в итоговый образ и аппаратная приёмка. Отчёт dtc02-lower-service-gate.md.",
+      "result": "3ef0e6e5cdf3e932aab4eec617dc070ac8c24688",
       "based_on_reviews": []
     },
     "CAN-03": {
@@ -8719,9 +8719,34 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "d124563bfa2a4101ab5955706c9b0e99",
+      "task": "DTC-02",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "review",
+      "claim_id": "5bb09a6c858e41d7a7b760ee40373d75",
+      "at": "2026-11-20T22:00:11+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex DTC-02 — нижний BasicCAN в сервисном режиме",
+        "branch": "codex/can01-h03-engine-owner-b0157640",
+        "files": [
+          "targets/lfj8/check_h03_dtc_service_gate.py",
+          "targets/lfj8/h03_dtc_rx_hook.S",
+          "verification/project-audit/dtc02-lower-service-gate.md"
+        ],
+        "stage": "review",
+        "claim_id": "5bb09a6c858e41d7a7b760ee40373d75",
+        "claimed_at": "2026-11-20T21:56:37+00:00",
+        "updated_at": "2026-11-20T22:00:11+00:00",
+        "note": "Обе нижние обёртки DTC обходят проектный RX при сервисном режиме 0x804887=4; OEM BasicCAN и повторы сохранены. 4 целевых, 18 родных сравнений, 3 прежних обхода и 4 теста размещения прошли; запрос 0x732 дошёл до 0x722. +24 байта, RAM без новых объектов. Остаются установка в итоговый образ и аппаратная приёмка. Отчёт dtc02-lower-service-gate.md.",
+        "result": "3ef0e6e5cdf3e932aab4eec617dc070ac8c24688",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:59:52+00:00",
+  "updated_at": "2026-11-20T22:00:11+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -10237,6 +10262,25 @@
       "based_on_reviews": [],
       "task": "ORG-01",
       "submitted_at": "2026-11-20T21:46:25+00:00"
+    },
+    "5bb09a6c858e41d7a7b760ee40373d75": {
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "label": "Codex DTC-02 — нижний BasicCAN в сервисном режиме",
+      "branch": "codex/can01-h03-engine-owner-b0157640",
+      "files": [
+        "targets/lfj8/check_h03_dtc_service_gate.py",
+        "targets/lfj8/h03_dtc_rx_hook.S",
+        "verification/project-audit/dtc02-lower-service-gate.md"
+      ],
+      "stage": "review",
+      "claim_id": "5bb09a6c858e41d7a7b760ee40373d75",
+      "claimed_at": "2026-11-20T21:56:37+00:00",
+      "updated_at": "2026-11-20T22:00:11+00:00",
+      "note": "Обе нижние обёртки DTC обходят проектный RX при сервисном режиме 0x804887=4; OEM BasicCAN и повторы сохранены. 4 целевых, 18 родных сравнений, 3 прежних обхода и 4 теста размещения прошли; запрос 0x732 дошёл до 0x722. +24 байта, RAM без новых объектов. Остаются установка в итоговый образ и аппаратная приёмка. Отчёт dtc02-lower-service-gate.md.",
+      "result": "3ef0e6e5cdf3e932aab4eec617dc070ac8c24688",
+      "based_on_reviews": [],
+      "task": "DTC-02",
+      "submitted_at": "2026-11-20T22:00:11+00:00"
     }
   }
 }
