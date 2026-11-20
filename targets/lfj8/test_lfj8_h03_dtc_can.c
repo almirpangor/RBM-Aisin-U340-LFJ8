@@ -27,6 +27,7 @@ typedef struct {
     uint16_t now;
     unsigned requests;
     unsigned aborts;
+    unsigned writes;
     unsigned critical;
 } CanShadow;
 
@@ -66,6 +67,7 @@ static void write8(void *context, uint32_t address, uint8_t value)
     CanShadow *shadow = context;
     assert(shadow->critical == 1);
     assert(shadow->stat == 0u);
+    ++shadow->writes;
     if (address == CAN0_MSC13) {
         if (value == 0x0f) {
             assert(shadow->control == 0x80 || shadow->control == 0x82);
@@ -236,6 +238,10 @@ static void test_timeout_abort_and_recovery(void)
     assert(shadow.aborts == 1 && shadow.requests == 2 && adapter.link.phase == CHERY_DTC_LINK_IDLE);
     shadow.stat = 0;
     shadow.control = 0;
+    const unsigned writes = shadow.writes;
+    assert(lfj8_h03_dtc_can_poll(&adapter, &dtc, &io, 1, 1, start + 185u, &event) ==
+           LFJ8_H03_DTC_NO_OWNERSHIP);
+    assert(shadow.writes == writes);
     assert(lfj8_h03_dtc_can_poll(&adapter, &dtc, &io, 1, 2, start + 185u, &event) == LFJ8_H03_DTC_SLOT_FREE);
     assert(shadow.requests == 2);
     event.generation = 2;
@@ -254,10 +260,47 @@ static void test_timeout_abort_and_recovery(void)
     assert(shadow.requests == 4);
 }
 
+static void test_foreign_completion_revokes_session(void)
+{
+    CanShadow shadow = {.oem_state = 6, .now = 1000};
+    const Lfj8RegisterIo io = {.context = &shadow, .read8 = read8, .read16 = read16,
+                             .write8 = write8, .enter = enter, .leave = leave};
+    Lfj8H03DtcCan adapter;
+    CheryDtcState dtc;
+    assert(lfj8_h03_dtc_can_init(&adapter, 100));
+    chery_dtc_init(&dtc);
+    assert(chery_dtc_store_snapshot(&dtc, 0, 0x15));
+
+    const Lfj8H03DtcReceive start = rx(1, 995, 3, 2, 0x10, 0x86);
+    assert(lfj8_h03_dtc_can_poll(&adapter, &dtc, &io, 1, 1, 0, &start) == LFJ8_H03_DTC_SLOT_RESERVED);
+    expect_reply(&shadow, (const uint8_t[8]){2, 0x50, 0x86});
+
+    /* A different writer left an OEM 0x231 completion in the mailbox. */
+    complete(&shadow, 1001, 0x81);
+    shadow.slot[0] = 0x231u >> 6;
+    shadow.slot[1] = 0x231u & 0x3fu;
+    shadow.now = 1010;
+    const unsigned writes = shadow.writes;
+    assert(lfj8_h03_dtc_can_poll(&adapter, &dtc, &io, 1, 1, 1, NULL) == LFJ8_H03_DTC_NO_OWNERSHIP);
+    assert(adapter.link.phase == CHERY_DTC_LINK_IDLE && adapter.link.session.permission_bits == 0x11);
+    assert(shadow.writes == writes && shadow.control == 0x81);
+
+    shadow.control = 0;
+    assert(lfj8_h03_dtc_can_poll(&adapter, &dtc, &io, 1, 1, 2, &start) == LFJ8_H03_DTC_NO_OWNERSHIP);
+    assert(lfj8_h03_dtc_can_poll(&adapter, &dtc, &io, 1, 2, 3, &start) == LFJ8_H03_DTC_SLOT_FREE);
+    assert(shadow.writes == writes);
+
+    const Lfj8H03DtcReceive clear = rx(2, 1009, 4, 3, 0x14, 0xff);
+    assert(lfj8_h03_dtc_can_poll(&adapter, &dtc, &io, 1, 2, 4, &clear) == LFJ8_H03_DTC_SLOT_RESERVED);
+    expect_reply(&shadow, (const uint8_t[8]){3, 0x7f, 0x14, 0x80});
+    assert(!dtc.clear_pending && dtc.snapshot_index[0] == 0x15);
+}
+
 int main(void)
 {
     test_basiccan_decode();
     test_segmented_read();
+    test_foreign_completion_revokes_session();
     test_timeout_abort_and_recovery();
     puts("H03 CAN0 diagnostic TX13 completion, stale Flow Control, abort and recovery: PASS");
     return 0;
