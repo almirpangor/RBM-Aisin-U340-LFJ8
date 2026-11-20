@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 557,
+  "sequence": 558,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -477,12 +477,12 @@
         "tests/test_h03_sensor_config.py",
         "verification/project-audit/vss02-h03-sensor-config-source.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "625fae5569f34ec79ee0206423a3fa01",
       "claimed_at": "2026-11-20T19:56:16+00:00",
-      "updated_at": "2026-11-20T19:58:46+00:00",
-      "note": "CLI из проверенного профиля формирует целевой символ, 16 тестов ПК и нативный путь S51/S83/ATF прошли. M32R подтвердил ABI и снятие неразрешённой конфигурации на синтетических данных; проверяю расширённый состав.",
-      "result": null
+      "updated_at": "2026-11-20T20:01:05+00:00",
+      "note": "Генератор rbm_h03_sensor_config проверяет пределы, наблюдения и оба таймера; 16 тестов ПК, нативный S51/S83/ATF и ABI M32R прошли. Расширенная компоновка с синтетикой оставляет только application_binding. Реальные замеры открыты. Отчёт vss02-h03-sensor-config-source.md.",
+      "result": "3ffed063500c6347896338731573da0bd14a1eeb"
     },
     "TOY-01": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -5042,9 +5042,17 @@
       "action": "review",
       "claim_id": "7180472509b343958005e9c8aeaadc9c",
       "at": "2026-11-20T20:00:46+00:00"
+    },
+    {
+      "operation_id": "6b650d0b871440869122fb72fc68f7e5",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "625fae5569f34ec79ee0206423a3fa01",
+      "at": "2026-11-20T20:01:05+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:00:46+00:00",
+  "updated_at": "2026-11-20T20:01:05+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
