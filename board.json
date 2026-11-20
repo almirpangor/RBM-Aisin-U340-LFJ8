@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 111,
+  "sequence": 112,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -47,8 +47,8 @@
       "stage": "in_progress",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:17:33+00:00",
-      "note": "Продолжаю после review a4f93e5. Соединяю очередь и существующий CAN13 в отдельном foreground-адаптере. Проверка реального диспетчера в модели, без правок файлов CAN-02 и H03-03.",
+      "updated_at": "2026-11-20T16:21:49+00:00",
+      "note": "Добавлен foreground-адаптер очереди к настоящему CAN13. Отдельный прогон ПК и M32R прошёл. Повторяю с регрессией отзыва разрешения и полными проверками на main 4fd3f71.",
       "result": "a4f93e544a290886df65d8245ea6a91b0c7a4d4d"
     },
     "CAN-03": {
@@ -1303,9 +1303,17 @@
       "action": "claim",
       "claim_id": "b0a3618e8676435c94101b0abb236b6a",
       "at": "2026-11-20T16:21:43+00:00"
+    },
+    {
+      "operation_id": "d2bc949448cc465d8b4bdcb93b4a8dc8",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:21:49+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:21:43+00:00",
+  "updated_at": "2026-11-20T16:21:49+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
