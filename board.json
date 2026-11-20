@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 460,
+  "sequence": 461,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -122,12 +122,12 @@
         "targets/lfj8/h03_service_guard_hooks.S",
         "verification/project-audit/h03-04-service-cancel.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "4f246c72de0f49dc90a87bed827a9df1",
       "claimed_at": "2026-11-20T18:58:41+00:00",
-      "updated_at": "2026-11-20T19:03:58+00:00",
-      "note": "Отмена подключена к принятому закрытию 0x002E9C и использует неизменяемую политику целого переноса. Проверяю 56 сценариев закрытия и 240 исходных регрессий M32R.",
-      "result": null
+      "updated_at": "2026-11-20T19:06:42+00:00",
+      "note": "Передаю отмену удержанного переноса при принятом закрытии сеанса. 56 нативных сценариев закрытия, 240 регрессий писателей, 20 проверок политики и 37 шагов ПК/113 тестов прошли. Новый guard 528 байт с модельной политикой. Отчёт verification/project-audit/h03-04-service-cancel.md. Окончательная установка обёрток и стенд открыты.",
+      "result": "8eaaa60efcfeb7f79056b36e44983bdac546494d"
     },
     "DTC-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -4240,9 +4240,17 @@
       "action": "heartbeat",
       "claim_id": "af75614181e6438cbed6652ba8147606",
       "at": "2026-11-20T19:06:30+00:00"
+    },
+    {
+      "operation_id": "969a6629edf74bff9c5dcf568d81e680",
+      "task": "H03-04",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "review",
+      "claim_id": "4f246c72de0f49dc90a87bed827a9df1",
+      "at": "2026-11-20T19:06:42+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:06:30+00:00",
+  "updated_at": "2026-11-20T19:06:42+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
