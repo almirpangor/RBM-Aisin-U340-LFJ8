@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 582,
+  "sequence": 583,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -68,19 +68,22 @@
       "result": "1876a8c6ca973baec3a804d034aa7495e7105458"
     },
     "TOY-03": {
-      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
-      "label": "Codex — независимый P/N H03",
-      "branch": "codex/toy03-native-range-01a1f9a2",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex TOY-03 — допуск независимого P/N",
+      "branch": "codex/toy03-independent-pn-mwp5rm2ofhaxjfi9dss",
       "files": [
         "targets/lfj8/check_h03_range_pnp.py",
-        "verification/project-audit/toy03-h03-pnp-source.md"
+        "targets/lfj8/lfj8_h03_range_pn.c",
+        "targets/lfj8/lfj8_h03_range_pn.h",
+        "targets/lfj8/test_lfj8_h03_range_pn.c",
+        "verification/project-audit/toy03-independent-pn-qualifier.md"
       ],
-      "stage": "done",
-      "claim_id": "91dc6f6e798a4450860733fb188dbe9e",
-      "claimed_at": "2026-11-20T18:54:09+00:00",
-      "updated_at": "2026-11-20T19:22:47+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "27ebaeb9efc5844de3924a58520754635b50c875"
+      "stage": "in_progress",
+      "claim_id": "5d801751d9964d70bb7719d4db03f597",
+      "claimed_at": "2026-11-20T20:09:46+00:00",
+      "updated_at": "2026-11-20T20:09:46+00:00",
+      "note": "Реализую целевую квалификацию независимого контакта P/N по поколению, давности, рассогласованию и согласию с AN2. Подключу проверку к штатному M32R range-pnp. Назначение входа и пределы без замеров не подставляю.",
+      "result": null
     },
     "REL-01": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -5238,9 +5241,17 @@
       "action": "review",
       "claim_id": "976c5a059ccb4336b70933d8338d8217",
       "at": "2026-11-20T20:09:08+00:00"
+    },
+    {
+      "operation_id": "13dbcf0b9439408e9bb18c9a11795809",
+      "task": "TOY-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "5d801751d9964d70bb7719d4db03f597",
+      "at": "2026-11-20T20:09:46+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:09:08+00:00",
+  "updated_at": "2026-11-20T20:09:46+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
