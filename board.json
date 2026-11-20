@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 588,
+  "sequence": 589,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -558,11 +558,11 @@
         "tools/check_e4m3_diff.py",
         "verification/project-audit/aud01-e4m3-diff-check.md"
       ],
-      "stage": "in_progress",
+      "stage": "released",
       "claim_id": "905e8720217a4978bc115ceef39b1035",
       "claimed_at": "2026-11-20T20:10:29+00:00",
-      "updated_at": "2026-11-20T20:10:29+00:00",
-      "note": "Независимая офлайн-сверка data/e4m3-diff.json с Git-объектами R1/R4. Проверяю размеры, SHA-256, blob ID, побайтовое равенство и каждый диапазон смещений. Результат только локально.",
+      "updated_at": "2026-11-20T20:13:26+00:00",
+      "note": "Офлайн-сверка завершена. Совпали 8 закреплённых файлов, 3 группы копий и 1057 диапазонов. Скрипт и отчёт сохранены в локальном коммите. Резерв освобождён.",
       "result": null
     },
     "REL-02": {
@@ -5291,9 +5291,17 @@
       "action": "claim",
       "claim_id": "afe9090e65ce4d9caf011f47cdcfe67a",
       "at": "2026-11-20T20:13:14+00:00"
+    },
+    {
+      "operation_id": "0ea69aef643b4da8ac1b2deb19170dd0",
+      "task": "AUD-01",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "release",
+      "claim_id": "905e8720217a4978bc115ceef39b1035",
+      "at": "2026-11-20T20:13:26+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:13:14+00:00",
+  "updated_at": "2026-11-20T20:13:26+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
