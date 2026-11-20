@@ -165,4 +165,8 @@ int lfj8_h03_can0_arm_engine_rx(const Lfj8RegisterIo *io, uint8_t slots_owned);
  * and the controller runs in the one-count-per-bit mode. */
 int lfj8_h03_can0_read_timestamp(const Lfj8RegisterIo *io, uint16_t *timestamp);
 
+/* Read-only check after the OEM setup tail. The owner must mask CAN0 IRQ
+ * across this call, the queue reset, and publication of the new grant. */
+int lfj8_h03_can0_epoch_drained(const Lfj8RegisterIo *io);
+
 #endif

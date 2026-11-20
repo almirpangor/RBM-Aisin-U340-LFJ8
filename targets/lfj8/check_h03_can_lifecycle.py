@@ -88,7 +88,7 @@ def check(base, compiler):
                         f"-DTEST_STATE={initial}", f"-DTEST_STATUS={status}",
                         f"-DTEST_MASK={mask}", f"-DTEST_SLOT13={slot13}",
                         f"-DRUN_TAIL={tail}", f"-DWRAPPED={wrapped}", f"-DTEST_GENERATION={generation_seed}",
-                        "fixture.S", "setup_hook.S", "-o", "sim.elf")
+                        f"-I{HERE}", "fixture.S", "setup_hook.S", "-o", "sim.elf")
                     stdout = run(simulator, "--memory-size", "16M", "sim.elf")
                     if len(stdout) != 344:
                         raise ValueError(f"Incomplete snapshot for {path}: {len(stdout)} bytes")
@@ -146,7 +146,7 @@ def check(base, compiler):
                            "OEM saved-PSW pointer"],
         "observer_own_stack_bytes": 12,
         "setup_hook_own_stack_bytes": 16,
-        "setup_hook_grant_and_generation_bound": "simulation only",
+        "setup_hook_grant_and_generation_bound": "shared CAN owner layout at a simulator address",
         "implemented_peripheral_behavior": "none; CAN0 register addresses are RAM shadows",
         "cases": results,
         "hardware_executed": False,

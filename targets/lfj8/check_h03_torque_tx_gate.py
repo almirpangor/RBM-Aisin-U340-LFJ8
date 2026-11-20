@@ -48,9 +48,12 @@ def check(base, compiler):
             source.extend((f'    .section {section},"ax",@progbits', f'    .incbin "{file}"'))
             placements.append((section, start))
         (work / "fixture.S").write_text("\n".join(source) + "\n", encoding="ascii")
-        (work / "tx-entry.bin").write_bytes(rom[0xC34C:0xC350])
+        entry = rom[0xC34C:0xC350]
+        if entry != bytes.fromhex("2E7F2A7F"):
+            raise ValueError("The native TX gate must replay the original entry word")
+        (work / "tx-entry.bin").write_bytes(entry)
         placements.extend(((".tx_entry", 0xC34C), (".fixture", 0x060000),
-                           (".fixture_state", 0x100000)))
+                           (".text.h03_can13_tx_gate", 0x060800), (".fixture_state", 0x100000)))
         sections = "\n".join(f"  {section} {address:#x} : {{ *({section}) }}"
                              for section, address in sorted(placements, key=lambda item: item[1]))
         (work / "fixture.ld").write_text(
@@ -73,7 +76,8 @@ def check(base, compiler):
                 parameters = {"IRQ_PATH": irq, "HOOKED": hooked, "LEASE_VALUE": lease,
                               "INITIAL_CONTROL": control}
                 run(compiler, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,fixture.ld",
-                    *(f"-D{k}={v}" for k, v in parameters.items()), "fixture.S", "-o", "fixture.elf")
+                    *(f"-D{k}={v}" for k, v in parameters.items()),
+                    f"-I{HERE}", "fixture.S", HERE / "h03_can13_tx_gate.S", "-o", "fixture.elf")
                 run(simulator, "--memory-size", "16M", "fixture.elf")
                 cases.append({
                     "caller": path,
@@ -91,7 +95,7 @@ def check(base, compiler):
         "native_irq_entry": "invoked directly with SLIST bit 2 set",
         "can_hardware_irq_modelled": False,
         "traces": cases,
-        "scope": "Original H03 code and call sites; simulated MMIO, owner flag and branch patch.",
+        "scope": "Original H03 call sites and production TX gate with simulated MMIO and owner placement.",
         "hardware_executed": False,
         "flashable_image": None,
     }
