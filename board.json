@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 328,
+  "sequence": 329,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -128,19 +128,20 @@
       "result": null
     },
     "H03-04": {
-      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex — сервисные границы RAM H03",
-      "branch": "codex/h03-service-spans-32e6ac79",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "label": "Codex — уменьшение Flash H03",
+      "branch": "codex/h03-04-torque-size-01a1f9a2",
       "files": [
-        "targets/lfj8/check_h03_service_isolation.py",
-        "verification/project-audit/h03-service-ram-spans.md"
+        "docs/lfj8-h03-torque.md",
+        "targets/lfj8/lfj8_h03_torque.c",
+        "targets/lfj8/lfj8_h03_torque_can.c"
       ],
-      "stage": "done",
-      "claim_id": "a16c78536102430583d910e97b8385d3",
-      "claimed_at": "2026-11-20T16:20:52+00:00",
-      "updated_at": "2026-11-20T17:38:42+00:00",
-      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
-      "result": "e4ac4b09967f7edf86cf2c1911218ba34e260b24"
+      "stage": "in_progress",
+      "claim_id": "9e93704114d342ff9848b326e2d3d7fc",
+      "claimed_at": "2026-11-20T18:07:03+00:00",
+      "updated_at": "2026-11-20T18:07:03+00:00",
+      "note": "Уменьшаю код диалога и адаптера CAN момента в хвостовом окне Flash. Сверю тот же набор корней в общей модели и повторю проверки границ и потери CAN. Общую компоновку не меняю.",
+      "result": null
     },
     "DTC-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -3204,9 +3205,17 @@
       "action": "claim",
       "claim_id": "df8ec9e7df1a4383b71e3070e9462547",
       "at": "2026-11-20T18:06:13+00:00"
+    },
+    {
+      "operation_id": "ad78ecec2b9f4d26a6edf7760bc333e7",
+      "task": "H03-04",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "claim",
+      "claim_id": "9e93704114d342ff9848b326e2d3d7fc",
+      "at": "2026-11-20T18:07:03+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:06:13+00:00",
+  "updated_at": "2026-11-20T18:07:03+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
