@@ -167,8 +167,53 @@ static Lfj8H03TorqueCanSlot poll(Lfj8H03TorqueCan *link, const Lfj8RegisterIo *i
     return result;
 }
 
+static void test_inflight_lease_loss(bool bus_off)
+{
+    CanRegisters can = {.irq_mask = 0x8003, .global_mask = 0x1f};
+    const Lfj8RegisterIo io = {.context = &can, .read8 = read_byte, .read16 = read_halfword,
+                             .write8 = write_byte, .enter = lock_irq, .leave = restore_irq};
+    Lfj8H03TorqueCan link;
+    assert(lfj8_h03_torque_can_init(&link, 4000u, 10000u, 2u));
+    poll(&link, &io, 0u, false, false, 1, 1u);
+    poll(&link, &io, 100u, false, false, 1, 1u);
+    status(&can, 120u, 0, 0, 0, 0);
+    poll(&link, &io, 300u, false, false, 1, 1u);
+    poll(&link, &io, 500u, true, false, 1, 1u);
+    expect_request(&can, 1, 1);
+    finish(&can, 900u);
+    poll(&link, &io, 1000u, true, false, 1, 1u);
+    status(&can, 1400u, 0x72, 1, 32, 1);
+    poll(&link, &io, 1500u, true, false, 1, 1u);
+
+    poll(&link, &io, 9500u, true, false, 1, 1u);
+    poll(&link, &io, 17500u, true, false, 1, 1u);
+    poll(&link, &io, 20500u, true, false, 1, 1u);
+    expect_request(&can, 2, 2);
+    assert(link.request.pending && link.request.full_reduction);
+    const unsigned writes = can.writes;
+    if (bus_off) {
+        can.stat = 0x4000u;
+    } else {
+        finish(&can, 20510u);
+        can.storage[0] = 0x231u >> 6;
+        can.storage[1] = 0x231u & 0x3fu;
+    }
+    assert(poll(&link, &io, 20600u, true, false, 1, 1u) == LFJ8_H03_TORQUE_CAN_UNAVAILABLE);
+    assert(can.writes == writes && !link.request.full_reduction && !link.request.have_status);
+    assert(link.request.pending && link.request.seq == 1u);
+
+    can.stat = 0;
+    can.control = 0;
+    assert(poll(&link, &io, 20700u, true, false, 1, 1u) == LFJ8_H03_TORQUE_CAN_UNAVAILABLE);
+    assert(can.writes == writes);
+    assert(poll(&link, &io, 20800u, false, false, 1, 2u) == LFJ8_H03_TORQUE_CAN_RESERVED);
+    assert(!link.lease_lost && !link.request.pending && !link.request.have_status && can.sent == 2u);
+}
+
 int main(void)
 {
+    test_inflight_lease_loss(false);
+    test_inflight_lease_loss(true);
     CanRegisters can = {.irq_mask = 0x8007, .global_mask = 0x1f};
     const Lfj8RegisterIo io = {.context = &can, .read8 = read_byte, .read16 = read_halfword,
                              .write8 = write_byte, .enter = lock_irq, .leave = restore_irq};

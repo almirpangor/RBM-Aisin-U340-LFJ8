@@ -52,6 +52,17 @@ static void clear_status(Lfj8H03TorqueCan *adapter)
     adapter->need_drain = true;
 }
 
+static Lfj8H03TorqueCanSlot lose_ownership(Lfj8H03TorqueCan *adapter,
+        const Lfj8TorqueCalibration *cal, uint32_t now_us)
+{
+    /* An unverified completion cannot retire the old generation's TX. */
+    adapter->lease_lost = adapter->lease_lost || adapter->request.pending;
+    adapter->clock_seen = false;
+    clear_status(adapter);
+    lfj8_h03_torque_poll(&adapter->request, NULL, cal, now_us, NULL, NULL);
+    return LFJ8_H03_TORQUE_CAN_UNAVAILABLE;
+}
+
 Lfj8H03TorqueCanSlot lfj8_h03_torque_can_poll(
     Lfj8H03TorqueCan *adapter, const Lfj8RegisterIo *io, uint8_t slot13_owned,
     bool yield_slot13, uint32_t generation, uint32_t now_us,
@@ -68,19 +79,9 @@ Lfj8H03TorqueCanSlot lfj8_h03_torque_can_poll(
         adapter->lease_lost = false;
         clear_status(adapter);
     }
-    if (slot13_owned != 1u || adapter->lease_lost) {
-        adapter->lease_lost = adapter->lease_lost || adapter->request.pending;
-        adapter->clock_seen = false;
-        clear_status(adapter);
-        lfj8_h03_torque_poll(&adapter->request, NULL, cal, now_us, NULL, NULL);
-        return LFJ8_H03_TORQUE_CAN_UNAVAILABLE;
-    }
     uint16_t tick;
-    if (!lfj8_h03_can0_read_timestamp(io, &tick)) {
-        adapter->clock_seen = false;
-        clear_status(adapter);
-        lfj8_h03_torque_poll(&adapter->request, NULL, cal, now_us, NULL, NULL);
-        return LFJ8_H03_TORQUE_CAN_UNAVAILABLE;
+    if (slot13_owned != 1u || adapter->lease_lost || !lfj8_h03_can0_read_timestamp(io, &tick)) {
+        return lose_ownership(adapter, cal, now_us);
     }
     const bool advancing = adapter->clock_seen && tick != adapter->previous_tick;
     const bool continuous = update_clock(adapter, tick, now_us);
@@ -93,7 +94,10 @@ Lfj8H03TorqueCanSlot lfj8_h03_torque_can_poll(
             now_us - adapter->request.submitted_at >= adapter->max_poll_gap_us;
         const Lfj8CanTxStatus status =
             lfj8_h03_can0_torque_status(io, 1u, cancel, &adapter->completed_tick);
-        if (status == LFJ8_CAN_TX_PENDING || status == LFJ8_CAN_TX_UNAVAILABLE) {
+        if (status == LFJ8_CAN_TX_UNAVAILABLE) {
+            return lose_ownership(adapter, cal, now_us);
+        }
+        if (status == LFJ8_CAN_TX_PENDING) {
             lfj8_h03_torque_poll(&adapter->request, continuous ? input : NULL, cal, now_us, NULL, NULL);
             return LFJ8_H03_TORQUE_CAN_RESERVED;
         }
