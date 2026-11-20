@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 114,
+  "sequence": 115,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -391,12 +391,12 @@
         "docs/lfj8-slt-calibration.md",
         "targets/lfj8/check_h03_slt_fault.py"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "claimed_at": "2026-11-20T16:20:38+00:00",
-      "updated_at": "2026-11-20T16:20:38+00:00",
-      "note": "Исполняю цепь P0745 → арбитраж → применение Pressure A в M32R, проверяю сохранение старого PWM до применения.",
-      "result": null
+      "updated_at": "2026-11-20T16:22:22+00:00",
+      "note": "P0745: 16 проверок M32R и native hooks PASS. Подтверждены снятие PWM на этапе применения и повтор старого предложения после очистки с новым штатным арбитражем; физический inhibit и ток остаются.",
+      "result": "bf4720ec65f4f5e8f32ce3368c873fd865e1ae41"
     },
     "MODE-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -1343,9 +1343,17 @@
       "action": "complete",
       "claim_id": "f014bd3c6bba42f5bb7e5fa23c121d0d",
       "at": "2026-11-20T16:22:02+00:00"
+    },
+    {
+      "operation_id": "4d6fc2ffa9a14ddc9f0c2713c2bd70b7",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
+      "at": "2026-11-20T16:22:22+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:22:02+00:00",
+  "updated_at": "2026-11-20T16:22:22+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
