@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 495,
+  "sequence": 496,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -46,23 +46,18 @@
       "result": "500b34cb08d9d61ce2016a47e0f09e77132edf21"
     },
     "CAN-03": {
-      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
-      "label": "Codex CAN-03 monitor admission",
-      "branch": "codex/can03-h03-monitor-startup-01a1f99f",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "label": "Основной чат — принятие CAN-03",
+      "branch": "codex/integration-01a1f76d-20261120",
       "files": [
-        "targets/lfj8/check_h03_can_monitor_startup.py",
-        "targets/lfj8/h03_can_monitor_startup_hooks.S",
-        "targets/lfj8/lfj8_h03_can_monitor_startup.c",
-        "targets/lfj8/lfj8_h03_can_monitor_startup.h",
-        "verification/project-audit/2026-11-20-h03-can-monitor-startup.json",
-        "verification/project-audit/can03-h03-monitor-startup.md"
+        "targets/lfj8/check_h03_can_monitor_startup.py"
       ],
-      "stage": "released",
-      "claim_id": "941f259113e042a39db21686bc935bc8",
-      "claimed_at": "2026-11-20T18:34:34+00:00",
-      "updated_at": "2026-11-20T19:15:26+00:00",
-      "note": "Интегратор принял опубликованный 89d0ed8 в общее дерево 2b7be4b. Передаю только исправление верификатора для пути проекта с кириллицей основному чату; исходный результат сохранён.",
-      "result": "89d0ed83d5e9c84a2834a95fb1bf01a8e67aae59"
+      "stage": "in_progress",
+      "claim_id": "2ec8aacec9a4492593f09b24555a5f0f",
+      "claimed_at": "2026-11-20T19:32:51+00:00",
+      "updated_at": "2026-11-20T19:32:51+00:00",
+      "note": "Оформляю принятие переданной порции 89d0ed8 вместе с проверенным исправлением кириллического пути из ae393e8; работа была зарезервирована ORG-01.",
+      "result": null
     },
     "TOY-03": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -4520,9 +4515,17 @@
       "action": "complete",
       "claim_id": "52e7f6ec20834ce89a8c8faa785fe86b",
       "at": "2026-11-20T19:32:32+00:00"
+    },
+    {
+      "operation_id": "6ebc7bd7b917412ca4ae6009d22ea632",
+      "task": "CAN-03",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "2ec8aacec9a4492593f09b24555a5f0f",
+      "at": "2026-11-20T19:32:51+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:32:32+00:00",
+  "updated_at": "2026-11-20T19:32:51+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
