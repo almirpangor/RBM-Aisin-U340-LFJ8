@@ -122,6 +122,8 @@ def run(compiler: str, bosch: tuple[Path, Path, Path] | None = None,
             "rpm": host["tc_rx_rpm_q3"] // 8,
             "coolant_celsius": host["tc_rx_coolant_plus_50"] - 50,
         }
+        if bosch is not None:
+            report["same_bosch_image_both_directions"] = probe["sha256"] == tx_sha
     return report
 
 

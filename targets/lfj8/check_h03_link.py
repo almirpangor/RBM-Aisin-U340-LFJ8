@@ -146,6 +146,10 @@ def check(base, bridge, controller, compiler, simulator_output):
         if (manifest["m32r_base"]["sha256"] != report["source"]["sha256"] or
                 manifest["artifacts"][bridge.name]["sha256"] != report["inputs"][bridge.name]["sha256"]):
             raise ValueError("The bridge object and its manifest do not match the H03 build")
+        control_manifest = json.loads((controller.parent / "manifest.json").read_text(encoding="utf-8"))
+        if (control_manifest["architecture"] != "m32r" or
+                control_manifest["sha256"].get(controller.name) != report["inputs"][controller.name]["sha256"]):
+            raise ValueError("The controller object does not match its M32R build manifest")
 
         def run(*args):
             return subprocess.run([str(arg) for arg in args], cwd=stage, text=True, check=True,
@@ -237,6 +241,25 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
         run(compiler, *TARGET, "-r", *root_flags(roots_with_dtc), "compact.o", *dtc_objects,
             *libraries, "-o", "compact-with-dtc.o")
         compact_with_dtc = link_model("compact-with-dtc.elf", "compact-with-dtc.o", roots_with_dtc)
+        # Verify the bytes in the final linked image against the three S01 slices.
+        objcopy = run(compiler, "-print-prog-name=objcopy")
+        run(objcopy, "-O", "binary", "compact-with-dtc.elf", "linked-rom.dat")
+        rom = (stage / "linked-rom.dat").read_bytes()
+        symbols = [line.split() for line in run(nm, "-S", "compact-with-dtc.elf").splitlines()]
+        compact_with_dtc["shared_s01_tables"] = {}
+        for name, size, digest in (
+            ("learning_001C3C", 800, "8276650f90e31262d21eca82fd06ce04c9ed0456b74c9456cebf2b11b0b9fd5b"),
+            ("pressure_0015FC", 36, "57d409e7acd5e96573b9857bd4275a2e850990facad3e1e668a7109b8600e41f"),
+            ("gear_000D08", 8, "297dcae8b2e253f2f4087110887391050045684a250054e96ebf7b81624df67b"),
+        ):
+            matches = [row for row in symbols if len(row) == 4 and row[3] == name]
+            if len(matches) != 1 or int(matches[0][1], 16) != size or matches[0][2] != "R":
+                raise ValueError(f"Expected one read-only instance of S01 table {name}")
+            address = int(matches[0][0], 16)
+            offset = address - FLASH_START
+            if offset < 0 or sha256(rom[offset:offset + size]).hexdigest() != digest:
+                raise ValueError(f"S01 calibration mismatch in the linked image: {name}")
+            compact_with_dtc["shared_s01_tables"][name] = {"address": address, "bytes": size, "sha256": digest}
         compact_with_dtc["dtc_increment_bytes"] = compact_with_dtc["rom_extent_bytes"] - compact["rom_extent_bytes"]
         report["compact_address_model_with_dtc"] = compact_with_dtc
 

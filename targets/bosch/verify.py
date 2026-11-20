@@ -43,8 +43,12 @@ def build_native_model(image, path, *, packed=True):
 
 def probe_frame(engine, s04, image, frame, *, compact=False):
     expected, manifest, _, _ = build(engine, s04, compact=compact)
-    if len(frame) != 8 or image != expected:
-        raise ValueError("Expected an eight-byte frame and the exact candidate")
+    if len(frame) != 8:
+        raise ValueError("Expected one eight-byte 0x1AE frame")
+    if image != expected:
+        expected, manifest, _, _ = build(engine, s04, with_engine_signals_tx=True, compact=compact)
+        if image != expected:
+            raise ValueError("Image differs from both reproducible Bosch candidates")
     from audit_machine import Machine
     from test_can_diag import start
 

@@ -4,12 +4,13 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
 
-from hydraulic_port import write_port
+from hydraulic_port import replace_once, write_port
 
 
 CONTROLLER = Path(__file__).resolve().parent
@@ -30,6 +31,30 @@ def verify_toyota() -> tuple[dict, list[Path]]:
             raise ValueError(f"Toyota source SHA-256 mismatch: {entry['path']}")
         files.append(path)
     return provenance, files
+
+
+def stage_toyota_sources(destination: Path) -> None:
+    """Adapt a verified copy of the donor sources for host and target builds."""
+    shutil.copytree(TOYOTA / "src", destination)
+    header = destination / "donor_calibration.h"
+    shared = destination / "donor_shared_calibration.c"
+    declarations = header.read_text(encoding="utf-8")
+    definitions = shared.read_text(encoding="utf-8")
+    for name in ("learning_001C3C", "pressure_0015FC", "gear_000D08"):
+        pattern = rf"^static (const uint8_t {name}\[\d+\])=(\{{[\d,]+\}});$"
+        match = re.search(pattern, declarations, re.MULTILINE)
+        if match is None:
+            raise ValueError(f"Missing donor calibration definition: {name}")
+        declarations = replace_once(declarations, match[0], f"extern {match[1]};")
+        definitions += f"\n{match[1]}={match[2]};\n"
+    header.write_text(declarations, encoding="utf-8")
+    shared.write_text(definitions, encoding="utf-8")
+
+    learning = destination / "factory_learning.c"
+    source = learning.read_text(encoding="utf-8")
+    # Subtract the donor base before adding an offset to the C array.
+    source = replace_once(source, "learning_001C3C+a-0x1c3c", "learning_001C3C+(a-0x1c3c)")
+    learning.write_text(source, encoding="utf-8")
 
 
 def build(compiler: str, destination: Path) -> None:
@@ -61,8 +86,13 @@ def build(compiler: str, destination: Path) -> None:
 
     with TemporaryDirectory(dir=destination) as stage_directory:
         stage = Path(stage_directory)
-        port = write_port(TOYOTA / "src", stage)
-        source_args = [str(path) for path in sources if path.name != "factory_hydraulics.c"] + [str(port)]
+        vendor_src = stage / "vendor"
+        stage_toyota_sources(vendor_src)
+        port = write_port(vendor_src, stage)
+        source_args = [str(CONTROLLER / path) for path in CONTROLLER_SOURCES]
+        source_args.extend(str(vendor_src / path.name) for path in vendor_files
+                           if path.suffix == ".c" and path.name != "factory_hydraulics.c")
+        source_args.append(str(port))
         subprocess.run([*driver, *flags, *shared, *source_args, "-o", str(stage / library)], check=True)
         subprocess.run(
             [*driver, *flags, "-DRBM_TEST_TRANSFERS", "-DRBM_TEST_RUNTIME", *source_args,

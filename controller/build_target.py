@@ -8,7 +8,7 @@ import shutil
 import subprocess
 from tempfile import TemporaryDirectory
 
-from build import CONTROLLER, CONTROLLER_SOURCES, CONTROLLER_TESTS, TOYOTA, sha256, verify_toyota
+from build import CONTROLLER, CONTROLLER_SOURCES, CONTROLLER_TESTS, TOYOTA, sha256, stage_toyota_sources, verify_toyota
 from hydraulic_port import write_port
 
 
@@ -43,7 +43,7 @@ def build(architecture: str, compiler: Path, destination: Path, sh_runner: Path 
         stage = Path(temp)
         shutil.copytree(CONTROLLER / "include", stage / "include")
         shutil.copytree(TOYOTA / "include", stage / "vendor/include")
-        shutil.copytree(TOYOTA / "src", stage / "vendor/src")
+        stage_toyota_sources(stage / "vendor/src")
 
         def copy_source(path: str) -> str:
             name = Path(path).name
