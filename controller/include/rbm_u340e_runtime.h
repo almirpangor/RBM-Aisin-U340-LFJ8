@@ -61,6 +61,12 @@ int rbm_u340e_runtime_snapshot_gears(const RbmU340eRuntime *runtime, FactoryGear
 int rbm_u340e_runtime_gears_outputs(RbmU340eRuntime *runtime, FactoryGearState *work,
                                     FactoryGearWrites *writes);
 
+/* Same sequence with a current, source-qualified forward request in 1..4.
+ * Zero selects the original Toyota map. A request is offered before the
+ * donor guards, transition timers, and S1/S2 calculations run. */
+int rbm_u340e_runtime_gears_outputs_with_request(RbmU340eRuntime *runtime, FactoryGearState *work,
+                                                 FactoryGearWrites *writes, uint8_t requested_gear);
+
 /* Coherent TA2005 operands after 06E856 and 06ED70. The owner checks
  * source selection and freshness before supplying this snapshot.
  * FAD8/F9E9 are raw receiver values and are outside this contract. */

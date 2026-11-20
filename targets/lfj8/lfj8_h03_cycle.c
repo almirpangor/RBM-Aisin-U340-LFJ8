@@ -38,7 +38,8 @@ static int main_step(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
     factory_hydraulics_load_main(&runtime->gp);
     if (!rbm_u340e_runtime_main_engine_speed(runtime, &engine) ||
         !rbm_u340e_runtime_main_range(runtime, &cycle->range, range, &work->gear) ||
-        !rbm_u340e_runtime_gears_outputs(runtime, &work->gear, &result->shift)) {
+        !rbm_u340e_runtime_gears_outputs_with_request(runtime, &work->gear, &result->shift,
+                                                      input->requested_gear)) {
         return 0;
     }
     result->gear_4852 = work->gear.b4852;
@@ -142,6 +143,16 @@ static int secondary_slu(FactoryHydraulics *gp, uint32_t event, uint32_t command
 typedef int (*SluStage)(FactoryHydraulics *, uint32_t, uint32_t,
                         const Lfj8H03CycleLoad *, const Lfj8H03CycleSlu *);
 
+static int request_in_range(const Lfj8H03CycleInput *input)
+{
+    static const uint8_t limit[RBM_U340E_SELECTOR_L + 1] = {
+        [RBM_U340E_SELECTOR_D] = 4u,
+        [RBM_U340E_SELECTOR_2] = 2u,
+        [RBM_U340E_SELECTOR_L] = 1u,
+    };
+    return input->requested_gear <= limit[input->selector];
+}
+
 static Lfj8H03CycleResult cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
     const Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work, Lfj8H03MainResult *result,
     const Lfj8H03CycleLoad *load, const Lfj8H03CycleSlu *slu, SluStage run_slu)
@@ -163,7 +174,7 @@ static Lfj8H03CycleResult cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *runti
         (slu && (!slu->state || !slu->output)) ||
         input->qualified != 1u || input->engine.coherent != 1u ||
         input->selector < RBM_U340E_SELECTOR_P || input->selector > RBM_U340E_SELECTOR_L ||
-        (cycle->have_event && input->event - cycle->last_event != 1u)) {
+        !request_in_range(input) || (cycle->have_event && input->event - cycle->last_event != 1u)) {
         cycle->faulted = 1u;
         return LFJ8_H03_CYCLE_FAULT;
     }

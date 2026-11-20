@@ -56,6 +56,34 @@ def stage_toyota_sources(destination: Path) -> None:
     source = replace_once(source, "learning_001C3C+a-0x1c3c", "learning_001C3C+(a-0x1c3c)")
     learning.write_text(source, encoding="utf-8")
 
+    gears = destination / "factory_gears.c"
+    source = gears.read_text(encoding="utf-8")
+    source = replace_once(source, "static int gears_step(FactoryGearState *s)",
+                          "static int gears_step(FactoryGearState *s, uint8_t requested_gear)")
+    source = replace_once(source, "    if(!request_maps(s)) return 0;\n",
+                          """    if(!request_maps(s)) return 0;
+    /* Project input at the map output, ahead of every donor shift guard.
+     * Neutral and the donor alternate strategy keep their original request. */
+    if (requested_gear && !(B(7252) & 1u) && !(B(4845) & 8u) && !(B(4844) & 2u)) {
+        B(4854) = (uint8_t)(requested_gear - 1u);
+    }
+""")
+    source = replace_once(source, "if(!gears_step(&t)||!valid_gear(&t)) return 0;",
+                          "if(!gears_step(&t, 0)||!valid_gear(&t)) return 0;")
+    source = replace_once(source, """int factory_gears_outputs_step(FactoryGearState *p,FactoryGearWrites *writes) {
+    if(!valid_gear(p)||!writes||p->driver5302[0]>4||p->driver5302[1]>4) return 0;
+    FactoryGearState t=*p,*s=&t;
+    if(!gears_step(s)||!valid_gear(s)) return 0;""", """int rbm_factory_gears_outputs_step(FactoryGearState *p, FactoryGearWrites *writes,
+                                   uint8_t requested_gear) {
+    if(requested_gear>4||!valid_gear(p)||!writes||p->driver5302[0]>4||p->driver5302[1]>4) return 0;
+    FactoryGearState t=*p,*s=&t;
+    if(!gears_step(s, requested_gear)||!valid_gear(s)) return 0;""")
+    source = replace_once(source, "#define RETURN_WRAPPER(a,type)", """int factory_gears_outputs_step(FactoryGearState *p, FactoryGearWrites *writes) {
+    return rbm_factory_gears_outputs_step(p, writes, 0);
+}
+#define RETURN_WRAPPER(a,type)""")
+    gears.write_text(source, encoding="utf-8", newline="\n")
+
 
 def build(compiler: str, destination: Path) -> None:
     resolved = shutil.which(compiler)

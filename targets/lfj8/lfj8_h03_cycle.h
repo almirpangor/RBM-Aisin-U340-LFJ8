@@ -31,6 +31,11 @@ typedef struct {
     uint8_t range_5722;
     uint8_t inhibit_5250;
     uint8_t qualified;   /* Includes the canonical GP, not only engine and range. */
+    /* Current permitted manual gear (1..4), or 0 for the Toyota map.
+     * Supply a level on each admitted event, including the donor delay.
+     * command_at and qualified also cover the driver request, observed gear
+     * and current external interlocks. */
+    uint8_t requested_gear;
 } Lfj8H03CycleInput;
 
 typedef struct {

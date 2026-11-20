@@ -34,12 +34,15 @@ static void next_main(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
     for (unsigned i = 0; i < 17u; ++i) {
         ++input->event;
         input->command_at += 1000u; /* Fixture time; not a hardware period. */
+        Lfj8H03CycleResult status;
         if (load) {
             RbmU340eQualifiedLoadFeed sample = *load;
             sample.sampled_at = input->command_at;
-            assert(rbm_u340e_runtime_publish_load(runtime, &sample, input->command_at, 0u));
+            status = lfj8_h03_cycle_tick_with_load(cycle, runtime, input, work, result,
+                (Lfj8H03CycleLoad){.sample = &sample, .now_us = input->command_at});
+        } else {
+            status = lfj8_h03_cycle_tick(cycle, runtime, input, work, result);
         }
-        const Lfj8H03CycleResult status = lfj8_h03_cycle_tick(cycle, runtime, input, work, result);
         if (status == LFJ8_H03_CYCLE_MAIN) {
             assert(result->valid == 1u && result->command_at == input->command_at);
             return;
@@ -124,6 +127,77 @@ static void test_range(uint8_t initial_selector, uint8_t forward_selector,
     check_event_gap(&cycle, &runtime, input, &work);
 }
 
+static void test_manual_request(void)
+{
+    RbmU340eRuntime runtime = {0};
+    Lfj8H03Cycle cycle;
+    Lfj8H03CycleWorkspace work;
+    Lfj8H03MainResult result;
+    const RbmU340eQualifiedLoadFeed load = {.coherent = 1u};
+    Lfj8H03CycleInput input = {
+        .engine = {.fa62 = 9600, .f9b8 = 137, .coherent = 1},
+        .selector = RBM_U340E_SELECTOR_N, .range_5722 = 5u, .qualified = 1u,
+    };
+    clear_seed(&runtime);
+    assert(lfj8_h03_cycle_init(&cycle, &(RbmU340eRangeState){0}, 0u));
+    for (unsigned i = 0; i < 2; ++i) {
+        next_main(&cycle, &runtime, &input, &work, &result, &load);
+    }
+    input.selector = RBM_U340E_SELECTOR_D;
+    input.range_5722 = 1u;
+    assert(factory_hydraulics_set(&runtime.gp, -7154, 2u, 6400u));
+    for (unsigned i = 0; i < 130; ++i) {
+        next_main(&cycle, &runtime, &input, &work, &result, &load);
+    }
+    assert(factory_hydraulics_set(&runtime.gp, -4548, 1u, 19u));
+    assert(factory_hydraulics_set(&runtime.gp, -4549, 1u, 19u));
+    next_main(&cycle, &runtime, &input, &work, &result, &load);
+    assert(result.gear_4852 == 0u && read_gp(&runtime, -4854, 1u) == 0u);
+
+    input.requested_gear = 2u;
+    for (unsigned call = 1u; call <= 20u; ++call) {
+        next_main(&cycle, &runtime, &input, &work, &result, &load);
+        const unsigned index = call >= 10u;
+        assert(read_gp(&runtime, -4854, 1u) == 1u);
+        assert(result.gear_4852 == index && result.gear_4848 == index);
+        assert(!!(read_gp(&runtime, -4838, 1u) & 2u) == (call == 10u));
+        assert(read_gp(&runtime, -4851, 1u) == index);
+        check_shift(&result, 1u, !index);
+    }
+
+    /* Below the S01 2->1 threshold, an authorized hold in second keeps
+     * the S1/S2 command until the producer withdraws the request. */
+    assert(factory_hydraulics_set(&runtime.gp, -4548, 1u, 17u));
+    assert(factory_hydraulics_set(&runtime.gp, -4549, 1u, 17u));
+    next_main(&cycle, &runtime, &input, &work, &result, &load);
+    check_shift(&result, 1u, 0u);
+    input.requested_gear = 0u;
+    next_main(&cycle, &runtime, &input, &work, &result, &load);
+    assert(result.gear_4852 == 0u && result.gear_4848 == 0u);
+    check_shift(&result, 1u, 1u);
+
+    /* Reverse is carried to the donor phase code in GP-7252.3. */
+    assert(factory_hydraulics_set(&runtime.gp, -4548, 1u, 0u));
+    assert(factory_hydraulics_set(&runtime.gp, -4549, 1u, 0u));
+    input.selector = RBM_U340E_SELECTOR_N;
+    input.range_5722 = 5u;
+    next_main(&cycle, &runtime, &input, &work, &result, &load);
+    input.selector = RBM_U340E_SELECTOR_R;
+    input.range_5722 = 2u;
+    next_main(&cycle, &runtime, &input, &work, &result, &load);
+    assert((read_gp(&runtime, -7252, 1u) & 0x0fu) == 9u);
+    assert(read_gp(&runtime, -7250, 1u) == read_gp(&runtime, -7252, 1u));
+
+    const RbmU340eRuntime before = runtime;
+    const uint16_t releases = cycle.scheduler.producer_count;
+    ++input.event;
+    input.requested_gear = 2u;
+    assert(lfj8_h03_cycle_tick(&cycle, &runtime, &input, &work, &result) == LFJ8_H03_CYCLE_FAULT);
+    assert(cycle.faulted && !result.valid && !result.shift.count);
+    assert(cycle.scheduler.producer_count == releases);
+    assert(memcmp(&runtime, &before, sizeof runtime) == 0);
+}
+
 typedef struct {
     int16_t load_operand;
     uint16_t expected_load;
@@ -181,6 +255,9 @@ static void test_speed_map(uint8_t coolant, bool cold, const SpeedMapProfile *pr
         const unsigned transition = steps[i].shift_main[cold];
         assert(factory_hydraulics_set(&runtime.gp, -4548, 1u, speed));
         assert(factory_hydraulics_set(&runtime.gp, -4549, 1u, speed));
+        /* Below the warm fourth-gear threshold, request fourth explicitly
+         * in the cold trace. S01 must still inhibit the transition. */
+        input.requested_gear = cold && steps[i].threshold_row == 2u && steps[i].below_threshold ? 4u : 0u;
         for (unsigned call = 1; call <= 24u; ++call) {
             next_main(&cycle, &runtime, &input, &work, &result, feed);
             const unsigned gear = call < transition ? previous : target;
@@ -195,9 +272,10 @@ static void test_speed_map(uint8_t coolant, bool cold, const SpeedMapProfile *pr
             assert(result.gear_4852 == gear - 1u && result.gear_4848 == gear - 1u);
             assert(!!(read_gp(&runtime, -4838, 1u) & 2u) == (call == transition));
             check_shift(&result, gear <= 2u, gear == 1u || gear == 4u);
-            if (steps[i].threshold_row == 2u && !steps[i].below_threshold && call == 1u) {
-                assert(!!(read_gp(&runtime, -4835, 1u) & 32u) == cold);
-                if (!cold) {
+            if (steps[i].threshold_row == 2u && call == 1u) {
+                const bool fourth_requested = !steps[i].below_threshold || input.requested_gear == 4u;
+                assert(!!(read_gp(&runtime, -4835, 1u) & 32u) == (cold && fourth_requested));
+                if (!cold && fourth_requested) {
                     /* Branch from a pending 3->4, then continue the good trace. */
                     Lfj8H03Cycle interrupted = cycle;
                     RbmU340eRuntime interrupted_runtime = runtime;
@@ -370,6 +448,8 @@ int main(void)
     test_range(RBM_U340E_SELECTOR_N, RBM_U340E_SELECTOR_2, 2u, 1u);
     test_range(RBM_U340E_SELECTOR_N, RBM_U340E_SELECTOR_L, 4u, 0u);
     puts("H03 Toyota cycle: P/N to D, 1->2, ranges 2/L, rollover and lost event passed.");
+    test_manual_request();
+    puts("H03 Toyota cycle: manual 1->2, hold, withdrawal, reverse range and request refusal passed.");
     /* Thresholds decoded from the pinned S01 bank at ROM 0x1078. */
     const SpeedMapProfile unloaded = {0, 0, {20, 34, 64, 18, 20, 48}};
     const SpeedMapProfile load_20 = {2202, 5120, {37, 69, 99, 18, 27, 56}};
