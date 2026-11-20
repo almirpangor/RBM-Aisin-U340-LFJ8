@@ -6,6 +6,7 @@ enum {
     CURRENT_E02A = 2,
     CURRENT_E02B = 3,
     E02B_INHIBIT = 0x80,
+    E02B_BUS_FAULTS = E02B_INHIBIT | 0x04,
 };
 
 static void manage_dtc(CheryDtcState *dtc, uint8_t index, bool latched, bool new_event,
@@ -18,10 +19,10 @@ static void manage_dtc(CheryDtcState *dtc, uint8_t index, bool latched, bool new
     }
 }
 
-unsigned lfj8_h03_engine_feed_task2(Lfj8H03EngineRx *rx, Ta2005EngineQualifier *qualifier,
-    CheryDtcState *dtc, const Lfj8RegisterIo *io, uint32_t now_us, uint8_t slots_owned,
-    const Ta2005EngineQualificationContext *context, bool inhibit_history,
-    RbmU340eQualifiedEngineFeed *feed)
+unsigned lfj8_h03_engine_feed_task2_with_model(Lfj8H03EngineRx *rx,
+    Ta2005EngineQualifier *qualifier, CheryDtcState *dtc, const Lfj8RegisterIo *io,
+    uint32_t now_us, uint8_t slots_owned, const Ta2005EngineQualificationContext *context,
+    bool inhibit_history, RbmU340eQualifiedEngineFeed *feed, Lfj8H03EngineModelSample *model)
 {
     if (qualifier && dtc && dtc->clear_pending) {
         /* Native clear 0652FC resets E04C, E020, E02A and E026. FA62
@@ -34,6 +35,10 @@ unsigned lfj8_h03_engine_feed_task2(Lfj8H03EngineRx *rx, Ta2005EngineQualifier *
     }
     if (feed) {
         feed->coherent = 0u;
+    }
+    if (model) {
+        ta2005_chery_snapshot_clear(&model->snapshot);
+        model->state = LFJ8_H03_MODEL_NOT_EVALUATED;
     }
     if (!rx || !qualifier || !dtc || !feed || !io || !context || context->coherent != 1u) {
         return 0u;
@@ -59,5 +64,22 @@ unsigned lfj8_h03_engine_feed_task2(Lfj8H03EngineRx *rx, Ta2005EngineQualifier *
                (events & TA2005_ENGINE_NEW_RPM_DTC) != 0u, inhibit_history);
     manage_dtc(dtc, COOLANT_DTC, (qualifier->flags & TA2005_ENGINE_COOLANT_LATCH) != 0u,
                (events & TA2005_ENGINE_NEW_COOLANT_DTC) != 0u, inhibit_history);
+    if (model) {
+        if (signal.e02b & E02B_BUS_FAULTS) {
+            model->state = LFJ8_H03_MODEL_INHIBITED;
+        } else {
+            model->snapshot = raw;
+            model->state = LFJ8_H03_MODEL_EVALUATE;
+        }
+    }
     return events;
+}
+
+unsigned lfj8_h03_engine_feed_task2(Lfj8H03EngineRx *rx, Ta2005EngineQualifier *qualifier,
+    CheryDtcState *dtc, const Lfj8RegisterIo *io, uint32_t now_us, uint8_t slots_owned,
+    const Ta2005EngineQualificationContext *context, bool inhibit_history,
+    RbmU340eQualifiedEngineFeed *feed)
+{
+    return lfj8_h03_engine_feed_task2_with_model(rx, qualifier, dtc, io, now_us, slots_owned,
+        context, inhibit_history, feed, NULL);
 }
