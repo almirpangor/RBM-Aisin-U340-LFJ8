@@ -29,6 +29,7 @@ typedef struct {
     bool queued;
     bool busy_on_listener_pause;
     bool bus_off_before_tx_request;
+    bool receive_starts_during_id_read;
     unsigned sent;
     unsigned aborts;
     unsigned writes;
@@ -56,6 +57,10 @@ static uint8_t read8(void *context, uint32_t address)
         case MSC13: return f->control;
         default:
             assert(address >= SLOT13 && address < SLOT13 + 16u && !(f->control & 2u));
+            if (address == SLOT13 + 1u && f->receive_starts_during_id_read) {
+                f->control |= 2u;
+                f->receive_starts_during_id_read = false;
+            }
             return f->slot[address - SLOT13];
     }
 }
@@ -463,6 +468,56 @@ static void test_status_timeout_and_wrong_completion(void)
     assert(!poll(&f, 11100).available && f.broker.lease_lost && f.writes == writes);
 }
 
+static void test_foreign_queued_tx_is_not_aborted(void)
+{
+    Fixture f;
+    init(&f, 2000, 0);
+    start_torque(&f);
+    finish(&f, 900);
+    poll(&f, 1000);
+    torque_status(&f, 1400, 0x72, 1, 32, 1);
+    assert(poll(&f, 2500).status_submitted == LFJ8_DUE_1AE);
+    assert(f.broker.torque.request.full_reduction && f.control == 0x80u);
+
+    /* A different sender now owns the waiting request, without TRSTAT. */
+    f.slot[0] = CHERY_DTC_CAN_REPLY_ID >> 6;
+    f.slot[1] = CHERY_DTC_CAN_REPLY_ID & 0x3fu;
+    const unsigned writes = f.writes;
+    const uint32_t deadline = 2500u + f.broker.torque.max_poll_gap_us;
+    assert(!poll(&f, deadline).available && f.broker.lease_lost);
+    assert(!f.broker.torque.request.full_reduction);
+    assert(f.control == 0x80u && !f.aborts && f.writes == writes);
+    assert(active_id(&f) == CHERY_DTC_CAN_REPLY_ID);
+}
+
+static void test_foreign_listener_keeps_its_slot(void)
+{
+    Fixture f;
+    init(&f, 0, 0);
+    assert(poll(&f, 0).available);
+    f.slot[0] = CHERY_DTC_CAN_REPLY_ID >> 6;
+    f.slot[1] = CHERY_DTC_CAN_REPLY_ID & 0x3fu;
+    const unsigned writes = f.writes;
+    assert(lfj8_h03_can0_torque_yield(&f.io, 1u) == LFJ8_CAN_SLOT_NOT_OWNED);
+    assert(!poll(&f, 100).available && f.broker.lease_lost);
+    assert(f.control == 0x40u && f.writes == writes);
+    assert(active_id(&f) == CHERY_DTC_CAN_REPLY_ID);
+}
+
+static void test_listener_busy_during_id_read(void)
+{
+    Fixture f;
+    init(&f, 0, 0);
+    assert(poll(&f, 0).available);
+    f.receive_starts_during_id_read = true;
+    const unsigned writes = f.writes;
+    assert(lfj8_h03_can0_torque_yield(&f.io, 1u) == LFJ8_CAN_SLOT_BUSY);
+    assert(f.control == 0x42u && f.writes == writes);
+    assert(poll(&f, 100).available && !f.broker.lease_lost);
+    f.control = 0x40u;
+    assert(lfj8_h03_can0_torque_yield(&f.io, 1u) == LFJ8_CAN_READY && !f.control);
+}
+
 int main(void)
 {
     test_torque_priority_and_cancel();
@@ -474,6 +529,9 @@ int main(void)
     test_timeout_and_generation();
     test_receive_lease_loss_requires_generation();
     test_status_timeout_and_wrong_completion();
+    test_foreign_queued_tx_is_not_aborted();
+    test_foreign_listener_keeps_its_slot();
+    test_listener_busy_during_id_read();
     puts("H03 CAN13 broker: torque preemption, diagnostic FC and generation recovery PASS");
     return 0;
 }

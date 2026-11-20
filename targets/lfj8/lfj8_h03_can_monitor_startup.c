@@ -183,6 +183,9 @@ int rbm_h03_can_monitor_runtime_rearm(void)
     const uint32_t saved = io->enter(io->context);
     rbm_h03_can_monitor_revoke_locked();
     const int ready = rearm_locked(CAN_BCM);
+    if (ready) {
+        rbm_h03_can_monitor_publish_setup_locked();
+    }
     io->leave(io->context, saved);
     return ready;
 }
