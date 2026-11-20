@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 179,
+  "sequence": 180,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -114,11 +114,11 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "claimed_at": "2026-11-20T16:18:01+00:00",
-      "updated_at": "2026-11-20T16:36:12+00:00",
-      "note": "Целевой читатель TML0CT и реальный enter/leave PSW. 14 сценариев, сборки M32R, split-link/replay Bosch, 17 компонентов, 65 Python-тестов и реестр PASS. При объединении нужен активный снимок интегратора; аппаратное время и inhibit ещё открыты.",
+      "updated_at": "2026-11-20T16:38:16+00:00",
+      "note": "Свожу штатную публикацию 040424 и контроль 008150 через один TML0CT в M32R.",
       "result": "5eea6c5a18636830a3fe38ae9f997a3bb73d38d1"
     },
     "H03-04": {
@@ -1921,9 +1921,17 @@
       "action": "review",
       "claim_id": "e02562d3b21f423d914c1c00a9c88077",
       "at": "2026-11-20T16:37:36+00:00"
+    },
+    {
+      "operation_id": "6119afa5933f4a5bbece82a3aa73186f",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "resume",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "at": "2026-11-20T16:38:16+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:37:36+00:00",
+  "updated_at": "2026-11-20T16:38:16+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
