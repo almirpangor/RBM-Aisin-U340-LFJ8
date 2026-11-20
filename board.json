@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 412,
+  "sequence": 413,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -350,26 +350,22 @@
     },
     "TOY-06": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
-      "label": "Codex TOY-06 — SLU в SECONDARY",
-      "branch": "codex/toy-06-secondary-schedule-fea1b366",
+      "label": "Codex TOY-06 — границы стадий SLU",
+      "branch": "codex/toy-06-slu-stage-boundaries-fea1b366",
       "files": [
-        "targets/lfj8/check_h03_link.py",
-        "targets/lfj8/check_h03_native_hooks.py",
-        "targets/lfj8/check_h03_toyota_stack.py",
+        "targets/lfj8/check_toyota_slu.py",
         "targets/lfj8/lfj8_h03_cycle.c",
-        "targets/lfj8/lfj8_h03_cycle.h",
+        "targets/lfj8/lfj8_h03_slu.c",
         "targets/lfj8/lfj8_h03_slu.h",
         "targets/lfj8/test_lfj8_h03_cycle.c",
-        "tools/build_pc_checks.py",
-        "tools/check_integrated_h03.py",
-        "verification/project-audit/toy06-slu-schedule.md"
+        "verification/project-audit/toy06-slu-stage-boundaries.md"
       ],
-      "stage": "done",
-      "claim_id": "2b42f17a3d734aa29534d7fcee10f2ea",
-      "claimed_at": "2026-11-20T18:04:06+00:00",
-      "updated_at": "2026-11-20T18:38:46+00:00",
-      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
-      "result": "fd1c4a7fd479934eb2d6d0266462ad16a0b5a539"
+      "stage": "in_progress",
+      "claim_id": "f9f139056ba24b4a88ede7ceaeb63df1",
+      "claimed_at": "2026-11-20T18:42:41+00:00",
+      "updated_at": "2026-11-20T18:42:41+00:00",
+      "note": "Предыдущий SECONDARY принят. Довожу соседние донорские стадии 05DA44 и 05B6DE на том же снимке и каноническом GP; проверю отсечки, сохранение остальных флагов и общий цикл. Файлы владельца приложения H03-03 и физические выходы вне резерва.",
+      "result": null
     },
     "DTC-01": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -3869,9 +3865,17 @@
       "action": "heartbeat",
       "claim_id": "649f9eb04dd24d0ea547f2886878f0b0",
       "at": "2026-11-20T18:41:19+00:00"
+    },
+    {
+      "operation_id": "e1f5e99bd3504ec9b31f88c7de800ad4",
+      "task": "TOY-06",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "f9f139056ba24b4a88ede7ceaeb63df1",
+      "at": "2026-11-20T18:42:41+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:41:19+00:00",
+  "updated_at": "2026-11-20T18:42:41+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
