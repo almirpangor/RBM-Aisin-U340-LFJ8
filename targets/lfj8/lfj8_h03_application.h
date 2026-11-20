@@ -2,6 +2,7 @@
 #define RBM_LFJ8_H03_APPLICATION_H
 
 #include "lfj8_h03_cycle.h"
+#include "lfj8_h03_engine_feed.h"
 #include "lfj8_h03_phase_startup.h"
 #include "lfj8_h03_sensor_feed.h"
 
@@ -18,6 +19,19 @@ typedef enum {
 } Lfj8H03ToyotaEvent;
 
 typedef struct {
+    Lfj8H03EngineFeedTarget target;
+    uint16_t max_age_ticks;
+    uint16_t max_poll_gap_us;
+    /* Called under the application I/O lock on an admitted Task 2 release.
+     * Return 1 with coherent qualifier context, history policy and a
+     * conservative oldest TML0 timestamp for the engine operands, covering
+     * any retained or fallback inputs. Refuse if that bound is unavailable.
+     * This callback must not advance the qualifier or consume a CAN frame. */
+    int (*context_for_task2)(void *context, const Lfj8H03SensorSnapshot *sensors,
+        Ta2005EngineQualificationContext *engine, bool *inhibit_history, uint32_t *oldest_us);
+} Lfj8H03ApplicationEngine;
+
+typedef struct {
     const Lfj8H03TakeoverOps *takeover_ops;
     Lfj8H03PhaseStartupConfig phase_config;
     Lfj8H03Takeover *takeover;
@@ -31,6 +45,11 @@ typedef struct {
     RbmU340eRangeState startup_range;
     uint32_t toyota_max_period_ticks;
     uint8_t startup_request_1120;
+    /* Optional CAN source. Use the same locked I/O, CAN owner and shared DTC
+     * state as the application. initialize brings up those shared owners.
+     * When set, the lifecycle owns input.engine and merges its age; the
+     * take_toyota provider supplies the age of the other cycle operands. */
+    const Lfj8H03ApplicationEngine *engine;
 
     /* Called under takeover_ops->io's nestable interrupt lock. ram_owned
      * must be independent of the reserved RAM. The linker/boot path must

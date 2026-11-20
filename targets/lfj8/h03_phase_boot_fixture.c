@@ -13,6 +13,7 @@ enum {
     NO_PROVIDER, COALESCED, OVERTAKEN, SENSOR_CLOCK_CHANGED, SENSOR_BAD_CONFIG, SENSOR_BAD_STARTUP,
     ADAPT_NO_STORE, ADAPT_ERASED, ADAPT_SAVED, ADAPT_CORRUPT, ADAPT_TORN, ADAPT_UNREADABLE,
     ADAPT_RESET, ADAPT_RESTART, ADAPT_ALIAS,
+    ENGINE, ENGINE_BAD_TIME, ENGINE_BAD_CONFIG,
 };
 
 #define MMIO8(address) (*(volatile uint8_t *)(uintptr_t)(address))
@@ -62,6 +63,11 @@ static const FactoryAdaptation saved_adaptation = {
 static uint8_t adaptation_slots[2][FACTORY_ADAPT_RECORD_BYTES];
 static unsigned adaptation_reads;
 static int peer_unreadable;
+static Lfj8H03EngineRx engine_rx;
+static Ta2005EngineQualifier engine_qualifier;
+static CheryDtcState engine_dtc;
+static Lfj8H03CanOwner engine_can_owner;
+static unsigned engine_context_calls;
 
 void fixture_publish_first_phase(void);
 void fixture_run_wait(void);
@@ -229,7 +235,18 @@ static int initialize(void *context)
     MMIO8(0x800203) = 9u;
     MMIO8(0x8003EB) = 0x01u;
     MMIO8(0x800FEB) = BOOT_CASE == SENSOR_BAD_STARTUP ? 0x30u : 0x31u;
-    return BOOT_CASE != PARTIAL && (BOOT_CASE < ADAPT_NO_STORE || prepare_adaptation()) &&
+    if (BOOT_CASE >= ENGINE) {
+        engine_can_owner = (Lfj8H03CanOwner){
+            .setup_generation = 42u, .admitted_generation = 42u, .grant = 1u, .initialized = true,
+        };
+        chery_dtc_init(&engine_dtc);
+        engine_dtc.history[2] = 0x20u;
+        MMIO8(0x806AE6) = 6u;
+        MMIO8(0x801028) = 0x1fu;
+        MMIO8(0x801029) = 0x3fu;
+    }
+    return BOOT_CASE != PARTIAL &&
+        (BOOT_CASE < ADAPT_NO_STORE || BOOT_CASE > ADAPT_ALIAS || prepare_adaptation()) &&
         factory_hydraulics_set(&startup_gp, -7184, 2u, gear.u7184) &&
         factory_hydraulics_set(&startup_gp, -7164, 2u, gear.u7164) &&
         factory_hydraulics_set(&startup_gp, -7186, 2u, gear.u7186);
@@ -263,7 +280,7 @@ static Lfj8H03ToyotaEvent take_toyota(void *context, const Lfj8H03SensorSnapshot
     ++source_calls;
     if (replay_old) {
         *released_at = last_release;
-    } else if (BOOT_CASE == DUPLICATE && source_calls == 3u) {
+    } else if ((BOOT_CASE == DUPLICATE || BOOT_CASE == ENGINE) && source_calls == 3u) {
         *released_at = last_release;
     } else if (!(source_calls & 1u) || BOOT_CASE == STOPPED_TOYOTA) {
         return LFJ8_H03_TOYOTA_WAIT;
@@ -273,7 +290,7 @@ static Lfj8H03ToyotaEvent take_toyota(void *context, const Lfj8H03SensorSnapshot
         *released_at = last_release;
     }
 
-    const uint32_t sample_us = *timer + 0x01000000u;
+    const uint32_t sample_us = BOOT_CASE >= ENGINE ? *timer : *timer + 0x01000000u;
     *result = (Lfj8H03CycleInput){
         .engine = {.fa62 = 9600, .f9b8 = 137, .coherent = 1u},
         .command_at = sample_us - 1u,
@@ -304,7 +321,8 @@ static void service_phase(void *context, const Lfj8H03PhaseEvent *event,
     ++phase_calls;
     if (result) {
         ++main_calls;
-        if (!result->valid || result->command_at != load_feed.sampled_at ||
+        const uint32_t expected_command_at = BOOT_CASE == ENGINE ? *timer - 20u : load_feed.sampled_at;
+        if (!result->valid || result->command_at != expected_command_at ||
             (main_calls == 3u && (result->gear_4848 != 1u || result->shift.count != 2u ||
                                  result->shift.writes[0].value != 1u ||
                                  result->shift.writes[1].value != 0u))) {
@@ -320,14 +338,41 @@ static const Lfj8H03TakeoverOps ops = {
     .phase_clock = &phase, .isolated_pwm_mask = LFJ8_H03_ALL_SPARE_PWM_ISOLATED,
 };
 
+static int engine_context(void *context, const Lfj8H03SensorSnapshot *sensors,
+                          Ta2005EngineQualificationContext *qualified,
+                          bool *inhibit_history, uint32_t *oldest_us)
+{
+    (void)context;
+    if (sensors != last_sensors || engine_rx.generation_source != &engine_can_owner.setup_generation) {
+        unexpected = 1;
+        return 0;
+    }
+    ++engine_context_calls;
+    *qualified = (Ta2005EngineQualificationContext){
+        .coherent = 1u, .coolant_can_enabled = 1u, .fallback_fa7b = 87u,
+    };
+    *inhibit_history = true;
+    *oldest_us = BOOT_CASE == ENGINE_BAD_TIME ? *timer + 1u : *timer - 20u;
+    return 1;
+}
+
+static const Lfj8H03ApplicationEngine engine = {
+    .target = {.rx = &engine_rx, .qualifier = &engine_qualifier, .dtc = &engine_dtc,
+               .can_owner = &engine_can_owner, .io = &lfj8_h03_mmio, .now_us = rbm_h03_atf_now_us},
+    .max_age_ticks = BOOT_CASE == ENGINE_BAD_CONFIG ? 0u : 20u,
+    .max_poll_gap_us = 32u,
+    .context_for_task2 = engine_context,
+};
+
 const Lfj8H03ApplicationBinding rbm_h03_application_binding = {
     .takeover_ops = &ops,
     .phase_config = {8u, BOOT_CASE == INVALID_PERIOD ? 16u : 12u, 2u, 24u},
     .takeover = &takeover, .cycle = &cycle, .runtime = &runtime, .workspace = &workspace,
     .main = &main_result, .input = &input, .startup_gear = &gear, .startup_gp = &startup_gp,
-    .toyota_max_period_ticks = 23u,
+    .toyota_max_period_ticks = BOOT_CASE == ENGINE ? 36u : 23u,
     .ram_owned = ram_owned, .clock_ready = clock_ready, .initialize = initialize,
-    .read_adaptation = BOOT_CASE > ADAPT_NO_STORE ? read_adaptation : NULL,
+    .engine = BOOT_CASE >= ENGINE ? &engine : NULL,
+    .read_adaptation = BOOT_CASE > ADAPT_NO_STORE && BOOT_CASE <= ADAPT_ALIAS ? read_adaptation : NULL,
     .take_toyota = BOOT_CASE == NO_PROVIDER ? NULL : take_toyota,
     .service_phase = service_phase,
 };
@@ -411,11 +456,13 @@ int fixture_complete(void)
         return 2;
     }
     if (BOOT_CASE == INVALID_PERIOD || BOOT_CASE == PARTIAL ||
-        BOOT_CASE == BAD_CLOCK || BOOT_CASE == NO_PROVIDER || BOOT_CASE == SENSOR_BAD_STARTUP) {
+        BOOT_CASE == BAD_CLOCK || BOOT_CASE == NO_PROVIDER || BOOT_CASE == SENSOR_BAD_STARTUP ||
+        BOOT_CASE == ENGINE_BAD_CONFIG) {
         const unsigned expected_init = BOOT_CASE == INVALID_PERIOD || BOOT_CASE == PARTIAL ||
-            BOOT_CASE == SENSOR_BAD_STARTUP;
+            BOOT_CASE == SENSOR_BAD_STARTUP || BOOT_CASE == ENGINE_BAD_CONFIG;
         return rbm_h03_application.running || runtime.initialized || takeover.ops ||
             takeover.pending || initialize_calls != expected_init || rbm_h03_tml0_1mhz_qualified ||
+            engine_context_calls || (BOOT_CASE == ENGINE_BAD_CONFIG && engine_rx.generation_source) ||
             (BOOT_CASE == INVALID_PERIOD && !phase.faulted);
     }
     if (BOOT_CASE == ADAPT_ALIAS) {
@@ -428,7 +475,7 @@ int fixture_complete(void)
         LFJ8_H03_PHASE_WAIT) {
         return 3;
     }
-    if (BOOT_CASE >= ADAPT_NO_STORE) {
+    if (BOOT_CASE >= ADAPT_NO_STORE && BOOT_CASE <= ADAPT_ALIAS) {
         return check_adaptation_boot();
     }
     fixture_run_foreground(); /* OEM startup bit has no project event. */
@@ -449,6 +496,37 @@ int fixture_complete(void)
         MMIO8(0x800FEB) = 0x30u;
     }
     next_phase();
+    if (BOOT_CASE == ENGINE_BAD_TIME) {
+        return unexpected || !rejected() || cycle.have_event || engine_context_calls != 1u ||
+            phase_calls || inhibit_calls != 3u;
+    }
+    if (BOOT_CASE == ENGINE) {
+        if (engine_rx.generation_source != &engine_can_owner.setup_generation ||
+            !MMIO8(0x80105B) || !MMIO8(0x80105C) || engine_context_calls != 1u ||
+            input.engine.fa62 != 0u || input.engine.f9b8 != 87u || input.command_at != *timer - 20u) {
+            return 10;
+        }
+        MMIO16(0x801008) += 4u;
+        next_phase(); /* Wait for Toyota while CAN polling continues. */
+        if (engine_context_calls != 1u || engine_rx.last_poll_us != *timer || !engine_rx.clock_running) {
+            return 11;
+        }
+        engine_can_owner.grant = 0u;
+        ++engine_can_owner.setup_generation;
+        next_phase(); /* Duplicate Toyota sequence. */
+        if (unexpected || !rbm_h03_application.running || engine_context_calls != 1u ||
+            engine_rx.last_generation != 43u || engine_rx.clock_running || !engine_rx.discontinuity ||
+            engine_dtc.history[2] != 0x20u || cycle.last_event != UINT32_MAX || phase_calls != 3u) {
+            return 12;
+        }
+        while (rbm_h03_application.running && !main_calls && phase_calls < 90u) {
+            next_phase();
+        }
+        uint32_t published_rpm;
+        return unexpected || !rbm_h03_application.running || main_calls != 1u ||
+            engine_context_calls != advances ||
+            !factory_hydraulics_get(&runtime.gp, -7186, 2u, &published_rpm) || published_rpm != 0u;
+    }
     if (BOOT_CASE == SENSOR_CLOCK_CHANGED || BOOT_CASE == SENSOR_BAD_CONFIG) {
         return unexpected || !rejected() || phase_calls || source_calls || inhibit_calls != 3u ||
             rbm_h03_atf_state.valid || rbm_h03_sensor_state.s51.primed || rbm_h03_sensor_state.s83.primed;

@@ -17,6 +17,7 @@ from lfj8_h03_layout import read_elf
 
 HERE = Path(__file__).resolve().parent
 CONTROLLER = HERE.parent.parent / "controller"
+DIAGNOSTICS = CONTROLLER.parent / "diagnostics"
 FRAGMENTS = (
     ("reset_dispatch", 0x003DC8, 0x003DE0),
     ("marker_check", 0x004210, 0x00423C),
@@ -47,9 +48,9 @@ CASES = ("stock", "owned", "invalid_period", "unowned", "bad_header", "bad_trail
          "bad_clock", "no_provider", "coalesced", "overtaken", "sensor_clock_changed",
          "sensor_bad_config", "sensor_bad_startup", "adapt_no_store", "adapt_erased",
          "adapt_saved", "adapt_corrupt", "adapt_torn", "adapt_unreadable", "adapt_reset",
-         "adapt_restart", "adapt_alias")
+         "adapt_restart", "adapt_alias", "engine", "engine_bad_time", "engine_bad_config")
 CLOSED_AT_START = {"invalid_period", "unowned", "partial", "bad_clock", "no_provider",
-                   "sensor_bad_startup", "adapt_alias"}
+                   "sensor_bad_startup", "adapt_alias", "engine_bad_config"}
 CANDIDATE_START, CANDIDATE_END = 0x20000, 0x30000
 FIXTURE = r"""
     .section .entry,"ax"
@@ -504,13 +505,14 @@ def check(base, compiler, controller=None):
             "lfj8_h03_takeover.c", "lfj8_h03_cycle.c", "lfj8_h03_torque.c",
             "h03_sensor_hooks.S", "lfj8_h03_sensor_target.c", "lfj8_h03_sensor_feed.c",
             "lfj8_donor_io.c", "lfj8_bridge.c", "lfj8_h03_atf.c", "lfj8_h03_atf_target.c",
-            "lfj8_h03_atf_tml0.c",
-        )]
+            "lfj8_h03_atf_tml0.c", "lfj8_h03_engine_feed.c", "lfj8_h03_engine_rx.c",
+            "ta2005_chery_inputs.c", "ta2005_engine_qualifier.c",
+        )] + [DIAGNOSTICS / "chery_dtc.c"]
         fixture = HERE / "h03_phase_boot_fixture.c"
         flags = (*TARGET, "-Os", "-g", "-Wall", "-Wextra", "-Werror", "-std=c99",
                  "-Wno-missing-braces", "-Wno-missing-field-initializers",
                  "-ffunction-sections", "-fdata-sections", "-I", CONTROLLER / "include",
-                 "-I", CONTROLLER / "vendor" / "toyota" / "include")
+                 "-I", CONTROLLER / "vendor" / "toyota" / "include", "-I", DIAGNOSTICS)
         # Only boot.S and the fixture depend on the per-case defines.
         common = [source for source in sources if source != fixture]
         run(compiler, *flags, "-c", *common, timeout=120)
