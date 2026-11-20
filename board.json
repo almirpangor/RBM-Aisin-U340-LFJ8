@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 137,
+  "sequence": 138,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -214,11 +214,11 @@
         "targets/lfj8/check_h03_link.py",
         "verification/project-audit/toy02-load-feed.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "04163e758d304ae28f99c09cf17d8d25",
       "claimed_at": "2026-11-20T16:01:53+00:00",
-      "updated_at": "2026-11-20T16:06:58+00:00",
-      "note": "Публикация квалифицированной нагрузки в GP проверена. PC 33 шага/59 тестов, M32R и 17 компонентов, три профиля SIGNALS PASS. Источники GW, бюджет возраста и допуск H03 открыты. Отчёт verification/project-audit/toy02-load-feed.md, общий снимок для интегратора.",
+      "updated_at": "2026-11-20T16:27:59+00:00",
+      "note": "Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена.",
       "result": "ff7f42b48d58831a8d7a396711042fc45685acd3"
     },
     "CAN-01": {
@@ -1549,9 +1549,17 @@
       "action": "review",
       "claim_id": "a16c78536102430583d910e97b8385d3",
       "at": "2026-11-20T16:27:39+00:00"
+    },
+    {
+      "operation_id": "2944932e0506465f9b67af9035bdacfe",
+      "task": "TOY-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "04163e758d304ae28f99c09cf17d8d25",
+      "at": "2026-11-20T16:27:59+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:27:39+00:00",
+  "updated_at": "2026-11-20T16:27:59+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
