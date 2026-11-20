@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 330,
+  "sequence": 331,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -162,30 +162,23 @@
       "result": null
     },
     "H03-02": {
-      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
-      "label": "Codex — привязка ATF H03",
-      "branch": "codex/h03-02-atf-01a1f9a2",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex — штатные события датчиков H03",
+      "branch": "codex/h03-02-sensor-events-mwp5rm2ofhaxjfi9dss",
       "files": [
-        "docs/lfj8-h03-atf-native.md",
-        "targets/lfj8/check_h03_atf_native.py",
-        "targets/lfj8/check_h03_link.py",
-        "targets/lfj8/h03_atf_hook_fixture.c",
-        "targets/lfj8/h03_atf_hooks.S",
-        "targets/lfj8/lfj8_h03_atf.h",
-        "targets/lfj8/lfj8_h03_atf_feed.c",
-        "targets/lfj8/lfj8_h03_atf_feed.h",
-        "targets/lfj8/lfj8_h03_atf_target.c",
-        "targets/lfj8/lfj8_h03_atf_target.h",
-        "targets/lfj8/lfj8_h03_atf_tml0.c",
-        "targets/lfj8/test_lfj8_h03_atf.c",
-        "targets/lfj8/test_lfj8_h03_atf_feed.c"
+        "targets/lfj8/check_h03_sensor_native.py",
+        "targets/lfj8/h03_sensor_hook_fixture.c",
+        "targets/lfj8/h03_sensor_hooks.S",
+        "targets/lfj8/lfj8_h03_sensor_target.c",
+        "targets/lfj8/lfj8_h03_sensor_target.h",
+        "verification/project-audit/h03-02-sensor-events.md"
       ],
-      "stage": "done",
-      "claim_id": "11e70992d32245529e20626f4b9bd867",
-      "claimed_at": "2026-11-20T15:54:09+00:00",
-      "updated_at": "2026-11-20T17:39:23+00:00",
-      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
-      "result": "f8535218156ba32282a6e299e256a77ef0ae752d"
+      "stage": "in_progress",
+      "claim_id": "02b9e231450d4f81b9517ac724b155ed",
+      "claimed_at": "2026-11-20T18:08:03+00:00",
+      "updated_at": "2026-11-20T18:08:03+00:00",
+      "note": "Штатные S51/S83 после AA0C/AA70, связка ATF и foreground, единая эпоха TML0 с тестом M32R. Использую уже опубликованный поставщик VSS-02 как зависимость, без изменений файлов H03-03.",
+      "result": null
     },
     "CAN-05": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -3221,9 +3214,17 @@
       "action": "heartbeat",
       "claim_id": "dde35120f1f04f6b9be6619a41ccbc33",
       "at": "2026-11-20T18:07:39+00:00"
+    },
+    {
+      "operation_id": "0c2dd1971a56422ea26c6016f9370d92",
+      "task": "H03-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "02b9e231450d4f81b9517ac724b155ed",
+      "at": "2026-11-20T18:08:03+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:07:39+00:00",
+  "updated_at": "2026-11-20T18:08:03+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
