@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 341,
+  "sequence": 342,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -122,12 +122,12 @@
         "verification/project-audit/2026-11-20-h03-application-owner.json",
         "verification/project-audit/h03-03-application-owner.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "dde35120f1f04f6b9be6619a41ccbc33",
       "claimed_at": "2026-11-20T18:01:25+00:00",
-      "updated_at": "2026-11-20T18:07:39+00:00",
-      "note": "Application owner and two H03 wrappers implemented. Running exact M32R reset, stock input, independent Toyota cadence, replay and deadline checks.",
-      "result": null
+      "updated_at": "2026-11-20T18:13:12+00:00",
+      "note": "Application owner on H03 cold reset and foreground. PASS: 32 startup/scheduling cases and 17 native check groups. New audit snapshot and binding requirements included; verified hardware paths and final placement are still pending.",
+      "result": "7ced52319211d394a5b1e2a8b08f9910df082018"
     },
     "H03-04": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -3303,9 +3303,17 @@
       "action": "heartbeat",
       "claim_id": "2b42f17a3d734aa29534d7fcee10f2ea",
       "at": "2026-11-20T18:12:33+00:00"
+    },
+    {
+      "operation_id": "48af494827b34831b75e316d85c82c9b",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "dde35120f1f04f6b9be6619a41ccbc33",
+      "at": "2026-11-20T18:13:12+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:12:33+00:00",
+  "updated_at": "2026-11-20T18:13:12+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
