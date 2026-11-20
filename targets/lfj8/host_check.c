@@ -799,6 +799,45 @@ static void test_standstill_during_s51_restart(void)
     assert(f.last_data[6] == 0xffu && f.last_data[7] == 0xffu);
 }
 
+static void test_foreground_s51_for_telemetry(void)
+{
+    Fixture f = {.use_9e1c_vss_map = 1u};
+    const Lfj8RegisterIo io = {&f, read8, read16, read32, write8, lock, unlock};
+    const Lfj8VehicleCalibration cal = {1000000u, 100u, 2000000u, 1u, 1u};
+    Lfj8CheryTx tx;
+    lfj8_chery_tx_init(&tx, 0u, 10u, 0u);
+
+    const struct {
+        uint32_t age;
+        uint32_t edge_age;
+        uint8_t state;
+        uint8_t stopped;
+        uint16_t speed;
+    } cases[] = {
+        {40u, 59u, LFJ8_VSS_VALID, 0u, 6000u},
+        {40u, 60u, LFJ8_VSS_VALID, 0u, LFJ8_SPEED_UNAVAILABLE},
+        {UINT32_MAX, 0u, LFJ8_VSS_VALID, 0u, LFJ8_SPEED_UNAVAILABLE},
+        {5u, UINT32_MAX, LFJ8_VSS_VALID, 0u, LFJ8_SPEED_UNAVAILABLE},
+        {0u, 0u, LFJ8_VSS_UNAVAILABLE, 1u, LFJ8_SPEED_UNAVAILABLE},
+        {5u, 0u, LFJ8_VSS_STOPPED, 1u, 0u},
+        {5u, 0u, LFJ8_VSS_STOPPED, 0u, LFJ8_SPEED_UNAVAILABLE},
+        {100u, 0u, LFJ8_VSS_STOPPED, 1u, LFJ8_SPEED_UNAVAILABLE},
+    };
+    for (unsigned i = 0; i < sizeof cases / sizeof cases[0]; ++i) {
+        const uint32_t now = (i + 1u) * 10u;
+        const uint32_t observed_at = now - cases[i].age;
+        const Lfj8CapturePair capture = {
+            .vss = {.interval_ticks = 26400u, .pulse_window = 1u, .state = cases[i].state},
+            .now_tml0 = observed_at, .vss_at_tml0 = observed_at - cases[i].edge_age,
+        };
+        const Lfj8CheryTxInputs inputs = {.stopped = cases[i].stopped, .s51_capture = &capture};
+        f.slot_control = 0x81u;
+        assert(lfj8_chery_tx_poll(&tx, &io, now, 1u, NULL, &cal, &inputs) == LFJ8_DUE_1AE);
+        const uint16_t raw = (uint16_t)((uint16_t)f.last_data[6] << 8) | f.last_data[7];
+        assert(raw == cases[i].speed);
+    }
+}
+
 static void test_engine_receive(void)
 {
     Ta2005CheryInputs receiver;
@@ -879,6 +918,7 @@ int main(void)
     test_9e1c_nt_capture();
     test_pipeline();
     test_standstill_during_s51_restart();
+    test_foreground_s51_for_telemetry();
     test_engine_receive();
     puts("LFJ8 I/O: S51, S83, Chery TX, CAN0 RX/TX and recovery, RPM/ECT, relays and schedule passed");
     return 0;
