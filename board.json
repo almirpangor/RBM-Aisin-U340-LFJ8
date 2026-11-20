@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 186,
+  "sequence": 187,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -504,8 +504,8 @@
       "stage": "in_progress",
       "claim_id": "125a9fc02e0b4315aa93ce8efbe1bda1",
       "claimed_at": "2026-11-20T16:38:48+00:00",
-      "updated_at": "2026-11-20T16:38:48+00:00",
-      "note": "Добавляю строгую идентификацию утверждённого H03 в существующую утилиту. Проверяю образ с тем же ID и изменённым содержимым, исторический режим сохраняется.",
+      "updated_at": "2026-11-20T16:39:43+00:00",
+      "note": "Строгий режим готов. Исходный H03 принят, одинаковый ID при другом хеше отклоняется. Сверяю SOURCES и сохраняю отчёт.",
       "result": null
     }
   },
@@ -1997,9 +1997,17 @@
       "action": "claim",
       "claim_id": "d048f56f20764374915133ea2b7bbcde",
       "at": "2026-11-20T16:39:32+00:00"
+    },
+    {
+      "operation_id": "b25708cdc10242c1b62a0840bd35929a",
+      "task": "H03-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "125a9fc02e0b4315aa93ce8efbe1bda1",
+      "at": "2026-11-20T16:39:43+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:39:32+00:00",
+  "updated_at": "2026-11-20T16:39:43+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
