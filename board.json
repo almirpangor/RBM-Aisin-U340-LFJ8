@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 197,
+  "sequence": 198,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -523,8 +523,8 @@
       "stage": "in_progress",
       "claim_id": "abd55696a19e48a1aaf3a4b0e23f7414",
       "claimed_at": "2026-11-20T16:41:21+00:00",
-      "updated_at": "2026-11-20T16:41:21+00:00",
-      "note": "Проверка закреплённых коммитов R1–R4 из локальных Git объектов без переключения checkout. Сохраню совместимость SOURCES и раздельные проверки образов.",
+      "updated_at": "2026-11-20T16:42:29+00:00",
+      "note": "SOURCES подтвердил R1–R4, S01–S04 и H03. Оба теста с временными Git-репозиториями прошли; сохраняю доказательства.",
       "result": null
     }
   },
@@ -2104,9 +2104,17 @@
       "action": "review",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "at": "2026-11-20T16:41:39+00:00"
+    },
+    {
+      "operation_id": "f3c0f79a76c047e1823bc60a825d6134",
+      "task": "SRC-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "abd55696a19e48a1aaf3a4b0e23f7414",
+      "at": "2026-11-20T16:42:29+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:41:39+00:00",
+  "updated_at": "2026-11-20T16:42:29+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
