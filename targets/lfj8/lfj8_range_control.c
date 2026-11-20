@@ -142,17 +142,22 @@ static void update_buttons(Lfj8ButtonFilter *filter, const Lfj8ButtonReading *re
         filter->sampled = 0;
         disarm_buttons(filter);
     }
-    if (!reading || now_us - reading->captured_us >= filter->max_age_us) {
+    if (!reading) {
         return;
     }
     const uint32_t since_last = reading->captured_us - filter->last_sample_us;
-    if (filter->sampled && (since_last == 0 || since_last >= HALF_CLOCK)) {
+    const int fresh = now_us - reading->captured_us < filter->max_age_us &&
+        (!filter->sampled || (since_last != 0 && since_last < HALF_CLOCK));
+    if (fresh) {
+        filter->last_sample_us = reading->captured_us;
+        filter->sampled = 1;
+    }
+    if (reading->valid != 1 || (reading->pressed & ~BUTTON_MASK)) {
+        /* A fault revokes the baseline even without a usable capture time. */
+        disarm_buttons(filter);
         return;
     }
-    filter->last_sample_us = reading->captured_us;
-    filter->sampled = 1;
-    if (reading->valid != 1 || (reading->pressed & ~BUTTON_MASK)) {
-        disarm_buttons(filter);
+    if (!fresh) {
         return;
     }
     if (!filter->candidate_valid || reading->pressed != filter->candidate) {
