@@ -108,7 +108,7 @@
     "targets/lfj8/check_h03_native_hooks.py": "3c13c6a4e76f309c531cde4e2b1f360157fcf869561f723fbcf8eafd6b03048b",
     "targets/lfj8/check_h03_phase_clock.py": "e4b4a05011409a180028de66c49405cdc5f356fed13fd4befbe1a3a1209582c4",
     "targets/lfj8/check_h03_phase_hook.py": "224a0c5b5c6241f399e06723656c6d0d1585064d03cd3b341914e1c0091bc1bf",
-    "targets/lfj8/check_h03_phase_wait.py": "0f94f9ab4e080831239a400ccbe2f94c8e4835b7057c5ad0aa961845564ade6d",
+    "targets/lfj8/check_h03_phase_wait.py": "4b976ac384837716cdca7075c980d45f2baf2f63128f2eb92a0aebe07dedbabf",
     "targets/lfj8/check_h03_ram_candidate.py": "2eb1795f9fa4b8859824db5ec31d9103da2d0d617819210d6b947228dc083e27",
     "targets/lfj8/check_h03_ram_init.py": "cb5626028192dbeeecde41ac730255daddec80f8f602a7af377a385521d75fba",
     "targets/lfj8/check_h03_secondary_load.py": "38df986a3002132837d89107de73b8d671b12f23b8c07c3f5fa63a79457dd54d",
@@ -236,7 +236,7 @@
     "verification/e4m3-can-9e1c/h03-native-phases.json": "abc24d7f01dbd56c21b3dd1390075a78fc0e3fa5ac46829d9badd7df8ae4d226",
     "verification/e4m3-can-9e1c/h03-phase-clock.json": "974963a324c111edffacdcf2bc532dab3020771ea55dc491a4c51500b2f2e921",
     "verification/e4m3-can-9e1c/h03-phase-hook.json": "154ceceb3a95fbf4b48a526ac71b38d5a9a4e05794f7b0c84634b7619db943ac",
-    "verification/e4m3-can-9e1c/h03-phase-wait.json": "d42c81506c2972d8407dc4635da8502f9734605877ed3b4e0ffaf2e9b6d18808",
+    "verification/e4m3-can-9e1c/h03-phase-wait.json": "961b560364b98a29342826b5d5230ba9f3cd6502dfd14b3a0f719b77d8e4f1e1",
     "verification/e4m3-can-9e1c/h03-storage.json": "7766f2370f4d01ac8e47a3e744168d04a14733fd1a1d474596d40549c4b12f64",
     "verification/e4m3-can-9e1c/h03-torque-dialogue.json": "398148cf9f5910d8ce4d1c2bb3149e1d49ea056557d2ce0b453a7e242ec08ee9",
     "verification/e4m3-can-9e1c/ordinary-model/h03-link.json": "6f30d3b170be567da29bf6305de62cec0c0873ad905370dcd8163176e2cdaedb",
@@ -303,5 +303,35 @@
       "scope": "Original dispatcher and RTE; simulator TRAP entry and synthetic vector targets."
     },
     "limits": "Simulator TRAP supplies exception entry, and the vector targets are fixture handlers. Interrupt priority and real handler stack costs remain outside the probe."
+  },
+  "nested_top8_stack_followup": {
+    "repeated_checks": [
+      "14 M32R scenarios; four new runs cover the OEM TOP8/9 idle and pending state-0 paths",
+      "OEM PSW save and restore: a single changed word, original cursor and intact guard",
+      "Temporary negative control: routing around the OEM TOP8/9 body is rejected"
+    ],
+    "findings": {
+      "oem_handler_range": [
+        "0x00ACD8",
+        "0x00B1C0"
+      ],
+      "oem_handler_sha256": "1c10de2d5a82459f5a350179306e8e8ac20b9a02111dd675b9208a8c5e182297",
+      "oem_psw_helper_range": [
+        "0x003E50",
+        "0x003E78"
+      ],
+      "oem_psw_helper_sha256": "d3730699d376a0a4645f6a5734f59e0223af828c4cb4ced31ec3c97aa72394c5",
+      "maximum_written_depth_bytes": 184,
+      "psw_stack_written_bytes": 4,
+      "psw_cursor_restored": true,
+      "pending_timer_state": {
+        "status_before": 24,
+        "status_after": 40,
+        "compare": 1249,
+        "next_state": 1
+      },
+      "scope": "Synthetic outer handler; original TOP8/9 idle and pending state-0 paths."
+    },
+    "limits": "Only the inner handler is original. TRAP entry timing, timer MMIO, the outer handler and hardware inhibit remain simulated."
   }
 }

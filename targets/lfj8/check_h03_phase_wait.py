@@ -19,6 +19,10 @@ CLEAR = 0x815C
 CONTINUE = 0x8160
 IRQ_START = 0x3DE0
 IRQ_END = 0x3E40
+PSW_HELPERS_START = 0x3E50
+PSW_HELPERS_END = 0x3E78
+TOP8_START = 0xACD8
+TOP8_END = 0xB1C0
 STOCK_WAIT = bytes.fromhex("E4804ADE2094F000B080FFFE60002004")
 FIXTURE = r"""
 
@@ -170,7 +174,11 @@ fixture_irq_outer:
     sample_irq_sp 0
     ld24 r0,#0x11111
     ld24 r5,#0x55555
+#if OEM_TOP8
+    test_irq fixture_irq_top8
+#else
     test_irq fixture_irq_inner
+#endif
     .p2align 2
 fixture_irq_outer_resume:
     sample_irq_sp 8
@@ -183,11 +191,24 @@ fixture_irq_fail:
     bra.l fail
 
     .p2align 2
+#if OEM_TOP8
+fixture_irq_top8:
+    sample_irq_sp 4
+    bra.l h03_stock_top8
+#else
 fixture_irq_inner:
     sample_irq_sp 4
     ld24 r0,#0x22222
     ld24 r5,#0x66666
     jmp lr
+#endif
+
+    .section .oem_psw,"ax"
+    .incbin "psw-helpers.dat"
+
+    .section .oem_top8,"ax"
+h03_stock_top8:
+    .incbin "top8.dat"
 """
 LAYOUT = """ENTRY(_start)
 SECTIONS {
@@ -195,9 +216,11 @@ SECTIONS {
   .entry 0x1000 : { *(.entry) }
   .test_irq 0x1240 : { KEEP(*(.test_irq)) }
   .oem_irq 0x3de0 : { KEEP(*(.oem_irq)) }
+  .oem_psw 0x3e50 : { KEEP(*(.oem_psw)) }
   .wait 0x8150 : { *(.wait) }
   ASSERT(SIZEOF(.wait) == 4, "The replacement branch must fit one word")
   .clear 0x815c : { *(.clear) }
+  .oem_top8 0xacd8 : { KEEP(*(.oem_top8)) }
   .text 0x60000 : { *(.text .text.*) *(.rodata .rodata.*) }
   .data 0x100000 : { *(.data .data.*) }
   .bss : { *(.bss .bss.*) }
@@ -256,6 +279,15 @@ commands
   end
   set $callbacks = $callbacks + 1
   set *(unsigned int*)0x1238 = $inject_nested && $callbacks == 5
+  if $oem_top8 && $callbacks == 5
+    set *(unsigned char*)0x800233 = $top8_status
+    set *(unsigned short*)0x8002c2 = 0xffff
+    set *(unsigned char*)0x806acc = 0x7e
+    set *(unsigned char*)0x806acd = 0
+    set *(unsigned int*)0x809f94 = $marker
+    set *(unsigned int*)0x809f98 = $marker
+    set *(unsigned int*)0x809f9c = 0x809f9c
+  end
   restore stack-marker.bin binary {PROBE_START:#x}
   continue
 end
@@ -274,6 +306,27 @@ commands
     if *(unsigned int*)0x1228 != *(unsigned int*)0x1220 || *(unsigned int*)0x122c != {CALLBACK_SP - CALLBACK_LR_BYTES:#x}
       printf "UNEXPECTED IRQ RETURN FRAMES\\n"
       quit
+    end
+    if $oem_top8
+      if *(unsigned int*)0x809f9c != 0x809f9c
+        printf "TOP8 PSW CURSOR CHANGED\\n"
+        quit
+      end
+      if $top8_status & 0x10
+        if *(unsigned char*)0x800233 != 0x28 || *(unsigned short*)0x8002c2 != 1249 || *(unsigned char*)0x806acc != 0 || *(unsigned char*)0x806acd != 1
+          printf "TOP8 PENDING PATH DID NOT ADVANCE\\n"
+          quit
+        end
+      else
+        if *(unsigned char*)0x800233 != 8 || *(unsigned short*)0x8002c2 != 0xffff || *(unsigned char*)0x806acc != 0x7e || *(unsigned char*)0x806acd != 0
+          printf "TOP8 IDLE PATH CHANGED TIMER STATE\\n"
+          quit
+        end
+      end
+      if *(unsigned int*)0x809f98 == $marker || *(unsigned int*)0x809f94 != $marker
+        printf "UNEXPECTED TOP8 PSW STACK WRITE\\n"
+        quit
+      end
     end
     set $verified_irq_levels = 2
   end
@@ -309,6 +362,8 @@ def check(base, compiler):
         (work / "fixture.ld").write_text(LAYOUT, encoding="ascii")
         (work / "clear.dat").write_bytes(wait_code[CLEAR - WAIT:])
         (work / "irq.dat").write_bytes(rom[IRQ_START:IRQ_END])
+        (work / "psw-helpers.dat").write_bytes(rom[PSW_HELPERS_START:PSW_HELPERS_END])
+        (work / "top8.dat").write_bytes(rom[TOP8_START:TOP8_END])
         (work / "tick-driver.gdb").write_text(TICK_DRIVER, encoding="ascii")
         debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
         compiler_version = subprocess.run(
@@ -318,11 +373,14 @@ def check(base, compiler):
         sources = [HERE / name for name in (
             "h03_phase_wait_fixture.c", "lfj8_h03_phase_clock.c", "lfj8_h03_takeover.c",
         )]
-        for scenario, name, calls, samples, nested in (
-            (0, "ready", 1, 0, False), (1, "delayed_across_wrap", 3, 8, False),
-            (2, "stalled", 6, 20, False), (3, "flag_before_next_poll", 2, 2, False),
-            (2, "stalled_nested_irq", 6, 20, True),
+        for scenario, name, calls, samples, nested, top8_status in (
+            (0, "ready", 1, 0, False, None), (1, "delayed_across_wrap", 3, 8, False, None),
+            (2, "stalled", 6, 20, False, None), (3, "flag_before_next_poll", 2, 2, False, None),
+            (2, "stalled_nested_irq", 6, 20, True, None),
+            (2, "stalled_nested_top8_idle", 6, 20, True, 0x08),
+            (2, "stalled_nested_top8_pending", 6, 20, True, 0x18),
         ):
+            top8 = top8_status is not None
             for carry, marker in enumerate(MARKERS):
                 (work / "stack-marker.bin").write_bytes(
                     marker.to_bytes(4, "big") * (PROBE_BYTES // 4)
@@ -332,7 +390,7 @@ def check(base, compiler):
                      "-Wall", "-Wextra", "-Werror",
                      "-ffunction-sections", "-fdata-sections", "-nostdlib", "-Wl,--gc-sections,-T,fixture.ld",
                      "-I", CONTROLLER / "include", "-I", CONTROLLER / "vendor" / "toyota" / "include",
-                     f"-DSCENARIO={scenario}", f"-DCARRY={carry}",
+                     f"-DSCENARIO={scenario}", f"-DCARRY={carry}", f"-DOEM_TOP8={int(top8)}",
                      f"-Wl,--defsym,h03_phase_wait_interval_ticks={POLL_INTERVAL}",
                      "fixture.S", "hook.S", *sources, "-lc", "-lgcc", "-o", "fixture.elf"],
                     cwd=work, check=True, capture_output=True, timeout=15,
@@ -340,6 +398,8 @@ def check(base, compiler):
                 output = subprocess.run(
                     [debugger, "--batch", "-nx", "-ex", f"set $release_early = {int(scenario == 3)}",
                      "-ex", f"set $inject_nested = {int(nested)}",
+                     "-ex", f"set $oem_top8 = {int(top8)}",
+                     "-ex", f"set $top8_status = {top8_status or 0}",
                      "-ex", f"set $marker = (unsigned int){marker:#x}",
                      "-x", "tick-driver.gdb", "fixture.elf"],
                     cwd=work, check=True, capture_output=True, timeout=15,
@@ -358,6 +418,7 @@ def check(base, compiler):
                                 "clock_samples_while_waiting": samples,
                                 "callback_stack_written_bytes": depths,
                                 "oem_irq_levels_injected": returns,
+                                "oem_top8_status_before": top8_status,
                                 "stock_flag_cleared": True, "phase_consumed": scenario != 2,
                                 "command_revoked": scenario == 2})
     return {"base": identity, "compiler": compiler_version, "wait": f"0x{WAIT:06X}", "stock_clear": f"0x{CLEAR:06X}",
@@ -380,9 +441,23 @@ def check(base, compiler):
                 "checked_return_context": ["SP", "R0", "R5", "foreground C"],
                 "maximum_written_depth_bytes": max(
                     max(case["callback_stack_written_bytes"]) for case in results
-                    if case["oem_irq_levels_injected"]
+                    if case["oem_irq_levels_injected"] and case["oem_top8_status_before"] is None
                 ),
                 "scope": "Original dispatcher and RTE; simulator TRAP entry and synthetic vector targets.",
+            },
+            "nested_top8_probe": {
+                "oem_handler_range": [f"0x{TOP8_START:06X}", f"0x{TOP8_END:06X}"],
+                "oem_handler_sha256": sha256(rom[TOP8_START:TOP8_END]).hexdigest(),
+                "oem_psw_helper_range": [f"0x{PSW_HELPERS_START:06X}", f"0x{PSW_HELPERS_END:06X}"],
+                "oem_psw_helper_sha256": sha256(rom[PSW_HELPERS_START:PSW_HELPERS_END]).hexdigest(),
+                "maximum_written_depth_bytes": max(
+                    max(case["callback_stack_written_bytes"]) for case in results
+                    if case["oem_top8_status_before"] is not None
+                ),
+                "psw_stack_written_bytes": 4, "psw_cursor_restored": True,
+                "pending_timer_state": {"status_before": 0x18, "status_after": 0x28,
+                                        "compare": 1249, "next_state": 1},
+                "scope": "Synthetic outer handler; original TOP8/9 idle and pending state-0 paths.",
             },
             "scope": "Real C phase clock and takeover check; synthetic clock, OEM flag and inhibit.",
             "hardware_executed": False, "flashable_image": None}
