@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 29,
+  "sequence": 30,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -107,15 +107,20 @@
         "docs/lfj8-h03-control-cycle.md",
         "targets/lfj8/check_h03_phase_wait.py",
         "targets/lfj8/h03_phase_wait_hook.S",
+        "targets/lfj8/lfj8_h03_phase_clock.c",
+        "targets/lfj8/lfj8_h03_phase_clock.h",
+        "targets/lfj8/lfj8_h03_takeover.c",
+        "targets/lfj8/lfj8_h03_takeover.h",
+        "targets/lfj8/test_lfj8_h03_takeover.c",
         "verification/e4m3-can-9e1c/h03-foreground.json",
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-phase-wait.json"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "claimed_at": "2026-11-20T15:51:48+00:00",
-      "updated_at": "2026-11-20T15:56:16+00:00",
-      "note": "Кандидат точки 008150 вызывает проверку без флага OEM. Четыре сценария M32R и project_status --check PASS. Целевой callback, RAM и нагрузка IRQ требуют интеграции.",
+      "updated_at": "2026-11-20T15:57:32+00:00",
+      "note": "Подключаю отзыв при ожидании без потребления события к проверке M32R.",
       "result": "2584dd654ded6cfaae0d0ab65520eb443bcb8445"
     },
     "H03-04": {
@@ -422,9 +427,17 @@
       "action": "resume",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T15:57:27+00:00"
+    },
+    {
+      "operation_id": "83b8ab78c6324ebe944ae6a140bfdc9b",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "resume",
+      "claim_id": "ef041474d8994309836820d6cd886071",
+      "at": "2026-11-20T15:57:32+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:57:27+00:00",
+  "updated_at": "2026-11-20T15:57:32+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
