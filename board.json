@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 275,
+  "sequence": 276,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -8,6 +8,8 @@
       "branch": "codex/integration-01a1f76d-20261120",
       "files": [
         "README.md",
+        "controller/build_target.py",
+        "controller/size_port.py",
         "data/project-tasks.json",
         "docs/integration-next-tasks.md",
         "docs/project-map.md",
@@ -19,8 +21,8 @@
       "stage": "in_progress",
       "claim_id": "d5108ac7030f46e2afe22bca1a1ee468",
       "claimed_at": "2026-11-20T17:16:57+00:00",
-      "updated_at": "2026-11-20T17:16:57+00:00",
-      "note": "Объединяю 31 опубликованный результат, проверяю общую сборку и оформляю конкретные остатки для чатов.",
+      "updated_at": "2026-11-20T17:27:09+00:00",
+      "note": "31 результата объединены. ПК 37 шагов/98 тестов и M32R проходят; расширенная компоновка переполняется на 1888 байт. Проверяю сокращение M32R без изменения логики донора.",
       "result": null
     },
     "DTC-02": {
@@ -2767,9 +2769,17 @@
       "action": "claim",
       "claim_id": "d5108ac7030f46e2afe22bca1a1ee468",
       "at": "2026-11-20T17:16:57+00:00"
+    },
+    {
+      "operation_id": "f82ad0f7207948c1b9fb2caa6dd9fc00",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "heartbeat",
+      "claim_id": "d5108ac7030f46e2afe22bca1a1ee468",
+      "at": "2026-11-20T17:27:09+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:16:57+00:00",
+  "updated_at": "2026-11-20T17:27:09+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
