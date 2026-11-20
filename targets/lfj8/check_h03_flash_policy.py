@@ -18,6 +18,9 @@ READBACK, READBACK_DONE = 0x004554, 0x004588
 SUM_VALUE, SUM_CURSOR = 0x8048E0, 0x806AC8
 VIRTUAL_CONFIG, VIRTUAL_CONFIG_DONE = 0x003550, 0x0035B4
 VIRTUAL_SELECT, FCNT1, FESBANK1 = 0x808DB0, 0x8007E2, 0x8007F2
+SERVICE_ACTIVATE, SERVICE_ACTIVATE_RETURN = 0x003364, 0x00336C
+SERVICE_STATE, SERVICE_ADDRESS = 0x808578, 0x808584
+VIRTUAL_RAM_BASE = 0x807000
 VIRTUAL_S_PAGE_BYTES = 0x1000
 
 LAYOUT = """
@@ -139,13 +142,31 @@ def check_placement(elf, flash_bytes, banks):
     return {
         "elf_sha256": identity["sha256"],
         "scope": "allocated ELF sections intersecting internal Flash",
-        "observed_selector_entry": f"0x{VIRTUAL_CONFIG:06X}",
+        "observed_service_activation_entry": f"0x{SERVICE_ACTIVATE:06X}",
         "s_banks_replayed": len(banks),
         "overlaps_stock_selector_pages": bool(collisions),
         "collisions": collisions,
         "physical_remapping_verified": False,
         "external_service_admission_verified": False,
     }
+
+
+def replay_service_activation(run, work, gdb, bank, address, *, initially_enabled):
+    initial_selection = (0x8000 | bank) if initially_enabled else bank ^ 0x7F
+    memory = (
+        ("unsigned int", 0x809F9C, 0x809F9C),
+        ("unsigned int", SERVICE_ADDRESS, address),
+        ("unsigned short", VIRTUAL_SELECT, bank),
+        ("unsigned char", FCNT1, int(initially_enabled)),
+        ("unsigned short", FESBANK1, initial_selection),
+    )
+    pc, *_, control, selection = replay(
+        run, work, gdb, hex(SERVICE_ACTIVATE), (hex(SERVICE_ACTIVATE_RETURN),),
+        arguments=(0, 0, SERVICE_STATE), memory=memory,
+    )
+    if pc != SERVICE_ACTIVATE_RETURN:
+        raise ValueError(f"Stock service activation did not return at bank {bank:#x}")
+    return control, selection
 
 
 def check(base, compiler, placement_elf=None):
@@ -223,7 +244,17 @@ def check(base, compiler, placement_elf=None):
                                                 memory=memory, initial_r0=0x807000)
             if (pc, control, selection) != (VIRTUAL_CONFIG_DONE, 1, 0x8000 | bank):
                 raise ValueError(f"Unexpected virtual Flash register shadow for bank {bank:#x}")
+            activated = replay_service_activation(
+                run, work, gdb, bank, VIRTUAL_RAM_BASE, initially_enabled=False)
+            if activated != (1, 0x8000 | bank):
+                raise ValueError(f"Stock service branch did not enable virtual Flash bank {bank:#x}")
             selected_banks.add(bank)
+
+        for address in (VIRTUAL_RAM_BASE - 1, VIRTUAL_RAM_BASE + 1):
+            disabled = replay_service_activation(
+                run, work, gdb, 0x20, address, initially_enabled=True)
+            if disabled != (0, 0x20):
+                raise ValueError(f"Stock service branch did not disable virtual Flash at {address:#x}")
 
     report = {
         "base": identity,
@@ -236,6 +267,13 @@ def check(base, compiler, placement_elf=None):
                          for start, end, allowed in erase_cases],
         "readback_equality_and_mismatch_verified": True,
         "virtual_flash_selector_register_shadow_cases": [f"0x{0x8000 | bank:04X}" for bank in banks],
+        "virtual_flash_service_activation": {
+            "entry": f"0x{SERVICE_ACTIVATE:06X}",
+            "already_prepared_monitor_state": True,
+            "enabled_s_banks": [f"0x{bank:02X}" for bank in sorted(selected_banks)],
+            "adjacent_destinations_disable_overlay": True,
+            "external_transport_executed": False,
+        },
         "raw_reference_candidates_outside_the_sector": reference_candidates(rom),
         "stock_diagnostic_sum": f"0x{stock_sum:04X}",
         "diagnostic_sum_after_simulated_sector_change": f"0x{changed_sum:04X}",
