@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 367,
+  "sequence": 368,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -336,12 +336,12 @@
         "targets/lfj8/lfj8_h03_outputs.c",
         "verification/project-audit/toy04-output-flash-size.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "07e364700a914694bb6ff3542e87e98a",
       "claimed_at": "2026-11-20T18:21:58+00:00",
-      "updated_at": "2026-11-20T18:21:58+00:00",
-      "note": "Уменьшаю размер адаптера ordered S1/S2/ST и SLT без изменений расчётов или назначения каналов. Проверяю общий small на опубликованных порциях, не трогаю файлы H03-03 или общую компоновку.",
-      "result": null
+      "updated_at": "2026-11-20T18:27:21+00:00",
+      "note": "Планировщик выходов освобождает 108 байт. Общий small с CAN-02/H03-04/H03-05: 117 точек, запас 228/140, ноль релокаций. Пройдены 18 компонентных и 15 штатных сценариев M32R. На ПК совпали 888888 последовательностей и 65536 сочетаний блокировок. Планировщик и доказательства готовы к объединению.",
+      "result": "c2eee31f06230b7d060d88bb051721a1cdf30445"
     },
     "CAN-02": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -3513,9 +3513,17 @@
       "action": "claim",
       "claim_id": "a36532debaa64238a1ee2b84f37624a1",
       "at": "2026-11-20T18:26:38+00:00"
+    },
+    {
+      "operation_id": "3c4346db67c54d5ab8c412a1b2f610e4",
+      "task": "TOY-04",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "07e364700a914694bb6ff3542e87e98a",
+      "at": "2026-11-20T18:27:21+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:26:38+00:00",
+  "updated_at": "2026-11-20T18:27:21+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
