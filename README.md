@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:32:59+00:00**. Изменение № **381**.
+Обновлено UTC: **2026-11-20T18:33:25+00:00**. Изменение № **382**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -27,7 +27,7 @@
 | ECU-02 — Калибровка момента и работа двигателя | Свободна для продолжения | Предыдущий: Codex — обороты и отпускание момента Bosch \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/ecu02-torque-rpm-32e6ac79 | 2026-11-20T17:47:17+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 06eacf1ff4f42e423886b4b25b849ead054ac924 |
 | H03-01 — Выбранная основа 9E1C и карта подключения | Закрыта по текущему объёму | Предыдущий: Codex H03-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-01-base-guard-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:47:37+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit cf488af90f0e7beca13fe3c02599cd4854f3668e |
 | H03-02 — S51, S83 и температура ATF | На проверке | Codex — штатные события датчиков H03 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-02-sensor-events-mwp5rm2ofhaxjfi9dss | 2026-11-20T18:13:42+00:00 | AA0C/AA70 + foreground и владелец эпохи реализованы. M32R: 2 ELF, базовые 18 компонентов и 17 native PASS. Зависимость 5cfe811, стыковка с приложением H03-03 и стенд открыты. Отчёт verification/project-audit/h03-02-sensor-events.md. / commit c354bf9f0ceb130ac03d525c6889f3d277dc7666 |
-| H03-03 — Единое расписание и запуск приложения H03 | На проверке | Codex H03 application owner \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/h03-03-foreground-01a1f99f | 2026-11-20T18:13:12+00:00 | Application owner on H03 cold reset and foreground. PASS: 32 startup/scheduling cases and 17 native check groups. New audit snapshot and binding requirements included; verified hardware paths and final placement are still pending. / commit 7ced52319211d394a5b1e2a8b08f9910df082018 |
+| H03-03 — Единое расписание и запуск приложения H03 | Свободна для продолжения | Предыдущий: Codex H03 application owner \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/h03-03-foreground-01a1f99f | 2026-11-20T18:33:25+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit 7ced52319211d394a5b1e2a8b08f9910df082018 |
 | H03-04 — Память, стек и сервисные пути | На проверке | Codex — уменьшение Flash H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-04-torque-size-01a1f9a2 | 2026-11-20T18:11:08+00:00 | Адаптер CAN момента меньше на 132 байта. В той же модели сохранены все 116 корней; основной запас 1396 байт, хвост переполнен на 1712, общий дефицит 316. Прошли 18 компонентов в обычной компоновке M32R, включая потерю допуска и передачу CAN13. H03-05 под c0e68fe на отдельном review, владелец H03-03 работает отдельно. / commit 4ecfdd9de91fd6d3d4160c0fb3b50769c6ded907 |
 | H03-05 — SLT, силовые выходы и реакция на отказ | На проверке | Codex — целевой inhibit H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-02-atf-01a1f9a2 | 2026-11-20T18:04:53+00:00 | Целевой callback D/E/F и Pressure A, девять переходов по трассе регистров, отзыв поколения и обнуление обоих банков. Прошли 17 проверок native M32R. Модуль 148 байт, собственной RAM нет. Для H03-03 передать в Lfj8H03TakeoverOps.inhibit после квалификации, вызвать отзыв до смены владельца. Нужны стендовые полярность, ток, давление и независимое снятие питания при остановке CPU. / commit c0e68fe2fc43a86df71cf122d228af63b7c29fed |
 | IO-01 — Два дополнительных реле | Отложена владельцем | — | — | — | — |
@@ -55,7 +55,7 @@
 
 | Задача | Сейчас | Следующий шаг | Кому удобно продолжить |
 | --- | --- | --- | --- |
-| [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f36613136fffce586a2736c1ea043794784c5c6f/docs/project-map.md#h03-03) | На проверке | Определить семь перечисленных привязок, единственные состояния, initialize/take_toyota/service_phase и исходные часы/снимки; объединить нативные обёртки. | Чат запуска H03 |
+| [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f36613136fffce586a2736c1ea043794784c5c6f/docs/project-map.md#h03-03) | Свободна для продолжения | Определить семь перечисленных привязок, единственные состояния, initialize/take_toyota/service_phase и исходные часы/снимки; объединить нативные обёртки. | Чат запуска H03 |
 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f36613136fffce586a2736c1ea043794784c5c6f/docs/project-map.md#can-03) | Свободна для продолжения | Связать готового CAN owner и RX target с общим временем/запуском; установить setup/TX gate, проверить потерю/возврат допуска. | Чат CAN |
 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f36613136fffce586a2736c1ea043794784c5c6f/docs/project-map.md#h03-05) | На проверке | Подключить готовый inhibit в application_binding; квалифицировать полярность и ток–давление отдельно от трасс регистров. | Чат силовых выходов |
 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f36613136fffce586a2736c1ea043794784c5c6f/docs/project-map.md#vss-02) | На проверке | Связать sensor_target/config с H03-03, установить подтверждённые частоты/тайм-ауты и критерий остановки. | Чат датчиков |
@@ -70,7 +70,7 @@
 ### Сделано и остаток по каждой незакрытой задаче
 
 <details>
-<summary>H03-03 — Единое расписание и запуск приложения H03: На проверке</summary>
+<summary>H03-03 — Единое расписание и запуск приложения H03: Свободна для продолжения</summary>
 
 **Сделано.** Холодный запуск и foreground имеют владельца приложения; проверены 32 сценария и штатные пути. Объединённая линковка теперь выдаёт точные отсутствующие определения платформы.
 
@@ -80,7 +80,7 @@
 
 **Рекомендуемый чат.** Чат запуска H03 — 01a1f99f-5cb5-70e0-afd0-60e6b41a5d51.
 
-**Сейчас выполняет.** Codex H03 application owner — codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Полный цикл вызывается автономно, пропуск обнаруживается и без фазы выдачи, тестовые callbacks заменены подтверждёнными целевыми.
 
@@ -600,19 +600,6 @@
 - targets/lfj8/lfj8_h03_sensor_target.h
 - verification/project-audit/h03-02-sensor-events.md
 
-### H03-03
-
-Чат: Codex H03 application owner. Claim ID: dde35120f1f04f6b9be6619a41ccbc33.
-
-- docs/lfj8-h03-control-cycle.md
-- targets/lfj8/check_h03_phase_boot.py
-- targets/lfj8/h03_application_hooks.S
-- targets/lfj8/h03_phase_boot_fixture.c
-- targets/lfj8/lfj8_h03_application.c
-- targets/lfj8/lfj8_h03_application.h
-- verification/project-audit/2026-11-20-h03-application-owner.json
-- verification/project-audit/h03-03-application-owner.md
-
 ### H03-04
 
 Чат: Codex — уменьшение Flash H03. Claim ID: 9e93704114d342ff9848b326e2d3d7fc.
@@ -734,6 +721,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:33:25+00:00 | H03-03 | complete | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:32:59+00:00 | REL-01 | complete | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:32:39+00:00 | ORG-01 | review | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T18:32:28+00:00 | DTC-01 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
@@ -763,4 +751,3 @@
 | 2026-11-20T18:18:48+00:00 | CAN-02 | heartbeat | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:18:41+00:00 | DTC-02 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T18:18:32+00:00 | REL-01 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
-| 2026-11-20T18:18:10+00:00 | DTC-03 | claim | 01a1f9c7-675a-78c3-be98-5bd65e44995c |

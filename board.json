@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 381,
+  "sequence": 382,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -122,11 +122,11 @@
         "verification/project-audit/2026-11-20-h03-application-owner.json",
         "verification/project-audit/h03-03-application-owner.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "dde35120f1f04f6b9be6619a41ccbc33",
       "claimed_at": "2026-11-20T18:01:25+00:00",
-      "updated_at": "2026-11-20T18:13:12+00:00",
-      "note": "Application owner on H03 cold reset and foreground. PASS: 32 startup/scheduling cases and 17 native check groups. New audit snapshot and binding requirements included; verified hardware paths and final placement are still pending.",
+      "updated_at": "2026-11-20T18:33:25+00:00",
+      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
       "result": "7ced52319211d394a5b1e2a8b08f9910df082018"
     },
     "H03-04": {
@@ -3625,9 +3625,17 @@
       "action": "complete",
       "claim_id": "728ac0bbf9a84b04bfdc5f0fce5a6b1b",
       "at": "2026-11-20T18:32:59+00:00"
+    },
+    {
+      "operation_id": "4b557ab3f5604fdb8eba1da583321780",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "dde35120f1f04f6b9be6619a41ccbc33",
+      "at": "2026-11-20T18:33:25+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:32:59+00:00",
+  "updated_at": "2026-11-20T18:33:25+00:00",
   "main_commit": "f36613136fffce586a2736c1ea043794784c5c6f",
   "catalog": [
     {
