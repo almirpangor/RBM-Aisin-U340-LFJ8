@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 619,
+  "sequence": 620,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -112,12 +112,12 @@
         "targets/lfj8/lfj8_h03_application_binding.h",
         "verification/project-audit/h03-03-native-binding.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "77e3f918a51449ab982b5ad578a53b85",
       "claimed_at": "2026-11-20T20:33:34+00:00",
-      "updated_at": "2026-11-20T20:36:29+00:00",
-      "note": "Нативная привязка прошла M32R: отказ без RAM/часов, сброс AN2, штатная foreground-обёртка и отзыв срока. Повторяю полный штатный запуск и проверяю типизированные адреса.",
-      "result": null,
+      "updated_at": "2026-11-20T20:41:45+00:00",
+      "note": "Определён rbm_h03_application_binding, 7 ссылок RAM разрешены в M32R, профиль обязателен. Отдельный ELF прошёл холодный/тёплый старт и foreground; штатная регрессия 56 сценариев/80 IRQ. Восемь поставщиков платформы и измеренные параметры открыты. Отчёт h03-03-native-binding.md.",
+      "result": "e31b2572704388e3bfc90a5fdbb83c1b6812d909",
       "based_on_reviews": [
         "c7107b9bc8974c67b7113c75529f935c"
       ]
@@ -6048,9 +6048,38 @@
           "15e6e783e4d74a5b9c000d3658becff0"
         ]
       }
+    },
+    {
+      "operation_id": "361eb63f43fe43939cd3c98e579ac28c",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "77e3f918a51449ab982b5ad578a53b85",
+      "at": "2026-11-20T20:41:45+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex H03-03 — нативная привязка приложения",
+        "branch": "codex/h03-03-application-binding-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/check_h03_application_binding.py",
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_application_binding.h",
+          "verification/project-audit/h03-03-native-binding.md"
+        ],
+        "stage": "review",
+        "claim_id": "77e3f918a51449ab982b5ad578a53b85",
+        "claimed_at": "2026-11-20T20:33:34+00:00",
+        "updated_at": "2026-11-20T20:41:45+00:00",
+        "note": "Определён rbm_h03_application_binding, 7 ссылок RAM разрешены в M32R, профиль обязателен. Отдельный ELF прошёл холодный/тёплый старт и foreground; штатная регрессия 56 сценариев/80 IRQ. Восемь поставщиков платформы и измеренные параметры открыты. Отчёт h03-03-native-binding.md.",
+        "result": "e31b2572704388e3bfc90a5fdbb83c1b6812d909",
+        "based_on_reviews": [
+          "c7107b9bc8974c67b7113c75529f935c"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:38:58+00:00",
+  "updated_at": "2026-11-20T20:41:45+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
@@ -7099,6 +7128,29 @@
       ],
       "task": "CAN-03",
       "submitted_at": "2026-11-20T20:38:24+00:00"
+    },
+    "77e3f918a51449ab982b5ad578a53b85": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex H03-03 — нативная привязка приложения",
+      "branch": "codex/h03-03-application-binding-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "targets/lfj8/check_h03_application_binding.py",
+        "targets/lfj8/h03_application_binding_fixture.c",
+        "targets/lfj8/lfj8_h03_application_binding.c",
+        "targets/lfj8/lfj8_h03_application_binding.h",
+        "verification/project-audit/h03-03-native-binding.md"
+      ],
+      "stage": "review",
+      "claim_id": "77e3f918a51449ab982b5ad578a53b85",
+      "claimed_at": "2026-11-20T20:33:34+00:00",
+      "updated_at": "2026-11-20T20:41:45+00:00",
+      "note": "Определён rbm_h03_application_binding, 7 ссылок RAM разрешены в M32R, профиль обязателен. Отдельный ELF прошёл холодный/тёплый старт и foreground; штатная регрессия 56 сценариев/80 IRQ. Восемь поставщиков платформы и измеренные параметры открыты. Отчёт h03-03-native-binding.md.",
+      "result": "e31b2572704388e3bfc90a5fdbb83c1b6812d909",
+      "based_on_reviews": [
+        "c7107b9bc8974c67b7113c75529f935c"
+      ],
+      "task": "H03-03",
+      "submitted_at": "2026-11-20T20:41:45+00:00"
     }
   }
 }
