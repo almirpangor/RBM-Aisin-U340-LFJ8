@@ -3,6 +3,8 @@
 
 #include "lfj8_donor_io.h"
 
+#define LFJ8_H03_P1DATA_ADDRESS UINT32_C(0x800701)
+
 typedef enum {
     LFJ8_SELECTOR_ADC_NONE,
     LFJ8_SELECTOR_ADC_VALUE,
@@ -14,12 +16,16 @@ typedef enum {
 typedef struct {
     uint32_t captured_us;
     uint16_t raw;
+    uint8_t p1data;
+    uint8_t p1_valid;
     Lfj8SelectorAdcEvent event;
 } Lfj8SelectorAdcReading;
 
 typedef struct {
     uint32_t pending_us;
     uint16_t pending_raw;
+    uint8_t pending_p1data;
+    uint8_t pending_p1_valid;
     Lfj8SelectorAdcEvent pending_event;
 } Lfj8SelectorAdc;
 
@@ -32,6 +38,11 @@ void lfj8_selector_adc_init(volatile Lfj8SelectorAdc *adc);
  */
 void lfj8_selector_adc_publish(volatile Lfj8SelectorAdc *adc,
                                const Lfj8RegisterIo *io, uint16_t raw, uint32_t captured_us);
+
+/* H03 only. Capture P1DATA together with a fresh AN2 conversion under the
+ * same lock. p1_valid marks the raw byte and implies no GPIO pin assignment. */
+void lfj8_selector_adc_publish_h03(volatile Lfj8SelectorAdc *adc,
+    const Lfj8RegisterIo *io, uint16_t raw, uint32_t captured_us);
 
 /* Discard an unconsumed value. The untimed loss stays pending until taken
  * even if the clock provides fresh timestamps before the next poll. */
