@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 177,
+  "sequence": 178,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -450,12 +450,12 @@
         "tools/check_vss_measurements.py",
         "verification/project-audit/vss02-measurement-check.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
       "claimed_at": "2026-11-20T16:24:53+00:00",
-      "updated_at": "2026-11-20T16:35:21+00:00",
-      "note": "11 тестов VSS прошли. Сверка TML0 учитывает перенос, остановку счётчика, отклонение частоты и неоднозначный длинный интервал. Идут полный PC и M32R на актуальной базе.",
-      "result": null
+      "updated_at": "2026-11-20T16:37:13+00:00",
+      "note": "Сверка TML0 по независимому времени и допуску ppm, перенос, неправильная частота и остановка проверены. PC 35 шагов/82 теста, M32R 17 компонентов PASS. Реальная частота TML0 и стенд открыты, отчёт verification/project-audit/vss02-measurement-check.md.",
+      "result": "0ce144d22b18682e3384b05ec602224f8ec6d159"
     },
     "TOY-01": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -1905,9 +1905,17 @@
       "action": "claim",
       "claim_id": "a8e9ff099358496bacacf60bfcc8aa84",
       "at": "2026-11-20T16:37:07+00:00"
+    },
+    {
+      "operation_id": "772d1bb2cca443858d9134bc0fc1a947",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
+      "at": "2026-11-20T16:37:13+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:37:07+00:00",
+  "updated_at": "2026-11-20T16:37:13+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
