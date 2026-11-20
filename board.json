@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 309,
+  "sequence": 310,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -19,12 +19,12 @@
         "verification/project-audit/2026-11-20-integration-3.json",
         "verification/project-audit/integration-3/"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "d5108ac7030f46e2afe22bca1a1ee468",
       "claimed_at": "2026-11-20T17:16:57+00:00",
-      "updated_at": "2026-11-20T17:36:11+00:00",
-      "note": "31 порция объединена; общие проверки и аудит готовы. Публикую интеграцию, отдельные аппаратные и компоновочные остатки не закрываю.",
-      "result": null
+      "updated_at": "2026-11-20T17:49:04+00:00",
+      "note": "31 точная порция объединена и принята. 37 шагов/98 тестов ПК, M32R 18+17+5 групп; оптимизация 1440 байт. Полная раскладка и аппаратные связи открыты, готовых BIN нет. Восемь продолжений: docs/integration-next-tasks.md.",
+      "result": "48e51c80bac085fe67f60e1b399328879916dd28"
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -3042,9 +3042,17 @@
       "action": "complete",
       "claim_id": "9df078bb4f93459f8e1b8d34220dd825",
       "at": "2026-11-20T17:48:37+00:00"
+    },
+    {
+      "operation_id": "0d7cd71c101947f4bfb29ac1c393991e",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "review",
+      "claim_id": "d5108ac7030f46e2afe22bca1a1ee468",
+      "at": "2026-11-20T17:49:04+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:48:37+00:00",
+  "updated_at": "2026-11-20T17:49:04+00:00",
   "main_commit": "48e51c80bac085fe67f60e1b399328879916dd28",
   "catalog": [
     {
