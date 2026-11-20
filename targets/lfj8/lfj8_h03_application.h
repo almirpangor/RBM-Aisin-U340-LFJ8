@@ -8,6 +8,7 @@
 typedef struct {
     uint32_t last_toyota_at;
     uint8_t running;
+    uint8_t adaptation_status; /* RbmU340eAdaptationResult, valid while running. */
 } Lfj8H03Application;
 
 typedef enum {
@@ -35,7 +36,8 @@ typedef struct {
      * must be independent of the reserved RAM. The linker/boot path must
      * guarantee that the cold gate runs before any application IRQ can
      * read retained RAM. If unavailable there, access must stay blocked
-     * until startup can clear the gate. Keep ownership while running. */
+     * until startup can clear the gate. Once granted, keep ownership
+     * through startup and while the application is running. */
     int (*ram_owned)(void *context);
     /* Independently qualify continuous TML0 and TML1 at 1 MHz. The
      * application owns the sensor epoch. Close its gate before resetting or
@@ -45,8 +47,16 @@ typedef struct {
 
     /* Called in serialized foreground with the gate closed and outputs
      * inhibited. Reset producer queues and initialize their single objects,
-     * including any persisted GP restore inputs, before returning success. */
+     * including any adaptation read state, before returning success. */
     int (*initialize)(void *context);
+
+    /* Optional read-only startup source. Return FACTORY_ADAPT_RECORD_BYTES
+     * raw bytes for slot 0 or 1, even when erased or damaged. NULL denotes
+     * a failed read. Keep both snapshots distinct, separate from runtime,
+     * and stable until restore completes. Called in serialized foreground
+     * with outputs inhibited and outside the takeover interrupt lock.
+     * Without a reader, restore uses the S01 cold baseline. */
+    FactoryAdaptRead read_adaptation;
 
     /* Nonblocking read of the independent Toyota timer source. Return one
      * coherent input/load snapshot and its producer timestamp in TML0CT

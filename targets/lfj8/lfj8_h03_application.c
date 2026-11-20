@@ -20,6 +20,7 @@ int lfj8_h03_application_running_locked(void)
 static void close_gate_locked(const Lfj8RegisterIo *io)
 {
     app->running = 0u;
+    app->adaptation_status = RBM_U340E_ADAPTATION_INVALID;
     rbm_h03_sensor_clock_rebase(0);
     binding->takeover->ops = NULL;
     binding->takeover->pending = 0u;
@@ -60,12 +61,27 @@ void rbm_h03_phase_startup_callback(void)
         return;
     }
 
+    const FactoryAdaptRead read_adaptation = binding->read_adaptation;
+    const uint8_t *slot0 = NULL;
+    const uint8_t *slot1 = NULL;
+    if (read_adaptation) {
+        slot0 = read_adaptation(context, 0u);
+        slot1 = read_adaptation(context, 1u);
+    }
+    const RbmU340eAdaptationResult restored = rbm_u340e_runtime_restore_adaptation(
+        binding->runtime, rbm_u340e_s01_adaptation_baseline(), slot0, slot1);
+    if (restored == RBM_U340E_ADAPTATION_INVALID) {
+        binding->runtime->initialized = 0u;
+        return;
+    }
+
     saved = io->enter(context);
     if (owns_ram(io)) {
         if (binding->clock_ready(context) == 1 &&
             rbm_h03_sensor_clock_rebase(1) &&
             lfj8_h03_phase_startup(binding->takeover, ops, &binding->phase_config)) {
             app->last_toyota_at = ops->phase_clock->latest.released_at;
+            app->adaptation_status = (uint8_t)restored;
             app->running = 1u;
         } else {
             rbm_h03_sensor_clock_rebase(0);
@@ -89,6 +105,7 @@ void rbm_h03_phase_release_callback(uint32_t released_at)
 static void fault_locked(void)
 {
     app->running = 0u;
+    app->adaptation_status = RBM_U340E_ADAPTATION_INVALID;
     rbm_h03_sensor_clock_rebase(0);
     binding->takeover_ops->phase_clock->faulted = 1u;
     binding->cycle->faulted = 1u;
