@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 625,
+  "sequence": 626,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -34,12 +34,12 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/dtc02-resident-rx-integrated-placement.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
       "claimed_at": "2026-11-20T20:34:46+00:00",
-      "updated_at": "2026-11-20T20:38:58+00:00",
-      "note": "Общий линкер выделяет нижний сектор отдельно, сохраняет граф IRQ и обе ветви. Предварительный расчёт получен; проверяю совместную компоновку, запрет неверных адресов и неизменность обычного профиля.",
-      "result": null,
+      "updated_at": "2026-11-20T20:44:17+00:00",
+      "note": "Нижний BasicCAN включён в общий расчёт размещения: 3224 байта, обе ветви и проверенная RAM-привязка владельца. 18 сравнений IRQ, 11+18 проверок M32R и 6 по адресам прошли. Расширенная сборка с RAM-алиасами оставляет FAIL_BINDINGS по application_binding и sensor_config. T6/native_ready и стенд открыты.",
+      "result": "5e6c7a8818290bddebfa97bb55d199570f4127ca",
       "based_on_reviews": [
         "0580560d4a0e442cb07862988bd40b0f",
         "15e6e783e4d74a5b9c000d3658becff0"
@@ -6222,9 +6222,38 @@
           "ef6ec9b39ec54c5fab41e021568c094f"
         ]
       }
+    },
+    {
+      "operation_id": "11619043bf424749bc56e77609c71cc0",
+      "task": "DTC-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
+      "at": "2026-11-20T20:44:17+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex DTC-02 — нижние переходы в общей компоновке H03",
+        "branch": "codex/can03-live-native-ready-1121-c7e4",
+        "files": [
+          "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+          "tests/test_h03_dtc_rx_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/dtc02-resident-rx-integrated-placement.md"
+        ],
+        "stage": "review",
+        "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
+        "claimed_at": "2026-11-20T20:34:46+00:00",
+        "updated_at": "2026-11-20T20:44:17+00:00",
+        "note": "Нижний BasicCAN включён в общий расчёт размещения: 3224 байта, обе ветви и проверенная RAM-привязка владельца. 18 сравнений IRQ, 11+18 проверок M32R и 6 по адресам прошли. Расширенная сборка с RAM-алиасами оставляет FAIL_BINDINGS по application_binding и sensor_config. T6/native_ready и стенд открыты.",
+        "result": "5e6c7a8818290bddebfa97bb55d199570f4127ca",
+        "based_on_reviews": [
+          "0580560d4a0e442cb07862988bd40b0f",
+          "15e6e783e4d74a5b9c000d3658becff0"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:43:58+00:00",
+  "updated_at": "2026-11-20T20:44:17+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
@@ -7320,6 +7349,29 @@
       ],
       "task": "REL-02",
       "submitted_at": "2026-11-20T20:43:17+00:00"
+    },
+    "ae0aa09617874ca8bcc10362dcb84b80": {
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "label": "Codex DTC-02 — нижние переходы в общей компоновке H03",
+      "branch": "codex/can03-live-native-ready-1121-c7e4",
+      "files": [
+        "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+        "tests/test_h03_dtc_rx_placement.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/dtc02-resident-rx-integrated-placement.md"
+      ],
+      "stage": "review",
+      "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
+      "claimed_at": "2026-11-20T20:34:46+00:00",
+      "updated_at": "2026-11-20T20:44:17+00:00",
+      "note": "Нижний BasicCAN включён в общий расчёт размещения: 3224 байта, обе ветви и проверенная RAM-привязка владельца. 18 сравнений IRQ, 11+18 проверок M32R и 6 по адресам прошли. Расширенная сборка с RAM-алиасами оставляет FAIL_BINDINGS по application_binding и sensor_config. T6/native_ready и стенд открыты.",
+      "result": "5e6c7a8818290bddebfa97bb55d199570f4127ca",
+      "based_on_reviews": [
+        "0580560d4a0e442cb07862988bd40b0f",
+        "15e6e783e4d74a5b9c000d3658becff0"
+      ],
+      "task": "DTC-02",
+      "submitted_at": "2026-11-20T20:44:17+00:00"
     }
   }
 }
