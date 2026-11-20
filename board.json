@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 21,
+  "sequence": 22,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -103,14 +103,19 @@
       "label": "Codex — foreground H03",
       "branch": "codex/h03-03-foreground-01a1f99f",
       "files": [
+        "data/project-tasks.json",
         "docs/lfj8-h03-control-cycle.md",
-        "verification/e4m3-can-9e1c/h03-foreground.json"
+        "targets/lfj8/check_h03_phase_wait.py",
+        "targets/lfj8/h03_phase_wait_hook.S",
+        "verification/e4m3-can-9e1c/h03-foreground.json",
+        "verification/e4m3-can-9e1c/h03-phase-wait.json",
+        "verification/project-audit/2026-11-20-h03-phase-wait.json"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "claimed_at": "2026-11-20T15:51:48+00:00",
-      "updated_at": "2026-11-20T15:52:36+00:00",
-      "note": "Подтверждены три пары foreground-прогонов, фазовый тест PASS. Зафиксированы место вызова и независимый отзыв при остановке публикаций. Целевой callback и стек ещё открыты.",
+      "updated_at": "2026-11-20T15:54:48+00:00",
+      "note": "Проверяю вызов контроля фазы при нулевом штатном флаге, отдельно от рабочего BIN.",
       "result": "ae5d3e4b0e61c04041145d85d269d18cc7925eef"
     },
     "H03-04": {
@@ -335,9 +340,17 @@
       "action": "claim",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T15:54:09+00:00"
+    },
+    {
+      "operation_id": "c382667a05a84539954849b56e15b80a",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "resume",
+      "claim_id": "ef041474d8994309836820d6cd886071",
+      "at": "2026-11-20T15:54:48+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:54:09+00:00",
+  "updated_at": "2026-11-20T15:54:48+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
