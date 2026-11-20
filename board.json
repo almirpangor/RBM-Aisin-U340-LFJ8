@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 71,
+  "sequence": 72,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -243,12 +243,12 @@
         "tests/u340_integration_host.c",
         "verification/project-audit/mode02-button-input.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "2b87aa66de244cf9b30a828391ad9001",
       "claimed_at": "2026-11-20T16:04:25+00:00",
-      "updated_at": "2026-11-20T16:08:55+00:00",
-      "note": "Первые прогоны ПК и M32R с подтверждённым H03 прошли. Ветка обновлена до main a52ab8c; повторяю проверки для передачи интегратору.",
-      "result": null
+      "updated_at": "2026-11-20T16:10:33+00:00",
+      "note": "Передаю интегратору. ПК 33 шага / 65 тестов PASS, M32R сборка с H03, сквозной прогон с трассой Bosch и 17 компонентов PASS. Отчёт mode02-button-input.md содержит хеши для общего аудита. Подключение к расписанию H03, измерение входов и полный гидравлический цикл остаются открытыми.",
+      "result": "53c5f27e40f4ed48fd5873d002a0ab315f448bcf"
     },
     "TOY-05": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -851,9 +851,17 @@
       "action": "claim",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "at": "2026-11-20T16:10:26+00:00"
+    },
+    {
+      "operation_id": "59ac5f76839d4c0f992b24d0c52218be",
+      "task": "MODE-02",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "2b87aa66de244cf9b30a828391ad9001",
+      "at": "2026-11-20T16:10:33+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:10:26+00:00",
+  "updated_at": "2026-11-20T16:10:33+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
