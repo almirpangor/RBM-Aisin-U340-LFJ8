@@ -9,13 +9,11 @@ import struct
 import subprocess
 from tempfile import TemporaryDirectory
 
+import lfj8_h03_service_placement as service
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-FLASH_START = 0x020000
-FLASH_END = 0x030000
-TAIL_START = 0x07C118
-TAIL_END = 0x07FFFC
+(FLASH_START, FLASH_END), (TAIL_START, TAIL_END) = service.SPLIT_MODEL_WINDOWS
 TARGET = ["-m32r", "-mmodel=medium", "-msdata=none", "-Wa,-EB"]
 LIBRARIES = ["-Wl,--start-group", "-lc", "-lgcc", "-Wl,--end-group"]
 
@@ -140,6 +138,8 @@ def check_shared_tables(stage, compiler, run, elf):
     nm = run(compiler, "-print-prog-name=nm")
     run(objcopy, "-O", "binary", elf, "linked-rom.dat")
     rom = (stage / "linked-rom.dat").read_bytes()
+    _, allocated = elf_info(stage / elf, 2)
+    origin = min(address for address, _, flags in allocated if not flags & 1)
     rows = [line.split() for line in run(nm, "-S", elf).splitlines()]
     tables = {}
     for name, size, digest in S01_LINK_TABLES:
@@ -147,14 +147,15 @@ def check_shared_tables(stage, compiler, run, elf):
         if len(matches) != 1 or int(matches[0][1], 16) != size or matches[0][2] != "R":
             raise ValueError(f"Expected one read-only instance of S01 table {name}")
         address = int(matches[0][0], 16)
-        offset = address - FLASH_START
+        offset = address - origin
         if offset < 0 or sha256(rom[offset:offset + size]).hexdigest() != digest:
             raise ValueError(f"S01 calibration mismatch in the linked image: {name}")
         tables[name] = {"address": address, "bytes": size, "sha256": digest}
     return tables
 
 
-def check_split_layout(stage, compiler, run, base, primary_objects, extension_objects, extension_roots):
+def check_split_layout(stage, compiler, run, base, primary_objects, extension_objects, extension_roots,
+                       service_ranges=None):
     """Link independent CAN modules into a second read-only window for sizing."""
     rom = base.read_bytes()
     if rom[TAIL_START:TAIL_END] != b"\xff" * (TAIL_END - TAIL_START):
@@ -162,8 +163,31 @@ def check_split_layout(stage, compiler, run, base, primary_objects, extension_ob
     extension_input = "\n    ".join(
         f"{name}(.text .text.* .rodata .rodata.*)" for name in extension_objects
     )
+    sites = guard = targets = ""
+    primary_text = hex(FLASH_START)
+    service_objects = []
+    if service_ranges is not None:
+        service.verify_stock(rom)
+        service.stage_sources(stage, service_ranges)
+        sites, guard = service.linker_sections()
+        guard = f"  . = {FLASH_START:#x};\n{guard}"
+        targets = service.linker_targets()
+        primary_text = "ADDR(.service_guard) + SIZEOF(.service_guard)"
+        for source in ("h03_service_guard_hooks.S", "lfj8_h03_service_guard.c", "lfj8_h03_service_guard.h"):
+            shutil.copyfile(HERE / source, stage / source)
+        for source, obj in (
+            ("service-sites.S", "service-sites.o"),
+            ("h03_service_guard_hooks.S", "service-hooks.o"),
+            ("lfj8_h03_service_guard.c", "service-guard.o"),
+            ("service-policy.c", "service-policy.o"),
+        ):
+            run(compiler, *TARGET, "-Os", "-std=c11", "-ffreestanding", "-fno-builtin", "-fno-common",
+                "-ffunction-sections", "-fdata-sections", "-I.", "-c", source, "-o", obj)
+            service_objects.append(obj)
     script = f"""ENTRY(rbm_u340e_step)
 SECTIONS {{
+{sites}
+{guard}
   .can_extension {TAIL_START:#x} : {{
     {extension_input}
     *(.text.lfj8_h03_can0_torque_* .text.pause_torque_listener .text.torque_slot_available)
@@ -172,12 +196,13 @@ SECTIONS {{
     *(.text.rbm_u340e_runtime_secondary_load_qualify .text.rbm_u340e_hydraulics_control_main_workspace)
     *(.text.lfj8_h03_takeover_check_phase .text.lfj8_h03_takeover_take_phase)
   }}
-  .text {FLASH_START:#x} : {{ *(.text .text.*) }}
+  .text {primary_text} : {{ *(.text .text.*) }}
   .rodata : {{ *(.rodata .rodata.*) }}
   .data : {{ *(.data .data.* .sdata .sdata.*) }}
   .bss (NOLOAD) : {{ *(.bss .bss.* .sbss .sbss.*) *(COMMON) }}
   /DISCARD/ : {{ *(.note*) *(.comment) }}
 }}
+{targets}
 ASSERT(ADDR(.rodata) + SIZEOF(.rodata) <= {FLASH_END:#x}, "Primary H03 window overflow")
 ASSERT(ADDR(.can_extension) + SIZEOF(.can_extension) <= {TAIL_END:#x}, "CAN extension window overflow")
 ASSERT(SIZEOF(.data) == 0 && SIZEOF(.bss) == 0, "Unexpected writable static state")
@@ -186,9 +211,13 @@ ASSERT(SIZEOF(.data) == 0 && SIZEOF(.bss) == 0, "Unexpected writable static stat
     roots = H03_ROOTS + extension_roots
     options = [f"-Wl,--undefined={root}" for root in roots]
     run(compiler, *TARGET, "-fno-use-linker-plugin", "-nostdlib", "-Wl,-T,split.ld,--gc-sections",
-        *options, *primary_objects, *extension_objects, *LIBRARIES, "-o", "split.elf")
+        *options, *primary_objects, *extension_objects, *service_objects, *LIBRARIES, "-o", "split.elf")
     linked, allocated = elf_info(stage / "split.elf", 2)
     ranges = ((FLASH_START, FLASH_END), (TAIL_START, TAIL_END))
+    placement = None
+    if service_ranges is not None:
+        _, placement = service.verify_and_overlay(rom, stage / "split.elf", service_ranges)
+        ranges += tuple((site.address, site.address + 4) for site in service.SITES)
     if linked["relocations"] or any(flags & 1 or not any(lo <= address and address + size <= hi
                                    for lo, hi in ranges) for address, size, flags in allocated):
         raise ValueError("Split layout has an unresolved relocation or unexpected allocation")
@@ -209,12 +238,15 @@ ASSERT(SIZEOF(.data) == 0 && SIZEOF(.bss) == 0, "Unexpected writable static stat
             "start": f"0x{lo:06X}", "end_exclusive": f"0x{hi:06X}",
             "rom_extent_bytes": end - lo, "window_margin_bytes": hi - end,
         }
-    return {
+    report = {
         "windows": windows, "section_bytes": linked["alloc_bytes"],
         "entry_points": {root: f"0x{symbols[root]:06X}" for root in roots},
         "relocations": linked["relocations"], "target_ownership_verified": False,
         "shared_s01_tables": check_shared_tables(stage, compiler, run, "split.elf"),
     }
+    if placement is not None:
+        report["service_protection"] = placement
+    return report
 
 
 def stage_test(stage, engine_payloads):
@@ -254,8 +286,15 @@ def stage_test(stage, engine_payloads):
     return [item.name for item in sources]
 
 
-def check(base, bridge, controller, compiler, simulator_output, bosch_trace=None, address_model_output=None):
+def check(base, bridge, controller, compiler, simulator_output, bosch_trace=None,
+          address_model_output=None, service_storage_report=None):
     report = {"source": identify_h03(base), "artifact_kind": "address_model_and_cpu_test"}
+    service_ranges = None
+    if service_storage_report is not None:
+        from check_h03_service_isolation import storage_blocks
+
+        raw = service_storage_report.read_bytes()
+        service_ranges = service.policy_ranges(storage_blocks(raw, report["source"]))
     engine_payloads = ()
     if bosch_trace is not None:
         trace_bytes = bosch_trace.read_bytes()
@@ -394,8 +433,10 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
         can_extension_objects = compile_modules(CAN_EXTENSION_FILES)
         report["split_address_model"] = check_split_layout(
             stage, compiler, run, base, ("combined.o", "takeover.o"),
-            dtc_objects + can_extension_objects, DTC_ROOTS + CAN_EXTENSION_ROOTS,
+            dtc_objects + can_extension_objects, DTC_ROOTS + CAN_EXTENSION_ROOTS, service_ranges,
         )
+        if service_ranges is not None:
+            report["split_address_model"]["service_protection"]["storage_report_sha256"] = sha256(raw).hexdigest()
 
         crt = run(compiler, *TARGET, "-print-file-name=crt0.o")
         run(compiler, *TARGET, *flags, "-Dmain=integration_test", "-c", integration,
@@ -478,10 +519,11 @@ def main():
     parser.add_argument("--sim-out", type=Path, help="optional simulator ELF with the test fixture")
     parser.add_argument("--address-model-out", type=Path, help="optional ELF with the two checked address windows")
     parser.add_argument("--bosch-trace", type=Path, help="optional round-trip JSON from model.run_integrated")
+    parser.add_argument("--service-storage-report", type=Path,
+                        help="include native service protection for this candidate RAM inventory")
     args = parser.parse_args()
     input_paths = {path.resolve() for path in (args.base, args.bridge, args.controller, args.gcc)}
-    if args.bosch_trace is not None:
-        input_paths.add(args.bosch_trace.resolve())
+    input_paths.update(path.resolve() for path in (args.bosch_trace, args.service_storage_report) if path is not None)
     if args.out.suffix.lower() != ".json" or args.out.resolve() in input_paths:
         parser.error("--out must be a separate JSON report")
     paths_in_use = input_paths | {args.out.resolve()}
@@ -492,7 +534,7 @@ def main():
             paths_in_use.add(destination.resolve())
     try:
         report = check(args.base, args.bridge, args.controller, args.gcc.resolve(), args.sim_out,
-                       args.bosch_trace, args.address_model_out)
+                       args.bosch_trace, args.address_model_out, args.service_storage_report)
         report_text = json.dumps(report, indent=2) + "\n"
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(report_text, encoding="utf-8")

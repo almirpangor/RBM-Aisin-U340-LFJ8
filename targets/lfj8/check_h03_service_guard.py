@@ -12,13 +12,10 @@ import check_h03_service_writes as writes
 from check_h03_link import identify_h03, TARGET
 from check_h03_service_isolation import storage_blocks
 from lfj8_h03_layout import read_elf
+import lfj8_h03_service_placement as service
 
 HERE=Path(__file__).resolve().parent
-CLOSE_STORE = 0x002E9C
-PATCHES=((0x2924,0x2E7F4FF8,'rbm_h03_service_direct_hook',0xFF),
-         (0x294C,0xFE0002F7,'rbm_h03_service_span_hook',0xFE),
-         (0x2D1C,0x2E7F297F,'rbm_h03_service_copy_hook',0xFF),
-         (CLOSE_STORE,0xA00A0008,'rbm_h03_service_close_hook',0xFF))
+CLOSE_STORE = service.WRITER_SITES[-1].address
 SOURCES=('lfj8_h03_service_guard.c','lfj8_h03_service_guard.h',
          'h03_service_guard_hooks.S','h03_service_guard_fixture.c')
 
@@ -82,7 +79,7 @@ def close_state_line(name):
             f"*(unsigned short*){address + 4:#x}, *(unsigned int*){address:#x}")
 
 
-def check_close(run, work, debugger, symbols, case, psw, lockout):
+def check_close(run, work, debugger, symbols, case, psw, lockout, *, lockout_installed=False):
     monitor, source = writes.MONITOR, writes.SOURCE
     width = max(case.total, case.remaining, 1)
     sentinel = bytes([writes.SENTINEL]) * (width + 2)
@@ -109,7 +106,7 @@ def check_close(run, work, debugger, symbols, case, psw, lockout):
     commands = ["set confirm off", "target sim --memory-size 16M", "load",
                 "tbreak *fixture_ready", "run"]
     commands.extend(writes.assignment(kind, hex(addr), value) for kind, addr, value in seed)
-    if lockout:
+    if lockout and not lockout_installed:
         commands.append(writes.assignment("unsigned int", hex(writes.SITE), writes.DISABLE_BRANCH))
     arguments = (writes.ADC0, 0, 0, 0, 0, 1)
     commands.extend(writes.assignment("unsigned int", f"((char*)&fixture_arguments+{4*i})", value)
@@ -165,15 +162,17 @@ def check_close(run, work, debugger, symbols, case, psw, lockout):
             "checksum_after_close": case.checksum, "adc_stop": hex(adc[0]), "bytes_written": wrote}
 
 
-def check(base,compiler,storage_report):
+def check(base,compiler,storage_report,placed_elf=None):
     identity=identify_h03(base)
     rom=base.read_bytes()
+    if sha256(rom).hexdigest() != identity['sha256']:
+        raise ValueError('H03 changed while preparing the service guard fixture')
     blocks=storage_blocks(storage_report.read_bytes(),identity)
     if set(blocks)!={'control','communication','workspace'}:
         raise ValueError('Expected the three measured storage groups')
-    for address,word,_,_ in PATCHES:
-        if int.from_bytes(rom[address:address+4],'big')!=word:
-            raise ValueError('H03 writer site changed')
+    service.verify_stock(rom, service.WRITER_SITES)
+    if placed_elf is not None:
+        candidate, placement = service.verify_and_overlay(rom, placed_elf, service.policy_ranges(blocks))
     # Existing monitor protection is also applied to PREPARED copies, which
     # originally bypass it. No production range is guessed in this fixture.
     ranges=sorted([*blocks.values(),(0x808578,0x808DB4)])
@@ -181,22 +180,22 @@ def check(base,compiler,storage_report):
         raise ValueError('The proposed RAM overlaps live service state')
     with TemporaryDirectory(prefix='rbm-h03-service-guard-') as folder:
         work=Path(folder)
+        for name in SOURCES:
+            (work / name).write_bytes((HERE / name).read_bytes())
         def run(*args):
             return subprocess.run([str(x) for x in args],cwd=work,check=True,
                                   capture_output=True,timeout=40).stdout
         if run(compiler,'-dumpmachine').strip()!=b'm32r-elf':
             raise ValueError('Use a bare-metal M32R compiler')
         flags=[*TARGET,'-Os','-std=c11','-Wall','-Wextra','-Werror','-ffreestanding',
-               '-fno-builtin','-ffunction-sections','-fdata-sections','-I',HERE]
+               '-fno-builtin','-ffunction-sections','-fdata-sections','-I.']
         crt=run(compiler,*TARGET,'-print-file-name=crt0.o').decode().strip()
-        run(compiler,*flags,'-nostartfiles',crt,HERE/SOURCES[0],HERE/SOURCES[3],
+        run(compiler,*flags,'-nostartfiles',crt,SOURCES[0],SOURCES[3],
             '-Wl,--start-group','-lc','-lgloss','-lgcc','-Wl,--end-group','-o','policy.elf')
         policy_test=run(compiler.with_name('m32r-elf-run'+compiler.suffix),'policy.elf').decode().strip()
         if not policy_test.endswith('assertions PASS'):
             raise ValueError('Policy edge-case tests did not finish')
-        policy='#include "lfj8_h03_service_guard.h"\nconst Lfj8H03ServicePolicy rbm_h03_service_policy = {'
-        policy+=f'.count={len(ranges)}, .ranges={{'+','.join(f'{{{start:#x},{end:#x}}}' for start,end in ranges)+'}};\n'
-        (work/'policy.c').write_text(policy,encoding='ascii')
+        (work/'policy.c').write_text(service.policy_source(ranges),encoding='ascii')
         fixture=writes.FIXTURE.replace('ld24 lr,#fixture_done','ld24 lr,#fixture_capture_return')
         fixture=fixture.replace('    jmp r3','    ld24 r4,#fixture_call_psw\n    ld r4,@r4\n    mvtc r4,psw\n    jmp r3',1)
         fixture=fixture.replace('fixture_done:\n',
@@ -283,20 +282,23 @@ fixture_run_adc:
     pop lr
     jmp lr
 '''
-        fixture=fixture.replace('.section .oem,"ax",@progbits\n    .incbin "h03.dat"',
-            '.section .oem_before,"ax",@progbits\n    .incbin "h03.dat",0,0x20000\n'
-            '    .section .oem_after,"ax",@progbits\n    .incbin "h03.dat",0x30000,0x50000')
-        (work/'fixture.S').write_text(fixture,encoding='ascii')
-        (work/'fixture.ld').write_text('''ENTRY(_start)
-SECTIONS {
- .oem_before 0 : { *(.oem_before) }
+        rom_sections = ' .oem 0 : { *(.oem) }'
+        if placed_elf is None:
+            fixture=fixture.replace('.section .oem,"ax",@progbits\n    .incbin "h03.dat"',
+                '.section .oem_before,"ax",@progbits\n    .incbin "h03.dat",0,0x20000\n'
+                '    .section .oem_after,"ax",@progbits\n    .incbin "h03.dat",0x30000,0x50000')
+            rom_sections = ''' .oem_before 0 : { *(.oem_before) }
  .guard 0x20000 : { *(.text*) *(.rodata*) }
- .oem_after 0x30000 : { *(.oem_after) }
+ .oem_after 0x30000 : { *(.oem_after) }'''
+        (work/'fixture.S').write_text(fixture,encoding='ascii')
+        linker_script = '''ENTRY(_start)
+SECTIONS {
+ ROM_SECTIONS
  .fixture 0x100000 : { *(.fixture) }
  .fixture_data : { *(.fixture_data) }
  /DISCARD/ : { *(.note*) *(.comment) }
 }
-ASSERT(SIZEOF(.guard) <= 0x10000, "Guard exceeds empty model window")
+GUARD_LIMIT
 stock_selector = 0x003550;
 stock_close = 0x002e80;
 stock_adc0 = 0x003608;
@@ -306,21 +308,47 @@ h03_service_copy_after_entry = 0x002d20;
 h03_service_close_after_store = 0x002eA0;
 h03_direct_after_store = 0x00297c;
 h03_copy_after_store = 0x002de4;
-''',encoding='ascii')
+'''
+        guard_limit = ('ASSERT(SIZEOF(.guard) <= 0x10000, "Guard exceeds empty model window")'
+                       if placed_elf is None else '')
+        (work/'fixture.ld').write_text(linker_script.replace('ROM_SECTIONS', rom_sections)
+                                     .replace('GUARD_LIMIT', guard_limit), encoding='ascii')
+        gdb=compiler.with_name('m32r-elf-gdb'+compiler.suffix)
+        if placed_elf is not None:
+            (work/'h03.dat').write_bytes(candidate)
+            run(compiler,*flags,'-nostdlib','-Wl,-T,fixture.ld','fixture.S','-o','fixture.elf')
+            symbols = read_elf(work/'fixture.elf',2)['symbols']
+            # Measure writers with the session open. The separate close cases
+            # exercise its cancellation of an otherwise unchanged pending copy.
+            stack_start, stack_end = service.CONDITIONAL_STACK_AND_PSW
+            placed_cases = [replace(case, close=False) for case in scenarios(blocks)]
+            placed_cases.extend((
+                writes.Case('conditional_stack_edge_direct', writes.DIRECT, stack_start, 1, (0,)),
+                writes.Case('conditional_stack_crossing_direct', writes.DIRECT, stack_start - 1, 2, (0,)),
+                writes.Case('conditional_psw_edge_deferred', writes.ADC0, stack_end - 1, 1, (0,)),
+            ))
+            rows = [writes.run_case(run,work,gdb,case,True,lockout_installed=True)
+                    for case in placed_cases]
+            close_rows = [check_close(run,work,gdb,symbols,case,psw,True,lockout_installed=True)
+                          for case in close_cases(blocks) for psw in (0,1,0x40,0x41)]
+            return {'status':'PASS_PLACED_SERVICE_GUARD_MODEL_ONLY','base':identity,
+                    'placement':placement,'guard_with_fixture_policy_bytes':placement['guard_bytes'],
+                    'new_mutable_state_bytes':0,'policy_test':policy_test,'native_cases':rows,
+                    'close_cases':close_rows,'hardware_tested':False,'flashable_image':None}
         (work/'h03.dat').write_bytes(rom)
         def link():
             run(compiler,*flags,'-nostdlib','-Wl,-T,fixture.ld','fixture.S',
-                HERE/'h03_service_guard_hooks.S',HERE/'lfj8_h03_service_guard.c','policy.c','-o','fixture.elf')
+                'h03_service_guard_hooks.S','lfj8_h03_service_guard.c','policy.c','-o','fixture.elf')
         link()
         elf=read_elf(work/'fixture.elf',2)
         patched=bytearray(rom)
         sites=[]
-        for address,original,symbol,opcode in PATCHES:
-            target=elf['symbols'][symbol]['address'];distance=(target-address)//4
-            if target%4 or not -(1<<23)<=distance<(1<<23): raise ValueError('Invalid native branch')
-            value=opcode<<24 | (distance&0xFFFFFF)
-            patched[address:address+4]=value.to_bytes(4,'big')
-            sites.append({'address':hex(address),'original':f'{original:08x}','model_patch':f'{value:08x}','target':hex(target)})
+        for site in service.WRITER_SITES:
+            target=elf['symbols'][site.target]['address']
+            branch=site.branch(target)
+            patched[site.address:site.address+4]=branch
+            sites.append({'address':hex(site.address),'original':f'{site.stock:08x}',
+                          'model_patch':branch.hex(),'target':hex(target)})
         writer_patched=bytearray(patched)
         writer_patched[CLOSE_STORE:CLOSE_STORE+4]=rom[CLOSE_STORE:CLOSE_STORE+4]
         instrumented=bytearray(writer_patched)
@@ -331,7 +359,6 @@ h03_copy_after_store = 0x002de4;
             if int.from_bytes(rom[address:address+4],'big')!=word: raise ValueError('Store bundle changed')
             target=elf['symbols'][symbol]['address']
             instrumented[address:address+4]=(0xFF000000 | ((target-address)//4 & 0xFFFFFF)).to_bytes(4,'big')
-        gdb=compiler.with_name('m32r-elf-gdb'+compiler.suffix)
         (work/'h03.dat').write_bytes(patched)
         link()
         cancel_rows = [check_close(run,work,gdb,elf['symbols'],case,psw,lockout)
@@ -397,15 +424,17 @@ h03_copy_after_store = 0x002de4;
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('base','gcc','storage-report','out'): parser.add_argument('--'+name,type=Path,required=True)
+    parser.add_argument('--placed-elf', type=Path, help='replay the exact linked service protection')
     args=parser.parse_args()
-    if args.out.suffix.lower()!='.json' or any(args.out.resolve()==p.resolve() for p in (args.base,args.gcc,args.storage_report)):
+    inputs = [p for p in (args.base,args.gcc,args.storage_report,args.placed_elf) if p is not None]
+    if args.out.suffix.lower()!='.json' or any(args.out.resolve()==p.resolve() for p in inputs):
         parser.error('Use a separate JSON report')
     if args.out.exists():
-        if any(args.out.samefile(p) for p in (args.base,args.gcc,args.storage_report)):
+        if any(args.out.samefile(p) for p in inputs):
             parser.error('The report must not alias an input')
         args.out.unlink()
     try:
-        report=check(args.base,args.gcc.resolve(),args.storage_report)
+        report=check(args.base,args.gcc.resolve(),args.storage_report,args.placed_elf)
         args.out.parent.mkdir(parents=True,exist_ok=True)
         args.out.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
         print(json.dumps({k:report[k] for k in ('status','guard_with_fixture_policy_bytes','new_mutable_state_bytes','policy_test','flashable_image')}))

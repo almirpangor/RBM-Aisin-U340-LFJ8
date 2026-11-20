@@ -13,15 +13,15 @@ from check_h03_flash_policy import (
 )
 from check_h03_link import identify_h03
 from check_h03_service_isolation import (
-    FIXTURE as UPDATE_FIXTURE,
-    INSTALL_ACCEPT, INSTALL_BEGIN, INSTALL_DENY, observe,
+    FIXTURE as UPDATE_FIXTURE, INSTALL_ACCEPT, INSTALL_BEGIN, INSTALL_DENY, observe, storage_blocks,
 )
+import lfj8_h03_service_placement as service
 
 
-SITE = 0x003568
-STOCK_WORD = 0xB810000B
-DISABLE = 0x003594
-DISABLE_BRANCH = 0xFF000000 | ((DISABLE - SITE) // 4)
+SITE = service.LOCKOUT.address
+STOCK_WORD = service.LOCKOUT.stock
+DISABLE = service.STOCK_TARGETS[service.LOCKOUT.target]
+DISABLE_BRANCH = int.from_bytes(service.LOCKOUT.branch(DISABLE), "big")
 SERVICE_ACTIVATE = 0x003364
 SERVICE_RETURN = 0x00336C
 SERVICE_STATE = 0x808578
@@ -29,13 +29,18 @@ VIRTUAL_RAM_BASE = 0x807000
 PAGE_SIZE = 0x1000
 
 
-def check(base, compiler):
+def check(base, compiler, placed_elf=None, storage_report=None):
     identity = identify_h03(base)
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
         raise ValueError("H03 changed while preparing the Virtual Flash fixture")
-    if int.from_bytes(rom[SITE:SITE + 4], "big") != STOCK_WORD:
-        raise ValueError("Unexpected activation branch at the H03 lockout site")
+    service.verify_stock(rom, (service.LOCKOUT,))
+    if (placed_elf is None) != (storage_report is None):
+        raise ValueError("Supply both placed ELF and its storage report")
+    placement = None
+    if placed_elf is not None:
+        ranges = service.policy_ranges(storage_blocks(storage_report.read_bytes(), identity))
+        candidate, placement = service.verify_and_overlay(rom, placed_elf, ranges)
 
     with TemporaryDirectory(prefix="rbm-h03-vflash-lockout-") as directory:
         work = Path(directory)
@@ -45,10 +50,15 @@ def check(base, compiler):
                 [str(arg) for arg in args], cwd=work, check=True, capture_output=True, timeout=15,
             ).stdout
 
-        (work / "stock.dat").write_bytes(rom)
         (work / "fixture.S").write_text(FIXTURE, encoding="ascii")
         (work / "fixture.ld").write_text(LAYOUT, encoding="ascii")
-        run(compiler, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,fixture.ld", "fixture.S", "-o", "fixture.elf")
+
+        def load_rom(contents):
+            (work / "stock.dat").write_bytes(contents)
+            run(compiler, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,fixture.ld", "fixture.S", "-o", "fixture.elf")
+
+        load_rom(rom)
+        patch = (("unsigned int", SITE, DISABLE_BRANCH),) if placement is None else ()
         debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
 
         def probe(path, bank, destination, enabled, patched):
@@ -66,7 +76,7 @@ def check(base, compiler):
                 ("unsigned short", FESBANK1, initial_bank),
             )
             if patched:
-                memory += (("unsigned int", SITE, DISABLE_BRANCH),)
+                memory += patch
             pc, *_, control, selection = replay(
                 run, work, debugger, hex(entry), (hex(stop),),
                 arguments=(0, 0, SERVICE_STATE), memory=memory, initial_r0=destination,
@@ -81,18 +91,22 @@ def check(base, compiler):
 
         paths = ("selector", "service")
         control_banks = (0x00, 0x20, 0x7C, 0x7F)
+        adjacent_destinations = (VIRTUAL_RAM_BASE - 1, VIRTUAL_RAM_BASE + 1)
         for path in paths:
             for bank in control_banks:
                 probe(path, bank, VIRTUAL_RAM_BASE, False, False)
+        for destination in adjacent_destinations:
+            probe("service", 0x20, destination, True, False)
+        if placement is not None:
+            load_rom(candidate)
+        for path in paths:
             for bank in range(len(rom) // PAGE_SIZE):
                 for enabled in (False, True):
                     probe(path, bank, VIRTUAL_RAM_BASE, enabled, True)
 
-        for destination in (VIRTUAL_RAM_BASE - 1, VIRTUAL_RAM_BASE + 1):
-            probe("service", 0x20, destination, True, False)
+        for destination in adjacent_destinations:
             probe("service", 0x20, destination, True, True)
 
-        patch = (("unsigned int", SITE, DISABLE_BRANCH),)
         boot_cases = (
             ("valid_markers", APPLICATION, ()),
             ("bad_start_marker", RECOVERY, (("unsigned short", 0x008000, 0),)),
@@ -107,7 +121,7 @@ def check(base, compiler):
                 raise ValueError(f"Unexpected reset dispatch with Virtual Flash lockout: {name}")
 
         # Run the existing native updater address probe on the exact new site.
-        (work / "h03.dat").write_bytes(rom)
+        (work / "h03.dat").write_bytes(rom if placement is None else candidate)
         (work / "fixture.S").write_text(UPDATE_FIXTURE, encoding="ascii")
         run(compiler, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,fixture.ld", "fixture.S", "-o", "fixture.elf")
         update_addresses = ((SITE, False), (0x007FFF, False), (0x008000, True))
@@ -120,7 +134,7 @@ def check(base, compiler):
                 raise ValueError(f"Unexpected native update decision for {address:#x}")
 
     pages = len(rom) // PAGE_SIZE
-    return {
+    report = {
         "base": identity,
         "simulation_patch": {
             "site": f"0x{SITE:06X}",
@@ -148,6 +162,9 @@ def check(base, compiler):
         "hardware_executed": False,
         "flashable_image": None,
     }
+    if placement is not None:
+        report["placed_service_protection"] = placement
+    return report
 
 
 def main():
@@ -155,11 +172,14 @@ def main():
     parser.add_argument("--base", type=Path, required=True)
     parser.add_argument("--gcc", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--placed-elf", type=Path, help="verify the exact linked branches")
+    parser.add_argument("--storage-report", type=Path, help="candidate RAM inventory for the placed ELF")
     args = parser.parse_args()
-    if args.out.suffix.lower() != ".json" or args.out.resolve() == args.base.resolve():
+    inputs = (p for p in (args.base, args.gcc, args.placed_elf, args.storage_report) if p is not None)
+    if args.out.suffix.lower() != ".json" or any(args.out.resolve() == p.resolve() for p in inputs):
         parser.error("--out must be a separate JSON report")
     try:
-        result = check(args.base, args.gcc.resolve())
+        result = check(args.base, args.gcc.resolve(), args.placed_elf, args.storage_report)
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     except subprocess.CalledProcessError as error:
