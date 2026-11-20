@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 351,
+  "sequence": 352,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -200,21 +200,21 @@
     },
     "DTC-03": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
-      "label": "Codex DTC-03 — монитор цепи ATF H03",
-      "branch": "codex/dtc03-atf-monitor-01a1f9c7",
+      "label": "Codex DTC-03 — квалификация P0710 TA2005",
+      "branch": "codex/dtc03-ta2005-p0710-01a1f9c7",
       "files": [
-        "targets/lfj8/build.py",
-        "targets/lfj8/check_h03_atf_fault.py",
-        "targets/lfj8/lfj8_h03_atf_fault.c",
-        "targets/lfj8/lfj8_h03_atf_fault.h",
-        "verification/project-audit/dtc03-h03-atf-monitor.md"
+        "diagnostics/chery_atf_circuit.c",
+        "diagnostics/chery_atf_circuit.h",
+        "diagnostics/test_chery_atf_circuit.c",
+        "diagnostics/verify_atf_circuit.py",
+        "verification/project-audit/dtc03-ta2005-p0710.md"
       ],
-      "stage": "done",
-      "claim_id": "d048f56f20764374915133ea2b7bbcde",
-      "claimed_at": "2026-11-20T16:39:32+00:00",
-      "updated_at": "2026-11-20T17:40:03+00:00",
-      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
-      "result": "d487840ba2505064c7f281305a10813cbdf3b695"
+      "stage": "in_progress",
+      "claim_id": "0c37e0c652cd4b8285cdd4458b796cef",
+      "claimed_at": "2026-11-20T18:18:10+00:00",
+      "updated_at": "2026-11-20T18:18:10+00:00",
+      "note": "Сверка штатной квалификации P0710 с закреплённым S03 и перенос на нормализованный вход. Подключение к H03 выполняется отдельно.",
+      "result": null
     },
     "TOY-02": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -3381,9 +3381,17 @@
       "action": "review",
       "claim_id": "fbadfbdf06d745cf885f45918e8b9a03",
       "at": "2026-11-20T18:16:32+00:00"
+    },
+    {
+      "operation_id": "4e123ee23dae46a5b5488065b8508b86",
+      "task": "DTC-03",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "0c37e0c652cd4b8285cdd4458b796cef",
+      "at": "2026-11-20T18:18:10+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:16:32+00:00",
+  "updated_at": "2026-11-20T18:18:10+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
