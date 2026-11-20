@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 516,
+  "sequence": 517,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -120,20 +120,23 @@
       "result": null
     },
     "H03-04": {
-      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
-      "label": "Codex H03-04 — отмена удержанного переноса",
-      "branch": "codex/h03-04-service-cancel-01a1f9c7",
+      "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "label": "Codex H03-04 — компоновка сервисной защиты",
+      "branch": "codex/h03-04-service-placement-01a1fa79",
       "files": [
+        "targets/lfj8/check_h03_link.py",
         "targets/lfj8/check_h03_service_guard.py",
-        "targets/lfj8/h03_service_guard_hooks.S",
-        "verification/project-audit/h03-04-service-cancel.md"
+        "targets/lfj8/check_h03_vflash_lockout.py",
+        "targets/lfj8/lfj8_h03_service_placement.py",
+        "tests/test_h03_service_placement.py",
+        "verification/project-audit/h03-04-service-placement.md"
       ],
-      "stage": "done",
-      "claim_id": "4f246c72de0f49dc90a87bed827a9df1",
-      "claimed_at": "2026-11-20T18:58:41+00:00",
-      "updated_at": "2026-11-20T19:23:47+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "8eaaa60efcfeb7f79056b36e44983bdac546494d"
+      "stage": "in_progress",
+      "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
+      "claimed_at": "2026-11-20T19:45:11+00:00",
+      "updated_at": "2026-11-20T19:45:11+00:00",
+      "note": "Подключаю четыре проверенные точки защиты записи и штатное выключение Virtual Flash к адресному составу H03; сверяю карту диапазонов, исходные слова и исполнение. Владение памятью и выпуск остаются предметом отдельной приёмки.",
+      "result": null
     },
     "DTC-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -4704,9 +4707,17 @@
       "action": "heartbeat",
       "claim_id": "6ce2dadd9393441586bcbbbeb50614e0",
       "at": "2026-11-20T19:44:39+00:00"
+    },
+    {
+      "operation_id": "be55cfbc3619464da94204a8512705e1",
+      "task": "H03-04",
+      "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "action": "claim",
+      "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
+      "at": "2026-11-20T19:45:11+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:44:39+00:00",
+  "updated_at": "2026-11-20T19:45:11+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
