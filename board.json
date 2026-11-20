@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 241,
+  "sequence": 242,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -128,12 +128,12 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "claimed_at": "2026-11-20T16:18:01+00:00",
-      "updated_at": "2026-11-20T16:51:21+00:00",
-      "note": "Встраиваю старт фаз после штатного 00814C, проверяю вход после сброса, ABI и штатный цикл при отказе.",
-      "result": "2352cf844277dcd88a335b56c8357ac3df602219"
+      "updated_at": "2026-11-20T16:56:43+00:00",
+      "note": "Подключён reset→00814C→008150 в ELF M32R, первая штатная публикация принята. 12 boot, 22 wait, Flash policy, отрицательные проверки, 65 Python и реестр PASS. Подставлены ранняя периферия и RAM-допуск; реальный inhibit и два BIN открыты.",
+      "result": "42a4ffecdb9f99004aa0c5b4d9e889fc90658738"
     },
     "H03-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -2504,9 +2504,17 @@
       "action": "review",
       "claim_id": "8ab2489d68c04ca68447e7036ec190df",
       "at": "2026-11-20T16:56:25+00:00"
+    },
+    {
+      "operation_id": "c38020052971417aab4a25e23545775f",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "at": "2026-11-20T16:56:43+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:56:25+00:00",
+  "updated_at": "2026-11-20T16:56:43+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
