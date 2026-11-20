@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 589,
+  "sequence": 590,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -223,12 +223,12 @@
         "targets/bosch/audit_toyota_load_producers.py",
         "verification/project-audit/toy02-bosch-load-mode-source.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "e313f0457b4d468897a8179d3615ce3e",
       "claimed_at": "2026-11-20T20:07:45+00:00",
-      "updated_at": "2026-11-20T20:08:53+00:00",
-      "note": "Локализованы штатные записи A88B.0: 832E.0 сбрасывает, 832C.0/.1 и 832A.0 определяют установку или удержание. Добавляю воспроизводимую проверку с чтением штатного потребителя.",
-      "result": null
+      "updated_at": "2026-11-20T20:14:56+00:00",
+      "note": "Прослежены штатный счётчик 9224 и обновление A88B.0 до ветвей F8D6. Совпали 10 окон S04/REV8, прошли 64 комбинации и две последовательности на исходных инструкциях. Повторены проверки CAN и отсутствие парных GP-снимков. Условия и ограничения описаны в verification/project-audit/toy02-bosch-load-mode-source.md.",
+      "result": "aee80b834830ebf84a5120862b9bd999864a616c"
     },
     "CAN-01": {
       "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
@@ -5299,9 +5299,17 @@
       "action": "release",
       "claim_id": "905e8720217a4978bc115ceef39b1035",
       "at": "2026-11-20T20:13:26+00:00"
+    },
+    {
+      "operation_id": "21f1ccf458ce4b9f92d6ba91c5d4c1b0",
+      "task": "TOY-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "review",
+      "claim_id": "e313f0457b4d468897a8179d3615ce3e",
+      "at": "2026-11-20T20:14:56+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:13:26+00:00",
+  "updated_at": "2026-11-20T20:14:56+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
