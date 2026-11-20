@@ -31,14 +31,27 @@
     pop lr
     .endm
 
+/* The wrapper must already be visible in Flash. Keep OEM RX running when
+ * its programming flag is set or FCNT1 is outside normal read mode. */
+    .macro bypass_rx_callback resume
+    ld24 r0,#0x80801c
+    ldub r0,@r0
+    bnez r0,\resume
+    ld24 r0,#0x8007e2
+    ldub r0,@r0
+    bnez r0,\resume
+    .endm
+
     .section .text.rbm_h03_dtc_rx_hook,"ax",@progbits
     .p2align 2
     .global rbm_h03_dtc_rx_hook
     .type rbm_h03_dtc_rx_hook,@function
 rbm_h03_dtc_rx_hook:
     save_rx_context
+    bypass_rx_callback .Lrestore_observe
     and3 r0,r8,#0xff
     bl rbm_h03_dtc_rx_observe
+.Lrestore_observe:
     restore_rx_context rbm_h03_dtc_rx_restore_high
     and3 r0,r8,#0xff
     bra h03_dtc_rx_resume
@@ -53,8 +66,10 @@ rbm_h03_dtc_rx_hook:
 rbm_h03_dtc_rx_dispatch_hook:
     save_rx_context
     clrpsw #0x40
+    bypass_rx_callback .Lrestore_dispatch
     ld r0,@(rx_saved_r0,sp)
     bl rbm_h03_dtc_rx_begin
+.Lrestore_dispatch:
     restore_rx_context rbm_h03_dtc_rx_dispatch_restore_high
     bra h03_dtc_rx_entry
     .size rbm_h03_dtc_rx_dispatch_hook,.-rbm_h03_dtc_rx_dispatch_hook

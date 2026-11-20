@@ -9,8 +9,13 @@ import subprocess
 from tempfile import TemporaryDirectory
 from typing import NamedTuple
 
-from check_h03_flash_policy import LAYOUT
+from check_h03_flash_policy import (
+    ERASE_CALL, ERASE_DENIED, ERASE_POLICY, FCNT1, FESBANK1, LAYOUT,
+    VIRTUAL_CONFIG, VIRTUAL_CONFIG_DONE, VIRTUAL_SELECT,
+)
+from check_h03_flash_residency import PROGRAMMING_MODE
 from check_h03_link import HERE, ROOT, TARGET, identify_h03
+from check_h03_service_isolation import INSTALL_ACCEPT, INSTALL_BEGIN, INSTALL_DENY
 
 
 SLIST = 0x80100C
@@ -18,11 +23,15 @@ EXTID = 0x801004
 MSC = 0x801050
 SLOT_DATA = 0x801100
 COPY = 0x808526
+CAN0_IRQ_ENTRY = 0x004724
+CAN0_IRQ_TABLE_WORD = 0x0009D8
 HOOK_SITE = 0x001534
 HOOK_RESUME = HOOK_SITE + 4
 HOOK_STOCK = bytes.fromhex("80c800ff")
 DISPATCH_SITE = 0x004738
 DISPATCH_STOCK = bytes.fromhex("fefff32e")
+RESIDENT_START, APP_START, FLASH_LIMIT = 0x006000, 0x008000, 0x080000
+RESIDENT_GEOMETRY = 0x000940
 MVTACHI_R0 = 0x5070
 STACK_PROBE_BYTES = 512
 STACK_PATTERN = 0xA55AA55A
@@ -37,6 +46,28 @@ SECTIONS {
   .data : { *(.data*) }
   .bss : { *(.bss*) *(COMMON) }
   /DISCARD/ : { *(.note*) *(.comment) }
+  h03_dtc_rx_resume = 0x001538;
+  h03_dtc_rx_entry = 0x0013F0;
+}
+"""
+RESIDENT_LAYOUT = """
+ENTRY(_start)
+SECTIONS {
+  .oem_low 0x000000 : { KEEP(*(.oem_low)) }
+  .resident_rx 0x006000 : {
+    FILL(0xffffffff)
+    KEEP(*(.text.rbm_h03_dtc_rx_hook))
+    *(.text*)
+    *(.rodata*)
+    rx_resident_end = .;
+    . = 0x2000;
+  }
+  .oem_app 0x008000 : { KEEP(*(.oem_app)) }
+  .fixture 0x100000 : { KEEP(*(.fixture)) }
+  .data 0x101000 : { *(.data*) }
+  .bss : { *(.bss*) *(COMMON) }
+  /DISCARD/ : { *(.note*) *(.comment) }
+  ASSERT(SIZEOF(.data) == 0, "Resident RX fixture must not load writable data")
   h03_dtc_rx_resume = 0x001538;
   h03_dtc_rx_entry = 0x0013F0;
 }
@@ -56,6 +87,19 @@ _start:
     ldi r10,#10
     .p2align 2
 fixture_ready:
+#ifdef RBM_DTC_RX_RESIDENT_FIXTURE
+    ld24 r0,#fixture_update_arguments
+    ld r4,@r0
+    beqz r4,.Lrx_fixture_probe
+    ld r1,@(8,r0)
+    ld r5,@(12,r0)
+    ld r8,@(16,r0)
+    ld r9,@(20,r0)
+    ld r0,@(4,r0)
+    jmp r4
+    .p2align 2
+.Lrx_fixture_probe:
+#endif
 #ifdef RBM_DTC_RX_HOOK_FIXTURE
     ld24 r0,#fixture_rx_high_probe
     ld r0,@r0
@@ -76,8 +120,20 @@ fixture_ready:
 #endif
 fixture_done:
     bra fixture_done
+#ifdef RBM_DTC_RX_RESIDENT_FIXTURE
+    .section .bss.fixture_update,"aw",@nobits
+    .p2align 2
+    .global fixture_update_arguments
+fixture_update_arguments:
+    .space 24
+    .section .oem_low,"ax",@progbits
+    .incbin "h03.dat",0,0x6000
+    .section .oem_app,"ax",@progbits
+    .incbin "h03.dat",0x8000
+#else
     .section .oem,"ax",@progbits
     .incbin "h03.dat"
+#endif
 """
 
 
@@ -131,8 +187,13 @@ def bytes_at(address, count):
     return [f"*(unsigned char*){address + offset:#x}" for offset in range(count)]
 
 
+def run_probe(run, work, debugger, commands):
+    (work / "probe.gdb").write_text("\n".join(commands) + "\n", encoding="ascii")
+    return run(debugger, "--batch", "-nx", "-x", "probe.gdb", "fixture.elf").decode(errors="replace")
+
+
 def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
-             compare_dispatch=False, high_probe=False):
+             compare_dispatch=False, high_probe=False, setup=()):
     pending = sum(slot_mask(slot) for slot in case.slots)
     commands = [
         "set confirm off", "target sim --memory-size 16M", "load",
@@ -141,6 +202,7 @@ def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
         f"set {{unsigned short}}{EXTID:#x} = {case.extended:#x}",
         f"set {{unsigned int}}0x80851c = {MSC:#x}",
         f"set {{unsigned int}}0x808518 = {SLOT_DATA:#x}",
+        *setup,
     ]
     for slot, (raw, control) in case.slots.items():
         commands.extend(write_slot(slot, raw, control))
@@ -239,10 +301,8 @@ def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
             "set $entry = $entry + 1",
             "end",
         ]
-    (work / "probe.gdb").write_text("\n".join(commands) + "\n", encoding="ascii")
-    output = run(debugger, "--batch", "-nx", "-x", "probe.gdb", "fixture.elf")
     events = []
-    for line in output.decode(errors="replace").splitlines():
+    for line in run_probe(run, work, debugger, commands).splitlines():
         if line.startswith("RX "):
             _, name, *fields = line.split()
             events.append((name, *(int(field, 16) for field in fields)))
@@ -322,7 +382,7 @@ def cases(with_dispatch=False):
         ], paired_slots=1, paired_deliveries=(flow,))
 
 
-def build_hook_fixture(run, work, gcc, rom, with_dispatch=False):
+def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False):
     sites = [(HOOK_SITE, HOOK_STOCK, "rbm_h03_dtc_rx_hook", 0xFF000000)]
     if with_dispatch:
         sites.append((DISPATCH_SITE, DISPATCH_STOCK, "rbm_h03_dtc_rx_dispatch_hook", 0xFE000000))
@@ -336,12 +396,22 @@ def build_hook_fixture(run, work, gcc, rom, with_dispatch=False):
     for directory in (HERE, ROOT / "diagnostics"):
         for path in directory.glob("*.h"):
             shutil.copyfile(path, work / path.name)
-    (work / "fixture.ld").write_text(HOOK_LAYOUT, encoding="ascii")
+    (work / "fixture.ld").write_text(RESIDENT_LAYOUT if resident else HOOK_LAYOUT, encoding="ascii")
     defines = ["-DRBM_DTC_RX_HOOK_FIXTURE"]
     roots = []
     if with_dispatch:
         defines.append("-DRBM_DTC_RX_DISPATCH_FIXTURE")
         roots.append("-Wl,--undefined=rbm_h03_dtc_rx_dispatch_hook")
+    if resident:
+        if int.from_bytes(rom[CAN0_IRQ_TABLE_WORD:CAN0_IRQ_TABLE_WORD + 4], "big") != CAN0_IRQ_ENTRY:
+            raise ValueError("Unexpected H03 CAN0 IRQ table entry")
+        geometry = (RESIDENT_START.to_bytes(4, "big") + (APP_START - 2).to_bytes(4, "big")
+                    + APP_START.to_bytes(4, "big"))
+        if rom[RESIDENT_GEOMETRY:RESIDENT_GEOMETRY + len(geometry)] != geometry:
+            raise ValueError("Unexpected H03 geometry for the resident RX sector")
+        if rom[RESIDENT_START:APP_START] != b"\xff" * (APP_START - RESIDENT_START):
+            raise ValueError("The H03 resident RX sector is not empty")
+        defines.append("-DRBM_DTC_RX_RESIDENT_FIXTURE")
     run(gcc, *TARGET, "-Os", "-g", "-std=c11", "-ffunction-sections", "-fdata-sections",
         *defines, *roots, "-nostdlib", "-I.", "-Wl,--gc-sections,-T,fixture.ld",
         "fixture.S", *sources, "-Wl,--start-group", "-lc", "-lgcc", "-Wl,--end-group", "-o", "fixture.elf")
@@ -349,14 +419,18 @@ def build_hook_fixture(run, work, gcc, rom, with_dispatch=False):
     symbols = {word[2]: int(word[0], 16) for word in
                (line.split() for line in run(nm, "--defined-only", "fixture.elf").decode().splitlines())
                if len(word) == 3}
+    minimum = RESIDENT_START if resident else 0x101000
+    limit = symbols["rx_resident_end"] if resident else 0x1000000
+    if resident and not RESIDENT_START < limit <= APP_START:
+        raise ValueError("Resident RX code and constants exceed the lower Flash sector")
     patches = {}
     for site, _, symbol, opcode in sites:
         target = symbols.get(symbol, 0)
         displacement = target - site
-        if target < 0x101000 or displacement % 4 or not 0 <= displacement < (1 << 25):
+        if not minimum <= target < limit or displacement % 4 or not 0 <= displacement < (1 << 25):
             raise ValueError(f"The branch to {symbol} does not target the simulator fixture area")
         patches[site] = opcode | (displacement // 4)
-    return patches
+    return patches, limit
 
 
 def expected_observation(case, with_dispatch=False):
@@ -406,7 +480,96 @@ def compare_high_word(run, work, debugger, case, patches, with_dispatch=False):
             "returned": f"0x{returned:08X}"}
 
 
-def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False):
+def compare_resident_bypass(run, work, debugger, patches):
+    case = next(case for case in cases(True) if case.name == "paired_retry_new_frame")
+    (work / "erased-app.dat").write_bytes(b"\xff" * (FLASH_LIMIT - APP_START))
+    programming = f"set {{unsigned char}}{PROGRAMMING_MODE:#x} = 1"
+    contexts = {
+        "programming": (programming,),
+        "virtual_flash_register_shadow": (
+            f"set {{unsigned char}}{FCNT1:#x} = 1",
+            f"set {{unsigned short}}{FESBANK1:#x} = 0x8020",
+        ),
+        "programming_with_erased_application": (
+            programming, f"restore erased-app.dat binary {APP_START:#x}",
+        ),
+    }
+    checks = {}
+    for name, setup in contexts.items():
+        stock = simulate(run, work, debugger, case, compare_hook=True, compare_dispatch=True,
+                         setup=setup)
+        wrapped = simulate(run, work, debugger, case, compare_hook=True, compare_dispatch=True,
+                           patches=patches, setup=setup)
+        stock, stock_depth = split_stack_observation(stock)
+        wrapped, wrapped_depth = split_stack_observation(wrapped)
+        empty = [("observer", 0, 0, 0, 0), ("dispatch", 0, 0, 0)]
+        attempts = sum(event[0] == "pre_clear" for event in stock)
+        if stock[-len(empty):] != empty or attempts != 3 or wrapped != stock:
+            raise ValueError(f"Resident RX bypass changed the original path in {name}")
+        checks[name] = {"stock_attempts": attempts, "observer_calls": 0, "dispatch_calls": 0,
+                        "stock_stack_bytes_written": stock_depth,
+                        "hook_stack_bytes_written": wrapped_depth}
+    return checks
+
+
+def probe_native_policy(run, work, debugger, entry, registers, stops, *, setup=(), fields=()):
+    commands = ["set confirm off", "target sim --memory-size 16M", "load",
+                "tbreak *fixture_ready", "run", *setup]
+    arguments = (entry, *(registers.get(reg, 0) for reg in (0, 1, 5, 8, 9)))
+    commands += [f"set {{unsigned int}}((char*)&fixture_update_arguments+{index * 4}) = {value:#x}"
+                 for index, value in enumerate(arguments)]
+    commands += [f"tbreak *{stop:#x}" for stop in stops]
+    commands += ["continue", trace("policy", "$pc", *fields)]
+    results = [tuple(int(value, 16) for value in line.split()[2:])
+               for line in run_probe(run, work, debugger, commands).splitlines()
+               if line.startswith("RX policy ")]
+    if len(results) != 1 or results[0][0] not in stops:
+        raise ValueError(f"Unexpected H03 policy stop at {entry:#x}: {results}")
+    return results[0]
+
+
+def compare_update_boundary(run, work, debugger):
+    def admitted(entry, accept, deny, registers):
+        (stop,) = probe_native_policy(run, work, debugger, entry, registers, (accept, deny))
+        return stop == accept
+
+    writes = {}
+    for start in (HOOK_SITE, DISPATCH_SITE, RESIDENT_START, APP_START - 1, APP_START):
+        accepted = admitted(INSTALL_BEGIN, INSTALL_ACCEPT, INSTALL_DENY, {0: 4, 1: 0, 5: start})
+        if accepted != (start == APP_START):
+            raise ValueError(f"Unexpected H03 write boundary decision for {start:#x}")
+        writes[f"0x{start:06X}"] = accepted
+
+    erases = {}
+    for start, end in ((0, 0x002000), (0x004000, RESIDENT_START), (RESIDENT_START, APP_START),
+                       (APP_START, FLASH_LIMIT)):
+        accepted = admitted(ERASE_POLICY, ERASE_CALL, ERASE_DENIED, {8: start, 9: end})
+        if accepted != (start == APP_START):
+            raise ValueError(f"Unexpected H03 erase boundary decision for {start:#x}..{end:#x}")
+        erases[f"0x{start:06X}..0x{end:06X}"] = accepted
+    return {"write_start_4_bytes": writes, "erase_range_end_exclusive": erases,
+            "drivers_executed": False}
+
+
+def probe_lower_page_selections(run, work, debugger):
+    selections = {}
+    for address in (CAN0_IRQ_TABLE_WORD, HOOK_SITE, DISPATCH_SITE, RESIDENT_START):
+        page = address & ~0xFFF
+        bank = page >> 12
+        setup = (f"set {{unsigned short}}{VIRTUAL_SELECT:#x} = {bank:#x}",
+                 "set {unsigned int}0x809f9c = 0x809f9c")
+        _, control, selection = probe_native_policy(
+            run, work, debugger, VIRTUAL_CONFIG, {0: 0x807000}, (VIRTUAL_CONFIG_DONE,),
+            setup=setup, fields=(f"*(unsigned char*){FCNT1:#x}", f"*(unsigned short*){FESBANK1:#x}"),
+        )
+        if (control, selection) != (1, 0x8000 | bank):
+            raise ValueError(f"Unexpected Virtual Flash register shadow for RX page {page:#x}")
+        selections[f"0x{page:06X}"] = f"0x{selection:04X}"
+    return selections
+
+
+def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=False):
+    with_rx_dispatch = with_rx_dispatch or resident
     with_rx_hook = with_rx_hook or with_rx_dispatch
     identity = identify_h03(base)
     rom = base.read_bytes()
@@ -427,7 +590,7 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False):
         (work / "fixture.S").write_text(FIXTURE, encoding="ascii")
         patches = {}
         if with_rx_hook:
-            patches = build_hook_fixture(run, work, gcc, rom, with_rx_dispatch)
+            patches, code_end = build_hook_fixture(run, work, gcc, rom, with_rx_dispatch, resident)
         else:
             (work / "fixture.ld").write_text(LAYOUT, encoding="ascii")
             run(gcc, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,fixture.ld", "fixture.S", "-o", "fixture.elf")
@@ -466,6 +629,10 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False):
         if with_rx_hook:
             single_rx = next(case for case in cases() if case.name == "rx14_session")
             high_word = compare_high_word(run, work, debugger, single_rx, patches, with_rx_dispatch)
+        if resident:
+            bypass = compare_resident_bypass(run, work, debugger, patches)
+            update = compare_update_boundary(run, work, debugger)
+            lower_pages = probe_lower_page_selections(run, work, debugger)
     result = {
         "base": identity,
         "compiler": version,
@@ -488,6 +655,28 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False):
     if with_rx_dispatch:
         result["simulator_hook"]["dispatch_site"] = f"0x{DISPATCH_SITE:06X}"
         result["simulator_hook"]["dispatch_entry"] = "0x0013F0"
+    if resident:
+        result["resident_layout"] = {
+            "start": f"0x{RESIDENT_START:06X}",
+            "code_and_constants_end_exclusive": f"0x{code_end:06X}",
+            "application_start": f"0x{APP_START:06X}",
+            "code_and_constants_bytes": code_end - RESIDENT_START,
+            "oem_can0_irq_table": f"0x{CAN0_IRQ_TABLE_WORD:06X}",
+            "oem_can0_irq_entry": f"0x{CAN0_IRQ_ENTRY:06X}",
+            "patched_words": {
+                f"0x{site:06X}": {
+                    "stock": rom[site:site + 4].hex(),
+                    "branch": f"{word:08x}",
+                    "target": f"0x{site + 4 * (word & 0xFFFFFF):06X}",
+                }
+                for site, word in patches.items()
+            },
+            "bypass_cases": bypass,
+            "native_update_admission": update,
+            "native_virtual_flash_selection_shadows": lower_pages,
+            "actual_virtual_flash_mapping_modelled": False,
+            "target_ram_ownership_verified": False,
+        }
     return result
 
 
@@ -501,19 +690,25 @@ def main():
                        help="Also compare the isolated RX hook against the original instructions")
     modes.add_argument("--with-rx-dispatch", action="store_true",
                        help="Compare the ordered pair and per-attempt hooks together")
+    modes.add_argument("--with-resident-rx", action="store_true",
+                       help="Verify both hooks with code and constants below H03 application Flash")
     args = parser.parse_args()
     if args.out and (args.out.suffix.lower() != ".json" or args.out.resolve() == args.base.resolve()):
         parser.error("--out must be a separate JSON report")
     try:
         result = check(args.base, args.gcc.resolve(), args.with_rx_hook,
-                       with_rx_dispatch=args.with_rx_dispatch)
+                       with_rx_dispatch=args.with_rx_dispatch, resident=args.with_resident_rx)
         if args.out:
             args.out.parent.mkdir(parents=True, exist_ok=True)
             args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
         print(f"PASS: {result['executed_cases']} H03 BasicCAN RX cases (M32R CPU simulator)")
-        if args.with_rx_hook or args.with_rx_dispatch:
+        if "simulator_hook" in result:
             print(f"PASS: {result['simulator_hook']['paired_cases']} stock/hook comparisons")
             print("PASS: high accumulator operand, instruction and return probe")
+        if args.with_resident_rx:
+            print(f"PASS: {len(result['resident_layout']['bypass_cases'])} resident RX bypass comparisons")
+            print("PASS: H03 write and erase admission at the resident RX boundary")
+            print("PASS: H03 Virtual Flash register probes for the lower RX pages")
     except subprocess.CalledProcessError as error:
         detail = b"\n".join(filter(None, (error.stdout, error.stderr))) or str(error).encode()
         parser.exit(1, detail.decode(errors="replace") + "\n")
