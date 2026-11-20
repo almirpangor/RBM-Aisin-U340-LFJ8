@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 762,
+  "sequence": 763,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -312,8 +312,8 @@
       "stage": "in_progress",
       "claim_id": "d86e0ce440d6458dbdcec18da3c3671b",
       "claimed_at": "2026-11-20T23:08:30+00:00",
-      "updated_at": "2026-11-20T23:08:30+00:00",
-      "note": "Подключаю сданный start_from_seed к штатному H03 после инициализации платформы и до допуска фаз. Профиль явно передаёт PREPARED/S01_COLD. Проверяю порядок cold до NVM, отзыв разрешения и совместимость с CAN startup/stop.",
+      "updated_at": "2026-11-20T23:11:12+00:00",
+      "note": "Штатная привязка H03 передаёт подтверждённый вид запуска в start_from_seed; отдельные M32R проверки платформы и binding прошли. Запущены сценарии чтения NVM до допуска, общий ПК и CAN lifecycle.",
       "result": null,
       "based_on_reviews": [
         "2101184d356545bfa9a1e0bd6716a9ee",
@@ -10306,9 +10306,47 @@
           "da533c7a58aa441b9ba639bc0ad0992e"
         ]
       }
+    },
+    {
+      "operation_id": "c658efc1b941494bb4fb8328fc462494",
+      "task": "TOY-05",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "d86e0ce440d6458dbdcec18da3c3671b",
+      "at": "2026-11-20T23:11:12+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex TOY-05 — квалифицированный холодный старт в H03",
+        "branch": "codex/toy05-seed-native-1121-c7e4",
+        "files": [
+          "targets/lfj8/check_h03_phase_boot.py",
+          "targets/lfj8/h03_phase_boot_fixture.c",
+          "targets/lfj8/lfj8_h03_application.c",
+          "targets/lfj8/lfj8_h03_application.h",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_target_platform.c",
+          "targets/lfj8/lfj8_h03_target_platform.h",
+          "targets/lfj8/test_lfj8_h03_target_platform.c",
+          "verification/project-audit/toy05-h03-native-startup-seed.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "d86e0ce440d6458dbdcec18da3c3671b",
+        "claimed_at": "2026-11-20T23:08:30+00:00",
+        "updated_at": "2026-11-20T23:11:12+00:00",
+        "note": "Штатная привязка H03 передаёт подтверждённый вид запуска в start_from_seed; отдельные M32R проверки платформы и binding прошли. Запущены сценарии чтения NVM до допуска, общий ПК и CAN lifecycle.",
+        "result": null,
+        "based_on_reviews": [
+          "2101184d356545bfa9a1e0bd6716a9ee",
+          "43d58327bd434219b328d74d652d3be9",
+          "6ce7588d41534bb3aae313663fe29f1a",
+          "77033e38e60445f2addf6c2c8e536996",
+          "9436326dc3784bbe994f50e6dce8e9c0",
+          "ddeb80aa0d00427f9cdc2ac2b6ee7241"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T23:10:58+00:00",
+  "updated_at": "2026-11-20T23:11:12+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
