@@ -1,6 +1,7 @@
 """Check selected Bosch S04 load producers on original C167 instructions."""
 
 import argparse
+from itertools import product
 import json
 from pathlib import Path
 
@@ -17,6 +18,7 @@ WINDOWS = (
     (0x048878, 0x04888A),  # Mode source.
     (0x04889E, 0x04894E),  # Selection and F8D6/F8CF publication.
     (0x0496DE, 0x0496FA),  # 9156 reset.
+    (0x04A3B0, 0x04A450),  # Counter, reset latch and A88B.0 update.
     (0x059D6A, 0x059DBE),  # 967C and 9680 calculation.
     (0x0C1E80, 0x0C1E98),  # Constant-load publication.
 )
@@ -24,6 +26,11 @@ WINDOWS = (
 
 def rom_window(image, start, end):
     return image[start - 0x10000:end - 0x10000]
+
+
+def mode_psw_bit(native):
+    native.run(0x048878, stop=0x048886)
+    return (native.read(0xFF10) >> 6) & 1
 
 
 def check_mode_source(native, image):
@@ -35,13 +42,100 @@ def check_mode_source(native, image):
             native.reset()
             native.write(0xFF10, prior)
             native.write(0xA88B, source, 1)
-            native.run(0x048878, stop=0x048886)
-            assert (native.read(0xFF10) & 0x40) == (source & 1) << 6
+            assert mode_psw_bit(native) == (source & 1)
     return {"prelude_cases": 8, "bit_copy_instruction": "0x048886 BMOVN T2.5,PSW.6"}
 
 
-def load_case(native, selector, regular, alternate, contribution):
+def update_load_mode(native, input_832a, input_832c, input_832e):
+    for address, value in ((0x832A, input_832a), (0x832C, input_832c), (0x832E, input_832e)):
+        native.write(address, value, 1)
+    native.run(0x04A412, stop=0x04A450)
+    return native.read(0xA88B, 1)
+
+
+def check_mode_transitions(native):
+    cases = 0
+    for input_a, input_c, input_e, prior in product(range(2), range(4), range(2), range(0xA4, 0xA8)):
+        native.reset()
+        native.write(0xA88B, prior, 1)
+        after = update_load_mode(native, 0xF0 | input_a, 0x80 | input_c, 0x42 | input_e)
+        assert (native.r[9] & 1) == bool(input_c)
+        assert (after & 0xFE) == (prior & 0xFE)
+        if input_e:
+            expected = 0
+        elif input_c or not input_a:
+            expected = 1
+        else:
+            expected = prior & 1
+        assert (after & 1) == expected, (input_a, input_c, input_e, prior, after)
+        cases += 1
+
     native.reset()
+    native.write(0xA88B, 0xA6, 1)
+    transitions = []
+    for input_a, input_c, input_e, expected in (
+        (0, 0, 0, 1),  # Set from 832A.
+        (1, 0, 0, 1),  # Retain the set bit.
+        (0, 3, 1, 0),  # Clear even with both set conditions.
+        (1, 0, 0, 0),  # Retain the clear bit.
+        (1, 2, 0, 1),  # Restore through 832C.1.
+    ):
+        flags = update_load_mode(native, input_a, input_c, input_e)
+        assert flags == (0xA6 | expected)
+        psw = mode_psw_bit(native)
+        assert psw == expected
+        # Apply the verified BMOVN inversion at the unsupported instruction.
+        load = run_load(native, 1 - psw, 1000, 2000, 500)
+        assert native.read(0xA88B, 1) == flags
+        transitions.append({"input_832a": input_a, "input_832c": input_c, "input_832e": input_e,
+                            "a88b": flags, "t2_bit5": load["t2_bit5"], "load_f8d6": load["load_f8d6"]})
+    return {"writer_entry": "0x04A412", "writer_end_exclusive": "0x04A450",
+            "matrix_cases": cases, "sequence": transitions}
+
+
+def check_mode_counter(native):
+    native.reset()
+    limit = 2  # Exercise the threshold with a short synthetic sequence.
+    native.write(0x9222, limit)
+    native.write(0x9224, 0)
+    native.write(0x832E, 0xA0, 1)
+    native.write(0xA88B, 0xA7, 1)
+
+    events = (
+        (1, 1, 0, 0, 0),
+        (1, 1, 0, 0, 0),
+        (1, 1, 0, 0, 0),  # Threshold reached, T2.10 clear.
+        (1, 1, 0, 0, 1),  # T2.10 overrides the threshold reset.
+        (1, 1, 1, 0, 1),  # The producer can set A88B.0 again.
+        (1, 1, 1, 1, 1),  # 832F.1 overrides T2.10.
+        (0, 1, 0, 0, 0),  # Dropping 832A.0 clears the count.
+        (1, 1, 0, 0, 0),
+        (1, 0, 0, 0, 0),  # Dropping 832B.0 also clears the count.
+    )
+    expected_states = (
+        (1, 0, 1), (2, 0, 1), (2, 1, 0), (2, 0, 0), (2, 0, 1),
+        (2, 1, 0), (0, 0, 1), (1, 0, 1), (0, 0, 1),
+    )
+    observations = []
+    for (input_a, input_b, input_c, input_f, t2), expected in zip(events, expected_states, strict=True):
+        for address, value in (
+            (0x832A, input_a), (0x832B, input_b), (0x832C, input_c), (0x832F, input_f << 1),
+        ):
+            native.write(address, value, 1)
+        native.write(0xFD40, t2 << 10)
+        native.run(0x04A3B0, stop=0x04A450)
+        count = native.read(0x9224)
+        reset = native.read(0x832E, 1)
+        flags = native.read(0xA88B, 1)
+        assert (count, reset & 1, flags & 1) == expected
+        assert (reset & 0xFE) == 0xA0 and (flags & 0xFE) == 0xA6
+        observations.append({"input_832a_bit0": input_a, "input_832b_bit0": input_b,
+                             "input_832c_bit0": input_c, "input_832f_bit1": input_f, "t2_bit10": t2,
+                             "count_9224": count, "reset_832e_bit0": reset & 1, "a88b_bit0": flags & 1})
+    return {"model_limit_9222": limit, "sequence": observations}
+
+
+def run_load(native, selector, regular, alternate, contribution):
     for address, value in (
         (0x90E6, regular), (0x924E, alternate), (0x9156, contribution),
         (0x90E2, 320), (0x924C, 450), (0x9246, 500), (0x924A, 600),
@@ -49,7 +143,6 @@ def load_case(native, selector, regular, alternate, contribution):
         (0x907E, 100), (0xF8D6, 1777), (0xFD40, selector << 5),
     ):
         native.write(address, value)
-    native.write(0xA88B, 1 - selector, 1)
     native.run(0x04889E, stop=0x04894E)
     selected = alternate if selector else regular
     load = min(0xFFFF, selected + contribution)
@@ -60,6 +153,12 @@ def load_case(native, selector, regular, alternate, contribution):
     return {"t2_bit5": selector, "load_regular_90e6": regular, "load_alternate_924e": alternate,
             "contribution_9156": contribution, "selected_90f6": selected,
             "load_f8d6": load, "compressed_f8cf": native.read(0xF8CF, 1)}
+
+
+def load_case(native, selector, regular, alternate, contribution):
+    native.reset()
+    native.write(0xA88B, 1 - selector, 1)
+    return run_load(native, selector, regular, alternate, contribution)
 
 
 def check_separate_paths(native):
@@ -124,7 +223,9 @@ def audit(rev8, s04, model):
     )]
     assert bases[0]["published_9680"] != bases[1]["published_9680"]
     return {"status": "SOURCE_AUDIT_OFFLINE_ONLY", "s04_sha256": S04_SHA, "rev8_sha256": REV8_SHA,
-            "matching_windows": windows, "mode_source": source, "load_cases": loads,
+            "matching_windows": windows, "mode_source": source,
+            "mode_transitions": check_mode_transitions(native), "mode_counter": check_mode_counter(native),
+            "load_cases": loads,
             "separate_paths": check_separate_paths(native), "model_base_cases": bases,
             "toyota_load_mapping_verified": False}
 
