@@ -86,11 +86,47 @@ bool lfj8_h03_dtc_rx_queue_reset(Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo 
     if (changed) {
         queue->head = 0;
         queue->count = 0;
+        queue->session_boundary_active = false;
         queue->generation = generation;
         /* Keep next_ticket and lifetime counters across reset. */
     }
     io->leave(io->context, saved);
     return changed;
+}
+
+void lfj8_h03_dtc_rx_queue_end_session(Lfj8H03DtcRxQueue *queue, const Lfj8RegisterIo *io,
+                                      uint32_t now_us, const uint16_t *can_now)
+{
+    if (!ready(queue, io)) {
+        return;
+    }
+    const uint32_t saved = io->enter(io->context);
+    queue->head = 0;
+    queue->count = 0;
+    queue->session_boundary_active = can_now != NULL;
+    if (can_now) {
+        queue->session_boundary_us = now_us;
+        queue->session_boundary_can = *can_now;
+    }
+    io->leave(io->context, saved);
+}
+
+static bool before_session_boundary(Lfj8H03DtcRxQueue *queue, uint32_t now_us,
+                                    uint16_t can_now, uint16_t frame_tick)
+{
+    if (!queue->session_boundary_active) {
+        return false;
+    }
+    const uint32_t elapsed = now_us - queue->session_boundary_us;
+    if (elapsed >= UINT32_C(0x80000000)) {
+        return true;
+    }
+    if (elapsed >= (uint32_t)queue->max_age_bits * queue->bit_time_us) {
+        queue->session_boundary_active = false;
+        return false;
+    }
+    const uint16_t since_boundary = (uint16_t)(can_now - queue->session_boundary_can);
+    return since_boundary >= 0x8000u || (uint16_t)(can_now - frame_tick) >= since_boundary;
 }
 
 static Lfj8H03DtcRxPublish publish_locked(
@@ -101,7 +137,8 @@ static Lfj8H03DtcRxPublish publish_locked(
     Lfj8H03DtcRxPublish result = LFJ8_H03_DTC_RX_REJECTED;
     if (generation != queue->generation ||
         !lfj8_h03_dtc_can_decode_basic(&received, slot, control, extended, generation) ||
-        (uint16_t)(can_now - received.can_timestamp) >= queue->max_age_bits) {
+        (uint16_t)(can_now - received.can_timestamp) >= queue->max_age_bits ||
+        before_session_boundary(queue, now_us, can_now, received.can_timestamp)) {
         increment(&queue->rejected);
     } else {
         expire(queue, now_us, can_now);

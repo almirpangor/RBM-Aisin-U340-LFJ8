@@ -8,6 +8,9 @@
  * Supply a CAN timestamp paired with input->now_us, or NULL when there is
  * no valid pair. The input must be exclusive to foreground. The adapter
  * borrows its received field for the broker call and restores it on return.
+ * diagnostic_tick is continuous T6 with the low bits in donor phase
+ * numbering. The session clock runs before queue delivery; expiry discards
+ * pending RX and allows the broker to drain any outstanding DTC TX.
  *
  * Serialize this call with CAN lease changes and queue reset. The CAN
  * owner changes generation and resets the queue after hardware reset or

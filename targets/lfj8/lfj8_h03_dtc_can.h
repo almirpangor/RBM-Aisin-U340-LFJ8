@@ -13,9 +13,11 @@ typedef struct {
 typedef struct {
     CheryDtcLink link;
     uint32_t generation;
+    uint32_t session_clock_tick;
     uint16_t max_receive_age_bits;
     uint16_t first_frame_finished_at;
     uint8_t submission;
+    bool session_clock_seen;
 } Lfj8H03DtcCan;
 
 typedef enum {
@@ -32,6 +34,12 @@ bool lfj8_h03_dtc_can_init(Lfj8H03DtcCan *state, uint16_t max_receive_age_bits);
  * reinitialization. Deliver due expiry before the next request. On expiry
  * poll drains an outstanding submission with the normal TX13 lease rules. */
 bool lfj8_h03_dtc_can_session_step(Lfj8H03DtcCan *state);
+
+/* Called once per CAN foreground turn, before dispatching RX. Low T6 tick
+ * bits represent the donor scheduler phase. Task 12 is due at 40/C0 hex.
+ * Several releases between polls coalesce into one. True requests an RX
+ * flush after session expiry or a discontinuity in the same CAN generation. */
+bool lfj8_h03_dtc_can_service_session(Lfj8H03DtcCan *state, uint32_t generation, uint32_t tick);
 
 /* Decode a coherent 16-byte copy of BasicCAN slot 14/15. Supply the
  * control byte captured before clearing TRFIN and the slot's EXTID bit.

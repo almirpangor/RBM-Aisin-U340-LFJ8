@@ -36,9 +36,11 @@ bool lfj8_h03_dtc_can_init(Lfj8H03DtcCan *state, uint16_t max_receive_age_bits)
     }
     chery_dtc_link_init(&state->link);
     state->generation = 0;
+    state->session_clock_tick = 0;
     state->max_receive_age_bits = max_receive_age_bits;
     state->first_frame_finished_at = 0;
     state->submission = EMPTY;
+    state->session_clock_seen = false;
     return true;
 }
 
@@ -64,6 +66,25 @@ bool lfj8_h03_dtc_can_session_step(Lfj8H03DtcCan *state)
     }
     discard_submission(state);
     return true;
+}
+
+bool lfj8_h03_dtc_can_service_session(Lfj8H03DtcCan *state, uint32_t generation, uint32_t tick)
+{
+    enum { SESSION_FIRST_RELEASE = 0x40, SESSION_PERIOD = 128 };
+    const uint32_t previous = state->session_clock_tick;
+    state->session_clock_tick = tick;
+    if (!state->session_clock_seen || state->generation != generation) {
+        state->session_clock_seen = true;
+        return false;
+    }
+    if (tick - previous >= UINT32_C(0x80000000)) {
+        stop_session(state);
+        return true;
+    }
+    const bool released =
+        (tick - SESSION_FIRST_RELEASE) / SESSION_PERIOD !=
+        (previous - SESSION_FIRST_RELEASE) / SESSION_PERIOD;
+    return released && lfj8_h03_dtc_can_session_step(state);
 }
 
 static Lfj8H03DtcSlotUse lose_ownership(Lfj8H03DtcCan *state)
