@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 369,
+  "sequence": 370,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -245,12 +245,12 @@
         "targets/lfj8/test_lfj8_h03_engine_feed.c",
         "verification/project-audit/can01-engine-rx-generation.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "013d85ef472c4e43bd8a34e924942ec2",
       "claimed_at": "2026-11-20T18:23:33+00:00",
-      "updated_at": "2026-11-20T18:25:38+00:00",
-      "note": "Обычный task2 теперь отзывает RPM, ОЖ и поля модели при наблюдаемой смене поколения. Целевой тест и отрицательный контроль прошли. Повторяю полный ПК, сборку и модель M32R и проверочный Bosch.",
-      "result": null
+      "updated_at": "2026-11-20T18:27:55+00:00",
+      "note": "RX11/12 detects native CAN generation changes in its ordinary poll and revokes RPM, ECT and model fields until reattachment. PC 37/102, M32R 18 components +17 native, Bosch PASS_OFFLINE_ONLY. RAM +8 B, code +76 B in bound sizing model. Integration call after init: lfj8_h03_engine_rx_bind_generation(rx, &h03_can_owner.setup_generation). Evidence verification/project-audit/can01-engine-rx-generation.md. Target startup and hardware open.",
+      "result": "c14dbfda51b20fe58b904f8d220e3d35e63ff5dd"
     },
     "MODE-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -3532,9 +3532,17 @@
       "action": "heartbeat",
       "claim_id": "69ac904b985641cea43c72eba859a273",
       "at": "2026-11-20T18:27:37+00:00"
+    },
+    {
+      "operation_id": "8c167fdb5f274370b210e3d9ad56da5a",
+      "task": "CAN-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "013d85ef472c4e43bd8a34e924942ec2",
+      "at": "2026-11-20T18:27:55+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:27:37+00:00",
+  "updated_at": "2026-11-20T18:27:55+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {

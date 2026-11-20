@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:27:37+00:00**. Изменение № **369**.
+Обновлено UTC: **2026-11-20T18:27:55+00:00**. Изменение № **370**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -18,7 +18,7 @@
 | TOY-04 — Полная последовательность переключений | На проверке | Codex — размер планировщика выходов H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/toy04-output-flash-01a1f9a2 | 2026-11-20T18:27:21+00:00 | Планировщик выходов освобождает 108 байт. Общий small с CAN-02/H03-04/H03-05: 117 точек, запас 228/140, ноль релокаций. Пройдены 18 компонентных и 15 штатных сценариев M32R. На ПК совпали 888888 последовательностей и 65536 сочетаний блокировок. Планировщик и доказательства готовы к объединению. / commit c2eee31f06230b7d060d88bb051721a1cdf30445 |
 | TOY-05 — Обучение и сохранение адаптаций | Выполняется | Codex — исходный снимок адаптаций S01 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy05-startup-baseline-32e6ac79 | 2026-11-20T18:25:22+00:00 | Определяю снимок коррекций по исходному V850 Toyota S01 при холодной инициализации и сбросе. Отдельно проверяю поля, оставляемые донором, и привязку к запуску runtime без назначения NVM. |
 | TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — SLU в SECONDARY \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-secondary-schedule-fea1b366 | 2026-11-20T18:15:57+00:00 | Передаю на объединение. SLU в SECONDARY, GP−4735 продвигает FAST, SECONDARY сбрасывает; 5 публикаций/7 отказов. ПК 37 шагов/102 теста, M32R 6 компонентных групп, 17 штатных групп, строгая модель 18 компонентов PASS. Расширенное окно −2652 Б (+808 Б к дефициту базы). Отчёт verification/project-audit/toy06-slu-schedule.md. Владелец H03, полный снимок, компоновка и физический SLU открыты. / commit fd1c4a7fd479934eb2d6d0266462ad16a0b5a539 |
-| CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Выполняется | Чат CAN — поколение RPM/ОЖ H03 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-engine-rx-generation-1120-c7e4 | 2026-11-20T18:25:38+00:00 | Обычный task2 теперь отзывает RPM, ОЖ и поля модели при наблюдаемой смене поколения. Целевой тест и отрицательный контроль прошли. Повторяю полный ПК, сборку и модель M32R и проверочный Bosch. |
+| CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Чат CAN — поколение RPM/ОЖ H03 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-engine-rx-generation-1120-c7e4 | 2026-11-20T18:27:55+00:00 | RX11/12 detects native CAN generation changes in its ordinary poll and revokes RPM, ECT and model fields until reattachment. PC 37/102, M32R 18 components +17 native, Bosch PASS_OFFLINE_ONLY. RAM +8 B, code +76 B in bound sizing model. Integration call after init: lfj8_h03_engine_rx_bind_generation(rx, &amp;h03_can_owner.setup_generation). Evidence verification/project-audit/can01-engine-rx-generation.md. Target startup and hardware open. / commit c14dbfda51b20fe58b904f8d220e3d35e63ff5dd |
 | CAN-02 — Общий диспетчер CAN13 | На проверке | Codex — размер диспетчера CAN13 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/can02-broker-size-01a1f9a2 | 2026-11-20T18:19:59+00:00 | CAN13 экономит 48 байт. В expanded medium с 4ecfdd9 дефицит 268 байт. Expanded small с переносом объектов torque_can и dtc_can, H03-04 и обработчиком H03-05 в основном окне: 117 точек, запас 120/140 байт, 0 релокаций, 18 тестов M32R, тест CAN13 на ПК. Рецепт в can02-broker-flash-size.md; привязка штатного цикла и проверка устройства открыты. / commit 9cd6fb79735af38f699a39e655d414a45966376e |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Чат CAN — владелец поколения CAN0 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can03-generation-rx-1120-c7e4 | 2026-11-20T18:08:50+00:00 | Единый h03_can_owner для setup и OEM TX gate, дренаж BasicCAN и отзыв CAN13. ПК 37/102, M32R 18 компонентов, native 17, components 5 и целевой тест PASS. Для H03-03: owner_poll с парой часов. Для DTC-02: rx_epoch перед захватом. Expanded: +556 байт, второе окно превышено на 2232. Отчёт verification/project-audit/can03-owner-recovery.md. Привязка RAM/IRQ и стенд открыты. / commit 720bb64de67d2b64dcb9134796cf193df2951ecd |
 | CAN-04 — Запрос снижения момента по RB | Свободна для продолжения | Предыдущий: Codex CAN-04 TX loss \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can04-tx-loss-1120-c7e4 | 2026-11-20T17:42:49+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit e02095c6b8d294dacd71db21ea36f970019d0790 |
@@ -273,7 +273,7 @@
 </details>
 
 <details>
-<summary>CAN-01 — Форматы CAN и квалификация RPM/ОЖ: Выполняется</summary>
+<summary>CAN-01 — Форматы CAN и квалификация RPM/ОЖ: На проверке</summary>
 
 **Сделано.** Повторная проверка RR/EXTID после копирования не допускает принятия исчезнувшего кадра. ПК/M32R и сквозное сравнение с точным Bosch прошли.
 
@@ -765,6 +765,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:27:55+00:00 | CAN-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T18:27:37+00:00 | DTC-01 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T18:27:21+00:00 | TOY-04 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:26:38+00:00 | TOY-01 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -794,4 +795,3 @@
 | 2026-11-20T18:13:23+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T18:13:12+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:12:33+00:00 | TOY-06 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-20T18:12:06+00:00 | CAN-05 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
