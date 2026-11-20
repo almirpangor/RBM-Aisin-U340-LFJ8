@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 258,
+  "sequence": 259,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -367,12 +367,12 @@
         "targets/lfj8/test_lfj8_h03_slu_secondary.c",
         "verification/project-audit/toy06-slu-pressure.md"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "a8e9ff099358496bacacf60bfcc8aa84",
       "claimed_at": "2026-11-20T16:37:07+00:00",
-      "updated_at": "2026-11-20T16:44:18+00:00",
-      "note": "05DCE8 → 055C5E: 15 760 сочетаний совпали с R3, общие 35 шагов ПК/71 тест PASS. M32R: 11 случаев/2 отказа и 17 компонентных прогонов PASS. Расширенная модель: +356 байт во втором окне, запас 324. Интегратору: отчёт verification/project-audit/toy06-slu-pressure.md для общего аудита. 05DC5E, снимок SECONDARY и физический канал открыты.",
-      "result": "583cf4a14897616018a6e08ee84dfa5c627b84b9"
+      "updated_at": "2026-11-20T17:03:05+00:00",
+      "note": "Продолжаю свой резерв TOY-06. Отдельная порция: 05DC5E формирует GP−7026 на квалифицированном снимке для 05DCE8. Изменяю только уже зарезервированные файлы; повторю ПК, M32R и замер окна.",
+      "result": null
     },
     "DTC-01": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -2635,9 +2635,17 @@
       "action": "resume",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T17:02:47+00:00"
+    },
+    {
+      "operation_id": "191b04a496dd4040bd918fd4c65ebeab",
+      "task": "TOY-06",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "resume",
+      "claim_id": "a8e9ff099358496bacacf60bfcc8aa84",
+      "at": "2026-11-20T17:03:05+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:02:47+00:00",
+  "updated_at": "2026-11-20T17:03:05+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {

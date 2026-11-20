@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:02:47+00:00**. Изменение № **258**.
+Обновлено UTC: **2026-11-20T17:03:05+00:00**. Изменение № **259**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -17,7 +17,7 @@
 | TOY-03 — Независимые разрешающие сигналы диапазона | На проверке | Codex TOY-03 — квалификация независимых входов \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/toy03-range-freshness-01a1f9c7 | 2026-11-20T16:56:25+00:00 | Передаю интегратору квалификатор независимых GP−5722 и GP−5250.2. ПК 35 шагов/71 тест. M32R 32 сочетания, индивидуальная давность, смена поколения, полный link и 17 компонентов PASS. Отчёт verification/project-audit/toy03-range-freshness.md. При приёмке учесть 3 файла кода в аудите и выполнить complete после публикации main. Физические источники и вызов в штатном цикле открыты. / commit e7264c651d3fafe77e4bbff78e5a8fd8aa4e25ee |
 | TOY-04 — Полная последовательность переключений | На проверке | Codex — переключения Toyota под нагрузкой \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy04-loaded-map-32e6ac79 | 2026-11-20T16:50:12+00:00 | Передаю интегратору. 24 точки D при двух синтетических нагрузках, пороги из S01, GP из квалифицированного снимка, логические S1/S2 и потеря события PASS. PC 35 шагов/71 тест, M32R 17 компонентов, NATIVE 16+15. Отчёт toy04-loaded-gears.md. Физическая нагрузка, R, ручное управление и гидравлика открыты. / commit 08b06eb14f7ccb6f46b3589f7f0131e143d529d8 |
 | TOY-05 — Обучение и сохранение адаптаций | На проверке | Codex — восстановление адаптаций Toyota \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy05-safe-restore-32e6ac79 | 2026-11-20T16:57:40+00:00 | Восстановление после повреждения записи сброса адаптаций проверено на ПК и M32R. Отчёт verification/project-audit/toy05-recovery-policy.md. Запуск H03 и страницы NVM открыты. Снимок аудита и реестр передаю интегратору. / commit 8d6a6f1f62d70c827531f672c98d309e708df595 |
-| TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — давление SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-pressure-fea1b366 | 2026-11-20T16:44:18+00:00 | 05DCE8 → 055C5E: 15 760 сочетаний совпали с R3, общие 35 шагов ПК/71 тест PASS. M32R: 11 случаев/2 отказа и 17 компонентных прогонов PASS. Расширенная модель: +356 байт во втором окне, запас 324. Интегратору: отчёт verification/project-audit/toy06-slu-pressure.md для общего аудита. 05DC5E, снимок SECONDARY и физический канал открыты. / commit 583cf4a14897616018a6e08ee84dfa5c627b84b9 |
+| TOY-06 — Блокировка гидротрансформатора SLU | Выполняется | Codex TOY-06 — давление SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-pressure-fea1b366 | 2026-11-20T17:03:05+00:00 | Продолжаю свой резерв TOY-06. Отдельная порция: 05DC5E формирует GP−7026 на квалифицированном снимке для 05DCE8. Изменяю только уже зарезервированные файлы; повторю ПК, M32R и замер окна. |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Codex CAN-01 FullCAN coherence \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-rx-coherence-1120-c7e4 | 2026-11-20T16:57:02+00:00 | Revalidate FullCAN RR and EXTID after the copy. Reproduced RR-loss bug. All 35 PC checks including 71 unit tests, 17 M32R components and Bosch PASS_OFFLINE_ONLY. Evidence verification/project-audit/can01-rx-coherence.md. OEM binding and hardware open. / commit 6820992a15300275c3dd9c98398151e661a42925 |
 | CAN-02 — Общий диспетчер CAN13 | Выполняется | Codex CAN-02 telemetry submission \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can02-telemetry-submit-1120-c7e4 | 2026-11-20T17:01:25+00:00 | Reproduced BusOff during 0x1AE staging on baseline, corrected and focused fixture passes; running PC and M32R checks. |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex CAN-03 reset generation \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can03-epoch-1120-c7e4 | 2026-11-20T16:39:51+00:00 | Native H03 setup hook revokes TX13 grant before OEM and advances generation on return. PASS 16 lifecycle, 12 TX gate, 17 M32R components. BasicCAN flags persist in RAM shadow. See verification/project-audit/can03-native-epoch.md; target RAM, RX drain and bench remain open. / commit 6fc5a51975cd6bbbdf5bc4985d5d61b811435b6b |
@@ -345,6 +345,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:03:05+00:00 | TOY-06 | resume | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:02:47+00:00 | H03-02 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T17:02:42+00:00 | VSS-01 | resume | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:02:27+00:00 | DTC-01 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
@@ -374,4 +375,3 @@
 | 2026-11-20T16:51:27+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:51:21+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:51:17+00:00 | TOY-03 | claim | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
-| 2026-11-20T16:51:10+00:00 | DTC-02 | resume | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
