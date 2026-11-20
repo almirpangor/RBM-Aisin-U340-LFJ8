@@ -39,7 +39,8 @@ int lfj8_h03_atf_after_adc_store(volatile Lfj8H03Atf *state, const Lfj8RegisterI
 
 /* Capture the tracked timestamp for the raw value OEM read at 0x03B138.
  * The caller must exclude ADC publication across both the OEM read and this
- * call. On failure, pass NULL to lfj8_h03_atf_after_store. */
+ * call. On failure, pass NULL to lfj8_h03_atf_after_store. The ROM-voltage
+ * path bypasses the raw ADC read, so it never supplies this timestamp. */
 static inline int lfj8_h03_atf_capture_source(const volatile Lfj8H03Atf *state,
                                               uint16_t oem_adc, uint32_t *source_acquired_us)
 {

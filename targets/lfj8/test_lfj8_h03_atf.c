@@ -155,6 +155,9 @@ static void check_causal_binding(void)
     assert(lfj8_h03_atf_after_store(&state, &io, LFJ8_H03_ATF_DIRECT_STORE, &acquired, 23));
     assert(lfj8_h03_atf_snapshot(&state, &io, 23, 10, &sample) && sample.acquired_us == 21);
     assert(lfj8_h03_atf_after_adc_store(&state, &io, 24));
+    /* The ROM-voltage branch can publish the same bits without reading AN1. */
+    assert(lfj8_h03_atf_after_store(&state, &io, LFJ8_H03_ATF_DIRECT_STORE, NULL, 25));
+    assert(!lfj8_h03_atf_snapshot(&state, &io, 25, 10, &sample));
     assert(!lfj8_h03_atf_snapshot(&state, &io, 35, 10, &sample)); /* Both generations stale. */
     acquired = 24;
     assert(lfj8_h03_atf_after_store(&state, &io, LFJ8_H03_ATF_FILTERED_STORE, &acquired, 36));
