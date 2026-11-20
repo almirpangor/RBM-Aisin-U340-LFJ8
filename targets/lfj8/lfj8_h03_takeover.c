@@ -153,6 +153,9 @@ static int prepare(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *plan,
                     io->leave(context, saved);
                     return 0;
                 }
+                if (ready && ops->phase_clock) {
+                    state->prepared_phase = ops->phase_clock->latest.sequence;
+                }
                 state->pending = ready ? TAKEOVER_READY : 0u;
             }
         }

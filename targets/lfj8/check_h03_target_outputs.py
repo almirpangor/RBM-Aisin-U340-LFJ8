@@ -8,6 +8,7 @@ from tempfile import TemporaryDirectory
 
 from check_h03_application_binding import FIXTURE_PROFILE
 from check_h03_link import HERE, ROOT, identify_h03
+from check_h03_native_hooks import COMMIT_SITE, OEM_COMMIT
 from check_h03_range_pnp import LAYOUT, START
 
 
@@ -19,7 +20,7 @@ extern volatile Lfj8H03PhaseClock fixture_phase_clock;
 SCENARIOS = (
     "binding and phase startup",
     "stage and OEM arbitration",
-    "OEM D/Pressure A apply",
+    "stock phase 2 call applies D/Pressure A",
     "prepare before loss of clock",
     "clock mismatch revokes outputs and preserves TIO9 registers",
     "restoring clock registers cannot replay the rejected apply",
@@ -27,7 +28,12 @@ SCENARIOS = (
     "Flash monitor entry revokes outputs",
     "prepare before application shutdown",
     "application shutdown revokes outputs",
-    "loss of RAM ownership rejects qualification",
+    "loss of RAM ownership suppresses the OEM call without touching staged RAM",
+    "a skipped phase cannot commit the older prepared generation",
+    "a repeated phase 2 call revokes a consumed generation",
+    "phase 2 before application startup inhibits with owned RAM",
+    "phase 2 cannot consume the release used by phase 3",
+    "a next release that foreground has not consumed cannot apply",
 )
 
 MODULES = (
@@ -35,7 +41,21 @@ MODULES = (
     "lfj8_h03_phase_clock.c", "lfj8_h03_takeover.c", "lfj8_h03_outputs.c",
     "lfj8_h03_mmio.c", "lfj8_h03_atf_tml0.c", "lfj8_h03_output_inhibit.c",
     "lfj8_selector_adc.c",
+    "lfj8_h03_target_commit.c", "h03_native_hooks.S",
 )
+
+
+COMMIT_START = START.replace('.incbin "h03.rom"', f'''\
+.incbin "h03.rom", 0, {COMMIT_SITE:#x}
+    bl rbm_h03_commit_hook
+    .incbin "h03.rom", {COMMIT_SITE + 4:#x}''')
+# The OEM caller starts one aligned word before its BL and supplies its own
+# LR save and return. The simulator runs it directly at the original address.
+COMMIT_LAYOUT = LAYOUT + f"""
+h03_stock_commit_caller = {COMMIT_SITE - 4:#x};
+h03_stock_commit = {OEM_COMMIT:#x};
+h03_stock_phase2 = 0x04682c;
+"""
 
 
 def check(compiler, base):
@@ -51,8 +71,8 @@ def check(compiler, base):
         if run(compiler, "-dumpmachine").stdout.strip() != b"m32r-elf":
             raise ValueError("A bare-metal M32R compiler is required")
         (work / "h03.rom").write_bytes(rom)
-        (work / "start.S").write_text(START, encoding="ascii")
-        (work / "layout.ld").write_text(LAYOUT, encoding="ascii")
+        (work / "start.S").write_text(COMMIT_START, encoding="ascii")
+        (work / "layout.ld").write_text(COMMIT_LAYOUT, encoding="ascii")
         profile = work / "fixture-profile.h"
         flags = (
             "-m32r", "-msdata=none", "-Wa,-EB", "-std=c11", "-Os", "-ffreestanding",
@@ -90,14 +110,19 @@ def check(compiler, base):
                 "-Wl,-T,layout.ld,--gc-sections", "start.S", binding,
                 *(HERE / module for module in MODULES), "-lc", "-lgcc", "-o", elf)
             run(objcopy, "-j", ".stock", "-O", "binary", elf, "linked.rom")
-            if (work / "linked.rom").read_bytes() != rom:
-                raise ValueError(f"The linked OEM H03 ROM changed in the {model} model")
+            linked = (work / "linked.rom").read_bytes()
+            if (linked[:COMMIT_SITE] != rom[:COMMIT_SITE] or
+                    linked[COMMIT_SITE + 4:] != rom[COMMIT_SITE + 4:] or
+                    linked[COMMIT_SITE] != 0xfe or
+                    linked[COMMIT_SITE:COMMIT_SITE + 4] == rom[COMMIT_SITE:COMMIT_SITE + 4]):
+                raise ValueError(f"Only the phase 2 BL may redirect in the {model} model")
             outcome = run(simulator, "--memory-size=16M", elf, checked=False)
             if 0 < outcome.returncode <= len(SCENARIOS):
                 raise ValueError(f"{model}: failed {SCENARIOS[outcome.returncode - 1]}")
             outcome.check_returncode()
     return {"status": "PASS", "base": identity, "models": ["small", "medium"],
-            "scenarios": SCENARIOS, "hardware_tested": False, "flashable_image": None}
+            "scenarios": SCENARIOS, "rom_redirect": f"{COMMIT_SITE:#08x}",
+            "hardware_tested": False, "flashable_image": None}
 
 
 def main():
