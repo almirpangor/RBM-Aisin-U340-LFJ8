@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 231,
+  "sequence": 232,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -425,12 +425,12 @@
         "targets/lfj8/lfj8_h03_takeover.h",
         "targets/lfj8/test_lfj8_h03_takeover.c"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "claimed_at": "2026-11-20T16:20:38+00:00",
-      "updated_at": "2026-11-20T16:49:33+00:00",
-      "note": "Проверяю внутреннюю ветвь активации Virtual Flash после диспетчера и применяю результат к допуску ELF. Физический транспорт не задействую.",
-      "result": null
+      "updated_at": "2026-11-20T16:51:27+00:00",
+      "note": "ELF-чек подтверждает все 128 страниц и через штатную внутреннюю ветвь активации 003364, с двумя отрицательными граничными адресами. ELF 020000/07C118 отклонён. Проверка внешнего сеанса и аппаратного наложения открыта.",
+      "result": "5813eaf480e4814fc5e78ed19d65b171e5f39a86"
     },
     "MODE-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -2407,9 +2407,17 @@
       "action": "resume",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "at": "2026-11-20T16:51:21+00:00"
+    },
+    {
+      "operation_id": "5c3c2e6d64fb4355a26bed018690d509",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
+      "at": "2026-11-20T16:51:27+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:51:21+00:00",
+  "updated_at": "2026-11-20T16:51:27+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
