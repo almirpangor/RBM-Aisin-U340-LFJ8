@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 3,
+  "sequence": 4,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -26,6 +26,30 @@
       "updated_at": "2026-11-20T15:37:39+00:00",
       "note": "Опубликованы карта задач и общий учёт чатов. Пройдены 59 локальных тестов; GitHub Actions 44764817941 завершён успешно. Настройка совместной работы завершена.",
       "result": "2875ed80264fd7714d44047f849e2df4b04123ef"
+    },
+    "DTC-02": {
+      "owner": "codex-dtc02-01a1f76d-20261120",
+      "label": "Основной чат — приём диагностики CAN",
+      "branch": "codex/dtc-02-rx-20261120",
+      "files": [
+        "README.md",
+        "data/project-tasks.json",
+        "docs/diagnostics-integration.md",
+        "docs/project-map.md",
+        "docs/working-set.md",
+        "targets/lfj8/check_h03_link.py",
+        "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
+        "targets/lfj8/lfj8_h03_dtc_rx_queue.h",
+        "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
+        "tools/build_pc_checks.py",
+        "verification/project-audit/"
+      ],
+      "stage": "in_progress",
+      "claim_id": "ed274f83f44345a3b9d759cf44aa6541",
+      "claimed_at": "2026-11-20T15:39:41+00:00",
+      "updated_at": "2026-11-20T15:39:41+00:00",
+      "note": "Реализую очередь между захватом BasicCAN и CAN13: целостность публикации, срок годности, переполнение и поколение после сброса. Штатный перехват RX исследуется отдельно.",
+      "result": null
     }
   },
   "events": [
@@ -52,9 +76,17 @@
       "action": "complete",
       "claim_id": "640a773925544cfd8486c913f6839c07",
       "at": "2026-11-20T15:37:39+00:00"
+    },
+    {
+      "operation_id": "d3b3a8201ce1458b87832fc461b787fe",
+      "task": "DTC-02",
+      "owner": "codex-dtc02-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "ed274f83f44345a3b9d759cf44aa6541",
+      "at": "2026-11-20T15:39:41+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:37:39+00:00",
+  "updated_at": "2026-11-20T15:39:41+00:00",
   "main_commit": "2875ed80264fd7714d44047f849e2df4b04123ef",
   "catalog": [
     {
