@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 556,
+  "sequence": 557,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -353,12 +353,12 @@
         "targets/lfj8/test_lfj8_h03_can13.c",
         "verification/project-audit/can02-slot13-identity.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "7180472509b343958005e9c8aeaadc9c",
       "claimed_at": "2026-11-20T19:51:10+00:00",
-      "updated_at": "2026-11-20T19:57:09+00:00",
-      "note": "Проверки M32R, 18 сравнений штатного RX и повтор с опубликованным DTC-02 ed5fd71 прошли. Готовлю публикацию CAN-02.",
-      "result": null
+      "updated_at": "2026-11-20T20:00:46+00:00",
+      "note": "Подтверждены 41 шаг ПК и 120 тестов, 11 интеграционных и 18 компонентных M32R, 18 сравнений BasicCAN на main и с DTC-02 ed5fd71. Проверен запрет отмены чужого ожидающего TX13 и чужого RX. Измерение физических окон открыто.",
+      "result": "b6dccd657c7208aef79ac9008a1091677fccff16"
     },
     "TOY-06": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -5034,9 +5034,17 @@
       "action": "claim",
       "claim_id": "3fd1870717ff4cc684af517ec9f56903",
       "at": "2026-11-20T20:00:42+00:00"
+    },
+    {
+      "operation_id": "e26dfdc680904acbad6ac9d41db1f76a",
+      "task": "CAN-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "7180472509b343958005e9c8aeaadc9c",
+      "at": "2026-11-20T20:00:46+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:00:42+00:00",
+  "updated_at": "2026-11-20T20:00:46+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
