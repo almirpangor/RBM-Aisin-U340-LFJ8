@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 246,
+  "sequence": 247,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -51,12 +51,12 @@
         "verification/project-audit/dtc02-native-rx-hook.md",
         "verification/project-audit/dtc02-preclear-capture.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:55:09+00:00",
-      "note": "Связка 0x004738/0x001534 уже прошла штатные трассы, порядок пары и новый кадр при повторе. Повторяю на b2ca79d с отдельной инъекцией перезаписи до первой очистки, замером стека и регрессиями.",
-      "result": null
+      "updated_at": "2026-11-20T16:58:23+00:00",
+      "note": "Парный захват и послотовый повтор H03 вместе проверены в 18 сравнениях M32R и двух отрицательных контролях. ПК 35 шагов и 71 тест, M32R 17 компонентных прогонов. Стек от входа CAN0 в модели 256 байт. Целевая привязка ниже 0x008000, RAM, часы и стенд открыты. Отчёт dtc02-native-paired-rx.md.",
+      "result": "4fb2794766535ae5efd2e351b0de3daea152853e"
     },
     "CAN-03": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -2544,9 +2544,17 @@
       "action": "heartbeat",
       "claim_id": "5e8a320b9b764646ac4a68af00a061dd",
       "at": "2026-11-20T16:57:40+00:00"
+    },
+    {
+      "operation_id": "9d0390f358e84719961069378b0b69ea",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:58:23+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:57:40+00:00",
+  "updated_at": "2026-11-20T16:58:23+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
