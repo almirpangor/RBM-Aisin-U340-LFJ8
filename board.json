@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 431,
+  "sequence": 432,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -176,21 +176,19 @@
       "result": "c354bf9f0ceb130ac03d525c6889f3d277dc7666"
     },
     "CAN-05": {
-      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Чат CAN — поколения RX Bosch",
-      "branch": "codex/can05-qualified-epoch-1120-c7e4",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex CAN-05 — часы Bosch для 0x1AE",
+      "branch": "codex/can05-st10-rx-clock-7bd19ea4",
       "files": [
-        "targets/bosch/chery_torque_rx.c",
-        "targets/bosch/chery_torque_rx.h",
-        "targets/bosch/test_chery_torque_rx.c",
-        "verification/project-audit/can05-rx-generation.md"
+        "targets/bosch/audit_chery_rx_clock.py",
+        "verification/project-audit/can05-st10-rx-clock.md"
       ],
-      "stage": "done",
-      "claim_id": "fbadfbdf06d745cf885f45918e8b9a03",
-      "claimed_at": "2026-11-20T18:12:06+00:00",
-      "updated_at": "2026-11-20T18:37:31+00:00",
-      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
-      "result": "1b7de46a4d9078d3ef8d46fa4ac724ae5eb20150"
+      "stage": "in_progress",
+      "claim_id": "59327b6eafdb4bdcac7a920397975731",
+      "claimed_at": "2026-11-20T18:54:59+00:00",
+      "updated_at": "2026-11-20T18:54:59+00:00",
+      "note": "Проверяю машинный путь приёма 0x1AE в проверочном Bosch, место получения согласованного T4 после IF1, признак потери кадра и границы смены поколения. Только программная модель, без изменения BIN.",
+      "result": null
     },
     "DTC-03": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -4019,9 +4017,17 @@
       "action": "claim",
       "claim_id": "a9db7d810e7b460fb52e5042ad8e2450",
       "at": "2026-11-20T18:54:52+00:00"
+    },
+    {
+      "operation_id": "046bd72703f84d26999de1e5aa9f75a8",
+      "task": "CAN-05",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "59327b6eafdb4bdcac7a920397975731",
+      "at": "2026-11-20T18:54:59+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:54:52+00:00",
+  "updated_at": "2026-11-20T18:54:59+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
