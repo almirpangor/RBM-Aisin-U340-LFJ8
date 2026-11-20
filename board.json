@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 41,
+  "sequence": 42,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -204,6 +204,23 @@
       "updated_at": "2026-11-20T16:00:19+00:00",
       "note": "Все 96 индексов сверены с проверенным S03. 33 шага ПК и 61 тест PASS. Отчёт verification/project-audit/dtc03-table.md. Мониторы отказов и привязка H03 открыты; снимок аудита передан интегратору.",
       "result": "fbeea2ca6b1ceb47be58f4bf05c9f3817c5664a2"
+    },
+    "TOY-02": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex TOY-02",
+      "branch": "codex/toy02-load-feed-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "controller/include/rbm_u340e_runtime.h",
+        "controller/src/rbm_u340e_runtime.c",
+        "controller/tests/test_runtime.c",
+        "verification/project-audit/toy02-load-feed.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "04163e758d304ae28f99c09cf17d8d25",
+      "claimed_at": "2026-11-20T16:01:53+00:00",
+      "updated_at": "2026-11-20T16:01:53+00:00",
+      "note": "Перенос когерентного снимка подтверждённых операндов нагрузки в GP Toyota с проверкой давности и отказа. Источники GW и калибровки остаются открытыми.",
+      "result": null
     }
   },
   "events": [
@@ -534,9 +551,17 @@
       "action": "review",
       "claim_id": "39e9816a3049466a955d4f49cf740da4",
       "at": "2026-11-20T16:01:03+00:00"
+    },
+    {
+      "operation_id": "a0d271a2828d4a87a28ecb8252f75df9",
+      "task": "TOY-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "04163e758d304ae28f99c09cf17d8d25",
+      "at": "2026-11-20T16:01:53+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:01:03+00:00",
+  "updated_at": "2026-11-20T16:01:53+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
