@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 279,
+  "sequence": 280,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -66,11 +66,11 @@
         "targets/lfj8/h03_can_lifecycle_test.S",
         "verification/project-audit/can03-native-epoch.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "0b028669dc7e44b69526dde8046610db",
       "claimed_at": "2026-11-20T16:36:31+00:00",
-      "updated_at": "2026-11-20T16:39:51+00:00",
-      "note": "Native H03 setup hook revokes TX13 grant before OEM and advances generation on return. PASS 16 lifecycle, 12 TX gate, 17 M32R components. BasicCAN flags persist in RAM shadow. See verification/project-audit/can03-native-epoch.md; target RAM, RX drain and bench remain open.",
+      "updated_at": "2026-11-20T17:37:21+00:00",
+      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
       "result": "6fc5a51975cd6bbbdf5bc4985d5d61b811435b6b"
     },
     "TOY-03": {
@@ -2802,9 +2802,17 @@
       "action": "complete",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "at": "2026-11-20T17:37:01+00:00"
+    },
+    {
+      "operation_id": "f8a39b48c8b144e48ee618713546c793",
+      "task": "CAN-03",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "0b028669dc7e44b69526dde8046610db",
+      "at": "2026-11-20T17:37:21+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:37:01+00:00",
+  "updated_at": "2026-11-20T17:37:21+00:00",
   "main_commit": "320b72e41aa4a85815f2db8942f88f7050abb3f0",
   "catalog": [
     {
