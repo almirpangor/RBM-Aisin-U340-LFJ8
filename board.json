@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 439,
+  "sequence": 440,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -158,22 +158,22 @@
     },
     "H03-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
-      "label": "Codex — штатные события датчиков H03",
-      "branch": "codex/h03-02-sensor-events-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex H03-02 — единый допуск часов датчиков",
+      "branch": "codex/h03-02-shared-clock-mwp5rm2ofhaxjfi9dss",
       "files": [
-        "targets/lfj8/check_h03_sensor_native.py",
+        "targets/lfj8/h03_atf_hook_fixture.c",
         "targets/lfj8/h03_sensor_hook_fixture.c",
-        "targets/lfj8/h03_sensor_hooks.S",
+        "targets/lfj8/lfj8_h03_atf_target.h",
+        "targets/lfj8/lfj8_h03_atf_tml0.c",
         "targets/lfj8/lfj8_h03_sensor_target.c",
-        "targets/lfj8/lfj8_h03_sensor_target.h",
-        "verification/project-audit/h03-02-sensor-events.md"
+        "verification/project-audit/h03-02-shared-clock.md"
       ],
-      "stage": "done",
-      "claim_id": "02b9e231450d4f81b9517ac724b155ed",
-      "claimed_at": "2026-11-20T18:08:03+00:00",
-      "updated_at": "2026-11-20T18:36:31+00:00",
-      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
-      "result": "c354bf9f0ceb130ac03d525c6889f3d277dc7666"
+      "stage": "in_progress",
+      "claim_id": "15ef4cba9c9a49b1acc46893d21aabad",
+      "claimed_at": "2026-11-20T18:57:46+00:00",
+      "updated_at": "2026-11-20T18:57:46+00:00",
+      "note": "Объединяю проверку конфигурации TML0/TML1 для S51/S83 и ATF. Проверяю отзыв общей эпохи при изменении часов и отсутствие устаревших выборок в M32R.",
+      "result": null
     },
     "CAN-05": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -4083,9 +4083,17 @@
       "action": "claim",
       "claim_id": "955fa03480184bffadb909ff493f7946",
       "at": "2026-11-20T18:57:39+00:00"
+    },
+    {
+      "operation_id": "398c8152860846faa64950b366a1aee8",
+      "task": "H03-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "15ef4cba9c9a49b1acc46893d21aabad",
+      "at": "2026-11-20T18:57:46+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:57:39+00:00",
+  "updated_at": "2026-11-20T18:57:46+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
