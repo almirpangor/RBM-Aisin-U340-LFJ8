@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 594,
+  "sequence": 595,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -553,12 +553,12 @@
         "tools/check_e4m3_diff.py",
         "verification/project-audit/aud01-e4m3-diff-check.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "d06e51f28ad0459dbc4d456c75b56bb4",
       "claimed_at": "2026-11-20T20:17:54+00:00",
-      "updated_at": "2026-11-20T20:17:54+00:00",
-      "note": "Повторный резерв для публикации согласованного коммита e340c61 и передачи на проверку. Восемь файлов, три группы копий, 1057 диапазонов сверены.",
-      "result": null
+      "updated_at": "2026-11-20T20:18:13+00:00",
+      "note": "Офлайн-сверка повторно прошла: 8 закреплённых файлов, 3 группы копий и все 1057 диапазонов. Опубликованы только скрипт сравнения и отчёт. Результат для проверки интегратором.",
+      "result": "e340c619c4cd9677fbe56bde39535b888d8e9328"
     },
     "REL-02": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -5334,9 +5334,17 @@
       "action": "claim",
       "claim_id": "d06e51f28ad0459dbc4d456c75b56bb4",
       "at": "2026-11-20T20:17:54+00:00"
+    },
+    {
+      "operation_id": "612dc87d0faf4898b9a019050f3edbfb",
+      "task": "AUD-01",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "review",
+      "claim_id": "d06e51f28ad0459dbc4d456c75b56bb4",
+      "at": "2026-11-20T20:18:13+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:17:54+00:00",
+  "updated_at": "2026-11-20T20:18:13+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
