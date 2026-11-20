@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 538,
+  "sequence": 539,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -205,12 +205,12 @@
         "targets/lfj8/lfj8_h03_dtc_target.h",
         "verification/project-audit/dtc03-h03-p0710-foreground.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "6ce2dadd9393441586bcbbbeb50614e0",
       "claimed_at": "2026-11-20T19:41:53+00:00",
-      "updated_at": "2026-11-20T19:44:39+00:00",
-      "note": "Подтверждён вызов BL по 0x0725B0 и возврат 0x0725B4. Резервирую описание переноса и проверку OEM-вызова с диагностическим владельцем.",
-      "result": null
+      "updated_at": "2026-11-20T19:55:44+00:00",
+      "note": "Порция P0710: OEM AN1 через DTC target и Chery CAN. Прошли 20+14 сценариев M32R, сравнение регистров, 6920 проверок S03, DTC foreground ПК/M32R, повтор CAN Bosch и проверка RAM. Нужны финальное размещение, конфигурация срока и истории, полный запуск и сканер. Остальные DTC и оба выпуска остаются открыты.",
+      "result": "4ee5305412f0e5b1aa708e43cd9ee2e1fde0777c"
     },
     "TOY-02": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -4892,9 +4892,17 @@
       "action": "review",
       "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
       "at": "2026-11-20T19:55:21+00:00"
+    },
+    {
+      "operation_id": "d70b9740b97949af9151791733acd912",
+      "task": "DTC-03",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "review",
+      "claim_id": "6ce2dadd9393441586bcbbbeb50614e0",
+      "at": "2026-11-20T19:55:44+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:55:21+00:00",
+  "updated_at": "2026-11-20T19:55:44+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
