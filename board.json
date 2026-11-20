@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 714,
+  "sequence": 715,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -246,12 +246,12 @@
         "targets/lfj8/test_lfj8_h03_engine_feed.c",
         "verification/project-audit/can01-h03-operand-age.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
       "claimed_at": "2026-11-20T21:52:45+00:00",
-      "updated_at": "2026-11-20T21:55:03+00:00",
-      "note": "Храню метку удержанного RPM в существующем RX того же поколения; обновляю резерв файлов приёмника. Общий переносимый квалификатор остаётся без изменений.",
-      "result": null,
+      "updated_at": "2026-11-20T22:01:43+00:00",
+      "note": "Метка фактических RPM/ECT и удержанных оборотов подключена к command_at в штатном Task 2. 62 запуска M32R, 41 шаг ПК/179 Python, 11+18 проверок с локально возвращённым cold-start корнем и 6 размещённых. rbm_h03_target_engine ожидает источники контекста и подтверждённые пределы.",
+      "result": "368ecd723336eaa20d508e0d0025172ed78cd127",
       "based_on_reviews": []
     },
     "MODE-02": {
@@ -8872,9 +8872,40 @@
         "result": "dc2afd95a829473823c05f10eabd66142177a0dc",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "425efb94d6be4d22abd817daebba5c87",
+      "task": "CAN-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
+      "at": "2026-11-20T22:01:43+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex CAN-01 — возраст операндов двигателя на Task 2",
+        "branch": "codex/can01-target-engine-1121-c7e4",
+        "files": [
+          "targets/lfj8/h03_phase_boot_fixture.c",
+          "targets/lfj8/lfj8_h03_application.c",
+          "targets/lfj8/lfj8_h03_application.h",
+          "targets/lfj8/lfj8_h03_engine_feed.c",
+          "targets/lfj8/lfj8_h03_engine_feed.h",
+          "targets/lfj8/lfj8_h03_engine_rx.c",
+          "targets/lfj8/lfj8_h03_engine_rx.h",
+          "targets/lfj8/test_lfj8_h03_engine_feed.c",
+          "verification/project-audit/can01-h03-operand-age.md"
+        ],
+        "stage": "review",
+        "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
+        "claimed_at": "2026-11-20T21:52:45+00:00",
+        "updated_at": "2026-11-20T22:01:43+00:00",
+        "note": "Метка фактических RPM/ECT и удержанных оборотов подключена к command_at в штатном Task 2. 62 запуска M32R, 41 шаг ПК/179 Python, 11+18 проверок с локально возвращённым cold-start корнем и 6 размещённых. rbm_h03_target_engine ожидает источники контекста и подтверждённые пределы.",
+        "result": "368ecd723336eaa20d508e0d0025172ed78cd127",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:01:30+00:00",
+  "updated_at": "2026-11-20T22:01:43+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -10475,6 +10506,31 @@
       "based_on_reviews": [],
       "task": "DTC-04",
       "submitted_at": "2026-11-20T22:01:30+00:00"
+    },
+    "9436326dc3784bbe994f50e6dce8e9c0": {
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "label": "Codex CAN-01 — возраст операндов двигателя на Task 2",
+      "branch": "codex/can01-target-engine-1121-c7e4",
+      "files": [
+        "targets/lfj8/h03_phase_boot_fixture.c",
+        "targets/lfj8/lfj8_h03_application.c",
+        "targets/lfj8/lfj8_h03_application.h",
+        "targets/lfj8/lfj8_h03_engine_feed.c",
+        "targets/lfj8/lfj8_h03_engine_feed.h",
+        "targets/lfj8/lfj8_h03_engine_rx.c",
+        "targets/lfj8/lfj8_h03_engine_rx.h",
+        "targets/lfj8/test_lfj8_h03_engine_feed.c",
+        "verification/project-audit/can01-h03-operand-age.md"
+      ],
+      "stage": "review",
+      "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
+      "claimed_at": "2026-11-20T21:52:45+00:00",
+      "updated_at": "2026-11-20T22:01:43+00:00",
+      "note": "Метка фактических RPM/ECT и удержанных оборотов подключена к command_at в штатном Task 2. 62 запуска M32R, 41 шаг ПК/179 Python, 11+18 проверок с локально возвращённым cold-start корнем и 6 размещённых. rbm_h03_target_engine ожидает источники контекста и подтверждённые пределы.",
+      "result": "368ecd723336eaa20d508e0d0025172ed78cd127",
+      "based_on_reviews": [],
+      "task": "CAN-01",
+      "submitted_at": "2026-11-20T22:01:43+00:00"
     }
   }
 }
