@@ -9,30 +9,30 @@
   "blocks": {
     "control": {
       "offset": 0,
-      "bytes": 1072,
+      "bytes": 1080,
       "alignment": 4,
       "address": 8416064,
-      "end_exclusive": 8417136
+      "end_exclusive": 8417144
     },
     "communication": {
       "offset": 0,
-      "bytes": 492,
+      "bytes": 500,
       "alignment": 4,
       "address": 8425024,
-      "end_exclusive": 8425516
+      "end_exclusive": 8425524
     },
     "workspace": {
       "offset": 0,
-      "bytes": 832,
+      "bytes": 952,
       "alignment": 4,
-      "address": 8425516,
-      "end_exclusive": 8426348
+      "address": 8425524,
+      "end_exclusive": 8426476
     }
   },
   "fields": {
     "control": {
       "offset": 0,
-      "bytes": 1072,
+      "bytes": 1080,
       "alignment": 4
     },
     "control/runtime": {
@@ -90,9 +90,19 @@
       "bytes": 52,
       "alignment": 4
     },
+    "control/slu_baseline": {
+      "offset": 1072,
+      "bytes": 4,
+      "alignment": 2
+    },
+    "control/slu_secondary": {
+      "offset": 1076,
+      "bytes": 2,
+      "alignment": 1
+    },
     "communication": {
       "offset": 0,
-      "bytes": 492,
+      "bytes": 500,
       "alignment": 4
     },
     "communication/engine_rx": {
@@ -120,19 +130,24 @@
       "bytes": 172,
       "alignment": 4
     },
-    "communication/main_result": {
+    "communication/dtc_rx_dispatch": {
       "offset": 448,
+      "bytes": 8,
+      "alignment": 4
+    },
+    "communication/main_result": {
+      "offset": 456,
       "bytes": 28,
       "alignment": 4
     },
     "communication/fast_output": {
-      "offset": 476,
+      "offset": 484,
       "bytes": 16,
       "alignment": 4
     },
     "workspace": {
       "offset": 0,
-      "bytes": 832,
+      "bytes": 952,
       "alignment": 4
     },
     "workspace/toyota": {
@@ -160,67 +175,92 @@
       "bytes": 8,
       "alignment": 4
     },
-    "workspace/slu_input": {
+    "workspace/range_inputs": {
       "offset": 652,
+      "bytes": 60,
+      "alignment": 4
+    },
+    "workspace/range_snapshot": {
+      "offset": 712,
+      "bytes": 8,
+      "alignment": 4
+    },
+    "workspace/slu_input": {
+      "offset": 720,
       "bytes": 10,
       "alignment": 2
     },
     "workspace/slu_command": {
-      "offset": 662,
+      "offset": 730,
       "bytes": 6,
       "alignment": 2
     },
+    "workspace/slu_baseline_input": {
+      "offset": 736,
+      "bytes": 22,
+      "alignment": 2
+    },
+    "workspace/slu_secondary_input": {
+      "offset": 758,
+      "bytes": 20,
+      "alignment": 2
+    },
+    "workspace/slu_secondary_result": {
+      "offset": 778,
+      "bytes": 8,
+      "alignment": 2
+    },
     "workspace/dtc_delivery": {
-      "offset": 668,
+      "offset": 788,
       "bytes": 28,
       "alignment": 4
     },
     "workspace/atf_sample": {
-      "offset": 696,
+      "offset": 816,
       "bytes": 8,
       "alignment": 4
     },
     "workspace/engine_context": {
-      "offset": 704,
+      "offset": 824,
       "bytes": 8,
       "alignment": 2
     },
     "workspace/can13_input": {
-      "offset": 712,
+      "offset": 832,
       "bytes": 44,
       "alignment": 4
     },
     "workspace/tx_input": {
-      "offset": 756,
+      "offset": 876,
       "bytes": 18,
       "alignment": 2
     },
     "workspace/oem_output": {
-      "offset": 774,
+      "offset": 894,
       "bytes": 14,
       "alignment": 1
     },
     "workspace/torque_input": {
-      "offset": 788,
+      "offset": 908,
       "bytes": 12,
       "alignment": 4
     },
     "workspace/gear_observation": {
-      "offset": 800,
+      "offset": 920,
       "bytes": 32,
       "alignment": 4
     }
   },
-  "storage_bytes": 2396,
+  "storage_bytes": 2532,
   "previous_two_window_capacity_bytes": 1780,
-  "previous_capacity_deficit_bytes": 616,
-  "primary_unused_bytes": 144,
+  "previous_capacity_deficit_bytes": 752,
+  "primary_unused_bytes": 136,
   "expanded_secondary_candidate": [
     8425024,
-    8426348
+    8426476
   ],
-  "extra_secondary_bytes_over_old_workspace": 760,
-  "gap_to_conditional_stack_lower_bound": 916,
+  "extra_secondary_bytes_over_old_workspace": 888,
+  "gap_to_conditional_stack_lower_bound": 788,
   "fixed_reference_candidates": {
     "control": {
       "LD24": [],
@@ -298,26 +338,26 @@
     }
   ],
   "compiled_object": {
-    "bytes": 2653,
-    "sha256": "b069d6b2ae758204e67218379d3b6b26388b9628aae0f3e6f1f23c6d04658cd3",
+    "bytes": 3005,
+    "sha256": "1070727444e41a76b22b52c045745f1b45f02d64e15d7c281e954d15de70a100",
     "flags": 65536,
     "alloc_bytes": {
       "code": 0,
-      "read_only_data": 1600,
+      "read_only_data": 1952,
       "writable_data": 0,
-      "bss": 2396
+      "bss": 2532
     },
     "relocations": 0
   },
   "linked_storage_model": {
-    "bytes": 2409,
-    "sha256": "4817754b616fb4263748f54fb4c5426a975145aa411660ede677aee387c32834",
+    "bytes": 2761,
+    "sha256": "521c322aa6272661458eeb762170bbcf6f416d7978e17027d7bd634aee8fd8c5",
     "flags": 0,
     "alloc_bytes": {
       "code": 0,
-      "read_only_data": 1600,
+      "read_only_data": 1952,
       "writable_data": 0,
-      "bss": 2396
+      "bss": 2532
     },
     "relocations": 0
   },
@@ -368,7 +408,7 @@
     "targets/lfj8/lfj8_h03_phase_clock.h": "867996025e23d3205eec569019c8d7e4347f0a3b19b522b6b54bd154a1bfd96c",
     "targets/lfj8/lfj8_h03_phase_startup.h": "7acba95ed9220ec399418d22232b59e3b7cd694bf0cd5d0f13e3cd97cb59d6e5",
     "targets/lfj8/lfj8_h03_slu.h": "622238b95e2440e4be819f4766432ca7c81bd5cdd6461a881f8040ddc82c9b80",
-    "targets/lfj8/lfj8_h03_storage.h": "074140a4d2e44d5848ea64bea8fd6f0d233e032889237afe3c93ec7fc2981318",
+    "targets/lfj8/lfj8_h03_storage.h": "1c309ddfddf4ad743cb87d274091de051185b8f806c0fc8d242c61591c50c926",
     "targets/lfj8/lfj8_h03_takeover.h": "98e40796a2f33ded784709c7b2924b5596efefe417d9a22afd0065f68b185090",
     "targets/lfj8/lfj8_h03_torque.h": "d1a76d174dea882762041e0db7c47209d8f323c38c4f7554dd178d5528410822",
     "targets/lfj8/lfj8_h03_torque_can.h": "fc9121a6f045fb399d77aa065a3f21170fcdd1fd5d55e7605ec830308a513d46",

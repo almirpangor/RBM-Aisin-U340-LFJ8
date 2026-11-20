@@ -1,6 +1,6 @@
 {
   "passed": false,
-  "error": "Expanded roots exceed reserved windows: {\"primary\": {\"capacity\": 65536, \"bytes\": 65028, \"margin\": 508}, \"can_extension\": {\"capacity\": 16100, \"bytes\": 17944, \"margin\": -1844}}",
+  "error": "Expanded roots exceed reserved windows: {\"primary\": {\"capacity\": 65536, \"bytes\": 64140, \"margin\": 1396}, \"can_extension\": {\"capacity\": 16100, \"bytes\": 17944, \"margin\": -1844}}",
   "suite": "expanded",
   "compiler_memory_model": "medium",
   "hardware_verified": false,

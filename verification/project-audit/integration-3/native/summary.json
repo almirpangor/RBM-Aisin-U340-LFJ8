@@ -91,7 +91,7 @@
       ],
       "exit_code": 0,
       "log": "native-hooks.log",
-      "sha256": "136f8dda02729725d6cdc0b4aa6578d9352e69cbb2463aa3c75aade951eb635d"
+      "sha256": "33c81c087cc964ce0d1818fc1c029824f66f69f27476376fa190b8b4fef20a34"
     },
     {
       "name": "phase-boot",
@@ -191,7 +191,7 @@
       ],
       "exit_code": 0,
       "log": "service.log",
-      "sha256": "132d7d19a4825716d0b46e1f2e57dd08eed8407edea08a93fa5d63d1282776f0"
+      "sha256": "f8b17b8c901d94a9d699de3dced04bc5a1ee9afa55fdaa1786d87f8c72680bc1"
     },
     {
       "name": "slt-fault",
@@ -223,7 +223,7 @@
       ],
       "exit_code": 0,
       "log": "storage.log",
-      "sha256": "af9387d3cf645990fd37a1b3b76b9e67a8d960a8e751ff92559cb9bc36f00410"
+      "sha256": "93334b751030d0820568468d7960ae1fcfc7323323134a537739f77368425cd3"
     },
     {
       "name": "toyota-stack",
@@ -240,7 +240,7 @@
       ],
       "exit_code": 0,
       "log": "toyota-stack.log",
-      "sha256": "2a09cc6f6e14081e70984dc0b486b0321250b2a2ddc18957dbe9c6f8d17d99c9"
+      "sha256": "f4862c9c7d72d76a01f46cb25c19f7b92285ef0d11d373ab41595b672e127990"
     },
     {
       "name": "tx-gate",
@@ -277,6 +277,7 @@
   ],
   "passed": true,
   "suite": "native",
+  "compiler_memory_model": "medium",
   "hardware_verified": false,
   "flashable_image": null
 }

@@ -156,8 +156,8 @@
         }
       },
       "toyota_main_to_original_outputs": {
-        "sha256": "b055642971578f693b269daf6cb814df44ec174282dbf1629ab296c4e060d056",
-        "payload_bytes": 55124,
+        "sha256": "10df8ff9d6c16b173497aa469d546a4ff48f22f07bfd9af421a3d252a9bc88e8",
+        "payload_bytes": 54236,
         "hook_targets": {
           "0x036f30": "0x020000",
           "0x07c10c": "0x0200a4"

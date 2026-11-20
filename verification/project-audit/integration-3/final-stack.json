@@ -5,7 +5,7 @@
     "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
   },
   "status": "PASS_SIMULATOR_ONLY",
-  "controller_sha256": "723bfc4abe7870ebbb0eb598ef8eba02c7b56c796a9d679bb3e745ee28ad1f2d",
+  "controller_sha256": "246ab351c1cef2adca3a56917198d2d5d817d7fed8a6f6a3a166b2f1acbd8d81",
   "fixture_source_sha256": {
     "test_runtime.c": "da2e25a714912b436e5099627e43bb8fd4b0b55b560650596c3150f3b59dd31b",
     "h03_toyota_stack_fixture.c": "c01090c31ecfb4c91c96c808f14ad6692674a934840c1ad7bb48371393a5c130",

@@ -3,8 +3,8 @@
   "windows": {
     "primary": {
       "capacity": 65536,
-      "bytes": 64360,
-      "margin": 1176
+      "bytes": 63504,
+      "margin": 2032
     },
     "can_extension": {
       "capacity": 16100,
@@ -13,11 +13,11 @@
     }
   },
   "elf": {
-    "bytes": 105667,
-    "sha256": "74ce94eb1f61561ec6ae9533eb3e5c8c773f3df7703bc9810daac56db1ee9bb7",
+    "bytes": 104861,
+    "sha256": "71562454b65eb9be749cc65acc4cf3ca55dfc8cf4b94b45b0d1c04fead975e60",
     "flags": 0,
     "alloc_bytes": {
-      "code": 75308,
+      "code": 74452,
       "read_only_data": 6956,
       "writable_data": 0,
       "bss": 0
@@ -144,12 +144,6 @@
   ],
   "largest_symbols": [
     {
-      "name": "factory_learning_up",
-      "bytes": 1796,
-      "address": "00028168",
-      "type": "T"
-    },
-    {
       "name": "gear_567b6",
       "bytes": 1532,
       "address": "0002530c",
@@ -162,21 +156,27 @@
       "type": "T"
     },
     {
-      "name": "factory_learning_down",
-      "bytes": 1448,
-      "address": "00028a04",
+      "name": "factory_learning_up",
+      "bytes": 1396,
+      "address": "0002848c",
       "type": "T"
     },
     {
       "name": "factory_phase_demand",
       "bytes": 1298,
-      "address": "0002aa3c",
+      "address": "0002a6e4",
       "type": "T"
     },
     {
       "name": "gear_56b88",
       "bytes": 1292,
       "address": "00025908",
+      "type": "T"
+    },
+    {
+      "name": "factory_learning_down",
+      "bytes": 1184,
+      "address": "00028b98",
       "type": "T"
     },
     {
@@ -189,12 +189,6 @@
       "name": "factory_pressure_correction_raw",
       "bytes": 1082,
       "address": "00024838",
-      "type": "T"
-    },
-    {
-      "name": "factory_learning_down_observer",
-      "bytes": 1068,
-      "address": "00028fac",
       "type": "T"
     },
     {
@@ -212,19 +206,19 @@
     {
       "name": "enqueue",
       "bytes": 914,
-      "address": "0002a030",
+      "address": "00029cd8",
       "type": "t"
     },
     {
       "name": "fill",
-      "bytes": 910,
-      "address": "00027d48",
+      "bytes": 902,
+      "address": "00028074",
       "type": "t"
     },
     {
       "name": "factory_phase_cycle",
       "bytes": 814,
-      "address": "0002b3fc",
+      "address": "0002b0a4",
       "type": "T"
     },
     {
@@ -236,19 +230,19 @@
     {
       "name": "lfj8_h03_plan_outputs",
       "bytes": 806,
-      "address": "0002d514",
+      "address": "0002d1bc",
       "type": "T"
     },
     {
       "name": "factory_phase_modes_step",
       "bytes": 800,
-      "address": "0002a55c",
+      "address": "0002a204",
       "type": "T"
     },
     {
       "name": "learning_001C3C",
       "bytes": 800,
-      "address": "0002e2f4",
+      "address": "0002df9c",
       "type": "R"
     },
     {
@@ -256,6 +250,12 @@
       "bytes": 794,
       "address": "00021cbc",
       "type": "T"
+    },
+    {
+      "name": "down_observer",
+      "bytes": 790,
+      "address": "00027c9c",
+      "type": "t"
     },
     {
       "name": "gear_565ce",
@@ -266,13 +266,13 @@
     {
       "name": "gear_001108",
       "bytes": 730,
-      "address": "0002e68c",
+      "address": "0002e334",
       "type": "R"
     },
     {
       "name": "factory_shift_outputs",
       "bytes": 724,
-      "address": "0002953c",
+      "address": "000291e4",
       "type": "T"
     },
     {
@@ -308,7 +308,7 @@
     {
       "name": "factory_phase_pressure",
       "bytes": 570,
-      "address": "0002b1c0",
+      "address": "0002ae68",
       "type": "T"
     },
     {
@@ -380,7 +380,7 @@
     {
       "name": "factory_base_pressure",
       "bytes": 498,
-      "address": "0002ba04",
+      "address": "0002b6ac",
       "type": "T"
     }
   ],

@@ -1,29 +1,29 @@
 {
-  "storage_bytes": 2396,
-  "previous_capacity_deficit_bytes": 616,
+  "storage_bytes": 2532,
+  "previous_capacity_deficit_bytes": 752,
   "blocks": {
     "control": {
       "offset": 0,
-      "bytes": 1072,
+      "bytes": 1080,
       "alignment": 4,
       "address": 8416064,
-      "end_exclusive": 8417136
+      "end_exclusive": 8417144
     },
     "communication": {
       "offset": 0,
-      "bytes": 492,
+      "bytes": 500,
       "alignment": 4,
       "address": 8425024,
-      "end_exclusive": 8425516
+      "end_exclusive": 8425524
     },
     "workspace": {
       "offset": 0,
-      "bytes": 832,
+      "bytes": 952,
       "alignment": 4,
-      "address": 8425516,
-      "end_exclusive": 8426348
+      "address": 8425524,
+      "end_exclusive": 8426476
     }
   },
-  "gap_to_conditional_stack_lower_bound": 916,
+  "gap_to_conditional_stack_lower_bound": 788,
   "flashable_image": null
 }

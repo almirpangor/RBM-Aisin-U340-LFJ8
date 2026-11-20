@@ -2,14 +2,28 @@
   "purpose": "relocatable control code and CPU simulation, without board I/O",
   "architecture": "m32r",
   "size_port": {
-    "file": "factory_phase_modes.c",
-    "functions": [
-      "getq",
-      "putq"
-    ],
-    "change": "noinline attribute only; staged copy, original vendor unchanged",
-    "before_lf_sha256": "07a5d733e9259e6b22f9ba855dcd9a4b8758f0207356f739a1398252a194fe90",
-    "after_lf_sha256": "436bc48d9484a5376ab19b59f420bce484041be018a7ab51a0c506958b7c1c8e"
+    "adjustments": [
+      {
+        "file": "factory_phase_modes.c",
+        "functions": [
+          "getq",
+          "putq"
+        ],
+        "change": "noinline attribute only; staged copy, original vendor unchanged",
+        "before_lf_sha256": "07a5d733e9259e6b22f9ba855dcd9a4b8758f0207356f739a1398252a194fe90",
+        "after_lf_sha256": "436bc48d9484a5376ab19b59f420bce484041be018a7ab51a0c506958b7c1c8e"
+      },
+      {
+        "file": "factory_learning.c",
+        "functions": [
+          "inc",
+          "down_observer"
+        ],
+        "change": "noinline attribute only; staged copy, original vendor unchanged",
+        "before_lf_sha256": "fa0763018451cdfabb234d74d173a2b0083649e831b569098962353dbd9af096",
+        "after_lf_sha256": "eb9fffcca7dbfcb733c561d349bc3c4eabb9c1593fee9bbbf006ad3646a0eed4"
+      }
+    ]
   },
   "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
   "flags": [
@@ -43,7 +57,7 @@
   "toyota_commit": "8cf4308d8539253d4ac994dd99c9650f02da6236",
   "tests": "Toyota adaptation store: 96 write cuts, 768 bit faults, reset and rollover passed.\nToyota adaptation recovery: 96 write cuts, 768 bit faults in either slot, and rollover passed.\nToyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.\nToyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.\nToyota 05518C: SECONDARY load qualifiers, hysteresis, clamp, fallback and MAIN handoff passed.\nToyota S01 range: P/N to warm low-load D, standstill fill, S1/S2 and first upshift passed.\nToyota scheduler: event release, FAST phase latch, busy drop and rollover passed.\nVerified 292 GP transfer fields and five donor hydraulic snapshots.\nController tests passed: six ADC ranges, relays, Auto, Tiptronic, OD, S1/S2, ST and SLT.",
   "sha256": {
-    "rbm_u340e_m32r_be.o": "723bfc4abe7870ebbb0eb598ef8eba02c7b56c796a9d679bb3e745ee28ad1f2d",
-    "u340e_m32r_sim.elf": "3cc2245cfa14052aed2dde5943668def677d15fe5714c37b2fc223c1fa81f307"
+    "rbm_u340e_m32r_be.o": "246ab351c1cef2adca3a56917198d2d5d817d7fed8a6f6a3a166b2f1acbd8d81",
+    "u340e_m32r_sim.elf": "c47a4690d2755bd8491312104b2ded3b8739e35bb8e6663e861a2a808e054e5d"
   }
 }

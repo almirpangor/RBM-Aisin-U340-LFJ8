@@ -25,16 +25,16 @@
       "relocations": 162
     },
     "rbm_u340e_m32r_be.o": {
-      "bytes": 121706,
-      "sha256": "723bfc4abe7870ebbb0eb598ef8eba02c7b56c796a9d679bb3e745ee28ad1f2d",
+      "bytes": 121104,
+      "sha256": "246ab351c1cef2adca3a56917198d2d5d817d7fed8a6f6a3a166b2f1acbd8d81",
       "flags": 0,
       "alloc_bytes": {
-        "code": 52660,
+        "code": 51772,
         "read_only_data": 6848,
         "writable_data": 0,
         "bss": 0
       },
-      "relocations": 1244
+      "relocations": 1248
     },
     "range.o": {
       "bytes": 2776,
@@ -75,16 +75,16 @@
   },
   "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
   "combined": {
-    "bytes": 157045,
-    "sha256": "2090f208ba6e7f7be2f9479a4169bbb16beff3316246bb980fb395f2bb02b22b",
+    "bytes": 156443,
+    "sha256": "52ed6c545a916f9d26e552e1fe97939c591fa5736ae83ab2a98a2a8b4d6916cc",
     "flags": 0,
     "alloc_bytes": {
-      "code": 65244,
+      "code": 64356,
       "read_only_data": 6892,
       "writable_data": 0,
       "bss": 0
     },
-    "relocations": 1492
+    "relocations": 1496
   },
   "address_model": {
     "start": "0x020000",
@@ -92,14 +92,14 @@
     "oem_erase_start_record": "0x000958",
     "target_ownership_verified": false,
     "section_bytes": {
-      "code": 65244,
+      "code": 64356,
       "read_only_data": 6896,
       "writable_data": 0,
       "bss": 0
     },
     "relocations": 0,
-    "rom_extent_bytes": 72140,
-    "window_margin_bytes": -6604,
+    "rom_extent_bytes": 71252,
+    "window_margin_bytes": -5716,
     "fits_window": false,
     "role": "unbounded_reference_with_no_takeover_or_dtc"
   },
@@ -109,14 +109,14 @@
     "oem_erase_start_record": "0x000958",
     "target_ownership_verified": false,
     "section_bytes": {
-      "code": 56564,
+      "code": 55676,
       "read_only_data": 6932,
       "writable_data": 0,
       "bss": 0
     },
     "relocations": 0,
-    "rom_extent_bytes": 63496,
-    "window_margin_bytes": 2040,
+    "rom_extent_bytes": 62608,
+    "window_margin_bytes": 2928,
     "fits_window": true,
     "retained_entry_points": [
       "lfj8_selector_adc_init",
@@ -187,14 +187,14 @@
     "oem_erase_start_record": "0x000958",
     "target_ownership_verified": false,
     "section_bytes": {
-      "code": 59260,
+      "code": 58372,
       "read_only_data": 7320,
       "writable_data": 0,
       "bss": 0
     },
     "relocations": 0,
-    "rom_extent_bytes": 66580,
-    "window_margin_bytes": -1044,
+    "rom_extent_bytes": 65692,
+    "window_margin_bytes": -156,
     "fits_window": false,
     "retained_entry_points": [
       "lfj8_selector_adc_init",
@@ -270,17 +270,17 @@
     ],
     "shared_s01_tables": {
       "learning_001C3C": {
-        "address": 191032,
+        "address": 190144,
         "bytes": 800,
         "sha256": "8276650f90e31262d21eca82fd06ce04c9ed0456b74c9456cebf2b11b0b9fd5b"
       },
       "pressure_0015FC": {
-        "address": 190996,
+        "address": 190108,
         "bytes": 36,
         "sha256": "57d409e7acd5e96573b9857bd4275a2e850990facad3e1e668a7109b8600e41f"
       },
       "gear_000D08": {
-        "address": 190988,
+        "address": 190100,
         "bytes": 8,
         "sha256": "297dcae8b2e253f2f4087110887391050045684a250054e96ebf7b81624df67b"
       }
@@ -292,8 +292,8 @@
       "primary": {
         "start": "0x020000",
         "end_exclusive": "0x030000",
-        "rom_extent_bytes": 63232,
-        "window_margin_bytes": 2304
+        "rom_extent_bytes": 62344,
+        "window_margin_bytes": 3192
       },
       "can_extension": {
         "start": "0x07C118",
@@ -303,7 +303,7 @@
       }
     },
     "section_bytes": {
-      "code": 71680,
+      "code": 70792,
       "read_only_data": 6932,
       "writable_data": 0,
       "bss": 0
@@ -312,8 +312,8 @@
       "lfj8_selector_adc_init": "0x0212E0",
       "lfj8_selector_adc_publish_9e1c": "0x0212F4",
       "lfj8_selector_adc_take": "0x021308",
-      "lfj8_range_control_init": "0x02CFE4",
-      "lfj8_range_control_step": "0x02D02C",
+      "lfj8_range_control_init": "0x02CC6C",
+      "lfj8_range_control_step": "0x02CCB4",
       "lfj8_9e1c_raw_vss_init": "0x020B7C",
       "lfj8_9e1c_raw_vss_after_capture_store": "0x020B8C",
       "lfj8_9e1c_raw_nt_init": "0x020BC0",
@@ -332,7 +332,7 @@
       "lfj8_chery_tx_poll": "0x021218",
       "rbm_u340e_outputs_init": "0x02233C",
       "rbm_u340e_outputs_step": "0x022434",
-      "lfj8_h03_plan_outputs": "0x02D268",
+      "lfj8_h03_plan_outputs": "0x02CEF0",
       "rbm_u340e_runtime_init": "0x0226BC",
       "rbm_u340e_runtime_snapshot_gears": "0x0227A0",
       "rbm_u340e_runtime_gears_outputs": "0x022830",
@@ -355,18 +355,18 @@
       "rbm_u340e_schedule_secondary_claim": "0x023630",
       "rbm_u340e_schedule_secondary_done": "0x023654",
       "rbm_u340e_schedule_main_done": "0x023694",
-      "lfj8_h03_takeover_init": "0x02DA4C",
-      "lfj8_h03_takeover_prepare": "0x02DAFC",
-      "lfj8_h03_takeover_apply": "0x02DB34",
-      "factory_hydraulics_control_main": "0x02CE4C",
-      "factory_hydraulics_fast_learning": "0x02CEA0",
-      "factory_hydraulics_load_main": "0x02CD80",
-      "factory_hydraulics_load_observer": "0x02CDD0",
-      "factory_hydraulics_counters_begin": "0x02CE20",
-      "factory_hydraulics_counters_end": "0x02CE38",
-      "factory_donor_engine_gate": "0x02C8DC",
-      "factory_hydraulics_capture": "0x02CF0C",
-      "factory_hydraulics_restore": "0x02CF74",
+      "lfj8_h03_takeover_init": "0x02D6D4",
+      "lfj8_h03_takeover_prepare": "0x02D784",
+      "lfj8_h03_takeover_apply": "0x02D7BC",
+      "factory_hydraulics_control_main": "0x02CAD4",
+      "factory_hydraulics_fast_learning": "0x02CB28",
+      "factory_hydraulics_load_main": "0x02CA08",
+      "factory_hydraulics_load_observer": "0x02CA58",
+      "factory_hydraulics_counters_begin": "0x02CAA8",
+      "factory_hydraulics_counters_end": "0x02CAC0",
+      "factory_donor_engine_gate": "0x02C564",
+      "factory_hydraulics_capture": "0x02CB94",
+      "factory_hydraulics_restore": "0x02CBFC",
       "factory_adaptation_load": "0x023BDC",
       "factory_adaptation_save": "0x023C8C",
       "chery_dtc_init": "0x07C118",
@@ -416,17 +416,17 @@
     "target_ownership_verified": false,
     "shared_s01_tables": {
       "learning_001C3C": {
-        "address": 188068,
+        "address": 187180,
         "bytes": 800,
         "sha256": "8276650f90e31262d21eca82fd06ce04c9ed0456b74c9456cebf2b11b0b9fd5b"
       },
       "pressure_0015FC": {
-        "address": 188032,
+        "address": 187144,
         "bytes": 36,
         "sha256": "57d409e7acd5e96573b9857bd4275a2e850990facad3e1e668a7109b8600e41f"
       },
       "gear_000D08": {
-        "address": 188024,
+        "address": 187136,
         "bytes": 8,
         "sha256": "297dcae8b2e253f2f4087110887391050045684a250054e96ebf7b81624df67b"
       }

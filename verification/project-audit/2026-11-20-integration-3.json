@@ -14,7 +14,8 @@
   "previous_audit": "verification/project-audit/2026-11-20-integration-2.json",
   "source_commit_before_integration": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "merge_commit_before_local_fixes": "e2fd3b7866f2134463ebf872075d8ff3d9c4b1dd",
-  "scope": "Integrate 31 reviewed portions; repeat combined CPU and Bosch checks; retain all requested sizing roots, reduce M32R code by 552 bytes, and account for added persistent state and workspace.",
+  "previous_integration_revision": "320b72e41aa4a85815f2db8942f88f7050abb3f0",
+  "scope": "Integrate 31 reviewed portions; repeat combined CPU and Bosch checks; retain all requested sizing roots, reduce M32R code by 1440 bytes, and account for added persistent state and workspace.",
   "accepted_portions": [
     {
       "task": "DTC-02",
@@ -177,7 +178,7 @@
     "37 host steps and 98 Python tests with zero skips before the target-only noinline change",
     "M32R controller and complete native tests repeated after the size port, including 292 GP transfer fields and donor snapshots",
     "Standard H03 link and 18 component scenarios repeated after the size port; exact match to the fresh Bosch bidirectional trace",
-    "17 native groups on the integrated source before the port; dependent native-hooks and Toyota-stack repeated after the port",
+    "All 17 native groups repeated after the final four-function size port, including native hooks, DTC foreground and Toyota stack",
     "Storage ABI, six 24576-byte OEM initializer comparisons, service isolation and six storage tests repeated after inventory changes",
     "Five additional M32R component groups repeated with final controller: 25000 VSS arithmetic cases, buttons, 501760 mode cases, journal and cycle-load",
     "SLU comparison: 65536 command words, 2560 branch cases, 15760 pressure cases, 2520 baseline cases and five steps; M32R 20 cases and three refusals",
@@ -188,24 +189,24 @@
     "Small-model experiment repeated with rebuilt controller and bridge; also rejected overflow, never accepted as a release profile"
   ],
   "inherited_checks": [
-    "The 17 native-group summary predates target-only noinline and storage inventory edits. final-native-hooks.json, final-stack.json, final-storage.json and final-service.json supersede affected cases. Remaining native sources and their dependencies are unchanged after those checks.",
+    "Host 37-step/98-test results preceded the target-only noinline port. Host build paths are unchanged; all affected target builds, native groups and five extra component groups were repeated after the final target-only edit.",
     "Previously audited packaging and coordination regression evidence is retained for unchanged corresponding source code. The evidence hashes identify its historic results; no new packaging or hardware acceptance is inferred."
   ],
   "diagnosed_failures": [
-    "All requested roots together exceed candidate Flash windows. Default medium-model final primary uses 65028/65536 bytes and extension 17944/16100 bytes; total deficit is 1336 bytes even if placement were rebalanced.",
-    "Small-symbol-model sizing uses 64360/65536 and 17904/16100 bytes; total deficit is 628 bytes. It is an explicit experiment, not the production compiler setting.",
+    "All requested roots together exceed candidate Flash windows. Default medium-model final primary uses 64140/65536 bytes and extension 17944/16100 bytes; total deficit is 448 bytes even if placement were rebalanced.",
+    "Small-symbol-model sizing uses 63504/65536 and 17904/16100 bytes; total margin is 228 bytes, but the extension still overflows and the placement remains rejected. It is an explicit experiment, not the production compiler setting.",
     "The known RAM inventory exceeds the previous two-window capacity by 752 bytes. Expanded secondary placement and its stack separation remain hypotheses.",
     "All sizing profiles still exclude native ASM hooks, final platform callbacks/startup, physical output inhibition, NVM backend and remaining Toyota producers."
   ],
   "findings": {
     "ready_target_bins": 0,
-    "controller_size_port_saved_bytes": 552,
+    "controller_size_port_saved_bytes": 1440,
     "vendor_sources_modified": false,
     "expanded_medium_windows": {
       "primary": {
-        "bytes": 65028,
+        "bytes": 64140,
         "capacity": 65536,
-        "margin": 508
+        "margin": 1396
       },
       "extension": {
         "bytes": 17944,
@@ -213,12 +214,12 @@
         "margin": -1844
       }
     },
-    "expanded_medium_total_deficit_bytes": 1336,
+    "expanded_medium_total_deficit_bytes": 448,
     "experimental_small_windows": {
       "primary": {
-        "bytes": 64360,
+        "bytes": 63504,
         "capacity": 65536,
-        "margin": 1176
+        "margin": 2032
       },
       "extension": {
         "bytes": 17904,
@@ -226,7 +227,7 @@
         "margin": -1804
       }
     },
-    "experimental_small_total_deficit_bytes": 628,
+    "experimental_small_total_margin_bytes": 228,
     "known_storage_bytes": 2532,
     "previous_capacity_bytes": 1780,
     "old_capacity_deficit_bytes": 752,
@@ -368,7 +369,7 @@
     "controller/include/rbm_u340e_hydraulic_workspace.h": "0e446b7272fce9af343f627e427b024e45b010fce07bc20ecef3d08c910938d5",
     "controller/include/rbm_u340e_runtime.h": "81e94947c13abdc4e22d26bd86d9400b330a92d68909cd4b27d6bc5b97bd1937",
     "controller/include/rbm_u340e_scheduler.h": "09be707bd3fc7da26c313d45a4092631e3db814934d8baf2703de25f16ea1b09",
-    "controller/size_port.py": "d384b2cd61deb2286b9e300d4e7b44dbba40a6f6893944287cb725be2fe7ef96",
+    "controller/size_port.py": "085cb8dcc38ac89c97108e2913faf31310fe235a8c6c7e51e31094a8b6203cc6",
     "controller/src/rbm_u340e.c": "dfe69b5304a6d847245b0803b65dc8c459ae1c2daab62caff9b5c515851427c1",
     "controller/src/rbm_u340e_runtime.c": "30ad7ba486aaf1db790bdf0ef3480f44595a26da19f8be305e295ceaa3688cc9",
     "controller/src/rbm_u340e_scheduler.c": "07ff995781a0c9b85a52fb7fae42069c977ab04c417744b5f3ed8d738460641d",
@@ -657,24 +658,24 @@
     "verification/project-audit/integration-3/components/cycle-load.log": "bc2dc029ca60c0dd29914d793ecee9dd9844a2259b72eddd6761cb26075755ce",
     "verification/project-audit/integration-3/components/journal.log": "465e7a963f67f2a166e2b3076b79d2be2935f53460f3d3787ff5d5f31166ee40",
     "verification/project-audit/integration-3/components/mode-policy.log": "c0e361250f93564d3fcd4fb1468754f971596b2a505097bc6b4bf9b7309e21c9",
-    "verification/project-audit/integration-3/components/summary.json": "6f803e287a094e343dcfc642f6fc12bbd34a3a835d9c2d64c22f42e1505aabe2",
+    "verification/project-audit/integration-3/components/summary.json": "f952a83016fec50448891d9f4242bfed4285e172eeca1eb1a1632c9fdcca9916",
     "verification/project-audit/integration-3/components/vss-arithmetic.log": "a3d55ebd11ec299598de87c2bce694563f1ea71a678b83956b497022fcaea0c1",
-    "verification/project-audit/integration-3/controller-manifest.json": "077e30c03841a45b4ae0b8e3daff8b45ac38a2fbaf6d5a1fb043143de57f23d9",
+    "verification/project-audit/integration-3/controller-manifest.json": "77e6fa6a5a4ce4531221ed3d1e9d5c85704a16d4d78a2077ed365bb66041e1d0",
     "verification/project-audit/integration-3/expanded-before-port.json": "90183881f2b6a9759d6d15ba38554da08b76442e14b426f2c0dcceb284619e5e",
-    "verification/project-audit/integration-3/expanded/summary.json": "a158cb2249e54654a57fb0806709cac19442f16e891b87ff505b809b8ef09388",
-    "verification/project-audit/integration-3/expanded/unbounded-sizing.json": "0ca80f7f642f46df278842be63cd0e913c6f9143951b6999d80caa345b0e3b4d",
-    "verification/project-audit/integration-3/final-native-hooks.json": "a7a0e26d9e6c903687281d66732844f243c6bf57c5970c9c05e5d43767a85ddc",
+    "verification/project-audit/integration-3/expanded/summary.json": "56175c31c7ac5765fa65c6437d1213b4164bfd99445b2dee99d0d3917cada96a",
+    "verification/project-audit/integration-3/expanded/unbounded-sizing.json": "2576e82f58eb67e97c79f95bcb7be36f99848784868411b1baaa39559075cc9a",
+    "verification/project-audit/integration-3/final-native-hooks.json": "d55367d99d34ab0f8f8081579cc0a49db72b2a371db882aeffcbdf1b3b1b9ea5",
     "verification/project-audit/integration-3/final-service.json": "0cd332a9a470fa2d455e986cd6788115d3ee047bf7da7367f023442375de6567",
-    "verification/project-audit/integration-3/final-stack.json": "6c3bd047605e0529d5c3cb561157bd276e56835e603be802e6cb5d97f5a2c9de",
+    "verification/project-audit/integration-3/final-stack.json": "8bcda083054bd5665a6bcd89d3d3dafea5f512f177a015baeaac930888b58516",
     "verification/project-audit/integration-3/final-storage-tests.txt": "9713dfa2c82efb2bd033573b472367575d9a29fcdb41a25b00a98cc8aad31d39",
     "verification/project-audit/integration-3/final-storage.json": "796a30f255a4df11f1e6aec2ec6d1b993aaeca4f35f92bc14f0687d2c76c2a1f",
-    "verification/project-audit/integration-3/m32r-link.json": "0afcfe5071a83644281628c258a287e87e7897686ac0716a58dc5f5708a36fda",
+    "verification/project-audit/integration-3/m32r-link.json": "68d104361c54a722a181b5513075fc666ada4f1c3b1593c9ca87fff8ed9a724f",
     "verification/project-audit/integration-3/native/atf-fault.log": "2007aa571d88058b685bfbf2a87fa9980dd3ab554f67be0730e333c55e5d85d7",
     "verification/project-audit/integration-3/native/atf-native.log": "80faaf4bc9fea1c7b1df7d2708aadb053a689e64b74fd8a70376b80dd621822d",
     "verification/project-audit/integration-3/native/basiccan.log": "1bdc40cdffb5410152cbb7a7a4477b930c9c5f1bfb29a47ddd56c17e790847ce",
     "verification/project-audit/integration-3/native/can-lifecycle.log": "35ffea960d5c4f56a8e47c2cfa74b5bffe52012245b69871dd5f643b56a736e2",
     "verification/project-audit/integration-3/native/dtc-foreground.log": "c539eeb179e982610c2fc07725e2d52e35677eb23b830e898ae88f7749acc732",
-    "verification/project-audit/integration-3/native/native-hooks.log": "103d3328318e8fa582c43e4515191ec72315cc702273cafe9926c6386d9ed335",
+    "verification/project-audit/integration-3/native/native-hooks.log": "d55367d99d34ab0f8f8081579cc0a49db72b2a371db882aeffcbdf1b3b1b9ea5",
     "verification/project-audit/integration-3/native/phase-boot.json": "390cf930223a977f0963c1f7007be60afbc2b210b954040464a5ba051b966603",
     "verification/project-audit/integration-3/native/phase-boot.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "verification/project-audit/integration-3/native/phase-clock.json": "974963a324c111edffacdcf2bc532dab3020771ea55dc491a4c51500b2f2e921",
@@ -684,20 +685,21 @@
     "verification/project-audit/integration-3/native/phase-wait.json": "4abbe5b1a26c0c2b289cc90842439e0bf42c34f5225deb94e793568084f7f68f",
     "verification/project-audit/integration-3/native/phase-wait.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "verification/project-audit/integration-3/native/selector.log": "f00490bce6073b887f7f3ae2f2a498f97f1473ec1cea29285c68b530e8186468",
-    "verification/project-audit/integration-3/native/service.log": "b6da50bb9920868c3e4f1512713375e5c6257220f47fb7e73ed7afea6a374c64",
+    "verification/project-audit/integration-3/native/service.log": "0cd332a9a470fa2d455e986cd6788115d3ee047bf7da7367f023442375de6567",
     "verification/project-audit/integration-3/native/slt-fault.log": "77e2eab4739660dd084255bc13f724e7f9e359d86f72d82ad1451f90e5dc0e74",
-    "verification/project-audit/integration-3/native/storage.json": "b7f3e8b7a071fe4324febab43dc4d24580e5d7cf949f5f2f363ce245dfa8a1eb",
-    "verification/project-audit/integration-3/native/storage.log": "8cfed08b48ee767e0d37f46ffa42667b0c09c4783f1cf7a9884a780a8df8dce7",
-    "verification/project-audit/integration-3/native/summary.json": "6690e69ee7032a216362cf5676d739bcb3fd0c19a8220b22a7949428e310ffc4",
-    "verification/project-audit/integration-3/native/toyota-stack.log": "acbf567cf6a9733e2acf7eb2d7a6c6ca7065bff1d38447fc5ddae59b33b9c677",
+    "verification/project-audit/integration-3/native/storage.json": "796a30f255a4df11f1e6aec2ec6d1b993aaeca4f35f92bc14f0687d2c76c2a1f",
+    "verification/project-audit/integration-3/native/storage.log": "28fb9adf6c5eb4bfdf4b604591b9fe1ddbcd105c330ebcac86eda062417d663f",
+    "verification/project-audit/integration-3/native/summary.json": "8a427f4835b29b585a546715f8cd77f5de225771f7fc76477bff54f30e62e5e4",
+    "verification/project-audit/integration-3/native/toyota-stack.log": "8bcda083054bd5665a6bcd89d3d3dafea5f512f177a015baeaac930888b58516",
     "verification/project-audit/integration-3/native/tx-gate.log": "86e88d0e5f7377059f6f15476547393e9fa086480b4177c472f2a27bf07722b2",
     "verification/project-audit/integration-3/native/vflash-lockout.json": "0d9821078887a5ed6a3d934a16cc74031878506c93842ed94a6975a387a9d296",
     "verification/project-audit/integration-3/native/vflash-lockout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "verification/project-audit/integration-3/pc-checks.json": "3436e7c82424c14ebd3e232f97a518f15bd59bb3d0d17d5f358ee808b361589e",
     "verification/project-audit/integration-3/roundtrip.json": "818627831cff4a55caaa2bd612dc411b4e5e63191e83f560a436de2246d88d2a",
+    "verification/project-audit/integration-3/size-optimization.json": "b11b6fde4e1d31ec0a57bfd16d123b76e07b2450b064d40b9a3039c1357698ab",
     "verification/project-audit/integration-3/slu.log": "d3c7789431a5914a417874034446416ab2b0964305b8876e7bf4f0df4df82636",
-    "verification/project-audit/integration-3/small-model/summary.json": "0a8dce8bb3b1bff789c1bbd8bb1829b6bd3cd54e7281866367683ea6304128fe",
-    "verification/project-audit/integration-3/small-model/unbounded-sizing.json": "b6a78be69708a931c583747ad77730b750c1da300bb493b558fab19fa746a895",
+    "verification/project-audit/integration-3/small-model/summary.json": "1b7ced3e5a1220008c5cca6929e7579512d26cf846974359f4be3a7e46aa6ee4",
+    "verification/project-audit/integration-3/small-model/unbounded-sizing.json": "5116a5c09afc4f1f3311d933021bfeaa600faeadd5300909d80121c04e01586d",
     "verification/project-audit/integration-3/sources.txt": "5994b1ae7040794dfdf485dffc8c00984bf4f7a7d94e14df1b2521a7bd78bde4",
     "verification/project-audit/integration-3/torque-dialogue.json": "0dc169bdb9ff775c0548eb2edb191a9b8510ce2c64bb122bd5ed6ffef6614b41",
     "verification/project-audit/integration/atf.txt": "39b1be4f0d8cd78d45f3766fd355d2471c6d619450a2445dfa6b1c5795e1e1f2",

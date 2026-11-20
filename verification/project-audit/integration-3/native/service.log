@@ -90,7 +90,7 @@
   "flash_or_ram_write_routine_executed": false,
   "hardware_executed": false,
   "monitor_storage_spans": {
-    "storage_report_sha256": "33e54547ecb0c9d86fec3082fbc2432241c65181004563aed8fa31ed6f873875",
+    "storage_report_sha256": "9be9728559de24f5a83b934ddb19dfc172b181d1404b02a8f2527f15d283bf3f",
     "stock_protected_ram": [
       "0x808578",
       "0x808DB4"
@@ -140,9 +140,9 @@
     "blocks": {
       "control": {
         "start": "0x806B40",
-        "end_exclusive": "0x806F70",
-        "tested_bytes": 1072,
-        "bytes_in_accepted_spans": 1072,
+        "end_exclusive": "0x806F78",
+        "tested_bytes": 1080,
+        "bytes_in_accepted_spans": 1080,
         "cases": [
           {
             "address": "0x806B40",
@@ -166,16 +166,16 @@
           },
           {
             "address": "0x806F3C",
-            "bytes": 52,
+            "bytes": 60,
             "accepted": true
           }
         ]
       },
       "communication": {
         "start": "0x808E40",
-        "end_exclusive": "0x80902C",
-        "tested_bytes": 492,
-        "bytes_in_accepted_spans": 492,
+        "end_exclusive": "0x809034",
+        "tested_bytes": 500,
+        "bytes_in_accepted_spans": 500,
         "cases": [
           {
             "address": "0x808E40",
@@ -184,35 +184,35 @@
           },
           {
             "address": "0x808F3F",
-            "bytes": 237,
+            "bytes": 245,
             "accepted": true
           }
         ]
       },
       "workspace": {
-        "start": "0x80902C",
-        "end_exclusive": "0x80936C",
-        "tested_bytes": 832,
-        "bytes_in_accepted_spans": 832,
+        "start": "0x809034",
+        "end_exclusive": "0x8093EC",
+        "tested_bytes": 952,
+        "bytes_in_accepted_spans": 952,
         "cases": [
           {
-            "address": "0x80902C",
+            "address": "0x809034",
             "bytes": 255,
             "accepted": true
           },
           {
-            "address": "0x80912B",
+            "address": "0x809133",
             "bytes": 255,
             "accepted": true
           },
           {
-            "address": "0x80922A",
+            "address": "0x809232",
             "bytes": 255,
             "accepted": true
           },
           {
-            "address": "0x809329",
-            "bytes": 67,
+            "address": "0x809331",
+            "bytes": 187,
             "accepted": true
           }
         ]
