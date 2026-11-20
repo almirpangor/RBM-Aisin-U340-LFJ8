@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 126,
+  "sequence": 127,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -429,12 +429,12 @@
         "tests/test_bosch_build_integrity.py",
         "verification/project-audit/ecu01-checksum-coverage.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "a1532b4af90d4794aec52c99f7b434a2",
       "claimed_at": "2026-11-20T16:21:57+00:00",
-      "updated_at": "2026-11-20T16:23:36+00:00",
-      "note": "Reproduced an invalid 0xA7830 checksum with a 50-record report on the original build. Added exact offset coverage guard. Negative injection and focused tests pass; running normal builds and ST10 model.",
-      "result": null
+      "updated_at": "2026-11-20T16:25:01+00:00",
+      "note": "E4M3 checksum coverage now requires all 51 exact record offsets. Real omission injection rejected. Eight profiles byte-identical to baseline, 68 unit tests and ordinary compact ST10 PASS_OFFLINE_ONLY. Evidence verification/project-audit/ecu01-checksum-coverage.md. Update shared audit at integration.",
+      "result": "84380128b8db2e0a6b24b297dd40aa020598e3ce"
     },
     "VSS-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -1461,9 +1461,17 @@
       "action": "claim",
       "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
       "at": "2026-11-20T16:24:53+00:00"
+    },
+    {
+      "operation_id": "e27dbc4147464fc288ad7fc376b87015",
+      "task": "ECU-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "a1532b4af90d4794aec52c99f7b434a2",
+      "at": "2026-11-20T16:25:01+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:24:53+00:00",
+  "updated_at": "2026-11-20T16:25:01+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
