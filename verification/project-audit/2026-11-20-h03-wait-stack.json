@@ -432,6 +432,34 @@
       "bss": 0,
       "target_ownership_verified": false
     },
-    "limits": "Caller-owned phase state. Native reset hook, target RAM ownership and qualified hardware inhibit remain open."
+    "limits": "Caller-owned phase state. Native reset hook, target RAM ownership and qualified hardware inhibit remain open.",
+    "prospective_merge": {
+      "main": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
+      "candidate": "7a0abe2c9b801c6efd9577e559abdbc0212757f2",
+      "rebuilt": [
+        "M32R Toyota controller",
+        "H03 bridge",
+        "H03 split-address model"
+      ],
+      "m32r_component_checks": 17,
+      "phase_wait_cases": 22,
+      "replayed_bosch_image": "bd0afefa40dfd1ea82e647ea5af7e64e2f652c27ccc5c3b91a986224fd77ec79",
+      "windows": {
+        "primary": {
+          "start": "0x020000",
+          "end_exclusive": "0x030000",
+          "rom_extent_bytes": 64240,
+          "window_margin_bytes": 1296
+        },
+        "can_extension": {
+          "start": "0x07C118",
+          "end_exclusive": "0x07FFFC",
+          "rom_extent_bytes": 14780,
+          "window_margin_bytes": 1320
+        }
+      },
+      "startup_address_in_model": "0x07E9E0",
+      "scope": "Private prospective merge. No main update and no flashable image."
+    }
   }
 }
