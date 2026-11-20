@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:42:29+00:00**. Изменение № **292**.
+Обновлено UTC: **2026-11-20T17:42:49+00:00**. Изменение № **293**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -21,7 +21,7 @@
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Работа завершена | Codex CAN-01 FullCAN coherence \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-rx-coherence-1120-c7e4 | 2026-11-20T17:40:45+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 6820992a15300275c3dd9c98398151e661a42925 |
 | CAN-02 — Общий диспетчер CAN13 | На проверке | Codex CAN-02 telemetry submission \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can02-telemetry-submit-1120-c7e4 | 2026-11-20T17:10:59+00:00 | На main b2ca79d проверены совместно точные коммиты CAN-01…05, затем добавлены DTC-02 f38da53 и H03-03 7888441. Без конфликтов. В обоих вариантах ПК 35 шагов/71 тест, M32R 17 компонентов. CAN0 16 сценариев, 0x1AE 65536 пар, Bosch PASS_OFFLINE_ONLY. В расширенной комбинации 18 сравнений BasicCAN и 22 сценария ожидания H03, запас ROM модели 1176/1272 байта. Отзыв TX13 при BusOff из текущего review принят моделью. Рабочая привязка IRQ, RAM, Virtual Flash и стенд открыты. / commit a45c2f67a80a5f7e0d939816cfb12551fd6edd96 |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Работа завершена | Codex CAN-03 reset generation \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can03-epoch-1120-c7e4 | 2026-11-20T17:37:21+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 6fc5a51975cd6bbbdf5bc4985d5d61b811435b6b |
-| CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 TX loss \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can04-tx-loss-1120-c7e4 | 2026-11-20T16:45:25+00:00 | Wrong-ID TX13 completion and BusOff now revoke RB torque confirmation and block reuse until a fresh generation. 35 PC steps/71 tests, 17 M32R component runs, Bosch normal and lost-status dialogues PASS_OFFLINE_ONLY. See verification/project-audit/can04-tx-lease-loss.md. / commit e02095c6b8d294dacd71db21ea36f970019d0790 |
+| CAN-04 — Запрос снижения момента по RB | Работа завершена | Codex CAN-04 TX loss \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can04-tx-loss-1120-c7e4 | 2026-11-20T17:42:49+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit e02095c6b8d294dacd71db21ea36f970019d0790 |
 | CAN-05 — Полнота штатного обмена Chery | Работа завершена | Codex CAN-05 RX age \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can05-rx-age-1120-c7e4 | 2026-11-20T17:39:43+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 82947a42cfb33ef5350af1ce98e39055ba6a1508 |
 | ECU-01 — Проверочная сборка Bosch E4M3 | На проверке | Codex ECU-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/ecu01-1120-c7e4 | 2026-11-20T16:25:01+00:00 | E4M3 checksum coverage now requires all 51 exact record offsets. Real omission injection rejected. Eight profiles byte-identical to baseline, 68 unit tests and ordinary compact ST10 PASS_OFFLINE_ONLY. Evidence verification/project-audit/ecu01-checksum-coverage.md. Update shared audit at integration. / commit 84380128b8db2e0a6b24b297dd40aa020598e3ce |
 | ECU-02 — Калибровка момента и работа двигателя | На проверке | Codex — обороты и отпускание момента Bosch \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/ecu02-torque-rpm-32e6ac79 | 2026-11-20T16:35:57+00:00 | Передаю интегратору. Точный обычный компактный образ E4M3 OFFLINE_ONLY: 4 границы RPM, 6 отзывов через air/fast/load, нулевой статус и защита старого токена PASS. Повтор 26 команд и сквозной диалог H03 с потерей статуса PASS. Отчёт ecu02-torque-rpm-guard.md. Аппаратный пуск и калибровки открыты. / commit 06eacf1ff4f42e423886b4b25b849ead054ac924 |
@@ -64,14 +64,6 @@
 - targets/lfj8/lfj8_h03_can13.c
 - targets/lfj8/test_lfj8_h03_can13.c
 - verification/project-audit/can02-telemetry-submit.md
-
-### CAN-04
-
-Чат: Codex CAN-04 TX loss. Claim ID: 8ac9d38cec054d318a8eb919f6783de2.
-
-- targets/lfj8/lfj8_h03_torque_can.c
-- targets/lfj8/test_lfj8_h03_torque_can.c
-- verification/project-audit/can04-tx-lease-loss.md
 
 ### DTC-01
 
@@ -212,6 +204,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:42:49+00:00 | CAN-04 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T17:42:29+00:00 | TOY-05 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T17:42:09+00:00 | MODE-02 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T17:40:45+00:00 | CAN-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
@@ -241,4 +234,3 @@
 | 2026-11-20T17:05:57+00:00 | MODE-01 | review | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T17:05:48+00:00 | H03-02 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T17:05:16+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
-| 2026-11-20T17:04:19+00:00 | CAN-02 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
