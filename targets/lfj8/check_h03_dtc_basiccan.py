@@ -909,6 +909,43 @@ def check_native_t6(run, work, debugger, patches, case):
             "startup_refusals": list(refused)}
 
 
+def check_native_durable_clear(run, work, debugger, patches):
+    clear = raw_slot(0x732, 4, "0314ff00", 0x13FE)
+    read = raw_slot(0x732, 4, "0317ff00", 0x13FF)
+    case = Case("clear_without_storage_then_read", {14: (clear, 0x41), 15: (read, 0x41)}, [])
+    setup = (
+        "set broker.diagnostic.link.session.mode_bits = 0x90",
+        "set broker.diagnostic.link.session.permission_bits = 0x08",
+        "set dtc.current[0] = 0x10",
+        "set dtc.history[0] = 0x10",
+        "set dtc.snapshot_index[0] = 4",
+    )
+    steps = (
+        trace("clear_state", "dtc.current[0]", "dtc.history[0]", "dtc.snapshot_index[0]",
+              "dtc.clear_pending", "broker.diagnostic.link.tx_token"),
+        "tbreak *fixture_target_done", "continue",
+        trace("read_after_clear", "fixture_foreground_result.available",
+              "fixture_foreground_result.diagnostic_consumed", "fixture_target.queue.count",
+              f"*(unsigned char*){MSC + 13:#x}", *bytes_at(SLOT_DATA + 13 * 16, 14)),
+    )
+    events = simulate(run, work, debugger, case, compare_hook=True, patches=patches,
+                      compare_dispatch=True, target=True, foreground=True,
+                      setup=setup, target_steps=steps)
+    clears = [row[1:5] for row in events if row[0] == "foreground"]
+    state = [row for row in events if row[0] == "clear_state"]
+    if clears != [(1, 1, 1, 0)] or state != [("clear_state", 0x10, 0x10, 4, 0, 0)]:
+        raise ValueError(f"Native clear changed DTC or submitted TX13 without storage: {clears}, {state}")
+    reads = [row for row in events if row[0] == "read_after_clear"]
+    if len(reads) != 1 or reads[0][1:5] != (1, 1, 0, 0x80):
+        raise ValueError(f"Native DTC read did not follow the denied clear: {reads}")
+    slot = reads[0][5:]
+    can_id = ((slot[0] & 0x1F) << 6) | (slot[1] & 0x3F)
+    if (can_id, slot[5], slot[6:14]) != (0x722, 8, (5, 0x57, 1, 7, 0x10, 0x74, 0, 0)):
+        raise ValueError(f"Native DTC read lost the retained P0710: {slot}")
+    return {"clear_request_consumed": True, "clear_tx13_submission": False,
+            "history_and_current_retained": True, "followup_read_reply": bytes(slot[6:14]).hex()}
+
+
 def check_target_foreground(run, work, debugger, patches, with_can_owner=False):
     case = next(case for case in cases() if case.name == "rx14_session")
     trace_events = simulate(run, work, debugger, case, compare_hook=True, patches=patches,
@@ -973,6 +1010,7 @@ def check_target_foreground(run, work, debugger, patches, with_can_owner=False):
             "post_reset_tx13_submission": False,
         }
         result["native_t6_clock"] = check_native_t6(run, work, debugger, patches, case)
+        result["native_durable_clear"] = check_native_durable_clear(run, work, debugger, patches)
     return result
 
 

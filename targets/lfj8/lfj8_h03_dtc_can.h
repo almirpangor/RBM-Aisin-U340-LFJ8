@@ -18,6 +18,7 @@ typedef struct {
     uint16_t first_frame_finished_at;
     uint8_t submission;
     bool session_clock_seen;
+    bool require_durable_clear; /* Set by the native binding. */
 } Lfj8H03DtcCan;
 
 typedef enum {
