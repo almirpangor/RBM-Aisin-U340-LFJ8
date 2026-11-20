@@ -10,6 +10,9 @@ import sys
 from tempfile import TemporaryDirectory
 
 from check_h03_link import TARGET, identify_h03
+from check_h03_sensor_native import SITES as SENSOR_SITES
+from check_h03_phase_wait import IRQ_START, IRQ_END, PSW_HELPERS_START, PSW_HELPERS_END
+from lfj8_h03_layout import read_elf
 
 
 HERE = Path(__file__).resolve().parent
@@ -29,16 +32,23 @@ FRAGMENTS = (
     ("stock_timer", 0x00A82C, 0x00A868),
     ("release_helper", 0x00A06C, 0x00A0B0),
     ("stock_release", 0x040468, 0x0404C4),
+    ("irq", IRQ_START, IRQ_END),
+    ("psw_helpers", PSW_HELPERS_START, PSW_HELPERS_END),
+    ("s51_irq", 0x00A9EC, 0x00AA50),
+    ("s83_irq", 0x00AA50, 0x00AAA8),
 )
 # Other initialization routines are not exercised by this fixture. The CAN
 # initialization stub is special: it advances TML0CT and leaves a stock flag.
 STUBS = (0x00B704, 0x0404C4, 0x04054C, 0x04050C, 0x0089EC,
          0x034000, 0x046774, 0x008FFC, 0x004784, 0x034004,
-         0x00A0CC, 0x00BED8, 0x00D108, 0x04039C, 0x0403C0)
+         0x00A0CC, 0x00BED8, 0x00D108, 0x04039C, 0x0403C0, 0x046794, 0x0467A0)
 CASES = ("stock", "owned", "invalid_period", "unowned", "bad_header", "bad_trailer",
          "partial", "stopped_h03", "duplicate", "toyota_gap", "restart", "stopped_toyota",
-         "bad_clock", "no_provider", "coalesced", "overtaken")
-CLOSED_AT_START = {"invalid_period", "unowned", "partial", "bad_clock", "no_provider"}
+         "bad_clock", "no_provider", "coalesced", "overtaken", "sensor_clock_changed",
+         "sensor_bad_config", "sensor_bad_startup")
+CLOSED_AT_START = {"invalid_period", "unowned", "partial", "bad_clock", "no_provider",
+                   "sensor_bad_startup"}
+CANDIDATE_START, CANDIDATE_END = 0x20000, 0x30000
 FIXTURE = r"""
     .section .entry,"ax"
     .global _start
@@ -128,6 +138,34 @@ input_site:
     .section .stock_timer,"ax"
     .incbin "stock_timer.dat"
 
+    .section .trap_vector,"ax"
+    bra.l fixture_oem_irq
+
+    .section .irq,"ax"
+fixture_oem_irq:
+    .incbin "irq.dat"
+
+    .section .psw_helpers,"ax"
+    .incbin "psw_helpers.dat"
+
+    .macro capture_handler channel
+    .section .\channel\()_irq,"ax"
+fixture_\channel\()_irq:
+    .incbin "\channel\()_irq.dat",0,0x20
+    .global fixture_\channel\()_store
+fixture_\channel\()_store:
+#if BOOT_CASE == 0
+    .incbin "\channel\()_irq.dat",0x20,4
+#else
+    bra.l rbm_h03_\channel\()_capture_hook
+#endif
+    .global h03_sensor_after_\channel
+h03_sensor_after_\channel:
+    .incbin "\channel\()_irq.dat",0x24
+    .endm
+    capture_handler s51
+    capture_handler s83
+
     .section .release_helper,"ax"
     .incbin "release_helper.dat"
     .section .stock_release,"ax"
@@ -183,6 +221,64 @@ fixture_publish_first_phase:
     .global fixture_run_foreground
 fixture_run_foreground:
     drive input_site
+
+    .macro save_irq_context buffer
+    push r0
+    push r1
+    ld24 r0,#\buffer
+    .set offset,8
+    .irp reg,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,lr
+    st \reg,@(offset,r0)
+    .set offset,offset+4
+    .endr
+    ld r1,@sp
+    st r1,@(4,r0)
+    ld r1,@(4,sp)
+    st r1,@r0
+    add3 r1,sp,#8
+    st r1,@(60,r0)
+    mvfc r1,psw
+    and3 r1,r1,#0xff
+    st r1,@(64,r0)
+    mvfaclo r1
+    st r1,@(68,r0)
+    mvfachi r1
+    st r1,@(72,r0)
+    pop r1
+    pop r0
+    .endm
+
+    .global fixture_capture_irq
+fixture_capture_irq:
+    /* Software IRQ via TRAP #3 and the real dispatcher/RTE. Model IVECT
+       with the same two-level RAM indirection the dispatcher reads. */
+    ld24 r1,#0x800000
+    ld24 r2,#0x1220
+    sth r2,@r1
+    ld24 r1,#0x1224
+    st r1,@r2
+    st r0,@r1
+    ld24 r0,#0x0789ab
+    mvtaclo r0
+    mvtachi r0
+#if INITIAL_MAX > 7
+    ldi r0,#0x41
+#else
+    ldi r0,#0x40
+#endif
+    mvtc r0,psw
+    ld24 r1,#0x165432
+    ld24 r2,#0x234567
+    ld24 r3,#0x376543
+    ld24 r4,#0x435679
+    ld24 r5,#0x543210
+    ld24 r6,#0x656789
+    ld24 r7,#0x765432
+    save_irq_context capture_before
+    .p2align 2
+    trap #3 || nop
+    save_irq_context capture_after
+    jmp lr
 
     .global fixture_run_wait
 fixture_run_wait:
@@ -262,8 +358,11 @@ fixture_done:
     bra fixture_done
 """
 SECTIONS = (
+    ("trap_vector", 0x4C),
     ("entry", 0x1000),
     ("reset_dispatch", 0x3DC8),
+    ("irq", IRQ_START),
+    ("psw_helpers", PSW_HELPERS_START),
     ("marker_check", 0x4210),
     ("recovery_stop", 0x47D8),
     ("header_marker", 0x8000),
@@ -277,12 +376,44 @@ SECTIONS = (
     ("mock_adc", 0x9FF4),
     ("stock_inputs", 0x40324),
     ("stock_timer", 0xA82C),
+    ("s51_irq", 0xA9EC),
+    ("s83_irq", 0xAA50),
     ("release_helper", 0xA06C),
     ("release_site", 0x40424),
     ("stock_release", 0x40468),
     ("mock_can_start", 0xB75C),
     ("trailer_marker", 0x7FFFE),
 )
+
+
+def verify_application_branches(elf):
+    sections = {section["name"]: section for section in elf["sections"]}
+    symbols = elf["symbols"]
+    sites = (
+        (".cold_entry", 0x8100, 0xFF, "rbm_h03_application_cold_hook"),
+        (".startup_call", 0x814C, 0xFE, "rbm_h03_phase_startup_hook"),
+        (".first_wait", 0x8150, 0xFF, "rbm_h03_phase_wait_hook"),
+        (".input_call", 0x816C, 0xFE, "rbm_h03_application_foreground_hook"),
+        (".release_site", 0x40424, 0xFE, "rbm_h03_phase_release_hook"),
+        (".s51_irq", 0xAA0C, 0xFF, "rbm_h03_s51_capture_hook"),
+        (".s83_irq", 0xAA70, 0xFF, "rbm_h03_s83_capture_hook"),
+    )
+    placed = {}
+    for section_name, site, opcode, hook in sites:
+        section = sections[section_name]
+        offset = site - section["address"]
+        word = section["data"][offset:offset + 4]
+        target = symbols[hook]["address"]
+        if (offset < 0 or len(word) != 4 or word[0] != opcode or
+                site + int.from_bytes(word[1:], "big", signed=True) * 4 != target or
+                not CANDIDATE_START <= target < CANDIDATE_END):
+            raise ValueError(f"Invalid branch to {hook} from {site:#x}")
+        placed[f"{site:#08x}"] = f"{target:#08x}"
+    for site, channel, _ in SENSOR_SITES:
+        if symbols[f"h03_sensor_after_{channel}"]["address"] != site + 4:
+            raise ValueError(f"Invalid resume from {channel} capture hook")
+    placed["text_bytes"] = sections[".text"]["size"]
+    return placed
 
 
 def check(base, compiler, controller=None):
@@ -298,6 +429,11 @@ def check(base, compiler, controller=None):
         raise ValueError("The H03 foreground input call differs from stock")
     if rom[0x40424:0x40428] != bytes.fromhex("7E11F000"):
         raise ValueError("The H03 phase publication call differs from stock")
+    for address, name, stock in SENSOR_SITES:
+        if rom[address:address + 4].hex() != stock:
+            raise ValueError(f"Unexpected {name} capture store at {address:#x}")
+    if any(byte != 0xFF for byte in rom[CANDIDATE_START:CANDIDATE_END]):
+        raise ValueError("The candidate H03 application window is no longer blank")
 
     with TemporaryDirectory(prefix="rbm-h03-native-startup-") as directory:
         work = Path(directory)
@@ -327,7 +463,7 @@ def check(base, compiler, controller=None):
         ] + [
             (f"mock_{address:x}", address, f"KEEP(*(.mock_{address:x}))") for address in STUBS
         ] + [
-            ("text", 0x60000, "*(.text .text.*) *(.rodata .rodata.*)"),
+            ("text", CANDIDATE_START, "*(.text .text.*) *(.rodata .rodata.*)"),
             ("data", 0x100000, "*(.data .data.*)"),
         ]
         layout = "\n".join(
@@ -343,6 +479,7 @@ def check(base, compiler, controller=None):
             "  h03_stock_phase_clear = 0x815c;\n"
             "  h03_phase_wait_ticks = 0x8003e0;\n"
             "  h03_phase_wait_interval_ticks = 2;\n"
+            f'  ASSERT(ADDR(.text) + SIZEOF(.text) <= {CANDIDATE_END:#x}, "Candidate code exceeds H03 window")\n'
             '  ASSERT(SIZEOF(.startup_call) == 4, "Startup hook must fit one word")\n}\n',
             encoding="ascii",
         )
@@ -354,7 +491,8 @@ def check(base, compiler, controller=None):
             'printf "RESULT %d %x %x %x %x\\n", $r0, *(unsigned int*)0x814c, '
             '*(unsigned short*)0x80481a, *(unsigned short*)0x80481c, *(unsigned char*)0x804ade\n'
             'printf "OWNER %d %d %d %d %d %d\\n", rbm_h03_application.running, cold_inhibit, '
-            'initialize_calls, inhibit_calls, phase_calls, main_calls\n',
+            'initialize_calls, inhibit_calls, phase_calls, main_calls\n'
+            'printf "SENSOR %d %d\\n", capture_irqs, sensor_samples\n',
             encoding="ascii",
         )
         sources = [HERE / name for name in (
@@ -362,6 +500,9 @@ def check(base, compiler, controller=None):
             "h03_phase_release_hook.S", "h03_phase_boot_fixture.c", "lfj8_h03_application.c",
             "lfj8_h03_phase_startup.c", "lfj8_h03_phase_clock.c", "lfj8_h03_mmio.c",
             "lfj8_h03_takeover.c", "lfj8_h03_cycle.c", "lfj8_h03_torque.c",
+            "h03_sensor_hooks.S", "lfj8_h03_sensor_target.c", "lfj8_h03_sensor_feed.c",
+            "lfj8_donor_io.c", "lfj8_bridge.c", "lfj8_h03_atf.c", "lfj8_h03_atf_target.c",
+            "lfj8_h03_atf_tml0.c",
         )]
         cases = []
         for initial_max in (2, 11):
@@ -386,7 +527,8 @@ def check(base, compiler, controller=None):
                 result = re.search(rb"^RESULT 0 ([0-9a-f]+) 7 ([0-9a-f]+) 0$", output, re.M)
                 owner = re.search(rb"^OWNER ((?:[0-9]+ ){5}[0-9]+)$", output, re.M)
                 snapshot = re.search(rb"^CONTEXT ((?:[0-9a-f]{8} ){19})$", output, re.M)
-                if not result or not owner or not snapshot or int(result[2], 16) != max(initial_max, 7):
+                sensors = re.search(rb"^SENSOR ([0-9]+) ([0-9]+)$", output, re.M)
+                if not result or not owner or not snapshot or not sensors or int(result[2], 16) != max(initial_max, 7):
                     raise ValueError(f"H03 startup failed ({name}, initial max={initial_max}): "
                                      + output[-1200:].decode(errors="replace"))
                 registers = tuple(int(word, 16) for word in snapshot[1].split())
@@ -397,6 +539,8 @@ def check(base, compiler, controller=None):
                 if stock != registers:
                     raise ValueError(f"The startup hook changed the OEM context ({name})")
                 running, cold, init, inhibit, phases, main = map(int, owner[1].split())
+                branches = (None if name == "stock" else
+                            verify_application_branches(read_elf(work / "boot.elf", 2)))
                 cases.append({"path": name, "initial_oem_max": initial_max,
                               "startup_call": result[1].decode(), "oem_elapsed_ticks": 7,
                               "oem_max_after": max(initial_max, 7), "stock_flag_cleared": True,
@@ -404,6 +548,9 @@ def check(base, compiler, controller=None):
                               "application_running_at_end": bool(running) if cold else None,
                               "cold_inhibit": cold, "initializer_calls": init, "inhibit_calls": inhibit,
                               "phase_calls": phases, "main_calls": main,
+                              "capture_irqs_with_matching_context": int(sensors[1]),
+                              "verified_first_sensor_snapshots": int(sensors[2]),
+                              "fixture_placement": branches,
                               "oem_context_matches_stock": True})
 
     return {"base": identity, "fragments": fragments, "cases": cases,
@@ -411,6 +558,10 @@ def check(base, compiler, controller=None):
             "hook_site": "0x00814C", "stock_continuation": "0x008150",
             "stubbed_oem_entries": [f"0x{address:06X}" for address in (*STUBS, 0xB75C)],
             "cold_gate_site": "0x008100", "foreground_call": "0x00816C",
+            "capture_sites": [f"0x{address:06X}" for address, _, _ in SENSOR_SITES],
+            "candidate_code_window": [f"{addr:#08x}" for addr in (CANDIDATE_START, CANDIDATE_END)],
+            "capture_irq": "TRAP #3 -> OEM dispatcher -> S51/S83 -> OEM RTE, RAM-backed MMIO",
+            "capture_irq_context": "R0-R15, active PSW, observable ACC and separate OEM PSW stack cursor",
             "first_project_event": "OEM phase release -> bounded wait -> stock inputs -> application owner",
             "toyota_source": "Independent simulated release, every other H03 publication in the steady case",
             "clock": "Simulated TML0CT, wraps across the reset-time OEM sample",
