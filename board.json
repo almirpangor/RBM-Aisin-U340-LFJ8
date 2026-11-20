@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 76,
+  "sequence": 77,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -25,13 +25,17 @@
       "branch": "codex/dtc02-basiccan-7bd19ea4",
       "files": [
         "targets/lfj8/check_h03_dtc_basiccan.py",
-        "verification/project-audit/dtc02-basiccan.md"
+        "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
+        "targets/lfj8/lfj8_h03_dtc_rx_queue.h",
+        "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
+        "verification/project-audit/dtc02-basiccan.md",
+        "verification/project-audit/dtc02-preclear-capture.md"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:08:34+00:00",
-      "note": "Опубликованы 15 прогонов OEM RX14/15, перезапись и штатные маршруты. ПК 33 шага/65 тестов, M32R link 17 и изоляция сервиса 16 — PASS. Отчёт verification/project-audit/dtc02-basiccan.md. Снимок аудита и карточка переданы интегратору. Нативная привязка, foreground и стенд открыты.",
+      "updated_at": "2026-11-20T16:12:22+00:00",
+      "note": "Продолжаю после review 345d949. Добавляю проверяемый предсбросовый снимок RX14/15 для очереди, с двойным контролем MSC и без записи в CAN0.",
       "result": "345d9490df4d8c177ab4d5eaff32224cf3f4f2c5"
     },
     "CAN-03": {
@@ -909,9 +913,17 @@
       "action": "resume",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T16:12:16+00:00"
+    },
+    {
+      "operation_id": "c411e97cb5894e07a7eac0117cd9390d",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "resume",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:12:22+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:12:16+00:00",
+  "updated_at": "2026-11-20T16:12:22+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {

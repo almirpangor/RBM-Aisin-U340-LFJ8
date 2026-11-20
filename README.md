@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:12:16+00:00**. Изменение № **76**.
+Обновлено UTC: **2026-11-20T16:12:22+00:00**. Изменение № **77**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -40,7 +40,7 @@
 | SRC-01 — Реестр происхождения и контроль исходников | Свободна | — | — | — | — |
 | AUD-01 — Программный аудит истории E4M3 | Свободна | — | — | — | — |
 | DTC-01 — Прикладной сеанс и статусы Chery | Свободна | — | — | — | — |
-| DTC-02 — Штатный приём BasicCAN для диагностического сеанса | На проверке | Codex — штатный RX BasicCAN H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T16:08:34+00:00 | Опубликованы 15 прогонов OEM RX14/15, перезапись и штатные маршруты. ПК 33 шага/65 тестов, M32R link 17 и изоляция сервиса 16 — PASS. Отчёт verification/project-audit/dtc02-basiccan.md. Снимок аудита и карточка переданы интегратору. Нативная привязка, foreground и стенд открыты. / commit 345d9490df4d8c177ab4d5eaff32224cf3f4f2c5 |
+| DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Выполняется | Codex — штатный RX BasicCAN H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T16:12:22+00:00 | Продолжаю после review 345d949. Добавляю проверяемый предсбросовый снимок RX14/15 для очереди, с двойным контролем MSC и без записи в CAN0. / commit 345d9490df4d8c177ab4d5eaff32224cf3f4f2c5 |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | На проверке | Codex DTC-03 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/dtc03-table-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:00:19+00:00 | Все 96 индексов сверены с проверенным S03. 33 шага ПК и 61 тест PASS. Отчёт verification/project-audit/dtc03-table.md. Мониторы отказов и привязка H03 открыты; снимок аудита передан интегратору. / commit fbeea2ca6b1ceb47be58f4bf05c9f3817c5664a2 |
 | DTC-04 — Хранение DTC после выключения питания | На проверке | Codex DTC-04 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/dtc04-mwp5rm2ofhaxjfi9dss | 2026-11-20T15:56:49+00:00 | Журнал DTC опубликован. ПК: 35 шагов и 59 тестов PASS. Модель: прерывание записи и очистка; H03 NVM, порядок подтверждения и стенд открыты. Доказательства: verification/project-audit/dtc04-journal.md. Общий снимок и реестр переданы интегратору. / commit 4ef63cb5d0a93d31c2db76411890d31593783f2e |
 | REL-01 — Два целевых BIN и воспроизводимый комплект | На проверке | Codex — комплект двух BIN \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/rel-01-pair-01a1f9a2 | 2026-11-20T15:51:56+00:00 | Проверка комплекта двух BIN опубликована. Детерминированность ZIP, проверка хешей и отказ на некорректных входах пройдены. H03 собирается в объект ELF; Bosch BIN проходит модель со статусом OFFLINE_ONLY. Целевых BIN нет. / commit b174397fe79ebdb0d0749bcee31fe7f198435a28 |
@@ -90,7 +90,11 @@
 Чат: Codex — штатный RX BasicCAN H03. Claim ID: 36f7538204a944d68df89f474cc590e4.
 
 - targets/lfj8/check_h03_dtc_basiccan.py
+- targets/lfj8/lfj8_h03_dtc_rx_queue.c
+- targets/lfj8/lfj8_h03_dtc_rx_queue.h
+- targets/lfj8/test_lfj8_h03_dtc_rx_queue.c
 - verification/project-audit/dtc02-basiccan.md
+- verification/project-audit/dtc02-preclear-capture.md
 
 ### DTC-03
 
@@ -196,6 +200,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:12:22+00:00 | DTC-02 | resume | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T16:12:16+00:00 | H03-02 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:12:09+00:00 | CAN-04 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:11:52+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
@@ -225,4 +230,3 @@
 | 2026-11-20T16:04:41+00:00 | TOY-02 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:04:31+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:04:25+00:00 | MODE-02 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
-| 2026-11-20T16:04:06+00:00 | TOY-02 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
