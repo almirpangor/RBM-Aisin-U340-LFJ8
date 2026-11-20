@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 526,
+  "sequence": 527,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -238,12 +238,12 @@
         "targets/lfj8/test_lfj8_h03_engine_feed.c",
         "verification/project-audit/can01-h03-engine-owner.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "6293ebe446574c9ab1fce23fa806e922",
       "claimed_at": "2026-11-20T19:39:57+00:00",
-      "updated_at": "2026-11-20T19:39:57+00:00",
-      "note": "Связываю запуск и опрос RPM/ОЖ с единственным CAN0 owner, его поколением и допуском TML0; проверяю отзыв и повторный допуск.",
-      "result": null
+      "updated_at": "2026-11-20T19:49:51+00:00",
+      "note": "CAN-01: поколение CAN0, общий допуск TML0 и Task 2 связаны в целевом адаптере. PC, 18 групп M32R, 16 CAN и 11 ATF проверок. Вызовы из rbm_h03_application_binding и измерения интервалов остаются. Отчёт: verification/project-audit/can01-h03-engine-owner.md.",
+      "result": "d2733790c28ebe1c1fb2bbdd32c4ca64d70ba9ed"
     },
     "MODE-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -4791,9 +4791,17 @@
       "action": "review",
       "claim_id": "15e6e783e4d74a5b9c000d3658becff0",
       "at": "2026-11-20T19:49:29+00:00"
+    },
+    {
+      "operation_id": "91b2e928348b4f54af1737e0dc505fd5",
+      "task": "CAN-01",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "review",
+      "claim_id": "6293ebe446574c9ab1fce23fa806e922",
+      "at": "2026-11-20T19:49:51+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:49:29+00:00",
+  "updated_at": "2026-11-20T19:49:51+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
