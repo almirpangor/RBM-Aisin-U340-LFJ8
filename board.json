@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 465,
+  "sequence": 466,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12,6 +12,7 @@
         "docs/lfj8-h03-memory-layout.md",
         "docs/project-map.md",
         "docs/working-set.md",
+        "targets/lfj8/check_h03_can_monitor_startup.py",
         "targets/lfj8/check_h03_storage.py",
         "targets/lfj8/h03_storage_layout.c",
         "targets/lfj8/lfj8_h03_storage.h",
@@ -24,8 +25,8 @@
       "stage": "in_progress",
       "claim_id": "52e7f6ec20834ce89a8c8faa785fe86b",
       "claimed_at": "2026-11-20T19:11:44+00:00",
-      "updated_at": "2026-11-20T19:11:44+00:00",
-      "note": "Объединяю 28 опубликованных результатов, повторяю общую сборку и размещение памяти. Проверяю реальные условия выпуска пары BIN; статусы модели не заменяют готовность.",
+      "updated_at": "2026-11-20T19:15:59+00:00",
+      "note": "28 результатов объединены. 22 нативных проверки и 8 дополнительных компонентов прошли; 6 прогонов размещённого кода прошли. Исправляю компоновку CAN для кириллического пути после явной передачи CAN-03.",
       "result": null
     },
     "DTC-02": {
@@ -4279,9 +4280,17 @@
       "action": "release",
       "claim_id": "941f259113e042a39db21686bc935bc8",
       "at": "2026-11-20T19:15:26+00:00"
+    },
+    {
+      "operation_id": "cda2fc36ef73404c947605a121579846",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "heartbeat",
+      "claim_id": "52e7f6ec20834ce89a8c8faa785fe86b",
+      "at": "2026-11-20T19:15:59+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:15:26+00:00",
+  "updated_at": "2026-11-20T19:15:59+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
