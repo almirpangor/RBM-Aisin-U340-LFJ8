@@ -9,7 +9,7 @@
     "engine": "GW4G15 / Bosch ME7.9.71 E4M3"
   },
   "release_ready": false,
-  "audit": "verification/project-audit/2026-11-21-final-integration.json",
+  "audit": "verification/project-audit/startup-integration-20261121/audit.json",
   "status_labels": {
     "closed": "Завершено в указанном объёме",
     "model": "Проверено программно",
@@ -297,6 +297,16 @@
         "verification/project-audit/final-integration-20261121/native-final/summary.json",
         "verification/project-audit/final-integration-20261121/combined-profile/protected_padding.json"
       ]
+    },
+    "S01_COLD": {
+      "title": "Холодная ветвь Toyota и новая общая композиция",
+      "command": "python -B targets/lfj8/check_toyota_cold_init.py --r3 $r3 --controller-lib $controllerLibrary --cc $zig --out $report",
+      "reports": [
+        "verification/project-audit/toy05-s01-cold-state.md",
+        "verification/project-audit/toy05-s01-cold-state.json",
+        "verification/project-audit/startup-integration-20261121/combined-summary.json",
+        "verification/project-audit/startup-integration-20261121/placed-layout.json"
+      ]
     }
   },
   "modules": [
@@ -549,8 +559,8 @@
       ],
       "title": "Обучение и сохранение адаптаций",
       "status": "open",
-      "current": "Объединённый результат 21.11.2026: Восстановление S01/UFL1 подключено к штатному старту H03 до допуска фаз. ПК 41/120, S01/R3 288, M32R 56 запусков (18 новых), 22 native, 18+8 компонентных, 6 размещённых. Отчёт toy05-h03-boot-restore.md. Физический NVM, штатный binding, запись и долговечный сброс ещё открыты.",
-      "remaining": "Назначить NVM, подключить холодную базу и восстановление к запуску H03, сохранение адаптаций полного цикла и долговечный сброс.",
+      "current": "Объединённый результат 21.11.2026: Восстановление S01/UFL1 подключено к штатному старту H03 до допуска фаз. ПК 41/120, S01/R3 288, M32R 56 запусков (18 новых), 22 native, 18+8 компонентных, 6 размещённых. Отчёт toy05-h03-boot-restore.md. Физический NVM, штатный binding, запись и долговечный сброс ещё открыты. Добавлена холодная проекция S01 в общий runtime: 258 сравнений 828 байт с R3, ПК/M32R и размещённый runtime прошли. Она изменяет 143 байта, сохраняет 685 и не заменяет полный начальный снимок.",
+      "remaining": "Задать остальные исходные GP/входы и условия холодной ветви; включить prepare_s01_cold до восстановления адаптаций. Назначить NVM, связать сохранение полного цикла и долговечный сброс с аппаратным запуском.",
       "acceptance": "Проверены пределы коррекции, повторный пуск, повреждённая запись и сброс адаптаций.",
       "code": [
         "controller/vendor/toyota/src/factory_learning.c",
@@ -558,7 +568,8 @@
         "controller/tests/test_controller.c",
         "controller/include/rbm_u340e_runtime.h",
         "controller/src/rbm_u340e_runtime.c",
-        "targets/lfj8/check_toyota_adaptation_baseline.py"
+        "targets/lfj8/check_toyota_adaptation_baseline.py",
+        "targets/lfj8/check_toyota_cold_init.py"
       ],
       "settings": "Контракты factory_learning.h и factory_adaptation_store.h. Область NVM ещё не назначена.",
       "checks": [
@@ -567,14 +578,16 @@
         "INTEGRATION2",
         "INTEGRATION3",
         "INTEGRATION21",
-        "FINAL_INTEGRATION"
+        "FINAL_INTEGRATION",
+        "S01_COLD"
       ],
       "docs": [
         "docs/toyota-integration.md",
         "docs/lfj8-h03-flash.md",
         "verification/project-audit/toy05-adaptation-store.md",
         "docs/integration-next-tasks.md",
-        "verification/project-audit/toy05-s01-baseline.md"
+        "verification/project-audit/toy05-s01-baseline.md",
+        "verification/project-audit/toy05-s01-cold-state.md"
       ],
       "depends": [
         "TOY-04",
@@ -966,8 +979,8 @@
       ],
       "title": "Единое расписание и запуск приложения H03",
       "status": "open",
-      "current": "Объединённый результат 21.11.2026: Определён rbm_h03_application_binding, 7 ссылок RAM разрешены в M32R, профиль обязателен. Отдельный ELF прошёл холодный/тёплый старт и foreground; штатная регрессия 56 сценариев/80 IRQ. Восемь поставщиков платформы и измеренные параметры открыты. Отчёт h03-03-native-binding.md.",
-      "remaining": "Определение rbm_h03_application_binding уже есть и связано с CAN-адаптером. Остались реальные rbm_h03_target_takeover_ops, startup_gear, startup_gp, engine, ram_owned, clock_ready, initialize, take_toyota и service_phase; согласованный профиль и rbm_h03_sensor_config. Их испытательные поставщики не являются целевой программой.",
+      "current": "Объединённый результат 21.11.2026: Определён rbm_h03_application_binding, 7 ссылок RAM разрешены в M32R, профиль обязателен. Отдельный ELF прошёл холодный/тёплый старт и foreground; штатная регрессия 56 сценариев/80 IRQ. Восемь поставщиков платформы и измеренные параметры открыты. Отчёт h03-03-native-binding.md. Подготовлена проверенная холодная проекция Toyota; она пока не задаёт все startup GP и не включена автоматически.",
+      "remaining": "Определение rbm_h03_application_binding уже есть и связано с CAN-адаптером. Остались реальные rbm_h03_target_takeover_ops, startup_gear, startup_gp, engine, ram_owned, clock_ready, initialize, take_toyota и service_phase; согласованный профиль и rbm_h03_sensor_config. Их испытательные поставщики не являются целевой программой. Для холодной ветви использовать rbm_u340e_runtime_prepare_s01_cold после квалификации исходного состояния и до restore_adaptation.",
       "acceptance": "Полный цикл вызывается автономно, пропуск обнаруживается и без фазы выдачи, тестовые callbacks заменены подтверждёнными целевыми.",
       "code": [
         "targets/lfj8/lfj8_h03_cycle.c",
@@ -996,7 +1009,8 @@
         "INTEGRATION3",
         "MEMORY4",
         "INTEGRATION21",
-        "FINAL_INTEGRATION"
+        "FINAL_INTEGRATION",
+        "S01_COLD"
       ],
       "docs": [
         "docs/lfj8-h03-control-cycle.md",
@@ -1009,7 +1023,7 @@
       ],
       "continuation": {
         "order": 1,
-        "action": "Определение rbm_h03_application_binding уже есть и связано с CAN-адаптером. Остались реальные rbm_h03_target_takeover_ops, startup_gear, startup_gp, engine, ram_owned, clock_ready, initialize, take_toyota и service_phase; согласованный профиль и rbm_h03_sensor_config. Их испытательные поставщики не являются целевой программой.",
+        "action": "Определение rbm_h03_application_binding уже есть и связано с CAN-адаптером. Остались реальные rbm_h03_target_takeover_ops, startup_gear, startup_gp, engine, ram_owned, clock_ready, initialize, take_toyota и service_phase; согласованный профиль и rbm_h03_sensor_config. Их испытательные поставщики не являются целевой программой. Для холодной ветви использовать rbm_u340e_runtime_prepare_s01_cold после квалификации исходного состояния и до restore_adaptation.",
         "chat_label": "Чат запуска H03",
         "chat_id": "01a1f99f-5cb5-70e0-afd0-60e6b41a5d51"
       }
@@ -1021,7 +1035,7 @@
       ],
       "title": "Память, стек и сервисные пути",
       "status": "open",
-      "current": "Полный объединённый срез: ядро 84470 байт, прежний prefix не проходит; padding-модель исполнила 6 групп. Известные native CAN/датчики/BasicCAN/привязка занимают 101026 байт при явно тестовом профиле; 10 поставщиков не определены. RAM 2728+4 байта. Размещённая сервисная защита: 27+28+512 проверок.",
+      "current": "После холодной проекции S01: ядро 84904 байта, padding-модель заново прошла 6 групп; известная native-композиция 101460 байт с явно тестовым профилем. Увеличение 434 байта, RAM прежняя 2728+4. Все 10 платформенных определений остаются. Сервисные 27+28+512 проверки — прежний срез.",
       "remaining": "Установить окончательные переходы, данные и все недостающие поставщики; включить остальные ASM и сервисную политику в один состав. Подтвердить владение Flash/RAM, полный стек и поведение DMA/SBI/IRQ во всём времени работы. FF и частичное размещение не разрешают выпуск.",
       "acceptance": "Карта сборки и анализ всех владельцев, подтверждённый запас стека и измерения. Свободное окно в ELF само по себе не разрешает запись.",
       "code": [
@@ -1052,7 +1066,8 @@
         "MEMORY4",
         "SERVICE_GUARD",
         "INTEGRATION21",
-        "FINAL_INTEGRATION"
+        "FINAL_INTEGRATION",
+        "S01_COLD"
       ],
       "docs": [
         "docs/lfj8-h03-ram-audit.md",

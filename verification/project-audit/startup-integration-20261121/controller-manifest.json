@@ -1,0 +1,113 @@
+{
+  "purpose": "relocatable control code and CPU simulation, without board I/O",
+  "architecture": "m32r",
+  "source_hash_format": "lf",
+  "source_sha256": {
+    "controller/build.py": "a46b31ed28c6114fe142527f9102653a11841fad3ae4b2de0cdab76d7b747774",
+    "controller/build_target.py": "43cfc76ee7a9e7615674c90e3a757229096db23d80a36186c12b2bc791dba207",
+    "controller/hydraulic_port.py": "00cb0e1ffa8751353b5766d731a436b1659a7899d67174ca4f7cecee1171e00d",
+    "controller/include/rbm_u340e.h": "f16ec6c18f8706b651e44e636a9081903adadc5290a891a9f01e4e402533a105",
+    "controller/include/rbm_u340e_hydraulic_workspace.h": "0e446b7272fce9af343f627e427b024e45b010fce07bc20ecef3d08c910938d5",
+    "controller/include/rbm_u340e_runtime.h": "6cb44159a5b7f6f033cee89d97fed38812f75b2e39911873257359fc98b5d1fa",
+    "controller/include/rbm_u340e_scheduler.h": "09be707bd3fc7da26c313d45a4092631e3db814934d8baf2703de25f16ea1b09",
+    "controller/size_port.py": "085cb8dcc38ac89c97108e2913faf31310fe235a8c6c7e51e31094a8b6203cc6",
+    "controller/src/rbm_u340e.c": "1f0e2d9277d66203e92ed8d0ef4ccff0b3e88484fe8705b1908fdca764ed3b73",
+    "controller/src/rbm_u340e_runtime.c": "70a2b6d83b03e50670f494ca8bbfb43d70bfcfaf537e4e7303003ee4ec8c0848",
+    "controller/src/rbm_u340e_scheduler.c": "07ff995781a0c9b85a52fb7fae42069c977ab04c417744b5f3ed8d738460641d",
+    "controller/tests/sh2_sim.c": "c8a754321da220aeb3ddb36c9741bacff37f81e1a05fa9c867b6fa30ce9a31cd",
+    "controller/tests/test_controller.c": "8b6af458c0dffa85dc276d158117439ce5830cda5b74aaa25284204f044aab7a",
+    "controller/tests/test_mode_policy.c": "f7ce538457055e4cf67ace4690b820c5645288191d54fce85e5d12dca0247143",
+    "controller/tests/test_runtime.c": "dd478fba519d4961a438878af6aa07f79c6d9aaa3fa784a67421c1c43dd15fe9",
+    "controller/tests/test_shift_buttons.c": "3b53a8444714ac4fbfe931706d0e181248ae1fbcd1a4d9d689c31c5ccbb6a44d",
+    "controller/vendor/toyota/include/factory_adaptation_store.h": "787611d51114f5976f17ed3d5436d1e61607ca78f9162bcd949d4233e219b5d2",
+    "controller/vendor/toyota/include/factory_core.h": "2536872ba4b2d6b9aa5fd5f73d8184133b81c2377618b9d5116b34de25298cbd",
+    "controller/vendor/toyota/include/factory_correction.h": "b6df36bf16f08ecaecdd3c389fa62118dc64b60951a8498c8ec6d71c57a439c8",
+    "controller/vendor/toyota/include/factory_gears.h": "29816ad99a9c5ffe1cd8e25a42281e0318db04c04d854b2c3b3ff752e71015b3",
+    "controller/vendor/toyota/include/factory_gears_state.h": "d5db4101c87abfd6141f0b925c5c3170ee4f354c441f03f9df058a5a17e9c887",
+    "controller/vendor/toyota/include/factory_hydraulic_state.h": "f7c66ec07c3b0f3cf4d1c88a761c182b81ce70f6ddb9706918a465ea2c25d7d5",
+    "controller/vendor/toyota/include/factory_hydraulics.h": "4bdd3b60b05c9392317d2c85d36c8273871e5e936b164720e00412fbbe564646",
+    "controller/vendor/toyota/include/factory_inputs.h": "719e3c6e868db3896df3d71d3c119c02da0d9e561cd7427b876a787899b67a0d",
+    "controller/vendor/toyota/include/factory_learning.h": "c42982b09ed232c2c698acf861e3855e7a7a5271d07b0b6cbcab06bfd294a535",
+    "controller/vendor/toyota/include/factory_learning_state.h": "652fc03cf850422c5597fe2ea7e1cf38fbe27ff11e7d6dd0a5aeeaeae0ff2bfd",
+    "controller/vendor/toyota/include/factory_outputs.h": "d38585cf52ebbc7b424aab478de4ab81bf57355ff9d94b15a9f0a707c35b29ae",
+    "controller/vendor/toyota/include/factory_phase_modes.h": "9998bd2dd2af0d406809bb4890e6e04db3f0eef52742e18b84f40af3d76734dd",
+    "controller/vendor/toyota/include/factory_pressure.h": "51dc36c6239f82f3c568f7b74d4ac9cee4d8a6bba12012b1c174e390453d57c2",
+    "controller/vendor/toyota/include/factory_torque.h": "9588ca81a789e6ae1cb454515c5a90860d3b878ad2a62850e1d5e90fd93cf61a",
+    "controller/vendor/toyota/include/factory_torque_state.h": "5fcc1e6e3560d210d1e31fe2493fb2c69d7a280a6415579f945fd8e968f56c6c",
+    "controller/vendor/toyota/src/donor_calibration.h": "3f8c7c26247bb58a9b263d126879a49e90fe8b6db41332f77705f342589231e7",
+    "controller/vendor/toyota/src/donor_shared_calibration.c": "6b3387dc62f4cfbc77bc2057d2ce7b06fe9ba80f0602612dcbf3e652d9d3080a",
+    "controller/vendor/toyota/src/factory_adaptation_store.c": "1d128ab45c8f3d266b215f70abe854b57cc856cc29cecc495e04a7484644bbea",
+    "controller/vendor/toyota/src/factory_core.c": "27c8bdf678126fb3aaa6fa7acb40cfed1441a35eae38d2a2151ef9f996fb14c9",
+    "controller/vendor/toyota/src/factory_correction.c": "9b064e45a2cf8d73a59c8df328ca2992116096f021666565e1c479e11d34e3f7",
+    "controller/vendor/toyota/src/factory_gear_strategy.c": "e5fea13cc084c259f85b77934f6fd3b0867b6b88ae5cdac8cfae5ef667c1cf46",
+    "controller/vendor/toyota/src/factory_gears.c": "187b0a2fb17da0478b748ad08e5ecb24de491d5f7bd44bc84ea1d56a6ec888f8",
+    "controller/vendor/toyota/src/factory_hydraulics.c": "7b897901a7ba4280e3bb2c1f3191e13858f8d92654b17dcbf6246cc3dc67bf5a",
+    "controller/vendor/toyota/src/factory_inputs.c": "5972c8bdb81c9f0862d0e6496d22a0ded694437e994cfbb33d8bd92b0317604f",
+    "controller/vendor/toyota/src/factory_learning.c": "c35e4f992a66d9bae1004b9c22e34f82385e1b441998ac00ac2c414fedac6680",
+    "controller/vendor/toyota/src/factory_outputs.c": "3d94107f88b79ede3381e7938ae709e545a85669cd4df674c97cb7cca15fb4e2",
+    "controller/vendor/toyota/src/factory_phase_modes.c": "07a5d733e9259e6b22f9ba855dcd9a4b8758f0207356f739a1398252a194fe90",
+    "controller/vendor/toyota/src/factory_pressure.c": "2727aa206584e1182538d8c38cb3e7a1e8412912613989d0ebbdebabd2115dda",
+    "controller/vendor/toyota/src/factory_torque.c": "f2229b9ea1d5b19a2434e9dd27ad6d5fc729194333bc2273b1d211d538019dd8",
+    "controller/vendor/toyota/src/gear_internal.h": "a38a95a88d67c3819f675352a3ec7824c4ff542bc78ee3a52db4431efa1f8ace",
+    "controller/vendor/toyota/src/hydraulic_mapping.h": "4fdb66514875f44f29e563b8cc4d7f14b1783a53e6eba0d6b1620a337e84056f"
+  },
+  "size_port": {
+    "adjustments": [
+      {
+        "file": "factory_phase_modes.c",
+        "functions": [
+          "getq",
+          "putq"
+        ],
+        "change": "noinline attribute only; staged copy, original vendor unchanged",
+        "before_lf_sha256": "07a5d733e9259e6b22f9ba855dcd9a4b8758f0207356f739a1398252a194fe90",
+        "after_lf_sha256": "436bc48d9484a5376ab19b59f420bce484041be018a7ab51a0c506958b7c1c8e"
+      },
+      {
+        "file": "factory_learning.c",
+        "functions": [
+          "inc",
+          "down_observer"
+        ],
+        "change": "noinline attribute only; staged copy, original vendor unchanged",
+        "before_lf_sha256": "fa0763018451cdfabb234d74d173a2b0083649e831b569098962353dbd9af096",
+        "after_lf_sha256": "eb9fffcca7dbfcb733c561d349bc3c4eabb9c1593fee9bbbf006ad3646a0eed4"
+      }
+    ]
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "flags": [
+    "-std=c11",
+    "-Os",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-Wno-missing-braces",
+    "-Wno-missing-field-initializers",
+    "-ffreestanding",
+    "-fno-builtin",
+    "-fno-common",
+    "-fno-stack-protector",
+    "-fno-unwind-tables",
+    "-fno-asynchronous-unwind-tables",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-m32r",
+    "-mmodel=medium",
+    "-msdata=none",
+    "-Wa,-EB",
+    "-Iinclude",
+    "-Ivendor/include"
+  ],
+  "elf_flags": "0x0",
+  "undefined_symbols": [
+    "memcpy",
+    "memset"
+  ],
+  "toyota_commit": "8cf4308d8539253d4ac994dd99c9650f02da6236",
+  "tests": "Toyota adaptation store: 96 write cuts, 768 bit faults, reset and rollover passed.\nToyota adaptation recovery: 96 write cuts, 768 bit faults in either slot, and rollover passed.\nToyota S01 adaptation baseline: empty, valid, and unreadable startup passed.\nToyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.\nToyota S01 cold projection: flags, unavailable periods, preservation and rejection passed.\nToyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.\nToyota 05518C: SECONDARY load qualifiers, hysteresis, clamp, fallback and MAIN handoff passed.\nToyota S01 range: P/N to warm low-load D, standstill fill, S1/S2 and first upshift passed.\nToyota scheduler: event release, FAST phase latch, busy drop and rollover passed.\nVerified 292 GP transfer fields and five donor hydraulic snapshots.\nController tests passed: six ADC ranges, relays, Auto, Tiptronic, OD, S1/S2, ST and SLT.",
+  "sha256": {
+    "rbm_u340e_m32r_be.o": "fe7a1d6c72f1a31d0bc8fa72083dfcfcc9e80285a3e9b34729e731b0caf8e549",
+    "u340e_m32r_sim.elf": "c670a96f7bcf1544f6800624c1149bd1931162f2dd14f3cc2d91a3bcbd7c415e"
+  }
+}

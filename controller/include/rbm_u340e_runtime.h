@@ -22,6 +22,15 @@ typedef struct {
 int rbm_u340e_runtime_init(RbmU340eRuntime *runtime, const FactoryGearState *gear,
                            const FactoryHydraulics *gp);
 
+/* Apply the owned projection of S01 0540B0's cold/fallback branch, including
+ * its fast-filter preparation, to an initialized runtime. Call before
+ * restore_adaptation and before enabling tasks/outputs. The caller must
+ * separately establish the cold-branch precondition and supply the other
+ * initial GP/input values: this is not a complete ECU reset or permission
+ * to run. Fields outside the donor writes, and unrelated flag bits, survive.
+ * work is disjoint caller-owned scratch. Invalid calls leave runtime intact. */
+int rbm_u340e_runtime_prepare_s01_cold(RbmU340eRuntime *runtime, FactoryGearState *work);
+
 typedef enum {
     RBM_U340E_ADAPTATION_INVALID = 0,
     RBM_U340E_ADAPTATION_LOADED,

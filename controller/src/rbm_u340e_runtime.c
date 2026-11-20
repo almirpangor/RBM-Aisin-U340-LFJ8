@@ -228,6 +228,62 @@ int rbm_u340e_runtime_init(RbmU340eRuntime *runtime, const FactoryGearState *gea
     return 1;
 }
 
+int rbm_u340e_runtime_prepare_s01_cold(RbmU340eRuntime *runtime, FactoryGearState *work)
+{
+    /* Projection of S01 0540B0/0545E0/055104/055730 onto this runtime.
+     * Byte writes use the canonical GP API, independent of native endian.
+     * 1492 and 4830.6 are the documented fast-filter preconditions.
+     * The remaining S01 stores belong to components outside this runtime. */
+    static const struct {
+        int16_t gp;
+        uint8_t count, value, keep;
+    } spans[] = {
+        {-7224, 12, 0, 0},
+        {-4854, 4, 2, 0}, {-4848, 2, 2, 0},
+        {-4835, 1, 0, 0xef}, {-4830, 1, 0, 0xbf},
+        {-4815, 2, 0xff, 0}, {-4784, 3, 0xff, 0},
+        {-4746, 2, 0xff, 0}, {-4704, 1, 0xff, 0},
+        {-4619, 2, 0, 0}, {-4603, 1, 0, 0}, {-4600, 8, 0, 0},
+        {-4579, 18, 0, 0}, {-4554, 5, 0, 0}, {1492, 2, 0, 0},
+    };
+    if (!runtime || runtime->initialized != 1u || !work ||
+        overlaps(runtime, sizeof *runtime, work, sizeof *work)) {
+        return 0;
+    }
+    /* Preflight the entire projection before modifying canonical state. */
+    for (size_t i = 0; i < sizeof spans / sizeof spans[0]; ++i) {
+        for (unsigned j = 0; j < spans[i].count; ++j) {
+            uint32_t value;
+            if (!factory_hydraulics_get(&runtime->gp, spans[i].gp + (int)j, 1u, &value)) {
+                return 0;
+            }
+        }
+    }
+    if (!rbm_u340e_runtime_snapshot_gears(runtime, work)) {
+        return 0;
+    }
+    for (size_t i = 0; i < sizeof spans / sizeof spans[0]; ++i) {
+        for (unsigned j = 0; j < spans[i].count; ++j) {
+            const int gp = spans[i].gp + (int)j;
+            uint32_t value = 0;
+            factory_hydraulics_get(&runtime->gp, gp, 1u, &value);
+            factory_hydraulics_set(&runtime->gp, gp, 1u,
+                                   (value & spans[i].keep) | spans[i].value);
+        }
+    }
+    for (size_t i = 0; i < sizeof work->periods / sizeof work->periods[0]; ++i) {
+        work->periods[i] = UINT16_MAX;
+    }
+    work->u7166 = UINT16_MAX;
+    for (size_t i = 0; i < sizeof work->history / sizeof work->history[0]; ++i) {
+        work->history[i] = UINT16_MAX;
+    }
+    work->b4828 &= (uint8_t)~24u;
+    pack_private(runtime->gear_private, work);
+    /* The caller's working view must also contain the newly set shared GP. */
+    return refresh_shared(&runtime->gp, work);
+}
+
 const FactoryAdaptation *rbm_u340e_s01_adaptation_baseline(void)
 {
     /* The S01 group-7 fallback pointer table at 00B0E0 supplies zero

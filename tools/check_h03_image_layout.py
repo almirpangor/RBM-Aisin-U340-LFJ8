@@ -22,6 +22,7 @@ EXTRA_ROOTS=(
     "rbm_u340e_step",
     "lfj8_button_filter_init","lfj8_range_control_step_with_buttons","lfj8_h03_range_snapshot",
     "rbm_u340e_runtime_restore_adaptation","rbm_u340e_s01_adaptation_baseline",
+    "rbm_u340e_runtime_prepare_s01_cold",
     "lfj8_h03_atf_circuit_after_monitor",
     "chery_dtc_journal_encode","chery_dtc_journal_restore",
     "lfj8_h03_cycle_tick_with_load","lfj8_h03_cycle_tick_with_slu",

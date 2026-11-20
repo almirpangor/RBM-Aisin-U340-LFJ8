@@ -1,0 +1,4667 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "profile": "padding-candidate",
+  "compiler_memory_model": "medium",
+  "input_objects": {
+    "lfj8_9e1c_m32r.o": "f63509c6abb30692beed1709db9f5faa94c654aebdbae048f934858173846b15",
+    "rbm_u340e_m32r_be.o": "fe7a1d6c72f1a31d0bc8fa72083dfcfcc9e80285a3e9b34729e731b0caf8e549"
+  },
+  "input_sources": {
+    "diagnostics/chery_dtc.c": "dd21f1d6bc5bf7607d72785eca7e007d3a1702812e0796a7c8f5d5cf826dd6de",
+    "diagnostics/chery_dtc_can.c": "f1df361c6eb78560f93fcdffb58e6d1d6591e8f74f411f01a877588caa1847e4",
+    "diagnostics/chery_dtc_link.c": "6e1915a13beecdf128a3800cf3d4a7c4b212dc7dd95ae2c80de2a0aadc9e13cc",
+    "diagnostics/chery_model_monitor.c": "00f7d1375be79efa54d308b76f6889fec29983dcdcb666af5dc9c9b8d97713b0",
+    "diagnostics/chery_dtc_journal.c": "880f38b3aac2cf5cd6f44a272683f2b0126eb1d451772cd875f8be864cc4cfbb",
+    "targets/lfj8/lfj8_range_control.c": "a7874e95cfa1dc2fc1585fb78e70ae59c7c26670812d20100feb8252fa057799",
+    "targets/lfj8/lfj8_h03_outputs.c": "f4f7fffd84595a499490ee89785b7d030a44c20671ad3ff1963dbccd3dd53208",
+    "targets/lfj8/lfj8_h03_takeover.c": "211c91fd8426d6e091d4e0c905b9d14640ef226e6578b003bb55ce1a4281b594",
+    "targets/lfj8/lfj8_h03_torque.c": "ab086313da469e76065100dc5a90ddeb88b4c98a167e22bfb30b91252ae3b990",
+    "targets/lfj8/lfj8_h03_dtc_can.c": "321488b4473b0c991aad5f140060e999517644ced91ca597d6f9aaa32d8d643e",
+    "targets/lfj8/lfj8_h03_dtc_rx_queue.c": "3af1fc93728dd8386abd1558cb0daae7b3613be5ee17719217a7694d6c8007d9",
+    "targets/lfj8/lfj8_h03_torque_can.c": "9703bb5ab434cb865ca6831d65265c34e11e82834c47e594ca711b2525cecfb5",
+    "targets/lfj8/ta2005_engine_qualifier.c": "3e8555cd59d42ca87c155ba918a2138695e0841bf40574ca4a947374a685091d",
+    "targets/lfj8/lfj8_h03_cycle.c": "e4966f0dbd33357907a6dfb587f4db52a976f31b34ef3fd3b6ff37c36037f14a",
+    "targets/lfj8/lfj8_h03_phase_clock.c": "842354b863c8bc74e52835a5c8bdbe1925cfc9933c242977ab0b6a72564e7fbe",
+    "targets/lfj8/lfj8_h03_phase_startup.c": "a2978dcd24e83379d28ec0770bf11d0464373e19f9a48ff1331a01a3d52e2e6b",
+    "targets/lfj8/lfj8_h03_engine_feed.c": "3e7d671260ad7299d7508b18d008c4e3beb89847ca3f801db7f09cf6405553e4",
+    "targets/lfj8/lfj8_h03_can13.c": "2d06fdaac550a9d26407cae2fdaf59e49ba7e925f2d3976c27df82ec4f311936",
+    "targets/lfj8/lfj8_h03_atf_feed.c": "6ea6666340f297cdd62643ea5170e9c49c541d64b47754a8cf62ae8ebc1540ac",
+    "targets/lfj8/lfj8_h03_slu.c": "0a95655bd4b1fa066e012bf77acdb00cd1e37efc44e93287d5f89cdac086880a",
+    "targets/lfj8/lfj8_h03_dtc_foreground.c": "4d2146af060fdcb850ebf1e7ab5ec98fb860817ea997fa17402150b5c3b173ee"
+  },
+  "bindings_included": [],
+  "bindings_not_present": [],
+  "raw_reference_patterns": {
+    "classification": "Raw patterns may be calibration data, not executed instructions. Computed references are not excluded.",
+    "windows": {
+      "pad_f5dc": {
+        "aligned_u32": [
+          "0x94c"
+        ],
+        "ld24_pattern": [
+          "0x364",
+          "0x4c0",
+          "0x584",
+          "0x614",
+          "0x439c",
+          "0x4768",
+          "0xae10",
+          "0xce70",
+          "0x3651c",
+          "0x3d41c",
+          "0x3d474"
+        ]
+      },
+      "pad_10af4": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_12b2c": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_14e68": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_16c0c": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_17d58": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_18c20": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_19e58": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_1aa1c": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_1bea0": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_1cec4": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_1eabc": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "prefix_primary": {
+        "aligned_u32": [
+          "0x954",
+          "0x958",
+          "0x95c",
+          "0x1a194",
+          "0x318a0"
+        ],
+        "ld24_pattern": [
+          "0x5220",
+          "0x5228",
+          "0x5274",
+          "0x527c"
+        ]
+      },
+      "tail": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_33084": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_3f608": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      }
+    }
+  },
+  "hardware_verified": false,
+  "target_ownership_verified": false,
+  "flashable_image": null,
+  "application_profile": null,
+  "profiled_bindings_omitted": [
+    "lfj8_h03_application_binding.c: requires an explicit application profile"
+  ],
+  "required_roots": [
+    "chery_dtc_init",
+    "chery_dtc_journal_encode",
+    "chery_dtc_journal_restore",
+    "chery_dtc_link_confirm_tx",
+    "chery_dtc_link_end_session",
+    "chery_dtc_link_expire",
+    "chery_dtc_link_init",
+    "chery_dtc_link_receive",
+    "chery_dtc_set_current",
+    "chery_dtc_store_snapshot",
+    "chery_model_monitor_init",
+    "chery_model_monitor_task2",
+    "factory_adaptation_load",
+    "factory_adaptation_save",
+    "factory_donor_engine_gate",
+    "factory_hydraulics_capture",
+    "factory_hydraulics_control_main",
+    "factory_hydraulics_counters_begin",
+    "factory_hydraulics_counters_end",
+    "factory_hydraulics_fast_learning",
+    "factory_hydraulics_load_main",
+    "factory_hydraulics_load_observer",
+    "factory_hydraulics_restore",
+    "lfj8_9e1c_raw_nt_after_capture_store",
+    "lfj8_9e1c_raw_nt_init",
+    "lfj8_9e1c_raw_vss_after_capture_store",
+    "lfj8_9e1c_raw_vss_init",
+    "lfj8_button_filter_init",
+    "lfj8_chery_tx_init",
+    "lfj8_chery_tx_poll",
+    "lfj8_gear_observe_pair",
+    "lfj8_gear_observer_init",
+    "lfj8_h03_atf_after_adc_store",
+    "lfj8_h03_atf_after_store",
+    "lfj8_h03_atf_circuit_after_monitor",
+    "lfj8_h03_atf_feed",
+    "lfj8_h03_atf_init",
+    "lfj8_h03_atf_snapshot",
+    "lfj8_h03_can13_init",
+    "lfj8_h03_can13_poll",
+    "lfj8_h03_capture_pair",
+    "lfj8_h03_cycle_init",
+    "lfj8_h03_cycle_prepare_outputs",
+    "lfj8_h03_cycle_slt_inputs",
+    "lfj8_h03_cycle_tick",
+    "lfj8_h03_cycle_tick_with_load",
+    "lfj8_h03_cycle_tick_with_slu",
+    "lfj8_h03_dtc_can_decode_basic",
+    "lfj8_h03_dtc_can_init",
+    "lfj8_h03_dtc_can_poll",
+    "lfj8_h03_dtc_foreground_poll",
+    "lfj8_h03_dtc_rx_dispatch_begin",
+    "lfj8_h03_dtc_rx_dispatch_skip_paired",
+    "lfj8_h03_dtc_rx_queue_capture_basic",
+    "lfj8_h03_dtc_rx_queue_consume",
+    "lfj8_h03_dtc_rx_queue_init",
+    "lfj8_h03_dtc_rx_queue_peek",
+    "lfj8_h03_dtc_rx_queue_publish",
+    "lfj8_h03_dtc_rx_queue_reset",
+    "lfj8_h03_engine_feed_task2",
+    "lfj8_h03_engine_feed_task2_with_model",
+    "lfj8_h03_engine_rx_init",
+    "lfj8_h03_engine_rx_m32r",
+    "lfj8_h03_phase_clock_init",
+    "lfj8_h03_phase_clock_release",
+    "lfj8_h03_phase_clock_take",
+    "lfj8_h03_phase_startup",
+    "lfj8_h03_plan_outputs",
+    "lfj8_h03_range_snapshot",
+    "lfj8_h03_slu_secondary_from_baseline",
+    "lfj8_h03_takeover_apply",
+    "lfj8_h03_takeover_check_phase",
+    "lfj8_h03_takeover_init",
+    "lfj8_h03_takeover_prepare",
+    "lfj8_h03_takeover_take_phase",
+    "lfj8_h03_tml0ct_m32r",
+    "lfj8_h03_torque_applied",
+    "lfj8_h03_torque_can_init",
+    "lfj8_h03_torque_can_poll",
+    "lfj8_h03_torque_demand",
+    "lfj8_h03_torque_init",
+    "lfj8_h03_torque_poll",
+    "lfj8_h03_torque_receive",
+    "lfj8_h03_torque_tx_done",
+    "lfj8_range_control_init",
+    "lfj8_range_control_step",
+    "lfj8_range_control_step_with_buttons",
+    "lfj8_selector_adc_init",
+    "lfj8_selector_adc_publish_9e1c",
+    "lfj8_selector_adc_take",
+    "rbm_u340e_outputs_init",
+    "rbm_u340e_outputs_step",
+    "rbm_u340e_range_fast",
+    "rbm_u340e_runtime_gears_outputs",
+    "rbm_u340e_runtime_init",
+    "rbm_u340e_runtime_main_coolant",
+    "rbm_u340e_runtime_main_engine_speed",
+    "rbm_u340e_runtime_main_range",
+    "rbm_u340e_runtime_main_range_complete",
+    "rbm_u340e_runtime_prepare_engine",
+    "rbm_u340e_runtime_prepare_s01_cold",
+    "rbm_u340e_runtime_publish_load",
+    "rbm_u340e_runtime_restore_adaptation",
+    "rbm_u340e_runtime_secondary_load_qualify",
+    "rbm_u340e_runtime_snapshot_gears",
+    "rbm_u340e_s01_adaptation_baseline",
+    "rbm_u340e_schedule_fast_begin",
+    "rbm_u340e_schedule_fast_claim",
+    "rbm_u340e_schedule_fast_done",
+    "rbm_u340e_schedule_fast_end",
+    "rbm_u340e_schedule_finish_init",
+    "rbm_u340e_schedule_main_done",
+    "rbm_u340e_schedule_producer_done",
+    "rbm_u340e_schedule_producer_publish",
+    "rbm_u340e_schedule_secondary_claim",
+    "rbm_u340e_schedule_secondary_done",
+    "rbm_u340e_schedule_timer_irq",
+    "rbm_u340e_step",
+    "ta2005_engine_qualifier_init",
+    "ta2005_engine_qualifier_task2"
+  ],
+  "retained_sections": 452,
+  "flash_payload_bytes": 84904,
+  "new_static_ram_bytes": 0,
+  "status": "PASS_ADDRESS_MODEL_ONLY",
+  "accepted_layout": true,
+  "windows": {
+    "pad_f5dc": {
+      "start": 62940,
+      "end_exclusive": 65536,
+      "capacity": 2596,
+      "payload_bytes": 2596,
+      "extent": 2596,
+      "margin": 0
+    },
+    "pad_10af4": {
+      "start": 68340,
+      "end_exclusive": 69632,
+      "capacity": 1292,
+      "payload_bytes": 1292,
+      "extent": 1292,
+      "margin": 0
+    },
+    "pad_12b2c": {
+      "start": 76588,
+      "end_exclusive": 77824,
+      "capacity": 1236,
+      "payload_bytes": 1236,
+      "extent": 1236,
+      "margin": 0
+    },
+    "pad_14e68": {
+      "start": 85608,
+      "end_exclusive": 86016,
+      "capacity": 408,
+      "payload_bytes": 408,
+      "extent": 408,
+      "margin": 0
+    },
+    "pad_16c0c": {
+      "start": 93196,
+      "end_exclusive": 94208,
+      "capacity": 1012,
+      "payload_bytes": 1012,
+      "extent": 1012,
+      "margin": 0
+    },
+    "pad_17d58": {
+      "start": 97624,
+      "end_exclusive": 98304,
+      "capacity": 680,
+      "payload_bytes": 680,
+      "extent": 680,
+      "margin": 0
+    },
+    "pad_18c20": {
+      "start": 101408,
+      "end_exclusive": 102400,
+      "capacity": 992,
+      "payload_bytes": 992,
+      "extent": 992,
+      "margin": 0
+    },
+    "pad_19e58": {
+      "start": 106072,
+      "end_exclusive": 106496,
+      "capacity": 424,
+      "payload_bytes": 424,
+      "extent": 424,
+      "margin": 0
+    },
+    "pad_1aa1c": {
+      "start": 109084,
+      "end_exclusive": 110592,
+      "capacity": 1508,
+      "payload_bytes": 1508,
+      "extent": 1508,
+      "margin": 0
+    },
+    "pad_1bea0": {
+      "start": 114336,
+      "end_exclusive": 114688,
+      "capacity": 352,
+      "payload_bytes": 352,
+      "extent": 352,
+      "margin": 0
+    },
+    "pad_1cec4": {
+      "start": 118468,
+      "end_exclusive": 118784,
+      "capacity": 316,
+      "payload_bytes": 316,
+      "extent": 316,
+      "margin": 0
+    },
+    "pad_1eabc": {
+      "start": 125628,
+      "end_exclusive": 126976,
+      "capacity": 1348,
+      "payload_bytes": 1348,
+      "extent": 1348,
+      "margin": 0
+    },
+    "prefix_primary": {
+      "start": 128976,
+      "end_exclusive": 196608,
+      "capacity": 67632,
+      "payload_bytes": 50180,
+      "extent": 50192,
+      "margin": 17440
+    },
+    "tail": {
+      "start": 508184,
+      "end_exclusive": 524284,
+      "capacity": 16100,
+      "payload_bytes": 16100,
+      "extent": 16100,
+      "margin": 0
+    },
+    "pad_33084": {
+      "start": 209028,
+      "end_exclusive": 212992,
+      "capacity": 3964,
+      "payload_bytes": 3964,
+      "extent": 3964,
+      "margin": 0
+    },
+    "pad_3f608": {
+      "start": 259592,
+      "end_exclusive": 262088,
+      "capacity": 2496,
+      "payload_bytes": 2496,
+      "extent": 2496,
+      "margin": 0
+    }
+  },
+  "placements": [
+    {
+      "section": ".text.factory_learning_up",
+      "window": "pad_f5dc",
+      "address": 62940,
+      "bytes": 1432,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_pressure_correction_raw",
+      "window": "pad_f5dc",
+      "address": 64372,
+      "bytes": 1100,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.chery_dtc_link_expire",
+      "window": "pad_f5dc",
+      "address": 65472,
+      "bytes": 64,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_56b88",
+      "window": "pad_10af4",
+      "address": 68340,
+      "bytes": 1292,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_can13_poll",
+      "window": "pad_12b2c",
+      "address": 76588,
+      "bytes": 1232,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.header",
+      "window": "pad_12b2c",
+      "address": 77820,
+      "bytes": 4,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.gear_56348",
+      "window": "pad_14e68",
+      "address": 85608,
+      "bytes": 404,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.learning_00B240",
+      "window": "pad_14e68",
+      "address": 86012,
+      "bytes": 4,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.lfj8_h03_torque_can_poll",
+      "window": "pad_16c0c",
+      "address": 93196,
+      "bytes": 892,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.gear_00B198",
+      "window": "pad_16c0c",
+      "address": 94088,
+      "bytes": 120,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.lfj8_h03_torque_receive",
+      "window": "pad_17d58",
+      "address": 97624,
+      "bytes": 648,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.donor",
+      "window": "pad_17d58",
+      "address": 98272,
+      "bytes": 32,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.cycle_tick",
+      "window": "pad_18c20",
+      "address": 101408,
+      "bytes": 984,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.end.1114",
+      "window": "pad_18c20",
+      "address": 102392,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.alternate",
+      "window": "pad_19e58",
+      "address": 106072,
+      "bytes": 424,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_main_range",
+      "window": "pad_1aa1c",
+      "address": 109084,
+      "bytes": 1484,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.cal_000FBC",
+      "window": "pad_1aa1c",
+      "address": 110568,
+      "bytes": 24,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.lfj8_h03_cycle_prepare_outputs",
+      "window": "pad_1bea0",
+      "address": 114336,
+      "bytes": 352,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.finish",
+      "window": "pad_1cec4",
+      "address": 118468,
+      "bytes": 312,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.override_counts",
+      "window": "pad_1cec4",
+      "address": 118780,
+      "bytes": 4,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.enqueue",
+      "window": "pad_1eabc",
+      "address": 125628,
+      "bytes": 1332,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.input_load_000D14",
+      "window": "pad_1eabc",
+      "address": 126960,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.chery_dtc_link_receive_with_store",
+      "window": "prefix_primary",
+      "address": 128976,
+      "bytes": 508,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_can0_arm_engine_rx",
+      "window": "prefix_primary",
+      "address": 129484,
+      "bytes": 508,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_can_poll",
+      "window": "prefix_primary",
+      "address": 129992,
+      "bytes": 508,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.main_step",
+      "window": "prefix_primary",
+      "address": 130500,
+      "bytes": 508,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.receive8",
+      "window": "prefix_primary",
+      "address": 131008,
+      "bytes": 504,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_5769a",
+      "window": "prefix_primary",
+      "address": 131512,
+      "bytes": 496,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_secondary_load_qualify",
+      "window": "prefix_primary",
+      "address": 132008,
+      "bytes": 496,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.ta2005_engine_qualifier_task2",
+      "window": "prefix_primary",
+      "address": 132504,
+      "bytes": 492,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.torque_00148C",
+      "window": "prefix_primary",
+      "address": 132996,
+      "bytes": 484,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_rx_queue_capture_pending",
+      "window": "prefix_primary",
+      "address": 133480,
+      "bytes": 484,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_pressure_feedback",
+      "window": "prefix_primary",
+      "address": 133964,
+      "bytes": 480,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_chery_tx_poll_status",
+      "window": "prefix_primary",
+      "address": 134444,
+      "bytes": 480,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_atf_after_store",
+      "window": "prefix_primary",
+      "address": 134924,
+      "bytes": 468,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.tail",
+      "window": "prefix_primary",
+      "address": 135392,
+      "bytes": 448,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.delay32",
+      "window": "prefix_primary",
+      "address": 135840,
+      "bytes": 440,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_adaptation_decode",
+      "window": "prefix_primary",
+      "address": 136280,
+      "bytes": 440,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.shared_fields",
+      "window": "prefix_primary",
+      "address": 136720,
+      "bytes": 438,
+      "alignment": 2,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.chery_dtc_can_format_reply_with_store",
+      "window": "prefix_primary",
+      "address": 137160,
+      "bytes": 436,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_request_normal",
+      "window": "prefix_primary",
+      "address": 137596,
+      "bytes": 436,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_pressure_ramp",
+      "window": "prefix_primary",
+      "address": 138032,
+      "bytes": 416,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_learning_up_observer",
+      "window": "prefix_primary",
+      "address": 138448,
+      "bytes": 412,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.publish_locked",
+      "window": "prefix_primary",
+      "address": 138860,
+      "bytes": 404,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.main_queue",
+      "window": "prefix_primary",
+      "address": 139264,
+      "bytes": 400,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_main_range_complete",
+      "window": "prefix_primary",
+      "address": 139664,
+      "bytes": 400,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_restore_adaptation",
+      "window": "prefix_primary",
+      "address": 140064,
+      "bytes": 400,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_slu_secondary_from_baseline",
+      "window": "prefix_primary",
+      "address": 140464,
+      "bytes": 392,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.dtc_table",
+      "window": "prefix_primary",
+      "address": 140856,
+      "bytes": 384,
+      "alignment": 2,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.factory_driver_dispatch",
+      "window": "prefix_primary",
+      "address": 141240,
+      "bytes": 364,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.ranges",
+      "window": "prefix_primary",
+      "address": 141604,
+      "bytes": 360,
+      "alignment": 2,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.lfj8_h03_can0_torque_listen",
+      "window": "prefix_primary",
+      "address": 141964,
+      "bytes": 348,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.qualified",
+      "window": "prefix_primary",
+      "address": 142312,
+      "bytes": 348,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_prepare_s01_cold",
+      "window": "prefix_primary",
+      "address": 142660,
+      "bytes": 344,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_adaptation_save",
+      "window": "prefix_primary",
+      "address": 143004,
+      "bytes": 332,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_57cc6",
+      "window": "prefix_primary",
+      "address": 143336,
+      "bytes": 332,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.qualify_task2",
+      "window": "prefix_primary",
+      "address": 143668,
+      "bytes": 332,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_capture_pair",
+      "window": "prefix_primary",
+      "address": 144000,
+      "bytes": 324,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_publish_load",
+      "window": "prefix_primary",
+      "address": 144324,
+      "bytes": 320,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_gears_outputs_with_request",
+      "window": "prefix_primary",
+      "address": 144644,
+      "bytes": 308,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.alternate_tail",
+      "window": "prefix_primary",
+      "address": 144952,
+      "bytes": 300,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_foreground_poll",
+      "window": "prefix_primary",
+      "address": 145252,
+      "bytes": 296,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.secondary_result",
+      "window": "prefix_primary",
+      "address": 145548,
+      "bytes": 292,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_pressure_limit",
+      "window": "prefix_primary",
+      "address": 145840,
+      "bytes": 284,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_st_output",
+      "window": "prefix_primary",
+      "address": 146124,
+      "bytes": 280,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_atf_snapshot",
+      "window": "prefix_primary",
+      "address": 146404,
+      "bytes": 280,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_load_observer",
+      "window": "prefix_primary",
+      "address": 146684,
+      "bytes": 276,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_pressure_special",
+      "window": "prefix_primary",
+      "address": 146960,
+      "bytes": 276,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.chery_model_monitor_task2",
+      "window": "prefix_primary",
+      "address": 147236,
+      "bytes": 272,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.pop",
+      "window": "prefix_primary",
+      "address": 147508,
+      "bytes": 272,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_engine_feed_task2_with_model",
+      "window": "prefix_primary",
+      "address": 147780,
+      "bytes": 264,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lookup",
+      "window": "prefix_primary",
+      "address": 148044,
+      "bytes": 264,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_outputs_step",
+      "window": "prefix_primary",
+      "address": 148308,
+      "bytes": 264,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.slot13_status",
+      "window": "prefix_primary",
+      "address": 148572,
+      "bytes": 264,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.write_if_idle",
+      "window": "prefix_primary",
+      "address": 148836,
+      "bytes": 264,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.map_FactoryLearning",
+      "window": "prefix_primary",
+      "address": 149100,
+      "bytes": 261,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.factory_interp2",
+      "window": "prefix_primary",
+      "address": 149364,
+      "bytes": 260,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.ta2005_chery_inputs_receive",
+      "window": "prefix_primary",
+      "address": 149624,
+      "bytes": 252,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.map_FactoryPhaseModes",
+      "window": "prefix_primary",
+      "address": 149876,
+      "bytes": 252,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.gear_56152",
+      "window": "prefix_primary",
+      "address": 150128,
+      "bytes": 248,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_range_control_sample_buttons",
+      "window": "prefix_primary",
+      "address": 150376,
+      "bytes": 248,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_outputs_init",
+      "window": "prefix_primary",
+      "address": 150624,
+      "bytes": 248,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.chery_dtc_journal_restore",
+      "window": "prefix_primary",
+      "address": 150872,
+      "bytes": 240,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.delay31.part.0",
+      "window": "prefix_primary",
+      "address": 151112,
+      "bytes": 236,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_adaptation_encode",
+      "window": "prefix_primary",
+      "address": 151348,
+      "bytes": 232,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_atf_after_adc_store",
+      "window": "prefix_primary",
+      "address": 151580,
+      "bytes": 232,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_output_plan_resolve",
+      "window": "prefix_primary",
+      "address": 151812,
+      "bytes": 232,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_pressure_window",
+      "window": "prefix_primary",
+      "address": 152044,
+      "bytes": 228,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_init",
+      "window": "prefix_primary",
+      "address": 152272,
+      "bytes": 228,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_5608a",
+      "window": "prefix_primary",
+      "address": 152500,
+      "bytes": 224,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_torque_demand",
+      "window": "prefix_primary",
+      "address": 152724,
+      "bytes": 224,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_gear_observer_init",
+      "window": "prefix_primary",
+      "address": 152948,
+      "bytes": 220,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_rx_queue_capture_basic",
+      "window": "prefix_primary",
+      "address": 153168,
+      "bytes": 220,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_range_snapshot",
+      "window": "prefix_primary",
+      "address": 153388,
+      "bytes": 220,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_range_control_sample_selector",
+      "window": "prefix_primary",
+      "address": 153608,
+      "bytes": 220,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_prepare_engine",
+      "window": "prefix_primary",
+      "address": 153828,
+      "bytes": 220,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text",
+      "window": "prefix_primary",
+      "address": 154048,
+      "bytes": 216,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_56484",
+      "window": "prefix_primary",
+      "address": 154264,
+      "bytes": 216,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_pack_1ae_with_counter",
+      "window": "prefix_primary",
+      "address": 154480,
+      "bytes": 216,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.pulse_action",
+      "window": "prefix_primary",
+      "address": 154696,
+      "bytes": 216,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_57b8a",
+      "window": "prefix_primary",
+      "address": 154912,
+      "bytes": 208,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_atf_circuit_after_monitor",
+      "window": "prefix_primary",
+      "address": 155120,
+      "bytes": 208,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_phase_startup",
+      "window": "prefix_primary",
+      "address": 155328,
+      "bytes": 208,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_range_control_step_with_buttons",
+      "window": "prefix_primary",
+      "address": 155536,
+      "bytes": 208,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.valid",
+      "window": "prefix_primary",
+      "address": 155744,
+      "bytes": 208,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.chery_dtc_link_confirm_tx",
+      "window": "prefix_primary",
+      "address": 155952,
+      "bytes": 204,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_load_main",
+      "window": "prefix_primary",
+      "address": 156156,
+      "bytes": 204,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.expire",
+      "window": "prefix_primary",
+      "address": 156360,
+      "bytes": 200,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_57bf2",
+      "window": "prefix_primary",
+      "address": 156560,
+      "bytes": 200,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.pressure_001A18",
+      "window": "prefix_primary",
+      "address": 156760,
+      "bytes": 196,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.factory_donor_engine_gate",
+      "window": "prefix_primary",
+      "address": 156956,
+      "bytes": 196,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_slu_command",
+      "window": "prefix_primary",
+      "address": 157152,
+      "bytes": 196,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.capture_basic.part.0",
+      "window": "prefix_primary",
+      "address": 157348,
+      "bytes": 192,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_pressure_override",
+      "window": "prefix_primary",
+      "address": 157540,
+      "bytes": 192,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_range_fast",
+      "window": "prefix_primary",
+      "address": 157732,
+      "bytes": 192,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.ta2005_chery_inputs_snapshot",
+      "window": "prefix_primary",
+      "address": 157924,
+      "bytes": 192,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_57b0c",
+      "window": "prefix_primary",
+      "address": 158116,
+      "bytes": 184,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_takeover_apply",
+      "window": "prefix_primary",
+      "address": 158300,
+      "bytes": 184,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_can_decode_basic",
+      "window": "prefix_primary",
+      "address": 158484,
+      "bytes": 180,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_adaptation_load",
+      "window": "prefix_primary",
+      "address": 158664,
+      "bytes": 176,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_takeover_init",
+      "window": "prefix_primary",
+      "address": 158840,
+      "bytes": 176,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.correction_001F5C",
+      "window": "prefix_primary",
+      "address": 159016,
+      "bytes": 172,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_001890",
+      "window": "prefix_primary",
+      "address": 159188,
+      "bytes": 172,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.check_phase",
+      "window": "prefix_primary",
+      "address": 159360,
+      "bytes": 172,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.chery_dtc_journal_encode",
+      "window": "prefix_primary",
+      "address": 159532,
+      "bytes": 172,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.activate",
+      "window": "prefix_primary",
+      "address": 159704,
+      "bytes": 164,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.dispatch",
+      "window": "prefix_primary",
+      "address": 159868,
+      "bytes": 164,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_5641e",
+      "window": "prefix_primary",
+      "address": 160032,
+      "bytes": 160,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_57c6c",
+      "window": "prefix_primary",
+      "address": 160192,
+      "bytes": 160,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_atf_feed",
+      "window": "prefix_primary",
+      "address": 160352,
+      "bytes": 160,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_rx_queue_consume",
+      "window": "prefix_primary",
+      "address": 160512,
+      "bytes": 160,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_rx_queue_peek",
+      "window": "prefix_primary",
+      "address": 160672,
+      "bytes": 160,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_range_control_step",
+      "window": "prefix_primary",
+      "address": 160832,
+      "bytes": 160,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.speed_ramp",
+      "window": "prefix_primary",
+      "address": 160992,
+      "bytes": 160,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.edge",
+      "window": "prefix_primary",
+      "address": 161152,
+      "bytes": 156,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_slt_correction_step",
+      "window": "prefix_primary",
+      "address": 161308,
+      "bytes": 156,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_57d78",
+      "window": "prefix_primary",
+      "address": 161464,
+      "bytes": 156,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.matching_commands",
+      "window": "prefix_primary",
+      "address": 161620,
+      "bytes": 156,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.raw_capture_snapshot",
+      "window": "prefix_primary",
+      "address": 161776,
+      "bytes": 152,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_init",
+      "window": "prefix_primary",
+      "address": 161928,
+      "bytes": 152,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.qualify",
+      "window": "prefix_primary",
+      "address": 162080,
+      "bytes": 148,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.chery_dtc_raise_c0",
+      "window": "prefix_primary",
+      "address": 162228,
+      "bytes": 144,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_engagement_step",
+      "window": "prefix_primary",
+      "address": 162372,
+      "bytes": 144,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_cycle_slt_inputs",
+      "window": "prefix_primary",
+      "address": 162516,
+      "bytes": 144,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_rx_queue_publish",
+      "window": "prefix_primary",
+      "address": 162660,
+      "bytes": 144,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_phase_clock_init",
+      "window": "prefix_primary",
+      "address": 162804,
+      "bytes": 144,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_torque_should_abort_tx",
+      "window": "prefix_primary",
+      "address": 162948,
+      "bytes": 144,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_snapshot_gears",
+      "window": "prefix_primary",
+      "address": 163092,
+      "bytes": 144,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.shift_bank_000FEC",
+      "window": "prefix_primary",
+      "address": 163236,
+      "bytes": 140,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.shift_bank_001078",
+      "window": "prefix_primary",
+      "address": 163376,
+      "bytes": 140,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.factory_adaptation_apply",
+      "window": "prefix_primary",
+      "address": 163516,
+      "bytes": 140,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_adaptation_capture",
+      "window": "prefix_primary",
+      "address": 163656,
+      "bytes": 140,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.refresh_shared",
+      "window": "prefix_primary",
+      "address": 163796,
+      "bytes": 140,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_cycle_init",
+      "window": "prefix_primary",
+      "address": 163936,
+      "bytes": 136,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.pack",
+      "window": "prefix_primary",
+      "address": 164072,
+      "bytes": 136,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rom",
+      "window": "prefix_primary",
+      "address": 164208,
+      "bytes": 136,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_selector_adc_take",
+      "window": "prefix_primary",
+      "address": 164344,
+      "bytes": 132,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.transfer",
+      "window": "prefix_primary",
+      "address": 164476,
+      "bytes": 132,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.map_FactoryTorque",
+      "window": "prefix_primary",
+      "address": 164608,
+      "bytes": 132,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.mode_001744",
+      "window": "prefix_primary",
+      "address": 164740,
+      "bytes": 128,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_001998",
+      "window": "prefix_primary",
+      "address": 164868,
+      "bytes": 128,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_00209C",
+      "window": "prefix_primary",
+      "address": 164996,
+      "bytes": 128,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.lfj8_can0_receive8",
+      "window": "prefix_primary",
+      "address": 165124,
+      "bytes": 128,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_can13_init",
+      "window": "prefix_primary",
+      "address": 165252,
+      "bytes": 128,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.accept_frame",
+      "window": "prefix_primary",
+      "address": 165380,
+      "bytes": 124,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.down_tail",
+      "window": "prefix_primary",
+      "address": 165504,
+      "bytes": 124,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_interp1",
+      "window": "prefix_primary",
+      "address": 165628,
+      "bytes": 124,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_request_special1",
+      "window": "prefix_primary",
+      "address": 165752,
+      "bytes": 124,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_torque_can_init",
+      "window": "prefix_primary",
+      "address": 165876,
+      "bytes": 124,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_schedule_producer_publish",
+      "window": "prefix_primary",
+      "address": 166000,
+      "bytes": 124,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_can0_telemetry_status",
+      "window": "prefix_primary",
+      "address": 166124,
+      "bytes": 120,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_can0_torque_receive",
+      "window": "prefix_primary",
+      "address": 166244,
+      "bytes": 120,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_can0_torque_submit",
+      "window": "prefix_primary",
+      "address": 166364,
+      "bytes": 120,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_pack_300",
+      "window": "prefix_primary",
+      "address": 166484,
+      "bytes": 120,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.output",
+      "window": "prefix_primary",
+      "address": 166604,
+      "bytes": 120,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.pause_torque_listener",
+      "window": "prefix_primary",
+      "address": 166724,
+      "bytes": 120,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_main_coolant",
+      "window": "prefix_primary",
+      "address": 166844,
+      "bytes": 120,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_selector_sample",
+      "window": "prefix_primary",
+      "address": 166964,
+      "bytes": 120,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_pressure_snapshot",
+      "window": "prefix_primary",
+      "address": 167084,
+      "bytes": 116,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_torque_step",
+      "window": "prefix_primary",
+      "address": 167200,
+      "bytes": 116,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_hydraulics_control_main_workspace",
+      "window": "prefix_primary",
+      "address": 167316,
+      "bytes": 116,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_hydraulics_restore",
+      "window": "prefix_primary",
+      "address": 167432,
+      "bytes": 112,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_lookup_thresholds",
+      "window": "prefix_primary",
+      "address": 167544,
+      "bytes": 112,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_slt_select",
+      "window": "prefix_primary",
+      "address": 167656,
+      "bytes": 112,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.pressure_001BA0",
+      "window": "prefix_primary",
+      "address": 167768,
+      "bytes": 108,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.factory_hydraulics_fast_learning",
+      "window": "prefix_primary",
+      "address": 167876,
+      "bytes": 108,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.getq",
+      "window": "prefix_primary",
+      "address": 167984,
+      "bytes": 108,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_can0_torque_status",
+      "window": "prefix_primary",
+      "address": 168092,
+      "bytes": 108,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_can0_slot13_timestamp",
+      "window": "prefix_primary",
+      "address": 168200,
+      "bytes": 104,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.position",
+      "window": "prefix_primary",
+      "address": 168304,
+      "bytes": 104,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_counter_banks",
+      "window": "prefix_primary",
+      "address": 168408,
+      "bytes": 100,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_can0_slot13_submit",
+      "window": "prefix_primary",
+      "address": 168508,
+      "bytes": 100,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_gear_observe_pair",
+      "window": "prefix_primary",
+      "address": 168608,
+      "bytes": 100,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_can_service_session",
+      "window": "prefix_primary",
+      "address": 168708,
+      "bytes": 100,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_rx_queue_end_session",
+      "window": "prefix_primary",
+      "address": 168808,
+      "bytes": 100,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_rx_queue_reset",
+      "window": "prefix_primary",
+      "address": 168908,
+      "bytes": 100,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_engine_rx_init",
+      "window": "prefix_primary",
+      "address": 169008,
+      "bytes": 100,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_phase_clock_release",
+      "window": "prefix_primary",
+      "address": 169108,
+      "bytes": 100,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_schedule_poll",
+      "window": "prefix_primary",
+      "address": 169208,
+      "bytes": 100,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.committed_valid",
+      "window": "prefix_primary",
+      "address": 169308,
+      "bytes": 96,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_rx_queue_init",
+      "window": "prefix_primary",
+      "address": 169404,
+      "bytes": 96,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.publish_stock_sample",
+      "window": "prefix_primary",
+      "address": 169500,
+      "bytes": 96,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.putq",
+      "window": "prefix_primary",
+      "address": 169596,
+      "bytes": 96,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_schedule_fast_begin",
+      "window": "prefix_primary",
+      "address": 169692,
+      "bytes": 96,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.trim",
+      "window": "prefix_primary",
+      "address": 169788,
+      "bytes": 96,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.pressure_00193C",
+      "window": "prefix_primary",
+      "address": 169884,
+      "bytes": 92,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_001ADC",
+      "window": "prefix_primary",
+      "address": 169976,
+      "bytes": 92,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.factory_adaptation_valid",
+      "window": "prefix_primary",
+      "address": 170068,
+      "bytes": 92,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_hydraulics_get",
+      "window": "prefix_primary",
+      "address": 170160,
+      "bytes": 92,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_load_limited",
+      "window": "prefix_primary",
+      "address": 170252,
+      "bytes": 92,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_57a3e",
+      "window": "prefix_primary",
+      "address": 170344,
+      "bytes": 92,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.h03_can0_operational",
+      "window": "prefix_primary",
+      "address": 170436,
+      "bytes": 92,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_can0_read_timestamp",
+      "window": "prefix_primary",
+      "address": 170528,
+      "bytes": 92,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_can0_torque_yield",
+      "window": "prefix_primary",
+      "address": 170620,
+      "bytes": 92,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.timed_ramp",
+      "window": "prefix_primary",
+      "address": 170712,
+      "bytes": 92,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.spans.2020",
+      "window": "prefix_primary",
+      "address": 170804,
+      "bytes": 90,
+      "alignment": 2,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.row_value",
+      "window": "prefix_primary",
+      "address": 170896,
+      "bytes": 88,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.can0_available",
+      "window": "prefix_primary",
+      "address": 170984,
+      "bytes": 84,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_correction_multiply",
+      "window": "prefix_primary",
+      "address": 171068,
+      "bytes": 84,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_hydraulics_capture",
+      "window": "prefix_primary",
+      "address": 171152,
+      "bytes": 84,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_hydraulics_control_main",
+      "window": "prefix_primary",
+      "address": 171236,
+      "bytes": 84,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_can0_diag_submit",
+      "window": "prefix_primary",
+      "address": 171320,
+      "bytes": 84,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_can_session_step",
+      "window": "prefix_primary",
+      "address": 171404,
+      "bytes": 84,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_rx_dispatch_begin",
+      "window": "prefix_primary",
+      "address": 171488,
+      "bytes": 84,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_rx_dispatch_skip_paired",
+      "window": "prefix_primary",
+      "address": 171572,
+      "bytes": 84,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.slot13_id_matches",
+      "window": "prefix_primary",
+      "address": 171656,
+      "bytes": 84,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.torque_step",
+      "window": "prefix_primary",
+      "address": 171740,
+      "bytes": 84,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_hydraulics_load_main",
+      "window": "prefix_primary",
+      "address": 171824,
+      "bytes": 80,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_hydraulics_load_observer",
+      "window": "prefix_primary",
+      "address": 171904,
+      "bytes": 80,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_hydraulics_set",
+      "window": "prefix_primary",
+      "address": 171984,
+      "bytes": 80,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_57a78",
+      "window": "prefix_primary",
+      "address": 172064,
+      "bytes": 80,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_57ade",
+      "window": "prefix_primary",
+      "address": 172144,
+      "bytes": 80,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_dtc_can_init",
+      "window": "prefix_primary",
+      "address": 172224,
+      "bytes": 80,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.torque_listener_ready",
+      "window": "prefix_primary",
+      "address": 172304,
+      "bytes": 80,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.factory_driver_dispatch",
+      "window": "prefix_primary",
+      "address": 172384,
+      "bytes": 76,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.chery_dtc_set_current",
+      "window": "prefix_primary",
+      "address": 172460,
+      "bytes": 76,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_div_s32_s16",
+      "window": "prefix_primary",
+      "address": 172536,
+      "bytes": 76,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_request_special2",
+      "window": "prefix_primary",
+      "address": 172612,
+      "bytes": 76,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_phase_clock_check",
+      "window": "prefix_primary",
+      "address": 172688,
+      "bytes": 76,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_phase_clock_take",
+      "window": "prefix_primary",
+      "address": 172764,
+      "bytes": 76,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_range_control_init",
+      "window": "prefix_primary",
+      "address": 172840,
+      "bytes": 76,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.raw_capture_at",
+      "window": "prefix_primary",
+      "address": 172916,
+      "bytes": 76,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_schedule_fast_end",
+      "window": "prefix_primary",
+      "address": 172992,
+      "bytes": 76,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.shift_profile",
+      "window": "prefix_primary",
+      "address": 173068,
+      "bytes": 76,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.torque_slot_available",
+      "window": "prefix_primary",
+      "address": 173144,
+      "bytes": 76,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_learning_down_observer",
+      "window": "prefix_primary",
+      "address": 173220,
+      "bytes": 72,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_value.isra.0",
+      "window": "prefix_primary",
+      "address": 173292,
+      "bytes": 72,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_can0_diag_status",
+      "window": "prefix_primary",
+      "address": 173364,
+      "bytes": 72,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.read_member",
+      "window": "prefix_primary",
+      "address": 173436,
+      "bytes": 72,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.mode_001B38",
+      "window": "prefix_primary",
+      "address": 173508,
+      "bytes": 68,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.crc.constprop.2",
+      "window": "prefix_primary",
+      "address": 173576,
+      "bytes": 68,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.crc8",
+      "window": "prefix_primary",
+      "address": 173644,
+      "bytes": 68,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_load_difference",
+      "window": "prefix_primary",
+      "address": 173712,
+      "bytes": 68,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_5631a",
+      "window": "prefix_primary",
+      "address": 173780,
+      "bytes": 68,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_slu_update_diagnostics",
+      "window": "prefix_primary",
+      "address": 173848,
+      "bytes": 68,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_torque_tx_done",
+      "window": "prefix_primary",
+      "address": 173916,
+      "bytes": 68,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.pack_private",
+      "window": "prefix_primary",
+      "address": 173984,
+      "bytes": 68,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.release",
+      "window": "prefix_primary",
+      "address": 174052,
+      "bytes": 68,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.snapshots_valid",
+      "window": "prefix_primary",
+      "address": 174120,
+      "bytes": 68,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.valid_gear",
+      "window": "prefix_primary",
+      "address": 174188,
+      "bytes": 68,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_request_stage",
+      "window": "prefix_primary",
+      "address": 174256,
+      "bytes": 64,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_button_filter_init",
+      "window": "prefix_primary",
+      "address": 174320,
+      "bytes": 64,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_engine_feed_task2",
+      "window": "prefix_primary",
+      "address": 174384,
+      "bytes": 64,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_torque_applied",
+      "window": "prefix_primary",
+      "address": 174448,
+      "bytes": 64,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.mul",
+      "window": "prefix_primary",
+      "address": 174512,
+      "bytes": 64,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_schedule_secondary_done",
+      "window": "prefix_primary",
+      "address": 174576,
+      "bytes": 64,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_schedule_timer_irq",
+      "window": "prefix_primary",
+      "address": 174640,
+      "bytes": 64,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.body_crc",
+      "window": "prefix_primary",
+      "address": 174704,
+      "bytes": 60,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_571e2",
+      "window": "prefix_primary",
+      "address": 174764,
+      "bytes": 60,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.interp",
+      "window": "prefix_primary",
+      "address": 174824,
+      "bytes": 60,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lower",
+      "window": "prefix_primary",
+      "address": 174884,
+      "bytes": 60,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.submit",
+      "window": "prefix_primary",
+      "address": 174944,
+      "bytes": 60,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.map_FactoryLoadInputs",
+      "window": "prefix_primary",
+      "address": 175004,
+      "bytes": 60,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.actions.962",
+      "window": "prefix_primary",
+      "address": 175064,
+      "bytes": 56,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.chery_dtc_link_end_session",
+      "window": "prefix_primary",
+      "address": 175120,
+      "bytes": 56,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.chery_dtc_store_snapshot",
+      "window": "prefix_primary",
+      "address": 175176,
+      "bytes": 56,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.coolant_source_flags",
+      "window": "prefix_primary",
+      "address": 175232,
+      "bytes": 56,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_load_primary",
+      "window": "prefix_primary",
+      "address": 175288,
+      "bytes": 56,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_pressure_correction",
+      "window": "prefix_primary",
+      "address": 175344,
+      "bytes": 56,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_chery_tx_poll",
+      "window": "prefix_primary",
+      "address": 175400,
+      "bytes": 56,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_main_engine_speed",
+      "window": "prefix_primary",
+      "address": 175456,
+      "bytes": 56,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.reset_rx",
+      "window": "prefix_primary",
+      "address": 175512,
+      "bytes": 56,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.sar",
+      "window": "prefix_primary",
+      "address": 175568,
+      "bytes": 56,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.output_guards",
+      "window": "prefix_primary",
+      "address": 175624,
+      "bytes": 52,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_00185C",
+      "window": "prefix_primary",
+      "address": 175676,
+      "bytes": 52,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.factory_load_code",
+      "window": "prefix_primary",
+      "address": 175728,
+      "bytes": 52,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_9e1c_raw_nt_after_capture_store",
+      "window": "prefix_primary",
+      "address": 175780,
+      "bytes": 52,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_9e1c_raw_vss_after_capture_store",
+      "window": "prefix_primary",
+      "address": 175832,
+      "bytes": 52,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_cycle_tick_with_slu",
+      "window": "prefix_primary",
+      "address": 175884,
+      "bytes": 52,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.map_FactoryBasePressure",
+      "window": "prefix_primary",
+      "address": 175936,
+      "bytes": 51,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_001C0C",
+      "window": "prefix_primary",
+      "address": 175988,
+      "bytes": 48,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.lfj8_h03_atf_init",
+      "window": "prefix_primary",
+      "address": 176036,
+      "bytes": 48,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.read_shift_levels",
+      "window": "prefix_primary",
+      "address": 176084,
+      "bytes": 48,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.ru16",
+      "window": "prefix_primary",
+      "address": 176132,
+      "bytes": 48,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.stop_session",
+      "window": "prefix_primary",
+      "address": 176180,
+      "bytes": 48,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.sx16",
+      "window": "prefix_primary",
+      "address": 176228,
+      "bytes": 48,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.amps_binary32.part.0",
+      "window": "prefix_primary",
+      "address": 176276,
+      "bytes": 44,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_correction_saturate",
+      "window": "prefix_primary",
+      "address": 176320,
+      "bytes": 44,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_div_u32_u16",
+      "window": "prefix_primary",
+      "address": 176364,
+      "bytes": 44,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_57210",
+      "window": "prefix_primary",
+      "address": 176408,
+      "bytes": 44,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_57aac",
+      "window": "prefix_primary",
+      "address": 176452,
+      "bytes": 44,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_cycle_tick_with_load",
+      "window": "prefix_primary",
+      "address": 176496,
+      "bytes": 44,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.period_remainder",
+      "window": "prefix_primary",
+      "address": 176540,
+      "bytes": 44,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.raw_capture_edge",
+      "window": "prefix_primary",
+      "address": 176584,
+      "bytes": 44,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_schedule_fast_claim",
+      "window": "prefix_primary",
+      "address": 176628,
+      "bytes": 44,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_schedule_fast_done",
+      "window": "prefix_primary",
+      "address": 176672,
+      "bytes": 44,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_schedule_main_done",
+      "window": "prefix_primary",
+      "address": 176716,
+      "bytes": 44,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.private_spans",
+      "window": "prefix_primary",
+      "address": 176760,
+      "bytes": 44,
+      "alignment": 2,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.chery_dtc_init",
+      "window": "prefix_primary",
+      "address": 176804,
+      "bytes": 40,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_engine_rx_m32r",
+      "window": "prefix_primary",
+      "address": 176844,
+      "bytes": 40,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.ready",
+      "window": "prefix_primary",
+      "address": 176884,
+      "bytes": 40,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.ta2005_chery_inputs_reset",
+      "window": "prefix_primary",
+      "address": 176924,
+      "bytes": 40,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.pressure_0015FC",
+      "window": "prefix_primary",
+      "address": 176964,
+      "bytes": 36,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_001B7C",
+      "window": "prefix_primary",
+      "address": 177000,
+      "bytes": 36,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_002060",
+      "window": "prefix_primary",
+      "address": 177036,
+      "bytes": 36,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.basiccan_active",
+      "window": "prefix_primary",
+      "address": 177072,
+      "bytes": 36,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.chery_dtc_link_init",
+      "window": "prefix_primary",
+      "address": 177108,
+      "bytes": 36,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.chery_model_monitor_init",
+      "window": "prefix_primary",
+      "address": 177144,
+      "bytes": 36,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_learning_interp",
+      "window": "prefix_primary",
+      "address": 177180,
+      "bytes": 36,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.h03_can0_tx13_polling",
+      "window": "prefix_primary",
+      "address": 177216,
+      "bytes": 36,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_chery_tx_init",
+      "window": "prefix_primary",
+      "address": 177252,
+      "bytes": 36,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_cycle_tick",
+      "window": "prefix_primary",
+      "address": 177288,
+      "bytes": 36,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_schedule_secondary_claim",
+      "window": "prefix_primary",
+      "address": 177324,
+      "bytes": 36,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.map_FactoryPressureSnapshot",
+      "window": "prefix_primary",
+      "address": 177360,
+      "bytes": 36,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.map_FactoryPressureSpecial",
+      "window": "prefix_primary",
+      "address": 177396,
+      "bytes": 36,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.baseline.2051",
+      "window": "prefix_primary",
+      "address": 177432,
+      "bytes": 34,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.map_FactoryPressureOverride",
+      "window": "prefix_primary",
+      "address": 177466,
+      "bytes": 33,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.mode_001620",
+      "window": "prefix_primary",
+      "address": 177500,
+      "bytes": 32,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.table.997",
+      "window": "prefix_primary",
+      "address": 177532,
+      "bytes": 32,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.lfj8_h03_takeover_prepare",
+      "window": "prefix_primary",
+      "address": 177564,
+      "bytes": 32,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_raw_vss_snapshot_with_standstill",
+      "window": "prefix_primary",
+      "address": 177596,
+      "bytes": 32,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.put",
+      "window": "prefix_primary",
+      "address": 177628,
+      "bytes": 32,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_schedule_producer_done",
+      "window": "prefix_primary",
+      "address": 177660,
+      "bytes": 32,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.read_le32",
+      "window": "prefix_primary",
+      "address": 177692,
+      "bytes": 32,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.ta2005_chery_snapshot_clear",
+      "window": "prefix_primary",
+      "address": 177724,
+      "bytes": 32,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.ta2005_engine_qualifier_init",
+      "window": "prefix_primary",
+      "address": 177756,
+      "bytes": 32,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.l_delay.2218",
+      "window": "prefix_primary",
+      "address": 177788,
+      "bytes": 30,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.second_delay.2219",
+      "window": "prefix_primary",
+      "address": 177818,
+      "bytes": 30,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.lfj8_h03_mmio",
+      "window": "prefix_primary",
+      "address": 177848,
+      "bytes": 28,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_002044",
+      "window": "prefix_primary",
+      "address": 177876,
+      "bytes": 28,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.chery_dtc_link_receive",
+      "window": "prefix_primary",
+      "address": 177904,
+      "bytes": 28,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_driver_count",
+      "window": "prefix_primary",
+      "address": 177932,
+      "bytes": 28,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_slt_characteristic",
+      "window": "prefix_primary",
+      "address": 177960,
+      "bytes": 28,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_slu_characteristic",
+      "window": "prefix_primary",
+      "address": 177988,
+      "bytes": 28,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.half",
+      "window": "prefix_primary",
+      "address": 178016,
+      "bytes": 28,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_selector_adc_init",
+      "window": "prefix_primary",
+      "address": 178044,
+      "bytes": 28,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.range_read",
+      "window": "prefix_primary",
+      "address": 178072,
+      "bytes": 28,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.unlikely.get",
+      "window": "prefix_primary",
+      "address": 178100,
+      "bytes": 28,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.word",
+      "window": "prefix_primary",
+      "address": 178128,
+      "bytes": 28,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.limits.1210",
+      "window": "prefix_primary",
+      "address": 178156,
+      "bytes": 28,
+      "alignment": 2,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.map_FactoryPressureLimit",
+      "window": "prefix_primary",
+      "address": 178184,
+      "bytes": 27,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.cal_000FD4",
+      "window": "prefix_primary",
+      "address": 178212,
+      "bytes": 24,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.mode_00181C",
+      "window": "prefix_primary",
+      "address": 178236,
+      "bytes": 24,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_002084",
+      "window": "prefix_primary",
+      "address": 178260,
+      "bytes": 24,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.factory_hydraulics_counters_begin",
+      "window": "prefix_primary",
+      "address": 178284,
+      "bytes": 24,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_slu_reset_secondary",
+      "window": "prefix_primary",
+      "address": 178308,
+      "bytes": 24,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_takeover_prepare_plan",
+      "window": "prefix_primary",
+      "address": 178332,
+      "bytes": 24,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.sh",
+      "window": "prefix_primary",
+      "address": 178356,
+      "bytes": 24,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.base.1406",
+      "window": "prefix_primary",
+      "address": 178380,
+      "bytes": 22,
+      "alignment": 2,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.learning_000D00",
+      "window": "prefix_primary",
+      "address": 178404,
+      "bytes": 20,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.mode_0015D8",
+      "window": "prefix_primary",
+      "address": 178424,
+      "bytes": 20,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_0017C4",
+      "window": "prefix_primary",
+      "address": 178444,
+      "bytes": 20,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_0017D8",
+      "window": "prefix_primary",
+      "address": 178464,
+      "bytes": 20,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.factory_hydraulics_counters_end",
+      "window": "prefix_primary",
+      "address": 178484,
+      "bytes": 20,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.inc",
+      "window": "prefix_primary",
+      "address": 178504,
+      "bytes": 20,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_takeover_check_phase",
+      "window": "prefix_primary",
+      "address": 178524,
+      "bytes": 20,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_torque_init",
+      "window": "prefix_primary",
+      "address": 178544,
+      "bytes": 20,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_selector_adc_publish_9e1c",
+      "window": "prefix_primary",
+      "address": 178564,
+      "bytes": 20,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.range_write",
+      "window": "prefix_primary",
+      "address": 178584,
+      "bytes": 20,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.sx8",
+      "window": "prefix_primary",
+      "address": 178604,
+      "bytes": 20,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.mode_0015EC",
+      "window": "prefix_primary",
+      "address": 178624,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_0017EC",
+      "window": "prefix_primary",
+      "address": 178640,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_0017FC",
+      "window": "prefix_primary",
+      "address": 178656,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_00180C",
+      "window": "prefix_primary",
+      "address": 178672,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_001840",
+      "window": "prefix_primary",
+      "address": 178688,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_00200C",
+      "window": "prefix_primary",
+      "address": 178704,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pwm_final",
+      "window": "prefix_primary",
+      "address": 178720,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pwm_proposal",
+      "window": "prefix_primary",
+      "address": 178736,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.increment",
+      "window": "prefix_primary",
+      "address": 178752,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_9e1c_raw_nt_init",
+      "window": "prefix_primary",
+      "address": 178768,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_9e1c_raw_vss_init",
+      "window": "prefix_primary",
+      "address": 178784,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_takeover_take_phase",
+      "window": "prefix_primary",
+      "address": 178800,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_schedule_init",
+      "window": "prefix_primary",
+      "address": 178816,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rb",
+      "window": "prefix_primary",
+      "address": 178832,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_runtime_gears_outputs",
+      "window": "prefix_primary",
+      "address": 178848,
+      "bytes": 16,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.offsets.2139",
+      "window": "prefix_primary",
+      "address": 178864,
+      "bytes": 16,
+      "alignment": 2,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.cst4",
+      "window": "prefix_primary",
+      "address": 178880,
+      "bytes": 12,
+      "alignment": 4,
+      "noload": false,
+      "flags": 18
+    },
+    {
+      "section": ".rodata.learning_001634",
+      "window": "prefix_primary",
+      "address": 178892,
+      "bytes": 12,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_0017A8",
+      "window": "prefix_primary",
+      "address": 178904,
+      "bytes": 12,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_001834",
+      "window": "prefix_primary",
+      "address": 178916,
+      "bytes": 12,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_001850",
+      "window": "prefix_primary",
+      "address": 178928,
+      "bytes": 12,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_001B85",
+      "window": "prefix_primary",
+      "address": 178940,
+      "bytes": 12,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.shift_final",
+      "window": "prefix_primary",
+      "address": 178952,
+      "bytes": 12,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.strategy_mailbox",
+      "window": "prefix_primary",
+      "address": 178964,
+      "bytes": 12,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.enter",
+      "window": "prefix_primary",
+      "address": 178976,
+      "bytes": 12,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_s01_adaptation_baseline",
+      "window": "prefix_primary",
+      "address": 178988,
+      "bytes": 12,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_schedule_finish_init",
+      "window": "prefix_primary",
+      "address": 179000,
+      "bytes": 12,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.gp_fields.2177",
+      "window": "prefix_primary",
+      "address": 179012,
+      "bytes": 12,
+      "alignment": 2,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.gear_000D08",
+      "window": "prefix_primary",
+      "address": 179024,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.limit.2453",
+      "window": "prefix_primary",
+      "address": 179032,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.masks.2190",
+      "window": "prefix_primary",
+      "address": 179040,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.nt_axis.1132",
+      "window": "prefix_primary",
+      "address": 179048,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.override_thresholds_rom",
+      "window": "prefix_primary",
+      "address": 179056,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_001774",
+      "window": "prefix_primary",
+      "address": 179064,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_00177C",
+      "window": "prefix_primary",
+      "address": 179072,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_001784",
+      "window": "prefix_primary",
+      "address": 179080,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_00178C",
+      "window": "prefix_primary",
+      "address": 179088,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_0017A0",
+      "window": "prefix_primary",
+      "address": 179096,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.range_mask.1236",
+      "window": "prefix_primary",
+      "address": 179104,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.speed_axis.1131",
+      "window": "prefix_primary",
+      "address": 179112,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.threshold.2184",
+      "window": "prefix_primary",
+      "address": 179120,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.lfj8_h03_tml0ct_m32r",
+      "window": "prefix_primary",
+      "address": 179128,
+      "bytes": 8,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.pressure_001770",
+      "window": "prefix_primary",
+      "address": 179136,
+      "bytes": 4,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".rodata.pressure_001798",
+      "window": "prefix_primary",
+      "address": 179140,
+      "bytes": 4,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.leave",
+      "window": "prefix_primary",
+      "address": 179144,
+      "bytes": 4,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.read_byte",
+      "window": "prefix_primary",
+      "address": 179148,
+      "bytes": 4,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.read_halfword",
+      "window": "prefix_primary",
+      "address": 179152,
+      "bytes": 4,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.read_word",
+      "window": "prefix_primary",
+      "address": 179156,
+      "bytes": 4,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.write_byte",
+      "window": "prefix_primary",
+      "address": 179160,
+      "bytes": 4,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata",
+      "window": "prefix_primary",
+      "address": 179164,
+      "bytes": 4,
+      "alignment": 1,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.factory_phase_demand",
+      "window": "pad_33084",
+      "address": 209028,
+      "bytes": 1368,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_learning_down",
+      "window": "pad_33084",
+      "address": 210396,
+      "bytes": 1188,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_torque_poll",
+      "window": "pad_33084",
+      "address": 211584,
+      "bytes": 880,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_5724c",
+      "window": "pad_33084",
+      "address": 212464,
+      "bytes": 528,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_567b6",
+      "window": "pad_3f608",
+      "address": 259592,
+      "bytes": 1532,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.fill",
+      "window": "pad_3f608",
+      "address": 261124,
+      "bytes": 924,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.pressure_00201C",
+      "window": "pad_3f608",
+      "address": 262048,
+      "bytes": 40,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.factory_phase_cycle",
+      "window": "tail",
+      "address": 508184,
+      "bytes": 816,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_phase_modes_step",
+      "window": "tail",
+      "address": 509000,
+      "bytes": 808,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.learning_001C3C",
+      "window": "tail",
+      "address": 509808,
+      "bytes": 800,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.down_observer",
+      "window": "tail",
+      "address": 510608,
+      "bytes": 796,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_gear_observe",
+      "window": "tail",
+      "address": 511404,
+      "bytes": 796,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_565ce",
+      "window": "tail",
+      "address": 512200,
+      "bytes": 752,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.secondary_slu",
+      "window": "tail",
+      "address": 512952,
+      "bytes": 740,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".rodata.gear_001108",
+      "window": "tail",
+      "address": 513692,
+      "bytes": 732,
+      "alignment": 4,
+      "noload": false,
+      "flags": 2
+    },
+    {
+      "section": ".text.lfj8_h03_plan_outputs",
+      "window": "tail",
+      "address": 514424,
+      "bytes": 732,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_shift_outputs",
+      "window": "tail",
+      "address": 515156,
+      "bytes": 728,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_factory_gears_outputs_step",
+      "window": "tail",
+      "address": 515884,
+      "bytes": 692,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_h03_engine_rx_poll",
+      "window": "tail",
+      "address": 516576,
+      "bytes": 620,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.chery_dtc_respond_with_store",
+      "window": "tail",
+      "address": 517196,
+      "bytes": 612,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.rbm_u340e_step",
+      "window": "tail",
+      "address": 517808,
+      "bytes": 604,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_phase_pressure",
+      "window": "tail",
+      "address": 518412,
+      "bytes": 584,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gears_step",
+      "window": "tail",
+      "address": 518996,
+      "bytes": 580,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.prepare",
+      "window": "tail",
+      "address": 519576,
+      "bytes": 568,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.lfj8_vss_raw_1ae",
+      "window": "tail",
+      "address": 520144,
+      "bytes": 552,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_5737e",
+      "window": "tail",
+      "address": 520696,
+      "bytes": 536,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_561e4",
+      "window": "tail",
+      "address": 521232,
+      "bytes": 532,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_56eda",
+      "window": "tail",
+      "address": 521764,
+      "bytes": 524,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.deadline",
+      "window": "tail",
+      "address": 522288,
+      "bytes": 516,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.factory_base_pressure",
+      "window": "tail",
+      "address": 522804,
+      "bytes": 516,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.gear_578f0",
+      "window": "tail",
+      "address": 523320,
+      "bytes": 516,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    },
+    {
+      "section": ".text.down",
+      "window": "tail",
+      "address": 523836,
+      "bytes": 448,
+      "alignment": 4,
+      "noload": false,
+      "flags": 6
+    }
+  ],
+  "shared_donor_tables": {
+    "learning_001C3C": {
+      "address": 509808,
+      "bytes": 800,
+      "sha256": "8276650f90e31262d21eca82fd06ce04c9ed0456b74c9456cebf2b11b0b9fd5b"
+    },
+    "pressure_0015FC": {
+      "address": 176964,
+      "bytes": 36,
+      "sha256": "57d409e7acd5e96573b9857bd4275a2e850990facad3e1e668a7109b8600e41f"
+    },
+    "gear_000D08": {
+      "address": 179024,
+      "bytes": 8,
+      "sha256": "297dcae8b2e253f2f4087110887391050045684a250054e96ebf7b81624df67b"
+    }
+  },
+  "entry_points": {
+    "chery_dtc_init": 176804,
+    "chery_dtc_journal_encode": 159532,
+    "chery_dtc_journal_restore": 150872,
+    "chery_dtc_link_confirm_tx": 155952,
+    "chery_dtc_link_end_session": 175120,
+    "chery_dtc_link_expire": 65472,
+    "chery_dtc_link_init": 177108,
+    "chery_dtc_link_receive": 177904,
+    "chery_dtc_set_current": 172460,
+    "chery_dtc_store_snapshot": 175176,
+    "chery_model_monitor_init": 177144,
+    "chery_model_monitor_task2": 147236,
+    "factory_adaptation_load": 158664,
+    "factory_adaptation_save": 143004,
+    "factory_donor_engine_gate": 156956,
+    "factory_hydraulics_capture": 171152,
+    "factory_hydraulics_control_main": 171236,
+    "factory_hydraulics_counters_begin": 178284,
+    "factory_hydraulics_counters_end": 178484,
+    "factory_hydraulics_fast_learning": 167876,
+    "factory_hydraulics_load_main": 171824,
+    "factory_hydraulics_load_observer": 171904,
+    "factory_hydraulics_restore": 167432,
+    "lfj8_9e1c_raw_nt_after_capture_store": 175780,
+    "lfj8_9e1c_raw_nt_init": 178768,
+    "lfj8_9e1c_raw_vss_after_capture_store": 175832,
+    "lfj8_9e1c_raw_vss_init": 178784,
+    "lfj8_button_filter_init": 174320,
+    "lfj8_chery_tx_init": 177252,
+    "lfj8_chery_tx_poll": 175400,
+    "lfj8_gear_observe_pair": 168608,
+    "lfj8_gear_observer_init": 152948,
+    "lfj8_h03_atf_after_adc_store": 151580,
+    "lfj8_h03_atf_after_store": 134924,
+    "lfj8_h03_atf_circuit_after_monitor": 155120,
+    "lfj8_h03_atf_feed": 160352,
+    "lfj8_h03_atf_init": 176036,
+    "lfj8_h03_atf_snapshot": 146404,
+    "lfj8_h03_can13_init": 165252,
+    "lfj8_h03_can13_poll": 76588,
+    "lfj8_h03_capture_pair": 144000,
+    "lfj8_h03_cycle_init": 163936,
+    "lfj8_h03_cycle_prepare_outputs": 114336,
+    "lfj8_h03_cycle_slt_inputs": 162516,
+    "lfj8_h03_cycle_tick": 177288,
+    "lfj8_h03_cycle_tick_with_load": 176496,
+    "lfj8_h03_cycle_tick_with_slu": 175884,
+    "lfj8_h03_dtc_can_decode_basic": 158484,
+    "lfj8_h03_dtc_can_init": 172224,
+    "lfj8_h03_dtc_can_poll": 129992,
+    "lfj8_h03_dtc_foreground_poll": 145252,
+    "lfj8_h03_dtc_rx_dispatch_begin": 171488,
+    "lfj8_h03_dtc_rx_dispatch_skip_paired": 171572,
+    "lfj8_h03_dtc_rx_queue_capture_basic": 153168,
+    "lfj8_h03_dtc_rx_queue_consume": 160512,
+    "lfj8_h03_dtc_rx_queue_init": 169404,
+    "lfj8_h03_dtc_rx_queue_peek": 160672,
+    "lfj8_h03_dtc_rx_queue_publish": 162660,
+    "lfj8_h03_dtc_rx_queue_reset": 168908,
+    "lfj8_h03_engine_feed_task2": 174384,
+    "lfj8_h03_engine_feed_task2_with_model": 147780,
+    "lfj8_h03_engine_rx_init": 169008,
+    "lfj8_h03_engine_rx_m32r": 176844,
+    "lfj8_h03_phase_clock_init": 162804,
+    "lfj8_h03_phase_clock_release": 169108,
+    "lfj8_h03_phase_clock_take": 172764,
+    "lfj8_h03_phase_startup": 155328,
+    "lfj8_h03_plan_outputs": 514424,
+    "lfj8_h03_range_snapshot": 153388,
+    "lfj8_h03_slu_secondary_from_baseline": 140464,
+    "lfj8_h03_takeover_apply": 158300,
+    "lfj8_h03_takeover_check_phase": 178524,
+    "lfj8_h03_takeover_init": 158840,
+    "lfj8_h03_takeover_prepare": 177564,
+    "lfj8_h03_takeover_take_phase": 178800,
+    "lfj8_h03_tml0ct_m32r": 179128,
+    "lfj8_h03_torque_applied": 174448,
+    "lfj8_h03_torque_can_init": 165876,
+    "lfj8_h03_torque_can_poll": 93196,
+    "lfj8_h03_torque_demand": 152724,
+    "lfj8_h03_torque_init": 178544,
+    "lfj8_h03_torque_poll": 211584,
+    "lfj8_h03_torque_receive": 97624,
+    "lfj8_h03_torque_tx_done": 173916,
+    "lfj8_range_control_init": 172840,
+    "lfj8_range_control_step": 160832,
+    "lfj8_range_control_step_with_buttons": 155536,
+    "lfj8_selector_adc_init": 178044,
+    "lfj8_selector_adc_publish_9e1c": 178564,
+    "lfj8_selector_adc_take": 164344,
+    "rbm_u340e_outputs_init": 150624,
+    "rbm_u340e_outputs_step": 148308,
+    "rbm_u340e_range_fast": 157732,
+    "rbm_u340e_runtime_gears_outputs": 178848,
+    "rbm_u340e_runtime_init": 152272,
+    "rbm_u340e_runtime_main_coolant": 166844,
+    "rbm_u340e_runtime_main_engine_speed": 175456,
+    "rbm_u340e_runtime_main_range": 109084,
+    "rbm_u340e_runtime_main_range_complete": 139664,
+    "rbm_u340e_runtime_prepare_engine": 153828,
+    "rbm_u340e_runtime_prepare_s01_cold": 142660,
+    "rbm_u340e_runtime_publish_load": 144324,
+    "rbm_u340e_runtime_restore_adaptation": 140064,
+    "rbm_u340e_runtime_secondary_load_qualify": 132008,
+    "rbm_u340e_runtime_snapshot_gears": 163092,
+    "rbm_u340e_s01_adaptation_baseline": 178988,
+    "rbm_u340e_schedule_fast_begin": 169692,
+    "rbm_u340e_schedule_fast_claim": 176628,
+    "rbm_u340e_schedule_fast_done": 176672,
+    "rbm_u340e_schedule_fast_end": 172992,
+    "rbm_u340e_schedule_finish_init": 179000,
+    "rbm_u340e_schedule_main_done": 176716,
+    "rbm_u340e_schedule_producer_done": 177660,
+    "rbm_u340e_schedule_producer_publish": 166000,
+    "rbm_u340e_schedule_secondary_claim": 177324,
+    "rbm_u340e_schedule_secondary_done": 174576,
+    "rbm_u340e_schedule_timer_irq": 174640,
+    "rbm_u340e_step": 517808,
+    "ta2005_engine_qualifier_init": 177756,
+    "ta2005_engine_qualifier_task2": 132504
+  },
+  "elf_sha256": "53fcac8acb8492e1e71c450436ab045c01cac33ce25bb927b76dfffcc6fa0596",
+  "startup_initialization_verified": false,
+  "limits": [
+    "Not an executable replacement application or release BIN",
+    "FF fill and raw reference patterns do not prove exclusive Flash ownership",
+    "Virtual Flash, full startup, physical outputs and full IRQ stack still require integration",
+    "Existing inventory and native globals are conservatively counted separately"
+  ],
+  "placed_code_cpu_tests": {
+    "scope": "Only the fixed linked production bytes execute at their placed addresses; monitor CRT and tests are outside target Flash",
+    "hardware_tested": false,
+    "cases": [
+      {
+        "case": "runtime",
+        "fixture": "controller/tests/test_runtime.c",
+        "fixture_sha256": "a5ab4d9deab1d71c978cbe39aabfe8644fbee0869e1111e66388a2a8b0d8d94e",
+        "output": "Toyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.\nToyota S01 cold projection: flags, unavailable periods, preservation and rejection passed.\nToyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.\nToyota 05518C: SECONDARY load qualifiers, hysteresis, clamp, fallback and MAIN handoff passed.\nToyota S01 range: P/N to warm low-load D, standstill fill, S1/S2 and first upshift passed.\nToyota scheduler: event release, FAST phase latch, busy drop and rollover passed.",
+        "production_bytes_unchanged": true
+      },
+      {
+        "case": "mode-policy",
+        "fixture": "controller/tests/test_mode_policy.c",
+        "fixture_sha256": "f5d8d8bde207d1db1bd3d36189ddfb0fc7e7f3d648d7b6237d22a7dcd333f4d7",
+        "output": "MODE-03 policy: 128 restart profiles, 128 conflict profiles, 256 held-shift transitions and 501760 gear proposal cases PASS.\nMODE-03 initialization: cold state and five rejected profiles with recovery PASS.",
+        "production_bytes_unchanged": true
+      },
+      {
+        "case": "cycle",
+        "fixture": "targets/lfj8/test_lfj8_h03_cycle.c",
+        "fixture_sha256": "afe509d9ca8cf48b1d622bbdc01a656fe554fd571d0130bc6a5a4d16d5fd758c",
+        "output": "SLU SECONDARY: 5 publications, reset, diagnostic gates, FAST timers and 7 refusals PASS\nH03 Toyota cycle: P/N to D, 1->2, ranges 2/L, rollover and lost event passed.\nH03 Toyota cycle: manual 1->2, hold, withdrawal, reverse range and request refusal passed.\nH03 Toyota cycle: two 12-point D traces, S1/S2, cold fourth-gear inhibit and pending-shift loss passed.\nH03 Toyota cycle: two loaded D maps, qualified GP feed, six shift thresholds and S1/S2 passed.",
+        "production_bytes_unchanged": true
+      },
+      {
+        "case": "cycle-load",
+        "fixture": "targets/lfj8/test_lfj8_h03_cycle_load.c",
+        "fixture_sha256": "24186f3503ef4b55dcf4746e612e125f056381405d8f28e0d244f778aa3b13d6",
+        "output": "H03 qualified load cycle: publication, expiry, clock wrap and event ordering PASS",
+        "production_bytes_unchanged": true
+      },
+      {
+        "case": "can13",
+        "fixture": "targets/lfj8/test_lfj8_h03_can13.c",
+        "fixture_sha256": "a94dadba5a89594da9643e90aae4933af8869d360c11457a0255b4c94d41d726",
+        "output": "H03 CAN13 broker: torque preemption, diagnostic FC and generation recovery PASS",
+        "production_bytes_unchanged": true
+      },
+      {
+        "case": "diagnostic-session",
+        "fixture": "diagnostics/test_chery_dtc_link.c",
+        "fixture_sha256": "e80d9692ba825c23d05b6301d3aa051ddffed5f8dce07d807d02c1d209fd0176",
+        "output": "Chery C0 diagnostic link and independent model-field loss and recovery: passed\nChery C0 durable clear: storage before TX, no acknowledgement on failure, retry passed.",
+        "production_bytes_unchanged": true
+      }
+    ],
+    "separate_fixture_checks": [
+      {
+        "fixture": "targets/lfj8/test_lfj8_h03_torque.c",
+        "reason": "Uses the standalone donor torque wrapper omitted from production; the production workspace cycle calls torque_step. Run the standard component suite separately."
+      }
+    ]
+  }
+}

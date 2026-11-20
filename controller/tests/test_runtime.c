@@ -39,6 +39,45 @@ static void check_initialization(void)
     assert(work.b4852 == 2);
 }
 
+static void check_s01_cold_prepare(void)
+{
+    RbmU340eRuntime runtime = {0};
+    FactoryGearState gear = {0}, work;
+    FactoryHydraulics gp = {0};
+    memset(&work, 0xa5, sizeof work);
+    assert(!rbm_u340e_runtime_prepare_s01_cold(NULL, &work));
+    assert(!rbm_u340e_runtime_prepare_s01_cold(&runtime, &work));
+    assert(rbm_u340e_runtime_init(&runtime, &gear, &gp));
+    RbmU340eRuntime before = runtime;
+    assert(!rbm_u340e_runtime_prepare_s01_cold(&runtime, NULL));
+    assert(!rbm_u340e_runtime_prepare_s01_cold(&runtime, (FactoryGearState *)&runtime));
+    assert(memcmp(&before, &runtime, sizeof runtime) == 0);
+
+    for (unsigned flags = 0; flags < 256u; ++flags) {
+        gear.b4828 = (uint8_t)flags;
+        gear.b5299 = 0xa5u;
+        gear.u7184 = 0x1234u;
+        assert(factory_hydraulics_set(&gp, -5299, 1, gear.b5299));
+        assert(factory_hydraulics_set(&gp, -7184, 2, gear.u7184));
+        gear.b4835 = (uint8_t)flags;
+        assert(factory_hydraulics_set(&gp, -4835, 1, flags));
+        assert(factory_hydraulics_set(&gp, -4830, 1, flags));
+        assert(rbm_u340e_runtime_init(&runtime, &gear, &gp));
+        assert(rbm_u340e_runtime_prepare_s01_cold(&runtime, &work));
+        assert(work.b4828 == (flags & ~24u));
+        assert(work.b4835 == (flags & ~16u));
+        assert(gp_value(&runtime.gp, -4830, 1) == (flags & ~64u));
+        assert(work.u7184 == 0x1234u && work.b5299 == 0xa5u);
+        assert(work.b4854 == 2u && work.b4851 == 2u && work.b4847 == 2u);
+        assert(work.u7166 == UINT16_MAX);
+        for (unsigned j = 0; j < 6u; ++j) assert(work.periods[j] == UINT16_MAX);
+        for (unsigned j = 0; j < 32u; ++j) assert(work.history[j] == UINT16_MAX);
+        before = runtime;
+        assert(rbm_u340e_runtime_prepare_s01_cold(&runtime, &work));
+        assert(memcmp(&before, &runtime, sizeof runtime) == 0);
+    }
+}
+
 static void check_compact_storage(void)
 {
     struct UnalignedState {
@@ -579,6 +618,7 @@ static void check_secondary_and_producer_overrun(void)
 void rbm_test_runtime(void)
 {
     check_initialization();
+    check_s01_cold_prepare();
     check_compact_storage();
     check_workspace_overlap();
     check_live_stages();
@@ -592,6 +632,7 @@ void rbm_test_runtime(void)
     check_secondary_and_producer_overrun();
 #ifndef RBM_TEST_QUIET
     puts("Toyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.");
+    puts("Toyota S01 cold projection: flags, unavailable periods, preservation and rejection passed.");
     puts("Toyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.");
     puts("Toyota 05518C: SECONDARY load qualifiers, hysteresis, clamp, fallback and MAIN handoff passed.");
     puts("Toyota S01 range: P/N to warm low-load D, standstill fill, S1/S2 and first upshift passed.");
