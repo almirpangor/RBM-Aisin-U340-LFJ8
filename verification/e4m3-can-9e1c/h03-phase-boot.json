@@ -1,0 +1,235 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "fragments": {
+    "reset_dispatch": {
+      "range": [
+        "0x003DC8",
+        "0x003DE0"
+      ],
+      "sha256": "121b71fc00aac053e347768d4a57af441b57a6dbc146ad3580cf1bbe656b1f01"
+    },
+    "marker_check": {
+      "range": [
+        "0x004210",
+        "0x00423C"
+      ],
+      "sha256": "88c436c28854be4c1188642811933ed66df4790d8ee09e7173e0089d3dea4bda"
+    },
+    "header_marker": {
+      "range": [
+        "0x008000",
+        "0x008002"
+      ],
+      "sha256": "274834e8b3d6a1191aef6436a1d7e8e091370721333f6c6e3658225bc67e0db0"
+    },
+    "trailer_marker": {
+      "range": [
+        "0x07FFFE",
+        "0x080000"
+      ],
+      "sha256": "857b915078ad488cff951bded73cfb4021129efb943c37604781c79f0726bb41"
+    },
+    "handoff": {
+      "range": [
+        "0x008084",
+        "0x008088"
+      ],
+      "sha256": "1812ba00c44faf99222097c6b8c0db676752b7977cd011a76fbb4573a38d0953"
+    },
+    "startup": {
+      "range": [
+        "0x008100",
+        "0x00814C"
+      ],
+      "sha256": "484916858eada55c9999dc17aae6b5ada8e685d3170df80348f8c61dcccd936c"
+    },
+    "startup_call": {
+      "range": [
+        "0x00814C",
+        "0x008150"
+      ],
+      "sha256": "5a486e0692ce165a2615af19dbf97403a3c793248edfed331f40d2acc6e20e91"
+    },
+    "first_wait": {
+      "range": [
+        "0x008150",
+        "0x008160"
+      ],
+      "sha256": "3a1d498859f2cf7e4f6a832ecc42926f986812f3952bb501d400d161f9a97ccb"
+    },
+    "stock_timer": {
+      "range": [
+        "0x00A82C",
+        "0x00A868"
+      ],
+      "sha256": "5542ae38cf6f0c629a92aa00f9baef4c8e79d4d422ffde2492a404de7b468dcc"
+    },
+    "release_helper": {
+      "range": [
+        "0x00A06C",
+        "0x00A0B0"
+      ],
+      "sha256": "d8938d834b8cbc235038ee6fe9ea3590ead1556a94915efbd48eca9e25f023fc"
+    },
+    "stock_release": {
+      "range": [
+        "0x040468",
+        "0x0404C4"
+      ],
+      "sha256": "797b440ddcb28edacbca68b0be4c8b7a307ceba10ba64c55b07bd35b16edc0d1"
+    }
+  },
+  "cases": [
+    {
+      "path": "stock",
+      "initial_oem_max": 2,
+      "startup_call": "fe0009bb",
+      "oem_elapsed_ticks": 7,
+      "oem_max_after": 7,
+      "stock_flag_cleared": true,
+      "startup_armed": false,
+      "first_project_event": false,
+      "oem_flag_at_end": 0,
+      "oem_context_matches_stock": true
+    },
+    {
+      "path": "owned",
+      "initial_oem_max": 2,
+      "startup_call": "fe015fdc",
+      "oem_elapsed_ticks": 7,
+      "oem_max_after": 7,
+      "stock_flag_cleared": true,
+      "startup_armed": true,
+      "first_project_event": true,
+      "oem_flag_at_end": 1,
+      "oem_context_matches_stock": true
+    },
+    {
+      "path": "invalid_period",
+      "initial_oem_max": 2,
+      "startup_call": "fe015fdc",
+      "oem_elapsed_ticks": 7,
+      "oem_max_after": 7,
+      "stock_flag_cleared": true,
+      "startup_armed": false,
+      "first_project_event": false,
+      "oem_flag_at_end": 0,
+      "oem_context_matches_stock": true
+    },
+    {
+      "path": "unowned",
+      "initial_oem_max": 2,
+      "startup_call": "fe015fdc",
+      "oem_elapsed_ticks": 7,
+      "oem_max_after": 7,
+      "stock_flag_cleared": true,
+      "startup_armed": false,
+      "first_project_event": false,
+      "oem_flag_at_end": 0,
+      "oem_context_matches_stock": true
+    },
+    {
+      "path": "bad_header",
+      "initial_oem_max": 2,
+      "recovery_entry_reached": true,
+      "startup_armed": false
+    },
+    {
+      "path": "bad_trailer",
+      "initial_oem_max": 2,
+      "recovery_entry_reached": true,
+      "startup_armed": false
+    },
+    {
+      "path": "stock",
+      "initial_oem_max": 11,
+      "startup_call": "fe0009bb",
+      "oem_elapsed_ticks": 7,
+      "oem_max_after": 11,
+      "stock_flag_cleared": true,
+      "startup_armed": false,
+      "first_project_event": false,
+      "oem_flag_at_end": 0,
+      "oem_context_matches_stock": true
+    },
+    {
+      "path": "owned",
+      "initial_oem_max": 11,
+      "startup_call": "fe015fdc",
+      "oem_elapsed_ticks": 7,
+      "oem_max_after": 11,
+      "stock_flag_cleared": true,
+      "startup_armed": true,
+      "first_project_event": true,
+      "oem_flag_at_end": 1,
+      "oem_context_matches_stock": true
+    },
+    {
+      "path": "invalid_period",
+      "initial_oem_max": 11,
+      "startup_call": "fe015fdc",
+      "oem_elapsed_ticks": 7,
+      "oem_max_after": 11,
+      "stock_flag_cleared": true,
+      "startup_armed": false,
+      "first_project_event": false,
+      "oem_flag_at_end": 0,
+      "oem_context_matches_stock": true
+    },
+    {
+      "path": "unowned",
+      "initial_oem_max": 11,
+      "startup_call": "fe015fdc",
+      "oem_elapsed_ticks": 7,
+      "oem_max_after": 11,
+      "stock_flag_cleared": true,
+      "startup_armed": false,
+      "first_project_event": false,
+      "oem_flag_at_end": 0,
+      "oem_context_matches_stock": true
+    },
+    {
+      "path": "bad_header",
+      "initial_oem_max": 11,
+      "recovery_entry_reached": true,
+      "startup_armed": false
+    },
+    {
+      "path": "bad_trailer",
+      "initial_oem_max": 11,
+      "recovery_entry_reached": true,
+      "startup_armed": false
+    }
+  ],
+  "reset_dispatch": "0x003DC8",
+  "handoff": "0x008084",
+  "recovery_entry": "0x0047D8",
+  "hook_site": "0x00814C",
+  "stock_continuation": "0x008150",
+  "stubbed_oem_entries": [
+    "0x00B704",
+    "0x0404C4",
+    "0x04054C",
+    "0x04050C",
+    "0x0089EC",
+    "0x034000",
+    "0x046774",
+    "0x008FFC",
+    "0x004784",
+    "0x034004",
+    "0x00B75C"
+  ],
+  "first_project_event": "OEM phase release and timestamp hook after the first stock wait",
+  "callback_clobbers_for_test": [
+    "R0-R7",
+    "C",
+    "ACC"
+  ],
+  "context_checked": "R0-R15, CR0 and observable ACC at 0x008160",
+  "hardware_executed": false,
+  "flashable_image": null
+}
