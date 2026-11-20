@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T23:18:28+00:00**. Изменение № **775**.
+Обновлено UTC: **2026-11-20T23:18:55+00:00**. Изменение № **776**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,15 +12,13 @@
 
 Каталог задач взят из main f64eff7c24744cef0fe608415039c6d10c677ff1.
 
-**В работе: 1 · Ожидают с резервом: 0 · Порций на проверке: 29.**
+**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 30.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
 ## Сейчас выполняются
 
-| Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
-| --- | --- | --- | --- | --- |
-| 8 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex CAN-03 — остановка TX13 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-20T23:16:42+00:00 | В M32R проходят реальный путь закрытия, команда 0x0F, ожидание readback и обе ветви OEM. Повторяю общую регрессию и измеряю Flash. |
+Нет действующих резервов выполнения.
 
 ## Ожидают — резерв сохранён
 
@@ -37,6 +35,7 @@
 | CAN-01 | Codex CAN-01 — возраст операндов двигателя на Task 2 | [368ecd723336](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/368ecd723336eaa20d508e0d0025172ed78cd127) | 9436326dc3784bbe994f50e6dce8e9c0 | Метка фактических RPM/ECT и удержанных оборотов подключена к command_at в штатном Task 2. 62 запуска M32R, 41 шаг ПК/179 Python, 11+18 проверок с локально возвращённым cold-start корнем и 6 размещённых. rbm_h03_target_engine ожидает источники контекста и подтверждённые пределы. |
 | CAN-03 | Codex CAN-03 target service | [cf5f2879f589](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/cf5f2879f589a0fbf823b3948bdeb47f43fb5053) | 1b7a53b2c91c49d481c892507323d9d9 | Сервис H03 связан с application_binding, единым брокером, DTC IRQ и TML0/T6. M32R 22/22, ПК 41 шаг, Python 178 PASS + 1 skip, Bosch PASS_OFFLINE_ONLY. Открыты профиль/initialize/stop H03-03, общая компоновка и испытания на блоке. Отчёт verification/project-audit/can03-target-service-phase.md. |
 | CAN-03 | Codex CAN-03 — запуск и остановка сервиса | [b0c2eda62974](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/b0c2eda629743ede633049fbc60256734b8575b7) | 2101184d356545bfa9a1e0bd6716a9ee | Связан штатный target_initialize, сервис CAN и остановка перед сбросом TML0. M32R 22/22, связанный сценарий 14+2, 62 boot, ПК 41/179, Bosch PASS_OFFLINE_ONLY. Открыты рабочий профиль, финальный линк и физическая отмена уже выставленного TX13 при закрытии. Отчёт can03-target-platform-lifecycle.md. |
+| CAN-03 | Codex CAN-03 — остановка TX13 | [40d644fdc0de](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/40d644fdc0de059069d937be70d23aef80c5592f) | 4781e27fe7274496be65a8d2faf92977 | Закрытие H03 и потеря допуска запрашивают отмену TX13; OEM писатель блокируется до проверки освобождения. M32R 22/22, 18 путей gate, 16+2 связанных сценария, ПК 41 шаг, Bosch PASS_OFFLINE_ONLY. +476 Flash, RAM без роста. Остаются стенд и итоговая компоновка. Отчёт can03-tx13-shutdown.md. |
 | DTC-01 | Codex DTC-01 — отзыв при потере времени | [58da73ce98e0](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/58da73ce98e0933795fb9095b70955ce0f77d839) | 0c1450c04da64b0da07d705e9b9d38bb | При отзыве доступа к CAN13 прекращён ход таймера T6 и сбрасывается вся очередь RX. M32R/PC, 22 native и 41 шаг ПК (179 тестов) прошли. Совместимость DTC-02/DTC-04 проверена, ложного подтверждения очистки нет. |
 | DTC-02 | Codex DTC-02 — нижний BasicCAN в сервисном режиме | [3ef0e6e5cdf3](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/3ef0e6e5cdf3e932aab4eec617dc070ac8c24688) | 5bb09a6c858e41d7a7b760ee40373d75 | Обе нижние обёртки DTC обходят проектный RX при сервисном режиме 0x804887=4; OEM BasicCAN и повторы сохранены. 4 целевых, 18 родных сравнений, 3 прежних обхода и 4 теста размещения прошли; запрос 0x732 дошёл до 0x722. +24 байта, RAM без новых объектов. Остаются установка в итоговый образ и аппаратная приёмка. Отчёт dtc02-lower-service-gate.md. |
 | DTC-02 | Codex DTC-02 — регистры банков Flash | [1e27a0f6dc02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/1e27a0f6dc02d66f62edbd3724af9d55b17d3e44) | 702717949ca545219ea4fbe0c6486d2c | Обе нижние обёртки BasicCAN проверяют бит включения FELBANK0/1 и FESBANK0/1 перед доступом к проектному RX, включая FCNT1=0. Девять сценариев M32R и 18+18 BasicCAN, четыре проверки размещения, совместный прогон с dc2afd9 PASS. +72 байта Flash, RAM 2728 байт. Общая линковка требует прежних платформенных привязок; аппаратное наложение и размещение переходов требуют подтверждения. Отчёт verification/project-audit/dtc02-flash-bank-admission.md. |
@@ -84,7 +83,7 @@
 | 5 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#can-01) | Свободна для продолжения; порция на проверке | rbm_h03_target_engine, реальные пределы возраста/опроса, испытания потери и восстановления данных через общий startup/foreground. | См. входные условия карточки |
 | 6 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#dtc-04) | Свободна для продолжения; порция на проверке | Физический NVM backend, адреса, busy/ошибки, восстановление после прерывания и очистка без ложного подтверждения. | H03-04 |
 | 7 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#toy-05) | Свободна для продолжения; порция на проверке | rbm_h03_target_startup_gear/gp с происхождением полей; порядок init → prepare_s01_cold → restore_adaptation до допуска выходов. | TOY-04, H03-04 |
-| 8 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#can-03) | Выполняется | rbm_h03_target_service_phase и связанная CAN-композиция без дублирования owner/состояния. | H03-04 |
+| 8 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#can-03) | Свободна для продолжения; порция на проверке | rbm_h03_target_service_phase и связанная CAN-композиция без дублирования owner/состояния. | H03-04 |
 | 9 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#mode-02) | Свободна для продолжения; порция на проверке | Реальный захват селектора/кнопок до входа take_toyota, шесть положений и отказы проводов. | H03-03 |
 | 10 | [TOY-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#toy-03) | Свободна для продолжения | Поставщики GP−5722 и GP−5250.2 с происхождением, временем и отказом. | См. входные условия карточки |
 | 11 | [TOY-06](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#toy-06) | Свободна для продолжения | Цельный путь SLU от входов до выходного интерфейса H03-05, включая скольжение и отказ. | TOY-02, H03-05 |
@@ -256,7 +255,7 @@
 </details>
 
 <details>
-<summary>CAN-03 — Штатный запуск, IRQ и восстановление CAN0: Выполняется</summary>
+<summary>CAN-03 — Штатный запуск, IRQ и восстановление CAN0: Свободна для продолжения; порция на проверке</summary>
 
 **Сделано.** Объединённый результат 21.11.2026: Холодный путь снимает старый IRQ target, нативный foreground использует тот же h03_can_owner, IRQ-очередь и TML0. 0x732→0x722, потеря квалификации, 18 сравнений BasicCAN, ПК 41/129 и все 22 native PASS. Нужны конечная привязка H03-03, T6 DTC-01 и размещение DTC-02. Отчёт verification/project-audit/can03-dtc-shared-owner.md.
 
@@ -268,7 +267,7 @@
 
 **Что сдать.** rbm_h03_target_service_phase и связанная CAN-композиция без дублирования owner/состояния.
 
-**Сейчас выполняет.** Codex CAN-03 — остановка TX13 — codex-fea1b366-66b6-4667-8206-915153ca1033.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Штатная ветвь не перезаписывает CAN13, старые кадры не принимаются после сброса, сохранена диагностика и отмена.
 
@@ -710,6 +709,7 @@
 | CAN-01 | На проверке | Codex CAN-01 — возраст операндов двигателя на Task 2 | codex/can01-target-engine-1121-c7e4 | Метка фактических RPM/ECT и удержанных оборотов подключена к command_at в штатном Task 2. 62 запуска M32R, 41 шаг ПК/179 Python, 11+18 проверок с локально возвращённым cold-start корнем и 6 размещённых. rbm_h03_target_engine ожидает источники контекста и подтверждённые пределы. / commit 368ecd723336eaa20d508e0d0025172ed78cd127 |
 | DTC-04 | На проверке | Codex DTC-04 — проверка физического чтения журнала | codex/dtc04-native-restore-bank-gate-922b7b11 | Читатель холодного журнала отклоняет каждый из четырёх сигналов разрешения FELBANK/FESBANK до и после чтения слота даже при FCNT1=0. ПК/M32R, GDB с включением FESBANK1 после чтения, 22 native и BasicCAN 18+18 прошли. Объект 444 байта, без статической RAM. Остаются назначенные блоки с владением, подключение на холодном старте, физический драйвер записи, износ и проверка на блоке. Отчёт verification/project-audit/dtc04-native-restore-bank-gate.md. / commit 456abca6b0dda9bf8f542f1fbe90653246959443 |
 | TOY-05 | На проверке | Codex TOY-05 — квалифицированный холодный старт в H03 | codex/toy05-seed-native-1121-c7e4 | В штатном startup H03 после подготовки CAN и до допуска фаз вызывается start_from_seed; холодная проекция проверена до чтения NVM, отказ вида и буфера закрывает выходы. 68 нативных стартов, 96 IRQ, 22 native, 8 components, 6 размещённых, ПК 41/179; 11+18 с локальными корнями. Стек callback +24 байта, новых RAM-объектов нет. Профиль, полные снимки, физический NVM и стенд открыты. Отчёт toy05-h03-native-startup-seed.md. / commit 2ae850bef8c0f064aaf1cc0e3541eb143ef32f97 |
+| CAN-03 | На проверке | Codex CAN-03 — остановка TX13 | codex/can03-tx13-shutdown-fea1b366 | Закрытие H03 и потеря допуска запрашивают отмену TX13; OEM писатель блокируется до проверки освобождения. M32R 22/22, 18 путей gate, 16+2 связанных сценария, ПК 41 шаг, Bosch PASS_OFFLINE_ONLY. +476 Flash, RAM без роста. Остаются стенд и итоговая компоновка. Отчёт can03-tx13-shutdown.md. / commit 40d644fdc0de059069d937be70d23aef80c5592f |
 | MODE-02 | На проверке | Codex MODE-02 — конфликт Tiptronic между событиями Toyota | codex/mode02-chord-1121-c7e4 | После конфликта плюс/минус AN2/P1DATA удерживает запрет до квалифицированного отпускания обеих кнопок. Штатный источник Toyota M32R подтвердил отзыв и один новый запрос после отпускания. ПК 41 шаг, 179 Python с отдельным повтором S03, M32R 8 компонентных, 6 размещённых, 11+18 с локально добавленным cold S01. +56 байт кода, 0 новых RAM. Полная привязка H03 и измерения MODE-02 открыты. Отчёт mode02-h03-conflict-recovery.md. / commit 3823b6baa0f3a6aa165584e1d4b1df5fb71a4312 |
 | TOY-03 | Порция принята | Codex TOY-03 — допуск независимого P/N | codex/toy03-independent-pn-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 3f2596f31930203fe9cd7918e9b62f81ea82699c |
 | TOY-06 | Порция принята | Codex TOY-06 — штатные выходы H03 | codex/toy06-native-lockup-output-01a1f9a2 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 4baf99ccd587811223aa05bc44460053dbade903 |
@@ -740,29 +740,11 @@
 
 ## Зарезервированные файлы
 
-### CAN-03
-
-Чат: Codex CAN-03 — остановка TX13. Claim ID: 4781e27fe7274496be65a8d2faf92977.
-
-- targets/lfj8/check_h03_can_monitor_revoke.py
-- targets/lfj8/check_h03_torque_tx_gate.py
-- targets/lfj8/h03_can13_tx_gate.S
-- targets/lfj8/h03_torque_tx_gate_fixture.S
-- targets/lfj8/lfj8_donor_io.c
-- targets/lfj8/lfj8_donor_io.h
-- targets/lfj8/lfj8_h03_can_monitor_revoke.c
-- targets/lfj8/lfj8_h03_can_monitor_startup.h
-- targets/lfj8/lfj8_h03_can_owner.c
-- targets/lfj8/lfj8_h03_can_owner.h
-- targets/lfj8/lfj8_h03_target_service.c
-- targets/lfj8/lfj8_h03_target_service.h
-- targets/lfj8/test_lfj8_h03_can_owner.c
-- verification/project-audit/can03-tx13-shutdown.md
-
 ## Последние события
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T23:18:55+00:00 | CAN-03 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T23:18:28+00:00 | H03-05 | review | 01a1fa79-a9fd-70c0-80a3-f59592edaf79 |
 | 2026-11-20T23:18:13+00:00 | H03-04 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T23:16:42+00:00 | CAN-03 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -792,4 +774,3 @@
 | 2026-11-20T22:51:06+00:00 | VSS-02 | review | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T22:50:38+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T22:48:16+00:00 | H03-03 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T22:48:03+00:00 | MODE-02 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
