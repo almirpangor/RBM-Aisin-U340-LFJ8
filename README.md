@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:40:01+00:00**. Изменение № **407**.
+Обновлено UTC: **2026-11-20T18:40:13+00:00**. Изменение № **408**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -21,7 +21,7 @@
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Чат CAN — поколение RPM/ОЖ H03 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-engine-rx-generation-1120-c7e4 | 2026-11-20T18:27:55+00:00 | RX11/12 detects native CAN generation changes in its ordinary poll and revokes RPM, ECT and model fields until reattachment. PC 37/102, M32R 18 components +17 native, Bosch PASS_OFFLINE_ONLY. RAM +8 B, code +76 B in bound sizing model. Integration call after init: lfj8_h03_engine_rx_bind_generation(rx, &amp;h03_can_owner.setup_generation). Evidence verification/project-audit/can01-engine-rx-generation.md. Target startup and hardware open. / commit c14dbfda51b20fe58b904f8d220e3d35e63ff5dd |
 | CAN-02 — Общий диспетчер CAN13 | Свободна для продолжения | Предыдущий: Codex — размер диспетчера CAN13 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/can02-broker-size-01a1f9a2 | 2026-11-20T18:38:24+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit 9cd6fb79735af38f699a39e655d414a45966376e |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Выполняется | Codex CAN-03 monitor admission \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can03-h03-monitor-startup-01a1f99f | 2026-11-20T18:34:34+00:00 | Integrate the REL-02 monitor protection candidate with cold start and native CAN recovery barriers. Replay original receive-enable sites and measure linked Flash/RAM without touching shared owner files. |
-| CAN-04 — Запрос снижения момента по RB | Выполняется | Codex CAN-04 — срок подтверждения момента \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-progress-deadline-fea1b366 | 2026-11-20T18:35:52+00:00 | Ошибка ровно в 60 мс воспроизведена до правки. Срок проверяется по времени захвата перед обновлением состояния. Добавляю сценарий задержанного ответа модели Bosch в verify_h03_torque.py. |
+| CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 — срок подтверждения момента \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-progress-deadline-fea1b366 | 2026-11-20T18:40:13+00:00 | Передаю на объединение. Статус в срок захвата ≥60 мс и на конце импульса не подтверждает момент. 6 границ + срок импульса, ПК 37 шагов/113 тестов, M32R 18 компонентов и 17 штатных групп. Два ST10 OFFLINE_ONLY: раньше 3 REFRESH, теперь CANCEL в 460 мс, ноль при 510. Prefix ELF +48 Б, запас 868. Отчёт verification/project-audit/can04-progress-deadline.md. Реальные метки и калибровка открыты. / commit 07fc25af65515ddd77b680b37423ddbce80f4d55 |
 | CAN-05 — Полнота штатного обмена Chery | Свободна для продолжения | Предыдущий: Чат CAN — поколения RX Bosch \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can05-qualified-epoch-1120-c7e4 | 2026-11-20T18:37:31+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit 1b7de46a4d9078d3ef8d46fa4ac724ae5eb20150 |
 | ECU-01 — Проверочная сборка Bosch E4M3 | Свободна для продолжения | Предыдущий: Codex ECU-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/ecu01-1120-c7e4 | 2026-11-20T17:46:01+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 84380128b8db2e0a6b24b297dd40aa020598e3ce |
 | ECU-02 — Калибровка момента и работа двигателя | Свободна для продолжения | Предыдущий: Codex — обороты и отпускание момента Bosch \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/ecu02-torque-rpm-32e6ac79 | 2026-11-20T17:47:17+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 06eacf1ff4f42e423886b4b25b849ead054ac924 |
@@ -303,7 +303,7 @@
 </details>
 
 <details>
-<summary>CAN-04 — Запрос снижения момента по RB: Выполняется</summary>
+<summary>CAN-04 — Запрос снижения момента по RB: На проверке</summary>
 
 **Сделано.** BusOff и чужое завершение TX13 отзывают подтверждение момента. Повторены нормальный диалог и потеря статуса с точным ordinary Bosch OFFLINE_ONLY.
 
@@ -696,6 +696,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:40:13+00:00 | CAN-04 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T18:40:01+00:00 | MODE-02 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T18:39:50+00:00 | H03-04 | claim | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T18:39:34+00:00 | VSS-02 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -725,4 +726,3 @@
 | 2026-11-20T18:32:59+00:00 | REL-01 | complete | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:32:39+00:00 | ORG-01 | review | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T18:32:28+00:00 | DTC-01 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
-| 2026-11-20T18:32:03+00:00 | CAN-03 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
