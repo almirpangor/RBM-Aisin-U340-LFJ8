@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 587,
+  "sequence": 588,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -520,20 +520,20 @@
       "result": "85b2e9320cf8f6e4a3729915ed3ebbd0fc00a732"
     },
     "H03-01": {
-      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
-      "label": "Codex H03-01",
-      "branch": "codex/h03-01-base-guard-mwp5rm2ofhaxjfi9dss",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "label": "Codex H03-01 — сверка прочитанного образа",
+      "branch": "codex/h03-01-readback-01a1f9a2",
       "files": [
-        "tests/test_inspect_lfj8_tcm.py",
-        "tools/inspect_lfj8_tcm.py",
-        "verification/project-audit/h03-01-base-guard.md"
+        "tests/test_h03_readback.py",
+        "tools/check_h03_readback.py",
+        "verification/project-audit/h03-01-readback.md"
       ],
-      "stage": "done",
-      "claim_id": "125a9fc02e0b4315aa93ce8efbe1bda1",
-      "claimed_at": "2026-11-20T16:38:48+00:00",
-      "updated_at": "2026-11-20T17:47:37+00:00",
-      "note": "袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md.",
-      "result": "cf488af90f0e7beca13fe3c02599cd4854f3668e"
+      "stage": "in_progress",
+      "claim_id": "afe9090e65ce4d9caf011f47cdcfe67a",
+      "claimed_at": "2026-11-20T20:13:14+00:00",
+      "updated_at": "2026-11-20T20:13:14+00:00",
+      "note": "Реализую офлайн-сверку байтов прочитанного H03 с ожидаемым 9E1C для стендовой приёмки. Считаю покрытие адресов, пропуски, расхождения и хеши. Частичные чтения не дают подтверждения полного BIN. Инструменты связи с блоком и упаковщик не меняю.",
+      "result": null
     },
     "SRC-01": {
       "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
@@ -5283,9 +5283,17 @@
       "action": "review",
       "claim_id": "881583aa76814d4da3f768699f01ca29",
       "at": "2026-11-20T20:12:38+00:00"
+    },
+    {
+      "operation_id": "26b473e5a78a45e1aee5f0f669096276",
+      "task": "H03-01",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "claim",
+      "claim_id": "afe9090e65ce4d9caf011f47cdcfe67a",
+      "at": "2026-11-20T20:13:14+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:12:38+00:00",
+  "updated_at": "2026-11-20T20:13:14+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
