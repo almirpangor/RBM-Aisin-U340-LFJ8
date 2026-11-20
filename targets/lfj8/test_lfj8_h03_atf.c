@@ -137,12 +137,21 @@ static void check_causal_binding(void)
     Lfj8H03Atf state;
     Lfj8H03AtfSample sample;
     lfj8_h03_atf_init(&state);
-    uint32_t acquired = 20;
-    assert(lfj8_h03_atf_after_adc_store(&state, &io, acquired));
+    uint32_t acquired = 0;
+    assert(!lfj8_h03_atf_capture_source(&state, registers.adc, &acquired));
+    assert(lfj8_h03_atf_after_adc_store(&state, &io, 20));
+    uint32_t saved = io.enter(io.context);
+    assert(!lfj8_h03_atf_capture_source(&state, registers.adc + 1u, &acquired));
+    assert(lfj8_h03_atf_capture_source(&state, read_adc(io.context, 0x804BC4), &acquired));
+    io.leave(io.context, saved);
+    assert(acquired == 20);
     assert(lfj8_h03_atf_after_adc_store(&state, &io, 21));
     assert(lfj8_h03_atf_after_store(&state, &io, LFJ8_H03_ATF_DIRECT_STORE, &acquired, 22));
     assert(!lfj8_h03_atf_snapshot(&state, &io, 22, 10, &sample)); /* Same bits, wrong generation. */
-    acquired = 21;
+    saved = io.enter(io.context);
+    assert(lfj8_h03_atf_capture_source(&state, read_adc(io.context, 0x804BC4), &acquired));
+    io.leave(io.context, saved);
+    assert(acquired == 21);
     assert(lfj8_h03_atf_after_store(&state, &io, LFJ8_H03_ATF_DIRECT_STORE, &acquired, 23));
     assert(lfj8_h03_atf_snapshot(&state, &io, 23, 10, &sample) && sample.acquired_us == 21);
     assert(lfj8_h03_atf_after_adc_store(&state, &io, 24));
