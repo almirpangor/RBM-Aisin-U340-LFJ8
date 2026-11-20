@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 262,
+  "sequence": 263,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -349,12 +349,12 @@
         "targets/lfj8/test_lfj8_h03_can13.c",
         "verification/project-audit/can02-telemetry-submit.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "90cda8d0e88e47969f50d8225f329437",
       "claimed_at": "2026-11-20T16:59:25+00:00",
-      "updated_at": "2026-11-20T17:01:25+00:00",
-      "note": "Reproduced BusOff during 0x1AE staging on baseline, corrected and focused fixture passes; running PC and M32R checks.",
-      "result": null
+      "updated_at": "2026-11-20T17:04:19+00:00",
+      "note": "Revoke TX13 lease and torque confirmation in the same poll on a telemetry submission fault. BusOff regression, all 35 PC steps with 71 unit tests, and 17 M32R components PASS. Evidence verification/project-audit/can02-telemetry-submit.md. Native owner and hardware timing open.",
+      "result": "a45c2f67a80a5f7e0d939816cfb12551fd6edd96"
     },
     "TOY-06": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -2667,9 +2667,17 @@
       "action": "heartbeat",
       "claim_id": "7dfd6790e36a47d2a1e356338ffe82e8",
       "at": "2026-11-20T17:04:05+00:00"
+    },
+    {
+      "operation_id": "73fa09786c95476a8d7b3e3ba4ee3866",
+      "task": "CAN-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "90cda8d0e88e47969f50d8225f329437",
+      "at": "2026-11-20T17:04:19+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:04:05+00:00",
+  "updated_at": "2026-11-20T17:04:19+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
