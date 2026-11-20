@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 53,
+  "sequence": 54,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -232,8 +232,8 @@
       "stage": "in_progress",
       "claim_id": "8af57ad2c27440c6822dea2579b051d2",
       "claimed_at": "2026-11-20T16:03:00+00:00",
-      "updated_at": "2026-11-20T16:03:00+00:00",
-      "note": "Check startup and drain/recovery epoch of CAN RX timestamps. Reproduce and fix admission of pre-epoch RPM/ECT frames.",
+      "updated_at": "2026-11-20T16:05:54+00:00",
+      "note": "Both regressions reproduced on the original C receiver. Fixed version passes the LFJ8 host fixture and M32R simulator, 33 PC steps, and Bosch offline checks.",
       "result": null
     },
     "MODE-02": {
@@ -678,9 +678,17 @@
       "action": "review",
       "claim_id": "83b9428ce0f2463f92341fea12156d66",
       "at": "2026-11-20T16:05:43+00:00"
+    },
+    {
+      "operation_id": "90ed2a11b33a42169195384f155b6a28",
+      "task": "CAN-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "8af57ad2c27440c6822dea2579b051d2",
+      "at": "2026-11-20T16:05:54+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:05:43+00:00",
+  "updated_at": "2026-11-20T16:05:54+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
