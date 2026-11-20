@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 767,
+  "sequence": 768,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -39,12 +39,12 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/dtc02-linked-lower-redirects.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "7d595279d73d44b882c2a6d929c481bb",
       "claimed_at": "2026-11-20T23:06:45+00:00",
-      "updated_at": "2026-11-20T23:06:45+00:00",
-      "note": "База 3ef0e6e; включены сданные DTC-02, VSS-02 и H03-03. Добавляю две секции переходов на OEM-адресах, сверку итоговых ELF-байтов и повтор RX→CAN13/Virtual Flash. Без прошивки и подстановки профиля.",
-      "result": null,
+      "updated_at": "2026-11-20T23:13:54+00:00",
+      "note": "Два нижних BasicCAN перехода включены в общую H03-компоновку, M32R подтвердил оба слова на OEM-адресах. Офлайн RX→CAN13 0x722, 18 сравнений и обходы Virtual Flash прошли. Полный линк FAIL_BINDINGS до профиля приложения, конфигурации датчиков и типизированных RAM-символов. Без прошивки. Отчёт verification/project-audit/dtc02-linked-lower-redirects.md.",
+      "result": "1bc3c22b18114cf8f2d5d547026fe7ac44ad9926",
       "based_on_reviews": [
         "5bb09a6c858e41d7a7b760ee40373d75",
         "702717949ca545219ea4fbe0c6486d2c",
@@ -10478,9 +10478,41 @@
           "77033e38e60445f2addf6c2c8e536996"
         ]
       }
+    },
+    {
+      "operation_id": "df0e8c4536394c9e96550f81cdaf1d41",
+      "task": "DTC-02",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "review",
+      "claim_id": "7d595279d73d44b882c2a6d929c481bb",
+      "at": "2026-11-20T23:13:54+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex DTC-02 — нижние переходы в общей компоновке",
+        "branch": "codex/can01-h03-engine-owner-b0157640",
+        "files": [
+          "targets/lfj8/h03_dtc_rx_redirects.S",
+          "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+          "tests/test_h03_dtc_rx_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/dtc02-linked-lower-redirects.md"
+        ],
+        "stage": "review",
+        "claim_id": "7d595279d73d44b882c2a6d929c481bb",
+        "claimed_at": "2026-11-20T23:06:45+00:00",
+        "updated_at": "2026-11-20T23:13:54+00:00",
+        "note": "Два нижних BasicCAN перехода включены в общую H03-компоновку, M32R подтвердил оба слова на OEM-адресах. Офлайн RX→CAN13 0x722, 18 сравнений и обходы Virtual Flash прошли. Полный линк FAIL_BINDINGS до профиля приложения, конфигурации датчиков и типизированных RAM-символов. Без прошивки. Отчёт verification/project-audit/dtc02-linked-lower-redirects.md.",
+        "result": "1bc3c22b18114cf8f2d5d547026fe7ac44ad9926",
+        "based_on_reviews": [
+          "5bb09a6c858e41d7a7b760ee40373d75",
+          "702717949ca545219ea4fbe0c6486d2c",
+          "8b0ce759514b4c68b04d002b192f50ff",
+          "96f93fae25924717a50bf354ff863f44"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T23:13:35+00:00",
+  "updated_at": "2026-11-20T23:13:54+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -12486,6 +12518,32 @@
       ],
       "task": "CAN-03",
       "submitted_at": "2026-11-20T22:52:33+00:00"
+    },
+    "7d595279d73d44b882c2a6d929c481bb": {
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "label": "Codex DTC-02 — нижние переходы в общей компоновке",
+      "branch": "codex/can01-h03-engine-owner-b0157640",
+      "files": [
+        "targets/lfj8/h03_dtc_rx_redirects.S",
+        "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+        "tests/test_h03_dtc_rx_placement.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/dtc02-linked-lower-redirects.md"
+      ],
+      "stage": "review",
+      "claim_id": "7d595279d73d44b882c2a6d929c481bb",
+      "claimed_at": "2026-11-20T23:06:45+00:00",
+      "updated_at": "2026-11-20T23:13:54+00:00",
+      "note": "Два нижних BasicCAN перехода включены в общую H03-компоновку, M32R подтвердил оба слова на OEM-адресах. Офлайн RX→CAN13 0x722, 18 сравнений и обходы Virtual Flash прошли. Полный линк FAIL_BINDINGS до профиля приложения, конфигурации датчиков и типизированных RAM-символов. Без прошивки. Отчёт verification/project-audit/dtc02-linked-lower-redirects.md.",
+      "result": "1bc3c22b18114cf8f2d5d547026fe7ac44ad9926",
+      "based_on_reviews": [
+        "5bb09a6c858e41d7a7b760ee40373d75",
+        "702717949ca545219ea4fbe0c6486d2c",
+        "8b0ce759514b4c68b04d002b192f50ff",
+        "96f93fae25924717a50bf354ff863f44"
+      ],
+      "task": "DTC-02",
+      "submitted_at": "2026-11-20T23:13:54+00:00"
     }
   }
 }
