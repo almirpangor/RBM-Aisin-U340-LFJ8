@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 478,
+  "sequence": 479,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -425,11 +425,11 @@
         "targets/lfj8/test_lfj8_h03_input_binding.c",
         "verification/project-audit/mode03-conflict-policy.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "b49a1451f0334d85925f428bba02510d",
       "claimed_at": "2026-11-20T18:55:44+00:00",
-      "updated_at": "2026-11-20T19:01:09+00:00",
-      "note": "Общий контроллер и H03 одинаково подавляют заявки на такте конфликта. Пройдены ПК 37/113, 128 профилей конфликта, 501760 заявок, отдельная проверка H03 на ПК/M32R, M32R 18+11+6+17 групп и 6 проверок размещённого CPU-кода. Отчёт mode03-conflict-policy.md. Настройки выпуска, привязки и стенд открыты.",
+      "updated_at": "2026-11-20T19:26:16+00:00",
+      "note": "Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены.",
       "result": "671a63edbaf189ff048edd0d5f5e22e94ea0c440"
     },
     "ECU-01": {
@@ -4384,9 +4384,17 @@
       "action": "complete",
       "claim_id": "8618b77e068c469baa54217bf3b2f9f2",
       "at": "2026-11-20T19:25:58+00:00"
+    },
+    {
+      "operation_id": "9d435b4f8eb54c68886137672ea609b2",
+      "task": "MODE-03",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "b49a1451f0334d85925f428bba02510d",
+      "at": "2026-11-20T19:26:16+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:25:58+00:00",
+  "updated_at": "2026-11-20T19:26:16+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
