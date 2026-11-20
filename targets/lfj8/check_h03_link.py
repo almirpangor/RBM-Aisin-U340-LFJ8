@@ -47,11 +47,12 @@ H03_ROOTS = (
     "factory_hydraulics_capture", "factory_hydraulics_restore",
     "factory_adaptation_load", "factory_adaptation_save",
 )
-DTC_FILES = ("chery_dtc.c", "chery_dtc_can.c", "chery_dtc_link.c")
+DTC_FILES = ("chery_dtc.c", "chery_dtc_can.c", "chery_dtc_link.c", "chery_model_monitor.c")
 DTC_ROOTS = (
     "chery_dtc_init", "chery_dtc_set_current", "chery_dtc_store_snapshot",
     "chery_dtc_link_init", "chery_dtc_link_end_session", "chery_dtc_link_expire",
     "chery_dtc_link_receive", "chery_dtc_link_confirm_tx",
+    "chery_model_monitor_init", "chery_model_monitor_task2",
 )
 
 
@@ -103,7 +104,7 @@ def elf_info(path, kind):
     }, allocated
 
 
-def stage_test(stage):
+def stage_test(stage, engine_payloads):
     shutil.copytree(ROOT / "controller/include", stage / "controller")
     shutil.copytree(ROOT / "controller/vendor/toyota/include", stage / "toyota")
     sources = [
@@ -122,18 +123,37 @@ def stage_test(stage):
                  HERE / "lfj8_h03_takeover.c", HERE / "test_lfj8_h03_takeover.c",
                  ROOT / "controller/tests/test_runtime.c"):
         shutil.copyfile(item, stage / item.name)
+    launch = "return integration_test(1, (char **)0);"
+    if engine_payloads:
+        rpm, coolant = (payload.hex() for payload in engine_payloads)
+        launch = f'char *args[] = {{"sim", "{rpm}", "{coolant}", (char *)0}}; return integration_test(3, args);'
     (stage / "sim_crt.c").write_text(
         "int integration_test(int argc, char **argv);\n"
         "void __init(void) {}\n"
         "void __fini(void) {}\n"
-        "int main(void) { return integration_test(1, (char **)0); }\n",
+        f"int main(void) {{ {launch} }}\n",
         encoding="ascii",
     )
     return [item.name for item in sources]
 
 
-def check(base, bridge, controller, compiler, simulator_output):
+def check(base, bridge, controller, compiler, simulator_output, bosch_trace=None):
     report = {"source": identify_h03(base), "artifact_kind": "address_model_and_cpu_test"}
+    engine_payloads = ()
+    if bosch_trace is not None:
+        trace_bytes = bosch_trace.read_bytes()
+        trace = json.loads(trace_bytes)
+        tx = trace["bosch_tx_to_tcm"]
+        if (trace["status"] != "PASS_OFFLINE_ONLY" or trace["same_bosch_image_both_directions"] is not True
+                or tx["sha256"] != trace["bosch_candidate_frame_probe"]["sha256"]):
+            raise ValueError("Expected a passing bidirectional Bosch trace from one image")
+        engine_payloads = tuple(bytes.fromhex(tx[key]) for key in ("0x0FA", "0x278"))
+        if any(len(payload) != 8 for payload in engine_payloads):
+            raise ValueError("The Bosch trace must contain two eight-byte engine messages")
+        report["bosch_trace_replay"] = {
+            "trace_sha256": sha256(trace_bytes.replace(b"\r\n", b"\n")).hexdigest(),
+            "bosch_image_sha256": tx["sha256"], "0x0FA": engine_payloads[0].hex(), "0x278": engine_payloads[1].hex(),
+        }
 
     with TemporaryDirectory(prefix="rbm-h03-link-") as directory:
         stage = Path(directory)
@@ -160,7 +180,7 @@ def check(base, bridge, controller, compiler, simulator_output):
         report["compiler"] = run(compiler, "--version").splitlines()[0]
         nm = run(compiler, "-print-prog-name=nm")
         simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")
-        integration, selector_test, range_source, panel = stage_test(stage)
+        integration, selector_test, range_source, panel = stage_test(stage, engine_payloads)
         flags = ["-Os", "-std=c11", "-Wall", "-Wextra", "-Werror", "-Wno-missing-braces",
                  "-Wno-missing-field-initializers", "-I.", "-Icontroller", "-Itoyota"]
         module_flags = [*flags, "-ffreestanding", "-fno-builtin", "-ffunction-sections", "-fdata-sections"]
@@ -267,11 +287,13 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
         run(compiler, *TARGET, *flags, "-Dmain=integration_test", "-c", integration,
             "-o", "integration.o")
         run(compiler, *TARGET, *flags, "-nostartfiles", crt, selector_test, panel, "sim_crt.c",
-            "integration.o", "combined.o", "-Wl,-e,_start", "-Wl,--start-group", "-lc", "-lgloss", "-lgcc",
+            "integration.o", "combined.o", *dtc_objects, "-Wl,-e,_start", "-Wl,--start-group", "-lc", "-lgloss", "-lgcc",
             "-Wl,--end-group", "-o", "sim.elf")
         result = json.loads(run(simulator, "sim.elf"))
         if (result.get("selector_adc_events"), result.get("selector_timeout")) != ("PASS", "PASS"):
             raise ValueError("The M32R integration check did not report a passing result")
+        if engine_payloads and result != trace["host_controller_and_lfj8"]:
+            raise ValueError("The M32R replay does not match the host results for the same Bosch frames")
         report["emulated_integration"] = result
         (stage / "component_crt.c").write_text(
             "void __init(void) {}\nvoid __fini(void) {}\n", encoding="ascii",
@@ -315,15 +337,18 @@ def main():
     for argument in ("base", "bridge", "controller", "gcc", "out"):
         parser.add_argument(f"--{argument}", required=True, type=Path)
     parser.add_argument("--sim-out", type=Path, help="optional simulator ELF with the test fixture")
+    parser.add_argument("--bosch-trace", type=Path, help="optional round-trip JSON from model.run_integrated")
     args = parser.parse_args()
     input_paths = {path.resolve() for path in (args.base, args.bridge, args.controller, args.gcc)}
+    if args.bosch_trace is not None:
+        input_paths.add(args.bosch_trace.resolve())
     if args.out.suffix.lower() != ".json" or args.out.resolve() in input_paths:
         parser.error("--out must be a separate JSON report")
     if args.sim_out is not None and (args.sim_out.suffix.lower() != ".elf" or
             args.sim_out.resolve() in input_paths | {args.out.resolve()}):
         parser.error("--sim-out must be a separate simulator ELF")
     try:
-        report = check(args.base, args.bridge, args.controller, args.gcc.resolve(), args.sim_out)
+        report = check(args.base, args.bridge, args.controller, args.gcc.resolve(), args.sim_out, args.bosch_trace)
         report_text = json.dumps(report, indent=2) + "\n"
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(report_text, encoding="utf-8")

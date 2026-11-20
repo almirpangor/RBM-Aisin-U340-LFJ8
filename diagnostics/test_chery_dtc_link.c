@@ -1,4 +1,5 @@
 #include "chery_dtc_link.h"
+#include "chery_model_monitor.h"
 
 #undef NDEBUG
 #include <assert.h>
@@ -184,12 +185,92 @@ static void test_timeouts_and_wrap(void)
     assert(link.phase == CHERY_DTC_LINK_IDLE && link.session.permission_bits == 0x08u);
 }
 
+static void expect_model_records(CheryDtcLink *link, CheryDtcState *dtc, uint32_t tick,
+                                 uint8_t limit_status, uint8_t now_status)
+{
+    CheryDtcLinkTx tx;
+    const uint8_t first[8] = {0x10, 0x08, 0x57, 2, 0xd1, 0x2b, limit_status, 0xd1};
+    const uint8_t last[8] = {0x21, 0x20, now_status};
+    assert(chery_dtc_link_receive(link, dtc, &read_request, tick, &tx) == CHERY_DTC_LINK_FRAME_READY);
+    expect_frame(&tx, first);
+    assert(chery_dtc_link_confirm_tx(link, tx.token, tick + 1, &tx) == CHERY_DTC_LINK_WAITING);
+    assert(chery_dtc_link_receive(link, dtc, &flow_control, tick + 2, &tx) == CHERY_DTC_LINK_FRAME_READY);
+    expect_frame(&tx, last);
+    assert(chery_dtc_link_confirm_tx(link, tx.token, tick + 3, &tx) == CHERY_DTC_LINK_COMPLETE);
+}
+
+static void sample_model_message(CheryModelMonitor *monitor, CheryDtcState *dtc, Ta2005CheryInputs *receiver,
+                                 const CheryModelContext *context, uint32_t tick, const uint8_t payload[8])
+{
+    Ta2005CherySnapshot snapshot;
+    if (payload != NULL) {
+        assert(ta2005_chery_inputs_receive(receiver, 0x0fa, 8, payload, &tick));
+    }
+    unsigned available = ta2005_chery_inputs_snapshot(receiver, &tick, 5, &snapshot);
+    assert(available == (payload != NULL ? TA2005_CHERY_SPEED : 0));
+    chery_model_monitor_task2(monitor, dtc, &snapshot, context);
+}
+
+static void test_model_field_loss_and_recovery(void)
+{
+    CheryDtcLink link;
+    CheryDtcState dtc;
+    CheryDtcLinkTx tx;
+    CheryModelMonitor monitor;
+    const CheryModelContext context = {0};
+    Ta2005CheryInputs receiver;
+    uint8_t payload[8] = {0x12, 0xc0, 95, 0xff, 0, 35, 0, 0};
+    uint32_t tick = 0;
+    chery_dtc_link_init(&link);
+    chery_dtc_init(&dtc);
+    chery_model_monitor_init(&monitor);
+    open_authorized(&link, &dtc, tick);
+    ta2005_chery_inputs_reset(&receiver);
+    sample_model_message(&monitor, &dtc, &receiver, &context, tick, payload);
+    assert(monitor.now_code == 95 && monitor.limit_code == 35);
+
+    tick = 5;
+    for (unsigned i = 0; i < 101; ++i) {
+        sample_model_message(&monitor, &dtc, &receiver, &context, tick++, NULL);
+    }
+    assert(dtc.current[2] == 0 && dtc.history[2] == 0 && monitor.limit_pending);
+    sample_model_message(&monitor, &dtc, &receiver, &context, tick++, NULL);
+    assert(monitor.now_failed && !monitor.limit_pending && dtc.current[2] == 5);
+    assert(monitor.now_code == 95 && monitor.limit_code == 35);
+    expect_model_records(&link, &dtc, 120, 0x6f, 0x6f);
+
+    payload[2] = 88;
+    payload[5] = UINT8_MAX;
+    for (unsigned i = 0; i < 251; ++i) {
+        sample_model_message(&monitor, &dtc, &receiver, &context, tick++, payload);
+    }
+    assert(monitor.now_failed && monitor.now_code == 95 && dtc.current[2] == 5);
+    sample_model_message(&monitor, &dtc, &receiver, &context, tick++, payload);
+    assert(!monitor.now_failed && monitor.now_code == 88);
+    expect_model_records(&link, &dtc, 380, 0x6f, 0x4f);
+    payload[5] = 24;
+    for (unsigned i = 0; i < 252; ++i) {
+        sample_model_message(&monitor, &dtc, &receiver, &context, tick++, payload);
+    }
+    assert(monitor.limit_code == 24 && dtc.current[2] == 0);
+    expect_model_records(&link, &dtc, 640, 0x4f, 0x4f);
+    assert(chery_dtc_link_receive(&link, &dtc, &clear_request, 645, &tx) == CHERY_DTC_LINK_FRAME_READY);
+    const uint8_t cleared[8] = {0x03, 0x54, 0xff, 0x00};
+    expect_frame(&tx, cleared);
+    assert(chery_dtc_link_confirm_tx(&link, tx.token, 646, &tx) == CHERY_DTC_LINK_COMPLETE);
+    assert(chery_dtc_link_receive(&link, &dtc, &read_request, 647, &tx) == CHERY_DTC_LINK_FRAME_READY);
+    const uint8_t empty[8] = {0x02, 0x57, 0};
+    expect_frame(&tx, empty);
+    assert(chery_dtc_link_confirm_tx(&link, tx.token, 648, &tx) == CHERY_DTC_LINK_COMPLETE);
+}
+
 int main(void)
 {
     test_cold_permission_and_session_end();
     test_flow_control_and_continuations();
     test_out_of_profile_flow_control();
     test_timeouts_and_wrap();
-    puts("Chery C0 diagnostic link: passed");
+    test_model_field_loss_and_recovery();
+    puts("Chery C0 diagnostic link and independent model-field loss and recovery: passed");
     return 0;
 }

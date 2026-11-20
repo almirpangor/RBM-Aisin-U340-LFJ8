@@ -69,6 +69,29 @@ bool chery_dtc_store_snapshot(CheryDtcState *state, size_t slot, uint8_t index)
     return true;
 }
 
+bool chery_dtc_raise_c0(CheryDtcState *state, uint8_t index, bool inhibit_history)
+{
+    if (state == NULL || index >= CHERY_DTC_INDEX_COUNT) {
+        return false;
+    }
+    uint8_t cell = (uint8_t)(index / 8u);
+    uint8_t mask = index_mask(index);
+    if ((state->current[cell] & mask) != 0u) {
+        return true;
+    }
+    state->current[cell] |= mask;
+    if (inhibit_history || (state->history[cell] & mask) != 0u) {
+        return true;
+    }
+    for (size_t slot = 0; slot < CHERY_DTC_SNAPSHOT_COUNT; ++slot) {
+        if (state->snapshot_index[slot] == UINT8_MAX) {
+            return chery_dtc_store_snapshot(state, slot, index);
+        }
+    }
+    state->history[cell] |= mask;
+    return true;
+}
+
 static size_t build_read_reply(
     const CheryDtcState *state,
     uint8_t reply[CHERY_DTC_MAX_REPLY_BYTES]

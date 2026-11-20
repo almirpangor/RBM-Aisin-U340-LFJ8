@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "chery_model_monitor.h"
 #include "lfj8_bridge.h"
 #include "lfj8_range_control.h"
 #include "panel_pulse.h"
@@ -113,6 +114,14 @@ int main(int argc, char **argv)
     assert(engine_inputs.speed_fad8 == 9600 && engine_inputs.coolant_f9e9 == 137);
     assert(engine_inputs.model.f9d8 == rpm_frame[2] && engine_inputs.model.f9e8 == rpm_frame[3] &&
            engine_inputs.model.f914 == rpm_frame[5]);
+    CheryDtcState dtc;
+    CheryModelMonitor model;
+    const CheryModelContext model_context = {0};
+    chery_dtc_init(&dtc);
+    chery_model_monitor_init(&model);
+    chery_model_monitor_task2(&model, &dtc, &engine_inputs, &model_context);
+    assert(model.now_code == (rpm_frame[2] == UINT8_MAX ? 50u : rpm_frame[2]));
+    assert(model.limit_code == (rpm_frame[5] == UINT8_MAX ? 50u : rpm_frame[5]));
 
     const RbmU340ePolicy policy = {
         .manual_selectors = 1u << RBM_U340E_SELECTOR_D,
@@ -183,10 +192,12 @@ int main(int argc, char **argv)
     printf("\",\"panel_input_speed_q7\":%u,\"panel_period_ticks_1mhz\":%lu,"
            "\"tc_rx_rpm_q3\":%u,\"tc_rx_coolant_plus_50\":%u,"
            "\"tc_rx_model_codes\":[%u,%u,%u],"
+           "\"tc_qualified_model_codes\":[%u,%u],"
            "\"selector_adc_events\":\"PASS\",\"selector_timeout\":\"PASS\"}\n",
            speed_q7, (unsigned long)pulse.period_field,
            (unsigned int)engine_inputs.speed_fad8, (unsigned int)engine_inputs.coolant_f9e9,
            (unsigned int)engine_inputs.model.f9d8, (unsigned int)engine_inputs.model.f9e8,
-           (unsigned int)engine_inputs.model.f914);
+           (unsigned int)engine_inputs.model.f914,
+           (unsigned int)model.now_code, (unsigned int)model.limit_code);
     return 0;
 }

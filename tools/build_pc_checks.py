@@ -54,6 +54,7 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
         run("Сборка транспорта диагностики Chery C0", [
             *driver, *common_flags, "-pedantic", "diagnostics/chery_dtc.c",
             "diagnostics/chery_dtc_can.c", "diagnostics/chery_dtc_link.c",
+            "-I", "targets/lfj8", "diagnostics/chery_model_monitor.c", "targets/lfj8/ta2005_chery_inputs.c",
             "diagnostics/test_chery_dtc_link.c", "-o", str(diagnostic_link_check),
         ])
         run("Сеанс Chery C0, сегментация и тайм-ауты", [str(diagnostic_link_check)])

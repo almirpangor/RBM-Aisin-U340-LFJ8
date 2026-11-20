@@ -13,6 +13,10 @@
       255,
       35
     ],
+    "tc_qualified_model_codes": [
+      95,
+      35
+    ],
     "selector_adc_events": "PASS",
     "selector_timeout": "PASS"
   },

@@ -33,6 +33,10 @@ typedef enum {
 void chery_dtc_init(CheryDtcState *state);
 bool chery_dtc_set_current(CheryDtcState *state, uint8_t index, bool current);
 bool chery_dtc_store_snapshot(CheryDtcState *state, size_t slot, uint8_t index);
+/* Update the fields visible to service 0x17 on a C0 monitor transition.
+ * On the first occurrence take the first free snapshot slot. An occupied
+ * list is retained; the history bit can exist without a visible slot. */
+bool chery_dtc_raise_c0(CheryDtcState *state, uint8_t index, bool inhibit_history);
 
 /* Request and response contain application bytes starting with the SID.
  * The caller owns transport, synchronization and monitor qualification. */

@@ -28,6 +28,7 @@ def run_c_scenario(compiler: str, engine_vectors: tuple[str, ...] = ()) -> dict:
     toyota = controller / "vendor" / "toyota"
     lfj8 = ROOT / "targets" / "lfj8"
     panel = ROOT / "targets" / "panel"
+    diagnostics = ROOT / "diagnostics"
     manifest = json.loads((toyota / "manifest.json").read_text(encoding="utf-8"))
     sources = [str(toyota / entry["path"]) for entry in manifest["files"] if entry["path"].endswith(".c")]
     with TemporaryDirectory(prefix="u340-host-scenario-") as temp:
@@ -35,11 +36,12 @@ def run_c_scenario(compiler: str, engine_vectors: tuple[str, ...] = ()) -> dict:
         command = [
             *driver, "-std=c11", "-O2", "-UNDEBUG", "-Wall", "-Wextra", "-Werror",
             "-I", str(controller / "include"), "-I", str(toyota / "include"),
-            "-I", str(lfj8), "-I", str(panel),
+            "-I", str(lfj8), "-I", str(panel), "-I", str(diagnostics),
             str(controller / "src" / "rbm_u340e.c"), *sources, str(lfj8 / "lfj8_bridge.c"),
             str(lfj8 / "ta2005_chery_inputs.c"), str(lfj8 / "lfj8_selector_adc.c"),
             str(lfj8 / "lfj8_range_control.c"),
             str(lfj8 / "test_lfj8_selector_adc.c"),
+            str(diagnostics / "chery_dtc.c"), str(diagnostics / "chery_model_monitor.c"),
             str(panel / "panel_pulse.c"), str(ROOT / "tests" / "u340_integration_host.c"),
             "-o", str(exe),
         ]
@@ -78,6 +80,10 @@ def run(compiler: str, bosch: tuple[Path, Path, Path] | None = None,
     host = run_c_scenario(compiler, engine_vectors)
     if engine_vectors and host["tc_rx_model_codes"] != [by_id[0x0FA][i] for i in (2, 3, 5)]:
         raise RuntimeError("LFJ8 model operands differ from the executed Bosch payload")
+    raw_now, _, raw_limit = host["tc_rx_model_codes"]
+    expected = [50 if raw == 0xFF else raw for raw in (raw_now, raw_limit)]
+    if host["tc_qualified_model_codes"] != expected:
+        raise RuntimeError("The first healthy C0 task release did not publish the expected model codes")
     speed_frame = frame_from_c(0x1AE, host["0x1AE"])
     speed = decode_chery_frame(speed_frame)
     if speed.status is not DecodeStatus.DECODED or speed.reading is None or speed.fields_1ae is None:
