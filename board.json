@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 555,
+  "sequence": 556,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -568,21 +568,22 @@
     },
     "REL-02": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
-      "label": "Codex REL-02 H03 application-only isolation",
-      "branch": "codex/rel02-h03-application-isolation-01a1f99f",
+      "label": "Codex REL-02 H03 native RAM owner",
+      "branch": "codex/rel02-h03-ram-owner-01a1f99f",
       "files": [
-        "targets/lfj8/check_h03_application_isolation.py",
-        "targets/lfj8/lfj8_h03_monitor_quiesce.c",
-        "targets/lfj8/lfj8_h03_monitor_quiesce.h",
-        "verification/project-audit/2026-11-20-h03-application-isolation.json",
-        "verification/project-audit/rel02-h03-application-isolation.md"
+        "targets/lfj8/check_h03_ram_owner.py",
+        "targets/lfj8/lfj8_h03_ram_owner.c",
+        "targets/lfj8/lfj8_h03_ram_owner.h",
+        "targets/lfj8/test_lfj8_h03_ram_owner.c",
+        "verification/project-audit/2026-11-21-h03-ram-owner.json",
+        "verification/project-audit/rel02-h03-ram-owner.md"
       ],
-      "stage": "done",
-      "claim_id": "e050fbd1bb5d4d14a3f58aac59b8cf86",
-      "claimed_at": "2026-11-20T18:22:47+00:00",
-      "updated_at": "2026-11-20T19:28:30+00:00",
-      "note": "Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены.",
-      "result": "c8d6d0d7b4852e8cbcf0919ea09d4883e1d608ae"
+      "stage": "in_progress",
+      "claim_id": "3fd1870717ff4cc684af517ec9f56903",
+      "claimed_at": "2026-11-20T20:00:42+00:00",
+      "updated_at": "2026-11-20T20:00:42+00:00",
+      "note": "Продолжение программной изоляции H03: условие ram_owned для холодного старта, сверка пяти установленных переходов и покрытия RAM. Резервы H03-03, H03-04 и TOY-01 сохраняются.",
+      "result": null
     }
   },
   "events": [
@@ -5025,9 +5026,17 @@
       "action": "claim",
       "claim_id": "25f1a0e7da1d41bba388e0e989f02e36",
       "at": "2026-11-20T20:00:31+00:00"
+    },
+    {
+      "operation_id": "be4ccbbba0104b96b4aa54ff79da7648",
+      "task": "REL-02",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "3fd1870717ff4cc684af517ec9f56903",
+      "at": "2026-11-20T20:00:42+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:00:31+00:00",
+  "updated_at": "2026-11-20T20:00:42+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
