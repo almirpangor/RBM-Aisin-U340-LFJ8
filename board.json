@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 690,
+  "sequence": 691,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -497,20 +497,24 @@
       "result": "d7c0edc021c5caf7f4c03723847a6dcdd6583a81"
     },
     "VSS-02": {
-      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
-      "label": "Codex VSS-02 — целевая конфигурация из измерений",
-      "branch": "codex/vss02-sensor-config-source-mwp5rm2ofhaxjfi9dss",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex VSS-02 — целевой допуск часов H03",
+      "branch": "codex/vss02-h03-clock-binding-32e6ac79",
       "files": [
+        "targets/lfj8/check_h03_application_binding.py",
         "targets/lfj8/check_h03_sensor_config.py",
+        "targets/lfj8/h03_application_binding_fixture.c",
         "tests/test_h03_sensor_config.py",
-        "verification/project-audit/vss02-h03-sensor-config-source.md"
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/vss02-h03-clock-binding.md"
       ],
-      "stage": "done",
-      "claim_id": "625fae5569f34ec79ee0206423a3fa01",
-      "claimed_at": "2026-11-20T19:56:16+00:00",
-      "updated_at": "2026-11-20T21:14:43+00:00",
-      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
-      "result": "3ffed063500c6347896338731573da0bd14a1eeb"
+      "stage": "in_progress",
+      "claim_id": "8b0ce759514b4c68b04d002b192f50ff",
+      "claimed_at": "2026-11-20T21:52:15+00:00",
+      "updated_at": "2026-11-20T21:52:15+00:00",
+      "note": "Подключаю rbm_h03_target_clock_ready из проверенного профиля обоих таймеров к startup/foreground и адресной сборке. Проверяю MMIO, отзыв и перезапуск. Аппаратные числа не подставляю.",
+      "result": null,
+      "based_on_reviews": []
     },
     "TOY-01": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -8227,9 +8231,37 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "edf49bea41734db98d032271a7df1d6f",
+      "task": "VSS-02",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "8b0ce759514b4c68b04d002b192f50ff",
+      "at": "2026-11-20T21:52:15+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex VSS-02 — целевой допуск часов H03",
+        "branch": "codex/vss02-h03-clock-binding-32e6ac79",
+        "files": [
+          "targets/lfj8/check_h03_application_binding.py",
+          "targets/lfj8/check_h03_sensor_config.py",
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "tests/test_h03_sensor_config.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/vss02-h03-clock-binding.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "8b0ce759514b4c68b04d002b192f50ff",
+        "claimed_at": "2026-11-20T21:52:15+00:00",
+        "updated_at": "2026-11-20T21:52:15+00:00",
+        "note": "Подключаю rbm_h03_target_clock_ready из проверенного профиля обоих таймеров к startup/foreground и адресной сборке. Проверяю MMIO, отзыв и перезапуск. Аппаратные числа не подставляю.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:51:53+00:00",
+  "updated_at": "2026-11-20T21:52:15+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
