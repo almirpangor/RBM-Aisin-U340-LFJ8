@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 533,
+  "sequence": 534,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -290,22 +290,22 @@
       "result": null
     },
     "CAN-04": {
-      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
-      "label": "Codex CAN-04 — срок подтверждения момента",
-      "branch": "codex/can-04-progress-deadline-fea1b366",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "label": "Codex CAN-04 — отмена ожидающего START/REFRESH",
+      "branch": "codex/can04-pending-tx-revoke-b0157640",
       "files": [
         "targets/lfj8/lfj8_h03_torque.c",
         "targets/lfj8/lfj8_h03_torque.h",
-        "targets/lfj8/test_lfj8_h03_torque.c",
-        "targets/lfj8/verify_h03_torque.py",
-        "verification/project-audit/can04-progress-deadline.md"
+        "targets/lfj8/lfj8_h03_torque_can.c",
+        "targets/lfj8/test_lfj8_h03_torque_can.c",
+        "verification/project-audit/can04-pending-tx-revoke.md"
       ],
-      "stage": "done",
-      "claim_id": "001fe3e513b645ef9370cb6af6d76bc2",
-      "claimed_at": "2026-11-20T18:33:48+00:00",
-      "updated_at": "2026-11-20T19:28:47+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "07fc25af65515ddd77b680b37423ddbce80f4d55"
+      "stage": "in_progress",
+      "claim_id": "c4e3a3e369f14884b8a200b72aacab5e",
+      "claimed_at": "2026-11-20T19:52:46+00:00",
+      "updated_at": "2026-11-20T19:52:46+00:00",
+      "note": "Независимый остаток CAN-04: отзыв фактического допуска или истечение метки прекращает ожидающий START/REFRESH в CAN13 до обработки завершения; CANCEL сохраняется. Без подмены калибровок.",
+      "result": null
     },
     "MODE-01": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -4852,9 +4852,17 @@
       "action": "review",
       "claim_id": "ad997bd677c542c682cec961d4619193",
       "at": "2026-11-20T19:52:21+00:00"
+    },
+    {
+      "operation_id": "766a975927024ed0b98dba62b2b98098",
+      "task": "CAN-04",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "claim",
+      "claim_id": "c4e3a3e369f14884b8a200b72aacab5e",
+      "at": "2026-11-20T19:52:46+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:52:21+00:00",
+  "updated_at": "2026-11-20T19:52:46+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
