@@ -26,6 +26,7 @@ ALIASES = {
     "rbm_h03_takeover_state": "control/takeover",
     "rbm_h03_runtime_state": "control/runtime",
     "rbm_h03_cycle_state": "control/cycle",
+    "rbm_h03_toyota_release_state": "control/toyota_release",
     "h03_can_owner": "communication/can_owner",
     "rbm_h03_main_result": "communication/main_result",
     "rbm_h03_fast_output": "communication/fast_output",
@@ -40,11 +41,22 @@ ALIASES = {
     "rbm_h03_cycle_input": "workspace/cycle_input",
 }
 FIXTURE_PROFILE = """\
+#include "lfj8_h03_target_platform.h"
+#include "lfj8_h03_target_service.h"
+int fixture_initialize_inputs(void *);
+int fixture_capture_toyota(void *, const Lfj8H03SensorSnapshot *, uint32_t,
+                           Lfj8H03CycleInput *, Lfj8H03CycleLoad *);
+extern const Lfj8H03TargetServiceConfig service_profile;
 #define RBM_H03_PROFILE_PHASE_CONFIG {8u, 12u, 2u, 24u}
 #define RBM_H03_PROFILE_STARTUP_RANGE {0}
 #define RBM_H03_PROFILE_TOYOTA_MAX_PERIOD_TICKS 23u
 #define RBM_H03_PROFILE_STARTUP_REQUEST_1120 0u
 #define RBM_H03_PROFILE_READ_ADAPTATION NULL
+#define RBM_H03_PROFILE_CAN_SERVICE_CONFIG service_profile
+#define RBM_H03_PROFILE_TOYOTA_PERIOD_TICKS 16u
+#define RBM_H03_PROFILE_TOYOTA_MAX_LATENESS_TICKS 2u
+#define RBM_H03_PROFILE_INITIALIZE_INPUTS fixture_initialize_inputs
+#define RBM_H03_PROFILE_CAPTURE_TOYOTA fixture_capture_toyota
 """
 BINDINGS = r"""
 #include "lfj8_h03_application.h"
@@ -56,6 +68,7 @@ BINDINGS = r"""
 #include "lfj8_h03_atf_target.h"
 #include "lfj8_h03_mmio.h"
 #include "lfj8_h03_sensor_target.h"
+#include "lfj8_h03_target_platform.h"
 #include "lfj8_h03_target_service.h"
 
 extern Lfj8H03Takeover rbm_h03_takeover_state;
@@ -92,8 +105,8 @@ static void fixture_apply(void *context)
 }
 
 const Lfj8H03TakeoverOps rbm_h03_target_takeover_ops = {
-    .io = &simulated_io, .inhibit = lfj8_h03_output_inhibit_locked, .apply = fixture_apply,
-    .phase_clock = &fixture_phase_clock,
+    .io = &lfj8_h03_mmio, .inhibit = lfj8_h03_output_inhibit_locked, .apply = fixture_apply,
+    .clock_ticks = lfj8_h03_tml0ct_m32r, .phase_clock = &fixture_phase_clock,
 };
 static const Lfj8H03TakeoverOps stale = {
     .io = &simulated_io, .inhibit = fixture_apply, .apply = fixture_apply,
@@ -105,23 +118,18 @@ FactoryHydraulics rbm_h03_target_startup_gp;
 int rbm_h03_target_clock_ready(void *context)
 {
     (void)context;
-    return lfj8_h03_sensor_clock_ready_locked();
+    return lfj8_h03_sensor_clock_registers_match();
 }
 
-Lfj8H03ToyotaEvent rbm_h03_target_take_toyota(void *context, const Lfj8H03SensorSnapshot *sensors,
-    Lfj8H03CycleInput *input, Lfj8H03CycleLoad *load, uint32_t *released_at)
+int fixture_capture_toyota(void *context, const Lfj8H03SensorSnapshot *sensors, uint32_t due_at,
+                           Lfj8H03CycleInput *input, Lfj8H03CycleLoad *load)
 {
     (void)context;
     (void)sensors;
+    (void)due_at;
     (void)input;
     (void)load;
-    (void)released_at;
-    return LFJ8_H03_TOYOTA_WAIT;
-}
-
-int lfj8_h03_application_running_locked(void)
-{
-    return rbm_h03_target_ram_owned(NULL) && rbm_h03_application.running == 1u;
+    return 0;
 }
 
 static const uint32_t command_bytes[] = {0x8063d5, 0x8063d7, 0x8063d8, 0x8063da, 0x8063db, 0x8063dd};
@@ -377,7 +385,7 @@ static const Lfj8VehicleCalibration fixture_vehicle = {
     .wheel_num = 1u, .wheel_den = 1u,
 };
 static const Lfj8TorqueCalibration fixture_torque_cal = {.up = {[1] = {0x20u, 32u, 20u}}};
-static const Lfj8H03TargetServiceConfig service_profile = {
+const Lfj8H03TargetServiceConfig service_profile = {
     .can13 = {.period_1ae_us = 100u, .period_300_us = 160u, .torque_receive_age_bits = 4000u,
               .diagnostic_receive_age_bits = 1024u, .max_poll_gap_us = 5000u, .bit_time_us = 2u},
     .t6 = {.period_us_numerator = 10u, .period_us_denominator = 1u, .max_sample_gap_us = 250u},
@@ -386,13 +394,11 @@ static const Lfj8H03TargetServiceConfig service_profile = {
     .torque_calibration = &fixture_torque_cal, .torque = fixture_torque,
 };
 
-int rbm_h03_target_initialize(void *context)
+int fixture_initialize_inputs(void *context)
 {
     (void)context;
-    const uint32_t saved = lfj8_h03_mmio.enter(NULL);
-    const bool prepared = lfj8_h03_target_service_prepare_locked(&service_profile);
-    lfj8_h03_mmio.leave(NULL, saved);
-    return prepared;
+    chery_dtc_init(&fixture_shared_dtc);
+    return 1;
 }
 
 static void service_turn(uint32_t now)
@@ -425,15 +431,17 @@ void fixture_target_service_path(void)
     rbm_h03_tml0_1mhz_qualified = 0u;
     rbm_h03_sensor_state.feed.epoch = 8u;
     lfj8_h03_dtc_native_cold_init();
-    chery_dtc_init(&fixture_shared_dtc);
+    rbm_h03_toyota_release_state.status = UINT8_MAX;
     lfj8_h03_mmio.leave(NULL, saved);
     const bool prepared = rbm_h03_application_binding.initialize(NULL) == 1;
     if (!fixture_redirects_expected) {
-        fixture_service_steps = !prepared && !h03_can_owner.grant &&
+        fixture_service_steps = !prepared && rbm_h03_toyota_release_state.status == UINT8_MAX &&
+                                !h03_can_owner.grant &&
                                 !rbm_h03_can_service.config;
         return;
     }
-    if (!prepared || !rbm_h03_can_service.start_pending || h03_can_owner.grant) {
+    if (!prepared || rbm_h03_toyota_release_state.status != 0u ||
+        !rbm_h03_can_service.start_pending || h03_can_owner.grant) {
         return;
     }
     ++fixture_service_steps;
@@ -559,7 +567,36 @@ void fixture_target_service_path(void)
     ++fixture_service_steps;
     ++rbm_h03_sensor_state.feed.epoch;
     service_turn(1520u);
-    if (!h03_can_owner.grant && !rbm_h03_can_service.config) {
+    if (h03_can_owner.grant || rbm_h03_can_service.config) {
+        return;
+    }
+    ++fixture_service_steps;
+
+    /* An application restart may prepare CAN, but cannot re-admit the
+     * generation whose lease was withdrawn. The guarded permit does that. */
+    rbm_h03_application.running = 0u;
+    BYTE(CAN0 + 0x5du) = 0u;
+    if (rbm_h03_application_binding.initialize(NULL) != 1) {
+        return;
+    }
+    rbm_h03_application.running = 1u;
+    service_turn(1530u);
+    if (h03_can_owner.grant) {
+        return;
+    }
+    rbm_h03_can_monitor_publish_setup_locked();
+    service_turn(1540u);
+    if (!h03_can_owner.grant || rbm_h03_dtc_target.queue.generation != 3u) {
+        return;
+    }
+    ++fixture_service_steps;
+
+    rbm_h03_application_cold_gate();
+    stage_dtc_request();
+    rbm_h03_dtc_rx_observe(14u);
+    if (!h03_can_owner.grant && !rbm_h03_can_service.config &&
+        !rbm_h03_dtc_target.queue.count && !rbm_h03_tml0_1mhz_qualified &&
+        !rbm_h03_application.running) {
         ++fixture_service_steps;
     }
 }
@@ -628,6 +665,8 @@ def probe_binding(base, compiler, aliases, addresses):
             "lfj8_h03_atf_tml0.c", "lfj8_h03_dtc_native.c", "lfj8_h03_can_target.c",
             "lfj8_h03_target_service.c", "h03_can13_tx_gate.S",
             "h03_dtc_rx_hook.S", "lfj8_h03_application_binding.c",
+            "lfj8_h03_target_platform.c", "lfj8_h03_toyota_source.c",
+            "lfj8_h03_application.c", "lfj8_h03_sensor_target.c",
         )
         flags = (
             *TARGET, "-Os", "-g", "-std=c11", "-ffreestanding", "-fno-builtin",
@@ -637,6 +676,7 @@ def probe_binding(base, compiler, aliases, addresses):
         dtc_sources = (
             *(HERE / name for name in LFJ8_SOURCES if not name.startswith("test_")),
             HERE / "lfj8_h03_atf_feed.c",
+            HERE / "lfj8_h03_atf.c",
             HERE / "lfj8_selector_adc.c",
             write_port(ROOT / "controller/vendor/toyota/src", work),
             *(ROOT / "diagnostics" / name for name in DIAGNOSTIC_SOURCES),
@@ -722,7 +762,7 @@ def probe_binding(base, compiler, aliases, addresses):
         for name, patch_set, expected in (
             ("stock_writers", (), 1),
             ("missing_dtc_dispatch", service_patches[:-1], 1),
-            ("native_service", (*service_patches, fixture_flag), 12),
+            ("native_service", (*service_patches, fixture_flag), 14),
         ):
             observed, = startup.read_probe(run, work, debugger, "&fixture_target_service_path",
                                            patch_set, ((symbols["fixture_done"][0],),), 0,

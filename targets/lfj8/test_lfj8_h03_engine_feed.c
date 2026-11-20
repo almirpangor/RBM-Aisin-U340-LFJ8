@@ -392,10 +392,13 @@ static void check_target_owner_and_tml0(void)
     const Lfj8RegisterIo io = registers(&fixture);
     const Lfj8H03EngineFeedTarget target = {
         .rx = &fixture.receiver, .qualifier = &fixture.qualifier, .dtc = &fixture.dtc,
-        .io = &io, .can_owner = &fixture.owner, .now_us = target_clock,
+        .io = &io, .can_owner = &fixture.owner, .now_us = target_clock, .bit_time_us = 2u,
     };
     chery_dtc_init(&fixture.dtc);
     fixture.dtc.history[2] = RPM_BIT;
+    Lfj8H03EngineFeedTarget unqualified = target;
+    unqualified.bit_time_us = 0u;
+    assert(!lfj8_h03_engine_feed_target_init(&unqualified, FRAME_MAX_AGE, 30));
     assert(!lfj8_h03_engine_feed_target_init(&target, 0, 30));
     assert(lfj8_h03_engine_feed_target_init(&target, FRAME_MAX_AGE, 30));
     assert(fixture.receiver.generation_source == &fixture.owner.setup_generation);
@@ -413,8 +416,9 @@ static void check_target_owner_and_tml0(void)
     assert(!fixture.clock_reads && !fixture.slots[0] && !fixture.slots[1]);
     fixture.tml0_ready = true;
     Lfj8H03EngineModelSample model;
+    uint32_t oldest_us = fixture.now_us;
     assert(lfj8_h03_engine_feed_target_task2(&target, &context, false,
-                &fixture.feed, &model) == TA2005_ENGINE_EVALUATED);
+                &fixture.feed, &model, &oldest_us) == TA2005_ENGINE_EVALUATED);
     expect_model(model, LFJ8_H03_MODEL_INHIBITED, 0xff, 0xff, 0xff);
     assert(fixture.slots[0] == 0x40u && fixture.slots[1] == 0x40u);
 
@@ -424,19 +428,32 @@ static void check_target_owner_and_tml0(void)
     lfj8_h03_engine_feed_target_poll(&target);
     next_release(&fixture, 0u, NULL);
     assert(lfj8_h03_engine_feed_target_task2(&target, &context, false,
-                &fixture.feed, &model) == TA2005_ENGINE_EVALUATED);
+                &fixture.feed, &model, &oldest_us) == TA2005_ENGINE_EVALUATED);
     expect_model(model, LFJ8_H03_MODEL_EVALUATE, 0x21, 0x32, 0x43);
     assert(fixture.now_us == 0u && fixture.timestamp == 0u);
     assert(fixture.feed.fa62 == 9600u && fixture.feed.f9b8 == 137u);
+    assert(oldest_us == UINT32_MAX - 3u);
+
+    /* Age the RPM past the receive limit while the donor is still holding it.
+     * Fresh ECT and a newer fallback must not refresh the held operand. */
+    for (unsigned age = 2; age <= FRAME_MAX_AGE; ++age) {
+        next_release(&fixture, 2u, NULL);
+        oldest_us = fixture.now_us;
+        assert(lfj8_h03_engine_feed_target_task2(&target, &context, false,
+                   &fixture.feed, &model, &oldest_us) == TA2005_ENGINE_EVALUATED);
+    }
+    assert(fixture.feed.fa62 == 9600u && oldest_us == UINT32_MAX - FRAME_MAX_AGE - 1u);
 
     next_release(&fixture, 3u, payload);
     fixture.owner.grant = 0u;
     fixture.owner.setup_generation = 0u;
     const unsigned before_reset = fixture.clock_reads;
+    oldest_us = fixture.now_us - 5u;
     assert(lfj8_h03_engine_feed_target_task2(&target, &context, false,
-                &fixture.feed, &model) == TA2005_ENGINE_EVALUATED);
+                &fixture.feed, &model, &oldest_us) == TA2005_ENGINE_EVALUATED);
     expect_model(model, LFJ8_H03_MODEL_INHIBITED, 0xff, 0xff, 0xff);
     assert(fixture.feed.fa62 == 0u && fixture.feed.f9b8 == 87u);
+    assert(!fixture.receiver.rpm_stamp_valid && oldest_us == fixture.now_us - 5u);
     assert(fixture.receiver.last_generation == 0u && fixture.clock_reads == before_reset);
     assert(fixture.slots[0] == 0x41u && fixture.slots[1] == 0x41u);
 
@@ -444,18 +461,28 @@ static void check_target_owner_and_tml0(void)
     fixture.owner.admitted_generation = 0u;
     fixture.owner.grant = 1u;
     assert(lfj8_h03_engine_feed_target_task2(&target, &context, false,
-                &fixture.feed, &model) == TA2005_ENGINE_EVALUATED);
+                &fixture.feed, &model, &oldest_us) == TA2005_ENGINE_EVALUATED);
     expect_model(model, LFJ8_H03_MODEL_INHIBITED, 0xff, 0xff, 0xff);
     next_release(&fixture, 3u, payload);
     assert(lfj8_h03_engine_feed_target_task2(&target, &context, false,
-                &fixture.feed, &model) == TA2005_ENGINE_EVALUATED);
+                &fixture.feed, &model, &oldest_us) == TA2005_ENGINE_EVALUATED);
     expect_model(model, LFJ8_H03_MODEL_EVALUATE, 0x21, 0x32, 0x43);
     assert(fixture.feed.fa62 == 9600u && fixture.feed.f9b8 == 137u);
+
+    next_release(&fixture, 3u, payload);
+    const uint16_t coolant_stamp = (uint16_t)(fixture.timestamp - 1u);
+    fixture.data[SLOT_SIZE + 14u] = (uint8_t)(coolant_stamp >> 8);
+    fixture.data[SLOT_SIZE + 15u] = (uint8_t)coolant_stamp;
+    oldest_us = fixture.now_us;
+    assert(lfj8_h03_engine_feed_target_task2(&target, &context, false,
+               &fixture.feed, &model, &oldest_us) == TA2005_ENGINE_EVALUATED);
+    assert(fixture.feed.fa62 == 9600u && fixture.feed.f9b8 == 137u &&
+           oldest_us == fixture.now_us - 4u);
 
     /* Losing time also revokes RX when no coherent Task 2 context is ready. */
     fixture.tml0_ready = false;
     const unsigned before_clock_loss = fixture.clock_reads;
-    assert(!lfj8_h03_engine_feed_target_task2(&target, NULL, false, &fixture.feed, &model));
+    assert(!lfj8_h03_engine_feed_target_task2(&target, NULL, false, &fixture.feed, &model, &oldest_us));
     expect_model(model, LFJ8_H03_MODEL_NOT_EVALUATED, 0xff, 0xff, 0xff);
     assert(!fixture.feed.coherent && fixture.receiver.discontinuity);
     assert(fixture.receiver.phase == LFJ8_H03_RX_WAIT_FOR_OEM);

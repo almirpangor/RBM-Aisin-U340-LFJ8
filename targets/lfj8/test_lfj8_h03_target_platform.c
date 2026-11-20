@@ -5,6 +5,7 @@
 #include "lfj8_h03_atf_target.h"
 #include "lfj8_h03_mmio.h"
 #include "lfj8_h03_sensor_target.h"
+#include "lfj8_h03_target_service.h"
 #include "lfj8_selector_adc.h"
 
 #undef NDEBUG
@@ -43,6 +44,13 @@ static unsigned stock_startups, input_starts, captures, stock_updates, services,
 static uint32_t last_due;
 static int owned = 1, clock_ready = 1, inputs_ready = 1, capture_ready = 1;
 static int revoke_at_start;
+static int can_ready = 1, can_prepared, fail_after_prepare;
+static unsigned can_starts, can_live_stops, can_stops;
+static uint8_t clock_at_last_live_stop;
+
+const Lfj8H03TargetServiceConfig test_can_service_config = {
+    .can13 = {.bit_time_us = 2u},
+};
 
 static int irq_enabled(void)
 {
@@ -60,7 +68,27 @@ int rbm_h03_target_ram_owned(void *context)
 int rbm_h03_target_clock_ready(void *context)
 {
     assert(!context && !irq_enabled() && owned);
-    return clock_ready;
+    return clock_ready && !(fail_after_prepare && can_prepared);
+}
+
+bool lfj8_h03_target_service_prepare_locked(const Lfj8H03TargetServiceConfig *config)
+{
+    assert(config == &test_can_service_config && !irq_enabled() && owned && clock_ready);
+    assert(!rbm_h03_application.running && !rbm_h03_tml0_1mhz_qualified && !can_prepared);
+    ++can_starts;
+    can_prepared = can_ready;
+    return can_prepared != 0;
+}
+
+void lfj8_h03_target_service_stop_locked(void)
+{
+    assert(!irq_enabled() && owned && !rbm_h03_application.running);
+    ++can_stops;
+    if (can_prepared) {
+        clock_at_last_live_stop = rbm_h03_tml0_1mhz_qualified;
+        ++can_live_stops;
+    }
+    can_prepared = 0;
 }
 
 int test_initialize_inputs(void *context)
@@ -102,7 +130,8 @@ static int engine_context(void *context, const Lfj8H03SensorSnapshot *sensors,
 
 const Lfj8H03ApplicationEngine rbm_h03_target_engine = {
     .target = {.rx = &engine_rx, .qualifier = &engine_qualifier, .dtc = &engine_dtc,
-               .can_owner = &engine_owner, .io = &lfj8_h03_mmio, .now_us = rbm_h03_atf_now_us},
+               .can_owner = &engine_owner, .io = &lfj8_h03_mmio, .now_us = rbm_h03_atf_now_us,
+               .bit_time_us = 2u},
     .max_age_ticks = 20u, .max_poll_gap_us = 32u, .context_for_task2 = engine_context,
 };
 
@@ -131,7 +160,7 @@ void rbm_h03_target_service_phase(void *context, const Lfj8H03PhaseEvent *phase,
     const Lfj8H03SensorSnapshot *sensors, const Lfj8H03MainResult *main)
 {
     (void)main;
-    assert(!context && irq_enabled() && sensors->capture.now_tml0 == phase->released_at);
+    assert(!context && irq_enabled() && can_prepared && sensors->capture.now_tml0 == phase->released_at);
     ++services;
 }
 
@@ -192,6 +221,7 @@ static void assert_faulted(void)
     assert(!rbm_h03_application.running && !rbm_h03_runtime_state.initialized);
     assert(!rbm_h03_takeover_state.pending && !rbm_h03_main_result.valid && phase_clock.faulted);
     assert(rbm_h03_cycle_state.faulted && !rbm_h03_tml0_1mhz_qualified && inhibits > 0u);
+    assert(!can_prepared && clock_at_last_live_stop == 1u);
 }
 
 int main(void)
@@ -208,6 +238,7 @@ int main(void)
     rbm_h03_toyota_release_state.status = UINT8_MAX;
     owned = 0;
     startup(100u);
+    assert(!can_stops && !can_starts);
     owned = 1;
     clock_ready = 0;
     startup(100u);
@@ -226,11 +257,22 @@ int main(void)
     owned = 1;
     revoke_at_start = 0;
 
+    can_ready = 0;
+    startup(100u);
+    assert(input_starts == 3u && can_starts == 1u && !can_prepared && !rbm_h03_application.running);
+    assert(rbm_h03_toyota_release_state.status == UINT8_MAX);
+    can_ready = 1;
+    fail_after_prepare = 1;
+    startup(100u);
+    assert(input_starts == 4u && can_starts == 2u && can_live_stops == 1u);
+    assert(!can_prepared && !rbm_h03_application.running && clock_at_last_live_stop == 0u);
+    fail_after_prepare = 0;
+
     const uint32_t anchor = UINT32_MAX - 11u;
     startup(anchor);
-    assert(rbm_h03_application.running && input_starts == 3u);
-    assert(!rbm_h03_target_initialize(NULL) && input_starts == 3u);
-    assert(!rbm_h03_target_initialize(&owned) && input_starts == 3u);
+    assert(rbm_h03_application.running && input_starts == 5u && can_starts == 3u);
+    assert(!rbm_h03_target_initialize(NULL) && input_starts == 5u);
+    assert(!rbm_h03_target_initialize(&owned) && input_starts == 5u);
     foreground(anchor + 8u);
     assert(!captures && services == 1u);
     foreground(anchor + 17u);
@@ -240,7 +282,8 @@ int main(void)
     assert(rbm_h03_application.last_toyota_at == last_due);
 
     startup(100u); /* Warm restart: reanchor and discard the previous sequence. */
-    assert(rbm_h03_application.running && input_starts == 4u);
+    assert(rbm_h03_application.running && input_starts == 6u && can_starts == 4u);
+    assert(can_live_stops == 2u && clock_at_last_live_stop == 1u);
     foreground(108u);
     foreground(116u);
     assert(captures == 2u && services == 2u && last_due == 116u);
@@ -267,6 +310,7 @@ int main(void)
     assert_faulted();
     assert(rbm_h03_toyota_release_state.last_observed == 408u);
     assert(captures == 3u && services == 1u && irq_enabled());
-    puts("H03 target platform: native startup and foreground, Toyota rollover and inhibition PASS");
+    assert(can_live_stops == 6u);
+    puts("H03 target platform: native startup, CAN service lifecycle, Toyota rollover and inhibition PASS");
     return 0;
 }

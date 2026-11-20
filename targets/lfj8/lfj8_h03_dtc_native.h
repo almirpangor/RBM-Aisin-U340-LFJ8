@@ -13,7 +13,9 @@ void lfj8_h03_dtc_native_unbind(void);
 /* Bind the single IRQ target to the initialized CAN13 broker once the
  * application has qualified TML0. Supply objects from the typed RAM inventory.
  * The RX adapter, its read-only ops table, native clock/MMIO and RX callees
- * must be resident below application Flash along with the IRQ wrappers. */
+ * must be resident below application Flash along with the IRQ wrappers.
+ * Binding requires durable diagnostic clears. Until persistent storage is
+ * connected, a valid clear is consumed without changing DTC or sending ACK. */
 bool lfj8_h03_dtc_native_bind(Lfj8H03DtcTarget *target, Lfj8H03Can13 *broker,
                               uint16_t max_clock_span_us);
 

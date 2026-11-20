@@ -16,6 +16,9 @@ typedef struct {
 
 typedef struct {
     uint32_t max_age_us;
+    /* Return 1 with a qualified wrapping time in the same epoch as RX.
+     * Called with IE masked. H03 uses rbm_h03_atf_now_us. */
+    int (*now_us_locked)(uint32_t *now_us);
     /* Project the diagnostic owner's history policy using io->context.
      * Called in foreground, only for a fresh active fault. */
     bool (*inhibit_history)(void *context);
@@ -47,11 +50,13 @@ bool lfj8_h03_dtc_target_init(Lfj8H03DtcTarget *target, Lfj8H03Can13 *broker,
                             const Lfj8RegisterIo *io, const Lfj8H03DtcCanOwnerOps *can_owner,
                             uint32_t (*clock_us)(void *), uint16_t max_clock_span_us);
 
-/* Enable capture for the installed AN1 monitor hook after successful target
- * init and before releasing producers. Keep config alive and immutable.
+/* Enable capture once per binding for the installed AN1 monitor hook,
+ * after successful target init and before releasing producers.
+ * Keep config alive and immutable.
  * max_age_us is in the same qualified continuous clock as DTC RX, in
  * (0, 2^31), and the owner must service the target more often than half
- * a clock wrap. Unbind before clock loss, rearm through init and enable.
+ * a clock wrap. Clock loss discards capture and suspends ATF publication
+ * until unbind, init and enable in the new clock epoch.
  * Like init, serialize this operation with IRQ and foreground. */
 bool lfj8_h03_dtc_target_enable_atf(Lfj8H03DtcTarget *target,
                                   const Lfj8H03DtcAtfConfig *config);

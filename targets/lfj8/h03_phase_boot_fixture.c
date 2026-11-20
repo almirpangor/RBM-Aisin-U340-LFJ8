@@ -321,7 +321,8 @@ static void service_phase(void *context, const Lfj8H03PhaseEvent *event,
     ++phase_calls;
     if (result) {
         ++main_calls;
-        const uint32_t expected_command_at = BOOT_CASE == ENGINE ? *timer - 20u : load_feed.sampled_at;
+        const uint32_t expected_command_at = BOOT_CASE == ENGINE ?
+            *timer - (source_calls == 7u ? 22u : 20u) : load_feed.sampled_at;
         if (!result->valid || result->command_at != expected_command_at ||
             (main_calls == 3u && (result->gear_4848 != 1u || result->shift.count != 2u ||
                                  result->shift.writes[0].value != 1u ||
@@ -358,7 +359,8 @@ static int engine_context(void *context, const Lfj8H03SensorSnapshot *sensors,
 
 static const Lfj8H03ApplicationEngine engine = {
     .target = {.rx = &engine_rx, .qualifier = &engine_qualifier, .dtc = &engine_dtc,
-               .can_owner = &engine_can_owner, .io = &lfj8_h03_mmio, .now_us = rbm_h03_atf_now_us},
+               .can_owner = &engine_can_owner, .io = &lfj8_h03_mmio, .now_us = rbm_h03_atf_now_us,
+               .bit_time_us = 2u},
     .max_age_ticks = BOOT_CASE == ENGINE_BAD_CONFIG ? 0u : 20u,
     .max_poll_gap_us = 32u,
     .context_for_task2 = engine_context,
@@ -519,6 +521,33 @@ int fixture_complete(void)
             engine_dtc.history[2] != 0x20u || cycle.last_event != UINT32_MAX || phase_calls != 3u) {
             return 12;
         }
+        /* Readmit the next generation and consume its discontinuity before
+         * injecting a decoded slot capture. The RAM-backed OEM fixture does
+         * not emulate the CAN slot's write-zero receive acknowledgement. */
+        engine_can_owner.admitted_generation = 43u;
+        engine_can_owner.grant = 1u;
+        MMIO8(0x80105B) = 0u;
+        MMIO8(0x80105C) = 0u;
+        for (unsigned i = 0; i < 3u; ++i) {
+            MMIO16(0x801008) += 4u;
+            next_phase();
+        }
+        if (engine_rx.time_ticks != 8u || engine_rx.discontinuity || !engine_rx.clock_running) {
+            return 13;
+        }
+        const uint8_t rpm[8] = {0x12, 0xc0};
+        const uint32_t captured_at = engine_rx.time_ticks - 6u;
+        if (!ta2005_chery_inputs_receive(&engine_rx.inputs, 0x0fa, 8u, rpm, &captured_at)) {
+            return 14;
+        }
+        MMIO16(0x801008) += 4u;
+        next_phase();
+        if (!rbm_h03_application.running || !engine_rx.rpm_stamp_valid ||
+            input.engine.fa62 != 9600u || input.command_at != *timer - 22u) {
+            return 15;
+        }
+        engine_can_owner.grant = 0u;
+        ++engine_can_owner.setup_generation;
         while (rbm_h03_application.running && !main_calls && phase_calls < 90u) {
             next_phase();
         }
