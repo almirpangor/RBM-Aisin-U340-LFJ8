@@ -111,6 +111,21 @@ int lfj8_h03_capture_pair(volatile Lfj8RawVss *vss, volatile Lfj8RawCapture *nt,
 Lfj8CanResult lfj8_can0_slot13_submit(const Lfj8RegisterIo *io, uint8_t slot13_owned,
                                      uint16_t id, const uint8_t payload[8]);
 
+typedef enum {
+    LFJ8_CAN_TX_IDLE,
+    LFJ8_CAN_TX_PENDING,
+    LFJ8_CAN_TX_FINISHED,
+    LFJ8_CAN_TX_UNAVAILABLE,
+} Lfj8CanTxStatus;
+
+/* H03 diagnostic reply, ID 0x722. The caller owns slot 13 and
+ * serializes against OEM initialization, TX interrupt and other senders. */
+Lfj8CanResult lfj8_h03_can0_diag_submit(const Lfj8RegisterIo *io, const uint8_t payload[8]);
+/* Poll only after diagnostic submission. For a pending request cancel writes
+ * the Renesas abort command. Check again until the slot is inactive. */
+Lfj8CanTxStatus lfj8_h03_can0_diag_status(const Lfj8RegisterIo *io, uint8_t cancel,
+                                       uint16_t *finished_at);
+
 /* Poll a caller-owned 32176 FullCAN slot (0..13) configured to receive standard data frames.
  * The hardware timestamp stays in the CAN counter's 16-bit clock domain.
  * A lost message or a receive during the copy invalidates the copy. */

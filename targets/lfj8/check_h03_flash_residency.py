@@ -53,12 +53,14 @@ fixture_arguments:
 SESSION_FLAGS = 0x808580
 SCHEDULER_MODE = 0x804887
 PROGRAMMING_MODE = 0x80801C
+CHECKSUM_REMAINING = 0x808DA4
+COPY_REMAINING = 0x808DA8
 STRATEGY_GATE, STRATEGY_CALL = 0x0081D4, 0x0081E0
 COMMIT_GATE, COMMIT_CALL = 0x0081E8, 0x0081F4
 PHASE_SKIP = 0x00821C
 
 
-def observe(run, work, gdb, entry, phase, stops, mode, in_service):
+def observe(run, work, gdb, entry, phase, stops, mode, in_service, pending=(0, 0)):
     commands = ["set confirm off", "target sim --memory-size 16M", "load",
                 "tbreak *fixture_ready", "run",
                 f"set {{unsigned int}}&fixture_arguments = {entry}",
@@ -66,15 +68,18 @@ def observe(run, work, gdb, entry, phase, stops, mode, in_service):
                 f"set {{unsigned char}}{SESSION_FLAGS:#x} = {0x20 if in_service else 0}",
                 f"set {{unsigned char}}{SCHEDULER_MODE:#x} = {mode}",
                 f"set {{unsigned char}}{PROGRAMMING_MODE:#x} = 0",
+                f"set {{unsigned int}}{CHECKSUM_REMAINING:#x} = {pending[0]}",
+                f"set {{unsigned int}}{COPY_REMAINING:#x} = {pending[1]}",
                 f"set {{unsigned char}}{FCNT1:#x} = 1",
                 f"set {{unsigned short}}{FESBANK1:#x} = 0x8020"]
     commands.extend(f"tbreak *{address:#x}" for address in stops)
-    commands.extend(("continue", 'printf "H03_RESIDENCY %x %x %x %x %x\\n", $pc, '
+    commands.extend(("continue", 'printf "H03_RESIDENCY %x %x %x %x %x %x %x\\n", $pc, '
                      f"*(unsigned char*){SESSION_FLAGS:#x}, *(unsigned char*){PROGRAMMING_MODE:#x}, "
-                     f"*(unsigned char*){FCNT1:#x}, *(unsigned short*){FESBANK1:#x}"))
+                     f"*(unsigned char*){FCNT1:#x}, *(unsigned short*){FESBANK1:#x}, "
+                     f"*(unsigned int*){CHECKSUM_REMAINING:#x}, *(unsigned int*){COPY_REMAINING:#x}"))
     (work / "probe.gdb").write_text("\n".join(commands) + "\n", encoding="ascii")
     output = run(gdb, "--batch", "-nx", "-x", "probe.gdb", "fixture.elf")
-    match = re.search(rb"H03_RESIDENCY ((?:[0-9a-f]+ ){4}[0-9a-f]+)", output)
+    match = re.search(rb"H03_RESIDENCY ((?:[0-9a-f]+ ){6}[0-9a-f]+)", output)
     if match is None:
         raise ValueError(f"Missing residency observation: {output[-1000:].decode(errors='replace')}")
     return tuple(int(value, 16) for value in match[1].split())
@@ -110,19 +115,30 @@ def check(base, compiler):
             ):
                 for mode in (0, 4):
                     observed = observe(run, work, gdb, entry, gate, (call, PHASE_SKIP), mode, from_service)
-                    expected = (call if mode == 0 else PHASE_SKIP, expected_flags, 0, 1, 0x8020)
+                    expected = (call if mode == 0 else PHASE_SKIP, expected_flags, 0, 1, 0x8020, 0, 0)
                     if observed != expected:
                         raise ValueError(f"Unexpected H03 phase state for {name}, {path}, mode={mode}: {observed}")
                     results.append({"phase": name, "session": path, "mode": mode,
                                     "stop": f"0x{observed[0]:06X}", "session_flags": observed[1],
                                     "femmod": 1, "fesbank1": "0x8020"})
 
-        warm = observe(run, work, gdb, "0x003e40", 0, (0x000AE0,), 0, True)
-        if warm != (0x000AE0, 0, 0, 1, 0x8020):
+        closing = []
+        pending = (513, 257)
+        for gate, call in ((STRATEGY_GATE, STRATEGY_CALL), (COMMIT_GATE, COMMIT_CALL)):
+            result = observe(run, work, gdb, "&fixture_session_close", gate, (call, PHASE_SKIP), 0, True, pending)
+            if result != (call, 0x10, 0, 1, 0x8020, *pending):
+                raise ValueError(f"Unexpected pending service work on original H03 close: {result}")
+            closing.append({"call_site": f"0x{call:06X}",
+                            "checksum_remaining": result[-2], "copy_remaining": result[-1]})
+
+        warm = observe(run, work, gdb, "0x003e40", 0, (0x000AE0,), 0, True, pending)
+        if warm != (0x000AE0, 0, 0, 1, 0x8020, 0, 0):
             raise ValueError(f"Unexpected original software restart state: {warm}")
 
     return {"base": identity, "cases": results,
+            "stock_phases_reached_after_close_with_pending_work": closing,
             "software_restart_stop": "0x000AE0", "software_restart_keeps_overlay_shadow": True,
+            "software_restart_clears_pending_counters": True,
             "flash_alias_peripheral_modelled": False, "device_accessed": False}
 
 

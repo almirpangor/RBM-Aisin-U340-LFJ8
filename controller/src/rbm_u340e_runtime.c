@@ -3,6 +3,9 @@
 #include <stddef.h>
 #include <string.h>
 
+#include "rbm_u340e.h"
+#include "factory_core.h"
+
 typedef struct {
     int16_t gp;
     uint16_t offset;
@@ -341,4 +344,209 @@ int rbm_u340e_runtime_main_engine_speed(RbmU340eRuntime *runtime,
     }
     const uint16_t speed = (uint16_t)((uint32_t)prepared->speed_9306 << 1);
     return factory_hydraulics_set(&runtime->gp, -7186, 2u, speed);
+}
+
+static uint8_t project_range(uint8_t selector)
+{
+    static const uint8_t masks[] = {0, 0x01, 0x02, 0x04, 0x08, 0x40, 0x80};
+    return selector <= RBM_U340E_SELECTOR_L ? masks[selector] : 0;
+}
+
+static uint8_t set_flag(uint8_t value, unsigned mask, unsigned set)
+{
+    return (uint8_t)((value & ~mask) | (set ? mask : 0u));
+}
+
+int rbm_u340e_range_fast(RbmU340eRangeState *range, const RbmU340eRangeInputs *inputs)
+{
+    if (!range || !inputs) {
+        return 0;
+    }
+    const uint8_t selector_5720 = project_range(inputs->selector);
+    if (!selector_5720) {
+        return 0;
+    }
+    /* 054EB2. This selector has no separate position 3 (GP-5720.5). */
+    range->count_1112 = 0;
+    if (!(inputs->range_5722 & 4u) && !(selector_5720 & 2u)) {
+        if (!(selector_5720 & 8u)) {
+            range->count_1113 = 0;
+        } else if (range->count_1113 < 255u) {
+            ++range->count_1113;
+        }
+        if (range->count_1113 >= 2u) {
+            range->flags_1115 |= 1u;
+        }
+    } else {
+        range->count_1113 = 0;
+        range->flags_1115 &= (uint8_t)~3u;
+    }
+    if (inputs->range_5722 & 4u) {
+        range->flags_1115 |= 4u;
+    }
+    if (inputs->range_5722 & 2u) {
+        range->flags_1115 &= (uint8_t)~4u;
+    }
+    return 1;
+}
+
+static unsigned range_read(const FactoryHydraulics *gp, int address)
+{
+    /* Each operand below occupies one byte in hydraulic_mapping.h. */
+    uint32_t value = 0;
+    (void)factory_hydraulics_get(gp, address, 1, &value);
+    return value;
+}
+
+static void range_write(FactoryHydraulics *gp, int address, unsigned value)
+{
+    (void)factory_hydraulics_set(gp, address, 1, value);
+}
+
+static void qualify_range(FactoryHydraulics *gp, FactoryGearState *work,
+                          RbmU340eRangeState *range, unsigned mode, unsigned selector_7251)
+{
+    /* S01 ROM D24 and D44, with two 15-byte interpolation rows in each. */
+    static const uint8_t l_delay[2][15] = {
+        {7, 10, 25, 40, 60, 80, 120, 160, 8, 8, 8, 8, 8, 8, 8},
+        {7, 10, 25, 40, 60, 80, 110, 160, 122, 122, 122, 73, 31, 18, 18},
+    };
+    static const uint8_t second_delay[2][15] = {
+        {7, 10, 25, 40, 60, 80, 110, 160, 8, 8, 8, 8, 8, 8, 8},
+        {7, 10, 25, 40, 60, 80, 110, 160, 49, 37, 31, 24, 18, 18, 18},
+    };
+    const uint8_t selector = work->b7252;
+    uint8_t flags = work->b4845;
+    if (selector & 2u) {
+        range_write(gp, -4783, 0);
+    }
+    if (selector & 4u) {
+        range_write(gp, -4782, 0);
+    }
+    if (range_read(gp, -4782) >= (factory_interp1(work->u7184, l_delay[mode]) >> 8)) {
+        flags &= (uint8_t)~4u;
+    }
+    if (range_read(gp, -4783) >= (factory_interp1(work->u7184, second_delay[mode]) >> 8) &&
+        ((selector & 13u) || (selector_7251 & 4u) || !(range->flags_1115 & 2u))) {
+        flags &= (uint8_t)~2u;
+    }
+    if (!(flags & 4u) && (selector & 2u)) {
+        flags |= 2u;
+    }
+    if (!(flags & 2u) && (selector & 4u)) {
+        flags |= 4u;
+    }
+    range->mode_1114 = (uint8_t)mode;
+    if ((selector & 9u) || (flags & 6u)) {
+        flags &= (uint8_t)~1u;
+        work->b4846 &= (uint8_t)~128u;
+    } else {
+        if (range_read(gp, -4784) < 8u) {
+            flags |= 1u;
+        } else if ((selector_7251 & 4u) || !(range->flags_1115 & 1u)) {
+            flags &= (uint8_t)~1u;
+        }
+        work->b4846 = set_flag(work->b4846, 128u, !(flags & 1u));
+    }
+    const unsigned neutral = work->b4844 & 1u ? selector & 1u : range->flags_1115 & 4u;
+    work->b4845 = set_flag(flags, 8u, neutral);
+    range->flags_1115 &= (uint8_t)~4u;
+}
+
+static void range_output_override(FactoryHydraulics *gp, FactoryGearState *work,
+                                  RbmU340eRangeState *range)
+{
+    /* 057694 followed by 05780E. All four S01 ROM entries 1334..1337
+     * have value 1. Both ages at 133A are 244 and the count limit is 0. */
+    work->b4838 &= (uint8_t)~16u;
+    unsigned age = range_read(gp, -4764);
+    if (!(work->b4845 & 8u) && (work->b4844 & 1u) && work->u7184 >= 10240u) {
+        age = 0;
+        range->flags_1376 = (uint8_t)((range->flags_1376 & 0xfcu) |
+            (work->u7184 >= 15360u ? (work->b7252 & 32u ? 3u : 1u) : 0u));
+    }
+    if (age != 255u && ((range_read(gp, -4830) & 6u) == 2u || age >= 244u)) {
+        age = 255u;
+        range_write(gp, -4763, 0);
+    }
+    if (work->b4548 < 10u && (work->b4844 & 8u) &&
+        ((work->b4846 & 128u) || (work->b4845 & 3u)) &&
+        !(work->b4846 & 16u) && age != 255u) {
+        work->b4837 |= 4u;
+        work->b4838 |= 16u;
+        work->b4850 = 1u;
+    } else {
+        work->b4837 &= (uint8_t)~4u;
+        age = 255u;
+        range_write(gp, -4763, 255u);
+    }
+    range_write(gp, -4764, age);
+}
+
+int rbm_u340e_runtime_main_range(RbmU340eRuntime *runtime, RbmU340eRangeState *range,
+                                 const RbmU340eRangeInputs *inputs, FactoryGearState *work)
+{
+    if (!runtime || !range || !inputs || !work ||
+        overlaps(runtime, sizeof *runtime, range, sizeof *range) ||
+        overlaps(runtime, sizeof *runtime, inputs, sizeof *inputs) ||
+        overlaps(work, sizeof *work, range, sizeof *range) ||
+        overlaps(work, sizeof *work, inputs, sizeof *inputs) ||
+        overlaps(range, sizeof *range, inputs, sizeof *inputs)) {
+        return 0;
+    }
+    const uint8_t selector_5720 = project_range(inputs->selector);
+    if (!selector_5720 || !rbm_u340e_runtime_snapshot_gears(runtime, work)) {
+        return 0;
+    }
+    work->b5722 = inputs->range_5722;
+    const unsigned selector_7251 = selector_5720 & 0x28u ? 4u : 0u;
+    work->b7252 = (uint8_t)((work->b7252 & (uint8_t)~47u) |
+        ((inputs->range_5722 & 6u) ? 1u : 0u) | ((selector_5720 >> 5) & 6u) |
+        ((selector_5720 & 2u) << 2) | ((inputs->range_5722 & 8u) << 2));
+    const unsigned mode = (work->b4842 & 32u) ? 1u : (work->b7252 & 6u) ? 0u : range->mode_1114;
+    if (mode > 1u) {
+        return 0;
+    }
+    const unsigned enabled = !(work->b5299 & 2u);
+    work->b4844 = set_flag(work->b4844, 8u, enabled && (inputs->request_1120 & 2u));
+    work->b4844 = set_flag(work->b4844, 32u, enabled && (inputs->request_1120 & 8u));
+    work->b4844 = set_flag(work->b4844, 128u, enabled && (inputs->inhibit_5250 & 4u));
+    work->b4843 = set_flag(work->b4843, 2u, enabled && (inputs->request_1120 & 32u));
+
+    range_write(&runtime->gp, work->b7252 & 32u ? -4734 : -4733, 0);
+    qualify_range(&runtime->gp, work, range, mode, selector_7251);
+    range_output_override(&runtime->gp, work, range);
+    range_write(&runtime->gp, -7252, work->b7252);
+    range_write(&runtime->gp, -4846, work->b4846);
+    range_write(&runtime->gp, -4845, work->b4845);
+    range_write(&runtime->gp, -4844, work->b4844);
+    range_write(&runtime->gp, -4843, work->b4843);
+    range_write(&runtime->gp, -4838, work->b4838);
+    return 1;
+}
+
+int rbm_u340e_runtime_main_range_complete(RbmU340eRuntime *runtime)
+{
+    if (!runtime || runtime->initialized != 1u) {
+        return 0;
+    }
+    FactoryHydraulics *gp = &runtime->gp;
+    const unsigned flags_4846 = range_read(gp, -4846);
+    const unsigned flags_4845 = range_read(gp, -4845);
+    const unsigned flags_4844 = range_read(gp, -4844);
+    const unsigned flags_4842 = range_read(gp, -4842);
+    const unsigned flags_4841 = range_read(gp, -4841);
+    range_write(gp, -7250, range_read(gp, -7252));
+    range_write(gp, -4842, (flags_4842 & ~0x54u) | ((flags_4842 & 0x2au) << 1));
+    range_write(gp, -4841, set_flag(flags_4841, 2u, flags_4841 & 1u));
+    range_write(gp, -4844, (flags_4844 & ~0x51u) | ((flags_4845 & 8u) >> 3) |
+        ((flags_4844 & 0x28u) << 1));
+    range_write(gp, -4845, (flags_4845 & 15u) | ((flags_4846 & 128u) >> 3) |
+        ((flags_4845 & 7u) << 5));
+    range_write(gp, -4843, set_flag(range_read(gp, -4843), 1u, flags_4844 & 128u));
+    range_write(gp, -4840, (range_read(gp, -4840) & ~0x39u) | ((flags_4841 & 0x70u) >> 1));
+    range_write(gp, -4853, range_read(gp, -4854));
+    range_write(gp, -4851, range_read(gp, -4852));
+    range_write(gp, -4847, range_read(gp, -4848));
+    return 1;
 }

@@ -80,6 +80,26 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
             "-o", str(takeover_check),
         ])
         run("Синхронизация команд и блокировки LFJ8 H03", [str(takeover_check)])
+        dtc_io_check = output / f"lfj8_h03_dtc_can_test{suffix}"
+        run("Сборка транспорта диагностики для CAN0 H03", [
+            *driver, *common_flags, "-pedantic", "-I", "diagnostics", "-I", "targets/lfj8",
+            "diagnostics/chery_dtc.c", "diagnostics/chery_dtc_can.c", "diagnostics/chery_dtc_link.c",
+            "targets/lfj8/lfj8_bridge.c", "targets/lfj8/lfj8_donor_io.c",
+            "targets/lfj8/lfj8_h03_dtc_can.c", "targets/lfj8/test_lfj8_h03_dtc_can.c",
+            "-o", str(dtc_io_check),
+        ])
+        run("Диагностика H03 с подтверждением передачи CAN", [str(dtc_io_check)])
+        controller_dir = output / "controller"
+        library_by_platform = {"win32": "rbm_u340e.dll", "darwin": "librbm_u340e.dylib"}
+        library = controller_dir / library_by_platform.get(sys.platform, "librbm_u340e.so")
+        torque_check = controller_dir / f"lfj8_h03_torque_test{suffix}"
+        runtime_link = [] if suffix else [f"-Wl,-rpath,{controller_dir}"]
+        run("Сборка запроса снижения момента U340E", [
+            *driver, *common_flags, "-pedantic", "-I", "controller/vendor/toyota/include",
+            "targets/lfj8/lfj8_h03_torque.c", "targets/lfj8/test_lfj8_h03_torque.c",
+            str(library), *runtime_link, "-o", str(torque_check),
+        ])
+        run("Запрос, подтверждение и снятие снижения момента", [str(torque_check)])
         run("Тесты модели", [*python, "-m", "unittest", "discover", "-s", "tests", "-v"])
         integrated = [*python, "-m", "model.run_integrated", "--cc", resolved]
         if bosch is not None:

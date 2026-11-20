@@ -11,8 +11,12 @@ static const uint32_t word_out[] = {0x805094, 0x804F74, 0x804F80, 0x804F8C, 0x80
 
 enum {
     P3DATA = 0x800703,
+    FCNT1 = 0x8007E2,
+    MONITOR_FLAGS = 0x808580,
+    MONITOR_CHECKSUM_REMAINING = 0x808DA4,
+    MONITOR_COPY_REMAINING = 0x808DA8,
     BASE = 0x804000,
-    LIMIT = 0x808020,
+    LIMIT = 0x808DAC,
     SAVED_PSW = 0x41,
 };
 
@@ -20,7 +24,7 @@ typedef struct {
     uint8_t ram[LIMIT - BASE];
     uint32_t now;
     unsigned arbitration_delay, publications, arbitrations, applies, inhibits;
-    uint8_t locked, permitted, disturbed, p3;
+    uint8_t locked, permitted, disturbed, p3, fcnt1;
 } Fixture;
 
 static uint8_t *cell(Fixture *f, uint32_t address)
@@ -33,7 +37,10 @@ static uint8_t read_byte(void *c, uint32_t address)
 {
     Fixture *f = c;
     assert(f->locked);
-    return address == P3DATA ? f->p3 : *cell(f, address);
+    if (address == P3DATA) {
+        return f->p3;
+    }
+    return address == FCNT1 ? f->fcnt1 : *cell(f, address);
 }
 
 static uint16_t read_halfword(void *c, uint32_t address)
@@ -267,7 +274,29 @@ int main(void)
     fixture.p3 ^= 1u;
     assert(lfj8_h03_takeover_apply(&state, 24u));
     assert(fixture.applies == 4u && fixture.arbitrations == 14u && fixture.inhibits == 26u);
+
+    fixture.ram[MONITOR_FLAGS - BASE] = 0x20;
+    assert(!lfj8_h03_takeover_prepare(&state, &plan, 4u, 25u, 18u));
+    assert(fixture.arbitrations == 14u && fixture.publications == 0u);
+    fixture.ram[MONITOR_FLAGS - BASE] = 0x10;
+    assert(lfj8_h03_takeover_prepare(&state, &plan, 4u, 26u, 18u));
+    fixture.fcnt1 = 0x01;
+    assert(!lfj8_h03_takeover_apply(&state, 26u));
+    fixture.fcnt1 = 0x10;
+    assert(!lfj8_h03_takeover_prepare(&state, &plan, 4u, 27u, 18u));
+    fixture.fcnt1 = 0;
+    assert(lfj8_h03_takeover_prepare(&state, &plan, 4u, 28u, 18u));
+    const uint32_t remaining = 256u;
+    memcpy(&fixture.ram[MONITOR_COPY_REMAINING - BASE], &remaining, sizeof remaining);
+    assert(!lfj8_h03_takeover_apply(&state, 28u));
+    memset(&fixture.ram[MONITOR_COPY_REMAINING - BASE], 0, sizeof remaining);
+    memcpy(&fixture.ram[MONITOR_CHECKSUM_REMAINING - BASE], &remaining, sizeof remaining);
+    assert(!lfj8_h03_takeover_prepare(&state, &plan, 4u, 29u, 18u));
+    memset(&fixture.ram[MONITOR_CHECKSUM_REMAINING - BASE], 0, sizeof remaining);
+    assert(lfj8_h03_takeover_prepare(&state, &plan, 4u, 30u, 18u));
+    assert(lfj8_h03_takeover_apply(&state, 30u));
+    assert(fixture.applies == 5u && fixture.arbitrations == 17u && fixture.inhibits == 31u);
     assert(!fixture.locked);
-    puts("H03 takeover: 8 proposals, P3 transition replay, guarded apply and generation/clock wrap PASS");
+    puts("H03 takeover: 8 proposals, P3 replay, generation/clock wrap and stock service guards PASS");
     return 0;
 }

@@ -175,6 +175,9 @@ def check_full_phases(run, work, compiler, simulator, gdb, flags, rom):
         "p3_changed_after_prepare": "SCENARIO_P3_CHANGED",
         "missing_pressure_calibration": "SCENARIO_NO_CALIBRATION",
         "unrepresentable_real_edge_order": "SCENARIO_WRONG_ORDER",
+        "service_monitor_open_after_prepare": "SCENARIO_MONITOR_OPEN",
+        "service_monitor_closed_copy_pending": "SCENARIO_MONITOR_PENDING_COPY",
+        "flash_overlay_after_prepare": "SCENARIO_FLASH_OVERLAY",
     }
     (work / "full-phase.ld").write_text(FULL_PHASE_LAYOUT, encoding="ascii")
     (work / "oem-prefix.dat").write_bytes(rom[:FLASH_START])

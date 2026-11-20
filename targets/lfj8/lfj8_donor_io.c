@@ -30,6 +30,8 @@
 #define LFJ8_CAN0_SLOT13_SID1 UINT32_C(0x8011D1)
 #define LFJ8_CAN0_SLOT13_DLC UINT32_C(0x8011D5)
 #define LFJ8_CAN0_SLOT13_DATA UINT32_C(0x8011D6)
+#define LFJ8_CAN0_SLOT13_TIMESTAMP UINT32_C(0x8011DE)
+#define LFJ8_CAN_DIAG_REPLY UINT16_C(0x722)
 
 enum {
     CAN_CNT_TSR = 0x0400,
@@ -46,6 +48,7 @@ enum {
     CAN_SLOT_TRSTAT = 0x02,
     CAN_SLOT_TRFIN = 0x01,
     CAN_SLOT_CLEAR_RX = 0x4e,
+    CAN_SLOT_ABORT_TX = 0x0f,
 };
 
 static Lfj8CaptureSnapshot capture_snapshot(const Lfj8RegisterIo *io,
@@ -237,12 +240,17 @@ static uint8_t can0_available(const Lfj8RegisterIo *io)
            (io->read8(io->context, LFJ8_CAN0_MODE) & 3u) == 0u;
 }
 
+static uint8_t h03_can0_operational(const Lfj8RegisterIo *io)
+{
+    const uint8_t state = io->read8(io->context, LFJ8_H03_CAN0_OEM_STATE);
+    return (state == 6u || state == 7u) && can0_available(io) &&
+        (io->read16(io->context, LFJ8_CAN0_CNT) & (CAN_CNT_TSR | CAN_CNT_TSP)) == 0u;
+}
+
 int lfj8_h03_can0_read_timestamp(const Lfj8RegisterIo *io, uint16_t *timestamp)
 {
     const uint32_t saved_state = io->enter(io->context);
-    const uint8_t state = io->read8(io->context, LFJ8_H03_CAN0_OEM_STATE);
-    const int running = (state == 6u || state == 7u) && can0_available(io) &&
-        (io->read16(io->context, LFJ8_CAN0_CNT) & (CAN_CNT_TSR | CAN_CNT_TSP)) == 0u;
+    const int running = h03_can0_operational(io);
     *timestamp = running ? io->read16(io->context, LFJ8_CAN0_TSTMP) : 0u;
     io->leave(io->context, saved_state);
     return running;
@@ -419,6 +427,55 @@ Lfj8CanResult lfj8_can0_slot13_submit(const Lfj8RegisterIo *io, uint8_t slot13_o
 
     saved_state = io->enter(io->context);
     result = write_if_idle(io, id, payload);
+    io->leave(io->context, saved_state);
+    return result;
+}
+
+Lfj8CanResult lfj8_h03_can0_diag_submit(const Lfj8RegisterIo *io, const uint8_t payload[8])
+{
+    const uint32_t saved_state = io->enter(io->context);
+    const Lfj8CanResult result = h03_can0_operational(io) ?
+        write_if_idle(io, LFJ8_CAN_DIAG_REPLY, payload) : LFJ8_CAN_CONTROLLER_UNAVAILABLE;
+    io->leave(io->context, saved_state);
+    return result;
+}
+
+static Lfj8CanTxStatus diag_status(const Lfj8RegisterIo *io, uint8_t cancel, uint16_t *finished_at)
+{
+    if (!h03_can0_operational(io) ||
+        (io->read16(io->context, LFJ8_CAN0_EXTID) & LFJ8_CAN0_EXTID_IDE13) != 0u) {
+        return LFJ8_CAN_TX_UNAVAILABLE;
+    }
+    const uint8_t control = io->read8(io->context, LFJ8_CAN0_SLOT13_CNT);
+    if (control == 0u) {
+        return LFJ8_CAN_TX_IDLE;
+    }
+    if ((control & (uint8_t)~(CAN_SLOT_TR | CAN_SLOT_TRSTAT | CAN_SLOT_TRFIN)) != 0u) {
+        return LFJ8_CAN_TX_UNAVAILABLE;
+    }
+    if ((control & (CAN_SLOT_TRFIN | CAN_SLOT_TRSTAT)) == CAN_SLOT_TRFIN) {
+        /* Slot bytes are stable in idle. Check that the owner has not
+         * replaced our reply behind the outstanding transport token. */
+        if (io->read8(io->context, LFJ8_CAN0_SLOT13_SID0) != (LFJ8_CAN_DIAG_REPLY >> 6) ||
+            io->read8(io->context, LFJ8_CAN0_SLOT13_SID1) != (LFJ8_CAN_DIAG_REPLY & 0x3fu)) {
+            return LFJ8_CAN_TX_UNAVAILABLE;
+        }
+        *finished_at = io->read16(io->context, LFJ8_CAN0_SLOT13_TIMESTAMP);
+        return h03_can0_operational(io) ? LFJ8_CAN_TX_FINISHED : LFJ8_CAN_TX_UNAVAILABLE;
+    }
+    if (cancel && (control & CAN_SLOT_TR) != 0u && h03_can0_operational(io)) {
+        /* A frame already on the wire can finish. Do not reuse this slot
+         * until a later poll observes idle or completion. */
+        io->write8(io->context, LFJ8_CAN0_SLOT13_CNT, CAN_SLOT_ABORT_TX);
+    }
+    return LFJ8_CAN_TX_PENDING;
+}
+
+Lfj8CanTxStatus lfj8_h03_can0_diag_status(const Lfj8RegisterIo *io, uint8_t cancel,
+                                       uint16_t *finished_at)
+{
+    const uint32_t saved_state = io->enter(io->context);
+    const Lfj8CanTxStatus result = diag_status(io, cancel, finished_at);
     io->leave(io->context, saved_state);
     return result;
 }

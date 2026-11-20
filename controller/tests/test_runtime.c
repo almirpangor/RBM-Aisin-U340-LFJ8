@@ -1,4 +1,5 @@
 #include "rbm_u340e_runtime.h"
+#include "rbm_u340e.h"
 #include "rbm_u340e_scheduler.h"
 
 #undef NDEBUG
@@ -222,6 +223,120 @@ static RbmU340eRelease publish_tick(RbmU340eScheduler *schedule)
     return released;
 }
 
+static void release_range_main(RbmU340eScheduler *schedule, RbmU340eRuntime *runtime,
+                               RbmU340eRangeState *range, const RbmU340eRangeInputs *input)
+{
+    RbmU340eRelease release;
+    do {
+        release = publish_tick(schedule);
+        if (release == RBM_U340E_RELEASE_FAST) {
+            assert(rbm_u340e_schedule_fast_claim(schedule));
+            assert(rbm_u340e_schedule_fast_begin(schedule, &runtime->gp));
+            assert(rbm_u340e_range_fast(range, input));
+            assert(rbm_u340e_schedule_fast_end(schedule, &runtime->gp));
+            assert(rbm_u340e_schedule_fast_done(schedule));
+        } else if (release == RBM_U340E_RELEASE_SECONDARY) {
+            assert(rbm_u340e_schedule_secondary_claim(schedule));
+            if (rbm_u340e_schedule_secondary_done(schedule) == RBM_U340E_SECONDARY_RUN_MAIN) {
+                return;
+            }
+        }
+    } while (release <= RBM_U340E_RELEASE_SECONDARY);
+    assert(0 && "unexpected scheduling state");
+}
+
+static void check_range_main(RbmU340eScheduler *schedule, RbmU340eRuntime *runtime,
+                             RbmU340eRangeState *range, const RbmU340eRangeInputs *input,
+                             FactoryGearState *work, FactoryGearWrites *writes)
+{
+    release_range_main(schedule, runtime, range, input);
+    assert(rbm_u340e_runtime_main_range(runtime, range, input, work));
+    assert(rbm_u340e_runtime_gears_outputs(runtime, work, writes));
+    assert(factory_hydraulics_control_main(&runtime->gp));
+    assert(rbm_u340e_runtime_main_range_complete(runtime));
+    assert(rbm_u340e_schedule_main_done(schedule));
+}
+
+static void check_selected_solenoids(const FactoryGearWrites *writes, unsigned s1, unsigned s2)
+{
+    assert(writes->count == 2);
+    assert(writes->writes[0].channel == 0 && writes->writes[0].value == s1);
+    assert(writes->writes[1].channel == 1 && writes->writes[1].value == s2);
+}
+
+static void check_standstill_drive(uint16_t neutral_adc, uint8_t neutral_selector)
+{
+    RbmU340eScheduler schedule = {0};
+    RbmU340eRuntime runtime = {0};
+    RbmU340eRangeState range = {0};
+    FactoryHydraulics gp = {0};
+    const FactoryGearState start = {
+        .driver5302 = {1, 1}, .u7184 = 20000, .u7164 = 26000, .u7186 = 3072,
+        .periods = {65535, 65535, 65535, 65535, 65535, 65535},
+    };
+    FactoryGearState work;
+    FactoryGearWrites writes;
+    RbmU340eSelectorInput adc = {0};
+    RbmU340eRangeInputs input = {.range_5722 = 5, .request_1120 = 2};
+    assert(factory_hydraulics_set(&gp, -7184, 2, start.u7184));
+    assert(factory_hydraulics_set(&gp, -7164, 2, start.u7164));
+    assert(factory_hydraulics_set(&gp, -7186, 2, start.u7186));
+    assert(rbm_u340e_runtime_init(&runtime, &start, &gp));
+    rbm_u340e_schedule_finish_init(&schedule);
+
+    for (unsigned i = 0; i < 4; ++i) {
+        input.selector = rbm_u340e_selector_sample(&adc, neutral_adc);
+    }
+    assert(input.selector == neutral_selector);
+    check_range_main(&schedule, &runtime, &range, &input, &work, &writes);
+    assert(gp_value(&runtime.gp, -4844, 1) & 1u);
+    assert(!(gp_value(&runtime.gp, -4830, 1) & 1u));
+
+    for (unsigned i = 0; i < 4; ++i) {
+        input.selector = rbm_u340e_selector_sample(&adc, 500);
+    }
+    assert(input.selector == RBM_U340E_SELECTOR_D);
+    input.range_5722 = 1;
+    check_range_main(&schedule, &runtime, &range, &input, &work, &writes);
+    assert(!(gp_value(&runtime.gp, -4844, 1) & 1u));
+    assert(gp_value(&runtime.gp, -4830, 1) & 1u);
+    assert(gp_value(&runtime.gp, -7134, 2) > 0);
+    assert(work.b4852 == 0 && work.b4848 == 1);
+    check_selected_solenoids(&writes, 1, 0);
+
+    const uint8_t valid_drive = input.selector;
+    input.selector = rbm_u340e_selector_sample(&adc, UINT16_MAX);
+    const RbmU340eRuntime before_fault = runtime;
+    const RbmU340eRangeState range_before_fault = range;
+    assert(!rbm_u340e_range_fast(&range, &input));
+    assert(!rbm_u340e_runtime_main_range(&runtime, &range, &input, &work));
+    assert(memcmp(&before_fault, &runtime, sizeof runtime) == 0);
+    assert(memcmp(&range_before_fault, &range, sizeof range) == 0);
+    for (unsigned i = 0; i < 4; ++i) {
+        input.selector = rbm_u340e_selector_sample(&adc, 500);
+    }
+    assert(input.selector == valid_drive);
+
+    unsigned elapsed_main = 0;
+    while (work.b4848 != 0 && elapsed_main < 255u) {
+        check_range_main(&schedule, &runtime, &range, &input, &work, &writes);
+        ++elapsed_main;
+    }
+    assert(elapsed_main > 0 && work.b4852 == 0 && work.b4848 == 0);
+    check_selected_solenoids(&writes, 1, 1);
+
+    /* Replay a plausible increasing donor speed observation with no imposed
+     * current or requested gear. The stock request maps decide the change. */
+    assert(factory_hydraulics_set(&runtime.gp, -4548, 1, 22));
+    assert(factory_hydraulics_set(&runtime.gp, -4549, 1, 22));
+    assert(factory_hydraulics_set(&runtime.gp, -7154, 2, 6400));
+    for (unsigned i = 0; work.b4848 == 0 && i < 255u; ++i) {
+        check_range_main(&schedule, &runtime, &range, &input, &work, &writes);
+    }
+    assert(work.b4852 == 1 && work.b4848 == 1);
+    check_selected_solenoids(&writes, 1, 0);
+}
+
 static void check_schedule_nominal(void)
 {
     const RbmU340eRelease expected[] = {
@@ -361,12 +476,15 @@ void rbm_test_runtime(void)
     check_workspace_overlap();
     check_live_stages();
     check_engine_main_publications();
+    check_standstill_drive(925, RBM_U340E_SELECTOR_P);
+    check_standstill_drive(670, RBM_U340E_SELECTOR_N);
     check_schedule_nominal();
     check_fast_schedule();
     check_secondary_and_producer_overrun();
 #ifndef RBM_TEST_QUIET
     puts("Toyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.");
     puts("Toyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.");
+    puts("Toyota S01 range: P/N to warm low-load D, standstill fill, S1/S2 and first upshift passed.");
     puts("Toyota scheduler: event release, FAST phase latch, busy drop and rollover passed.");
 #endif
 }

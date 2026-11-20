@@ -1,0 +1,294 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "phase_program_with_takeover": {
+    "cases": [
+      "fresh_across_clock_wrap",
+      "expired_at_commit",
+      "pressure_fault_after_prepare",
+      "final_byte_changed_after_prepare",
+      "external_authority_lost",
+      "repeat_commit",
+      "startup_cutout",
+      "stock_combined_entry",
+      "p3_changed_after_prepare",
+      "missing_pressure_calibration",
+      "unrepresentable_real_edge_order",
+      "service_monitor_open_after_prepare",
+      "service_monitor_closed_copy_pending",
+      "flash_overlay_after_prepare"
+    ],
+    "fixture_state_outside_h03_ram": true,
+    "observed_stack_bytes": {
+      "fresh_across_clock_wrap": 640,
+      "expired_at_commit": 640,
+      "pressure_fault_after_prepare": 640,
+      "final_byte_changed_after_prepare": 640,
+      "external_authority_lost": 644,
+      "repeat_commit": 648,
+      "startup_cutout": 40,
+      "stock_combined_entry": 636,
+      "p3_changed_after_prepare": 644,
+      "missing_pressure_calibration": 648,
+      "unrepresentable_real_edge_order": 648,
+      "service_monitor_open_after_prepare": 640,
+      "service_monitor_closed_copy_pending": 640,
+      "flash_overlay_after_prepare": 640
+    },
+    "verified_rom_start": "0x020000",
+    "exact_image_composition": {
+      "fresh_across_clock_wrap": {
+        "sha256": "6484141daaa0742c3aaa75f343fda58bd8248a5c8863078311ac528519871b57",
+        "payload_bytes": 8980,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "expired_at_commit": {
+        "sha256": "ef86f7303bd80169adccbe96fd254045e3ec20be189e4b1a234a135f0759bad3",
+        "payload_bytes": 8952,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "pressure_fault_after_prepare": {
+        "sha256": "968fc29bc821adcf49fa406835a68fe0756fdf48525d6a008490c65210e5e629",
+        "payload_bytes": 8948,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "final_byte_changed_after_prepare": {
+        "sha256": "7f78ceea1aa5009f34d2afeba649fbf222da9e315571ed73f6bb901ee08eb2b5",
+        "payload_bytes": 8952,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "external_authority_lost": {
+        "sha256": "8648ab9afdd549cbc1b58b51ab8ff6331c95306aa6b41eceb6774ee032167e8c",
+        "payload_bytes": 8948,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "repeat_commit": {
+        "sha256": "6597878cd046e0783f802c2c147aab938058e84e3eee75650af51fd4f591d2b9",
+        "payload_bytes": 9080,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "startup_cutout": {
+        "sha256": "484abd4e8d3b3cc76920e24d35bfb993255867deeee4208011244a22ea59e1eb",
+        "payload_bytes": 8784,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "stock_combined_entry": {
+        "sha256": "66771408b59f069367e5724d65a1594f3fe1ff71d82faa5ba11e32d866428b39",
+        "payload_bytes": 8800,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "p3_changed_after_prepare": {
+        "sha256": "5933d14ea46bce1df91ab4e2d2d501a6e1e601b43f84aa611bf1da293f299b41",
+        "payload_bytes": 8948,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "missing_pressure_calibration": {
+        "sha256": "cf9199b7150200a6b8b585a8826501fc4ddbf499f5de8df990a35467c3df848c",
+        "payload_bytes": 8804,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "unrepresentable_real_edge_order": {
+        "sha256": "0939f46b3d0d977dacf0080e02badcb65b403ea2e65f20ce8d30706df9aa15cf",
+        "payload_bytes": 8832,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "service_monitor_open_after_prepare": {
+        "sha256": "79c548bbccb937bf73755832c1a98399a27a5ac8210f13de3fafd98ed8d1a5f2",
+        "payload_bytes": 8948,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "service_monitor_closed_copy_pending": {
+        "sha256": "e7200672f78d585af6a5882c7ef6a8e6d292fc299486b68581940148f9a726ce",
+        "payload_bytes": 8960,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      },
+      "flash_overlay_after_prepare": {
+        "sha256": "ffc8bc7d602438a6bbd640cc098d99e1d6dd630777b8e65b5ccb720f23eeae32",
+        "payload_bytes": 8948,
+        "hook_targets": {
+          "0x036f30": "0x020000",
+          "0x07c10c": "0x0200a4"
+        }
+      }
+    },
+    "untouched_original_bytes_verified": true,
+    "hardware_rom_emitted": false,
+    "toyota_output_algorithms_executed": true,
+    "toyota_fixture_raw_slt": 5120,
+    "toyota_expected_compare": 652,
+    "slt_calibration": "synthetic fixture points",
+    "physical_inhibit_tested": false,
+    "stock_entries": [
+      "0x046804",
+      "0x04682C",
+      "0x036EA4"
+    ],
+    "address_space": "GNU M32R test ELF with registers backed by simulator memory"
+  },
+  "cases": [
+    {
+      "variant": "stock",
+      "hook": "strategy",
+      "decision": 0,
+      "dispatch": "0x06FED4",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "stock",
+      "hook": "commit",
+      "decision": 0,
+      "dispatch": "0x046900",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "takeover",
+      "hook": "strategy",
+      "decision": -1,
+      "dispatch": "0x036F34",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "takeover",
+      "hook": "strategy",
+      "decision": 0,
+      "dispatch": "0x036F34",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "takeover",
+      "hook": "strategy",
+      "decision": 1,
+      "dispatch": "0x0717B8",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "takeover",
+      "hook": "strategy",
+      "decision": 2,
+      "dispatch": "0x036F34",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "takeover",
+      "hook": "commit",
+      "decision": -1,
+      "dispatch": "0x07C110",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "takeover",
+      "hook": "commit",
+      "decision": 0,
+      "dispatch": "0x07C110",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "takeover",
+      "hook": "commit",
+      "decision": 1,
+      "dispatch": "0x046900",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "takeover",
+      "hook": "commit",
+      "decision": 2,
+      "dispatch": "0x07C110",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "legacy_bench",
+      "hook": "strategy",
+      "decision": 0,
+      "dispatch": "0x06FED4",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "legacy_bench",
+      "hook": "strategy",
+      "decision": 1,
+      "dispatch": "0x0717B8",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "legacy_bench",
+      "hook": "strategy",
+      "decision": 2,
+      "dispatch": "0x036F34",
+      "return": "0x036F34"
+    },
+    {
+      "variant": "legacy_bench",
+      "hook": "commit",
+      "decision": 0,
+      "dispatch": "0x046900",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "legacy_bench",
+      "hook": "commit",
+      "decision": 1,
+      "dispatch": "0x046900",
+      "return": "0x07C110"
+    },
+    {
+      "variant": "legacy_bench",
+      "hook": "commit",
+      "decision": 2,
+      "dispatch": "0x07C110",
+      "return": "0x07C110"
+    }
+  ],
+  "wrapper_frame_bytes": 72,
+  "psw_preserved_in_non_debugger_probes_with_carry": [
+    0,
+    1
+  ],
+  "acc_low_observed": true,
+  "acc_high_save_restore_present": true,
+  "acc_high_nonzero_verified": false,
+  "real_hardware_executed": false,
+  "interrupt_stack_verified": false
+}

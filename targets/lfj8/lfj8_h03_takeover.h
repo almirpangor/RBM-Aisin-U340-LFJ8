@@ -33,6 +33,9 @@ typedef struct {
  * critical section. qualified is a read-only check that returns 1 only with
  * verified physical output authority and service isolation. A separate failure
  * response must cover mode changes and missed phases that block invocation.
+ * Both phases screen the OEM monitor and Flash state under the I/O lock.
+ * The owner must establish control of executable Flash and state RAM before
+ * calling either phase and reinitialize state after surrendering ownership.
  * inhibit carries out the commissioned failure response even when previous
  * outputs are latched. Arbitration and apply use the H03 OEM functions 0717B8
  * and 046900 respectively.

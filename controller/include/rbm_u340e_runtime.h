@@ -68,4 +68,34 @@ int rbm_u340e_runtime_main_coolant(RbmU340eRuntime *runtime,
 int rbm_u340e_runtime_main_engine_speed(RbmU340eRuntime *runtime,
                                       const RbmU340eMainEngineInputs *prepared);
 
+typedef struct {
+    uint8_t count_1112;
+    uint8_t count_1113;
+    uint8_t mode_1114;
+    uint8_t flags_1115;
+    uint8_t flags_1376;
+} RbmU340eRangeState;
+
+typedef struct {
+    uint8_t selector; /* Stabilized RBM_U340E_SELECTOR_*. */
+    uint8_t range_5722; /* Independent Toyota range/auxiliary inputs. */
+    uint8_t request_1120; /* Load qualifier publication from SECONDARY. */
+    uint8_t inhibit_5250;
+} RbmU340eRangeInputs;
+
+/* Run the range qualifier at FAST 054EB2, after the counter prefix. Use
+ * the same qualifier state in MAIN and serialize access from both owners.
+ * Initialize these five bytes from the donor startup state. */
+int rbm_u340e_range_fast(RbmU340eRangeState *range, const RbmU340eRangeInputs *inputs);
+
+/* Project the range operands of 055138/054350 and run 054D76 and
+ * 057694/05780E before 055EA0/0574C4. The caller supplies the other MAIN
+ * inputs and stages in donor order. work is the snapshot passed next to
+ * rbm_u340e_runtime_gears_outputs. Refusal produces no output permit. */
+int rbm_u340e_runtime_main_range(RbmU340eRuntime *runtime, RbmU340eRangeState *range,
+                                 const RbmU340eRangeInputs *inputs, FactoryGearState *work);
+
+/* Save the gear/selector subset of 05449A after the full MAIN body. */
+int rbm_u340e_runtime_main_range_complete(RbmU340eRuntime *runtime);
+
 #endif

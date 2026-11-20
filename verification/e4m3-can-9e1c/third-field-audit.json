@@ -1,0 +1,47 @@
+{
+  "status": "SOURCE_AUDIT_OFFLINE_ONLY",
+  "s02_sha256": "99dc271a861ab6d9e6749e8beb4637ab5c6c7e111f3ff0d9df4e147b2a0a6e1c",
+  "s04_sha256": "e25a1c97492ae556b1a52043e6ae85b88d2da86c03a78ef01dc2151c8a0a4a2a",
+  "scheduler": {
+    "chery_dispatch": "0x0949D4",
+    "gw_dispatch": "0x094508",
+    "chery_calls_between_matching_neighbours": [
+      "0x04871E",
+      "0x046EE2",
+      "0x04720E",
+      "0x047450",
+      "0x047FFE",
+      "0x046CD2"
+    ]
+  },
+  "physical_0xf4630": {
+    "inactive_and_held_chery_cases": 8,
+    "gw_accumulator_cases": 12
+  },
+  "mode_and_faults": {
+    "chery_mode": "FD36.2",
+    "gw_same_address_homolog": "chery FD3A.4",
+    "mode_alias_rejected_cases": 4,
+    "fault_words": {
+      "chery": [
+        "B280",
+        "B282"
+      ],
+      "gw": [
+        "B286",
+        "B288"
+      ]
+    }
+  },
+  "ordinary_operand": {
+    "matched_calibration_and_input_cases": 352,
+    "chery": "91C2",
+    "gw": "8FAC"
+  },
+  "native_encoder_cases": 13264,
+  "open": [
+    "GW owner equivalent to the Chery cruise-dependent word F4630",
+    "GW owner equivalent to the Chery override selector FD36.2"
+  ],
+  "wire_publication_changed": false
+}

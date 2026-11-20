@@ -14,6 +14,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 FLASH_START = 0x020000
 FLASH_END = 0x030000
+TAIL_START = 0x07C118
+TAIL_END = 0x07FFFC
 TARGET = ["-m32r", "-mmodel=medium", "-msdata=none", "-Wa,-EB"]
 LIBRARIES = ["-Wl,--start-group", "-lc", "-lgcc", "-Wl,--end-group"]
 
@@ -33,6 +35,8 @@ H03_ROOTS = (
     "rbm_u340e_runtime_init", "rbm_u340e_runtime_snapshot_gears", "rbm_u340e_runtime_gears_outputs",
     "rbm_u340e_runtime_prepare_engine", "rbm_u340e_runtime_main_coolant",
     "rbm_u340e_runtime_main_engine_speed",
+    "rbm_u340e_range_fast", "rbm_u340e_runtime_main_range",
+    "rbm_u340e_runtime_main_range_complete",
     "rbm_u340e_schedule_finish_init", "rbm_u340e_schedule_timer_irq",
     "rbm_u340e_schedule_producer_publish", "rbm_u340e_schedule_producer_done",
     "rbm_u340e_schedule_fast_claim", "rbm_u340e_schedule_fast_begin",
@@ -53,6 +57,17 @@ DTC_ROOTS = (
     "chery_dtc_link_init", "chery_dtc_link_end_session", "chery_dtc_link_expire",
     "chery_dtc_link_receive", "chery_dtc_link_confirm_tx",
     "chery_model_monitor_init", "chery_model_monitor_task2",
+)
+CAN_EXTENSION_FILES = ("lfj8_h03_torque.c", "lfj8_h03_dtc_can.c")
+CAN_EXTENSION_ROOTS = (
+    "lfj8_h03_torque_demand", "lfj8_h03_torque_init", "lfj8_h03_torque_poll",
+    "lfj8_h03_torque_tx_done", "lfj8_h03_torque_receive", "lfj8_h03_torque_applied",
+    "lfj8_h03_dtc_can_decode_basic", "lfj8_h03_dtc_can_init", "lfj8_h03_dtc_can_poll",
+)
+S01_LINK_TABLES = (
+    ("learning_001C3C", 800, "8276650f90e31262d21eca82fd06ce04c9ed0456b74c9456cebf2b11b0b9fd5b"),
+    ("pressure_0015FC", 36, "57d409e7acd5e96573b9857bd4275a2e850990facad3e1e668a7109b8600e41f"),
+    ("gear_000D08", 8, "297dcae8b2e253f2f4087110887391050045684a250054e96ebf7b81624df67b"),
 )
 
 
@@ -104,6 +119,83 @@ def elf_info(path, kind):
     }, allocated
 
 
+def check_shared_tables(stage, compiler, run, elf):
+    objcopy = run(compiler, "-print-prog-name=objcopy")
+    nm = run(compiler, "-print-prog-name=nm")
+    run(objcopy, "-O", "binary", elf, "linked-rom.dat")
+    rom = (stage / "linked-rom.dat").read_bytes()
+    rows = [line.split() for line in run(nm, "-S", elf).splitlines()]
+    tables = {}
+    for name, size, digest in S01_LINK_TABLES:
+        matches = [row for row in rows if len(row) == 4 and row[3] == name]
+        if len(matches) != 1 or int(matches[0][1], 16) != size or matches[0][2] != "R":
+            raise ValueError(f"Expected one read-only instance of S01 table {name}")
+        address = int(matches[0][0], 16)
+        offset = address - FLASH_START
+        if offset < 0 or sha256(rom[offset:offset + size]).hexdigest() != digest:
+            raise ValueError(f"S01 calibration mismatch in the linked image: {name}")
+        tables[name] = {"address": address, "bytes": size, "sha256": digest}
+    return tables
+
+
+def check_split_layout(stage, compiler, run, base, primary_objects, extension_objects, extension_roots):
+    """Link independent CAN modules into a second read-only window for sizing."""
+    rom = base.read_bytes()
+    if rom[TAIL_START:TAIL_END] != b"\xff" * (TAIL_END - TAIL_START):
+        raise ValueError("Unexpected bytes in the H03 tail address window")
+    extension_input = "\n    ".join(
+        f"{name}(.text .text.* .rodata .rodata.*)" for name in extension_objects
+    )
+    script = f"""ENTRY(rbm_u340e_step)
+SECTIONS {{
+  .can_extension {TAIL_START:#x} : {{
+    {extension_input}
+  }}
+  .text {FLASH_START:#x} : {{ *(.text .text.*) }}
+  .rodata : {{ *(.rodata .rodata.*) }}
+  .data : {{ *(.data .data.* .sdata .sdata.*) }}
+  .bss (NOLOAD) : {{ *(.bss .bss.* .sbss .sbss.*) *(COMMON) }}
+  /DISCARD/ : {{ *(.note*) *(.comment) }}
+}}
+ASSERT(ADDR(.rodata) + SIZEOF(.rodata) <= {FLASH_END:#x}, "Primary H03 window overflow")
+ASSERT(ADDR(.can_extension) + SIZEOF(.can_extension) <= {TAIL_END:#x}, "CAN extension window overflow")
+ASSERT(SIZEOF(.data) == 0 && SIZEOF(.bss) == 0, "Unexpected writable static state")
+"""
+    (stage / "split.ld").write_text(script, encoding="ascii")
+    roots = H03_ROOTS + extension_roots
+    options = [f"-Wl,--undefined={root}" for root in roots]
+    run(compiler, *TARGET, "-fno-use-linker-plugin", "-nostdlib", "-Wl,-T,split.ld,--gc-sections",
+        *options, *primary_objects, *extension_objects, *LIBRARIES, "-o", "split.elf")
+    linked, allocated = elf_info(stage / "split.elf", 2)
+    ranges = ((FLASH_START, FLASH_END), (TAIL_START, TAIL_END))
+    if linked["relocations"] or any(flags & 1 or not any(lo <= address and address + size <= hi
+                                   for lo, hi in ranges) for address, size, flags in allocated):
+        raise ValueError("Split layout has an unresolved relocation or unexpected allocation")
+    nm = run(compiler, "-print-prog-name=nm")
+    symbols = {row.split()[-1]: int(row.split()[0], 16)
+               for row in run(nm, "--defined-only", "split.elf").splitlines() if len(row.split()) == 3}
+    if not set(roots) <= symbols.keys():
+        raise ValueError("Split layout discarded a required entry point")
+    if not all(TAIL_START <= symbols[root] < TAIL_END for root in extension_roots):
+        raise ValueError("An extended CAN entry point escaped the tail window")
+    windows = {}
+    for role, (lo, hi) in zip(("primary", "can_extension"), ranges):
+        placed = [(address + size) for address, size, _ in allocated if lo <= address < hi]
+        if not placed:
+            raise ValueError(f"Expected an allocated section in the {role} window")
+        end = max(placed)
+        windows[role] = {
+            "start": f"0x{lo:06X}", "end_exclusive": f"0x{hi:06X}",
+            "rom_extent_bytes": end - lo, "window_margin_bytes": hi - end,
+        }
+    return {
+        "windows": windows, "section_bytes": linked["alloc_bytes"],
+        "entry_points": {root: f"0x{symbols[root]:06X}" for root in roots},
+        "relocations": linked["relocations"], "target_ownership_verified": False,
+        "shared_s01_tables": check_shared_tables(stage, compiler, run, "split.elf"),
+    }
+
+
 def stage_test(stage, engine_payloads):
     shutil.copytree(ROOT / "controller/include", stage / "controller")
     shutil.copytree(ROOT / "controller/vendor/toyota/include", stage / "toyota")
@@ -117,7 +209,9 @@ def stage_test(stage, engine_payloads):
     diagnostics = ROOT / "diagnostics"
     dtc_inputs = [*(diagnostics / name for name in DTC_FILES), *diagnostics.glob("*.h"),
                   diagnostics / "test_chery_dtc_link.c"]
-    for item in (*sources, *headers, *dtc_inputs, HERE / "host_check.c", HERE / "test_lfj8_h03_atf.c",
+    can_extension = [HERE / name for name in (*CAN_EXTENSION_FILES,
+                    "test_lfj8_h03_torque.c", "test_lfj8_h03_dtc_can.c")]
+    for item in (*sources, *headers, *dtc_inputs, *can_extension, HERE / "host_check.c", HERE / "test_lfj8_h03_atf.c",
                  HERE / "test_lfj8_h03_mmio.c", HERE / "test_lfj8_gear_observer.c",
                  HERE / "lfj8_h03_outputs.c", HERE / "test_lfj8_h03_outputs.c",
                  HERE / "lfj8_h03_takeover.c", HERE / "test_lfj8_h03_takeover.c",
@@ -221,13 +315,14 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
         def root_flags(roots):
             return ["-Wl,--gc-sections", *(f"-Wl,--undefined={root}" for root in roots)]
 
-        def link_model(name, object_file, roots=()):
-            linker_script = "model.ld" if roots else "unbounded-reference.ld"
+        def link_model(name, object_file, roots=(), *, enforce_window=True):
+            bounded = bool(roots) and enforce_window
+            linker_script = "model.ld" if bounded else "unbounded-reference.ld"
             run(compiler, *TARGET, "-fno-use-linker-plugin", "-nostdlib", f"-Wl,-T,{linker_script}",
                 object_file, "-o", name)
             linked, allocated = elf_info(stage / name, 2)
             if linked["relocations"] or any(
-                start < FLASH_START or (roots and start + size > FLASH_END) or flags & 1
+                start < FLASH_START or (bounded and start + size > FLASH_END) or flags & 1
                 for start, size, flags in allocated
             ):
                 raise ValueError("Unresolved relocation or allocation outside the test ROM window")
@@ -238,6 +333,7 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
                 "rom_extent_bytes": max(start + size for start, size, _ in allocated) - FLASH_START,
             }
             layout["window_margin_bytes"] = FLASH_END - FLASH_START - layout["rom_extent_bytes"]
+            layout["fits_window"] = layout["window_margin_bytes"] >= 0
             if roots:
                 symbols = {line.split()[-1] for line in run(nm, "--defined-only", name).splitlines()
                            if line.strip()}
@@ -252,36 +348,31 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
             *libraries, "-o", "compact.o")
         compact = link_model("compact-model.elf", "compact.o", H03_ROOTS)
         report["compact_address_model"] = compact
-        dtc_objects = []
-        for source in DTC_FILES:
-            obj = Path(source).with_suffix(".o").name
-            run(compiler, *TARGET, *module_flags, "-c", source, "-o", obj)
-            dtc_objects.append(obj)
+        def compile_modules(sources):
+            objects = []
+            for source in sources:
+                obj = Path(source).with_suffix(".o").name
+                run(compiler, *TARGET, *module_flags, "-c", source, "-o", obj)
+                objects.append(obj)
+            return objects
+
+        dtc_objects = compile_modules(DTC_FILES)
         roots_with_dtc = H03_ROOTS + DTC_ROOTS
         run(compiler, *TARGET, "-r", *root_flags(roots_with_dtc), "compact.o", *dtc_objects,
             *libraries, "-o", "compact-with-dtc.o")
-        compact_with_dtc = link_model("compact-with-dtc.elf", "compact-with-dtc.o", roots_with_dtc)
+        # This one-window comparison predates the split layout. Report its
+        # real excess if the complete application no longer fits.
+        compact_with_dtc = link_model("compact-with-dtc.elf", "compact-with-dtc.o",
+                                      roots_with_dtc, enforce_window=False)
         # Verify the bytes in the final linked image against the three S01 slices.
-        objcopy = run(compiler, "-print-prog-name=objcopy")
-        run(objcopy, "-O", "binary", "compact-with-dtc.elf", "linked-rom.dat")
-        rom = (stage / "linked-rom.dat").read_bytes()
-        symbols = [line.split() for line in run(nm, "-S", "compact-with-dtc.elf").splitlines()]
-        compact_with_dtc["shared_s01_tables"] = {}
-        for name, size, digest in (
-            ("learning_001C3C", 800, "8276650f90e31262d21eca82fd06ce04c9ed0456b74c9456cebf2b11b0b9fd5b"),
-            ("pressure_0015FC", 36, "57d409e7acd5e96573b9857bd4275a2e850990facad3e1e668a7109b8600e41f"),
-            ("gear_000D08", 8, "297dcae8b2e253f2f4087110887391050045684a250054e96ebf7b81624df67b"),
-        ):
-            matches = [row for row in symbols if len(row) == 4 and row[3] == name]
-            if len(matches) != 1 or int(matches[0][1], 16) != size or matches[0][2] != "R":
-                raise ValueError(f"Expected one read-only instance of S01 table {name}")
-            address = int(matches[0][0], 16)
-            offset = address - FLASH_START
-            if offset < 0 or sha256(rom[offset:offset + size]).hexdigest() != digest:
-                raise ValueError(f"S01 calibration mismatch in the linked image: {name}")
-            compact_with_dtc["shared_s01_tables"][name] = {"address": address, "bytes": size, "sha256": digest}
+        compact_with_dtc["shared_s01_tables"] = check_shared_tables(stage, compiler, run, "compact-with-dtc.elf")
         compact_with_dtc["dtc_increment_bytes"] = compact_with_dtc["rom_extent_bytes"] - compact["rom_extent_bytes"]
         report["compact_address_model_with_dtc"] = compact_with_dtc
+        can_extension_objects = compile_modules(CAN_EXTENSION_FILES)
+        report["split_address_model"] = check_split_layout(
+            stage, compiler, run, base, ("combined.o", "takeover.o"),
+            dtc_objects + can_extension_objects, DTC_ROOTS + CAN_EXTENSION_ROOTS,
+        )
 
         crt = run(compiler, *TARGET, "-print-file-name=crt0.o")
         run(compiler, *TARGET, *flags, "-Dmain=integration_test", "-c", integration,
@@ -300,20 +391,22 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
         )
         report["emulated_components"] = {}
         component_tests = [
-            ("lfj8_io", "host_check.c", "bridge.o"),
-            ("h03_atf", "test_lfj8_h03_atf.c", "compact.o"),
-            ("h03_mmio", "test_lfj8_h03_mmio.c", "compact.o"),
-            ("gear_observer", "test_lfj8_gear_observer.c", "compact.o"),
-            ("h03_output_plan", "test_lfj8_h03_outputs.c", "compact.o"),
-            ("h03_takeover", "test_lfj8_h03_takeover.c", "compact.o"),
-            ("toyota_gp_runtime", "test_runtime.c", "compact.o"),
-            ("chery_dtc", "test_chery_dtc_link.c", "compact-with-dtc.o"),
+            ("lfj8_io", "host_check.c", ("bridge.o",)),
+            ("h03_atf", "test_lfj8_h03_atf.c", ("compact.o",)),
+            ("h03_mmio", "test_lfj8_h03_mmio.c", ("compact.o",)),
+            ("gear_observer", "test_lfj8_gear_observer.c", ("compact.o",)),
+            ("h03_output_plan", "test_lfj8_h03_outputs.c", ("compact.o",)),
+            ("h03_takeover", "test_lfj8_h03_takeover.c", ("compact.o",)),
+            ("toyota_gp_runtime", "test_runtime.c", ("compact.o",)),
+            ("chery_dtc", "test_chery_dtc_link.c", ("compact-with-dtc.o",)),
+            ("h03_torque_can", "test_lfj8_h03_torque.c", ("combined.o", "lfj8_h03_torque.o")),
+            ("h03_dtc_can_io", "test_lfj8_h03_dtc_can.c", ("combined.o", *dtc_objects, "lfj8_h03_dtc_can.o")),
         ]
-        for name, source, object_file in component_tests:
+        for name, source, object_files in component_tests:
             elf = f"{name}.elf"
             test_flags = ["-DRBM_TEST_RUNTIME_STANDALONE"] if name == "toyota_gp_runtime" else []
             run(compiler, *TARGET, *flags, *test_flags, "-nostartfiles", crt, source, "component_crt.c",
-                object_file, "-Wl,-e,_start", "-Wl,--start-group", "-lc", "-lgloss", "-lgcc",
+                *object_files, "-Wl,-e,_start", "-Wl,--start-group", "-lc", "-lgloss", "-lgcc",
                 "-Wl,--end-group", "-o", elf)
             report["emulated_components"][name] = run(simulator, elf)
         if simulator_output is not None:

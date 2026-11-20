@@ -2,6 +2,10 @@
 
 #define H03_SERVICE_MODE UINT32_C(0x804887)
 #define H03_EVENT_SUSPENDED UINT32_C(0x80801C)
+#define H03_MONITOR_FLAGS UINT32_C(0x808580)
+#define H03_MONITOR_CHECKSUM_REMAINING UINT32_C(0x808DA4)
+#define H03_MONITOR_COPY_REMAINING UINT32_C(0x808DA8)
+#define H03_FCNT1 UINT32_C(0x8007E2)
 #define H03_P3DATA UINT32_C(0x800703)
 #define H03_STARTUP_COUNT UINT32_C(0x80621A)
 #define SERIAL_HALF_RANGE UINT32_C(0x80000000)
@@ -23,9 +27,16 @@ static int qualified(const Lfj8H03Takeover *state)
 
     const uint16_t startup_count = io->read16(context, H03_STARTUP_COUNT);
 
-    if (ops->qualified(context) != 1 || startup_count <= 2u || startup_count >= 0x8000u ||
+    /* The 002E80 session close does not cancel the ADC0 monitor work or
+     * restore the flash mode. Check these independently under the lock. */
+    if (startup_count <= 2u || startup_count >= 0x8000u ||
         io->read8(context, H03_SERVICE_MODE) == 4u ||
-        io->read8(context, H03_EVENT_SUSPENDED) != 0u) {
+        io->read8(context, H03_EVENT_SUSPENDED) != 0u ||
+        io->read8(context, H03_FCNT1) != 0u ||
+        (io->read8(context, H03_MONITOR_FLAGS) & 0x20u) != 0u ||
+        io->read32(context, H03_MONITOR_CHECKSUM_REMAINING) != 0u ||
+        io->read32(context, H03_MONITOR_COPY_REMAINING) != 0u ||
+        ops->qualified(context) != 1) {
         return 0;
     }
     for (size_t i = 0; i < sizeof(output_guards) / sizeof(output_guards[0]); ++i) {
@@ -150,7 +161,7 @@ int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation)
     const int pending = state->pending;
     state->pending = 0;
     const int accepted = pending && generation == state->generation &&
-        matching_commands(state) && qualified(state) && read_shift_levels(io) == state->shift_before;
+        qualified(state) && matching_commands(state) && read_shift_levels(io) == state->shift_before;
     if (accepted) {
         ops->apply(context);
     } else {

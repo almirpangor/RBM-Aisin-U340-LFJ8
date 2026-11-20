@@ -21,6 +21,9 @@ enum {
     SCENARIO_P3_CHANGED,
     SCENARIO_NO_CALIBRATION,
     SCENARIO_WRONG_ORDER,
+    SCENARIO_MONITOR_OPEN,
+    SCENARIO_MONITOR_PENDING_COPY,
+    SCENARIO_FLASH_OVERLAY,
 };
 
 enum {
@@ -146,6 +149,10 @@ int h03_phase_fixture(void)
     const uint16_t initial_reload = 0x4444;
 
     RAM32(OEM_CRITICAL_STACK) = OEM_CRITICAL_STACK;
+    RAM8(0x8007E2) = 0;
+    RAM8(0x808580) = 0;
+    RAM32(0x808DA4) = 0;
+    RAM32(0x808DA8) = 0;
     RAM16(STARTUP_COUNT) = scenario == SCENARIO_STARTUP_SKIP ? 2u : 3u;
     RAM8(P3DATA) = initial_p3;
     RAM16(TIO4RL0) = initial_reload;
@@ -174,6 +181,12 @@ int h03_phase_fixture(void)
         case SCENARIO_FINAL_CHANGED: RAM8(0x8063DA) ^= 1u; break;
         case SCENARIO_AUTHORITY_LOST: permitted = 0; break;
         case SCENARIO_P3_CHANGED: RAM8(P3DATA) ^= 0x20u; break;
+        case SCENARIO_MONITOR_OPEN: RAM8(0x808580) = 0x20; break;
+        case SCENARIO_MONITOR_PENDING_COPY:
+            RAM8(0x808580) = 0x10;
+            RAM32(0x808DA8) = 257;
+            break;
+        case SCENARIO_FLASH_OVERLAY: RAM8(0x8007E2) = 1; break;
         default: break;
         }
         h03_stock_phase2();
