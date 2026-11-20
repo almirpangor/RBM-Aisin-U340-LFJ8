@@ -19,7 +19,9 @@
 #define LFJ8_CAN0_TSTMP UINT32_C(0x801008)
 #define LFJ8_CAN0_EXTID_IDE13 UINT16_C(0x0004)
 #define LFJ8_CAN0_SLIMK_TX13 UINT16_C(0x0004)
+#define LFJ8_CAN0_SLIST UINT32_C(0x80100C)
 #define LFJ8_CAN0_SLIMK UINT32_C(0x801010)
+#define LFJ8_CAN0_BASIC_RX_BITS UINT16_C(0x0003)
 #define LFJ8_CAN0_GMSKS0 UINT32_C(0x801028)
 #define LFJ8_CAN0_GMSKS1 UINT32_C(0x801029)
 #define LFJ8_CAN0_ENGINE_SLOT_BITS UINT16_C(0x0018)
@@ -43,6 +45,7 @@ enum {
     CAN_CNT_LBM = 0x0002,
     CAN_CNT_RST = 0x0001,
     CAN_STAT_BOS = 0x4000,
+    CAN_STAT_BASIC = 0x0800,
     CAN_STAT_LBS = 0x0200,
     CAN_STAT_CRS = 0x0100,
     CAN_SLOT_TR = 0x80,
@@ -634,6 +637,22 @@ Lfj8CanTxStatus lfj8_h03_can0_torque_status(const Lfj8RegisterIo *io, uint8_t tx
         slot13_status(io, LFJ8_CAN_TORQUE_REQUEST, cancel, finished_at) : LFJ8_CAN_TX_UNAVAILABLE;
     io->leave(io->context, saved_state);
     return result;
+}
+
+int lfj8_h03_can0_epoch_drained(const Lfj8RegisterIo *io)
+{
+    if (torque_slot_available(io) != LFJ8_CAN_READY ||
+        (io->read16(io->context, LFJ8_CAN0_STAT) & CAN_STAT_BASIC) == 0u) {
+        return 0;
+    }
+    const uint8_t tx = io->read8(io->context, LFJ8_CAN0_SLOT13_CNT);
+    /* A completed OEM TX can retain TR. There is no project submission
+     * until the broker enters the new generation and replaces the slot. */
+    return (tx == 0u || tx == CAN_SLOT_TRFIN || tx == (CAN_SLOT_TR | CAN_SLOT_TRFIN)) &&
+           io->read8(io->context, LFJ8_CAN0_SLOT_CNT + 14u) == CAN_SLOT_RR &&
+           io->read8(io->context, LFJ8_CAN0_SLOT_CNT + 15u) == CAN_SLOT_RR &&
+           (io->read16(io->context, LFJ8_CAN0_SLIST) & LFJ8_CAN0_BASIC_RX_BITS) == 0u &&
+           h03_can0_operational(io);
 }
 
 int lfj8_h03_can0_slot13_timestamp(const Lfj8RegisterIo *io, uint16_t *timestamp)

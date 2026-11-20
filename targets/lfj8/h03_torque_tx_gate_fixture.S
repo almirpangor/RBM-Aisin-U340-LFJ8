@@ -1,4 +1,5 @@
 /* Run only with the simulator linker layout. MMIO and the lease are RAM shadows. */
+#include "lfj8_h03_can_owner.h"
 
     .macro set_byte addr,val
     ld24 r1,#\addr
@@ -94,38 +95,16 @@ test_exit:
     ldi r0,#1
     trap #0
 
-    .p2align 2
-tx_gate:
-    push r0
-    push r1
-    mvfc r0,psw
-    push r0
-    ld24 r1,#lease_flag
-    ldub r0,@r1
-    ldi r1,#1
-    beq r0,r1,lease_held
-    pop r0
-    mvtc r0,psw
-    pop r1
-    pop r0
-    /* Replay the whole displaced native entry word before resuming. */
-    .incbin "tx-entry.bin"
-    bra h03_tx_writer_resume
-    .p2align 2
-lease_held:
-    pop r0
-    mvtc r0,psw
-    pop r1
-    pop r0
-    jmp lr
-
     .section .tx_entry,"ax",@progbits
 #if HOOKED
-    bra tx_gate
+    bra h03_can13_tx_gate
 #else
     .incbin "tx-entry.bin"
 #endif
 
     .section .fixture_state,"aw",@progbits
+    .global h03_can_owner
+h03_can_owner:
+    .space LFJ8_CAN_OWNER_GRANT_OFFSET
 lease_flag:
     .byte 0

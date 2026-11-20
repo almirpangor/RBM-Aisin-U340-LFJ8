@@ -214,7 +214,8 @@ hex_digits:
     .ascii "0123456789abcdef"
 
     .p2align 2
-    .global h03_can0_generation
+    .global h03_can_owner
+h03_can_owner:
 h03_can0_generation:
     .long 0
     .global h03_can13_grant
