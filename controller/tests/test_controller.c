@@ -1,4 +1,5 @@
 #include "rbm_u340e.h"
+#include "rbm_u340e_runtime.h"
 #include "factory_hydraulics.h"
 
 #undef NDEBUG
@@ -367,6 +368,89 @@ static void check_adaptation_store(void)
 #endif
 }
 
+static void expect_adaptation_restore(RbmU340eRuntime *runtime, const FactoryAdaptation *baseline,
+                                      const uint8_t *slot0, const uint8_t *slot1,
+                                      RbmU340eAdaptationResult result, const FactoryAdaptation *expected)
+{
+    assert(rbm_u340e_runtime_restore_adaptation(runtime, baseline, slot0, slot1) == result);
+    FactoryAdaptation actual;
+    factory_hydraulics_capture(&runtime->gp, &actual);
+    assert(memcmp(&actual, expected, sizeof actual) == 0);
+    uint32_t unrelated;
+    assert(factory_hydraulics_get(&runtime->gp, -7184, 2, &unrelated) && unrelated == 0x1153u);
+}
+
+static void check_adaptation_recovery(void)
+{
+    const FactoryAdaptation baseline = {.down = {-2}};
+    const FactoryAdaptation learned = {.down_counts = {3, 17}, .down = {13, -3}, .down_seen = 0x81};
+    const FactoryAdaptation reset_fixture = {0};
+    const FactoryAdaptation invalid = {.down = {41}};
+    RbmU340eRuntime runtime = {0};
+    FactoryGearState gear = {0};
+    uint8_t previous[FACTORY_ADAPT_RECORD_BYTES];
+    uint8_t reset[FACTORY_ADAPT_RECORD_BYTES];
+    uint8_t slot[FACTORY_ADAPT_RECORD_BYTES];
+    memset(previous, 0xFF, sizeof previous);
+    memset(slot, 0xFF, sizeof slot);
+
+    assert(rbm_u340e_runtime_restore_adaptation(&runtime, &baseline, previous, slot) ==
+           RBM_U340E_ADAPTATION_INVALID);
+    assert(rbm_u340e_runtime_init(&runtime, &gear, &runtime.gp));
+    assert(factory_hydraulics_set(&runtime.gp, -7184, 2, 0x1153u));
+    expect_adaptation_restore(&runtime, &baseline, previous, slot,
+                              RBM_U340E_ADAPTATION_BASELINE_UNPUBLISHED, &baseline);
+
+    assert(factory_adaptation_encode(previous, &learned, UINT32_MAX));
+    assert(factory_adaptation_encode(reset, &reset_fixture, 0));
+    enum { marker_offset = FACTORY_ADAPT_RECORD_BYTES - 4u };
+    for (unsigned cut = 0; cut < FACTORY_ADAPT_RECORD_BYTES; ++cut) {
+        memset(slot, 0xFF, sizeof slot);
+        memcpy(slot, reset, cut);
+        if (cut <= marker_offset) {
+            expect_adaptation_restore(&runtime, &baseline, previous, slot,
+                                      RBM_U340E_ADAPTATION_LOADED, &learned);
+        } else {
+            expect_adaptation_restore(&runtime, &baseline, previous, slot,
+                                      RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED, &baseline);
+        }
+    }
+
+    expect_adaptation_restore(&runtime, &baseline, previous, reset,
+                              RBM_U340E_ADAPTATION_LOADED, &reset_fixture);
+    expect_adaptation_restore(&runtime, &baseline, reset, previous,
+                              RBM_U340E_ADAPTATION_LOADED, &reset_fixture);
+    memcpy(slot, reset, sizeof slot);
+    for (unsigned byte = 0; byte < FACTORY_ADAPT_RECORD_BYTES; ++byte) {
+        for (unsigned bit = 0; bit < 8u; ++bit) {
+            const uint8_t mask = (uint8_t)(1u << bit);
+            slot[byte] ^= mask;
+            expect_adaptation_restore(&runtime, &baseline, previous, slot,
+                                      RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED, &baseline);
+            expect_adaptation_restore(&runtime, &baseline, slot, previous,
+                                      RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED, &baseline);
+            slot[byte] ^= mask;
+        }
+    }
+    expect_adaptation_restore(&runtime, &baseline, previous, NULL,
+                              RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED, &baseline);
+    expect_adaptation_restore(&runtime, &baseline, NULL, previous,
+                              RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED, &baseline);
+    expect_adaptation_restore(&runtime, &baseline, NULL, NULL,
+                              RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED, &baseline);
+    assert(factory_adaptation_encode(previous, &learned, UINT32_C(0x80000000)));
+    expect_adaptation_restore(&runtime, &baseline, previous, reset,
+                              RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED, &baseline);
+
+    assert(factory_hydraulics_restore(&runtime.gp, &learned));
+    expect_adaptation_restore(&runtime, &invalid, previous, reset, RBM_U340E_ADAPTATION_INVALID, &learned);
+    expect_adaptation_restore(&runtime, NULL, previous, reset, RBM_U340E_ADAPTATION_INVALID, &learned);
+    expect_adaptation_restore(&runtime, &baseline, previous, previous, RBM_U340E_ADAPTATION_INVALID, &learned);
+#ifndef RBM_TEST_QUIET
+    puts("Toyota adaptation recovery: 96 write cuts, 768 bit faults in either slot, and rollover passed.");
+#endif
+}
+
 #ifdef RBM_TEST_TRANSFERS
 unsigned rbm_test_hydraulic_transfer(void);
 #endif
@@ -381,6 +465,7 @@ int main(void)
     check_output_path();
     check_hydraulic_cycle();
     check_adaptation_store();
+    check_adaptation_recovery();
 #ifdef RBM_TEST_RUNTIME
     rbm_test_runtime();
 #endif
