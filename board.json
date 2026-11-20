@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 101,
+  "sequence": 102,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -174,12 +174,12 @@
         "targets/lfj8/lfj8_h03_atf_tml0.c",
         "targets/lfj8/test_lfj8_h03_atf.c"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "claimed_at": "2026-11-20T15:54:09+00:00",
-      "updated_at": "2026-11-20T16:15:36+00:00",
-      "note": "Сверяю PRS1 и TML0CR в H03 и подключаю условный целевой счётчик после подтверждения физической шкалы.",
-      "result": "65bb6912691ab0040ad1e0683dd62045a6e42926"
+      "updated_at": "2026-11-20T16:18:28+00:00",
+      "note": "Добавлен условный поставщик TML0: PRS1=9, Clock Bus 1 и внешнее подтверждение физического 1 МГц. M32R: 11 пар и 3 отрицательных проверки PASS; стек 92/120/72 байта. Физические 1 МГц, размещение и IRQ остаются.",
+      "result": "a376f561dacb33793b7bb65e57a2ea18fdcea08d"
     },
     "CAN-05": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -1187,9 +1187,17 @@
       "action": "heartbeat",
       "claim_id": "8ca0999c579843d5a6c858b0ba44f0b2",
       "at": "2026-11-20T16:18:17+00:00"
+    },
+    {
+      "operation_id": "efe84ee4035e48ca82d0e1e3d0618c67",
+      "task": "H03-02",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "11e70992d32245529e20626f4b9bd867",
+      "at": "2026-11-20T16:18:28+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:18:17+00:00",
+  "updated_at": "2026-11-20T16:18:28+00:00",
   "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {
