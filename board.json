@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 547,
+  "sequence": 548,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -300,12 +300,12 @@
         "targets/lfj8/test_lfj8_h03_torque_can.c",
         "verification/project-audit/can04-pending-tx-revoke.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "c4e3a3e369f14884b8a200b72aacab5e",
       "claimed_at": "2026-11-20T19:52:46+00:00",
-      "updated_at": "2026-11-20T19:52:46+00:00",
-      "note": "Независимый остаток CAN-04: отзыв фактического допуска или истечение метки прекращает ожидающий START/REFRESH в CAN13 до обработки завершения; CANCEL сохраняется. Без подмены калибровок.",
-      "result": null
+      "updated_at": "2026-11-20T19:57:54+00:00",
+      "note": "CAN13 отзывает ожидающий RB START/REFRESH на текущем опросе при потере допуска или истечении метки; CANCEL и подтверждение TRFIN сохраняются. Регрессия ПК, 18 групп M32R, 6 проверок размещения и оба диалога Bosch прошли. Физический профиль остаётся открытым. Отчёт: verification/project-audit/can04-pending-tx-revoke.md.",
+      "result": "6ed9a9e2480dc356725b3f1d47f683bef6625171"
     },
     "MODE-01": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -4965,9 +4965,17 @@
       "action": "review",
       "claim_id": "65f87fefa9434dd69e6efd740fa10b71",
       "at": "2026-11-20T19:57:34+00:00"
+    },
+    {
+      "operation_id": "707895dbd80d46b9a74f37aff7fcf176",
+      "task": "CAN-04",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "review",
+      "claim_id": "c4e3a3e369f14884b8a200b72aacab5e",
+      "at": "2026-11-20T19:57:54+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:57:34+00:00",
+  "updated_at": "2026-11-20T19:57:54+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
