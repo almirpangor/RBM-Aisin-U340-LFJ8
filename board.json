@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 504,
+  "sequence": 505,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -166,19 +166,21 @@
       "result": null
     },
     "CAN-05": {
-      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
-      "label": "Codex CAN-05 — часы Bosch для 0x1AE",
-      "branch": "codex/can05-st10-rx-clock-7bd19ea4",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "label": "Codex CAN-05 — время приёма ST10",
+      "branch": "codex/can05-st10-bound-t4-01a1f9a2",
       "files": [
-        "targets/bosch/audit_chery_rx_clock.py",
-        "verification/project-audit/can05-st10-rx-clock.md"
+        "targets/bosch/build.py",
+        "targets/bosch/rx_timestamp.py",
+        "targets/bosch/verify_rx_timestamp.py",
+        "verification/project-audit/can05-st10-bound-t4.md"
       ],
-      "stage": "done",
-      "claim_id": "59327b6eafdb4bdcac7a920397975731",
-      "claimed_at": "2026-11-20T18:54:59+00:00",
-      "updated_at": "2026-11-20T19:24:47+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "f8fe149c4bc99eb33eca239d85436b0adc29ab1f"
+      "stage": "in_progress",
+      "claim_id": "4be301294ddc41508ac41d1b94c6b14a",
+      "claimed_at": "2026-11-20T19:39:22+00:00",
+      "updated_at": "2026-11-20T19:39:22+00:00",
+      "note": "Собираю машинный путь фиксации нижней границы T4 до пустого опроса объекта 13 и её проверки после IF1, с отзывом при повреждении кадра и сбросе. Использую штатный резерв RAM, проверю изменённые инструкции ST10 на S04, без калибровки срока момента.",
+      "result": null
     },
     "DTC-03": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -4592,9 +4594,17 @@
       "action": "heartbeat",
       "claim_id": "f6547625e0dd48c180162a7963424191",
       "at": "2026-11-20T19:39:13+00:00"
+    },
+    {
+      "operation_id": "b20731db5a7c4821ac083fc23997fe1e",
+      "task": "CAN-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "claim",
+      "claim_id": "4be301294ddc41508ac41d1b94c6b14a",
+      "at": "2026-11-20T19:39:22+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:39:13+00:00",
+  "updated_at": "2026-11-20T19:39:22+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
