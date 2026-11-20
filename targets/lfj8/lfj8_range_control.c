@@ -60,6 +60,7 @@ int lfj8_range_control_init(Lfj8RangeControl *control, const RbmU340ePolicy *pol
     control->last_sample_us = 0;
     control->sampled = 0;
     control->selector = RBM_U340E_SELECTOR_UNKNOWN;
+    control->manual_gear = 0;
     return 1;
 }
 
@@ -141,6 +142,7 @@ void lfj8_range_control_disarm_buttons(Lfj8RangeControl *control, Lfj8ButtonFilt
 {
     disarm_buttons(filter);
     control->controller.buttons_seen = 0;
+    control->manual_gear = 0;
 }
 
 static void update_buttons(Lfj8ButtonFilter *filter, const Lfj8ButtonReading *reading,
@@ -189,6 +191,7 @@ void lfj8_range_control_sample_buttons(Lfj8RangeControl *control, Lfj8ButtonFilt
     update_buttons(filter, reading, now_us);
     if (!filter->armed) {
         control->controller.buttons_seen = 0;
+        control->manual_gear = 0;
     }
 }
 
@@ -208,7 +211,7 @@ int lfj8_range_control_step_with_buttons(Lfj8RangeControl *control, Lfj8Selector
     snapshot.stable_buttons = filter->stable;
     snapshot.buttons_valid = filter->armed;
     if (!lfj8_range_control_step(control, selector, now_us, &snapshot, output)) {
-        disarm_buttons(filter);
+        lfj8_range_control_disarm_buttons(control, filter);
         return 0;
     }
     return 1;

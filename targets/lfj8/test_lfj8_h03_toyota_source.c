@@ -1,4 +1,6 @@
 #include "lfj8_h03_toyota_source.h"
+#include "lfj8_h03_input_binding.h"
+#include "lfj8_h03_mmio.h"
 
 #undef NDEBUG
 #include <assert.h>
@@ -6,6 +8,7 @@
 
 #define TML0CT (*(volatile uint32_t *)(uintptr_t)0x8003e0u)
 #define OEM_PHASE (*(volatile uint8_t *)(uintptr_t)0x804adeu)
+#define P1DATA (*(volatile uint8_t *)(uintptr_t)LFJ8_H03_P1DATA_ADDRESS)
 
 static Lfj8H03ToyotaRelease release;
 static Lfj8H03Application application;
@@ -48,7 +51,7 @@ static int capture(void *context, const Lfj8H03SensorSnapshot *snapshot, uint32_
                    Lfj8H03CycleInput *out, Lfj8H03CycleLoad *out_load)
 {
     assert(context == &owns_ram);
-    assert(irq_enabled() && snapshot == &sensors && snapshot->epoch == 7u);
+    assert(irq_enabled() && snapshot == &sensors);
     captures++;
     captured_due = due_at;
     out->command_at = due_at - 4u;
@@ -97,6 +100,123 @@ static Lfj8H03ToyotaEvent poll(uint32_t at)
         &config, &sensors, &input, &load, &deadline);
     assert(irq_enabled());
     return result;
+}
+
+static Lfj8SelectorAdc mode_adc;
+static Lfj8RangeControl mode_control;
+static Lfj8ButtonFilter mode_buttons;
+static Lfj8H03InputProposal mode_proposal;
+static RbmU340eInput driver;
+static Lfj8H03RangeInputs range;
+
+static int read_mode(void *context, const Lfj8H03SensorSnapshot *snapshot, uint32_t due_at,
+                     Lfj8H03CycleInput *out, Lfj8H03CycleLoad *out_load,
+                     Lfj8H03InputSources *sources)
+{
+    const int ready = capture(context, snapshot, due_at, out, out_load);
+    out->qualified = 1u;
+    out->engine.coherent = 0u;
+    out->requested_gear = 4u;
+    for (unsigned i = 0; i < 4u; ++i) {
+        range.range_5722[i] = (Lfj8H03RangeBit){due_at - i, snapshot->epoch, i == 0u, 1u};
+    }
+    range.inhibit_5250_2 = (Lfj8H03RangeBit){due_at - 2u, snapshot->epoch, 0u, 1u};
+    sources->driver = &driver;
+    sources->range = &range;
+    return ready;
+}
+
+static const Lfj8H03RangeAgeLimits mode_limits = {{20u, 20u, 20u, 20u}, 20u};
+static const Lfj8H03ButtonMap mode_pins = {{
+    {LFJ8_H03_BUTTON_P1, 8u, 1u}, {LFJ8_H03_BUTTON_P1, 64u, 0u},
+    {LFJ8_H03_BUTTON_P1, 32u, 0u}, {0},
+}};
+static const Lfj8H03InputBinding mode_input = {
+    .adc = &mode_adc, .control = &mode_control, .button_filter = &mode_buttons,
+    .io = &lfj8_h03_mmio, .range_limits = &mode_limits, .p1_button_map = &mode_pins,
+    .manual_max_age_us = 30u,
+};
+static const Lfj8H03ToyotaInputCapture mode_capture = {
+    .binding = &mode_input, .proposal = &mode_proposal, .platform = &owns_ram,
+    .ram_owned = ram_owned, .read = read_mode,
+};
+
+static int mode_ram_owned(void *context)
+{
+    assert(context == &mode_capture);
+    return ram_owned(mode_capture.platform);
+}
+
+static int mode_clock_ready(void *context)
+{
+    assert(context == &mode_capture);
+    return clock_ready(mode_capture.platform);
+}
+
+static void mode_sample(uint32_t at, uint8_t port)
+{
+    TML0CT = at;
+    P1DATA = port;
+    lfj8_selector_adc_publish_h03(&mode_adc, &lfj8_h03_mmio, 500u, at);
+    lfj8_h03_input_capture(&mode_input, NULL, at);
+}
+
+static void start_mode(void)
+{
+    static const RbmU340ePolicy policy = {
+        .manual_selectors = 1u << RBM_U340E_SELECTOR_D,
+        .initial_mode = RBM_U340E_TIPTRONIC, .initial_overdrive_enabled = 1u,
+    };
+    start(1000u);
+    config.period_ticks = 10u;
+    config.max_lateness_ticks = 3u;
+    config.platform = (void *)&mode_capture;
+    config.ram_owned = mode_ram_owned;
+    config.clock_ready = mode_clock_ready;
+    config.capture = lfj8_h03_input_capture_toyota;
+    sensors.epoch = 7u;
+    driver = (RbmU340eInput){.actual_gear = 2u, .allowed_gears = 15u};
+    assert(lfj8_range_control_init(&mode_control, &policy, 25u));
+    assert(lfj8_button_filter_init(&mode_buttons, 1u, 25u));
+    lfj8_selector_adc_init(&mode_adc);
+    for (uint32_t at = 1001u; at < 1007u; ++at) {
+        mode_sample(at, 8u);
+    }
+    assert(poll(1010u) == LFJ8_H03_TOYOTA_EVENT && !input.requested_gear);
+    mode_sample(1011u, 72u);
+    mode_sample(1012u, 72u);
+    assert(poll(1019u) == LFJ8_H03_TOYOTA_WAIT && !mode_control.manual_gear);
+    assert(poll(1020u) == LFJ8_H03_TOYOTA_EVENT && input.event == 1u);
+    assert(input.requested_gear == 3u && input.qualified && !input.engine.coherent);
+    assert(input.selector == RBM_U340E_SELECTOR_D && input.command_at == 1012u);
+}
+
+static void test_mode_capture(void)
+{
+    start_mode();
+    mode_sample(1021u, 8u);
+    mode_sample(1022u, 8u);
+    driver.actual_gear = 0u;
+    driver.shifting = 1u;
+    assert(poll(1030u) == LFJ8_H03_TOYOTA_EVENT && input.requested_gear == 3u);
+    assert(!mode_proposal.driver.requested_gear && input.command_at == 1022u);
+    driver.actual_gear = 3u;
+    driver.shifting = 0;
+    assert(poll(1040u) == LFJ8_H03_TOYOTA_EVENT && !input.requested_gear);
+
+    start_mode();
+    ++sensors.epoch;
+    assert(poll(1030u) == LFJ8_H03_TOYOTA_FAULT && !input.requested_gear);
+    assert(!mode_control.manual_gear && !mode_buttons.armed && deadline == 1020u);
+
+    start_mode();
+    drop_ownership_after_capture = 1;
+    assert(poll(1030u) == LFJ8_H03_TOYOTA_FAULT && deadline == 1020u);
+    assert(mode_control.manual_gear == 3u && mode_proposal.cycle.event == 777u);
+    start_mode();
+    lfj8_selector_adc_clock_lost(&mode_adc, &lfj8_h03_mmio);
+    assert(!lfj8_h03_input_capture(&mode_input, NULL, 1021u));
+    assert(!mode_control.manual_gear && poll(1030u) == LFJ8_H03_TOYOTA_FAULT);
 }
 
 int main(void)
@@ -171,6 +291,7 @@ int main(void)
     config.max_lateness_ticks = 16u;
     assert(poll(1010u) == LFJ8_H03_TOYOTA_FAULT && !release.status && !captures);
     assert(sizeof release == 16u);
-    puts("H03 Toyota release: native TML0, fixed deadlines, faults and rollover PASS");
+    test_mode_capture();
+    puts("H03 Toyota release: native TML0, fixed deadlines, faults, rollover and manual target PASS");
     return 0;
 }
