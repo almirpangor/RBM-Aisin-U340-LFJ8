@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 703,
+  "sequence": 704,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -29,25 +29,21 @@
       "based_on_reviews": []
     },
     "DTC-02": {
-      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Codex DTC-02 — нижние переходы в общей компоновке H03",
-      "branch": "codex/can03-live-native-ready-1121-c7e4",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "label": "Codex DTC-02 — нижний BasicCAN в сервисном режиме",
+      "branch": "codex/can01-h03-engine-owner-b0157640",
       "files": [
-        "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
-        "tests/test_h03_dtc_rx_placement.py",
-        "tools/check_h03_image_layout.py",
-        "verification/project-audit/dtc02-resident-rx-integrated-placement.md"
+        "targets/lfj8/check_h03_dtc_service_gate.py",
+        "targets/lfj8/h03_dtc_rx_hook.S",
+        "verification/project-audit/dtc02-lower-service-gate.md"
       ],
-      "stage": "done",
-      "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
-      "claimed_at": "2026-11-20T20:34:46+00:00",
-      "updated_at": "2026-11-20T21:14:43+00:00",
-      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
-      "result": "5e6c7a8818290bddebfa97bb55d199570f4127ca",
-      "based_on_reviews": [
-        "0580560d4a0e442cb07862988bd40b0f",
-        "15e6e783e4d74a5b9c000d3658becff0"
-      ]
+      "stage": "in_progress",
+      "claim_id": "5bb09a6c858e41d7a7b760ee40373d75",
+      "claimed_at": "2026-11-20T21:56:37+00:00",
+      "updated_at": "2026-11-20T21:56:37+00:00",
+      "note": "Независимая часть нижнего RX: обе обёртки DTC сохраняют штатный BasicCAN и не обращаются к целевому состоянию при OEM сервисном режиме 0x804887=4. Проверю обе врезки на закреплённых H03 байтах, не меняя занятый проверочный скрипт и компоновщик.",
+      "result": null,
+      "based_on_reviews": []
     },
     "CAN-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -8591,9 +8587,34 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "b7aceb7bcfe948af88e37916777feeb8",
+      "task": "DTC-02",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "claim",
+      "claim_id": "5bb09a6c858e41d7a7b760ee40373d75",
+      "at": "2026-11-20T21:56:37+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex DTC-02 — нижний BasicCAN в сервисном режиме",
+        "branch": "codex/can01-h03-engine-owner-b0157640",
+        "files": [
+          "targets/lfj8/check_h03_dtc_service_gate.py",
+          "targets/lfj8/h03_dtc_rx_hook.S",
+          "verification/project-audit/dtc02-lower-service-gate.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "5bb09a6c858e41d7a7b760ee40373d75",
+        "claimed_at": "2026-11-20T21:56:37+00:00",
+        "updated_at": "2026-11-20T21:56:37+00:00",
+        "note": "Независимая часть нижнего RX: обе обёртки DTC сохраняют штатный BasicCAN и не обращаются к целевому состоянию при OEM сервисном режиме 0x804887=4. Проверю обе врезки на закреплённых H03 байтах, не меняя занятый проверочный скрипт и компоновщик.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:56:23+00:00",
+  "updated_at": "2026-11-20T21:56:37+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
