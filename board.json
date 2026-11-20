@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 8,
+  "sequence": 9,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -44,12 +44,12 @@
         "tools/build_pc_checks.py",
         "verification/project-audit/"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "ed274f83f44345a3b9d759cf44aa6541",
       "claimed_at": "2026-11-20T15:39:41+00:00",
-      "updated_at": "2026-11-20T15:46:30+00:00",
-      "note": "Очередь реализована: 33 шага проверки ПК и 17 компонентов M32R PASS, включая IRQ между чтением времени и обработкой. Обновлены карточка и доказательства; готовлю публикацию. Нативный RX ещё открыт.",
-      "result": null
+      "updated_at": "2026-11-20T15:47:17+00:00",
+      "note": "Опубликована очередь DTC: 33 шага ПК, 59 Python-тестов и 17 компонентов M32R PASS. Карточка остаётся open: нативный захват BasicCAN и foreground ещё не подключены.",
+      "result": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d"
     },
     "CAN-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -151,9 +151,17 @@
       "action": "claim",
       "claim_id": "f014bd3c6bba42f5bb7e5fa23c121d0d",
       "at": "2026-11-20T15:47:02+00:00"
+    },
+    {
+      "operation_id": "231cc85be7ec489188eac34b07740fe1",
+      "task": "DTC-02",
+      "owner": "codex-dtc02-01a1f76d-20261120",
+      "action": "review",
+      "claim_id": "ed274f83f44345a3b9d759cf44aa6541",
+      "at": "2026-11-20T15:47:17+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:47:02+00:00",
+  "updated_at": "2026-11-20T15:47:17+00:00",
   "main_commit": "2875ed80264fd7714d44047f849e2df4b04123ef",
   "catalog": [
     {
