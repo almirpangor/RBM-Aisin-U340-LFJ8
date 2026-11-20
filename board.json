@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 542,
+  "sequence": 543,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -185,12 +185,12 @@
         "targets/bosch/verify_rx_timestamp.py",
         "verification/project-audit/can05-st10-bound-t4.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "4be301294ddc41508ac41d1b94c6b14a",
       "claimed_at": "2026-11-20T19:39:22+00:00",
-      "updated_at": "2026-11-20T19:39:22+00:00",
-      "note": "Собираю машинный путь фиксации нижней границы T4 до пустого опроса объекта 13 и её проверки после IF1, с отзывом при повреждении кадра и сбросе. Использую штатный резерв RAM, проверю изменённые инструкции ST10 на S04, без калибровки срока момента.",
-      "result": null
+      "updated_at": "2026-11-20T19:56:55+00:00",
+      "note": "Реальный профиль Bosch включает чтение T4 до пустого опроса 0x1AE, проверку после IF1 и отзыв скорости. Два варианта ST10/C_CAN прошли 26 групп каждый и 51 запись целостности. Проверены RB, 12 прежних сборок, 41 этап ПК и 120 тестов с отдельным повтором S03. Открыты RAM и публикация поколения, потребитель момента, измеренный lease_ticks и ECU-02. Отчёт can05-st10-bound-t4.md.",
+      "result": "f3bb5000ebfdaaa30a33665bac1eab06ddb9165c"
     },
     "DTC-03": {
       "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
@@ -4925,9 +4925,17 @@
       "action": "claim",
       "claim_id": "fe39fa893cbe4843b42a5e9a0f82f3ed",
       "at": "2026-11-20T19:56:50+00:00"
+    },
+    {
+      "operation_id": "98f5e27e775b4cd09f44416ababfc32e",
+      "task": "CAN-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "4be301294ddc41508ac41d1b94c6b14a",
+      "at": "2026-11-20T19:56:55+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:56:50+00:00",
+  "updated_at": "2026-11-20T19:56:55+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
