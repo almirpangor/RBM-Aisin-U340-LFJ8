@@ -12,7 +12,13 @@ from check_h03_link import identify_h03
 
 START = """
     .section .stock,"ax",@progbits
+#if H03_SLT_FAULT_HOOK
+    .incbin "stock.bin",0,0x03484c
+    bra rbm_h03_slt_fault_hook
+    .incbin "stock.bin",0x034850
+#else
     .incbin "stock.bin"
+#endif
 
     .section .boot,"ax",@progbits
     .global _start
@@ -27,15 +33,18 @@ _start:
 LAYOUT = """
 ENTRY(_start)
 SECTIONS {
-  .stock 0 : { *(.stock) }
+  .stock 0 : { KEEP(*(.stock)) }
   .boot 0x100000 : { *(.boot) }
   .text : { *(.text*) *(.rodata*) }
   /DISCARD/ : { *(.note*) *(.comment) }
 }
+h03_slt_fault_resume = 0x034850;
 """
 
 FIXTURE = """
 #include <stdint.h>
+#include "lfj8_h03_mmio.h"
+#include "lfj8_h03_takeover.h"
 
 #define RAM8(a) (*(volatile uint8_t *)(uintptr_t)(a))
 #define RAM16(a) (*(volatile uint16_t *)(uintptr_t)(a))
@@ -47,6 +56,7 @@ enum {
     CURRENT_REQUEST = 0x805094,
     PWM_WIDTH = 0x8048CC,
     OEM_CRITICAL_STACK = 0x809F9C,
+    STARTUP_COUNT = 0x80621A,
     ADC0_AN3 = 0x804BC0,
     REMAINING = 0x804EAC,
     P0745 = 0x806356,
@@ -132,6 +142,96 @@ static int check_actuator_path(void)
     return 0;
 }
 
+Lfj8H03Takeover rbm_h03_takeover_state;
+static unsigned inhibits;
+static unsigned delivered;
+static unsigned fault_notifications;
+static uint32_t notification_ie;
+
+static void write_word(void *context, uint32_t address, uint32_t value)
+{
+    (void)context;
+    RAM32(address) = value;
+}
+
+static uint32_t clock_ticks(void *context)
+{
+    (void)context;
+    return 100;
+}
+
+static int qualified(void *context)
+{
+    (void)context;
+    return 1;
+}
+
+static void arbitrate(void *context)
+{
+    (void)context;
+    ((void (*)(void))(uintptr_t)0x0717B8)();
+}
+
+static void apply(void *context)
+{
+    (void)context;
+    ++delivered;
+    ((void (*)(void))(uintptr_t)0x046900)();
+}
+
+static void inhibit(void *context)
+{
+    (void)context;
+    ++inhibits;
+    if (RAM8(P0745)) {
+        uint32_t psw;
+        __asm__ volatile ("mvfc %0,psw" : "=r"(psw));
+        ++fault_notifications;
+        notification_ie |= psw & 0x40u;
+    }
+}
+
+static int check_revocation(void)
+{
+    static const Lfj8H03TakeoverOps ops = {
+        .io = &lfj8_h03_mmio, .write32 = write_word, .clock_ticks = clock_ticks,
+        .qualified = qualified, .arbitrate = arbitrate, .apply = apply, .inhibit = inhibit,
+        .isolated_pwm_mask = LFJ8_H03_ALL_SPARE_PWM_ISOLATED,
+    };
+    const Lfj8H03OutputPlan plan = {
+        .pressure_mailbox = PRESSURE_PROPOSAL, .pressure_binary32 = ONE_AMP,
+        .pressure_request_ma = 1000u, .toyota_compare = 400u,
+    };
+    Lfj8H03Takeover *state = &rbm_h03_takeover_state;
+    RAM16(STARTUP_COUNT) = 3u;
+    RAM8(CLEAR_REQUEST) = 0u;
+    RAM16(ADC0_AN3) = 307u << 6;
+    sample(1);
+    if (!lfj8_h03_takeover_init(state, &ops, 10) ||
+        !lfj8_h03_takeover_prepare_plan(state, &plan, 1, 100)) {
+        return 17;
+    }
+    RAM16(ADC0_AN3) = 0;
+    sample(20);
+    if (RAM8(P0745) != 1u || state->pending != 1u - H03_SLT_FAULT_HOOK ||
+        fault_notifications != H03_SLT_FAULT_HOOK || notification_ie != 0u) {
+        return 18;
+    }
+
+    RAM8(CLEAR_REQUEST) = 1u;
+    ((void (*)(void))(uintptr_t)0x071FF4)();
+    if (RAM8(P0745) || lfj8_h03_takeover_apply(state, 1) != 1 - H03_SLT_FAULT_HOOK ||
+        delivered != 1u - H03_SLT_FAULT_HOOK || inhibits != 2u * H03_SLT_FAULT_HOOK) {
+        return 19;
+    }
+    if (lfj8_h03_takeover_prepare_plan(state, &plan, 1, 100) ||
+        !lfj8_h03_takeover_prepare_plan(state, &plan, 2, 100) ||
+        !lfj8_h03_takeover_apply(state, 2) || delivered != 2u - H03_SLT_FAULT_HOOK) {
+        return 20;
+    }
+    return 0;
+}
+
 int main(void)
 {
     void (*clear)(void) = (void (*)(void))(uintptr_t)0x071FF4;
@@ -199,7 +299,8 @@ int main(void)
     if (RAM32(REMAINING) != FULL_COUNTDOWN || RAM8(P0745)) {
         return 10;
     }
-    return check_actuator_path();
+    const int result = check_actuator_path();
+    return result ? result : check_revocation();
 }
 """
 
@@ -220,6 +321,10 @@ SCENARIOS = (
     "apply_selects_gpio_low_and_updates_reloads",
     "clear_then_apply_keeps_last_zero_result",
     "stock_rearbitration_can_restore_the_old_proposal",
+    "takeover_prepares_one_generation_before_fault",
+    "latch_reaches_revoke_only_in_the_hooked_variant",
+    "cleared_fault_accepts_old_generation_only_without_hook",
+    "duplicate_prepare_rejects_and_next_generation_can_be_applied",
 )
 
 
@@ -228,6 +333,8 @@ def check(base, compiler):
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
         raise ValueError("H03 changed while the fixture was being prepared")
+    if rom[0x03484C:0x034850] != bytes.fromhex("60012004"):
+        raise ValueError("Unexpected stock P0745 latch word")
 
     with TemporaryDirectory(prefix="rbm-h03-slt-fault-") as directory:
         work = Path(directory)
@@ -243,16 +350,32 @@ def check(base, compiler):
         (work / "fixture.S").write_text(START, encoding="ascii")
         (work / "fixture.ld").write_text(LAYOUT, encoding="ascii")
         (work / "fixture.c").write_text(FIXTURE, encoding="ascii")
-        run(compiler, "-m32r", "-Wa,-EB", "-Os", "-ffreestanding", "-nostdlib",
-            "-std=c11", "-Wall", "-Wextra", "-Werror", "-Wl,-T,fixture.ld",
-            "fixture.S", "fixture.c", "-o", "fixture.elf")
+        here = Path(__file__).resolve().parent
+        root = here.parents[1]
         simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")
-        try:
-            run(simulator, "--memory-size", "16M", "fixture.elf")
-        except subprocess.CalledProcessError as error:
-            if 0 < error.returncode <= len(SCENARIOS):
-                raise ValueError(f"Unexpected P0745 result in {SCENARIOS[error.returncode - 1]}") from error
-            raise
+        objcopy = compiler.with_name(f"m32r-elf-objcopy{compiler.suffix}")
+        for hooked in (0, 1):
+            run(compiler, "-m32r", "-Wa,-EB", "-Os", "-ffreestanding", "-nostdlib",
+                "-ffunction-sections", "-fdata-sections",
+                "-std=c11", "-Wall", "-Wextra", "-Werror", "-Wl,-T,fixture.ld,--gc-sections",
+                f"-DH03_SLT_FAULT_HOOK={hooked}", f"-I{here}", f"-I{root / 'controller/include'}",
+                f"-I{root / 'controller/vendor/toyota/include'}",
+                "fixture.S", "fixture.c", here / "h03_slt_fault_hook.S", here / "lfj8_h03_takeover.c",
+                here / "lfj8_h03_outputs.c", here / "lfj8_h03_mmio.c", "-lc", "-lgcc",
+                "-o", "fixture.elf")
+            run(objcopy, "-j", ".stock", "-O", "binary", "fixture.elf", "linked-stock.bin")
+            linked = (work / "linked-stock.bin").read_bytes()
+            if len(linked) != len(rom) or linked[:0x03484C] != rom[:0x03484C] or linked[0x034850:] != rom[0x034850:]:
+                raise ValueError("The simulator ROM differs outside the P0745 latch word")
+            if (hooked and linked[0x03484C] != 0xFF) or (not hooked and linked != rom):
+                raise ValueError("P0745 latch was not linked as expected")
+            try:
+                run(simulator, "--memory-size", "16M", "fixture.elf")
+            except subprocess.CalledProcessError as error:
+                if 0 < error.returncode <= len(SCENARIOS):
+                    scenario = SCENARIOS[error.returncode - 1]
+                    raise ValueError(f"Unexpected P0745 result in {scenario} (hooked={hooked})") from error
+                raise
 
     return {
         "base": identity,
@@ -268,6 +391,9 @@ def check(base, compiler):
         "arbiter_zero_disconnects_pwm_without_apply": False,
         "apply_after_zero_selects_gpio_low": True,
         "stock_rearbitration_after_clear_can_reuse_unchanged_proposal": True,
+        "latch_hook": "0x03484C",
+        "takeover_can_apply_old_generation_after_clear_without_latch_hook": True,
+        "latch_hook_revokes_old_generation_and_invokes_inhibit": True,
         "hardware_executed": False,
         "target_image_emitted": False,
     }
