@@ -1,28 +1,37 @@
 {
   "schema_version": 2,
-  "sequence": 634,
+  "sequence": 635,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
-      "label": "Основной чат — свободное продолжение review",
+      "label": "Основной чат — общая сборка всех результатов",
       "branch": "codex/integration-01a1f76d-20261120",
       "files": [
-        "AGENTS.md",
         "README.md",
         "data/project-tasks.json",
-        "docs/multi-chat.md",
+        "docs/lfj8-h03-memory-layout.md",
         "docs/project-map.md",
-        "tests/test_task_coordination.py",
-        "tools/task_coordination.py",
-        "verification/project-audit/2026-11-21-coordination-review.json",
-        "verification/project-audit/review-continuations/"
+        "docs/working-set.md",
+        "targets/lfj8/check_h03_application_binding.py",
+        "targets/lfj8/h03_application_binding_fixture.c",
+        "targets/lfj8/lfj8_h03_application_binding.c",
+        "targets/lfj8/lfj8_h03_application_binding.h",
+        "tools/check_h03_image_layout.py",
+        "tools/check_integrated_h03.py",
+        "verification/project-audit/2026-11-21-final-integration.json",
+        "verification/project-audit/final-integration-20261121/"
       ],
-      "stage": "done",
-      "claim_id": "306818fa765b49debcd6e61e0420d8f9",
-      "claimed_at": "2026-11-20T20:16:50+00:00",
-      "updated_at": "2026-11-20T20:27:53+00:00",
-      "note": "Исправление координации включено в main: review не удерживает задачу, новая работа не теряет сданные результаты.",
-      "result": "20bf48d15b27608a39876bc96aacae68c705863a"
+      "stage": "in_progress",
+      "claim_id": "4c455b84d1db43c0a19c00f91baec753",
+      "claimed_at": "2026-11-20T21:01:34+00:00",
+      "updated_at": "2026-11-20T21:01:34+00:00",
+      "note": "Включены 42 опубликованные порции и локальный CAN-01 84b4433 без изменения чужой рабочей копии. Повторяю общую сборку, проверяю память и целевые привязки. Сданная порция не равна готовому BIN.",
+      "result": null,
+      "based_on_reviews": [
+        "15e6e783e4d74a5b9c000d3658becff0",
+        "77e3f918a51449ab982b5ad578a53b85",
+        "ae0aa09617874ca8bcc10362dcb84b80"
+      ]
     },
     "DTC-02": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -6486,9 +6495,48 @@
           "ef6ec9b39ec54c5fab41e021568c094f"
         ]
       }
+    },
+    {
+      "operation_id": "39326ac3c3eb4425963966d0ae42e227",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "4c455b84d1db43c0a19c00f91baec753",
+      "at": "2026-11-20T21:01:34+00:00",
+      "record": {
+        "owner": "codex-integration-01a1f76d-20261120",
+        "label": "Основной чат — общая сборка всех результатов",
+        "branch": "codex/integration-01a1f76d-20261120",
+        "files": [
+          "README.md",
+          "data/project-tasks.json",
+          "docs/lfj8-h03-memory-layout.md",
+          "docs/project-map.md",
+          "docs/working-set.md",
+          "targets/lfj8/check_h03_application_binding.py",
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_application_binding.h",
+          "tools/check_h03_image_layout.py",
+          "tools/check_integrated_h03.py",
+          "verification/project-audit/2026-11-21-final-integration.json",
+          "verification/project-audit/final-integration-20261121/"
+        ],
+        "stage": "in_progress",
+        "claim_id": "4c455b84d1db43c0a19c00f91baec753",
+        "claimed_at": "2026-11-20T21:01:34+00:00",
+        "updated_at": "2026-11-20T21:01:34+00:00",
+        "note": "Включены 42 опубликованные порции и локальный CAN-01 84b4433 без изменения чужой рабочей копии. Повторяю общую сборку, проверяю память и целевые привязки. Сданная порция не равна готовому BIN.",
+        "result": null,
+        "based_on_reviews": [
+          "15e6e783e4d74a5b9c000d3658becff0",
+          "77e3f918a51449ab982b5ad578a53b85",
+          "ae0aa09617874ca8bcc10362dcb84b80"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:52:18+00:00",
+  "updated_at": "2026-11-20T21:01:34+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
