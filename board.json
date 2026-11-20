@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 511,
+  "sequence": 512,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -189,22 +189,24 @@
       "result": null
     },
     "DTC-03": {
-      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
-      "label": "Codex DTC-03 — квалификация P0710 TA2005",
-      "branch": "codex/dtc03-ta2005-p0710-01a1f9c7",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "label": "Codex DTC-03: ATF H03 и P0710",
+      "branch": "codex/dtc03-h03-p0710-922b7b11",
       "files": [
-        "diagnostics/chery_atf_circuit.c",
-        "diagnostics/chery_atf_circuit.h",
-        "diagnostics/test_chery_atf_circuit.c",
-        "diagnostics/verify_atf_circuit.py",
-        "verification/project-audit/dtc03-ta2005-p0710.md"
+        "targets/lfj8/check_h03_atf_fault.py",
+        "targets/lfj8/h03_atf_fault_hook.S",
+        "targets/lfj8/lfj8_h03_atf_fault.c",
+        "targets/lfj8/lfj8_h03_atf_fault.h",
+        "targets/lfj8/lfj8_h03_dtc_target.c",
+        "targets/lfj8/lfj8_h03_dtc_target.h",
+        "verification/project-audit/dtc03-h03-p0710-foreground.md"
       ],
-      "stage": "done",
-      "claim_id": "0c37e0c652cd4b8285cdd4458b796cef",
-      "claimed_at": "2026-11-20T18:18:10+00:00",
-      "updated_at": "2026-11-20T19:25:07+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "69ccd6c59ad096fd2e1de078955cef8ae6ee1081"
+      "stage": "in_progress",
+      "claim_id": "6ce2dadd9393441586bcbbbeb50614e0",
+      "claimed_at": "2026-11-20T19:41:53+00:00",
+      "updated_at": "2026-11-20T19:41:53+00:00",
+      "note": "Связываю штатный разбор AN1 с P0710 в диагностическом foreground H03; проверяю точку вызова, очистку, возраст снимка и ответы Chery. Остальные цепи требуют собственного доказательства.",
+      "result": null
     },
     "TOY-02": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -4662,9 +4664,17 @@
       "action": "heartbeat",
       "claim_id": "ad997bd677c542c682cec961d4619193",
       "at": "2026-11-20T19:41:30+00:00"
+    },
+    {
+      "operation_id": "d94e28020e484cf1b8905bc5a5228c2d",
+      "task": "DTC-03",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "claim",
+      "claim_id": "6ce2dadd9393441586bcbbbeb50614e0",
+      "at": "2026-11-20T19:41:53+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:41:30+00:00",
+  "updated_at": "2026-11-20T19:41:53+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
