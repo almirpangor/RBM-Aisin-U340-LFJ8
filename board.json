@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 84,
+  "sequence": 85,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -319,6 +319,22 @@
       "claimed_at": "2026-11-20T16:12:39+00:00",
       "updated_at": "2026-11-20T16:12:39+00:00",
       "note": "Проверяю 2→3, 3→4 и обратные переходы в существующем цикле FAST/SECONDARY/MAIN. Фиксирую донорские состояния и отсутствующие звенья отдельно от аппаратной реализации.",
+      "result": null
+    },
+    "CAN-02": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex CAN-02",
+      "branch": "codex/can02-telemetry-timeout-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "targets/lfj8/lfj8_h03_can13.c",
+        "targets/lfj8/test_lfj8_h03_can13.c",
+        "verification/project-audit/can02-loan-timeout.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "c53be951e4c44833aea3f77adecbd92b",
+      "claimed_at": "2026-11-20T16:13:59+00:00",
+      "updated_at": "2026-11-20T16:13:59+00:00",
+      "note": "Проверяю отзыв подтверждения снижения момента, когда заём CAN13 под телеметрию превышает допустимый интервал и отмена ещё не освободила слот.",
       "result": null
     }
   },
@@ -994,9 +1010,17 @@
       "action": "heartbeat",
       "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
       "at": "2026-11-20T16:13:40+00:00"
+    },
+    {
+      "operation_id": "91cbdb3b843e4ad3bc6ada67aa078f69",
+      "task": "CAN-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "c53be951e4c44833aea3f77adecbd92b",
+      "at": "2026-11-20T16:13:59+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:13:40+00:00",
+  "updated_at": "2026-11-20T16:13:59+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
