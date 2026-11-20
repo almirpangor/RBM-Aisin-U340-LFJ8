@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 382,
+  "sequence": 383,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -293,20 +293,21 @@
       "result": null
     },
     "CAN-04": {
-      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Codex CAN-04 TX loss",
-      "branch": "codex/can04-tx-loss-1120-c7e4",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex CAN-04 — срок подтверждения момента",
+      "branch": "codex/can-04-progress-deadline-fea1b366",
       "files": [
-        "targets/lfj8/lfj8_h03_torque_can.c",
-        "targets/lfj8/test_lfj8_h03_torque_can.c",
-        "verification/project-audit/can04-tx-lease-loss.md"
+        "targets/lfj8/lfj8_h03_torque.c",
+        "targets/lfj8/lfj8_h03_torque.h",
+        "targets/lfj8/test_lfj8_h03_torque.c",
+        "verification/project-audit/can04-progress-deadline.md"
       ],
-      "stage": "done",
-      "claim_id": "8ac9d38cec054d318a8eb919f6783de2",
-      "claimed_at": "2026-11-20T16:41:24+00:00",
-      "updated_at": "2026-11-20T17:42:49+00:00",
-      "note": "袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md.",
-      "result": "e02095c6b8d294dacd71db21ea36f970019d0790"
+      "stage": "in_progress",
+      "claim_id": "001fe3e513b645ef9370cb6af6d76bc2",
+      "claimed_at": "2026-11-20T18:33:48+00:00",
+      "updated_at": "2026-11-20T18:33:48+00:00",
+      "note": "Проверяю гонку порядка RX → poll на границе 60 мс: запоздалый 0x5E9 не должен возобновлять снижение. Транспорт CAN13, калибровки и файлы других резервов не затрагиваю.",
+      "result": null
     },
     "MODE-01": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -3633,9 +3634,17 @@
       "action": "complete",
       "claim_id": "dde35120f1f04f6b9be6619a41ccbc33",
       "at": "2026-11-20T18:33:25+00:00"
+    },
+    {
+      "operation_id": "e40a5899e71145bab24b7db018ffecfe",
+      "task": "CAN-04",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "001fe3e513b645ef9370cb6af6d76bc2",
+      "at": "2026-11-20T18:33:48+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:33:25+00:00",
+  "updated_at": "2026-11-20T18:33:48+00:00",
   "main_commit": "f36613136fffce586a2736c1ea043794784c5c6f",
   "catalog": [
     {
