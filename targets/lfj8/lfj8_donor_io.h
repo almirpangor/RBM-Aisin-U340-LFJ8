@@ -178,4 +178,10 @@ int lfj8_h03_can0_read_timestamp(const Lfj8RegisterIo *io, uint16_t *timestamp);
  * across this call, the queue reset, and publication of the new grant. */
 int lfj8_h03_can0_epoch_drained(const Lfj8RegisterIo *io);
 
+/* Retire the excluded TX13 slot after lease loss. The caller has already
+ * withdrawn software RX/TX and holds the H03 IRQ lock and the OEM writer
+ * fence. Return 1 on confirmed idle or completion. A pending abort needs
+ * a later observation or the normal guarded reset/drain before handoff. */
+int lfj8_h03_can0_retire_tx13_locked(const Lfj8RegisterIo *io);
+
 #endif

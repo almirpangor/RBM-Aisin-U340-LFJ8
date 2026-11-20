@@ -6,6 +6,8 @@ _Static_assert(offsetof(Lfj8H03CanOwner, setup_generation) == LFJ8_CAN_OWNER_SET
                "Native CAN setup generation offset");
 _Static_assert(offsetof(Lfj8H03CanOwner, grant) == LFJ8_CAN_OWNER_GRANT_OFFSET,
                "Native CAN grant offset");
+_Static_assert(offsetof(Lfj8H03CanOwner, tx13_fenced) == LFJ8_CAN_OWNER_TX13_FENCE_OFFSET,
+               "Native CAN TX13 fence offset");
 
 void lfj8_h03_can_owner_init(Lfj8H03CanOwner *owner)
 {
@@ -35,6 +37,7 @@ Lfj8H03Can13Result lfj8_h03_can_owner_poll(
     } else if (epoch != owner->admitted_generation && lfj8_h03_can0_epoch_drained(io)) {
         lfj8_h03_dtc_rx_queue_reset(queue, io, epoch);
         owner->admitted_generation = epoch;
+        owner->tx13_fenced = 1u;
         owner->grant = 1u;
     }
     io->leave(io->context, saved_irq);
