@@ -33,6 +33,7 @@ typedef enum {
     BOSCH_CHERY_TORQUE_UNQUALIFIED,
     BOSCH_CHERY_TORQUE_SYNCHRONIZING,
     BOSCH_CHERY_TORQUE_ACCEPTED,
+    BOSCH_CHERY_TORQUE_STALE,
 } BoschCheryTorqueResult;
 
 typedef struct {
@@ -46,7 +47,9 @@ typedef struct {
     BoschCheryTorqueSample sample;
     uint32_t lease_ticks;
     uint32_t last_qualified_tick;
+    uint32_t order_floor_tick;
     bool synchronized;
+    bool have_order_floor;
 } BoschCheryTorqueRx;
 
 typedef struct {
@@ -61,8 +64,14 @@ typedef struct {
  * upstream_permit covers bus health, engine readiness and all external gates.
  */
 bool bosch_chery_torque_init(BoschCheryTorqueRx *rx, uint32_t lease_ticks);
+/* Immediate delivery: capture and service occur at the same tick. */
 BoschCheryTorqueResult bosch_chery_torque_receive(BoschCheryTorqueRx *rx,
     const BoschCheryTorqueFrame *frame, uint32_t now, bool upstream_permit);
+/* For queued delivery, pass the coherent frame capture tick and current
+ * service tick. The caller tracks clock generations and orders equal-tick
+ * captures. An operand expires one lease after capture. */
+BoschCheryTorqueResult bosch_chery_torque_receive_captured(BoschCheryTorqueRx *rx,
+    const BoschCheryTorqueFrame *frame, uint32_t captured_at, uint32_t now, bool upstream_permit);
 BoschCheryTorqueSample bosch_chery_torque_snapshot(BoschCheryTorqueRx *rx,
     uint32_t now, bool upstream_permit);
 

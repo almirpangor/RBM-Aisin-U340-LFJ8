@@ -34,11 +34,23 @@ BoschCheryTorqueSample bosch_chery_torque_snapshot(BoschCheryTorqueRx *rx,
         (rx->synchronized && now - rx->last_qualified_tick >= rx->lease_ticks)) {
         revoke(rx);
     }
+    if (!upstream_permit) {
+        /* Reject backlog captured before the observed permit withdrawal. */
+        rx->order_floor_tick = now;
+        rx->have_order_floor = true;
+    } else if (rx->have_order_floor && now - rx->order_floor_tick >= rx->lease_ticks) {
+        rx->have_order_floor = false;
+    }
     return rx->sample;
 }
 
 BoschCheryTorqueResult bosch_chery_torque_receive(BoschCheryTorqueRx *rx,
         const BoschCheryTorqueFrame *frame, uint32_t now, bool upstream_permit) {
+    return bosch_chery_torque_receive_captured(rx, frame, now, now, upstream_permit);
+}
+
+BoschCheryTorqueResult bosch_chery_torque_receive_captured(BoschCheryTorqueRx *rx,
+        const BoschCheryTorqueFrame *frame, uint32_t captured_at, uint32_t now, bool upstream_permit) {
     (void)bosch_chery_torque_snapshot(rx, now, upstream_permit);
     if (frame == NULL || frame->id != BOSCH_CHERY_TORQUE_CAN_ID) {
         return BOSCH_CHERY_TORQUE_IGNORED;
@@ -46,6 +58,13 @@ BoschCheryTorqueResult bosch_chery_torque_receive(BoschCheryTorqueRx *rx,
     if (rx == NULL || !upstream_permit || rx->lease_ticks == 0) {
         return BOSCH_CHERY_TORQUE_BLOCKED;
     }
+    const uint32_t age = now - captured_at;
+    if (age >= rx->lease_ticks ||
+        (rx->have_order_floor && age > now - rx->order_floor_tick)) {
+        return BOSCH_CHERY_TORQUE_STALE;
+    }
+    rx->order_floor_tick = captured_at;
+    rx->have_order_floor = true;
     if (frame->extended || frame->remote || frame->fd || frame->lost || frame->dlc != 8) {
         revoke(rx);
         return BOSCH_CHERY_TORQUE_MALFORMED;
@@ -70,7 +89,7 @@ BoschCheryTorqueResult bosch_chery_torque_receive(BoschCheryTorqueRx *rx,
     if ((qualification->flags_8182 & 3u) != 0) {
         return BOSCH_CHERY_TORQUE_UNQUALIFIED;
     }
-    rx->last_qualified_tick = now;
+    rx->last_qualified_tick = captured_at;
     rx->synchronized = true;
     if (!had_sequence) {
         return BOSCH_CHERY_TORQUE_SYNCHRONIZING;

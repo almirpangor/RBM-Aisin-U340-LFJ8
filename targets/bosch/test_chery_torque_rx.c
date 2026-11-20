@@ -21,6 +21,61 @@ static BoschCheryTorqueResult submit(BoschCheryTorqueRx *rx, uint32_t tick,
     return bosch_chery_torque_receive(rx, &frame, tick, true);
 }
 
+static BoschCheryTorqueResult submit_captured(BoschCheryTorqueRx *rx, uint32_t captured_at,
+        uint32_t now, uint8_t sequence) {
+    const BoschCheryTorqueFrame frame = make_frame(sequence, 40, 60, true, false);
+    return bosch_chery_torque_receive_captured(rx, &frame, captured_at, now, true);
+}
+
+static void test_capture_age(void) {
+    BoschCheryTorqueRx rx;
+    assert(bosch_chery_torque_init(&rx, 8));
+    assert(submit_captured(&rx, 1, 20, 7) == BOSCH_CHERY_TORQUE_STALE);
+    assert(submit_captured(&rx, 2, 21, 0) == BOSCH_CHERY_TORQUE_STALE);
+    assert(!rx.synchronized && bosch_chery_torque_snapshot(&rx, 21, true).valid_channels == 0);
+
+    const uint32_t start = UINT32_MAX - 3;
+    assert(submit_captured(&rx, start - 8, start, 7) == BOSCH_CHERY_TORQUE_STALE);
+    assert(submit_captured(&rx, start + 1, start, 7) == BOSCH_CHERY_TORQUE_STALE);
+    assert(submit_captured(&rx, start, start + 1, 7) == BOSCH_CHERY_TORQUE_SYNCHRONIZING);
+    assert(submit_captured(&rx, start + 1, start + 4, 0) == BOSCH_CHERY_TORQUE_ACCEPTED);
+    assert(submit_captured(&rx, start, start + 5, 7) == BOSCH_CHERY_TORQUE_STALE);
+    assert(bosch_chery_torque_snapshot(&rx, start + 8, true).valid_channels == BOSCH_CHERY_TORQUE_BOTH);
+    assert(bosch_chery_torque_snapshot(&rx, start + 9, true).valid_channels == 0);
+
+    assert(submit_captured(&rx, 10, 17, 1) == BOSCH_CHERY_TORQUE_SYNCHRONIZING);
+    /* Earlier capture expired before the next fresh frame was serviced. */
+    assert(submit_captured(&rx, 12, 18, 2) == BOSCH_CHERY_TORQUE_SYNCHRONIZING);
+    assert(bosch_chery_torque_snapshot(&rx, 18, true).valid_channels == 0);
+    assert(submit_captured(&rx, 18, 19, 3) == BOSCH_CHERY_TORQUE_ACCEPTED);
+}
+
+static void test_capture_order_after_revocation(void) {
+    BoschCheryTorqueRx rx;
+    assert(bosch_chery_torque_init(&rx, 8));
+    assert(submit_captured(&rx, 10, 10, 1) == BOSCH_CHERY_TORQUE_SYNCHRONIZING);
+    assert(submit_captured(&rx, 11, 11, 2) == BOSCH_CHERY_TORQUE_ACCEPTED);
+    assert(bosch_chery_torque_snapshot(&rx, 14, false).valid_channels == 0);
+    assert(submit_captured(&rx, 13, 15, 3) == BOSCH_CHERY_TORQUE_STALE);
+    assert(submit_captured(&rx, 15, 16, 4) == BOSCH_CHERY_TORQUE_SYNCHRONIZING);
+    assert(submit_captured(&rx, 16, 17, 5) == BOSCH_CHERY_TORQUE_ACCEPTED);
+
+    const BoschCheryTorqueFrame inactive = make_frame(0, 40, 60, false, false);
+    assert(bosch_chery_torque_receive_captured(&rx, &inactive, 18, 19, true) ==
+           BOSCH_CHERY_TORQUE_INACTIVE);
+    assert(submit_captured(&rx, 17, 20, 6) == BOSCH_CHERY_TORQUE_STALE);
+    assert(submit_captured(&rx, 19, 20, 1) == BOSCH_CHERY_TORQUE_SYNCHRONIZING);
+
+    BoschCheryTorqueFrame lost = make_frame(2, 40, 60, true, false);
+    lost.lost = true;
+    assert(bosch_chery_torque_receive_captured(&rx, &lost, 21, 22, true) ==
+           BOSCH_CHERY_TORQUE_MALFORMED);
+    assert(submit_captured(&rx, 20, 22, 2) == BOSCH_CHERY_TORQUE_STALE);
+    assert(bosch_chery_torque_snapshot(&rx, 22, true).valid_channels == 0);
+    assert(submit_captured(&rx, 22, 22, 3) == BOSCH_CHERY_TORQUE_SYNCHRONIZING);
+    assert(submit_captured(&rx, 22, 23, 4) == BOSCH_CHERY_TORQUE_ACCEPTED);
+}
+
 static void test_transport(void) {
     BoschCheryTorqueRx rx;
     assert(!bosch_chery_torque_init(&rx, 0));
@@ -123,8 +178,10 @@ static void test_calibration_lookup(void) {
 
 int main(void) {
     test_transport();
+    test_capture_age();
+    test_capture_order_after_revocation();
     test_qualification();
     test_calibration_lookup();
-    puts("Bosch Chery torque qualification, lease and calibrated lookup PASS (host)");
+    puts("Bosch Chery torque qualification, capture-time lease and calibrated lookup PASS (host)");
     return 0;
 }
