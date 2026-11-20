@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:44:55+00:00**. Изменение № **299**.
+Обновлено UTC: **2026-11-20T17:45:20+00:00**. Изменение № **300**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -29,7 +29,7 @@
 | H03-02 — S51, S83 и температура ATF | Работа завершена | Codex — привязка ATF H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-02-atf-01a1f9a2 | 2026-11-20T17:39:23+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit f8535218156ba32282a6e299e256a77ef0ae752d |
 | H03-03 — Единое расписание и запуск приложения H03 | Работа завершена | Codex — foreground H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/h03-03-foreground-01a1f99f | 2026-11-20T17:38:22+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit abaa51c3e09d017366e05906cafd1fe3de32515c |
 | H03-04 — Память, стек и сервисные пути | Работа завершена | Codex — сервисные границы RAM H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/h03-service-spans-32e6ac79 | 2026-11-20T17:38:42+00:00 | Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit e4ac4b09967f7edf86cf2c1911218ba34e260b24 |
-| H03-05 — SLT, силовые выходы и реакция на отказ | На проверке | Codex — штатное отключение SLT \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-05-p0745-01a1f9a2 | 2026-11-20T16:51:27+00:00 | ELF-чек подтверждает все 128 страниц и через штатную внутреннюю ветвь активации 003364, с двумя отрицательными граничными адресами. ELF 020000/07C118 отклонён. Проверка внешнего сеанса и аппаратного наложения открыта. / commit 5813eaf480e4814fc5e78ed19d65b171e5f39a86 |
+| H03-05 — SLT, силовые выходы и реакция на отказ | Работа завершена | Codex — штатное отключение SLT \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-05-p0745-01a1f9a2 | 2026-11-20T17:45:20+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 5813eaf480e4814fc5e78ed19d65b171e5f39a86 |
 | IO-01 — Два дополнительных реле | Отложена владельцем | — | — | — | — |
 | VSS-01 — Точный расчёт VSS и скорость по CAN | Работа завершена | Codex VSS-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss01-exact-arithmetic-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:44:55+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 01293a5be56c519cb2b01ad54f82637c0be823f6 |
 | VSS-02 — Кинематика и параметры реальной скорости | На проверке | Codex VSS-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss02-measurement-check-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:37:13+00:00 | Сверка TML0 по независимому времени и допуску ppm, перенос, неправильная частота и остановка проверены. PC 35 шагов/82 теста, M32R 17 компонентов PASS. Реальная частота TML0 и стенд открыты, отчёт verification/project-audit/vss02-measurement-check.md. / commit 0ce144d22b18682e3384b05ec602224f8ec6d159 |
@@ -77,19 +77,6 @@
 - tests/test_inspect_lfj8_tcm.py
 - tools/inspect_lfj8_tcm.py
 - verification/project-audit/h03-01-base-guard.md
-
-### H03-05
-
-Чат: Codex — штатное отключение SLT. Claim ID: 806db3cf9bd24f39aaf4b40aeb1d341b.
-
-- docs/lfj8-h03-flash.md
-- docs/lfj8-slt-calibration.md
-- targets/lfj8/check_h03_flash_policy.py
-- targets/lfj8/check_h03_slt_fault.py
-- targets/lfj8/h03_slt_fault_hook.S
-- targets/lfj8/lfj8_h03_takeover.c
-- targets/lfj8/lfj8_h03_takeover.h
-- targets/lfj8/test_lfj8_h03_takeover.c
 
 ### MODE-03
 
@@ -151,6 +138,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:45:20+00:00 | H03-05 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T17:44:55+00:00 | VSS-01 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:44:35+00:00 | DTC-01 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T17:44:14+00:00 | TOY-06 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -180,4 +168,3 @@
 | 2026-11-20T17:10:59+00:00 | CAN-02 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T17:09:39+00:00 | TOY-06 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:08:40+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
-| 2026-11-20T17:07:56+00:00 | TOY-06 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
