@@ -118,8 +118,7 @@ static uint8_t propose_gear(const RbmU340eController *controller,
         }
     } else {
         const uint8_t shift_button = rising & SHIFT_BUTTON_MASK;
-        if (!(selector_bit & controller->policy.manual_selectors) || !shift_button ||
-            output->conflicting_buttons) {
+        if (!(selector_bit & controller->policy.manual_selectors) || !shift_button) {
             return 0;
         }
         gear = input->actual_gear + (shift_button == RBM_U340E_BUTTON_UP ? 1 : -1);
@@ -168,7 +167,9 @@ int rbm_u340e_step(RbmU340eController *controller, const RbmU340eInput *input,
         (input->buttons_valid && (input->stable_buttons & SHIFT_BUTTON_MASK) == SHIFT_BUTTON_MASK) ||
         (shift_buttons && (rising & RBM_U340E_BUTTON_MODE));
     output->relay_mask = relay_commands(input->selector);
-    output->requested_gear = propose_gear(controller, input, rising, output);
+    if (!output->conflicting_buttons) {
+        output->requested_gear = propose_gear(controller, input, rising, output);
+    }
     return 1;
 }
 

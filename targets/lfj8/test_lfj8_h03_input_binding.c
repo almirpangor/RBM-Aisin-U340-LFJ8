@@ -154,6 +154,31 @@ static void test_shift_and_od(void)
     assert(tick(&f, 500, up) && !f.proposal.driver.requested_gear);
 }
 
+static void test_auto_conflict(void)
+{
+    Fixture f;
+    init(&f);
+    qualify(&f, 500);
+    f.driver.auto_request_valid = 1;
+    f.driver.auto_request.speed_4549 = 254;
+    const uint8_t mode_and_up = RBM_U340E_BUTTON_MODE | RBM_U340E_BUTTON_UP;
+    assert(tick(&f, 500, mode_and_up));
+    assert(tick(&f, 500, mode_and_up));
+    assert(f.proposal.cycle.qualified == 1 && f.proposal.driver.mode == RBM_U340E_AUTO);
+    assert(f.proposal.driver.conflicting_buttons && !f.proposal.driver.auto_request_valid &&
+           !f.proposal.driver.requested_gear);
+    assert(tick(&f, 500, 0) && f.proposal.driver.requested_gear == 4);
+
+    const uint8_t both = RBM_U340E_BUTTON_UP | RBM_U340E_BUTTON_DOWN;
+    assert(tick(&f, 500, both));
+    assert(tick(&f, 500, both));
+    assert(f.proposal.driver.conflicting_buttons && !f.proposal.driver.auto_request_valid &&
+           !f.proposal.driver.requested_gear);
+    assert(tick(&f, 500, 0));
+    assert(tick(&f, 500, 0) && f.proposal.driver.auto_request_valid &&
+           f.proposal.driver.requested_gear == 4);
+}
+
 static void test_invalid_snapshots(void)
 {
     Fixture f;
@@ -243,6 +268,7 @@ int main(void)
 {
     test_six_positions();
     test_shift_and_od();
+    test_auto_conflict();
     test_invalid_snapshots();
     test_adc_loss_and_recovery();
     puts("H03 input proposal: six ranges, debounce, conflict, Auto/OD, independent freshness, ADC loss and rearm PASS");
