@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:45:07+00:00**. Изменение № **420**.
+Обновлено UTC: **2026-11-20T18:45:27+00:00**. Изменение № **421**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -20,7 +20,7 @@
 | TOY-06 — Блокировка гидротрансформатора SLU | Выполняется | Codex TOY-06 — границы стадий SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-stage-boundaries-fea1b366 | 2026-11-20T18:42:41+00:00 | Предыдущий SECONDARY принят. Довожу соседние донорские стадии 05DA44 и 05B6DE на том же снимке и каноническом GP; проверю отсечки, сохранение остальных флагов и общий цикл. Файлы владельца приложения H03-03 и физические выходы вне резерва. |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Чат CAN — поколение RPM/ОЖ H03 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-engine-rx-generation-1120-c7e4 | 2026-11-20T18:27:55+00:00 | RX11/12 detects native CAN generation changes in its ordinary poll and revokes RPM, ECT and model fields until reattachment. PC 37/102, M32R 18 components +17 native, Bosch PASS_OFFLINE_ONLY. RAM +8 B, code +76 B in bound sizing model. Integration call after init: lfj8_h03_engine_rx_bind_generation(rx, &amp;h03_can_owner.setup_generation). Evidence verification/project-audit/can01-engine-rx-generation.md. Target startup and hardware open. / commit c14dbfda51b20fe58b904f8d220e3d35e63ff5dd |
 | CAN-02 — Общий диспетчер CAN13 | Свободна для продолжения | Предыдущий: Codex — размер диспетчера CAN13 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/can02-broker-size-01a1f9a2 | 2026-11-20T18:38:24+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit 9cd6fb79735af38f699a39e655d414a45966376e |
-| CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Выполняется | Codex CAN-03 monitor admission \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can03-h03-monitor-startup-01a1f99f | 2026-11-20T18:42:53+00:00 | Cold and both runtime permits passed exact H03; parked recovery clone removes the early broad enable at 0x0012B0. Aggregate retains 161 roots, 93416 Flash bytes, known sections fit padding only, 9 unresolved bindings. Finalizing audit and review. |
+| CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex CAN-03 monitor admission \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can03-h03-monitor-startup-01a1f99f | 2026-11-20T18:45:27+00:00 | 12 H03 CPU guard cases plus original early-enable control PASS. Native cold path and both permits install filters and drain before reception; parked recovery avoids the 0x0012B0 opening. New veneers above 0x008000, 161 roots and 93324 known Flash bytes; 11688-byte deficit in old windows and 8 missing bindings in extended plan. No flashable pair. / commit 89d0ed83d5e9c84a2834a95fb1bf01a8e67aae59 |
 | CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 — срок подтверждения момента \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-progress-deadline-fea1b366 | 2026-11-20T18:40:13+00:00 | Передаю на объединение. Статус в срок захвата ≥60 мс и на конце импульса не подтверждает момент. 6 границ + срок импульса, ПК 37 шагов/113 тестов, M32R 18 компонентов и 17 штатных групп. Два ST10 OFFLINE_ONLY: раньше 3 REFRESH, теперь CANCEL в 460 мс, ноль при 510. Prefix ELF +48 Б, запас 868. Отчёт verification/project-audit/can04-progress-deadline.md. Реальные метки и калибровка открыты. / commit 07fc25af65515ddd77b680b37423ddbce80f4d55 |
 | CAN-05 — Полнота штатного обмена Chery | Свободна для продолжения | Предыдущий: Чат CAN — поколения RX Bosch \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can05-qualified-epoch-1120-c7e4 | 2026-11-20T18:37:31+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit 1b7de46a4d9078d3ef8d46fa4ac724ae5eb20150 |
 | ECU-01 — Проверочная сборка Bosch E4M3 | Свободна для продолжения | Предыдущий: Codex ECU-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/ecu01-1120-c7e4 | 2026-11-20T17:46:01+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 84380128b8db2e0a6b24b297dd40aa020598e3ce |
@@ -56,7 +56,7 @@
 | Задача | Сейчас | Следующий шаг | Кому удобно продолжить |
 | --- | --- | --- | --- |
 | [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#h03-03) | На проверке | Определить семь перечисленных привязок, единственные состояния, initialize/take_toyota/service_phase и исходные часы/снимки; объединить нативные обёртки. | Чат запуска H03 |
-| [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#can-03) | Выполняется | Связать готового CAN owner и RX target с общим временем/запуском; установить setup/TX gate, проверить потерю/возврат допуска. | Чат CAN |
+| [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#can-03) | На проверке | Связать готового CAN owner и RX target с общим временем/запуском; установить setup/TX gate, проверить потерю/возврат допуска. | Чат CAN |
 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#h03-05) | Свободна для продолжения | Подключить готовый inhibit в application_binding; квалифицировать полярность и ток–давление отдельно от трасс регистров. | Чат силовых выходов |
 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#vss-02) | Свободна для продолжения | Связать sensor_target/config с H03-03, установить подтверждённые частоты/тайм-ауты и критерий остановки. | Чат датчиков |
 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/760628bd249b19051339403f5663e78187d12a9a/docs/project-map.md#toy-04) | На проверке | Замкнуть оставшиеся стадии полного цикла, R и ручные запросы; затем подключить SLU SECONDARY и назначить одного владельца таймера в TOY-06. | Чат переключений Toyota |
@@ -89,7 +89,7 @@
 </details>
 
 <details>
-<summary>CAN-03 — Штатный запуск, IRQ и восстановление CAN0: Выполняется</summary>
+<summary>CAN-03 — Штатный запуск, IRQ и восстановление CAN0: На проверке</summary>
 
 **Сделано.** Реализован единый владелец поколения для setup/TX gate, очистка BasicCAN и отзыв CAN13. Его состояние 12 байт включено в общий учёт RAM; целевые проверки прошли.
 
@@ -708,6 +708,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:45:27+00:00 | CAN-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:45:07+00:00 | DTC-04 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T18:44:53+00:00 | MODE-02 | review | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T18:44:49+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
@@ -737,4 +738,3 @@
 | 2026-11-20T18:36:55+00:00 | TOY-02 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:36:48+00:00 | MODE-02 | claim | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T18:36:31+00:00 | H03-02 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T18:35:59+00:00 | DTC-01 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |

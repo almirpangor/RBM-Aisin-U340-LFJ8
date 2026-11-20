@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 420,
+  "sequence": 421,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -57,12 +57,12 @@
         "verification/project-audit/2026-11-20-h03-can-monitor-startup.json",
         "verification/project-audit/can03-h03-monitor-startup.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "941f259113e042a39db21686bc935bc8",
       "claimed_at": "2026-11-20T18:34:34+00:00",
-      "updated_at": "2026-11-20T18:42:53+00:00",
-      "note": "Cold and both runtime permits passed exact H03; parked recovery clone removes the early broad enable at 0x0012B0. Aggregate retains 161 roots, 93416 Flash bytes, known sections fit padding only, 9 unresolved bindings. Finalizing audit and review.",
-      "result": null
+      "updated_at": "2026-11-20T18:45:27+00:00",
+      "note": "12 H03 CPU guard cases plus original early-enable control PASS. Native cold path and both permits install filters and drain before reception; parked recovery avoids the 0x0012B0 opening. New veneers above 0x008000, 161 roots and 93324 known Flash bytes; 11688-byte deficit in old windows and 8 missing bindings in extended plan. No flashable pair.",
+      "result": "89d0ed83d5e9c84a2834a95fb1bf01a8e67aae59"
     },
     "TOY-03": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -3929,9 +3929,17 @@
       "action": "review",
       "claim_id": "649f9eb04dd24d0ea547f2886878f0b0",
       "at": "2026-11-20T18:45:07+00:00"
+    },
+    {
+      "operation_id": "6dcf5f5994624073b06ce46c14434e8f",
+      "task": "CAN-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "941f259113e042a39db21686bc935bc8",
+      "at": "2026-11-20T18:45:27+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:45:07+00:00",
+  "updated_at": "2026-11-20T18:45:27+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
