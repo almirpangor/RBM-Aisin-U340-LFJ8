@@ -17,8 +17,35 @@ CONTROLLER = HERE.parent.parent / "controller"
 WAIT = 0x8150
 CLEAR = 0x815C
 CONTINUE = 0x8160
+IRQ_START = 0x3DE0
+IRQ_END = 0x3E40
 STOCK_WAIT = bytes.fromhex("E4804ADE2094F000B080FFFE60002004")
 FIXTURE = r"""
+
+    /* Route a simulator TRAP into the RAM-backed OEM vector chain. */
+    .macro test_irq target
+    push r0
+    push r1
+    ld24 r0,#0x800000
+    ld24 r1,#0x1200
+    sth r1,@r0
+    ld24 r0,#0x1200
+    ld24 r1,#0x1204
+    st r1,@r0
+    ld24 r1,#\target
+    st r1,@(4,r0)
+    pop r1
+    pop r0
+    .p2align 2
+    trap #3 || nop
+    .endm
+
+    /* Record SP without debugger breakpoints in the nested exception path. */
+    .macro sample_irq_sp offset
+    ld24 r1,#0x1220
+    st sp,@(\offset,r1)
+    .endm
+
     .section .entry,"ax"
     .global _start
 _start:
@@ -51,6 +78,32 @@ h03_stock_phase_clear:
     .global rbm_h03_phase_wait_callback
 rbm_h03_phase_wait_callback:
     push lr
+    push r0
+    ld24 r0,#0x1238
+    ld r0,@r0
+    beqz r0,fixture_skip_irq
+    pop r0
+    ldi r0,#CARRY
+    ldi r1,#0
+    cmpu r1,r0
+    ld24 r0,#0x12345
+    ld24 r5,#0x54321
+    test_irq fixture_irq_outer
+    .p2align 2
+fixture_irq_foreground_resume:
+    sample_irq_sp 12
+    mvfc r1,psw
+    and3 r1,r1,#1
+    ldi r3,#CARRY
+    bne r1,r3,fail
+    ld24 r1,#0x12345
+    bne r0,r1,fail
+    ld24 r1,#0x54321
+    bne r5,r1,fail
+    bra fixture_enter_poll
+fixture_skip_irq:
+    pop r0
+fixture_enter_poll:
     bl fixture_poll
     pop lr
     beqz r0,fail
@@ -103,10 +156,45 @@ finish:
     .global fixture_exit
 fixture_exit:
     trap #0
+
+    .section .trap_vector,"ax"
+    bra.l h03_stock_irq
+
+    .section .oem_irq,"ax"
+h03_stock_irq:
+    .incbin "irq.dat"
+
+    .section .test_irq,"ax"
+    .p2align 2
+fixture_irq_outer:
+    sample_irq_sp 0
+    ld24 r0,#0x11111
+    ld24 r5,#0x55555
+    test_irq fixture_irq_inner
+    .p2align 2
+fixture_irq_outer_resume:
+    sample_irq_sp 8
+    ld24 r1,#0x11111
+    bne r0,r1,fixture_irq_fail
+    ld24 r1,#0x55555
+    bne r5,r1,fixture_irq_fail
+    jmp lr
+fixture_irq_fail:
+    bra.l fail
+
+    .p2align 2
+fixture_irq_inner:
+    sample_irq_sp 4
+    ld24 r0,#0x22222
+    ld24 r5,#0x66666
+    jmp lr
 """
 LAYOUT = """ENTRY(_start)
 SECTIONS {
+  .trap_vector 0x4c : { KEEP(*(.trap_vector)) }
   .entry 0x1000 : { *(.entry) }
+  .test_irq 0x1240 : { KEEP(*(.test_irq)) }
+  .oem_irq 0x3de0 : { KEEP(*(.oem_irq)) }
   .wait 0x8150 : { *(.wait) }
   ASSERT(SIZEOF(.wait) == 4, "The replacement branch must fit one word")
   .clear 0x815c : { *(.clear) }
@@ -125,6 +213,8 @@ POLL_INTERVAL = 2
 STACK_TOP = 0x9FFFFC
 WAIT_BYTES = 8
 CALLBACK_ENTRY_BYTES = 64
+CALLBACK_LR_BYTES = 4
+OEM_IRQ_FRAME_BYTES = 48
 PROBE_BYTES = 256
 GUARD_BYTES = 16
 MARKERS = (0xA53C7ED2, 0x5AC3812D)
@@ -136,6 +226,7 @@ target sim --memory-size 16M
 load
 set $samples = 0
 set $callbacks = 0
+set $verified_irq_levels = 0
 break *rbm_h03_phase_wait_tick_sample
 commands
   silent
@@ -164,6 +255,7 @@ commands
     quit
   end
   set $callbacks = $callbacks + 1
+  set *(unsigned int*)0x1238 = $inject_nested && $callbacks == 5
   restore stack-marker.bin binary {PROBE_START:#x}
   continue
 end
@@ -173,6 +265,17 @@ commands
   if $sp != {CALLBACK_SP:#x}
     printf "UNEXPECTED CALLBACK RETURN SP %x\\n", $sp
     quit
+  end
+  if $inject_nested && $callbacks == 5
+    if *(unsigned int*)0x1220 != {CALLBACK_SP - CALLBACK_LR_BYTES - OEM_IRQ_FRAME_BYTES:#x} || *(unsigned int*)0x1224 != {CALLBACK_SP - CALLBACK_LR_BYTES - 2 * OEM_IRQ_FRAME_BYTES:#x}
+      printf "UNEXPECTED IRQ FRAMES\\n"
+      quit
+    end
+    if *(unsigned int*)0x1228 != *(unsigned int*)0x1220 || *(unsigned int*)0x122c != {CALLBACK_SP - CALLBACK_LR_BYTES:#x}
+      printf "UNEXPECTED IRQ RETURN FRAMES\\n"
+      quit
+    end
+    set $verified_irq_levels = 2
   end
   set $cursor = {PROBE_START:#x}
   while $cursor < {CALLBACK_SP:#x} && *(unsigned int*)$cursor == $marker
@@ -187,7 +290,7 @@ commands
 end
 tbreak *fixture_exit
 run
-printf "RESULT %d %d %d\\n", $r1, $samples, $callbacks
+printf "RESULT %d %d %d %d\\n", $r1, $samples, $callbacks, $verified_irq_levels
 """
 
 
@@ -205,6 +308,7 @@ def check(base, compiler):
         (work / "fixture.S").write_text(FIXTURE, encoding="ascii")
         (work / "fixture.ld").write_text(LAYOUT, encoding="ascii")
         (work / "clear.dat").write_bytes(wait_code[CLEAR - WAIT:])
+        (work / "irq.dat").write_bytes(rom[IRQ_START:IRQ_END])
         (work / "tick-driver.gdb").write_text(TICK_DRIVER, encoding="ascii")
         debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
         compiler_version = subprocess.run(
@@ -214,9 +318,10 @@ def check(base, compiler):
         sources = [HERE / name for name in (
             "h03_phase_wait_fixture.c", "lfj8_h03_phase_clock.c", "lfj8_h03_takeover.c",
         )]
-        for scenario, name, calls, samples in (
-            (0, "ready", 1, 0), (1, "delayed_across_wrap", 3, 8),
-            (2, "stalled", 6, 20), (3, "flag_before_next_poll", 2, 2),
+        for scenario, name, calls, samples, nested in (
+            (0, "ready", 1, 0, False), (1, "delayed_across_wrap", 3, 8, False),
+            (2, "stalled", 6, 20, False), (3, "flag_before_next_poll", 2, 2, False),
+            (2, "stalled_nested_irq", 6, 20, True),
         ):
             for carry, marker in enumerate(MARKERS):
                 (work / "stack-marker.bin").write_bytes(
@@ -234,11 +339,13 @@ def check(base, compiler):
                 )
                 output = subprocess.run(
                     [debugger, "--batch", "-nx", "-ex", f"set $release_early = {int(scenario == 3)}",
+                     "-ex", f"set $inject_nested = {int(nested)}",
                      "-ex", f"set $marker = (unsigned int){marker:#x}",
                      "-x", "tick-driver.gdb", "fixture.elf"],
                     cwd=work, check=True, capture_output=True, timeout=15,
                 ).stdout
-                if f"RESULT 0 {samples} {calls}".encode("ascii") not in output.splitlines():
+                returns = 2 if nested else 0
+                if f"RESULT 0 {samples} {calls} {returns}".encode("ascii") not in output.splitlines():
                     raise ValueError(f"Wait fixture failed ({name}, carry={carry}): "
                                      + output[-1200:].decode(errors="replace"))
                 trace = re.findall(rb"^CALLBACK STACK (\d+) (\d+)", output, re.M)
@@ -250,6 +357,7 @@ def check(base, compiler):
                 results.append({"scenario": name, "initial_carry": carry, "callback_calls": calls,
                                 "clock_samples_while_waiting": samples,
                                 "callback_stack_written_bytes": depths,
+                                "oem_irq_levels_injected": returns,
                                 "stock_flag_cleared": True, "phase_consumed": scenario != 2,
                                 "command_revoked": scenario == 2})
     return {"base": identity, "compiler": compiler_version, "wait": f"0x{WAIT:06X}", "stock_clear": f"0x{CLEAR:06X}",
@@ -261,8 +369,20 @@ def check(base, compiler):
                 "marked_below_callback_entry_bytes": PROBE_BYTES, "guard_bytes": GUARD_BYTES,
                 "maximum_written_depth_bytes": max(
                     max(case["callback_stack_written_bytes"]) for case in results
+                    if not case["oem_irq_levels_injected"]
                 ),
                 "interrupts_injected": False,
+            },
+            "nested_irq_probe": {
+                "oem_dispatcher_range": ["0x003DE0", "0x003E40"],
+                "oem_dispatcher_sha256": sha256(rom[IRQ_START:IRQ_END]).hexdigest(),
+                "levels": 2, "frame_bytes_each": OEM_IRQ_FRAME_BYTES,
+                "checked_return_context": ["SP", "R0", "R5", "foreground C"],
+                "maximum_written_depth_bytes": max(
+                    max(case["callback_stack_written_bytes"]) for case in results
+                    if case["oem_irq_levels_injected"]
+                ),
+                "scope": "Original dispatcher and RTE; simulator TRAP entry and synthetic vector targets.",
             },
             "scope": "Real C phase clock and takeover check; synthetic clock, OEM flag and inhibit.",
             "hardware_executed": False, "flashable_image": None}

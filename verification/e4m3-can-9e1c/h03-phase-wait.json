@@ -17,6 +17,7 @@
       "callback_stack_written_bytes": [
         112
       ],
+      "oem_irq_levels_injected": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -29,6 +30,7 @@
       "callback_stack_written_bytes": [
         112
       ],
+      "oem_irq_levels_injected": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -43,6 +45,7 @@
         112,
         112
       ],
+      "oem_irq_levels_injected": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -57,6 +60,7 @@
         112,
         112
       ],
+      "oem_irq_levels_injected": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -74,6 +78,7 @@
         120,
         120
       ],
+      "oem_irq_levels_injected": 0,
       "stock_flag_cleared": true,
       "phase_consumed": false,
       "command_revoked": true
@@ -91,6 +96,7 @@
         120,
         120
       ],
+      "oem_irq_levels_injected": 0,
       "stock_flag_cleared": true,
       "phase_consumed": false,
       "command_revoked": true
@@ -104,6 +110,7 @@
         112,
         112
       ],
+      "oem_irq_levels_injected": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -117,9 +124,46 @@
         112,
         112
       ],
+      "oem_irq_levels_injected": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
+    },
+    {
+      "scenario": "stalled_nested_irq",
+      "initial_carry": 0,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        120,
+        120,
+        120,
+        120,
+        164,
+        120
+      ],
+      "oem_irq_levels_injected": 2,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "stalled_nested_irq",
+      "initial_carry": 1,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        120,
+        120,
+        120,
+        120,
+        164,
+        120
+      ],
+      "oem_irq_levels_injected": 2,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
     }
   ],
   "test_poll_interval_ticks": 2,
@@ -134,6 +178,23 @@
     "guard_bytes": 16,
     "maximum_written_depth_bytes": 120,
     "interrupts_injected": false
+  },
+  "nested_irq_probe": {
+    "oem_dispatcher_range": [
+      "0x003DE0",
+      "0x003E40"
+    ],
+    "oem_dispatcher_sha256": "6c2188a5309263b9d0c18b53617ff89178601a5217ae400cfae504b3cffd618a",
+    "levels": 2,
+    "frame_bytes_each": 48,
+    "checked_return_context": [
+      "SP",
+      "R0",
+      "R5",
+      "foreground C"
+    ],
+    "maximum_written_depth_bytes": 164,
+    "scope": "Original dispatcher and RTE; simulator TRAP entry and synthetic vector targets."
   },
   "scope": "Real C phase clock and takeover check; synthetic clock, OEM flag and inhibit.",
   "hardware_executed": false,

@@ -108,7 +108,7 @@
     "targets/lfj8/check_h03_native_hooks.py": "3c13c6a4e76f309c531cde4e2b1f360157fcf869561f723fbcf8eafd6b03048b",
     "targets/lfj8/check_h03_phase_clock.py": "e4b4a05011409a180028de66c49405cdc5f356fed13fd4befbe1a3a1209582c4",
     "targets/lfj8/check_h03_phase_hook.py": "224a0c5b5c6241f399e06723656c6d0d1585064d03cd3b341914e1c0091bc1bf",
-    "targets/lfj8/check_h03_phase_wait.py": "4358eb2dce206b0524131d1b297bcd6df6c8cc85a40ace6a5b4b8ae335296d22",
+    "targets/lfj8/check_h03_phase_wait.py": "0f94f9ab4e080831239a400ccbe2f94c8e4835b7057c5ad0aa961845564ade6d",
     "targets/lfj8/check_h03_ram_candidate.py": "2eb1795f9fa4b8859824db5ec31d9103da2d0d617819210d6b947228dc083e27",
     "targets/lfj8/check_h03_ram_init.py": "cb5626028192dbeeecde41ac730255daddec80f8f602a7af377a385521d75fba",
     "targets/lfj8/check_h03_secondary_load.py": "38df986a3002132837d89107de73b8d671b12f23b8c07c3f5fa63a79457dd54d",
@@ -236,7 +236,7 @@
     "verification/e4m3-can-9e1c/h03-native-phases.json": "abc24d7f01dbd56c21b3dd1390075a78fc0e3fa5ac46829d9badd7df8ae4d226",
     "verification/e4m3-can-9e1c/h03-phase-clock.json": "974963a324c111edffacdcf2bc532dab3020771ea55dc491a4c51500b2f2e921",
     "verification/e4m3-can-9e1c/h03-phase-hook.json": "154ceceb3a95fbf4b48a526ac71b38d5a9a4e05794f7b0c84634b7619db943ac",
-    "verification/e4m3-can-9e1c/h03-phase-wait.json": "8ee3cacaf1b50818eb0b66a5a7d93f4d25f66f120884d89c217845af5927feb0",
+    "verification/e4m3-can-9e1c/h03-phase-wait.json": "d42c81506c2972d8407dc4635da8502f9734605877ed3b4e0ffaf2e9b6d18808",
     "verification/e4m3-can-9e1c/h03-storage.json": "7766f2370f4d01ac8e47a3e744168d04a14733fd1a1d474596d40549c4b12f64",
     "verification/e4m3-can-9e1c/h03-torque-dialogue.json": "398148cf9f5910d8ce4d1c2bb3149e1d49ea056557d2ce0b453a7e242ec08ee9",
     "verification/e4m3-can-9e1c/ordinary-model/h03-link.json": "6f30d3b170be567da29bf6305de62cec0c0873ad905370dcd8163176e2cdaedb",
@@ -278,5 +278,30 @@
     "Temporary negative control: a store inside the simulated callback guard is rejected"
   ],
   "inherited_checks": "H03-04 storage and wider simulator coverage are inherited from the preceding snapshot.",
-  "limits": "Callback measurement is based on written words, includes synthetic inhibit and excludes nested IRQ."
+  "limits": "Callback measurement is based on written words, includes synthetic inhibit and excludes nested IRQ.",
+  "nested_irq_stack_followup": {
+    "repeated_checks": [
+      "Eight baseline and two nested-IRQ M32R scenarios",
+      "Original H03 dispatcher and RTE executed twice on one live stack in each IRQ run",
+      "Temporary negative control: missing inner dispatch is rejected by the frame probe"
+    ],
+    "findings": {
+      "oem_dispatcher_range": [
+        "0x003DE0",
+        "0x003E40"
+      ],
+      "oem_dispatcher_sha256": "6c2188a5309263b9d0c18b53617ff89178601a5217ae400cfae504b3cffd618a",
+      "levels": 2,
+      "frame_bytes_each": 48,
+      "checked_return_context": [
+        "SP",
+        "R0",
+        "R5",
+        "foreground C"
+      ],
+      "maximum_written_depth_bytes": 164,
+      "scope": "Original dispatcher and RTE; simulator TRAP entry and synthetic vector targets."
+    },
+    "limits": "Simulator TRAP supplies exception entry, and the vector targets are fixture handlers. Interrupt priority and real handler stack costs remain outside the probe."
+  }
 }
