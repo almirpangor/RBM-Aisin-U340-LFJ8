@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 539,
+  "sequence": 540,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -472,20 +472,20 @@
       "result": "7fa849a631f1ba25e4fb7680008a7c2aca57399a"
     },
     "VSS-02": {
-      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
-      "label": "Codex VSS-02 H03 sensor binding",
-      "branch": "codex/vss02-h03-sensor-config-01a1f99f",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex VSS-02 — целевая конфигурация из измерений",
+      "branch": "codex/vss02-sensor-config-source-mwp5rm2ofhaxjfi9dss",
       "files": [
         "targets/lfj8/check_h03_sensor_config.py",
-        "verification/project-audit/2026-11-20-h03-sensor-config.json",
-        "verification/project-audit/vss02-h03-sensor-config.md"
+        "tests/test_h03_sensor_config.py",
+        "verification/project-audit/vss02-h03-sensor-config-source.md"
       ],
-      "stage": "done",
-      "claim_id": "aca1f05a2e5746a0b71ab9ad1476a5ba",
-      "claimed_at": "2026-11-20T18:56:53+00:00",
-      "updated_at": "2026-11-20T19:27:23+00:00",
-      "note": "Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены.",
-      "result": "cfaf1a812dcf26def7ed188b05b7dccdd75f4c8c"
+      "stage": "in_progress",
+      "claim_id": "625fae5569f34ec79ee0206423a3fa01",
+      "claimed_at": "2026-11-20T19:56:16+00:00",
+      "updated_at": "2026-11-20T19:56:16+00:00",
+      "note": "Подготовлю выпуск определения rbm_h03_sensor_config из явно заданных пределов, измерений и проверенной общей шкалы TML0/TML1. Проверю отказы и линковку M32R без подстановки реальных калибровок.",
+      "result": null
     },
     "TOY-01": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -4900,9 +4900,17 @@
       "action": "review",
       "claim_id": "6ce2dadd9393441586bcbbbeb50614e0",
       "at": "2026-11-20T19:55:44+00:00"
+    },
+    {
+      "operation_id": "3de3864649104715a7b7c3547c8b9444",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "625fae5569f34ec79ee0206423a3fa01",
+      "at": "2026-11-20T19:56:16+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:55:44+00:00",
+  "updated_at": "2026-11-20T19:56:16+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
