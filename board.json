@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 24,
+  "sequence": 25,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -165,12 +165,12 @@
         "targets/lfj8/lfj8_h03_atf.h",
         "targets/lfj8/test_lfj8_h03_atf.c"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "claimed_at": "2026-11-20T15:54:09+00:00",
-      "updated_at": "2026-11-20T15:54:09+00:00",
-      "note": "Добавляю захват происхождения отсчёта ATF для будущего OEM hook и проверяю гонку с новой конверсией.",
-      "result": null
+      "updated_at": "2026-11-20T15:55:29+00:00",
+      "note": "Добавлен захват метки AN1 в момент защищённого чтения OEM. M32R build и check_h03_link PASS, включая гонку с новым отсчётом с тем же кодом. Штатные точки вызова и физическая тарировка открыты.",
+      "result": "ced3c86de36fca6e77812025e15595dd67a3fa93"
     }
   },
   "events": [
@@ -365,9 +365,17 @@
       "action": "heartbeat",
       "claim_id": "83b9428ce0f2463f92341fea12156d66",
       "at": "2026-11-20T15:55:12+00:00"
+    },
+    {
+      "operation_id": "961b4272c4e84d02a4675332153a1250",
+      "task": "H03-02",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "11e70992d32245529e20626f4b9bd867",
+      "at": "2026-11-20T15:55:29+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:55:12+00:00",
+  "updated_at": "2026-11-20T15:55:29+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
