@@ -69,6 +69,11 @@ typedef struct {
 int lfj8_range_control_init(Lfj8RangeControl *control, const RbmU340ePolicy *policy,
                             uint32_t max_age_us);
 
+/* Update only the ADC state of an initialized control, without button edges
+ * or a gear proposal. */
+void lfj8_range_control_sample_selector(Lfj8RangeControl *control, Lfj8SelectorAdcReading reading,
+                                        uint32_t now_us);
+
 /* Poll after taking the mailbox event, using the same wrapping counter as
  * the ADC producer. Reinitialize on a counter reset.
  * The step supplies logical output proposals. */
@@ -79,6 +84,10 @@ int lfj8_range_control_step(Lfj8RangeControl *control, Lfj8SelectorAdcReading re
 /* Configure both intervals in microseconds from measured input timing. Each
  * interval must be nonzero and shorter than half the wrapping clock period. */
 int lfj8_button_filter_init(Lfj8ButtonFilter *filter, uint32_t debounce_us, uint32_t max_age_us);
+
+/* Inhibit driver changes until new captures establish a released baseline.
+ * Retains the current mode, OD state and button capture watermark. */
+void lfj8_range_control_disarm_buttons(Lfj8RangeControl *control, Lfj8ButtonFilter *filter);
 
 /* Use after initializing both states, in place of lfj8_range_control_step.
  * Pass each coherent capture once, NULL when idle, and valid=0 on known loss

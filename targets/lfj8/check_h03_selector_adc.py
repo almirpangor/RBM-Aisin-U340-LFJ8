@@ -37,7 +37,7 @@ def run(directory, *command):
     return result.stdout
 
 
-def probe(directory, debugger, branch, sample, psw, captured_us, pending):
+def probe(directory, debugger, branch, sample, psw, captured_us, pending, clock_available):
     register_format = " ".join(["%08x"] * len(REGISTERS))
     register_args = ", ".join(REGISTERS)
     commands = [
@@ -51,16 +51,17 @@ def probe(directory, debugger, branch, sample, psw, captured_us, pending):
         # to check that H03, not the hook, performs the right shift.
         f"set {{unsigned short}}((char*)&mock_adc_results + 4) = {(sample << 6) | 0x3F:#x}",
         f"set variable selector_fixture_captured_us = {captured_us:#x}",
-        "set variable selector_fixture_mailbox.pending_raw = 65535",
-        "set variable selector_fixture_mailbox.pending_event = 0",
+        f"set variable selector_fixture_clock_available = {int(clock_available)}",
+        "set variable rbm_h03_selector_adc_state.pending_raw = 65535",
+        "set variable rbm_h03_selector_adc_state.pending_event = 0",
         f"set {{unsigned short}}{AN2:#x} = 0xffff",
         f"set {{unsigned short}}{AN3:#x} = {AN3_SENTINEL:#x}",
     ]
     if pending:
         commands.extend((
-            "set variable selector_fixture_mailbox.pending_us = 98",
-            "set variable selector_fixture_mailbox.pending_raw = 512",
-            "set variable selector_fixture_mailbox.pending_event = 1",
+            "set variable rbm_h03_selector_adc_state.pending_us = 98",
+            "set variable rbm_h03_selector_adc_state.pending_raw = 512",
+            "set variable rbm_h03_selector_adc_state.pending_event = 1",
         ))
     if branch is not None:
         commands.append(f"set {{unsigned int}}{STORE_SITE:#x} = {branch:#x}")
@@ -74,8 +75,8 @@ def probe(directory, debugger, branch, sample, psw, captured_us, pending):
         'printf "CALL %08x %08x %08x %08x %08x %08x\\n", selector_fixture_calls, '
         'selector_fixture_psw, selector_fixture_argument, selector_fixture_stock_word, '
         'selector_fixture_an3_before, selector_fixture_callback_sp',
-        'printf "MAIL %08x %08x %08x\\n", selector_fixture_mailbox.pending_event, '
-        'selector_fixture_mailbox.pending_raw, selector_fixture_mailbox.pending_us',
+        'printf "MAIL %08x %08x %08x\\n", rbm_h03_selector_adc_state.pending_event, '
+        'rbm_h03_selector_adc_state.pending_raw, rbm_h03_selector_adc_state.pending_us',
         f'printf "RAM %08x %08x %08x %08x\\n", *(unsigned short*){AN2:#x}, '
         f'*(unsigned short*){AN3:#x}, *(unsigned short*)0x804bca, *(unsigned char*)0x804ae6',
     ))
@@ -121,16 +122,19 @@ def check(base, gcc):
             raise ValueError("A bare-metal M32R compiler is required")
         version = run(directory, gcc, "--version").splitlines()[0]
         sources = ("h03_foreground_test.S", "h03_selector_adc_hook.S",
-                   "h03_selector_adc_fixture.c", "lfj8_selector_adc.c", "lfj8_h03_mmio.c")
+                   "h03_selector_adc_fixture.c", "lfj8_h03_input_target.c",
+                   "lfj8_selector_adc.c", "lfj8_h03_mmio.c")
         headers = ("lfj8_selector_adc.h", "lfj8_h03_mmio.h", "lfj8_h03_engine_rx.h",
-                   "lfj8_donor_io.h", "ta2005_chery_inputs.h")
+                   "lfj8_donor_io.h", "ta2005_chery_inputs.h", "lfj8_h03_atf_target.h",
+                   "lfj8_h03_atf.h")
         # Legacy Windows M32R GCC cannot open non-ASCII checkout paths.
         for name in (*sources, *headers):
             copyfile(HERE / name, directory / name)
         run(directory, gcc, "-m32r", "-Wa,-EB", "-mmodel=medium", "-msdata=none",
             "-Os", "-g", "-ffreestanding", "-fno-builtin", "-Wall", "-Wextra", "-Werror",
             "-ffunction-sections", "-fdata-sections", "-nostdlib",
-            "-Wl,-T,selector.ld,--gc-sections", "-DADC2_SAMPLE=0", "-DINITIAL_FLAG=0",
+            "-Wl,-T,selector.ld,--gc-sections,--wrap=rbm_h03_selector_adc_capture",
+            "-DADC2_SAMPLE=0", "-DINITIAL_FLAG=0",
             *sources, "-o", "selector.elf")
         nm = gcc.with_name(f"m32r-elf-nm{gcc.suffix}")
         symbol = re.search(r"^([0-9a-f]+) T rbm_h03_selector_adc_hook$",
@@ -143,14 +147,16 @@ def check(base, gcc):
         branch = 0xFF000000 | (displacement // 4 & 0xFFFFFF)
         debugger = gcc.with_name(f"m32r-elf-gdb{gcc.suffix}")
         cases = []
-        for sample, psw, captured_us, pending in (
-            (0, 0x40, 0, False),
-            (347, 0x41, 101, False),
-            (1023, 0x00, 0xFFFFFFFF, False),
-            (347, 0x01, 102, True),
+        for sample, psw, captured_us, pending, clock_available in (
+            (0, 0x40, 0, False, True),
+            (347, 0x41, 101, False, True),
+            (1023, 0x00, 0xFFFFFFFF, False, True),
+            (347, 0x01, 102, True, True),
+            (347, 0x41, 103, True, False),
         ):
-            stock = probe(directory, debugger, None, sample, psw, captured_us, pending)
-            hooked = probe(directory, debugger, branch, sample, psw, captured_us, pending)
+            arguments = (sample, psw, captured_us, pending, clock_available)
+            stock = probe(directory, debugger, None, *arguments)
+            hooked = probe(directory, debugger, branch, *arguments)
             if any(stock[key] != hooked[key] for key in ("CONT", "EXIT", "RAM")):
                 raise ValueError(f"The hook changed OEM execution for ADC={sample}, PSW={psw:#x}")
             if (stock["CONT"][:2] != (sample, 3) or stock["CONT"][4] != AN2 or
@@ -165,13 +171,18 @@ def check(base, gcc):
                 raise ValueError("The callback did not see one completed AN2 store with IRQs masked")
             if hooked["CONT"][15] - callback_sp != HOOK_FRAME_BYTES:
                 raise ValueError("Unexpected stack use at the selector callback entry")
-            expected_mail = (3, 65535, captured_us) if pending else (1, sample, captured_us)
+            if not clock_available:
+                expected_mail, event = (4, 65535, 0), "CLOCK_LOST"
+            elif pending:
+                expected_mail, event = (3, 65535, captured_us), "OVERRUN"
+            else:
+                expected_mail, event = (1, sample, captured_us), "VALUE"
             if hooked["MAIL"] != expected_mail:
                 raise ValueError(f"The selector mailbox contains {hooked['MAIL']}, expected {expected_mail}")
             cases.append({
                 "adc2_10bit": sample, "entry_ie": bool(psw & 0x40), "entry_c": bool(psw & 1),
                 "irq_masked_in_callback": True, "callback_count": 1,
-                "sample_us": captured_us, "mailbox_event": "OVERRUN" if pending else "VALUE",
+                "sample_us": captured_us if clock_available else None, "mailbox_event": event,
                 "stock_cpu_and_ram_match": True,
             })
     return {

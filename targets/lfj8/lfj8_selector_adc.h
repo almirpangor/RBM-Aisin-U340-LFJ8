@@ -8,6 +8,7 @@ typedef enum {
     LFJ8_SELECTOR_ADC_VALUE,
     LFJ8_SELECTOR_ADC_INVALID,
     LFJ8_SELECTOR_ADC_OVERRUN,
+    LFJ8_SELECTOR_ADC_CLOCK_LOST,
 } Lfj8SelectorAdcEvent;
 
 typedef struct {
@@ -32,6 +33,10 @@ void lfj8_selector_adc_init(volatile Lfj8SelectorAdc *adc);
 void lfj8_selector_adc_publish(volatile Lfj8SelectorAdc *adc,
                                const Lfj8RegisterIo *io, uint16_t raw, uint32_t captured_us);
 
+/* Discard an unconsumed value. The untimed loss stays pending until taken
+ * even if the clock provides fresh timestamps before the next poll. */
+void lfj8_selector_adc_clock_lost(volatile Lfj8SelectorAdc *adc, const Lfj8RegisterIo *io);
+
 /* Read-only binding to the verified 9E1B map. Call once after the ADC0 channel 2
  * store at 0x040370. Callers may mark an event invalid to skip the RAM read.
  * Any other revision requires independent verification of this binding.
@@ -48,9 +53,15 @@ void lfj8_selector_adc_publish_9e1c(volatile Lfj8SelectorAdc *adc,
 
 /* Consume a pending event once. The raw value is UINT16_MAX for every event
  * except VALUE. OVERRUN discards the values and reports the latest event time.
- * Pass VALUE/INVALID/OVERRUN to the decoder. NONE is ordinary idle polling.
+ * CLOCK_LOST invalidates the decoder without using its timestamp.
+ * NONE is ordinary idle polling.
  */
 Lfj8SelectorAdcReading lfj8_selector_adc_take(volatile Lfj8SelectorAdc *adc,
                                               const Lfj8RegisterIo *io);
+
+/* H03 startup binds and initializes this symbol in the existing selector
+ * storage before enabling the 0x040370 hook. The hook runs with IRQs masked. */
+extern volatile Lfj8SelectorAdc rbm_h03_selector_adc_state;
+void rbm_h03_selector_adc_capture(uint16_t raw);
 
 #endif
