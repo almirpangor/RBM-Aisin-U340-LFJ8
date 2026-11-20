@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 19,
+  "sequence": 20,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -130,6 +130,24 @@
       "claimed_at": "2026-11-20T15:53:30+00:00",
       "updated_at": "2026-11-20T15:53:30+00:00",
       "note": "Собираю актуальную карту состояний и рабочего буфера ABI M32R: Toyota, CAN13, DTC, очередь и датчики. Проверяю объём, выравнивание и доступные окна RAM.",
+      "result": null
+    },
+    "DTC-04": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex DTC-04",
+      "branch": "codex/dtc04-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "diagnostics/chery_dtc_journal.c",
+        "diagnostics/chery_dtc_journal.h",
+        "diagnostics/test_chery_dtc_journal.c",
+        "tools/build_pc_checks.py",
+        "verification/project-audit/dtc04-journal.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "b714560b3e9a4abba849b7ea649a1622",
+      "claimed_at": "2026-11-20T15:53:33+00:00",
+      "updated_at": "2026-11-20T15:53:33+00:00",
+      "note": "Формат и восстановление истории DTC, модель прерванной записи и очистки.",
       "result": null
     }
   },
@@ -285,9 +303,17 @@
       "action": "claim",
       "claim_id": "83b9428ce0f2463f92341fea12156d66",
       "at": "2026-11-20T15:53:30+00:00"
+    },
+    {
+      "operation_id": "8ade38e2f38646c097718532ce54bb60",
+      "task": "DTC-04",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "b714560b3e9a4abba849b7ea649a1622",
+      "at": "2026-11-20T15:53:33+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:53:30+00:00",
+  "updated_at": "2026-11-20T15:53:33+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
