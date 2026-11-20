@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 532,
+  "sequence": 533,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -60,12 +60,12 @@
         "targets/lfj8/lfj8_h03_can_monitor_startup.h",
         "verification/project-audit/can03-guarded-generation.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "ad997bd677c542c682cec961d4619193",
       "claimed_at": "2026-11-20T19:38:33+00:00",
-      "updated_at": "2026-11-20T19:41:30+00:00",
-      "note": "На ROM H03 воспроизвёл потерю публикации после успешного перехода 0x00B7F8. Публикацию подключил к защищённым разрешениям; повторяю нативные проверки, отдельную компоновку и интеграцию.",
-      "result": null
+      "updated_at": "2026-11-20T19:52:21+00:00",
+      "note": "Подключена публикация setup_generation после разрешений 0x00B7F8/0x00B880. Допуск выдаёт foreground после очистки. ПК 41/120, M32R 18+8 компонентов, 21 нативная группа и повтор phase-boot 38; прямые и ROM-проверки CAN PASS. Расширенная сборка 94850 Б, FAIL_BINDINGS по application_binding и sensor_config. Доказательства verification/project-audit/can03-guarded-generation.md.",
+      "result": "1876a8c6ca973baec3a804d034aa7495e7105458"
     },
     "TOY-03": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -4844,9 +4844,17 @@
       "action": "review",
       "claim_id": "f6547625e0dd48c180162a7963424191",
       "at": "2026-11-20T19:51:50+00:00"
+    },
+    {
+      "operation_id": "4e52f12776274a4d888c7b94520ec8a4",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "ad997bd677c542c682cec961d4619193",
+      "at": "2026-11-20T19:52:21+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:51:50+00:00",
+  "updated_at": "2026-11-20T19:52:21+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
