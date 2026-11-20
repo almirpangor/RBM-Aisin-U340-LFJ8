@@ -68,6 +68,24 @@ class ProjectStatusTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Cyclic dependency"):
             status.validate(modified)
 
+    def test_continuation_cannot_reopen_closed_or_deferred_scope(self):
+        registry = json.loads(status.REGISTER.read_text(encoding="utf-8"))
+        for state in ("closed", "deferred"):
+            modified = copy.deepcopy(registry)
+            task = next(task for task in modified["tasks"] if task["status"] == state)
+            task["continuation"] = {"action": "More work", "order": 1}
+            with self.assertRaisesRegex(ValueError, "Invalid continuation"):
+                status.validate(modified)
+
+    def test_continuation_rejects_missing_action_and_invalid_chat(self):
+        registry = json.loads(status.REGISTER.read_text(encoding="utf-8"))
+        for follow in ({"order": 1}, {"order": 1, "action": "Work", "chat_id": 7}):
+            modified = copy.deepcopy(registry)
+            task = next(task for task in modified["tasks"] if task["status"] == "open")
+            task["continuation"] = follow
+            with self.assertRaisesRegex(ValueError, "Invalid continuation"):
+                status.validate(modified)
+
 
 if __name__ == "__main__":
     unittest.main()

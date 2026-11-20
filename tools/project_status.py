@@ -65,6 +65,17 @@ def validate(data):
         for key in ("title", "current", "remaining", "acceptance", "settings"):
             if not isinstance(task[key], str) or not task[key].strip():
                 raise ValueError(f"Empty {key}: {task['id']}")
+        follow = task.get("continuation")
+        if follow is not None:
+            if (not isinstance(follow, dict) or task["status"] in ("closed", "deferred") or
+                    not isinstance(follow.get("action"), str) or not follow["action"].strip() or
+                    type(follow.get("order")) is not int or follow["order"] < 1):
+                raise ValueError(f"Invalid continuation: {task['id']}")
+            if "chat_id" in follow and (
+                    not isinstance(follow["chat_id"], str) or
+                    not re.fullmatch(r"[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}", follow["chat_id"]) or
+                    not isinstance(follow.get("chat_label"), str) or not follow["chat_label"].strip()):
+                raise ValueError(f"Invalid continuation chat: {task['id']}")
         if not task["sections"] or not set(task["sections"]) <= expected:
             raise ValueError(f"Invalid specification section: {task['id']}")
         covered.update(task["sections"])
@@ -243,6 +254,15 @@ def render_map(data):
         ])
         if task["depends"]:
             lines.extend(["", "**Зависит от.** " + ", ".join(f"[{name}](#{name.lower()})" for name in task["depends"])])
+        if task.get("continuation"):
+            follow = task["continuation"]
+            lines.extend(["", "**Следующий шаг для продолжения.** " + follow["action"]])
+            if follow.get("chat_id"):
+                lines.extend(["", "**Кому удобно продолжить.** " + follow["chat_label"] +
+                              " — " + follow["chat_id"] + ". Это рекомендация, не резерв."])
+            lines.extend(["", "**Кто сейчас выполняет.** Проверить [общий список исполнителей]"
+                          "(https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). "
+                          "Перед изменениями занять этот ID и точные файлы."])
     lines.extend([
         "",
         "## Команды проверок",

@@ -19,8 +19,9 @@ ROOT = Path(__file__).resolve().parents[1]
 ACTIVE = {"in_progress", "blocked", "review"}
 STAGES = {
     "in_progress": "Выполняется", "blocked": "Ожидает данных / решения",
-    "review": "На проверке", "done": "Работа завершена", "released": "Освобождена",
+    "review": "На проверке", "done": "Порция принята", "released": "Освобождена",
 }
+PROJECT_WEB = "https://github.com/almirpangor/RBM-Aisin-U340-LFJ8"
 
 
 class CoordinationError(RuntimeError):
@@ -73,6 +74,73 @@ def cell(value):
     return text
 
 
+def catalog_entry(task):
+    """Carry continuation text from the same published register as readiness."""
+    keys = ("id", "title", "status", "current", "remaining", "acceptance", "continuation")
+    return {key: copy.deepcopy(task[key]) for key in keys if key in task}
+
+
+def work_state(task, claim):
+    if claim and claim["stage"] in ACTIVE:
+        return STAGES[claim["stage"]]
+    if task["status"] == "deferred":
+        return "Отложена владельцем"
+    if task["status"] == "closed":
+        return "Закрыта по текущему объёму"
+    return "Свободна для продолжения"
+
+
+def render_continuations(board):
+    tasks = [task for task in board["catalog"] if task["status"] not in ("closed", "deferred")]
+    if not tasks:
+        return []
+    tasks.sort(key=lambda task: (task.get("continuation", {}).get("order", 1000), task["id"]))
+    base = PROJECT_WEB + "/blob/" + board["main_commit"]
+    lines = [
+        "## Что осталось доделать", "",
+        "Продолжения относятся к тем же ID задач. Номер пункта не назначает чат.",
+        "Рекомендованный чат — подсказка для продолжения прежнего направления, а не резерв.",
+        "Сначала обновить свою копию из main, посмотреть список и занять задачу с точными файлами.",
+        "Активный исполнитель и пересекающиеся файлы защищены общим резервом.", "",
+        "| Задача | Сейчас | Следующий шаг | Кому удобно продолжить |",
+        "| --- | --- | --- | --- |",
+    ]
+    for task in tasks:
+        follow = task.get("continuation")
+        if follow:
+            link = f"[{task['id']}]({base}/docs/project-map.md#{task['id'].lower()})"
+            lines.append("| " + " | ".join((
+                link, cell(work_state(task, board["claims"].get(task["id"]))),
+                cell(follow["action"]), cell(follow.get("chat_label", "Любой свободный чат")),
+            )) + " |")
+    lines.extend(["", "### Сделано и остаток по каждой незакрытой задаче", ""])
+    for task in tasks:
+        claim = board["claims"].get(task["id"])
+        follow = task.get("continuation", {})
+        lines.extend([
+            "<details>",
+            f"<summary>{cell(task['id'] + ' — ' + task['title'])}: {cell(work_state(task, claim))}</summary>", "",
+            "**Сделано.** " + cell(task.get("current", "См. карточку в main.")), "",
+            "**Осталось доделать.** " + cell(task.get("remaining", "См. карточку в main.")), "",
+        ])
+        if follow:
+            lines.extend(["**Следующий шаг.** " + cell(follow["action"]), ""])
+            if follow.get("chat_id"):
+                lines.extend(["**Рекомендуемый чат.** " + cell(follow["chat_label"]) +
+                              " — " + cell(follow["chat_id"]) + ".", ""])
+        if claim and claim["stage"] in ACTIVE:
+            lines.extend(["**Сейчас выполняет.** " + cell(claim["label"]) +
+                          " — " + cell(claim["owner"]) + ".", ""])
+        else:
+            lines.extend(["**Исполнитель сейчас.** Задача не занята.", ""])
+        lines.extend([
+            "**Критерий приёмки.** " + cell(task.get("acceptance", "См. карточку в main.")), "",
+            f"[Код, настройки, зависимости и проверки]({base}/docs/project-map.md#{task['id'].lower()})",
+            "", "</details>", "",
+        ])
+    return lines
+
+
 def render_board(board):
     lines = [
         "# Кто сейчас работает над проектом", "",
@@ -82,22 +150,26 @@ def render_board(board):
         "Задача и пересекающиеся файлы удерживаются в состояниях «Выполняется», «Ожидает» и «На проверке».",
         "Давняя отметка не освобождается автоматически. Возобновившийся чат обязан проверить свой claim_id.", "",
         f"Каталог задач взят из main {board['main_commit']}.", "",
-        "| Задача | Ход работы | Чат | Ветка | Обновление UTC | Что делает / результат |",
+        "| Задача | Ход работы | Текущий / предыдущий чат | Ветка | Обновление UTC | Что делает / результат |",
         "| --- | --- | --- | --- | --- | --- |",
     ]
     for task in board["catalog"]:
         claim = board["claims"].get(task["id"])
         title = f"{task['id']} — {task['title']}"
         if not claim:
-            state = "Отложена владельцем" if task["status"] == "deferred" else "Свободна"
+            state = work_state(task, claim)
             lines.append(f"| {cell(title)} | {state} | — | — | — | — |")
         else:
             note = claim["note"]
+            if claim["stage"] == "done":
+                note = "Предыдущая порция принята. " + note
             if claim.get("result"):
                 note += " / commit " + claim["result"]
             lines.append("| " + " | ".join(map(cell, (
-                title, STAGES[claim["stage"]], claim["label"] + " [" + claim["owner"] + "]",
+                title, work_state(task, claim),
+                ("" if claim["stage"] in ACTIVE else "Предыдущий: ") + claim["label"] + " [" + claim["owner"] + "]",
                 claim["branch"], claim["updated_at"], note))) + " |")
+    lines.extend(["", *render_continuations(board)])
     lines.extend(["", "## Зарезервированные файлы", ""])
     for task_id, claim in sorted(board["claims"].items()):
         if claim["stage"] in ACTIVE:
@@ -177,8 +249,7 @@ class TaskBoard:
     def view(self):
         tip, board = self.read()
         main, tasks = self.catalog()
-        board.update(main_commit=main, catalog=[
-            {key: task[key] for key in ("id", "title", "status")} for task in tasks])
+        board.update(main_commit=main, catalog=[catalog_entry(task) for task in tasks])
         board.setdefault("updated_at", "ещё нет записей")
         return tip, board
 
@@ -291,7 +362,7 @@ class TaskBoard:
                         raise Conflict(f"Files conflict with {other_id} ({other['label']}): {overlap}")
             board["claims"][task_id] = record
             board.update(updated_at=now, main_commit=main, sequence=board["sequence"] + 1,
-                         catalog=[{key: task[key] for key in ("id", "title", "status")} for task in tasks])
+                         catalog=[catalog_entry(task) for task in tasks])
             board["events"].append({
                 "operation_id": op_id, "task": task_id, "owner": owner,
                 "action": action, "claim_id": record["claim_id"], "at": now,

@@ -77,7 +77,7 @@
 
 **Завершено в указанном объёме** · ТЗ §1
 
-**Сделано.** Объединены 31 новая опубликованная порция и прежние 19. Пересечение списка модулей H03 разрешено с сохранением запуска фаз и ATF. Общая проверка и задания восьми чатам оформлены.
+**Сделано.** Объединены 31 новая опубликованная порция и прежние 19. В общий список исполнителей и прежние карточки добавлены сделанное, остаток и следующий шаг; текущая занятость отделена от принятой порции. Продолжения берутся из одного реестра.
 
 **Осталось.** Окончательный комплект ведётся отдельно в REL-01.
 
@@ -129,6 +129,10 @@
 
 **Разбор и основания.** [toyota-integration.md](../docs/toyota-integration.md) · [bosch-integration.md](../docs/bosch-integration.md) · [toy02-load-feed.md](../verification/project-audit/toy02-load-feed.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md)
 
+**Следующий шаг для продолжения.** Установить источники и шкалы нагрузки Bosch, довести их до квалифицированного GP Toyota и повторить сквозной обмен.
+
+**Кто сейчас выполняет.** Проверить [общий список исполнителей](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). Перед изменениями занять этот ID и точные файлы.
+
 <a id="toy-03"></a>
 ## TOY-03 — Независимые разрешающие сигналы диапазона
 
@@ -168,6 +172,12 @@
 **Разбор и основания.** [lfj8-h03-control-cycle.md](../docs/lfj8-h03-control-cycle.md) · [toy04-upper-gears.md](../verification/project-audit/toy04-upper-gears.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md)
 
 **Зависит от.** [TOY-02](#toy-02), [TOY-03](#toy-03), [H03-03](#h03-03), [MODE-02](#mode-02)
+
+**Следующий шаг для продолжения.** Замкнуть оставшиеся стадии полного цикла, R и ручные запросы; затем подключить SLU SECONDARY и назначить одного владельца таймера в TOY-06.
+
+**Кому удобно продолжить.** Чат переключений Toyota — 01a1f9b5-5d41-79e0-8cd2-3dadc922f1ce. Это рекомендация, не резерв.
+
+**Кто сейчас выполняет.** Проверить [общий список исполнителей](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). Перед изменениями занять этот ID и точные файлы.
 
 <a id="toy-05"></a>
 ## TOY-05 — Обучение и сохранение адаптаций
@@ -269,6 +279,12 @@
 **Разбор и основания.** [lfj8-9e1c-base.md](../docs/lfj8-9e1c-base.md) · [lfj8-h03-torque.md](../docs/lfj8-h03-torque.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md)
 
 **Зависит от.** [H03-04](#h03-04)
+
+**Следующий шаг для продолжения.** Подключить реальное владение CAN0: общее время, смена поколения, отзыв TX и очистка старых кадров после сбоя.
+
+**Кому удобно продолжить.** Чат CAN — 01a1f9ab-19c7-72c0-ac90-6aa98e4aa488. Это рекомендация, не резерв.
+
+**Кто сейчас выполняет.** Проверить [общий список исполнителей](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). Перед изменениями занять этот ID и точные файлы.
 
 <a id="can-04"></a>
 ## CAN-04 — Запрос снижения момента по RB
@@ -409,6 +425,12 @@
 
 **Зависит от.** [H03-04](#h03-04)
 
+**Следующий шаг для продолжения.** Связать штатный запуск, часы и обработчики с одним владельцем приложения; довести события до общего цикла.
+
+**Кому удобно продолжить.** Чат запуска H03 — 01a1f99f-5cb5-70e0-afd0-60e6b41a5d51. Это рекомендация, не резерв.
+
+**Кто сейчас выполняет.** Проверить [общий список исполнителей](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). Перед изменениями занять этот ID и точные файлы.
+
 <a id="h03-04"></a>
 ## H03-04 — Память, стек и сервисные пути
 
@@ -428,6 +450,10 @@
 
 **Разбор и основания.** [lfj8-h03-ram-audit.md](../docs/lfj8-h03-ram-audit.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [lfj8-h03-service-isolation.md](../docs/lfj8-h03-service-isolation.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md)
 
+**Следующий шаг для продолжения.** Устранить дефицит Flash с сохранением всех функций; проверить окончательное размещение RAM, стек и сервисные границы с новыми привязками.
+
+**Кто сейчас выполняет.** Проверить [общий список исполнителей](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). Перед изменениями занять этот ID и точные файлы.
+
 <a id="h03-05"></a>
 ## H03-05 — SLT, силовые выходы и реакция на отказ
 
@@ -446,6 +472,12 @@
 **Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native) · [INTEGRATION3](#check-integration3)
 
 **Разбор и основания.** [lfj8-slt-calibration.md](../docs/lfj8-slt-calibration.md) · [lfj8-h03-output-adapter.md](../docs/lfj8-h03-output-adapter.md) · [lfj8-9e1c-minimum-bench.md](../docs/lfj8-9e1c-minimum-bench.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md)
+
+**Следующий шаг для продолжения.** Связать потерю допуска со штатным отключением выходов и проверить порядок записей. Недостающие ток–давление и полярность оставить отдельными измерениями.
+
+**Кому удобно продолжить.** Чат силовых выходов — 01a1f9a2-d0ae-78d3-86f1-21b27426fd3f. Это рекомендация, не резерв.
+
+**Кто сейчас выполняет.** Проверить [общий список исполнителей](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). Перед изменениями занять этот ID и точные файлы.
 
 <a id="io-01"></a>
 ## IO-01 — Два дополнительных реле
@@ -503,6 +535,12 @@
 **Проверки.** [M32R](#check-m32r) · [INTEGRATION3](#check-integration3)
 
 **Разбор и основания.** [lfj8-9e1c-minimum-bench.md](../docs/lfj8-9e1c-minimum-bench.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md)
+
+**Следующий шаг для продолжения.** Подключить единый снимок S51/S83/ATF с общим временем; затем продолжить H03-02. Отделить остановку, потерю импульсов и сброс счётчика.
+
+**Кому удобно продолжить.** Чат датчиков — 01a1f9a8-7b61-7763-adaa-0e3e11d1dbf4. Это рекомендация, не резерв.
+
+**Кто сейчас выполняет.** Проверить [общий список исполнителей](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). Перед изменениями занять этот ID и точные файлы.
 
 <a id="panel-01"></a>
 ## PANEL-01 — Импульсы Bosch на приборную панель
@@ -562,6 +600,12 @@
 **Разбор и основания.** [lfj8-selector.md](../docs/lfj8-selector.md) · [lfj8-h03-input-paths.md](../docs/lfj8-h03-input-paths.md) · [mode02-button-input.md](../verification/project-audit/mode02-button-input.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md)
 
 **Зависит от.** [H03-03](#h03-03)
+
+**Следующий шаг для продолжения.** Связать физические AN2/Tiptronic/OD и независимые разрешения с общей заявкой; продолжить независимые входы TOY-03.
+
+**Кому удобно продолжить.** Чат селектора и кнопок — 01a1f9c7-675a-78c3-be98-5bd65e44995c. Это рекомендация, не резерв.
+
+**Кто сейчас выполняет.** Проверить [общий список исполнителей](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). Перед изменениями занять этот ID и точные файлы.
 
 <a id="mode-03"></a>
 ## MODE-03 — Окончательная политика режимов
@@ -658,6 +702,12 @@
 
 **Разбор и основания.** [diagnostics-integration.md](../docs/diagnostics-integration.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [dtc02-basiccan.md](../verification/project-audit/dtc02-basiccan.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md)
 
+**Следующий шаг для продолжения.** Заменить тестовую обвязку RX привязкой к очереди и часам приложения; провести запрос через foreground до ответа.
+
+**Кому удобно продолжить.** Чат диагностики — 01a1f9ae-4a7e-7e31-951a-f6383e1831ee. Это рекомендация, не резерв.
+
+**Кто сейчас выполняет.** Проверить [общий список исполнителей](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). Перед изменениями занять этот ID и точные файлы.
+
 <a id="dtc-03"></a>
 ## DTC-03 — Все диагностические события и соответствия Toyota/Chery
 
@@ -700,6 +750,12 @@
 
 **Зависит от.** [H03-04](#h03-04)
 
+**Следующий шаг для продолжения.** Восстановить геометрию и операции NVM, реализовать запись и восстановление при старте; затем подключить адаптации TOY-05.
+
+**Кому удобно продолжить.** Чат постоянной памяти — 01a1f9b1-c11a-7b23-abcf-3214ce643805. Это рекомендация, не резерв.
+
+**Кто сейчас выполняет.** Проверить [общий список исполнителей](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). Перед изменениями занять этот ID и точные файлы.
+
 <a id="rel-01"></a>
 ## REL-01 — Два целевых BIN и воспроизводимый комплект
 
@@ -720,6 +776,10 @@
 **Разбор и основания.** [verification.md](../docs/verification.md) · [working-set.md](../docs/working-set.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md)
 
 **Зависит от.** [TOY-04](#toy-04), [TOY-05](#toy-05), [TOY-06](#toy-06), [CAN-03](#can-03), [CAN-05](#can-05), [ECU-02](#ecu-02), [H03-04](#h03-04), [H03-05](#h03-05), [VSS-02](#vss-02), [MODE-02](#mode-02), [MODE-03](#mode-03), [DTC-02](#dtc-02), [DTC-03](#dtc-03), [DTC-04](#dtc-04)
+
+**Следующий шаг для продолжения.** После закрытия обязательных привязок собрать два целевых BIN, проверить запуск, целостность и отсутствие тестовых функций.
+
+**Кто сейчас выполняет.** Проверить [общий список исполнителей](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/tree/task-board). Перед изменениями занять этот ID и точные файлы.
 
 <a id="rel-02"></a>
 ## REL-02 — Приёмка новой связки на оборудовании
@@ -848,7 +908,7 @@ python -B -m unittest discover -s tests -p test_task_coordination.py -v
 python -B -m unittest discover -s tests -p test_project_status.py -v
 ```
 
-**Последний сохранённый результат.** [collaboration-checks.json](../verification/project-audit/collaboration-checks.json)
+**Последний сохранённый результат.** [coordination-tests.txt](../verification/project-audit/task-board-continuations/coordination-tests.txt) · [status-tests.txt](../verification/project-audit/task-board-continuations/status-tests.txt)
 
 <a id="check-storage"></a>
 ### STORAGE — Актуальные состояния и кандидаты RAM M32R

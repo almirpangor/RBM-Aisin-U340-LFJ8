@@ -9,7 +9,7 @@ import threading
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-from task_coordination import TaskBoard, Conflict, CoordinationError, edit_paths
+from task_coordination import TaskBoard, Conflict, CoordinationError, edit_paths, render_board
 
 
 class CoordinationTests(unittest.TestCase):
@@ -272,6 +272,64 @@ class CoordinationTests(unittest.TestCase):
         self.assertEqual(self.ca.push(self.ca.make_commit(board, tip)).returncode, 0)
         with self.assertRaises(Conflict):
             self.claim(self.cb, owner="chat-b")
+
+    def test_continuation_tracks_main_without_reopening_accepted_work(self):
+        path = self.a / "data/project-tasks.json"
+        registry = json.loads(path.read_text(encoding="utf-8"))
+        task = registry["tasks"][0]
+        task.update(current="Model passed", remaining="Connect target input",
+                    acceptance="Input reaches shared cycle",
+                    continuation={"order": 1, "action": "Bind the input", "chat_id": "prior-chat",
+                                  "chat_label": "Input chat"})
+        path.write_text(json.dumps(registry), encoding="utf-8")
+        self.run_git(self.a, "add", "data/project-tasks.json")
+        self.run_git(self.a, "commit", "-m", "Describe continuation")
+        result = self.run_git(self.a, "rev-parse", "HEAD")
+        self.run_git(self.a, "push", "origin", "main", result + ":refs/heads/codex/chat-a")
+        record = self.claim()
+        key = {"claim_id": record["claim_id"]}
+        self.ca.change("review", "TEST-01", "chat-a", result=result, note="Portion", **key)
+        self.ca.change("complete", "TEST-01", "chat-a", result=result, note="Accepted", **key)
+        _, before = self.ca.read()
+        page = render_board(before)
+        self.assertIn("Свободна для продолжения", page)
+        self.assertIn("Model passed", page)
+        self.assertIn("Connect target input", page)
+        self.assertIn("Bind the input", page)
+        self.assertIn("Рекомендованный чат — подсказка", page)
+        self.assertNotIn("prior-chat", [claim["owner"] for claim in before["claims"].values()])
+
+        task["remaining"] = "Verify reset invalidates old sample"
+        task["continuation"]["action"] = "Bind reset to the input"
+        path.write_text(json.dumps(registry), encoding="utf-8")
+        self.run_git(self.a, "add", "data/project-tasks.json")
+        self.run_git(self.a, "commit", "-m", "Update remaining work")
+        self.run_git(self.a, "push", "origin", "main")
+        _, preview = self.cb.view()
+        self.assertIn(task["remaining"], render_board(preview))
+        self.assertEqual(preview["claims"], before["claims"])
+        self.assertEqual(self.cb.read()[1]["sequence"], before["sequence"])
+
+        self.claim(self.cb, task="TEST-02", owner="chat-b")
+        _, published = self.cb.read()
+        self.assertEqual(published["claims"]["TEST-01"], before["claims"]["TEST-01"])
+        self.assertEqual(published["catalog"][0]["status"], "open")
+        self.assertIn(task["remaining"], render_board(published))
+        saved_page = self.run_git(self.a, "show", self.ca.fetch_tip("task-board") + ":README.md")
+        self.assertIn(task["continuation"]["action"], saved_page)
+
+    def test_busy_continuation_does_not_appear_free_or_take_recommended_owner(self):
+        self.claim()
+        _, board = self.ca.view()
+        board["catalog"][0]["continuation"] = {
+            "order": 1, "action": "Continue", "chat_label": "Recommended", "chat_id": "different-chat"}
+        page = render_board(board)
+        card = page.split("<summary>TEST-01", 1)[1].split("</details>", 1)[0]
+        self.assertIn("Выполняется", card)
+        self.assertNotIn("Свободна для продолжения", card)
+        self.assertIn("**Сейчас выполняет.** chat-a", card)
+        self.assertIn("Recommended", card)
+        self.assertNotIn("<summary>WAIT-01", page)
 
 
 if __name__ == "__main__":

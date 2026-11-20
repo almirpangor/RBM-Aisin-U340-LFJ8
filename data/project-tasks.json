@@ -9,7 +9,7 @@
     "engine": "GW4G15 / Bosch ME7.9.71 E4M3"
   },
   "release_ready": false,
-  "audit": "verification/project-audit/2026-11-20-integration-3.json",
+  "audit": "verification/project-audit/2026-11-20-task-board-continuations.json",
   "status_labels": {
     "closed": "Завершено в указанном объёме",
     "model": "Проверено программно",
@@ -192,7 +192,8 @@
       "title": "Общий учёт нескольких чатов и переносимость аудита",
       "command": "python -B -m unittest discover -s tests -p test_task_coordination.py -v\npython -B -m unittest discover -s tests -p test_project_status.py -v",
       "reports": [
-        "verification/project-audit/collaboration-checks.json"
+        "verification/project-audit/task-board-continuations/coordination-tests.txt",
+        "verification/project-audit/task-board-continuations/status-tests.txt"
       ]
     },
     "STORAGE": {
@@ -307,7 +308,7 @@
       ],
       "title": "Основа проекта и локальная работа",
       "status": "closed",
-      "current": "Объединены 31 новая опубликованная порция и прежние 19. Пересечение списка модулей H03 разрешено с сохранением запуска фаз и ATF. Общая проверка и задания восьми чатам оформлены.",
+      "current": "Объединены 31 новая опубликованная порция и прежние 19. В общий список исполнителей и прежние карточки добавлены сделанное, остаток и следующий шаг; текущая занятость отделена от принятой порции. Продолжения берутся из одного реестра.",
       "remaining": "Окончательный комплект ведётся отдельно в REL-01.",
       "acceptance": "Файлы доступны, источник каждой сборки прослеживается.",
       "code": [
@@ -392,7 +393,12 @@
         "verification/project-audit/toy02-load-feed.md",
         "docs/integration-next-tasks.md"
       ],
-      "depends": []
+      "depends": [],
+      "continuation": {
+        "order": 10,
+        "action": "Установить источники и шкалы нагрузки Bosch, довести их до квалифицированного GP Toyota и повторить сквозной обмен.",
+        "chat_label": "Основной чат — нагрузка Bosch"
+      }
     },
     {
       "id": "TOY-03",
@@ -457,7 +463,13 @@
         "TOY-03",
         "H03-03",
         "MODE-02"
-      ]
+      ],
+      "continuation": {
+        "order": 5,
+        "action": "Замкнуть оставшиеся стадии полного цикла, R и ручные запросы; затем подключить SLU SECONDARY и назначить одного владельца таймера в TOY-06.",
+        "chat_label": "Чат переключений Toyota",
+        "chat_id": "01a1f9b5-5d41-79e0-8cd2-3dadc922f1ce"
+      }
     },
     {
       "id": "TOY-05",
@@ -619,7 +631,13 @@
       ],
       "depends": [
         "H03-04"
-      ]
+      ],
+      "continuation": {
+        "order": 2,
+        "action": "Подключить реальное владение CAN0: общее время, смена поколения, отзыв TX и очистка старых кадров после сбоя.",
+        "chat_label": "Чат CAN",
+        "chat_id": "01a1f9ab-19c7-72c0-ac90-6aa98e4aa488"
+      }
     },
     {
       "id": "CAN-04",
@@ -838,7 +856,13 @@
       ],
       "depends": [
         "H03-04"
-      ]
+      ],
+      "continuation": {
+        "order": 1,
+        "action": "Связать штатный запуск, часы и обработчики с одним владельцем приложения; довести события до общего цикла.",
+        "chat_label": "Чат запуска H03",
+        "chat_id": "01a1f99f-5cb5-70e0-afd0-60e6b41a5d51"
+      }
     },
     {
       "id": "H03-04",
@@ -874,7 +898,12 @@
         "docs/lfj8-h03-service-isolation.md",
         "docs/integration-next-tasks.md"
       ],
-      "depends": []
+      "depends": [],
+      "continuation": {
+        "order": 9,
+        "action": "Устранить дефицит Flash с сохранением всех функций; проверить окончательное размещение RAM, стек и сервисные границы с новыми привязками.",
+        "chat_label": "Основной чат — общая сборка"
+      }
     },
     {
       "id": "H03-05",
@@ -904,7 +933,13 @@
         "docs/lfj8-9e1c-minimum-bench.md",
         "docs/integration-next-tasks.md"
       ],
-      "depends": []
+      "depends": [],
+      "continuation": {
+        "order": 3,
+        "action": "Связать потерю допуска со штатным отключением выходов и проверить порядок записей. Недостающие ток–давление и полярность оставить отдельными измерениями.",
+        "chat_label": "Чат силовых выходов",
+        "chat_id": "01a1f9a2-d0ae-78d3-86f1-21b27426fd3f"
+      }
     },
     {
       "id": "IO-01",
@@ -982,7 +1017,13 @@
         "docs/lfj8-9e1c-minimum-bench.md",
         "docs/integration-next-tasks.md"
       ],
-      "depends": []
+      "depends": [],
+      "continuation": {
+        "order": 4,
+        "action": "Подключить единый снимок S51/S83/ATF с общим временем; затем продолжить H03-02. Отделить остановку, потерю импульсов и сброс счётчика.",
+        "chat_label": "Чат датчиков",
+        "chat_id": "01a1f9a8-7b61-7763-adaa-0e3e11d1dbf4"
+      }
     },
     {
       "id": "PANEL-01",
@@ -1070,7 +1111,13 @@
       ],
       "depends": [
         "H03-03"
-      ]
+      ],
+      "continuation": {
+        "order": 6,
+        "action": "Связать физические AN2/Tiptronic/OD и независимые разрешения с общей заявкой; продолжить независимые входы TOY-03.",
+        "chat_label": "Чат селектора и кнопок",
+        "chat_id": "01a1f9c7-675a-78c3-be98-5bd65e44995c"
+      }
     },
     {
       "id": "MODE-03",
@@ -1216,7 +1263,13 @@
         "verification/project-audit/dtc02-basiccan.md",
         "docs/integration-next-tasks.md"
       ],
-      "depends": []
+      "depends": [],
+      "continuation": {
+        "order": 7,
+        "action": "Заменить тестовую обвязку RX привязкой к очереди и часам приложения; провести запрос через foreground до ответа.",
+        "chat_label": "Чат диагностики",
+        "chat_id": "01a1f9ae-4a7e-7e31-951a-f6383e1831ee"
+      }
     },
     {
       "id": "DTC-03",
@@ -1283,7 +1336,13 @@
       ],
       "depends": [
         "H03-04"
-      ]
+      ],
+      "continuation": {
+        "order": 8,
+        "action": "Восстановить геометрию и операции NVM, реализовать запись и восстановление при старте; затем подключить адаптации TOY-05.",
+        "chat_label": "Чат постоянной памяти",
+        "chat_id": "01a1f9b1-c11a-7b23-abcf-3214ce643805"
+      }
     },
     {
       "id": "REL-01",
@@ -1334,7 +1393,12 @@
         "DTC-02",
         "DTC-03",
         "DTC-04"
-      ]
+      ],
+      "continuation": {
+        "order": 11,
+        "action": "После закрытия обязательных привязок собрать два целевых BIN, проверить запуск, целостность и отсутствие тестовых функций.",
+        "chat_label": "Основной чат — выпуск"
+      }
     },
     {
       "id": "REL-02",
