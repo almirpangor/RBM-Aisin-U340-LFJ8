@@ -183,6 +183,15 @@ static void update_buttons(Lfj8ButtonFilter *filter, const Lfj8ButtonReading *re
     }
 }
 
+void lfj8_range_control_sample_buttons(Lfj8RangeControl *control, Lfj8ButtonFilter *filter,
+                                        const Lfj8ButtonReading *reading, uint32_t now_us)
+{
+    update_buttons(filter, reading, now_us);
+    if (!filter->armed) {
+        control->controller.buttons_seen = 0;
+    }
+}
+
 int lfj8_range_control_step_with_buttons(Lfj8RangeControl *control, Lfj8SelectorAdcReading selector,
     Lfj8ButtonFilter *filter, const Lfj8ButtonReading *buttons, uint32_t now_us,
     const RbmU340eInput *input, RbmU340eOutput *output)
@@ -194,7 +203,7 @@ int lfj8_range_control_step_with_buttons(Lfj8RangeControl *control, Lfj8Selector
         *output = (RbmU340eOutput){0};
         return 0;
     }
-    update_buttons(filter, buttons, now_us);
+    lfj8_range_control_sample_buttons(control, filter, buttons, now_us);
     RbmU340eInput snapshot = *input;
     snapshot.stable_buttons = filter->stable;
     snapshot.buttons_valid = filter->armed;

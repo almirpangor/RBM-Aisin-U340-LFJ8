@@ -90,6 +90,11 @@ int lfj8_button_filter_init(Lfj8ButtonFilter *filter, uint32_t debounce_us, uint
  * Retains the current mode, OD state and button capture watermark. */
 void lfj8_range_control_disarm_buttons(Lfj8RangeControl *control, Lfj8ButtonFilter *filter);
 
+/* Qualify captures without advancing the controller. Both states must be
+ * initialized. Loss also clears the controller's edge baseline. */
+void lfj8_range_control_sample_buttons(Lfj8RangeControl *control, Lfj8ButtonFilter *filter,
+                                        const Lfj8ButtonReading *reading, uint32_t now_us);
+
 /* Use after initializing both states, in place of lfj8_range_control_step.
  * Pass each coherent capture once, NULL when idle, and valid=0 on known loss
  * or overrun. An explicit fault or malformed reading disarms the buttons

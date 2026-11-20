@@ -1,11 +1,14 @@
 /* Instrumentation for the target callback. The simulator supplies clock and RAM. */
 #include "lfj8_h03_atf_target.h"
+#include "lfj8_h03_input_lifecycle.h"
 #include "lfj8_h03_mmio.h"
 #include "lfj8_selector_adc.h"
 
 volatile Lfj8SelectorAdc rbm_h03_selector_adc_state;
 volatile uint32_t selector_fixture_captured_us;
 volatile uint8_t selector_fixture_clock_available;
+volatile uint8_t selector_fixture_application_running;
+volatile unsigned selector_fixture_clock_reads;
 volatile uint32_t selector_fixture_calls;
 volatile uint32_t selector_fixture_psw;
 volatile uint32_t selector_fixture_callback_sp;
@@ -25,8 +28,14 @@ __asm__ (
     ".previous\n"
 );
 
+int lfj8_h03_application_running_locked(void)
+{
+    return selector_fixture_application_running;
+}
+
 int rbm_h03_atf_now_us(uint32_t *now_us)
 {
+    ++selector_fixture_clock_reads;
     if (!selector_fixture_clock_available) {
         return 0;
     }

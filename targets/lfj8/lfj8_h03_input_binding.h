@@ -29,13 +29,24 @@ typedef struct {
     RbmU340eOutput driver;
 } Lfj8H03InputProposal;
 
-/* Foreground owner supplies disjoint, coherent snapshots and uses the same
- * qualified wrapping clock for all captures and now_us. Reinitialize the
- * existing ADC, selector and button state on a new acquisition epoch.
- * Upstream qualification and command_at also cover the driver operands.
- * Invoke once per candidate step and consume the button capture once.
- * Failure clears the proposal. Use no cycle inputs or gear request on failure.
- * On success the gear request remains a logical proposal for the cycle owner. */
+/* On every admitted H03 foreground pass, take one mailbox event and update
+ * selector and button qualification without advancing the mode or consuming
+ * controller edges. NULL selects the native P1 map when one is configured,
+ * or means no fresh external capture otherwise. Return 1 while both inputs
+ * are ready. The owner must withhold output while they are unqualified. */
+int lfj8_h03_input_capture(const Lfj8H03InputBinding *binding, const Lfj8ButtonReading *buttons,
+                          uint32_t now_us);
+
+/* For one new Toyota event, use the latest qualified input state from capture.
+ * No mailbox is read here. Supply disjoint, coherent objects and a common
+ * qualified wrapping clock. Upstream qualification and command_at also cover
+ * the driver operands. For native P1, keep sources->buttons NULL.
+ * Failure clears the proposal; a gear request is logical until admitted by
+ * the cycle owner. Reinitialize ADC, selector and buttons on a new epoch. */
+int lfj8_h03_input_propose_captured(const Lfj8H03InputBinding *binding,
+    const Lfj8H03InputSources *sources, Lfj8H03InputProposal *out);
+
+/* Combined entry point for callers using a single foreground/Toyota step. */
 int lfj8_h03_input_propose(const Lfj8H03InputBinding *binding, const Lfj8H03InputSources *sources,
                            Lfj8H03InputProposal *out);
 
