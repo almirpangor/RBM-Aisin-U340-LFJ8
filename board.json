@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 715,
+  "sequence": 716,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -109,12 +109,12 @@
         "targets/lfj8/test_lfj8_h03_target_platform.c",
         "verification/project-audit/h03-03-target-platform.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "43d58327bd434219b328d74d652d3be9",
       "claimed_at": "2026-11-20T21:54:45+00:00",
-      "updated_at": "2026-11-20T21:57:30+00:00",
-      "note": "Подключены штатные callbacks, проверка владельца RAM и единая шкала TML0; гоняю M32R lifecycle и отказы.",
-      "result": null,
+      "updated_at": "2026-11-20T22:02:06+00:00",
+      "note": "Штатные target_initialize и target_take_toyota связаны с application binding и TML0 в M32R. Сборка, 62 сценария boot и 96 IRQ прошли. Для общей сборки остаются 16 байт typed RAM, общий список модуля и подтверждённые времена и поставщики входов. Аппаратной проверки не было.",
+      "result": "1c0942de670d6ebd1245370d8f351c065dbc230f",
       "based_on_reviews": []
     },
     "H03-04": {
@@ -8903,9 +8903,36 @@
         "result": "368ecd723336eaa20d508e0d0025172ed78cd127",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "933267dae5f44e37b76dbe03721461d5",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "43d58327bd434219b328d74d652d3be9",
+      "at": "2026-11-20T22:02:06+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex H03-03 — целевые запуск и выпуск Toyota",
+        "branch": "codex/h03-03-platform-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/check_h03_target_platform.py",
+          "targets/lfj8/lfj8_h03_target_platform.c",
+          "targets/lfj8/lfj8_h03_target_platform.h",
+          "targets/lfj8/test_lfj8_h03_target_platform.c",
+          "verification/project-audit/h03-03-target-platform.md"
+        ],
+        "stage": "review",
+        "claim_id": "43d58327bd434219b328d74d652d3be9",
+        "claimed_at": "2026-11-20T21:54:45+00:00",
+        "updated_at": "2026-11-20T22:02:06+00:00",
+        "note": "Штатные target_initialize и target_take_toyota связаны с application binding и TML0 в M32R. Сборка, 62 сценария boot и 96 IRQ прошли. Для общей сборки остаются 16 байт typed RAM, общий список модуля и подтверждённые времена и поставщики входов. Аппаратной проверки не было.",
+        "result": "1c0942de670d6ebd1245370d8f351c065dbc230f",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:01:43+00:00",
+  "updated_at": "2026-11-20T22:02:06+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -10531,6 +10558,27 @@
       "based_on_reviews": [],
       "task": "CAN-01",
       "submitted_at": "2026-11-20T22:01:43+00:00"
+    },
+    "43d58327bd434219b328d74d652d3be9": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex H03-03 — целевые запуск и выпуск Toyota",
+      "branch": "codex/h03-03-platform-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "targets/lfj8/check_h03_target_platform.py",
+        "targets/lfj8/lfj8_h03_target_platform.c",
+        "targets/lfj8/lfj8_h03_target_platform.h",
+        "targets/lfj8/test_lfj8_h03_target_platform.c",
+        "verification/project-audit/h03-03-target-platform.md"
+      ],
+      "stage": "review",
+      "claim_id": "43d58327bd434219b328d74d652d3be9",
+      "claimed_at": "2026-11-20T21:54:45+00:00",
+      "updated_at": "2026-11-20T22:02:06+00:00",
+      "note": "Штатные target_initialize и target_take_toyota связаны с application binding и TML0 в M32R. Сборка, 62 сценария boot и 96 IRQ прошли. Для общей сборки остаются 16 байт typed RAM, общий список модуля и подтверждённые времена и поставщики входов. Аппаратной проверки не было.",
+      "result": "1c0942de670d6ebd1245370d8f351c065dbc230f",
+      "based_on_reviews": [],
+      "task": "H03-03",
+      "submitted_at": "2026-11-20T22:02:06+00:00"
     }
   }
 }
