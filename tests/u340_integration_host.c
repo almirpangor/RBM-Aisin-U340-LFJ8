@@ -93,6 +93,48 @@ static void check_selector_clock(void)
     assert(!output.relay_mask && !output.requested_gear);
 }
 
+static void check_selector_fault(void)
+{
+    const RbmU340ePolicy policy = {.initial_mode = RBM_U340E_AUTO, .initial_overdrive_enabled = 1};
+    const RbmU340eInput input = {.actual_gear = 2, .allowed_gears = 0x0f, .auto_request_valid = 1};
+    const uint32_t now = 2u;
+    const uint32_t last = now - 4u;
+    const uint32_t max_age = 25u;
+    const Lfj8SelectorAdcEvent faults[] = {LFJ8_SELECTOR_ADC_INVALID, LFJ8_SELECTOR_ADC_OVERRUN};
+    const uint32_t fault_times[] = {last, last - 1u, now - max_age, now + 1u, now - 1u};
+    for (unsigned kind = 0; kind < sizeof faults / sizeof faults[0]; ++kind) {
+        for (unsigned timing = 0; timing < sizeof fault_times / sizeof fault_times[0]; ++timing) {
+            Lfj8RangeControl control;
+            RbmU340eOutput output;
+            assert(lfj8_range_control_init(&control, &policy, max_age));
+            Lfj8SelectorAdcReading low = {.raw = 194, .event = LFJ8_SELECTOR_ADC_VALUE};
+            for (unsigned sample = 0; sample < 4; ++sample) {
+                low.captured_us = last - 2u * (3u - sample);
+                assert(lfj8_range_control_step(&control, low, low.captured_us, &input, &output));
+            }
+            assert(control.selector == RBM_U340E_SELECTOR_L && output.requested_gear == 1);
+
+            const Lfj8SelectorAdcReading fault = {
+                .captured_us = fault_times[timing], .raw = UINT16_MAX, .event = faults[kind],
+            };
+            assert(lfj8_range_control_step(&control, fault, now, &input, &output));
+            assert(control.selector == RBM_U340E_SELECTOR_UNKNOWN);
+            assert(!output.requested_gear && !output.relay_mask);
+            const uint32_t watermark = timing == 4u ? fault.captured_us : last;
+            assert(control.last_sample_us == watermark);
+
+            low.captured_us = watermark;
+            assert(lfj8_range_control_step(&control, low, now, &input, &output));
+            assert(control.filter.samples == 0u && !output.requested_gear);
+            for (unsigned sample = 0; sample < 4; ++sample) {
+                low.captured_us = now + sample;
+                assert(lfj8_range_control_step(&control, low, low.captured_us, &input, &output));
+                assert(output.requested_gear == (sample == 3u ? 1u : 0u));
+            }
+        }
+    }
+}
+
 static RbmU340eOutput step_range_buttons(Lfj8RangeControl *control, Lfj8ButtonFilter *filter,
     uint32_t now_us, const Lfj8ButtonReading *reading)
 {
@@ -359,6 +401,7 @@ int main(int argc, char **argv)
 {
     verify_lfj8_selector_adc();
     check_selector_clock();
+    check_selector_fault();
     check_button_debounce();
     check_button_recovery();
     check_button_loss_bad_timestamp();

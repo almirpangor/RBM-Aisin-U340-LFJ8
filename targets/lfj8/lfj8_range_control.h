@@ -70,7 +70,8 @@ int lfj8_range_control_init(Lfj8RangeControl *control, const RbmU340ePolicy *pol
                             uint32_t max_age_us);
 
 /* Update only the ADC state of an initialized control, without button edges
- * or a gear proposal. */
+ * or a gear proposal. A reported fault invalidates the range regardless of
+ * its timestamp. Only fresh, ordered events advance the capture watermark. */
 void lfj8_range_control_sample_selector(Lfj8RangeControl *control, Lfj8SelectorAdcReading reading,
                                         uint32_t now_us);
 
