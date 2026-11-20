@@ -17,11 +17,20 @@ SPEED_ORIGIN, SPEED_LIMIT = 0x66000, 0x66800
 CALIBRATION = 0xB8441
 OUTPUT = "E4M3_CHERY_SPEED_OFFLINE_ONLY.bin"
 TX_OUTPUT = "E4M3_CHERY_RPM_ECT_SPEED_OFFLINE_ONLY.bin"
+CHECKSUM_RECORD_OFFSETS = frozenset(range(0xA7800, 0xA7B00, 16)) | {0xA83CC, 0xA83DC, 0xA83EC}
 INIT_SPEED = 39
 
 
 def digest(data):
     return hashlib.sha256(data).hexdigest()
+
+
+def checksum_records(diag, image):
+    records = diag.checks(image)
+    offsets = {record["file_offset"] for record in records}
+    if len(records) != len(CHECKSUM_RECORD_OFFSETS) or offsets != CHECKSUM_RECORD_OFFSETS:
+        raise ValueError("Incomplete or unexpected E4M3 checksum table; expected 51 distinct records")
+    return records
 
 
 def assemble_speed(diag, torque, transmitter=None):
@@ -280,14 +289,14 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fie
         allowed.update(range(off, off + len(code)))
         regions[name] = {"cpu": hex(cpu), "offset": hex(off), "length": len(code)}
     for _ in range(5):
-        invalid = [record for record in diag.checks(output) if not record["valid"]]
+        invalid = [record for record in checksum_records(diag, output) if not record["valid"]]
         if not invalid:
             break
         for record in invalid:
             p = record["file_offset"] + 8
             struct.pack_into("<II", output, p, record["actual"], record["actual"] ^ 0xFFFFFFFF)
             allowed.update(range(p, p + 8))
-    records = diag.checks(output)
+    records = checksum_records(diag, output)
     if not all(record["valid"] for record in records):
         raise ValueError("Bosch checksum records failed after rebuild")
     ta = diag.offset(old_torque.origin)
