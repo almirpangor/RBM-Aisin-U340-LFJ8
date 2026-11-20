@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 624,
+  "sequence": 625,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -47,24 +47,25 @@
     },
     "CAN-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
-      "label": "Codex CAN-03 — холодный сброс владельца CAN",
-      "branch": "codex/can03-cold-owner-fea1b366",
+      "label": "Codex CAN-03 — общая привязка DTC и CAN13",
+      "branch": "codex/can03-dtc-shared-owner-fea1b366",
       "files": [
         "targets/lfj8/check_h03_can_monitor_revoke.py",
-        "targets/lfj8/check_h03_can_monitor_startup.py",
         "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
-        "targets/lfj8/lfj8_h03_can_monitor_startup.c",
-        "targets/lfj8/lfj8_h03_can_monitor_startup.h",
-        "verification/project-audit/can03-cold-owner.md"
+        "targets/lfj8/lfj8_h03_can_owner.h",
+        "targets/lfj8/lfj8_h03_can_target.c",
+        "targets/lfj8/lfj8_h03_can_target.h",
+        "verification/project-audit/can03-dtc-shared-owner.md"
       ],
-      "stage": "review",
-      "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
-      "claimed_at": "2026-11-20T20:30:28+00:00",
-      "updated_at": "2026-11-20T20:38:24+00:00",
-      "note": "Холодный путь 008084 сбрасывает CAN owner только при доказанном владении RAM, пока CAN0/CAN1 в сбросе. Первое штатное разрешение публикует поколение 1; отказ RAM ведёт в 0047D8. ПК 41/129, нативная модель 22 группы PASS. Расширенная модель 94954 байта, остаются application_binding и sensor_config. Отчёт verification/project-audit/can03-cold-owner.md.",
-      "result": "4948b51c57475444dea954ef79f44835ab0899df",
+      "stage": "in_progress",
+      "claim_id": "ffff885e4aa646d3b41c030b6eda77cb",
+      "claimed_at": "2026-11-20T20:43:58+00:00",
+      "updated_at": "2026-11-20T20:43:58+00:00",
+      "note": "Холодная обвязка снимает IRQ-привязку и сбрасывает единый CAN owner. Нативный foreground использует тот же владелец и часы TML0 после подтверждённой настройки.",
+      "result": null,
       "based_on_reviews": [
-        "ad997bd677c542c682cec961d4619193"
+        "ad997bd677c542c682cec961d4619193",
+        "ef6ec9b39ec54c5fab41e021568c094f"
       ]
     },
     "TOY-03": {
@@ -6190,9 +6191,40 @@
           "d06e51f28ad0459dbc4d456c75b56bb4"
         ]
       }
+    },
+    {
+      "operation_id": "3673daeeae534d05bc51089039e956cf",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "ffff885e4aa646d3b41c030b6eda77cb",
+      "at": "2026-11-20T20:43:58+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — общая привязка DTC и CAN13",
+        "branch": "codex/can03-dtc-shared-owner-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+          "targets/lfj8/lfj8_h03_can_owner.h",
+          "targets/lfj8/lfj8_h03_can_target.c",
+          "targets/lfj8/lfj8_h03_can_target.h",
+          "verification/project-audit/can03-dtc-shared-owner.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "ffff885e4aa646d3b41c030b6eda77cb",
+        "claimed_at": "2026-11-20T20:43:58+00:00",
+        "updated_at": "2026-11-20T20:43:58+00:00",
+        "note": "Холодная обвязка снимает IRQ-привязку и сбрасывает единый CAN owner. Нативный foreground использует тот же владелец и часы TML0 после подтверждённой настройки.",
+        "result": null,
+        "based_on_reviews": [
+          "ad997bd677c542c682cec961d4619193",
+          "ef6ec9b39ec54c5fab41e021568c094f"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:43:44+00:00",
+  "updated_at": "2026-11-20T20:43:58+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
