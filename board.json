@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 702,
+  "sequence": 703,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -505,8 +505,8 @@
       "stage": "in_progress",
       "claim_id": "8b0ce759514b4c68b04d002b192f50ff",
       "claimed_at": "2026-11-20T21:52:15+00:00",
-      "updated_at": "2026-11-20T21:52:15+00:00",
-      "note": "Подключаю rbm_h03_target_clock_ready из проверенного профиля обоих таймеров к startup/foreground и адресной сборке. Проверяю MMIO, отзыв и перезапуск. Аппаратные числа не подставляю.",
+      "updated_at": "2026-11-20T21:56:23+00:00",
+      "note": "Реальный callback из генератора прошёл нативную модель запуска и foreground M32R, включая отзыв часов и повторный старт. Проверяю фактическую компоновку с парными входами.",
       "result": null,
       "based_on_reviews": []
     },
@@ -8563,9 +8563,37 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "90bad2d1afd946eab4294b79e826f285",
+      "task": "VSS-02",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "heartbeat",
+      "claim_id": "8b0ce759514b4c68b04d002b192f50ff",
+      "at": "2026-11-20T21:56:23+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex VSS-02 — целевой допуск часов H03",
+        "branch": "codex/vss02-h03-clock-binding-32e6ac79",
+        "files": [
+          "targets/lfj8/check_h03_application_binding.py",
+          "targets/lfj8/check_h03_sensor_config.py",
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "tests/test_h03_sensor_config.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/vss02-h03-clock-binding.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "8b0ce759514b4c68b04d002b192f50ff",
+        "claimed_at": "2026-11-20T21:52:15+00:00",
+        "updated_at": "2026-11-20T21:56:23+00:00",
+        "note": "Реальный callback из генератора прошёл нативную модель запуска и foreground M32R, включая отзыв часов и повторный старт. Проверяю фактическую компоновку с парными входами.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:56:12+00:00",
+  "updated_at": "2026-11-20T21:56:23+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
