@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 636,
+  "sequence": 637,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -14,6 +14,8 @@
         "docs/working-set.md",
         "targets/lfj8/build.py",
         "targets/lfj8/check_h03_application_binding.py",
+        "targets/lfj8/check_h03_input_lifecycle.py",
+        "targets/lfj8/check_h03_toyota_source.py",
         "targets/lfj8/h03_application_binding_fixture.c",
         "targets/lfj8/lfj8_h03_application_binding.c",
         "targets/lfj8/lfj8_h03_application_binding.h",
@@ -25,14 +27,15 @@
       "stage": "in_progress",
       "claim_id": "4c455b84d1db43c0a19c00f91baec753",
       "claimed_at": "2026-11-20T21:01:34+00:00",
-      "updated_at": "2026-11-20T21:02:32+00:00",
-      "note": "Общая сборка обнаружила недостающий include diagnostics после CAN-01. Исправляю зависимости сборки и проверку native binding; чужой резерв CAN-01 не снимаю.",
+      "updated_at": "2026-11-20T21:09:32+00:00",
+      "note": "Повтор объединённых новых проверок выявил тот же пропущенный diagnostics include в input-lifecycle и toyota-source. Исправляю их, повторяю только затронутые проверки.",
       "result": null,
       "based_on_reviews": [
         "15e6e783e4d74a5b9c000d3658becff0",
         "65f87fefa9434dd69e6efd740fa10b71",
         "77e3f918a51449ab982b5ad578a53b85",
-        "ae0aa09617874ca8bcc10362dcb84b80"
+        "ae0aa09617874ca8bcc10362dcb84b80",
+        "c7107b9bc8974c67b7113c75529f935c"
       ]
     },
     "DTC-02": {
@@ -6577,9 +6580,53 @@
           "ae0aa09617874ca8bcc10362dcb84b80"
         ]
       }
+    },
+    {
+      "operation_id": "2677ceb014b945c4a353306bddf460be",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "heartbeat",
+      "claim_id": "4c455b84d1db43c0a19c00f91baec753",
+      "at": "2026-11-20T21:09:32+00:00",
+      "record": {
+        "owner": "codex-integration-01a1f76d-20261120",
+        "label": "Основной чат — общая сборка всех результатов",
+        "branch": "codex/integration-01a1f76d-20261120",
+        "files": [
+          "README.md",
+          "data/project-tasks.json",
+          "docs/lfj8-h03-memory-layout.md",
+          "docs/project-map.md",
+          "docs/working-set.md",
+          "targets/lfj8/build.py",
+          "targets/lfj8/check_h03_application_binding.py",
+          "targets/lfj8/check_h03_input_lifecycle.py",
+          "targets/lfj8/check_h03_toyota_source.py",
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_application_binding.h",
+          "tools/check_h03_image_layout.py",
+          "tools/check_integrated_h03.py",
+          "verification/project-audit/2026-11-21-final-integration.json",
+          "verification/project-audit/final-integration-20261121/"
+        ],
+        "stage": "in_progress",
+        "claim_id": "4c455b84d1db43c0a19c00f91baec753",
+        "claimed_at": "2026-11-20T21:01:34+00:00",
+        "updated_at": "2026-11-20T21:09:32+00:00",
+        "note": "Повтор объединённых новых проверок выявил тот же пропущенный diagnostics include в input-lifecycle и toyota-source. Исправляю их, повторяю только затронутые проверки.",
+        "result": null,
+        "based_on_reviews": [
+          "15e6e783e4d74a5b9c000d3658becff0",
+          "65f87fefa9434dd69e6efd740fa10b71",
+          "77e3f918a51449ab982b5ad578a53b85",
+          "ae0aa09617874ca8bcc10362dcb84b80",
+          "c7107b9bc8974c67b7113c75529f935c"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:02:32+00:00",
+  "updated_at": "2026-11-20T21:09:32+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
