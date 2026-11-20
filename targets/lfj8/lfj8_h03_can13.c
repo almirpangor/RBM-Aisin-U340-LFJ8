@@ -17,18 +17,6 @@ bool lfj8_h03_can13_init(Lfj8H03Can13 *broker, const Lfj8H03Can13Config *config,
     return true;
 }
 
-static Lfj8H03Can13Result unavailable(Lfj8H03Can13 *broker, const Lfj8RegisterIo *io,
-                                     const Lfj8H03Can13Input *input)
-{
-    broker->lease_lost = broker->lease_lost || broker->lease_seen;
-    lfj8_h03_torque_can_poll(&broker->torque, io, 0u, false, input->generation, input->now_us,
-                             NULL, input->torque_calibration);
-    lfj8_h03_dtc_can_poll(&broker->diagnostic, input->dtc, io, 0u,
-                          input->generation, input->diagnostic_tick, NULL);
-    lfj8_chery_tx_poll(&broker->status, io, input->now_us, 0u, NULL, NULL, NULL);
-    return (Lfj8H03Can13Result){.diagnostic_consumed = input->received != NULL};
-}
-
 static bool diagnostic_current(const Lfj8H03DtcReceive *received, uint32_t generation,
                                uint16_t timestamp, uint16_t max_age)
 {
@@ -65,7 +53,7 @@ Lfj8H03Can13Result lfj8_h03_can13_poll(Lfj8H03Can13 *broker, const Lfj8RegisterI
     uint16_t timestamp;
     if (broker->lease_lost || input->owns_slot13 != 1u ||
         !lfj8_h03_can0_slot13_timestamp(io, &timestamp)) {
-        return unavailable(broker, io, input);
+        goto slot_unavailable;
     }
     broker->lease_seen = true;
     const bool have_diagnostic = diagnostic_current(input->received, input->generation,
@@ -81,7 +69,7 @@ Lfj8H03Can13Result lfj8_h03_can13_poll(Lfj8H03Can13 *broker, const Lfj8RegisterI
     const Lfj8H03DtcSlotUse diagnostic = lfj8_h03_dtc_can_poll(
         &broker->diagnostic, input->dtc, io, 1u, input->generation, input->diagnostic_tick, NULL);
     if (diagnostic == LFJ8_H03_DTC_NO_OWNERSHIP) {
-        return unavailable(broker, io, input);
+        goto slot_unavailable;
     }
     if (diagnostic == LFJ8_H03_DTC_SLOT_RESERVED) {
         return result;
@@ -101,7 +89,7 @@ Lfj8H03Can13Result lfj8_h03_can13_poll(Lfj8H03Can13 *broker, const Lfj8RegisterI
         const uint16_t id = broker->status_in_flight == LFJ8_DUE_1AE ? LFJ8_CAN_1AE : LFJ8_CAN_300;
         const Lfj8CanTxStatus status = lfj8_h03_can0_telemetry_status(io, id, cancel);
         if (status == LFJ8_CAN_TX_UNAVAILABLE) {
-            return unavailable(broker, io, input);
+            goto slot_unavailable;
         }
         if (status == LFJ8_CAN_TX_PENDING) {
             return result;
@@ -118,7 +106,7 @@ Lfj8H03Can13Result lfj8_h03_can13_poll(Lfj8H03Can13 *broker, const Lfj8RegisterI
     if (lfj8_h03_torque_can_poll(&broker->torque, io, 1u, false, input->generation, now,
                                  input->torque, input->torque_calibration) ==
         LFJ8_H03_TORQUE_CAN_UNAVAILABLE) {
-        return unavailable(broker, io, input);
+        goto slot_unavailable;
     }
     const bool torque_priority = torque_holds(request);
     const bool status_window = !request->pending && request->progress_at != previous_progress &&
@@ -136,14 +124,14 @@ Lfj8H03Can13Result lfj8_h03_can13_poll(Lfj8H03Can13 *broker, const Lfj8RegisterI
         return result;
     }
     if (yielded != LFJ8_CAN_READY) {
-        return unavailable(broker, io, input);
+        goto slot_unavailable;
     }
     if (use_diagnostic) {
         const Lfj8H03DtcSlotUse admitted = lfj8_h03_dtc_can_poll(
             &broker->diagnostic, input->dtc, io, 1u, input->generation,
             input->diagnostic_tick, input->received);
         if (admitted == LFJ8_H03_DTC_NO_OWNERSHIP) {
-            return unavailable(broker, io, input);
+            goto slot_unavailable;
         }
         result.diagnostic_consumed = true;
         if (admitted == LFJ8_H03_DTC_SLOT_RESERVED) {
@@ -159,11 +147,20 @@ Lfj8H03Can13Result lfj8_h03_can13_poll(Lfj8H03Can13 *broker, const Lfj8RegisterI
             return result;
         }
         if (status != LFJ8_CAN_SUBMITTED) {
-            return unavailable(broker, io, input);
+            goto slot_unavailable;
         }
         broker->status_started_us = now;
         broker->status_in_flight = result.status_submitted;
         broker->status_during_reduction = status_window;
     }
     return result;
+
+slot_unavailable:
+    broker->lease_lost = broker->lease_lost || broker->lease_seen;
+    lfj8_h03_torque_can_poll(&broker->torque, io, 0u, false, input->generation, input->now_us,
+                            NULL, input->torque_calibration);
+    lfj8_h03_dtc_can_poll(&broker->diagnostic, input->dtc, io, 0u,
+                         input->generation, input->diagnostic_tick, NULL);
+    lfj8_chery_tx_poll(&broker->status, io, input->now_us, 0u, NULL, NULL, NULL);
+    return (Lfj8H03Can13Result){.diagnostic_consumed = input->received != NULL};
 }
