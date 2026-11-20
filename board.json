@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 620,
+  "sequence": 621,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -241,11 +241,11 @@
         "targets/lfj8/lfj8_h03_application.h",
         "verification/project-audit/can01-h03-app-lifecycle.md"
       ],
-      "stage": "in_progress",
+      "stage": "blocked",
       "claim_id": "4cb1fd3d23724b58bd2c94a052794a65",
       "claimed_at": "2026-11-20T20:31:55+00:00",
-      "updated_at": "2026-11-20T20:31:55+00:00",
-      "note": "Включены предыдущие CAN-01 и TOY-05. Подключаю запуск, опрос между релизами и квалификацию один раз на событие Task 2 в жизненный цикл приложения H03. Профиль и аппаратные интервалы остаются внешними входами.",
+      "updated_at": "2026-11-20T20:42:33+00:00",
+      "note": "Локально сохранено подключение CAN-01 к startup/foreground и Task 2, 62 запуска M32R. Для целевой активации нужны rbm_h03_application_binding, rbm_h03_sensor_config, подтверждённые контекст и метки Task 2, пределы возраста CAN и опроса. Ветка и код этой порции не опубликованы.",
       "result": null,
       "based_on_reviews": [
         "5fcdd962167d41129b445b4ea70a2c80",
@@ -6077,9 +6077,39 @@
           "c7107b9bc8974c67b7113c75529f935c"
         ]
       }
+    },
+    {
+      "operation_id": "6d4c33ed4398442c9708d867a25b7abd",
+      "task": "CAN-01",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "block",
+      "claim_id": "4cb1fd3d23724b58bd2c94a052794a65",
+      "at": "2026-11-20T20:42:33+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex CAN-01 — запуск и foreground двигателя H03",
+        "branch": "codex/can01-h03-engine-owner-b0157640",
+        "files": [
+          "targets/lfj8/check_h03_phase_boot.py",
+          "targets/lfj8/h03_phase_boot_fixture.c",
+          "targets/lfj8/lfj8_h03_application.c",
+          "targets/lfj8/lfj8_h03_application.h",
+          "verification/project-audit/can01-h03-app-lifecycle.md"
+        ],
+        "stage": "blocked",
+        "claim_id": "4cb1fd3d23724b58bd2c94a052794a65",
+        "claimed_at": "2026-11-20T20:31:55+00:00",
+        "updated_at": "2026-11-20T20:42:33+00:00",
+        "note": "Локально сохранено подключение CAN-01 к startup/foreground и Task 2, 62 запуска M32R. Для целевой активации нужны rbm_h03_application_binding, rbm_h03_sensor_config, подтверждённые контекст и метки Task 2, пределы возраста CAN и опроса. Ветка и код этой порции не опубликованы.",
+        "result": null,
+        "based_on_reviews": [
+          "5fcdd962167d41129b445b4ea70a2c80",
+          "6293ebe446574c9ab1fce23fa806e922"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:41:45+00:00",
+  "updated_at": "2026-11-20T20:42:33+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
