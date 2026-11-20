@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 189,
+  "sequence": 190,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -502,12 +502,12 @@
         "tools/inspect_lfj8_tcm.py",
         "verification/project-audit/h03-01-base-guard.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "125a9fc02e0b4315aa93ce8efbe1bda1",
       "claimed_at": "2026-11-20T16:38:48+00:00",
-      "updated_at": "2026-11-20T16:39:43+00:00",
-      "note": "Строгий режим готов. Исходный H03 принят, одинаковый ID при другом хеше отклоняется. Сверяю SOURCES и сохраняю отчёт.",
-      "result": null
+      "updated_at": "2026-11-20T16:40:16+00:00",
+      "note": "Строгая сверка H03 с реестром добавлена. Подлинный H03 PASS, изменённая копия с тем же ID отвергнута. Два теста и SOURCES PASS. Отчёт verification/project-audit/h03-01-base-guard.md. Требуется актуализация общего аудита интегратором.",
+      "result": "cf488af90f0e7beca13fe3c02599cd4854f3668e"
     }
   },
   "events": [
@@ -2022,9 +2022,17 @@
       "action": "heartbeat",
       "claim_id": "a8e9ff099358496bacacf60bfcc8aa84",
       "at": "2026-11-20T16:40:03+00:00"
+    },
+    {
+      "operation_id": "46936bbd519045c187a87e9559d2185e",
+      "task": "H03-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "125a9fc02e0b4315aa93ce8efbe1bda1",
+      "at": "2026-11-20T16:40:16+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:40:03+00:00",
+  "updated_at": "2026-11-20T16:40:16+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
