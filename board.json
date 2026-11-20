@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 752,
+  "sequence": 753,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -64,12 +64,12 @@
         "targets/lfj8/test_lfj8_h03_target_platform.c",
         "verification/project-audit/can03-target-platform-lifecycle.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "2101184d356545bfa9a1e0bd6716a9ee",
       "claimed_at": "2026-11-20T22:38:33+00:00",
-      "updated_at": "2026-11-20T22:47:45+00:00",
-      "note": "Совместная проверка CAN-01/VSS-02 выявила отсутствующий битовый период в прежнем тестовом профиле. Включён review VSS-02, добавляю один файл регрессии.",
-      "result": null,
+      "updated_at": "2026-11-20T22:52:33+00:00",
+      "note": "Связан штатный target_initialize, сервис CAN и остановка перед сбросом TML0. M32R 22/22, связанный сценарий 14+2, 62 boot, ПК 41/179, Bosch PASS_OFFLINE_ONLY. Открыты рабочий профиль, финальный линк и физическая отмена уже выставленного TX13 при закрытии. Отчёт can03-target-platform-lifecycle.md.",
+      "result": "b0c2eda629743ede633049fbc60256734b8575b7",
       "based_on_reviews": [
         "1b7a53b2c91c49d481c892507323d9d9",
         "43d58327bd434219b328d74d652d3be9",
@@ -9983,9 +9983,48 @@
           "ddeb80aa0d00427f9cdc2ac2b6ee7241"
         ]
       }
+    },
+    {
+      "operation_id": "360aba4416e54e6098e2e0c645a76876",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "2101184d356545bfa9a1e0bd6716a9ee",
+      "at": "2026-11-20T22:52:33+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — запуск и остановка сервиса",
+        "branch": "codex/can03-platform-lifecycle-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/check_h03_target_platform.py",
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "targets/lfj8/lfj8_h03_application.c",
+          "targets/lfj8/lfj8_h03_application.h",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_storage.h",
+          "targets/lfj8/lfj8_h03_target_platform.c",
+          "targets/lfj8/lfj8_h03_target_platform.h",
+          "targets/lfj8/test_lfj8_h03_target_platform.c",
+          "verification/project-audit/can03-target-platform-lifecycle.md"
+        ],
+        "stage": "review",
+        "claim_id": "2101184d356545bfa9a1e0bd6716a9ee",
+        "claimed_at": "2026-11-20T22:38:33+00:00",
+        "updated_at": "2026-11-20T22:52:33+00:00",
+        "note": "Связан штатный target_initialize, сервис CAN и остановка перед сбросом TML0. M32R 22/22, связанный сценарий 14+2, 62 boot, ПК 41/179, Bosch PASS_OFFLINE_ONLY. Открыты рабочий профиль, финальный линк и физическая отмена уже выставленного TX13 при закрытии. Отчёт can03-target-platform-lifecycle.md.",
+        "result": "b0c2eda629743ede633049fbc60256734b8575b7",
+        "based_on_reviews": [
+          "1b7a53b2c91c49d481c892507323d9d9",
+          "43d58327bd434219b328d74d652d3be9",
+          "77033e38e60445f2addf6c2c8e536996",
+          "8b0ce759514b4c68b04d002b192f50ff",
+          "9436326dc3784bbe994f50e6dce8e9c0"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:52:22+00:00",
+  "updated_at": "2026-11-20T22:52:33+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -11958,6 +11997,39 @@
       ],
       "task": "TOY-05",
       "submitted_at": "2026-11-20T22:52:22+00:00"
+    },
+    "2101184d356545bfa9a1e0bd6716a9ee": {
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex CAN-03 — запуск и остановка сервиса",
+      "branch": "codex/can03-platform-lifecycle-fea1b366",
+      "files": [
+        "targets/lfj8/check_h03_can_monitor_revoke.py",
+        "targets/lfj8/check_h03_target_platform.py",
+        "targets/lfj8/h03_application_binding_fixture.c",
+        "targets/lfj8/lfj8_h03_application.c",
+        "targets/lfj8/lfj8_h03_application.h",
+        "targets/lfj8/lfj8_h03_application_binding.c",
+        "targets/lfj8/lfj8_h03_storage.h",
+        "targets/lfj8/lfj8_h03_target_platform.c",
+        "targets/lfj8/lfj8_h03_target_platform.h",
+        "targets/lfj8/test_lfj8_h03_target_platform.c",
+        "verification/project-audit/can03-target-platform-lifecycle.md"
+      ],
+      "stage": "review",
+      "claim_id": "2101184d356545bfa9a1e0bd6716a9ee",
+      "claimed_at": "2026-11-20T22:38:33+00:00",
+      "updated_at": "2026-11-20T22:52:33+00:00",
+      "note": "Связан штатный target_initialize, сервис CAN и остановка перед сбросом TML0. M32R 22/22, связанный сценарий 14+2, 62 boot, ПК 41/179, Bosch PASS_OFFLINE_ONLY. Открыты рабочий профиль, финальный линк и физическая отмена уже выставленного TX13 при закрытии. Отчёт can03-target-platform-lifecycle.md.",
+      "result": "b0c2eda629743ede633049fbc60256734b8575b7",
+      "based_on_reviews": [
+        "1b7a53b2c91c49d481c892507323d9d9",
+        "43d58327bd434219b328d74d652d3be9",
+        "77033e38e60445f2addf6c2c8e536996",
+        "8b0ce759514b4c68b04d002b192f50ff",
+        "9436326dc3784bbe994f50e6dce8e9c0"
+      ],
+      "task": "CAN-03",
+      "submitted_at": "2026-11-20T22:52:33+00:00"
     }
   }
 }
