@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 207,
+  "sequence": 208,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -108,6 +108,7 @@
       "branch": "codex/h03-03-foreground-01a1f99f",
       "files": [
         "docs/lfj8-h03-control-cycle.md",
+        "targets/lfj8/check_h03_link.py",
         "targets/lfj8/check_h03_phase_wait.py",
         "targets/lfj8/h03_phase_wait_fixture.c",
         "targets/lfj8/lfj8_h03_mmio.c",
@@ -120,8 +121,8 @@
       "stage": "in_progress",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "claimed_at": "2026-11-20T16:18:01+00:00",
-      "updated_at": "2026-11-20T16:43:12+00:00",
-      "note": "Добавляю сериализованный запуск фаз и проверки команд в выделенной памяти, без привязки к неподтверждённому адресу RAM.",
+      "updated_at": "2026-11-20T16:45:02+00:00",
+      "note": "Запуск и отказы в M32R прошли, проверяю размещение стартового API в адресной компоновке H03.",
       "result": "7122fe326eff5c0f165caa527fd21c6a293743bf"
     },
     "H03-04": {
@@ -2188,9 +2189,17 @@
       "action": "resume",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "at": "2026-11-20T16:44:55+00:00"
+    },
+    {
+      "operation_id": "e0598fd0255443538672efd23d34f8bd",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "heartbeat",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "at": "2026-11-20T16:45:02+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:44:55+00:00",
+  "updated_at": "2026-11-20T16:45:02+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
