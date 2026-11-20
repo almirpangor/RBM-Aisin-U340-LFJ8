@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 607,
+  "sequence": 608,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -58,8 +58,8 @@
       "stage": "in_progress",
       "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
       "claimed_at": "2026-11-20T20:30:28+00:00",
-      "updated_at": "2026-11-20T20:30:28+00:00",
-      "note": "Инициализация единственного CAN owner под блокировкой до первого разрешения RX на холодном пути с проверкой права записи в RAM.",
+      "updated_at": "2026-11-20T20:33:29+00:00",
+      "note": "Регрессия на предыдущем SHA воспроизвела сохранённые generation=42/grant=1 после холодного разрешения. Инициализация подключена перед выходом из сброса; повторяю H03/ПК.",
       "result": null,
       "based_on_reviews": [
         "ad997bd677c542c682cec961d4619193"
@@ -5697,9 +5697,39 @@
           "1f0ef50b040d4c8ca2e5a05fd7501d40"
         ]
       }
+    },
+    {
+      "operation_id": "cc54c1b4d53e4ce996e9bfb62dea7bf6",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "heartbeat",
+      "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
+      "at": "2026-11-20T20:33:29+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — холодный сброс владельца CAN",
+        "branch": "codex/can03-cold-owner-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/check_h03_can_monitor_startup.py",
+          "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+          "targets/lfj8/lfj8_h03_can_monitor_startup.c",
+          "targets/lfj8/lfj8_h03_can_monitor_startup.h",
+          "verification/project-audit/can03-cold-owner.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
+        "claimed_at": "2026-11-20T20:30:28+00:00",
+        "updated_at": "2026-11-20T20:33:29+00:00",
+        "note": "Регрессия на предыдущем SHA воспроизвела сохранённые generation=42/grant=1 после холодного разрешения. Инициализация подключена перед выходом из сброса; повторяю H03/ПК.",
+        "result": null,
+        "based_on_reviews": [
+          "ad997bd677c542c682cec961d4619193"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:33:12+00:00",
+  "updated_at": "2026-11-20T20:33:29+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
