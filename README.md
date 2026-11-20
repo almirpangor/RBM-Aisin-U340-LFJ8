@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:02:42+00:00**. Изменение № **257**.
+Обновлено UTC: **2026-11-20T17:02:47+00:00**. Изменение № **258**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -26,7 +26,7 @@
 | ECU-01 — Проверочная сборка Bosch E4M3 | На проверке | Codex ECU-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/ecu01-1120-c7e4 | 2026-11-20T16:25:01+00:00 | E4M3 checksum coverage now requires all 51 exact record offsets. Real omission injection rejected. Eight profiles byte-identical to baseline, 68 unit tests and ordinary compact ST10 PASS_OFFLINE_ONLY. Evidence verification/project-audit/ecu01-checksum-coverage.md. Update shared audit at integration. / commit 84380128b8db2e0a6b24b297dd40aa020598e3ce |
 | ECU-02 — Калибровка момента и работа двигателя | На проверке | Codex — обороты и отпускание момента Bosch \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/ecu02-torque-rpm-32e6ac79 | 2026-11-20T16:35:57+00:00 | Передаю интегратору. Точный обычный компактный образ E4M3 OFFLINE_ONLY: 4 границы RPM, 6 отзывов через air/fast/load, нулевой статус и защита старого токена PASS. Повтор 26 команд и сквозной диалог H03 с потерей статуса PASS. Отчёт ecu02-torque-rpm-guard.md. Аппаратный пуск и калибровки открыты. / commit 06eacf1ff4f42e423886b4b25b849ead054ac924 |
 | H03-01 — Выбранная основа 9E1C и карта подключения | На проверке | Codex H03-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-01-base-guard-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:40:16+00:00 | Строгая сверка H03 с реестром добавлена. Подлинный H03 PASS, изменённая копия с тем же ID отвергнута. Два теста и SOURCES PASS. Отчёт verification/project-audit/h03-01-base-guard.md. Требуется актуализация общего аудита интегратором. / commit cf488af90f0e7beca13fe3c02599cd4854f3668e |
-| H03-02 — S51, S83 и температура ATF | На проверке | Codex — привязка ATF H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-02-atf-01a1f9a2 | 2026-11-20T16:18:28+00:00 | Добавлен условный поставщик TML0: PRS1=9, Clock Bus 1 и внешнее подтверждение физического 1 МГц. M32R: 11 пар и 3 отрицательных проверки PASS; стек 92/120/72 байта. Физические 1 МГц, размещение и IRQ остаются. / commit a376f561dacb33793b7bb65e57a2ea18fdcea08d |
+| H03-02 — S51, S83 и температура ATF | Выполняется | Codex — привязка ATF H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-02-atf-01a1f9a2 | 2026-11-20T17:02:47+00:00 | Подключаю свежий снимок ATF к GP−7184 и телеметрии 0x300, проверяю возраст самого старого операнда и компоновку M32R. / commit a376f561dacb33793b7bb65e57a2ea18fdcea08d |
 | H03-03 — Единое расписание и запуск приложения H03 | Выполняется | Codex — foreground H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/h03-03-foreground-01a1f99f | 2026-11-20T17:00:11+00:00 | Повторяю допуск RAM, отключение выходов и проверку наложения на текущем ELF; сверяю протокол CANHacker. / commit 42a4ffecdb9f99004aa0c5b4d9e889fc90658738 |
 | H03-04 — Память, стек и сервисные пути | На проверке | Codex — сервисные границы RAM H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/h03-service-spans-32e6ac79 | 2026-11-20T16:27:39+00:00 | Передаю интегратору. 35 сценариев допуска, все 2380 байт актуальных кандидатов покрыты разрешёнными интервалами; процедуры записи не запускались. STORAGE, M32R, NATIVE и Python PASS. Отчёт h03-service-ram-spans.md. Изоляция прямых/отложенных сервисных записей, запуск и владение RAM открыты. / commit e4ac4b09967f7edf86cf2c1911218ba34e260b24 |
 | H03-05 — SLT, силовые выходы и реакция на отказ | На проверке | Codex — штатное отключение SLT \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-05-p0745-01a1f9a2 | 2026-11-20T16:51:27+00:00 | ELF-чек подтверждает все 128 страниц и через штатную внутреннюю ветвь активации 003364, с двумя отрицательными граничными адресами. ELF 020000/07C118 отклонён. Проверка внешнего сеанса и аппаратного наложения открыта. / commit 5813eaf480e4814fc5e78ed19d65b171e5f39a86 |
@@ -183,13 +183,17 @@
 
 - docs/lfj8-h03-atf-native.md
 - targets/lfj8/check_h03_atf_native.py
+- targets/lfj8/check_h03_link.py
 - targets/lfj8/h03_atf_hook_fixture.c
 - targets/lfj8/h03_atf_hooks.S
 - targets/lfj8/lfj8_h03_atf.h
+- targets/lfj8/lfj8_h03_atf_feed.c
+- targets/lfj8/lfj8_h03_atf_feed.h
 - targets/lfj8/lfj8_h03_atf_target.c
 - targets/lfj8/lfj8_h03_atf_target.h
 - targets/lfj8/lfj8_h03_atf_tml0.c
 - targets/lfj8/test_lfj8_h03_atf.c
+- targets/lfj8/test_lfj8_h03_atf_feed.c
 
 ### H03-03
 
@@ -341,6 +345,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:02:47+00:00 | H03-02 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T17:02:42+00:00 | VSS-01 | resume | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:02:27+00:00 | DTC-01 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T17:01:37+00:00 | MODE-01 | claim | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
@@ -370,4 +375,3 @@
 | 2026-11-20T16:51:21+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:51:17+00:00 | TOY-03 | claim | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T16:51:10+00:00 | DTC-02 | resume | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
-| 2026-11-20T16:50:41+00:00 | DTC-02 | resume | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |

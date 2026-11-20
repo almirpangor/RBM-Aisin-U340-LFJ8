@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 257,
+  "sequence": 258,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -168,19 +168,23 @@
       "files": [
         "docs/lfj8-h03-atf-native.md",
         "targets/lfj8/check_h03_atf_native.py",
+        "targets/lfj8/check_h03_link.py",
         "targets/lfj8/h03_atf_hook_fixture.c",
         "targets/lfj8/h03_atf_hooks.S",
         "targets/lfj8/lfj8_h03_atf.h",
+        "targets/lfj8/lfj8_h03_atf_feed.c",
+        "targets/lfj8/lfj8_h03_atf_feed.h",
         "targets/lfj8/lfj8_h03_atf_target.c",
         "targets/lfj8/lfj8_h03_atf_target.h",
         "targets/lfj8/lfj8_h03_atf_tml0.c",
-        "targets/lfj8/test_lfj8_h03_atf.c"
+        "targets/lfj8/test_lfj8_h03_atf.c",
+        "targets/lfj8/test_lfj8_h03_atf_feed.c"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "claimed_at": "2026-11-20T15:54:09+00:00",
-      "updated_at": "2026-11-20T16:18:28+00:00",
-      "note": "Добавлен условный поставщик TML0: PRS1=9, Clock Bus 1 и внешнее подтверждение физического 1 МГц. M32R: 11 пар и 3 отрицательных проверки PASS; стек 92/120/72 байта. Физические 1 МГц, размещение и IRQ остаются.",
+      "updated_at": "2026-11-20T17:02:47+00:00",
+      "note": "Подключаю свежий снимок ATF к GP−7184 и телеметрии 0x300, проверяю возраст самого старого операнда и компоновку M32R.",
       "result": "a376f561dacb33793b7bb65e57a2ea18fdcea08d"
     },
     "CAN-05": {
@@ -2623,9 +2627,17 @@
       "action": "resume",
       "claim_id": "698c00d00af84972b5562bc8498c8628",
       "at": "2026-11-20T17:02:42+00:00"
+    },
+    {
+      "operation_id": "7cce4a715d644977944cd1fba6a5907b",
+      "task": "H03-02",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "resume",
+      "claim_id": "11e70992d32245529e20626f4b9bd867",
+      "at": "2026-11-20T17:02:47+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:02:42+00:00",
+  "updated_at": "2026-11-20T17:02:47+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
