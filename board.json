@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 39,
+  "sequence": 40,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -97,6 +97,7 @@
         "data/project-tasks.json",
         "docs/lfj8-h03-control-cycle.md",
         "targets/lfj8/check_h03_phase_wait.py",
+        "targets/lfj8/h03_phase_wait_fixture.c",
         "targets/lfj8/h03_phase_wait_hook.S",
         "targets/lfj8/lfj8_h03_phase_clock.c",
         "targets/lfj8/lfj8_h03_phase_clock.h",
@@ -107,11 +108,11 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-phase-wait.json"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "claimed_at": "2026-11-20T15:51:48+00:00",
-      "updated_at": "2026-11-20T15:59:46+00:00",
-      "note": "Добавлена проверка фазы без потребления с отзывом команды и inhibit. Сборки M32R, 17 компонентов, replay Bosch и реестр PASS. Штатная привязка к 008150 и аппаратный inhibit открыты.",
+      "updated_at": "2026-11-20T16:00:49+00:00",
+      "note": "Связываю штатную точку ожидания и C-проверку срока в M32R, без сборки прошивочного BIN.",
       "result": "9fa9c8aa18cd88543ba464f98fc8f7fc6a21a7d1"
     },
     "H03-04": {
@@ -517,9 +518,17 @@
       "action": "resume",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T16:00:34+00:00"
+    },
+    {
+      "operation_id": "73cfbc050822481a85536673228bb3bf",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "resume",
+      "claim_id": "ef041474d8994309836820d6cd886071",
+      "at": "2026-11-20T16:00:49+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:00:34+00:00",
+  "updated_at": "2026-11-20T16:00:49+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
