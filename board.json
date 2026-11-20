@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 469,
+  "sequence": 470,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -106,11 +106,11 @@
         "targets/lfj8/lfj8_h03_application.h",
         "verification/project-audit/h03-03-sensor-foreground.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "ba6497ac9d4a4fb380b163c8abb7d2d2",
       "claimed_at": "2026-11-20T18:35:39+00:00",
-      "updated_at": "2026-11-20T18:43:07+00:00",
-      "note": "Снимок S51/S83/ATF в штатном foreground, владелец эпохи приложение. M32R 38 сценариев и 80 IRQ/RTE, 17 native, 18 компонентных, 37 этапов ПК. Полная компоновка FAIL_BINDINGS, стенд открыт. Отчёт h03-03-sensor-foreground.md.",
+      "updated_at": "2026-11-20T19:23:27+00:00",
+      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
       "result": "391a5514f65fddb1041cfd7b7ee8018c10110c30"
     },
     "H03-04": {
@@ -4312,9 +4312,17 @@
       "action": "complete",
       "claim_id": "955fa03480184bffadb909ff493f7946",
       "at": "2026-11-20T19:23:07+00:00"
+    },
+    {
+      "operation_id": "aeafa2d041ff4c85848c04b6278d28bd",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "ba6497ac9d4a4fb380b163c8abb7d2d2",
+      "at": "2026-11-20T19:23:27+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:23:07+00:00",
+  "updated_at": "2026-11-20T19:23:27+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
