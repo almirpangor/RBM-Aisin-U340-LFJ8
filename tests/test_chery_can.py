@@ -74,15 +74,73 @@ class CheryCanTests(unittest.TestCase):
         wide_id = replace(self.coolant_frame, arbitration_id=0x800)
         self.assertIs(decode_chery_frame(wide_id).status, DecodeStatus.FORMAT_UNSUPPORTED)
 
-    def test_candidate_frames_and_unknown_id_stay_raw(self) -> None:
-        for arbitration_id in (0x1AE, 0x300):
-            with self.subTest(arbitration_id=arbitration_id):
-                frame = replace(self.coolant_frame, arbitration_id=arbitration_id, observed_direction=Direction.TA2005_TO_ECM)
+    def test_1ae_parses_raw_fields_in_the_matching_observed_direction(self) -> None:
+        frame = replace(self.coolant_frame, arbitration_id=0x1AE,
+                        payload=bytes.fromhex("0B 32 00 09 32 FF FF FF"),
+                        observed_direction=Direction.TA2005_TO_ECM)
+        decoded = decode_chery_frame(frame)
+        self.assertIs(decoded.status, DecodeStatus.DECODED)
+        self.assertIs(decoded.donor_direction, Direction.TA2005_TO_ECM)
+        self.assertIs(decoded.direction_evidence, DirectionEvidence.DONOR_TX_AND_RX)
+        self.assertEqual(decoded.reading, SignalReading("vehicle_speed", "km/h", 0xFFFF, None))
+        self.assertTrue(decoded.fields_1ae.checksum_matches)
+        self.assertTrue(decoded.fields_1ae.byte5_is_reserved)
+        self.assertTrue(decoded.fields_1ae.bytes6_7_is_reserved)
+
+        unknown_direction = decode_chery_frame(replace(frame, observed_direction=None))
+        self.assertIs(unknown_direction.status, DecodeStatus.DIRECTION_UNKNOWN)
+        self.assertIsNone(unknown_direction.fields_1ae)
+        reverse_direction = decode_chery_frame(replace(frame, observed_direction=Direction.ECM_TO_TA2005))
+        self.assertIs(reverse_direction.status, DecodeStatus.DIRECTION_MISMATCH)
+        self.assertIsNone(reverse_direction.fields_1ae)
+
+    def test_1ae_speed_uses_big_endian_and_one_hundredth_kmh(self) -> None:
+        frame = replace(self.coolant_frame, arbitration_id=0x1AE,
+                        payload=bytes.fromhex("0B 32 00 09 32 FF 19 8F"),
+                        observed_direction=Direction.TA2005_TO_ECM)
+        decoded = decode_chery_frame(frame)
+        self.assertEqual(decoded.reading, SignalReading("vehicle_speed", "km/h", 6543, Fraction(6543, 100)))
+        self.assertEqual(decoded.fields_1ae.bytes6_7, 6543)
+
+    def test_1ae_receiver_wrap_and_reserved_word_preserve_raw(self) -> None:
+        for raw, expected in ((0, 0), (51199, Fraction(51199, 100)), (51200, None),
+                              (0xFFFE, None), (0xFFFF, None)):
+            with self.subTest(raw=raw):
+                frame = replace(self.coolant_frame, arbitration_id=0x1AE,
+                                payload=bytes.fromhex("0B 32 00 09 32 00") + raw.to_bytes(2, "big"),
+                                observed_direction=Direction.TA2005_TO_ECM)
                 decoded = decode_chery_frame(frame)
-                self.assertIs(decoded.status, DecodeStatus.PAYLOAD_NOT_DECODED)
-                self.assertIs(decoded.direction_evidence, DirectionEvidence.DONOR_RX_TX_CANDIDATE)
+                self.assertEqual(decoded.reading, SignalReading("vehicle_speed", "km/h", raw, expected))
+                self.assertEqual(decoded.fields_1ae.bytes6_7_is_reserved, raw == 0xFFFF)
+
+    def test_300_temperature_uses_byte_three_and_saturates_at_104_c(self) -> None:
+        for raw, expected in ((0, -40), (40, 0), (100, 60), (143, 103), (144, 104),
+                              (200, 104), (254, 104), (255, None)):
+            with self.subTest(raw=raw):
+                frame = replace(self.coolant_frame, arbitration_id=0x300,
+                                payload=bytes((100, 101, 102, raw, 104, 105, 106, 107)),
+                                observed_direction=Direction.TA2005_TO_ECM)
+                decoded = decode_chery_frame(frame)
+                self.assertIs(decoded.status, DecodeStatus.DECODED)
                 self.assertIs(decoded.donor_direction, Direction.TA2005_TO_ECM)
-                self.assertIsNone(decoded.reading)
+                self.assertIs(decoded.direction_evidence, DirectionEvidence.DONOR_TX_AND_RX)
+                self.assertEqual(decoded.reading, SignalReading("atf_temperature", "°C", raw, expected))
+                self.assertIsNone(decoded.fields_1ae)
                 self.assertIs(decoded.frame, frame)
-        unknown = replace(self.coolant_frame, arbitration_id=0x123)
-        self.assertIs(decode_chery_frame(unknown).status, DecodeStatus.ID_UNKNOWN)
+
+    def test_300_requires_reported_ta2005_transmission(self) -> None:
+        for direction, status in ((None, DecodeStatus.DIRECTION_UNKNOWN),
+                                  (Direction.ECM_TO_TA2005, DecodeStatus.DIRECTION_MISMATCH)):
+            with self.subTest(direction=direction):
+                frame = replace(self.coolant_frame, arbitration_id=0x300, observed_direction=direction)
+                decoded = decode_chery_frame(frame)
+                self.assertIs(decoded.status, status)
+                self.assertIsNone(decoded.reading)
+
+    def test_unknown_id_stays_raw(self) -> None:
+        frame = replace(self.coolant_frame, arbitration_id=0x123)
+        decoded = decode_chery_frame(frame)
+        self.assertIs(decoded.status, DecodeStatus.ID_UNKNOWN)
+        self.assertIsNone(decoded.reading)
+        self.assertIsNone(decoded.fields_1ae)
+        self.assertIs(decoded.frame, frame)

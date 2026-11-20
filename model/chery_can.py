@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from enum import Enum
 from fractions import Fraction
 
+from .chery_1ae import Raw1AEFields, VEHICLE_SPEED_WRAP_RAW, parse_1ae_payload
+
 
 class FrameFormat(Enum):
     STANDARD_DATA = "classic_standard_data"
@@ -57,6 +59,7 @@ class DecodeResult:
     donor_direction: Direction | None = None
     direction_evidence: DirectionEvidence | None = None
     reading: SignalReading | None = None
+    fields_1ae: Raw1AEFields | None = None
 
 
 def decode_chery_frame(frame: CapturedFrame) -> DecodeResult:
@@ -66,26 +69,33 @@ def decode_chery_frame(frame: CapturedFrame) -> DecodeResult:
 
     if frame.arbitration_id in (0x0FA, 0x278):
         direction = Direction.ECM_TO_TA2005
-        evidence = DirectionEvidence.DONOR_TX_AND_RX
     elif frame.arbitration_id in (0x1AE, 0x300):
         direction = Direction.TA2005_TO_ECM
-        evidence = DirectionEvidence.DONOR_RX_TX_CANDIDATE
     else:
         return DecodeResult(frame, DecodeStatus.ID_UNKNOWN)
 
+    evidence = DirectionEvidence.DONOR_TX_AND_RX
     if frame.dlc != 8 or len(frame.payload) != frame.dlc:
         return DecodeResult(frame, DecodeStatus.LENGTH_MISMATCH, direction, evidence)
-    if evidence is DirectionEvidence.DONOR_RX_TX_CANDIDATE:
-        return DecodeResult(frame, DecodeStatus.PAYLOAD_NOT_DECODED, direction, evidence)
     if frame.observed_direction is None:
         return DecodeResult(frame, DecodeStatus.DIRECTION_UNKNOWN, direction, evidence)
     if frame.observed_direction is not direction:
         return DecodeResult(frame, DecodeStatus.DIRECTION_MISMATCH, direction, evidence)
 
+    if frame.arbitration_id == 0x1AE:
+        fields = parse_1ae_payload(frame.payload)
+        raw = fields.bytes6_7
+        speed = Fraction(raw, 100) if raw < VEHICLE_SPEED_WRAP_RAW else None
+        reading = SignalReading("vehicle_speed", "km/h", raw, speed)
+        return DecodeResult(frame, DecodeStatus.DECODED, direction, evidence, reading, fields)
     if frame.arbitration_id == 0x0FA:
         raw = int.from_bytes(frame.payload[:2], "big")
         rpm = None if raw == 0xFFFF else Fraction(raw, 4)
         reading = SignalReading("engine_speed", "rpm", raw, rpm)
+    elif frame.arbitration_id == 0x300:
+        raw = frame.payload[3]
+        atf_c = None if raw == 0xFF else Fraction(min(raw, 144) - 40)
+        reading = SignalReading("atf_temperature", "°C", raw, atf_c)
     else:
         raw = frame.payload[0]
         coolant_c = None if raw == 0xFF else Fraction(3 * raw, 4) - 48
