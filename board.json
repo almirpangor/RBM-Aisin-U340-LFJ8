@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 113,
+  "sequence": 114,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -77,11 +77,11 @@
       "files": [
         "docs/lfj8-h03-input-paths.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "f014bd3c6bba42f5bb7e5fa23c121d0d",
       "claimed_at": "2026-11-20T15:47:02+00:00",
-      "updated_at": "2026-11-20T15:48:28+00:00",
-      "note": "Карта битов Toyota, проверка вариантов проводки Mazda и сценарии стенда опубликованы. Проверка реестра и git diff --check PASS. Физические источники целевого жгута пока не подтверждены.",
+      "updated_at": "2026-11-20T16:22:02+00:00",
+      "note": "Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена.",
       "result": "dfc774eee013ba78c6679d3128f493f238f43000"
     },
     "REL-01": {
@@ -1335,9 +1335,17 @@
       "action": "claim",
       "claim_id": "a1532b4af90d4794aec52c99f7b434a2",
       "at": "2026-11-20T16:21:57+00:00"
+    },
+    {
+      "operation_id": "224f0b576fba47848320c4643890d8e2",
+      "task": "TOY-03",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "complete",
+      "claim_id": "f014bd3c6bba42f5bb7e5fa23c121d0d",
+      "at": "2026-11-20T16:22:02+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:21:57+00:00",
+  "updated_at": "2026-11-20T16:22:02+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
