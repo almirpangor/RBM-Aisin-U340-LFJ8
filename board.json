@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 422,
+  "sequence": 423,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -38,12 +38,12 @@
         "targets/lfj8/h03_dtc_rx_resident.ld",
         "verification/project-audit/dtc02-resident-target-rx.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "7ace3d79f2284f379601029d5ac4f737",
       "claimed_at": "2026-11-20T18:38:57+00:00",
-      "updated_at": "2026-11-20T18:44:49+00:00",
-      "note": "Нижний RX с целевыми callbacks занял 3176 байт. Совпали 18 входных сценариев, три обхода, активный RX с недоступным верхним кодом и выдача 0x722. Две отрицательные компоновки отвергнуты; заканчиваю проектные проверки.",
-      "result": null
+      "updated_at": "2026-11-20T18:46:58+00:00",
+      "note": "3176 байт в нижней Flash с целевым RX и CAN-03. 18 сравнений, три обхода, активный повтор после удаления верхнего кода, две отрицательные компоновки. ПК 37 шагов и 113 тестов, M32R 18 компонентных прогонов, 11 тестов размещения. Доказано в симуляторе. Остались установка переходов, RAM, Virtual Flash и стенд. Отчёт dtc02-resident-target-rx.md.",
+      "result": "500b34cb08d9d61ce2016a47e0f09e77132edf21"
     },
     "CAN-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -3945,9 +3945,17 @@
       "action": "heartbeat",
       "claim_id": "f9f139056ba24b4a88ede7ceaeb63df1",
       "at": "2026-11-20T18:46:22+00:00"
+    },
+    {
+      "operation_id": "9fa4d011b95140dc84e9ed4691d659a1",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "7ace3d79f2284f379601029d5ac4f737",
+      "at": "2026-11-20T18:46:58+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:46:22+00:00",
+  "updated_at": "2026-11-20T18:46:58+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
