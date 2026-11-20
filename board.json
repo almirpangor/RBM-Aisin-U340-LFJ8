@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 600,
+  "sequence": 601,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -376,24 +376,25 @@
     },
     "DTC-01": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
-      "label": "Codex DTC-01 — срок C0 в foreground H03",
-      "branch": "codex/dtc01-h03-session-foreground-7bd19ea4",
+      "label": "Codex DTC-01 — источник T6 от TML0",
+      "branch": "codex/dtc01-t6-clock-source-7bd19ea4",
       "files": [
-        "targets/lfj8/lfj8_h03_dtc_can.c",
-        "targets/lfj8/lfj8_h03_dtc_can.h",
-        "targets/lfj8/lfj8_h03_dtc_foreground.c",
-        "targets/lfj8/lfj8_h03_dtc_foreground.h",
-        "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
-        "targets/lfj8/lfj8_h03_dtc_rx_queue.h",
-        "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
-        "verification/project-audit/dtc01-h03-session-foreground.md"
+        "targets/lfj8/check_h03_dtc_basiccan.py",
+        "targets/lfj8/h03_dtc_rx_hook_fixture.c",
+        "targets/lfj8/lfj8_h03_dtc_native.c",
+        "targets/lfj8/lfj8_h03_dtc_native.h",
+        "verification/project-audit/dtc01-h03-t6-clock-source.md"
       ],
-      "stage": "review",
-      "claim_id": "f6547625e0dd48c180162a7963424191",
-      "claimed_at": "2026-11-20T19:38:10+00:00",
-      "updated_at": "2026-11-20T19:51:50+00:00",
-      "note": "Штатный CAN foreground H03 обслуживает девять фаз C0, закрывает сеанс, удаляет ожидающий RX и отсекает старые IRQ, TX13 освобождается через abort/drain. ПК 41/120, M32R foreground и 22 нативные группы (phase-boot отдельным повтором), 18 BasicCAN сравнений. +12 Б RAM. Остались подтверждённый источник T6 в application_binding, sensor_config и сканер на стенде. Отчёт dtc01-h03-session-foreground.md.",
-      "result": "c9d57c1fb0a038b06a5acff8aafffa639d3b0726"
+      "stage": "in_progress",
+      "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
+      "claimed_at": "2026-11-20T20:30:38+00:00",
+      "updated_at": "2026-11-20T20:30:38+00:00",
+      "note": "Подключаю вычисление непрерывных тиков T6 к нативному CAN foreground из квалифицированного TML0. Период и начальная фаза обязательны в конфигурации приложения. Сданные DTC-01 и DTC-02 включены.",
+      "result": null,
+      "based_on_reviews": [
+        "0580560d4a0e442cb07862988bd40b0f",
+        "f6547625e0dd48c180162a7963424191"
+      ]
     },
     "VSS-01": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -5477,9 +5478,39 @@
           "ad997bd677c542c682cec961d4619193"
         ]
       }
+    },
+    {
+      "operation_id": "f1ee3885b50c452e9d8e5faa00c31174",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
+      "at": "2026-11-20T20:30:38+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-01 — источник T6 от TML0",
+        "branch": "codex/dtc01-t6-clock-source-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_dtc_basiccan.py",
+          "targets/lfj8/h03_dtc_rx_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_dtc_native.c",
+          "targets/lfj8/lfj8_h03_dtc_native.h",
+          "verification/project-audit/dtc01-h03-t6-clock-source.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
+        "claimed_at": "2026-11-20T20:30:38+00:00",
+        "updated_at": "2026-11-20T20:30:38+00:00",
+        "note": "Подключаю вычисление непрерывных тиков T6 к нативному CAN foreground из квалифицированного TML0. Период и начальная фаза обязательны в конфигурации приложения. Сданные DTC-01 и DTC-02 включены.",
+        "result": null,
+        "based_on_reviews": [
+          "0580560d4a0e442cb07862988bd40b0f",
+          "f6547625e0dd48c180162a7963424191"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:30:28+00:00",
+  "updated_at": "2026-11-20T20:30:38+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
