@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 5,
+  "sequence": 6,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -65,12 +65,12 @@
         "targets/lfj8/lfj8_h03_can13.h",
         "verification/e4m3-can-9e1c/h03-can-lifecycle.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
       "claimed_at": "2026-11-20T15:44:32+00:00",
-      "updated_at": "2026-11-20T15:44:32+00:00",
-      "note": "Сверяю штатные пути CAN0 H03 и проверку восстановления CAN13.",
-      "result": null
+      "updated_at": "2026-11-20T15:46:14+00:00",
+      "note": "16 прогонов lifecycle и 12 TX gate прошли. OEM очищает MSC13 при сохранении SLIMK в модели RAM. Общий снимок аудита зарезервирован DTC-02, интегратору обновить хеши двух проверенных файлов и добавить отчёт. Нативная привязка и аппаратные замеры открыты.",
+      "result": "c46e9b5cf857a95757aef1025f599e41972eaf64"
     }
   },
   "events": [
@@ -113,9 +113,17 @@
       "action": "claim",
       "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
       "at": "2026-11-20T15:44:32+00:00"
+    },
+    {
+      "operation_id": "5267ac3b2e9249c4921a8d14228adb3a",
+      "task": "CAN-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
+      "at": "2026-11-20T15:46:14+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:44:32+00:00",
+  "updated_at": "2026-11-20T15:46:14+00:00",
   "main_commit": "2875ed80264fd7714d44047f849e2df4b04123ef",
   "catalog": [
     {
