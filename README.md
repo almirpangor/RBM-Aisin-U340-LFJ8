@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:12:48+00:00**. Изменение № **80**.
+Обновлено UTC: **2026-11-20T16:13:07+00:00**. Изменение № **81**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -21,7 +21,7 @@
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Codex CAN-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-1120-c7e4 | 2026-11-20T16:10:06+00:00 | CAN RX epoch guard; reproduced old startup and drain race, fixed regressions on host and M32R. PC 33 steps/59 tests, M32R 17 components and Bosch OFFLINE_ONLY PASS. Evidence verification/project-audit/can01-rx-epoch.md. Integrator to update the shared audit; OEM startup and hardware timing remain open. / commit ca268743dfe173f93121d6b9148e0951932cfc9d |
 | CAN-02 — Общий диспетчер CAN13 | Свободна | — | — | — | — |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex — CAN0 H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can-03-h03-01a1f99f | 2026-11-20T15:50:27+00:00 | Сведено с main 264f249. 16 прогонов lifecycle, 12 TX gate и project_status --check PASS. Протокол CANHacker добавлен. Штатная привязка и аппаратная приёмка открыты. / commit 507ba30e1a3e68c727b137ef209d1a45333591ad |
-| CAN-04 — Запрос снижения момента по RB | Выполняется | Codex CAN-04 — снятие RB-запроса \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-torque-fea1b366 | 2026-11-20T16:12:09+00:00 | Исправление прошло M32R, 17 компонентных прогонов. Bosch ST10 OFFLINE_ONLY прошёл обычный диалог и потерю статуса. Завершаю проверку ПК и отчёт. |
+| CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 — снятие RB-запроса \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-torque-fea1b366 | 2026-11-20T16:13:07+00:00 | Снятие RB-запроса при отзыве профиля готово. ПК: 33 шага и 65 тестов PASS. M32R: 17 компонентных прогонов PASS. Bosch OFFLINE_ONLY: штатное снятие и потеря статуса PASS. Интегратору: обновить общий снимок и карточку по отчёту verification/project-audit/can04-torque-revocation.md, затем complete после принятия в main. Стенд и целевые калибровки открыты. / commit 0a3f6260d1bee66174df70712597fc868777e34b |
 | CAN-05 — Полнота штатного обмена Chery | На проверке | Codex CAN-05 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/u340-1120-c7e4 | 2026-11-20T16:01:03+00:00 | Host 1AE round trip: 65536 operand pairs and validity transitions PASS. PC 33 steps / 59 tests PASS. Bosch compact build and ST10 model PASS OFFLINE_ONLY. Evidence can05-1ae-roundtrip.md; integrator to record the two new test files in the active audit. Native integration and hardware open. / commit 20247416c28972443bc2992d06d9706566c677d3 |
 | ECU-01 — Проверочная сборка Bosch E4M3 | Свободна | — | — | — | — |
 | ECU-02 — Калибровка момента и работа двигателя | Свободна | — | — | — | — |
@@ -210,6 +210,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:13:07+00:00 | CAN-04 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:12:48+00:00 | ORG-01 | heartbeat | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T16:12:39+00:00 | TOY-04 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:12:31+00:00 | TOY-05 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -239,4 +240,3 @@
 | 2026-11-20T16:05:54+00:00 | CAN-01 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:05:43+00:00 | H03-04 | review | codex-h03-04-01a1f76d-20261120 |
 | 2026-11-20T16:05:24+00:00 | H03-02 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
-| 2026-11-20T16:04:54+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |

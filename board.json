@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 80,
+  "sequence": 81,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -282,12 +282,12 @@
         "targets/lfj8/test_lfj8_h03_torque.c",
         "verification/project-audit/can04-torque-revocation.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "9575e38186c74fb9bb027e3985074fd3",
       "claimed_at": "2026-11-20T16:09:14+00:00",
-      "updated_at": "2026-11-20T16:12:09+00:00",
-      "note": "Исправление прошло M32R, 17 компонентных прогонов. Bosch ST10 OFFLINE_ONLY прошёл обычный диалог и потерю статуса. Завершаю проверку ПК и отчёт.",
-      "result": null
+      "updated_at": "2026-11-20T16:13:07+00:00",
+      "note": "Снятие RB-запроса при отзыве профиля готово. ПК: 33 шага и 65 тестов PASS. M32R: 17 компонентных прогонов PASS. Bosch OFFLINE_ONLY: штатное снятие и потеря статуса PASS. Интегратору: обновить общий снимок и карточку по отчёту verification/project-audit/can04-torque-revocation.md, затем complete после принятия в main. Стенд и целевые калибровки открыты.",
+      "result": "0a3f6260d1bee66174df70712597fc868777e34b"
     },
     "MODE-01": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -963,9 +963,17 @@
       "action": "heartbeat",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "at": "2026-11-20T16:12:48+00:00"
+    },
+    {
+      "operation_id": "e900b4a9e24940c4b47ea652d3adc78b",
+      "task": "CAN-04",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "9575e38186c74fb9bb027e3985074fd3",
+      "at": "2026-11-20T16:13:07+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:12:48+00:00",
+  "updated_at": "2026-11-20T16:13:07+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
