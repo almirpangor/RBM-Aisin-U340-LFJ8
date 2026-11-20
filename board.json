@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 185,
+  "sequence": 186,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -198,19 +198,19 @@
       "result": "82947a42cfb33ef5350af1ce98e39055ba6a1508"
     },
     "DTC-03": {
-      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
-      "label": "Codex DTC-03",
-      "branch": "codex/dtc03-table-mwp5rm2ofhaxjfi9dss",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "label": "Codex DTC-03 — монитор цепи ATF H03",
+      "branch": "codex/dtc03-atf-monitor-01a1f9c7",
       "files": [
-        "tests/test_chery_dtc_table.py",
-        "verification/project-audit/dtc03-table.md"
+        "targets/lfj8/check_h03_atf_fault.py",
+        "verification/project-audit/dtc03-h03-atf-monitor.md"
       ],
-      "stage": "done",
-      "claim_id": "b8f5993a9046405492ff005c31e01675",
-      "claimed_at": "2026-11-20T15:57:52+00:00",
-      "updated_at": "2026-11-20T16:25:38+00:00",
-      "note": "Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена.",
-      "result": "fbeea2ca6b1ceb47be58f4bf05c9f3817c5664a2"
+      "stage": "in_progress",
+      "claim_id": "d048f56f20764374915133ea2b7bbcde",
+      "claimed_at": "2026-11-20T16:39:32+00:00",
+      "updated_at": "2026-11-20T16:39:32+00:00",
+      "note": "Отдельная порция: воспроизвожу штатный монитор цепи ATF H03, раздельно подтверждаю границы, выдержки, флаги и восстановление P0712/P0713. Сопоставление с Chery P0710 только по подтверждённой семантике.",
+      "result": null
     },
     "TOY-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -1989,9 +1989,17 @@
       "action": "review",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "at": "2026-11-20T16:39:00+00:00"
+    },
+    {
+      "operation_id": "d0691b4dadd349e3a9b4cbb071cd4e9a",
+      "task": "DTC-03",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "d048f56f20764374915133ea2b7bbcde",
+      "at": "2026-11-20T16:39:32+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:39:00+00:00",
+  "updated_at": "2026-11-20T16:39:32+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
