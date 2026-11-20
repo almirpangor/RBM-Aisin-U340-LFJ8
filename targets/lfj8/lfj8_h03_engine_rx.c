@@ -1,5 +1,7 @@
 #include "lfj8_h03_engine_rx.h"
 
+#include <stddef.h>
+
 #define CAN_CLOCK_HALF UINT16_C(0x8000)
 #define MAXIMUM_POLL_GAP_US UINT16_C(30000)
 
@@ -19,6 +21,8 @@ int lfj8_h03_engine_rx_init(Lfj8H03EngineRx *rx, uint16_t max_age_ticks,
                            uint16_t max_poll_gap_us)
 {
     reset_rx(rx);
+    rx->generation_source = NULL;
+    rx->last_generation = 0u;
     rx->max_age_ticks = 0u;
     rx->max_poll_gap_us = 0u;
     if (max_age_ticks == 0u || max_age_ticks >= CAN_CLOCK_HALF ||
@@ -28,6 +32,14 @@ int lfj8_h03_engine_rx_init(Lfj8H03EngineRx *rx, uint16_t max_age_ticks,
     rx->max_age_ticks = max_age_ticks;
     rx->max_poll_gap_us = max_poll_gap_us;
     return 1;
+}
+
+void lfj8_h03_engine_rx_bind_generation(Lfj8H03EngineRx *rx,
+                                       const volatile uint32_t *generation)
+{
+    reset_rx(rx);
+    rx->generation_source = generation;
+    rx->last_generation = *generation;
 }
 
 static void accept_frame(Lfj8H03EngineRx *rx, Lfj8CanRxResult result, const Lfj8CanData8 *frame,
@@ -148,6 +160,13 @@ unsigned lfj8_h03_engine_rx_poll(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
                                 Ta2005CherySnapshot *snapshot)
 {
     const uint32_t saved = io->enter(io->context);
+    if (rx->generation_source != NULL) {
+        const uint32_t generation = *rx->generation_source;
+        if (generation != rx->last_generation) {
+            reset_rx(rx);
+            rx->last_generation = generation;
+        }
+    }
     const unsigned usable = poll_rx(rx, io, now_us, slots_owned, snapshot);
     io->leave(io->context, saved);
     return usable;

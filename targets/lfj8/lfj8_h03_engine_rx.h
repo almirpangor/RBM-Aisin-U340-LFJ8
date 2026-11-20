@@ -23,19 +23,31 @@ typedef struct {
     /* Sticky until the feed owner invalidates any retained engine values. */
     uint8_t discontinuity;
     Lfj8H03EngineRxPhase phase;
+    const volatile uint32_t *generation_source;
+    uint32_t last_generation;
 } Lfj8H03EngineRx;
 
 /* The scheduler uses an independent monotonic microsecond clock. The CAN
  * age limit is in H03 timestamp ticks (one per CAN bit). The poll gap limit
  * must be <= 30000 us to keep the 16-bit counter delta below half a wrap.
- * Initialize before dispatch and reinitialize when changing the policy. */
+ * Initialize before dispatch and reinitialize when changing the policy.
+ * Initialization clears the generation binding. */
 int lfj8_h03_engine_rx_init(Lfj8H03EngineRx *rx, uint16_t max_age_ticks,
                            uint16_t max_poll_gap_us);
+
+/* Bind the CAN setup generation after init and before enabling RX. The
+ * word is nonnull, aligned and lives as long as the receiver. The CAN
+ * owner updates it under the same interrupt serialization used by poll.
+ * Binding clears buffered data and restarts slot attachment. */
+void lfj8_h03_engine_rx_bind_generation(Lfj8H03EngineRx *rx,
+                                       const volatile uint32_t *generation);
 
 /* A single foreground owner calls poll. io uses nestable saved interrupt
  * state so a reconfiguration cannot interrupt the two-slot transaction.
  * H03 completes CAN startup/recovery with the two slots clear. On BusOff
  * or ownership loss, attach again after OEM is operational with clear slots.
+ * If bound, a change of generation takes the same path even if both the
+ * CAN timestamp and the ownership flag appear continuous across polls.
  * After a scheduling or counter discontinuity, discard pending frames and
  * reestablish the clock before accepting new frames. During startup and
  * recovery, accept only frames timestamped strictly after the clock anchor.

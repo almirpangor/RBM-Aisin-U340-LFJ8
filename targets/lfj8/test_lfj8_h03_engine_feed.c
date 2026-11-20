@@ -287,6 +287,42 @@ static void expect_model(Lfj8H03EngineModelSample sample, uint8_t state,
     }
 }
 
+static void check_generation_change(void)
+{
+    Fixture fixture;
+    setup(&fixture);
+    memset(fixture.slots, 0, sizeof(fixture.slots));
+    volatile uint32_t generation = UINT32_MAX;
+    lfj8_h03_engine_rx_bind_generation(&fixture.receiver, &generation);
+    assert(task2(&fixture, 0u, false) == TA2005_ENGINE_EVALUATED);
+    assert(task2(&fixture, 3u, false) == TA2005_ENGINE_EVALUATED);
+
+    const uint8_t old_model[8] = {0x12, 0xc0, 0x21, 0x32, 0, 0x43, 0, 0};
+    expect_model(model_release(&fixture, old_model, &context),
+                 LFJ8_H03_MODEL_EVALUATE, 0x21, 0x32, 0x43);
+    assert(fixture.feed.fa62 == 9600u && fixture.feed.f9b8 == 137u);
+    fixture.dtc.history[2] = RPM_BIT;
+
+    /* Setup completed between polls. The clock and slot flag still look
+     * valid, with a frame left over from the previous CAN generation. */
+    generation = 0u;
+    expect_model(model_release(&fixture, old_model, &context),
+                 LFJ8_H03_MODEL_INHIBITED, 0xff, 0xff, 0xff);
+    assert(fixture.slots[0] == 0x41u && fixture.receiver.phase == LFJ8_H03_RX_WAIT_FOR_OEM);
+    assert(fixture.feed.fa62 == 0u && fixture.feed.f9b8 == 87u);
+    assert(!fixture.dtc.current[2] && fixture.dtc.history[2] == RPM_BIT);
+
+    memset(fixture.slots, 0, sizeof(fixture.slots));
+    expect_model(model_release(&fixture, NULL, &context),
+                 LFJ8_H03_MODEL_INHIBITED, 0xff, 0xff, 0xff);
+    assert(task2(&fixture, 3u, false) == TA2005_ENGINE_EVALUATED);
+    const uint8_t new_model[8] = {0x12, 0xc0, 0x12, 0x23, 0, 0x34, 0, 0};
+    expect_model(model_release(&fixture, new_model, &context),
+                 LFJ8_H03_MODEL_EVALUATE, 0x12, 0x23, 0x34);
+    assert(fixture.feed.fa62 == 9600u && fixture.feed.f9b8 == 137u);
+    assert(fixture.receiver.last_generation == 0u && fixture.dtc.history[2] == RPM_BIT);
+}
+
 static void check_shared_model_snapshot(void)
 {
     Fixture fixture;
@@ -338,7 +374,9 @@ int main(void)
     check_clear_and_reinit();
     check_outage_between_releases();
     check_shared_model_snapshot();
+    check_generation_change();
     puts("H03 qualified engine feed and Chery clear/fault/recovery passed");
     puts("H03 shared model snapshot: common RX poll, wrap, expiry, inhibit and recovery passed");
+    puts("H03 engine RX: generation rollover, stale slot rejection and reattachment passed");
     return 0;
 }
