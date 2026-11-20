@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 165,
+  "sequence": 166,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -452,12 +452,12 @@
         "tools/check_vss_measurements.py",
         "verification/project-audit/vss02-measurement-check.md"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
       "claimed_at": "2026-11-20T16:24:53+00:00",
-      "updated_at": "2026-11-20T16:32:06+00:00",
-      "note": "Найдены данные GW4G15-CAN-U340e и редакции Z25: мосты 37/8, окружность 3,53 м при 0,25 бар. VSS wheel_um=3530000, 8/37; 5955,446819 имп/км. Целочисленный расчёт и CLI PASS с модельной трассой. Замеры TML0 и стенд открыты.",
-      "result": "5802c821a068480c3e2127ece68415877f11166e"
+      "updated_at": "2026-11-20T16:33:58+00:00",
+      "note": "Добавлю независимую сверку тактов TML0 с внешним временем и учётом перехода 32-битного счётчика; штатный поставщик H03-02 отдельно.",
+      "result": null
     },
     "TOY-01": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -1811,9 +1811,17 @@
       "action": "heartbeat",
       "claim_id": "e02562d3b21f423d914c1c00a9c88077",
       "at": "2026-11-20T16:33:47+00:00"
+    },
+    {
+      "operation_id": "714030fb47a145c489238889e3b6d47b",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "resume",
+      "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
+      "at": "2026-11-20T16:33:58+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:33:47+00:00",
+  "updated_at": "2026-11-20T16:33:58+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
