@@ -2,6 +2,7 @@
 
 #undef NDEBUG
 #include <assert.h>
+#include <stddef.h>
 #include <stdio.h>
 
 typedef struct {
@@ -17,6 +18,8 @@ typedef struct {
     Lfj8H03RangeInputs range;
     Lfj8ButtonReading reading;
     uint8_t locked;
+    uint8_t p1data;
+    unsigned p1_reads;
 } Fixture;
 
 static uint32_t enter(void *context)
@@ -34,6 +37,19 @@ static void leave(void *context, uint32_t saved)
     f->locked = 0;
 }
 
+_Static_assert(sizeof(Lfj8SelectorAdc) == 12 && offsetof(Lfj8SelectorAdc, pending_event) == 8,
+               "H03 mailbox layout changed");
+_Static_assert(sizeof(Lfj8SelectorAdcReading) == 12 && offsetof(Lfj8SelectorAdcReading, event) == 8,
+               "H03 observation layout changed");
+
+static uint8_t read_p1(void *context, uint32_t address)
+{
+    Fixture *f = context;
+    assert(f->locked && address == LFJ8_H03_P1DATA_ADDRESS);
+    ++f->p1_reads;
+    return f->p1data;
+}
+
 static void init(Fixture *f)
 {
     static const RbmU340ePolicy policy = {
@@ -49,8 +65,11 @@ static void init(Fixture *f)
     lfj8_selector_adc_init(&f->adc);
     assert(lfj8_range_control_init(&f->control, &policy, 15));
     assert(lfj8_button_filter_init(&f->buttons, 5, 15));
-    f->io = (Lfj8RegisterIo){.context = f, .enter = enter, .leave = leave};
-    f->binding = (Lfj8H03InputBinding){&f->adc, &f->control, &f->buttons, &f->io, &limits};
+    f->io = (Lfj8RegisterIo){.context = f, .read8 = read_p1, .enter = enter, .leave = leave};
+    f->binding = (Lfj8H03InputBinding){
+        .adc = &f->adc, .control = &f->control, .button_filter = &f->buttons,
+        .io = &f->io, .range_limits = &limits,
+    };
     f->sources = (Lfj8H03InputSources){
         .cycle = &f->cycle, .driver = &f->driver, .range = &f->range, .buttons = &f->reading,
         .generation = 3, .now_us = UINT32_MAX - 20u,
@@ -264,6 +283,87 @@ static void test_adc_loss_and_recovery(void)
     assert(!propose(&f));
 }
 
+static void acquire_p1(Fixture *f, uint8_t port)
+{
+    prepare_sources(f, 0);
+    f->sources.buttons = NULL;
+    f->p1data = port;
+    lfj8_selector_adc_publish_h03(&f->adc, &f->io, 500, f->sources.now_us);
+}
+
+static int step_p1(Fixture *f, uint8_t port)
+{
+    acquire_p1(f, port);
+    return propose(f);
+}
+
+static void test_p1_route(void)
+{
+    /* Synthetic pin layout including an active-low mode button. */
+    static const Lfj8H03ButtonMap map = {{
+        {LFJ8_H03_BUTTON_P1, 8, 1}, {LFJ8_H03_BUTTON_P1, 64, 0},
+        {LFJ8_H03_BUTTON_P1, 32, 0}, {0},
+    }};
+    const uint8_t released = 8, up = released | 64;
+    Fixture f;
+    init(&f);
+    f.binding.p1_button_map = &map;
+    f.sources.now_us = UINT32_MAX - 33u;
+    for (unsigned i = 0; i < 4u; ++i) {
+        assert(!step_p1(&f, released));
+    }
+    assert(step_p1(&f, released) && f.buttons.armed);
+    assert(f.p1_reads == 5u);
+
+    assert(step_p1(&f, up) && !f.proposal.driver.requested_gear);
+    acquire_p1(&f, up); /* Cross zero while debouncing the request. */
+    f.p1data = released;
+    assert(propose(&f) && f.proposal.driver.requested_gear == 3);
+    assert(f.buttons.last_sample_us == f.sources.now_us && f.p1_reads == 7u);
+    assert(propose(&f) && !f.proposal.driver.requested_gear && f.p1_reads == 7u);
+
+    acquire_p1(&f, up);
+    lfj8_selector_adc_publish_h03(&f.adc, &f.io, 500, f.sources.now_us);
+    assert(f.p1_reads == 8u && !f.adc.pending_p1_valid && !f.adc.pending_p1data);
+    assert(!propose(&f) && !f.buttons.armed);
+    for (unsigned i = 0; i < 5u; ++i) {
+        assert(!step_p1(&f, up));
+    }
+    assert(!step_p1(&f, released));
+    assert(step_p1(&f, released) && f.buttons.armed && !f.proposal.driver.requested_gear);
+
+    const unsigned reads = f.p1_reads;
+    prepare_sources(&f, 0);
+    f.sources.buttons = NULL;
+    lfj8_selector_adc_publish_h03(&f.adc, &f.io, UINT16_MAX, f.sources.now_us);
+    assert(f.p1_reads == reads && !propose(&f) && !f.buttons.armed);
+    for (unsigned i = 0; i < 4u; ++i) {
+        assert(!step_p1(&f, released));
+    }
+    assert(step_p1(&f, released) && f.buttons.armed);
+    prepare_sources(&f, 0);
+    f.sources.buttons = NULL;
+    lfj8_selector_adc_publish(&f.adc, &f.io, 500, f.sources.now_us);
+    assert(!propose(&f) && !f.buttons.armed);
+
+    assert(!step_p1(&f, released));
+    assert(step_p1(&f, released) && f.buttons.armed);
+    acquire_p1(&f, up);
+    f.sources.buttons = &f.reading;
+    assert(!propose(&f) && !f.buttons.armed); /* No ambiguous source precedence. */
+
+    Lfj8H03ButtonMap aux = map;
+    aux.pins[3] = (Lfj8H03ButtonPin){LFJ8_H03_BUTTON_AUX, 1, 0};
+    f.binding.p1_button_map = &aux;
+    assert(!step_p1(&f, released) && !f.buttons.armed);
+
+    acquire_p1(&f, up);
+    lfj8_selector_adc_clock_lost(&f.adc, &f.io);
+    const unsigned before = f.p1_reads;
+    lfj8_selector_adc_publish_h03(&f.adc, &f.io, 500, f.sources.now_us);
+    assert(f.p1_reads == before && !propose(&f) && !f.buttons.armed);
+}
+
 int main(void)
 {
     test_six_positions();
@@ -271,6 +371,7 @@ int main(void)
     test_auto_conflict();
     test_invalid_snapshots();
     test_adc_loss_and_recovery();
-    puts("H03 input proposal: six ranges, debounce, conflict, Auto/OD, independent freshness, ADC loss and rearm PASS");
+    test_p1_route();
+    puts("H03 input proposal: six ranges, debounce, conflict, Auto/OD, independent freshness, ADC/P1DATA pairing, loss and rearm PASS");
     return 0;
 }

@@ -19,6 +19,7 @@ STOCK_WORD = bytes.fromhex("20246103")
 RETURN_SITE = STORE_SITE + len(STOCK_WORD)
 AN2 = 0x804BC6
 AN3 = 0x804BC0
+P1DATA = 0x800701
 AN3_SENTINEL = 0xCAFE
 HOOK_FRAME_BYTES = 44
 REGISTERS = [f"$r{i}" for i in range(13)] + ["$fp", "$lr", "$sp", "$psw", "$acch", "$accl"]
@@ -37,7 +38,7 @@ def run(directory, *command):
     return result.stdout
 
 
-def probe(directory, debugger, branch, sample, psw, captured_us, pending, clock_available):
+def probe(directory, debugger, branch, sample, psw, captured_us, p1data, pending, clock_available):
     register_format = " ".join(["%08x"] * len(REGISTERS))
     register_args = ", ".join(REGISTERS)
     commands = [
@@ -54,14 +55,19 @@ def probe(directory, debugger, branch, sample, psw, captured_us, pending, clock_
         f"set variable selector_fixture_clock_available = {int(clock_available)}",
         "set variable rbm_h03_selector_adc_state.pending_raw = 65535",
         "set variable rbm_h03_selector_adc_state.pending_event = 0",
+        f"set {{unsigned char}}{P1DATA:#x} = {p1data:#x}",
         f"set {{unsigned short}}{AN2:#x} = 0xffff",
         f"set {{unsigned short}}{AN3:#x} = {AN3_SENTINEL:#x}",
     ]
-    if pending:
+    if pending == 4:
+        commands.append("set variable rbm_h03_selector_adc_state.pending_event = 4")
+    elif pending:
         commands.extend((
             "set variable rbm_h03_selector_adc_state.pending_us = 98",
             "set variable rbm_h03_selector_adc_state.pending_raw = 512",
-            "set variable rbm_h03_selector_adc_state.pending_event = 1",
+            "set variable rbm_h03_selector_adc_state.pending_p1data = 0x6d",
+            "set variable rbm_h03_selector_adc_state.pending_p1_valid = 1",
+            f"set variable rbm_h03_selector_adc_state.pending_event = {pending}",
         ))
     if branch is not None:
         commands.append(f"set {{unsigned int}}{STORE_SITE:#x} = {branch:#x}")
@@ -75,10 +81,11 @@ def probe(directory, debugger, branch, sample, psw, captured_us, pending, clock_
         'printf "CALL %08x %08x %08x %08x %08x %08x\\n", selector_fixture_calls, '
         'selector_fixture_psw, selector_fixture_argument, selector_fixture_stock_word, '
         'selector_fixture_an3_before, selector_fixture_callback_sp',
-        'printf "MAIL %08x %08x %08x\\n", rbm_h03_selector_adc_state.pending_event, '
-        'rbm_h03_selector_adc_state.pending_raw, rbm_h03_selector_adc_state.pending_us',
-        f'printf "RAM %08x %08x %08x %08x\\n", *(unsigned short*){AN2:#x}, '
-        f'*(unsigned short*){AN3:#x}, *(unsigned short*)0x804bca, *(unsigned char*)0x804ae6',
+        'printf "MAIL %08x %08x %08x %08x %08x\\n", rbm_h03_selector_adc_state.pending_event, '
+        'rbm_h03_selector_adc_state.pending_raw, rbm_h03_selector_adc_state.pending_us, '
+        'rbm_h03_selector_adc_state.pending_p1_valid, rbm_h03_selector_adc_state.pending_p1data',
+        f'printf "RAM %08x %08x %08x %08x %08x\\n", *(unsigned short*){AN2:#x}, '
+        f'*(unsigned short*){AN3:#x}, *(unsigned short*)0x804bca, *(unsigned char*)0x804ae6, *(unsigned char*){P1DATA:#x}',
     ))
     script = directory / "selector.gdb"
     script.write_text("\n".join(commands) + "\n", encoding="ascii")
@@ -86,7 +93,7 @@ def probe(directory, debugger, branch, sample, psw, captured_us, pending, clock_
     if not re.search(r"^BOOT 6040$", log, re.M):
         raise ValueError("The fixture no longer starts with LDI r0,#0x40")
     result = {}
-    for key, words in (("CONT", 19), ("EXIT", 19), ("CALL", 6), ("MAIL", 3), ("RAM", 4)):
+    for key, words in (("CONT", 19), ("EXIT", 19), ("CALL", 6), ("MAIL", 5), ("RAM", 5)):
         match = re.search(rf"^{key} ((?:[0-9a-f]{{8}} ){{{words - 1}}}[0-9a-f]{{8}})$", log, re.M)
         if match is None:
             raise ValueError(f"The simulator did not record {key}: {log[-1800:]}")
@@ -147,14 +154,15 @@ def check(base, gcc):
         branch = 0xFF000000 | (displacement // 4 & 0xFFFFFF)
         debugger = gcc.with_name(f"m32r-elf-gdb{gcc.suffix}")
         cases = []
-        for sample, psw, captured_us, pending, clock_available in (
-            (0, 0x40, 0, False, True),
-            (347, 0x41, 101, False, True),
-            (1023, 0x00, 0xFFFFFFFF, False, True),
-            (347, 0x01, 102, True, True),
-            (347, 0x41, 103, True, False),
+        for sample, psw, captured_us, p1data, pending, clock_available in (
+            (0, 0x40, 0, 0x00, 0, True),
+            (347, 0x41, 101, 0xa5, 0, True),
+            (1023, 0x00, 0xFFFFFFFF, 0xff, 0, True),
+            (347, 0x01, 102, 0x5a, 1, True),
+            (347, 0x41, 103, 0xc3, 1, False),
+            (347, 0x40, 104, 0x3c, 4, True),
         ):
-            arguments = (sample, psw, captured_us, pending, clock_available)
+            arguments = (sample, psw, captured_us, p1data, pending, clock_available)
             stock = probe(directory, debugger, None, *arguments)
             hooked = probe(directory, debugger, branch, *arguments)
             if any(stock[key] != hooked[key] for key in ("CONT", "EXIT", "RAM")):
@@ -171,24 +179,25 @@ def check(base, gcc):
                 raise ValueError("The callback did not see one completed AN2 store with IRQs masked")
             if hooked["CONT"][15] - callback_sp != HOOK_FRAME_BYTES:
                 raise ValueError("Unexpected stack use at the selector callback entry")
-            if not clock_available:
-                expected_mail, event = (4, 65535, 0), "CLOCK_LOST"
+            if not clock_available or pending == 4:
+                expected_mail, event = (4, 65535, 0, 0, 0), "CLOCK_LOST"
             elif pending:
-                expected_mail, event = (3, 65535, captured_us), "OVERRUN"
+                expected_mail, event = (3, 65535, captured_us, 0, 0), "OVERRUN"
             else:
-                expected_mail, event = (1, sample, captured_us), "VALUE"
+                expected_mail, event = (1, sample, captured_us, 1, p1data), "VALUE"
             if hooked["MAIL"] != expected_mail:
                 raise ValueError(f"The selector mailbox contains {hooked['MAIL']}, expected {expected_mail}")
             cases.append({
                 "adc2_10bit": sample, "entry_ie": bool(psw & 0x40), "entry_c": bool(psw & 1),
                 "irq_masked_in_callback": True, "callback_count": 1,
-                "sample_us": captured_us if clock_available else None, "mailbox_event": event,
+                "sample_us": captured_us if event != "CLOCK_LOST" else None, "mailbox_event": event,
+                "p1data": p1data if event == "VALUE" else None,
                 "stock_cpu_and_ram_match": True,
             })
     return {
         "base": identity, "compiler": version, "stock_store_bundle": STOCK_WORD.hex(),
         "store_site": f"{STORE_SITE:#08x}", "continuation": f"{RETURN_SITE:#08x}",
-        "compared": ["R0-R15", "CR0", "ACC", "stock ADC words", "OEM status byte"],
+        "compared": ["R0-R15", "CR0", "ACC", "stock ADC words", "OEM status byte", "P1DATA"],
         "hook_assembly_frame_bytes": HOOK_FRAME_BYTES,
         "cases": cases, "hardware_executed": False, "flashable_image": None,
     }

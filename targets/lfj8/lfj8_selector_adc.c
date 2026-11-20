@@ -7,6 +7,8 @@ void lfj8_selector_adc_init(volatile Lfj8SelectorAdc *adc)
 {
     adc->pending_us = 0;
     adc->pending_raw = UINT16_MAX;
+    adc->pending_p1data = 0;
+    adc->pending_p1_valid = 0;
     adc->pending_event = LFJ8_SELECTOR_ADC_NONE;
 }
 
@@ -16,6 +18,8 @@ static void publish_locked(volatile Lfj8SelectorAdc *adc, uint16_t raw, uint32_t
         return;
     }
     adc->pending_us = captured_us;
+    adc->pending_p1data = 0;
+    adc->pending_p1_valid = 0;
     if (adc->pending_event != LFJ8_SELECTOR_ADC_NONE) {
         adc->pending_raw = UINT16_MAX;
         adc->pending_event = LFJ8_SELECTOR_ADC_OVERRUN;
@@ -36,11 +40,22 @@ void lfj8_selector_adc_publish(volatile Lfj8SelectorAdc *adc,
     io->leave(io->context, saved_state);
 }
 
+void lfj8_selector_adc_publish_h03(volatile Lfj8SelectorAdc *adc,
+    const Lfj8RegisterIo *io, uint16_t raw, uint32_t captured_us)
+{
+    const uint32_t saved_state = io->enter(io->context);
+    publish_locked(adc, raw, captured_us);
+    if (adc->pending_event == LFJ8_SELECTOR_ADC_VALUE) {
+        adc->pending_p1data = io->read8(io->context, LFJ8_H03_P1DATA_ADDRESS);
+        adc->pending_p1_valid = 1;
+    }
+    io->leave(io->context, saved_state);
+}
+
 void lfj8_selector_adc_clock_lost(volatile Lfj8SelectorAdc *adc, const Lfj8RegisterIo *io)
 {
     const uint32_t saved_state = io->enter(io->context);
-    adc->pending_us = 0;
-    adc->pending_raw = UINT16_MAX;
+    lfj8_selector_adc_init(adc);
     adc->pending_event = LFJ8_SELECTOR_ADC_CLOCK_LOST;
     io->leave(io->context, saved_state);
 }
@@ -74,6 +89,8 @@ Lfj8SelectorAdcReading lfj8_selector_adc_take(volatile Lfj8SelectorAdc *adc,
     const uint32_t saved_state = io->enter(io->context);
     reading.captured_us = adc->pending_us;
     reading.raw = adc->pending_raw;
+    reading.p1data = adc->pending_p1data;
+    reading.p1_valid = adc->pending_p1_valid;
     reading.event = adc->pending_event;
     lfj8_selector_adc_init(adc);
     io->leave(io->context, saved_state);

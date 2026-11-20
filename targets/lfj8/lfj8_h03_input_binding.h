@@ -2,7 +2,7 @@
 #define RBM_LFJ8_H03_INPUT_BINDING_H
 
 #include "lfj8_h03_cycle.h"
-#include "lfj8_range_control.h"
+#include "lfj8_h03_button_capture.h"
 
 typedef struct {
     volatile Lfj8SelectorAdc *adc;
@@ -10,6 +10,9 @@ typedef struct {
     Lfj8ButtonFilter *button_filter;
     const Lfj8RegisterIo *io;
     const Lfj8H03RangeAgeLimits *range_limits;
+    /* Optional immutable map for P1DATA stored with AN2. With this map,
+     * sources.buttons must be NULL and every mapped button uses P1. */
+    const Lfj8H03ButtonMap *p1_button_map;
 } Lfj8H03InputBinding;
 
 typedef struct {
