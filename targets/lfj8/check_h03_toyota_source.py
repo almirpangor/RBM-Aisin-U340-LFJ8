@@ -14,7 +14,7 @@ from check_h03_link import HERE, ROOT, TARGET, identify_h03
 RELEASE_ROOTS = ("lfj8_h03_toyota_source_reset", "lfj8_h03_toyota_source_take")
 
 
-def simulate(compiler, bridge):
+def simulate(compiler, bridge, controller):
     def run(*args):
         result = subprocess.run([str(arg) for arg in args], check=True, capture_output=True, timeout=90)
         return result.stdout.decode(errors="replace").strip()
@@ -28,14 +28,17 @@ def simulate(compiler, bridge):
         shim.write_text("void __init(void) {}\nvoid __fini(void) {}\n", encoding="ascii")
         elf = work / "release.elf"
         run(compiler, *TARGET, "-Os", "-std=c11", "-Wall", "-Wextra", "-Werror",
+            "-Wno-missing-braces", "-Wno-missing-field-initializers",
             "-ffunction-sections", "-fdata-sections",
             *(option for folder in includes for option in ("-I", folder)),
-            "-nostartfiles", crt, HERE / "test_lfj8_h03_toyota_source.c", bridge, shim,
+            "-nostartfiles", crt, HERE / "test_lfj8_h03_toyota_source.c",
+            HERE / "lfj8_h03_input_binding.c", HERE / "lfj8_range_control.c",
+            HERE / "lfj8_h03_button_capture.c", bridge, controller, shim,
             "-Wl,-e,_start,--gc-sections", "-Wl,--start-group", "-lc", "-lgloss", "-lgcc",
             "-Wl,--end-group", "-o", elf)
         simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")
         result = run(simulator, "--memory-size=16M", elf)
-        if result != "H03 Toyota release: native TML0, fixed deadlines, faults and rollover PASS":
+        if result != "H03 Toyota release: native TML0, fixed deadlines, faults, rollover and manual target PASS":
             raise ValueError(f"Unexpected M32R result: {result}")
         return result
 
@@ -47,7 +50,7 @@ def check(args):
     identity = identify_h03(args.base)
     compiler = args.gcc.resolve()
     _, aliases = aliases_for(args.base, compiler, args.storage_report)
-    result = simulate(compiler, args.bridge.resolve())
+    result = simulate(compiler, args.bridge.resolve(), args.controller.resolve())
     previous_roots = layout.EXTRA_ROOTS
     layout.EXTRA_ROOTS += RELEASE_ROOTS
     try:

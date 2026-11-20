@@ -1,8 +1,8 @@
 #include "lfj8_range_control.h"
 
 #define HALF_CLOCK UINT32_C(0x80000000)
-#define BUTTON_MASK (RBM_U340E_BUTTON_MODE | RBM_U340E_BUTTON_UP | \
-                     RBM_U340E_BUTTON_DOWN | RBM_U340E_BUTTON_OVERDRIVE)
+#define SHIFT_BUTTONS (RBM_U340E_BUTTON_UP | RBM_U340E_BUTTON_DOWN)
+#define BUTTON_MASK (RBM_U340E_BUTTON_MODE | SHIFT_BUTTONS | RBM_U340E_BUTTON_OVERDRIVE)
 
 static int valid_range_bit(const Lfj8H03RangeBit *sample, uint32_t generation,
                            uint32_t age_us, uint32_t max_age_us)
@@ -60,6 +60,7 @@ int lfj8_range_control_init(Lfj8RangeControl *control, const RbmU340ePolicy *pol
     control->last_sample_us = 0;
     control->sampled = 0;
     control->selector = RBM_U340E_SELECTOR_UNKNOWN;
+    control->manual_gear = 0;
     return 1;
 }
 
@@ -141,6 +142,7 @@ void lfj8_range_control_disarm_buttons(Lfj8RangeControl *control, Lfj8ButtonFilt
 {
     disarm_buttons(filter);
     control->controller.buttons_seen = 0;
+    control->manual_gear = 0;
 }
 
 static void update_buttons(Lfj8ButtonFilter *filter, const Lfj8ButtonReading *reading,
@@ -186,9 +188,19 @@ static void update_buttons(Lfj8ButtonFilter *filter, const Lfj8ButtonReading *re
 void lfj8_range_control_sample_buttons(Lfj8RangeControl *control, Lfj8ButtonFilter *filter,
                                         const Lfj8ButtonReading *reading, uint32_t now_us)
 {
+    const int shift_conflict = (filter->stable & SHIFT_BUTTONS) == SHIFT_BUTTONS;
     update_buttons(filter, reading, now_us);
     if (!filter->armed) {
         control->controller.buttons_seen = 0;
+        control->manual_gear = 0;
+    } else if (shift_conflict) {
+        if (filter->stable & SHIFT_BUTTONS) {
+            /* A partially released chord remains a conflict at the next Toyota event. */
+            filter->stable |= SHIFT_BUTTONS;
+        } else {
+            /* The qualified release may arrive between controller steps. */
+            control->controller.previous_buttons &= (uint8_t)~SHIFT_BUTTONS;
+        }
     }
 }
 
@@ -208,7 +220,7 @@ int lfj8_range_control_step_with_buttons(Lfj8RangeControl *control, Lfj8Selector
     snapshot.stable_buttons = filter->stable;
     snapshot.buttons_valid = filter->armed;
     if (!lfj8_range_control_step(control, selector, now_us, &snapshot, output)) {
-        disarm_buttons(filter);
+        lfj8_range_control_disarm_buttons(control, filter);
         return 0;
     }
     return 1;

@@ -3,6 +3,7 @@
 
 #include "lfj8_h03_cycle.h"
 #include "lfj8_h03_button_capture.h"
+#include "lfj8_h03_sensor_feed.h"
 
 typedef struct {
     volatile Lfj8SelectorAdc *adc;
@@ -13,6 +14,8 @@ typedef struct {
     /* Optional immutable map for P1DATA stored with AN2. With this map,
      * sources.buttons must be NULL and every mapped button uses P1. */
     const Lfj8H03ButtonMap *p1_button_map;
+    /* Maximum qualified time from admission to completed shift, in us. */
+    uint32_t manual_max_age_us;
 } Lfj8H03InputBinding;
 
 typedef struct {
@@ -49,5 +52,26 @@ int lfj8_h03_input_propose_captured(const Lfj8H03InputBinding *binding,
 /* Combined entry point for callers using a single foreground/Toyota step. */
 int lfj8_h03_input_propose(const Lfj8H03InputBinding *binding, const Lfj8H03InputSources *sources,
                            Lfj8H03InputProposal *out);
+
+typedef struct {
+    const Lfj8H03InputBinding *binding;
+    Lfj8H03InputProposal *proposal;
+    void *platform;
+    int (*ram_owned)(void *platform); /* Called under binding->io. */
+    /* Supply qualified non-engine cycle data, load and coherent driver/range
+     * pointers valid through the capture. Set load.now_us in the sensor epoch.
+     * Foreground capture owns selector/buttons; leave sources->buttons NULL. */
+    int (*read)(void *platform, const Lfj8H03SensorSnapshot *sensors, uint32_t due_at,
+                Lfj8H03CycleInput *input, Lfj8H03CycleLoad *load, Lfj8H03InputSources *sources);
+} Lfj8H03ToyotaInputCapture;
+
+/* Set Lfj8H03ToyotaSource.capture to this function and its platform pointer to
+ * the immutable capture context. Use disjoint cycle and proposal workspace.
+ * The application attaches its engine qualifier after take_toyota and
+ * reinitializes range control, buttons and capture epoch on each startup.
+ * Supply a qualified manual age in (0, 2^31). */
+int lfj8_h03_input_capture_toyota(void *context, const Lfj8H03SensorSnapshot *sensors,
+                                  uint32_t due_at, Lfj8H03CycleInput *input,
+                                  Lfj8H03CycleLoad *load);
 
 #endif

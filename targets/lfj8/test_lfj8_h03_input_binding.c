@@ -416,6 +416,88 @@ static void test_phase_capture(void)
     assert(!f.control.sampled && !f.buttons.armed);
 }
 
+static void manual_edge(Fixture *f, uint8_t actual)
+{
+    init(f);
+    f->sources.now_us = UINT32_MAX - 48u;
+    f->binding.manual_max_age_us = 50u;
+    f->driver.actual_gear = actual;
+    f->cycle.requested_gear = 1u;
+    qualify(f, 500);
+    assert(!f->proposal.cycle.requested_gear);
+    assert(tick(f, 500, RBM_U340E_BUTTON_UP) && !f->proposal.cycle.requested_gear);
+    assert(tick(f, 500, RBM_U340E_BUTTON_UP));
+    assert(f->proposal.driver.requested_gear == actual + 1u);
+    assert(f->proposal.cycle.requested_gear == actual + 1u);
+}
+
+static void test_manual_target(void)
+{
+    Fixture f;
+    const uint8_t up = RBM_U340E_BUTTON_UP;
+    manual_edge(&f, 2);
+    assert(tick(&f, 500, 0) && !f.proposal.driver.requested_gear);
+    assert(f.proposal.cycle.requested_gear == 3);
+    f.driver.shifting = 1;
+    f.driver.actual_gear = 0;
+    assert(tick(&f, 500, 0) && f.proposal.cycle.requested_gear == 3);
+    f.driver.actual_gear = 3;
+    f.driver.shifting = 0;
+    assert(tick(&f, 500, 0) && !f.proposal.cycle.requested_gear);
+
+    manual_edge(&f, 2);
+    f.binding.manual_max_age_us = 15u;
+    for (unsigned i = 1; i <= 4; ++i) {
+        assert(tick(&f, 500, up));
+        assert(f.proposal.cycle.requested_gear == (i < 3 ? 3 : 0));
+    }
+    assert(f.sources.now_us < 15u && !f.control.manual_gear);
+
+    manual_edge(&f, 2);
+    f.driver.allowed_gears &= (uint8_t)~4u;
+    assert(tick(&f, 500, up) && !f.proposal.cycle.requested_gear);
+    f.driver.allowed_gears |= 4u;
+    assert(tick(&f, 500, up) && !f.proposal.cycle.requested_gear);
+
+    manual_edge(&f, 3);
+    const uint8_t od = RBM_U340E_BUTTON_OVERDRIVE;
+    assert(tick(&f, 500, od) && f.proposal.cycle.requested_gear == 4);
+    assert(tick(&f, 500, od) && !f.proposal.cycle.requested_gear);
+
+    manual_edge(&f, 2);
+    const uint8_t mode = RBM_U340E_BUTTON_MODE;
+    assert(tick(&f, 500, mode) && f.proposal.cycle.requested_gear == 3);
+    assert(tick(&f, 500, mode) && f.proposal.driver.mode == RBM_U340E_AUTO);
+    assert(!f.proposal.cycle.requested_gear);
+
+    manual_edge(&f, 2);
+    const uint8_t both = up | RBM_U340E_BUTTON_DOWN;
+    assert(tick(&f, 500, both) && f.proposal.cycle.requested_gear == 3);
+    assert(tick(&f, 500, both) && !f.proposal.cycle.requested_gear);
+    assert(!f.control.manual_gear && f.proposal.driver.conflicting_buttons);
+    const uint8_t down = RBM_U340E_BUTTON_DOWN;
+    assert(tick(&f, 500, down));
+    assert(tick(&f, 500, down) && f.proposal.driver.conflicting_buttons);
+    assert(!f.proposal.cycle.requested_gear);
+    assert(tick(&f, 500, 0));
+    assert(tick(&f, 500, 0) && !f.proposal.driver.conflicting_buttons);
+    assert(tick(&f, 500, down));
+    assert(tick(&f, 500, down) && f.proposal.cycle.requested_gear == 1);
+
+    manual_edge(&f, 2);
+    ++f.sources.generation;
+    assert(!tick(&f, 500, up) && !f.control.manual_gear && !f.buttons.armed);
+    assert(!tick(&f, 500, up));
+
+    manual_edge(&f, 2);
+    assert(!tick(&f, 665, up) && !f.control.manual_gear && !f.buttons.armed);
+
+    manual_edge(&f, 2);
+    prepare(&f, 500, up);
+    f.reading.valid = 0;
+    assert(!propose(&f) && !f.control.manual_gear && !f.buttons.armed);
+}
+
 int main(void)
 {
     test_six_positions();
@@ -425,6 +507,7 @@ int main(void)
     test_adc_loss_and_recovery();
     test_p1_route();
     test_phase_capture();
-    puts("H03 input proposal: six ranges, mode/OD, split phase capture, freshness, ADC/P1DATA pairing, loss and rearm PASS");
+    test_manual_target();
+    puts("H03 input proposal: six ranges, mode/OD, split phase capture, freshness, manual hold and revocation PASS");
     return 0;
 }
