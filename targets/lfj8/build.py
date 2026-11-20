@@ -27,6 +27,7 @@ WARNINGS = ["-Wall", "-Wextra", "-Werror", "-Wconversion", "-Wsign-conversion"]
 FREESTANDING = [
     "-Os", "-std=c99", "-ffreestanding", "-fno-builtin", "-fno-common",
     "-fno-stack-protector", "-fno-unwind-tables", "-fno-asynchronous-unwind-tables",
+    "-ffunction-sections", "-fdata-sections",
 ]
 
 

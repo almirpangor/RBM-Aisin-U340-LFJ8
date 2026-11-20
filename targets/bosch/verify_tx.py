@@ -12,8 +12,8 @@ from verify import SPEED_PHYS, calls, payload
 V3_SHA = "cde5d04fb871043ffcc387d4cb1e7087659745ca0f4b0cf406604fd76facf4b3"
 
 
-def verify_transmitter(engine, base, candidate):
-    expected, manifest, _, _ = build(engine, base, with_engine_signals_tx=True)
+def verify_transmitter(engine, base, candidate, *, compact=False):
+    expected, manifest, _, _ = build(engine, base, with_engine_signals_tx=True, compact=compact)
     assert expected == candidate, "Candidate differs from its exact rebuild"
     v3, v3_manifest, _, _ = build(engine, base)
     assert v3_manifest["sha256"] == V3_SHA, "Default speed-only output changed"
@@ -121,8 +121,10 @@ def main():
     parser.add_argument("--s04", required=True, type=Path)
     parser.add_argument("--image", required=True, type=Path)
     parser.add_argument("--report", type=Path)
+    parser.add_argument("--compact", action="store_true")
     args = parser.parse_args()
-    report = verify_transmitter(args.engine.resolve(), args.s04.read_bytes(), args.image.read_bytes())
+    report = verify_transmitter(args.engine.resolve(), args.s04.read_bytes(), args.image.read_bytes(),
+                                compact=args.compact)
     output = json.dumps(report, indent=2) + "\n"
     if args.report:
         with args.report.open("x", encoding="utf-8") as stream:

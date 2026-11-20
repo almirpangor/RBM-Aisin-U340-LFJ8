@@ -41,8 +41,8 @@ def build_native_model(image, path, *, packed=True):
     return module.C167(rom, dpp=(0x2E, 0x2F, 0x3C, 3))
 
 
-def probe_frame(engine, s04, image, frame):
-    expected, manifest, _, _ = build(engine, s04)
+def probe_frame(engine, s04, image, frame, *, compact=False):
+    expected, manifest, _, _ = build(engine, s04, compact=compact)
     if len(frame) != 8 or image != expected:
         raise ValueError("Expected an eight-byte frame and the exact candidate")
     from audit_machine import Machine
@@ -63,8 +63,8 @@ def probe_frame(engine, s04, image, frame):
     }
 
 
-def verify(engine, s04, image, c167):
-    expected, manifest, _, speed = build(engine, s04)
+def verify(engine, s04, image, c167, *, compact=False):
+    expected, manifest, _, speed = build(engine, s04, compact=compact)
     assert image == expected, "Candidate differs from reproducible build"
     import audit_machine
     import test_can_diag
@@ -197,12 +197,13 @@ def main():
     parser.add_argument("--c167", type=Path)
     parser.add_argument("--frame", help="Exercise one eight-byte 0x1AE payload in the register model")
     parser.add_argument("--report", type=Path)
+    parser.add_argument("--compact", action="store_true")
     args = parser.parse_args()
     inputs = (args.engine.resolve(), args.s04.read_bytes(), args.image.read_bytes())
     if args.frame is not None:
-        report = probe_frame(*inputs, bytes.fromhex(args.frame))
+        report = probe_frame(*inputs, bytes.fromhex(args.frame), compact=args.compact)
     elif args.c167 is not None:
-        report = verify(*inputs, args.c167)
+        report = verify(*inputs, args.c167, compact=args.compact)
     else:
         parser.error("Provide --c167 for the suite or --frame for a single-frame probe")
     output = json.dumps(report, indent=2) + "\n"

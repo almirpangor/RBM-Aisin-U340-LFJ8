@@ -220,13 +220,14 @@ def revised_wrapper(diag, labels):
     return namespace["assemble"](torque=True)
 
 
-def build(engine, s04, *, with_engine_signals_tx=False):
+def build(engine, s04, *, with_engine_signals_tx=False, compact=False):
     if digest(s04) != S04_SHA:
         raise ValueError("S04 SHA-256 does not match the pinned E4M3 image")
     sys.path.insert(0, str(engine / "tools"))
     import build_can_diag as diag
     import build_e4
     import torque_patch as torque
+    from compact_branches import compact_local_branches
 
     base = (engine / "build_inputs/GW4G15_REV8_BASELINE_NO_LIN.bin").read_bytes()
     donor = (engine / "build_inputs/CHERY_REFERENCE_DO_NOT_FLASH.bin").read_bytes()
@@ -244,7 +245,11 @@ def build(engine, s04, *, with_engine_signals_tx=False):
             if s04[span] != base[span]:
                 raise ValueError(f"E4M3 native producer differs from REV8 at {start:#x}")
         tx_part, tx_code = assemble(diag, torque)
+        if compact:
+            tx_code = compact_local_branches(tx_part, tx_code)
     speed, speed_code = assemble_speed(diag, torque, tx_part)
+    if compact:
+        speed_code = compact_local_branches(speed, speed_code)
     wrapper, wrapper_code = revised_wrapper(diag, speed.labels)
     output = bytearray(s04)
     allowed = set()
@@ -310,6 +315,10 @@ def build(engine, s04, *, with_engine_signals_tx=False):
         manifest["engine_signals_tx_symbols"] = {name: hex(address) for name, address in tx_part.labels.items()}
         speed.rows += tx_part.rows
         speed.labels.update({"engine_signals_" + name: address for name, address in tx_part.labels.items()})
+    if compact:
+        manifest["short_relative_branches"] = sum(
+            instruction.startswith("JMPR") for _, _, instruction in speed.rows
+        )
     return bytes(output), manifest, wrapper, speed
 
 
@@ -319,15 +328,20 @@ def main():
     parser.add_argument("--s04", required=True, type=Path)
     parser.add_argument("--outdir", required=True, type=Path)
     parser.add_argument("--with-engine-signals-tx", action="store_true")
+    parser.add_argument("--compact", action="store_true", help="Shorten local RX/TX branches")
     args = parser.parse_args()
     image, manifest, wrapper, speed = build(
-        args.engine.resolve(), args.s04.read_bytes(), with_engine_signals_tx=args.with_engine_signals_tx
+        args.engine.resolve(), args.s04.read_bytes(), with_engine_signals_tx=args.with_engine_signals_tx,
+        compact=args.compact,
     )
     try:
         args.outdir.mkdir(parents=True)
     except FileExistsError:
         parser.error("Use a new output directory")
-    (args.outdir / (TX_OUTPUT if args.with_engine_signals_tx else OUTPUT)).write_bytes(image)
+    filename = TX_OUTPUT if args.with_engine_signals_tx else OUTPUT
+    if args.compact:
+        filename = filename.replace("_OFFLINE_ONLY", "_COMPACT_OFFLINE_ONLY")
+    (args.outdir / filename).write_bytes(image)
     (args.outdir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     with (args.outdir / "candidate.asm").open("w", encoding="utf-8") as stream:
         for part in (wrapper, speed):

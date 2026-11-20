@@ -17,6 +17,33 @@ FLASH_END = 0x030000
 TARGET = ["-m32r", "-mmodel=medium", "-msdata=none", "-Wa,-EB"]
 LIBRARIES = ["-Wl,--start-group", "-lc", "-lgcc", "-Wl,--end-group"]
 
+# Keep the recovered control, adaptation and platform entry points even
+# when no target scheduler calls them yet. Helpers reachable from these
+# functions are retained by the linker.
+H03_ROOTS = (
+    "lfj8_selector_adc_init", "lfj8_selector_adc_publish_9e1c", "lfj8_selector_adc_take",
+    "lfj8_range_control_init", "lfj8_range_control_step",
+    "lfj8_9e1c_raw_vss_init", "lfj8_9e1c_raw_vss_after_capture_store",
+    "lfj8_9e1c_raw_nt_init", "lfj8_9e1c_raw_nt_after_capture_store",
+    "lfj8_h03_capture_pair", "lfj8_gear_observer_init", "lfj8_gear_observe_pair",
+    "lfj8_h03_atf_init", "lfj8_h03_atf_after_adc_store", "lfj8_h03_atf_after_store",
+    "lfj8_h03_atf_snapshot", "lfj8_h03_engine_rx_init", "lfj8_h03_engine_rx_m32r",
+    "lfj8_chery_tx_init", "lfj8_chery_tx_poll",
+    "rbm_u340e_outputs_init", "rbm_u340e_outputs_step", "lfj8_h03_plan_outputs",
+    "factory_gears_outputs_step", "factory_hydraulics_control_main",
+    "factory_hydraulics_fast_learning", "factory_hydraulics_load_main",
+    "factory_hydraulics_load_observer", "factory_hydraulics_counters_begin",
+    "factory_hydraulics_counters_end", "factory_donor_engine_gate",
+    "factory_hydraulics_capture", "factory_hydraulics_restore",
+    "factory_adaptation_load", "factory_adaptation_save",
+)
+DTC_FILES = ("chery_dtc.c", "chery_dtc_can.c", "chery_dtc_link.c")
+DTC_ROOTS = (
+    "chery_dtc_init", "chery_dtc_set_current", "chery_dtc_store_snapshot",
+    "chery_dtc_link_init", "chery_dtc_link_end_session", "chery_dtc_link_expire",
+    "chery_dtc_link_receive", "chery_dtc_link_confirm_tx",
+)
+
 
 def identify_h03(path):
     sources = json.loads((ROOT / "data/sources.json").read_text(encoding="utf-8"))
@@ -76,7 +103,10 @@ def stage_test(stage):
         ROOT / "targets/panel/panel_pulse.c",
     ]
     headers = [*HERE.glob("*.h"), ROOT / "targets/panel/panel_pulse.h"]
-    for item in (*sources, *headers, HERE / "host_check.c", HERE / "test_lfj8_h03_atf.c",
+    diagnostics = ROOT / "diagnostics"
+    dtc_inputs = [*(diagnostics / name for name in DTC_FILES), *diagnostics.glob("*.h"),
+                  diagnostics / "test_chery_dtc_link.c"]
+    for item in (*sources, *headers, *dtc_inputs, HERE / "host_check.c", HERE / "test_lfj8_h03_atf.c",
                  HERE / "test_lfj8_h03_mmio.c", HERE / "test_lfj8_gear_observer.c",
                  HERE / "lfj8_h03_outputs.c", HERE / "test_lfj8_h03_outputs.c"):
         shutil.copyfile(item, stage / item.name)
@@ -117,10 +147,11 @@ def check(base, bridge, controller, compiler, simulator_output):
         integration, selector_test, range_source, panel = stage_test(stage)
         flags = ["-Os", "-std=c11", "-Wall", "-Wextra", "-Werror", "-Wno-missing-braces",
                  "-Wno-missing-field-initializers", "-I.", "-Icontroller", "-Itoyota"]
-        run(compiler, *TARGET, *flags, "-ffreestanding", "-fno-builtin", "-c", range_source,
+        module_flags = [*flags, "-ffreestanding", "-fno-builtin", "-ffunction-sections", "-fdata-sections"]
+        run(compiler, *TARGET, *module_flags, "-c", range_source,
             "-o", "range.o")
         report["inputs"]["range.o"] = elf_info(stage / "range.o", 1)[0]
-        run(compiler, *TARGET, *flags, "-ffreestanding", "-fno-builtin", "-c", "lfj8_h03_outputs.c",
+        run(compiler, *TARGET, *module_flags, "-c", "lfj8_h03_outputs.c",
             "-o", "output-plan.o")
         report["inputs"]["output-plan.o"] = elf_info(stage / "output-plan.o", 1)[0]
         libraries = ["-fno-use-linker-plugin", "-nostdlib", *LIBRARIES]
@@ -144,20 +175,49 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
 ASSERT(ADDR(.rodata) + SIZEOF(.rodata) <= {FLASH_END:#x}, "Address-model ROM overflow")
 """, encoding="ascii",
         )
-        run(compiler, *TARGET, "-fno-use-linker-plugin", "-nostdlib", "-Wl,-T,model.ld",
-            "combined.o", "-o", "linked-model.elf")
-        linked, allocated = elf_info(stage / "linked-model.elf", 2)
-        if linked["relocations"] or any(
-            start < FLASH_START or start + size > FLASH_END or flags & 1
-            for start, size, flags in allocated
-        ):
-            raise ValueError("Unresolved relocation or allocation outside the test ROM window")
-        report["address_model"] = {
-            "start": f"0x{FLASH_START:06X}", "end_exclusive": f"0x{FLASH_END:06X}",
-            "oem_erase_start_record": "0x000958", "target_ownership_verified": False,
-            "section_bytes": linked["alloc_bytes"], "relocations": linked["relocations"],
-            "rom_extent_bytes": max(start + size for start, size, _ in allocated) - FLASH_START,
-        }
+        def root_flags(roots):
+            return ["-Wl,--gc-sections", *(f"-Wl,--undefined={root}" for root in roots)]
+
+        def link_model(name, object_file, roots=()):
+            run(compiler, *TARGET, "-fno-use-linker-plugin", "-nostdlib", "-Wl,-T,model.ld",
+                object_file, "-o", name)
+            linked, allocated = elf_info(stage / name, 2)
+            if linked["relocations"] or any(
+                start < FLASH_START or start + size > FLASH_END or flags & 1
+                for start, size, flags in allocated
+            ):
+                raise ValueError("Unresolved relocation or allocation outside the test ROM window")
+            layout = {
+                "start": f"0x{FLASH_START:06X}", "end_exclusive": f"0x{FLASH_END:06X}",
+                "oem_erase_start_record": "0x000958", "target_ownership_verified": False,
+                "section_bytes": linked["alloc_bytes"], "relocations": linked["relocations"],
+                "rom_extent_bytes": max(start + size for start, size, _ in allocated) - FLASH_START,
+            }
+            if roots:
+                symbols = {line.split()[-1] for line in run(nm, "--defined-only", name).splitlines()
+                           if line.strip()}
+                if not set(roots) <= symbols:
+                    raise ValueError("Compact link discarded a required symbol")
+                layout["retained_entry_points"] = roots
+                layout["window_margin_bytes"] = FLASH_END - FLASH_START - layout["rom_extent_bytes"]
+            return layout
+
+        report["address_model"] = link_model("linked-model.elf", "combined.o")
+        run(compiler, *TARGET, "-r", *root_flags(H03_ROOTS), "combined.o", *libraries, "-o", "compact.o")
+        compact = link_model("compact-model.elf", "compact.o", H03_ROOTS)
+        compact["saved_bytes"] = report["address_model"]["rom_extent_bytes"] - compact["rom_extent_bytes"]
+        report["compact_address_model"] = compact
+        dtc_objects = []
+        for source in DTC_FILES:
+            obj = Path(source).with_suffix(".o").name
+            run(compiler, *TARGET, *module_flags, "-c", source, "-o", obj)
+            dtc_objects.append(obj)
+        roots_with_dtc = H03_ROOTS + DTC_ROOTS
+        run(compiler, *TARGET, "-r", *root_flags(roots_with_dtc), "compact.o", *dtc_objects,
+            *libraries, "-o", "compact-with-dtc.o")
+        compact_with_dtc = link_model("compact-with-dtc.elf", "compact-with-dtc.o", roots_with_dtc)
+        compact_with_dtc["dtc_increment_bytes"] = compact_with_dtc["rom_extent_bytes"] - compact["rom_extent_bytes"]
+        report["compact_address_model_with_dtc"] = compact_with_dtc
 
         crt = run(compiler, *TARGET, "-print-file-name=crt0.o")
         run(compiler, *TARGET, *flags, "-Dmain=integration_test", "-c", integration,
@@ -175,10 +235,11 @@ ASSERT(ADDR(.rodata) + SIZEOF(.rodata) <= {FLASH_END:#x}, "Address-model ROM ove
         report["emulated_components"] = {}
         component_tests = [
             ("lfj8_io", "host_check.c", "bridge.o"),
-            ("h03_atf", "test_lfj8_h03_atf.c", "bridge.o"),
-            ("h03_mmio", "test_lfj8_h03_mmio.c", "bridge.o"),
-            ("gear_observer", "test_lfj8_gear_observer.c", "bridge.o"),
-            ("h03_output_plan", "test_lfj8_h03_outputs.c", "combined.o"),
+            ("h03_atf", "test_lfj8_h03_atf.c", "compact.o"),
+            ("h03_mmio", "test_lfj8_h03_mmio.c", "compact.o"),
+            ("gear_observer", "test_lfj8_gear_observer.c", "compact.o"),
+            ("h03_output_plan", "test_lfj8_h03_outputs.c", "compact.o"),
+            ("chery_dtc", "test_chery_dtc_link.c", "compact-with-dtc.o"),
         ]
         for name, source, object_file in component_tests:
             elf = f"{name}.elf"
