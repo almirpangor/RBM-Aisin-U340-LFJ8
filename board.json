@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 450,
+  "sequence": 451,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -460,12 +460,12 @@
         "verification/project-audit/2026-11-20-h03-sensor-config.json",
         "verification/project-audit/vss02-h03-sensor-config.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "aca1f05a2e5746a0b71ab9ad1476a5ba",
       "claimed_at": "2026-11-20T18:56:53+00:00",
-      "updated_at": "2026-11-20T18:59:39+00:00",
-      "note": "На точном H03 подтверждены штатные 225/500 мс. Проверка общей шкалы готова для данных стенда, модельные сценарии прошли. Объединённый C-состав 93684 байта и две прежние привязки. RAM guard проверен отдельно на 240 сценариях.",
-      "result": null
+      "updated_at": "2026-11-20T19:01:49+00:00",
+      "note": "Подтверждены штатные 225/500 мс и добавлена проверка TML0/TML1 по общему эталону. 32 сценария запуска и 240 сценариев защиты RAM прошли. Известный состав 93684 байта. Две привязки и итоговая политика RAM открыты; два стендовых BIN не созданы.",
+      "result": "cfaf1a812dcf26def7ed188b05b7dccdd75f4c8c"
     },
     "TOY-01": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -4163,9 +4163,17 @@
       "action": "claim",
       "claim_id": "a9fcda79bfd24244872059ac08ee0efd",
       "at": "2026-11-20T19:01:29+00:00"
+    },
+    {
+      "operation_id": "bbe8926729af462bacfc2512f5b8f72b",
+      "task": "VSS-02",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "aca1f05a2e5746a0b71ab9ad1476a5ba",
+      "at": "2026-11-20T19:01:49+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:01:29+00:00",
+  "updated_at": "2026-11-20T19:01:49+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
