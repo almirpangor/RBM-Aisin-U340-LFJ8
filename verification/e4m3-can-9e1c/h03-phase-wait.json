@@ -15,7 +15,7 @@
       "callback_calls": 1,
       "clock_samples_while_waiting": 0,
       "callback_stack_written_bytes": [
-        116
+        132
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -30,7 +30,7 @@
       "callback_calls": 1,
       "clock_samples_while_waiting": 0,
       "callback_stack_written_bytes": [
-        116
+        132
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -45,9 +45,9 @@
       "callback_calls": 3,
       "clock_samples_while_waiting": 8,
       "callback_stack_written_bytes": [
-        116,
-        116,
-        116
+        132,
+        132,
+        132
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -62,9 +62,9 @@
       "callback_calls": 3,
       "clock_samples_while_waiting": 8,
       "callback_stack_written_bytes": [
-        116,
-        116,
-        116
+        132,
+        132,
+        132
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -79,12 +79,12 @@
       "callback_calls": 6,
       "clock_samples_while_waiting": 20,
       "callback_stack_written_bytes": [
-        124,
-        124,
-        124,
-        124,
-        124,
-        124
+        140,
+        140,
+        140,
+        140,
+        140,
+        140
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -99,12 +99,12 @@
       "callback_calls": 6,
       "clock_samples_while_waiting": 20,
       "callback_stack_written_bytes": [
-        124,
-        124,
-        124,
-        124,
-        124,
-        124
+        140,
+        140,
+        140,
+        140,
+        140,
+        140
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -119,8 +119,8 @@
       "callback_calls": 2,
       "clock_samples_while_waiting": 2,
       "callback_stack_written_bytes": [
-        116,
-        116
+        132,
+        132
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -135,8 +135,8 @@
       "callback_calls": 2,
       "clock_samples_while_waiting": 2,
       "callback_stack_written_bytes": [
-        116,
-        116
+        132,
+        132
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -151,12 +151,12 @@
       "callback_calls": 6,
       "clock_samples_while_waiting": 20,
       "callback_stack_written_bytes": [
-        124,
-        124,
-        124,
-        124,
+        140,
+        140,
+        140,
+        140,
         164,
-        124
+        140
       ],
       "oem_irq_levels_injected": 2,
       "oem_top8_status_before": null,
@@ -171,12 +171,12 @@
       "callback_calls": 6,
       "clock_samples_while_waiting": 20,
       "callback_stack_written_bytes": [
-        124,
-        124,
-        124,
-        124,
+        140,
+        140,
+        140,
+        140,
         164,
-        124
+        140
       ],
       "oem_irq_levels_injected": 2,
       "oem_top8_status_before": null,
@@ -191,12 +191,12 @@
       "callback_calls": 6,
       "clock_samples_while_waiting": 20,
       "callback_stack_written_bytes": [
-        124,
-        124,
-        124,
-        124,
+        140,
+        140,
+        140,
+        140,
         184,
-        124
+        140
       ],
       "oem_irq_levels_injected": 2,
       "oem_top8_status_before": 8,
@@ -211,12 +211,12 @@
       "callback_calls": 6,
       "clock_samples_while_waiting": 20,
       "callback_stack_written_bytes": [
-        124,
-        124,
-        124,
-        124,
+        140,
+        140,
+        140,
+        140,
         184,
-        124
+        140
       ],
       "oem_irq_levels_injected": 2,
       "oem_top8_status_before": 8,
@@ -231,12 +231,12 @@
       "callback_calls": 6,
       "clock_samples_while_waiting": 20,
       "callback_stack_written_bytes": [
-        124,
-        124,
-        124,
-        124,
+        140,
+        140,
+        140,
+        140,
         184,
-        124
+        140
       ],
       "oem_irq_levels_injected": 2,
       "oem_top8_status_before": 24,
@@ -251,12 +251,12 @@
       "callback_calls": 6,
       "clock_samples_while_waiting": 20,
       "callback_stack_written_bytes": [
-        124,
-        124,
-        124,
-        124,
+        140,
+        140,
+        140,
+        140,
         184,
-        124
+        140
       ],
       "oem_irq_levels_injected": 2,
       "oem_top8_status_before": 24,
@@ -271,7 +271,7 @@
       "callback_calls": 1,
       "clock_samples_while_waiting": 0,
       "callback_stack_written_bytes": [
-        116
+        132
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -286,7 +286,7 @@
       "callback_calls": 1,
       "clock_samples_while_waiting": 0,
       "callback_stack_written_bytes": [
-        116
+        132
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -301,9 +301,9 @@
       "callback_calls": 3,
       "clock_samples_while_waiting": 8,
       "callback_stack_written_bytes": [
-        116,
-        116,
-        180
+        132,
+        132,
+        184
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -318,9 +318,9 @@
       "callback_calls": 3,
       "clock_samples_while_waiting": 8,
       "callback_stack_written_bytes": [
-        116,
-        116,
-        180
+        132,
+        132,
+        184
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -335,12 +335,12 @@
       "callback_calls": 6,
       "clock_samples_while_waiting": 20,
       "callback_stack_written_bytes": [
-        124,
-        124,
-        124,
-        124,
-        124,
-        188
+        140,
+        140,
+        140,
+        140,
+        140,
+        192
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -355,12 +355,12 @@
       "callback_calls": 6,
       "clock_samples_while_waiting": 20,
       "callback_stack_written_bytes": [
-        124,
-        124,
-        124,
-        124,
-        124,
-        188
+        140,
+        140,
+        140,
+        140,
+        140,
+        192
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -375,7 +375,7 @@
       "callback_calls": 1,
       "clock_samples_while_waiting": 0,
       "callback_stack_written_bytes": [
-        116
+        132
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -390,7 +390,7 @@
       "callback_calls": 1,
       "clock_samples_while_waiting": 0,
       "callback_stack_written_bytes": [
-        116
+        132
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
@@ -410,7 +410,7 @@
     "kind": "deepest overwritten aligned word below initial wrapper SP",
     "marked_below_callback_entry_bytes": 256,
     "guard_bytes": 16,
-    "maximum_written_depth_bytes": 124,
+    "maximum_written_depth_bytes": 140,
     "interrupts_injected": false
   },
   "nested_irq_probe": {
@@ -471,6 +471,12 @@
       }
     },
     "scope": "Native phase publisher and foreground wait with common RAM-backed TML0CT."
+  },
+  "startup_probe": {
+    "clock_and_takeover_under_one_lock": true,
+    "invalid_phase_timing_and_missing_callback_rejected": true,
+    "confirmed_wait_before_first_release": true,
+    "scope": "Caller-owned fixture state; no target RAM addresses selected."
   },
   "platform_io": {
     "clock_address": "0x8003E0",

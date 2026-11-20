@@ -104,11 +104,11 @@
     "targets/lfj8/check_h03_flash_policy.py": "a74efda1ecff15f7c5564ddf66698d251b6b75cc814e903f396484b75ca1b6f2",
     "targets/lfj8/check_h03_flash_residency.py": "95b297db910d81fc0fabe098d1bf57aa0e566800f2779e17056c7e407bbd65b1",
     "targets/lfj8/check_h03_foreground.py": "28de5adb44c77fa3e93c36e26ec5ecaa5a64f84023303c05a4642cb9ad1a44b1",
-    "targets/lfj8/check_h03_link.py": "ae93d300861c3f01fd31af912a9f6e6dff0218eb9554bdfe226c58e2c785dd87",
+    "targets/lfj8/check_h03_link.py": "e3a020ceb9c50e795ae44de8e91ed3a9a03a360baaa1c9c02d844ad85870d67e",
     "targets/lfj8/check_h03_native_hooks.py": "3c13c6a4e76f309c531cde4e2b1f360157fcf869561f723fbcf8eafd6b03048b",
     "targets/lfj8/check_h03_phase_clock.py": "e4b4a05011409a180028de66c49405cdc5f356fed13fd4befbe1a3a1209582c4",
     "targets/lfj8/check_h03_phase_hook.py": "224a0c5b5c6241f399e06723656c6d0d1585064d03cd3b341914e1c0091bc1bf",
-    "targets/lfj8/check_h03_phase_wait.py": "134b7e9731f6ad8f954a0e2d11ac0c1dc7edae46d065e2f9c86b10ae06d5f434",
+    "targets/lfj8/check_h03_phase_wait.py": "18ab4fe4ef8a38732e60f9c878674aba2d09c3da16aaa2bc4902a3cd71415615",
     "targets/lfj8/check_h03_ram_candidate.py": "2eb1795f9fa4b8859824db5ec31d9103da2d0d617819210d6b947228dc083e27",
     "targets/lfj8/check_h03_ram_init.py": "cb5626028192dbeeecde41ac730255daddec80f8f602a7af377a385521d75fba",
     "targets/lfj8/check_h03_secondary_load.py": "38df986a3002132837d89107de73b8d671b12f23b8c07c3f5fa63a79457dd54d",
@@ -225,7 +225,9 @@
     "tools/verify_chery_ecm_schedule.py": "e0f51f17be438fd4f8f9d55f0e85f6b2272b89ce335d7db1c3e3f06ccba1f411",
     "tools/verify_mazda_pcm_can.py": "9c8b96ed226e0619b8ab3b564644312d9bcc43a9da09e7a4e197e5baf2700da4",
     "tools/verify_sources.py": "405a4f27d83b7d6ce9f8fbd5ba6eb27ff0532053a54c16c9533e72a6d2abfb3c",
-    "targets/lfj8/h03_phase_wait_fixture.c": "4a12299030ff4994c583541133b051eb54902390172fb86a228a7d5892c7496d"
+    "targets/lfj8/h03_phase_wait_fixture.c": "9d634a08b5cbe2c72fafc9fbeca0d6e03edb64673ff59878071b36dfe8dc9914",
+    "targets/lfj8/lfj8_h03_phase_startup.c": "a3c99331dcf5ee38b019ef4837720d4e7717b9632ab6e4f85f753ca26ac31e56",
+    "targets/lfj8/lfj8_h03_phase_startup.h": "7acba95ed9220ec399418d22232b59e3b7cd694bf0cd5d0f13e3cd97cb59d6e5"
   },
   "evidence_sha256": {
     ".github/workflows/project-checks.yml": "6c98ced782463fe13630ee073ca17481468a42acdc14b78d40f498dc6048a767",
@@ -236,7 +238,7 @@
     "verification/e4m3-can-9e1c/h03-native-phases.json": "abc24d7f01dbd56c21b3dd1390075a78fc0e3fa5ac46829d9badd7df8ae4d226",
     "verification/e4m3-can-9e1c/h03-phase-clock.json": "974963a324c111edffacdcf2bc532dab3020771ea55dc491a4c51500b2f2e921",
     "verification/e4m3-can-9e1c/h03-phase-hook.json": "154ceceb3a95fbf4b48a526ac71b38d5a9a4e05794f7b0c84634b7619db943ac",
-    "verification/e4m3-can-9e1c/h03-phase-wait.json": "1ff87105160de5bf2d522d36cd372d8e064b9fcb58cd40b2988e8e0ef6a6b22f",
+    "verification/e4m3-can-9e1c/h03-phase-wait.json": "4abbe5b1a26c0c2b289cc90842439e0bf42c34f5225deb94e793568084f7f68f",
     "verification/e4m3-can-9e1c/h03-storage.json": "7766f2370f4d01ac8e47a3e744168d04a14733fd1a1d474596d40549c4b12f64",
     "verification/e4m3-can-9e1c/h03-torque-dialogue.json": "398148cf9f5910d8ce4d1c2bb3149e1d49ea056557d2ce0b453a7e242ec08ee9",
     "verification/e4m3-can-9e1c/ordinary-model/h03-link.json": "6f30d3b170be567da29bf6305de62cec0c0873ad905370dcd8163176e2cdaedb",
@@ -385,5 +387,51 @@
       "scope": "Native phase publisher and foreground wait with common RAM-backed TML0CT."
     },
     "limits": "Publication timing and TML0CT are driven by the fixture, and inhibit is simulated. No target application BIN."
+  },
+  "phase_startup_followup": {
+    "changed_code_and_tests": [
+      "targets/lfj8/check_h03_link.py",
+      "targets/lfj8/check_h03_phase_wait.py",
+      "targets/lfj8/h03_phase_wait_fixture.c",
+      "targets/lfj8/lfj8_h03_phase_startup.c",
+      "targets/lfj8/lfj8_h03_phase_startup.h"
+    ],
+    "repeated_checks": [
+      "22 M32R startup and phase wait cases, including both native call sites",
+      "Invalid phase timing and a missing callback leave the initialized state disabled",
+      "Negative controls for missing startup lock and incomplete failure reset",
+      "Split-address link, Bosch replay, 17 M32R component checks and 65 Python tests"
+    ],
+    "startup_probe": {
+      "clock_and_takeover_under_one_lock": true,
+      "invalid_phase_timing_and_missing_callback_rejected": true,
+      "confirmed_wait_before_first_release": true,
+      "scope": "Caller-owned fixture state; no target RAM addresses selected."
+    },
+    "split_address_model": {
+      "entry_points": {
+        "lfj8_h03_tml0ct_m32r": "0x021A18",
+        "lfj8_h03_phase_startup": "0x07E988",
+        "lfj8_h03_takeover_check_phase": "0x07FA38"
+      },
+      "windows": {
+        "primary": {
+          "start": "0x020000",
+          "end_exclusive": "0x030000",
+          "rom_extent_bytes": 63852,
+          "window_margin_bytes": 1684
+        },
+        "can_extension": {
+          "start": "0x07C118",
+          "end_exclusive": "0x07FFFC",
+          "rom_extent_bytes": 14660,
+          "window_margin_bytes": 1440
+        }
+      },
+      "writable_data": 0,
+      "bss": 0,
+      "target_ownership_verified": false
+    },
+    "limits": "Caller-owned phase state. Native reset hook, target RAM ownership and qualified hardware inhibit remain open."
   }
 }

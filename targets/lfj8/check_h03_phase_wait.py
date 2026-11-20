@@ -425,7 +425,7 @@ def check(base, compiler):
         results = []
         sources = [HERE / name for name in (
             "h03_phase_wait_fixture.c", "lfj8_h03_phase_clock.c", "lfj8_h03_takeover.c",
-            "lfj8_h03_mmio.c",
+            "lfj8_h03_mmio.c", "lfj8_h03_phase_startup.c",
         )]
         for scenario, name, calls, samples, nested, top8_status, native in (
             (0, "ready", 1, 0, False, None, False), (1, "delayed_across_wrap", 3, 8, False, None, False),
@@ -528,6 +528,12 @@ def check(base, compiler):
                     for name, start, end in STOCK_RELEASES
                 },
                 "scope": "Native phase publisher and foreground wait with common RAM-backed TML0CT.",
+            },
+            "startup_probe": {
+                "clock_and_takeover_under_one_lock": True,
+                "invalid_phase_timing_and_missing_callback_rejected": True,
+                "confirmed_wait_before_first_release": True,
+                "scope": "Caller-owned fixture state; no target RAM addresses selected.",
             },
             "platform_io": {"clock_address": "0x8003E0", "clock_read_bits": 32,
                             "checks_interrupt_mask_and_restore": True},

@@ -30,6 +30,7 @@ H03_ROOTS = (
     "lfj8_h03_capture_pair", "lfj8_gear_observer_init", "lfj8_gear_observe_pair",
     "lfj8_h03_atf_init", "lfj8_h03_atf_after_adc_store", "lfj8_h03_atf_after_store",
     "lfj8_h03_atf_snapshot", "lfj8_h03_engine_rx_init", "lfj8_h03_engine_rx_m32r",
+    "lfj8_h03_tml0ct_m32r",
     "lfj8_chery_tx_init", "lfj8_chery_tx_poll",
     "rbm_u340e_outputs_init", "rbm_u340e_outputs_step", "lfj8_h03_plan_outputs",
     "rbm_u340e_runtime_init", "rbm_u340e_runtime_snapshot_gears", "rbm_u340e_runtime_gears_outputs",
@@ -61,7 +62,8 @@ DTC_ROOTS = (
 )
 CAN_EXTENSION_FILES = ("lfj8_h03_torque.c", "lfj8_h03_dtc_can.c", "lfj8_h03_dtc_rx_queue.c",
                        "lfj8_h03_torque_can.c", "ta2005_engine_qualifier.c", "lfj8_h03_cycle.c",
-                       "lfj8_h03_phase_clock.c", "lfj8_h03_engine_feed.c", "lfj8_h03_can13.c")
+                       "lfj8_h03_phase_clock.c", "lfj8_h03_phase_startup.c",
+                       "lfj8_h03_engine_feed.c", "lfj8_h03_can13.c")
 CAN_EXTENSION_ROOTS = (
     "lfj8_h03_torque_demand", "lfj8_h03_torque_init", "lfj8_h03_torque_poll",
     "lfj8_h03_torque_tx_done", "lfj8_h03_torque_receive", "lfj8_h03_torque_applied",
@@ -73,7 +75,7 @@ CAN_EXTENSION_ROOTS = (
     "lfj8_h03_cycle_init", "lfj8_h03_cycle_tick", "lfj8_h03_cycle_slt_inputs",
     "lfj8_h03_cycle_prepare_outputs",
     "lfj8_h03_phase_clock_init", "lfj8_h03_phase_clock_release", "lfj8_h03_phase_clock_take",
-    "lfj8_h03_takeover_take_phase",
+    "lfj8_h03_phase_startup", "lfj8_h03_takeover_check_phase", "lfj8_h03_takeover_take_phase",
     "lfj8_h03_engine_feed_task2", "lfj8_h03_can13_init", "lfj8_h03_can13_poll",
 )
 S01_LINK_TABLES = (
@@ -166,7 +168,7 @@ SECTIONS {{
     *(.text.lfj8_h03_can0_diag_* .text.lfj8_h03_can0_telemetry_status
       .text.lfj8_h03_can0_slot13_timestamp .text.slot13_status)
     *(.text.rbm_u340e_runtime_secondary_load_qualify .text.rbm_u340e_hydraulics_control_main_workspace)
-    *(.text.lfj8_h03_takeover_take_phase)
+    *(.text.lfj8_h03_takeover_check_phase .text.lfj8_h03_takeover_take_phase)
   }}
   .text {FLASH_START:#x} : {{ *(.text .text.*) }}
   .rodata : {{ *(.rodata .rodata.*) }}

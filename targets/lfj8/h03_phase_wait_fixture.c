@@ -1,6 +1,6 @@
 /* Simulator state only. The clock and OEM phase flag are driven by the test. */
 #include "lfj8_h03_mmio.h"
-#include "lfj8_h03_takeover.h"
+#include "lfj8_h03_phase_startup.h"
 
 enum {
     READY = 0,
@@ -55,11 +55,64 @@ static void inhibit(void *context)
     ++inhibits;
 }
 
+static void unexpected_hardware_action(void *context)
+{
+    (void)context;
+    invalid = 1;
+}
+
+static int qualified(void *context)
+{
+    unexpected_hardware_action(context);
+    return 0;
+}
+
+static void unexpected_write(void *context, uint32_t address, uint32_t value)
+{
+    (void)address;
+    (void)value;
+    unexpected_hardware_action(context);
+}
+
 static const Lfj8H03TakeoverOps ops = {
     .io = &lfj8_h03_mmio, .clock_ticks = ticks, .inhibit = inhibit, .phase_clock = &phase,
+    .write32 = unexpected_write, .qualified = qualified,
+    .arbitrate = unexpected_hardware_action, .apply = unexpected_hardware_action,
+    .isolated_pwm_mask = LFJ8_H03_ALL_SPARE_PWM_ISOLATED,
 };
-/* Begin with a staged command. Its prepare/apply path has separate tests. */
-static Lfj8H03Takeover state = {.ops = &ops, .pending = 1};
+static Lfj8H03Takeover state;
+
+static int start_phase(void)
+{
+    Lfj8H03PhaseStartupConfig config = {8u, 16u, 2u, 16u};
+    *timer_shadow = origin;
+    enable_fixture_interrupts();
+
+    /* The failed start must leave neither the IRQ publisher nor the
+     * command path armed. A later qualified startup may reuse the storage. */
+    if (lfj8_h03_phase_startup(&state, &ops, &config) || state.ops ||
+        !phase.faulted || phase.min_period || !interrupts_enabled()) {
+        return 0;
+    }
+
+    config.max_period_ticks = LAST_VALID_AGE;
+    Lfj8H03TakeoverOps missing_callback = ops;
+    missing_callback.inhibit = 0;
+    if (lfj8_h03_phase_startup(&state, &missing_callback, &config) || state.ops ||
+        !phase.faulted || phase.min_period || !interrupts_enabled()) {
+        return 0;
+    }
+
+    if (!lfj8_h03_phase_startup(&state, &ops, &config) || state.ops != &ops || state.pending ||
+        phase.latest.released_at != origin || phase.have_release || phase.faulted ||
+        lfj8_h03_takeover_check_phase(&state) != LFJ8_H03_PHASE_WAIT || invalid || inhibits ||
+        !interrupts_enabled()) {
+        return 0;
+    }
+    /* The prepare and apply paths have separate tests. */
+    state.pending = 1u;
+    return 1;
+}
 
 #if NATIVE_PUBLISH
 static unsigned native_releases;
@@ -90,7 +143,7 @@ static void publish(void)
 
 int fixture_init(void)
 {
-    if (!lfj8_h03_phase_clock_init(&phase, origin, 8, LAST_VALID_AGE, 2)) {
+    if (!start_phase()) {
         return 0;
     }
     if (SCENARIO == READY) {
