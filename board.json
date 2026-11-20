@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 563,
+  "sequence": 564,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -543,11 +543,11 @@
         "tests/test_verify_sources.py",
         "verification/project-audit/src01-pinned-input-tests.md"
       ],
-      "stage": "in_progress",
+      "stage": "released",
       "claim_id": "9459ef396a854e778a241074b8d5aa57",
       "claimed_at": "2026-11-20T20:01:50+00:00",
-      "updated_at": "2026-11-20T20:01:50+00:00",
-      "note": "Локальные офлайн-регрессии: неизменный Git blob при активном refs/replace, независимая проверка SHA-256 и blob ID, выбор H03 и опциональных архивных входов. Рабочий код и исходники прошивок вне объёма. Без публикации ветки.",
+      "updated_at": "2026-11-20T20:03:31+00:00",
+      "note": "Независимая порция тестов на ПК закончена. Пять проверок происхождения и две проверки H03 прошли. Код и отчёт сохранены в локальном коммите; ветка остаётся локальной. Резерв освобождён.",
       "result": null
     },
     "AUD-01": {
@@ -5089,9 +5089,17 @@
       "action": "review",
       "claim_id": "1f0ef50b040d4c8ca2e5a05fd7501d40",
       "at": "2026-11-20T20:02:38+00:00"
+    },
+    {
+      "operation_id": "d561973c084f4c9db1e50e539741f8d8",
+      "task": "SRC-01",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "release",
+      "claim_id": "9459ef396a854e778a241074b8d5aa57",
+      "at": "2026-11-20T20:03:31+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:02:38+00:00",
+  "updated_at": "2026-11-20T20:03:31+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
