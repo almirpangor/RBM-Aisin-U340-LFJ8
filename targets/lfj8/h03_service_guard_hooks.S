@@ -1,4 +1,4 @@
-/* H03 2924/294C/2D1C only. The address model binds stock continuation
+/* H03 2924/294C/2D1C/2E9C only. The address model binds stock continuation
  * symbols and verifies all displaced words against the pinned ROM.
  * The entire bounded writer runs with maskable IRQs disabled, including
  * the guard and original stores. Caller PSW and callee-saved registers
@@ -71,7 +71,7 @@ rbm_h03_service_copy_hook:
 .Lcopy_held:
     /* Return the stock busy indication. Keep all pending state unchanged;
      * no completion/positive acknowledgement and no partial copy occurs.
-     * The lifecycle owner must explicitly retire/reset a held operation. */
+     * The accepted session-close path below retires a held operation. */
     .irp reg,r7,r6,r5,r4,r3,r2,r1
     pop \reg
     .endr
@@ -85,3 +85,36 @@ rbm_h03_service_copy_hook:
 .Lcopy_original:
     push lr -> push r9
     bra.l h03_service_copy_after_entry
+
+    /* Only the accepted OEM close path reaches this final flag store. R0
+     * holds its stock flags and R10 points to the resident monitor state. */
+    .p2align 2
+    .global rbm_h03_service_close_hook
+rbm_h03_service_close_hook:
+    push lr
+    push r8
+    mvfc r8,psw
+    clrpsw #0x40
+    .irp reg,r0,r1,r2,r3,r4,r5,r6,r7
+    push \reg
+    .endr
+    ld r3,@(2096,r10)
+    beqz r3,.Lclose_restore
+    ld24 r0,#rbm_h03_service_policy
+    ld r1,@(16,r10)
+    ld r2,@(2100,r10)
+    bl lfj8_h03_service_copy_allowed
+    bnez r0,.Lclose_restore
+    /* Zero the pending and original counts without entering the copy
+     * completion path. The independent checksum and its cursor survive. */
+    st r0,@(2096,r10)
+    st r0,@(2100,r10)
+.Lclose_restore:
+    .irp reg,r7,r6,r5,r4,r3,r2,r1,r0
+    pop \reg
+    .endr
+    stb r0,@(8,r10)
+    mvtc r8,psw
+    pop r8
+    pop lr
+    bra.l h03_service_close_after_store

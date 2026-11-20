@@ -1,6 +1,6 @@
 """Replay H03 writers with a RAM range guard; no patched BIN is exported."""
 import argparse
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -14,9 +14,11 @@ from check_h03_service_isolation import storage_blocks
 from lfj8_h03_layout import read_elf
 
 HERE=Path(__file__).resolve().parent
+CLOSE_STORE = 0x002E9C
 PATCHES=((0x2924,0x2E7F4FF8,'rbm_h03_service_direct_hook',0xFF),
          (0x294C,0xFE0002F7,'rbm_h03_service_span_hook',0xFE),
-         (0x2D1C,0x2E7F297F,'rbm_h03_service_copy_hook',0xFF))
+         (0x2D1C,0x2E7F297F,'rbm_h03_service_copy_hook',0xFF),
+         (CLOSE_STORE,0xA00A0008,'rbm_h03_service_close_hook',0xFF))
 SOURCES=('lfj8_h03_service_guard.c','lfj8_h03_service_guard.h',
          'h03_service_guard_hooks.S','h03_service_guard_fixture.c')
 
@@ -43,6 +45,124 @@ def scenarios(blocks):
     yield writes.Case('crossing_direct',writes.DIRECT,start-1,2,(0,))
     yield writes.Case('allowed_257',writes.ADC0,end,257,(256,1),close=True)
     yield writes.Case('allowed_checksum',writes.ADC0,end,1,(0,),close=True,checksum=257)
+
+
+@dataclass(frozen=True)
+class CloseCase:
+    name: str
+    address: int
+    total: int
+    remaining: int
+    checksum: int = 0
+    active: bool = True
+    held: bool = False
+    canceled: bool = False
+    completes: bool = False
+
+
+def close_cases(blocks):
+    start, end = blocks["control"]
+    return (
+        CloseCase("held_then_closed", start, 257, 257, held=True, canceled=True),
+        CloseCase("partial_original_overlap", end - 1, 257, 1, held=True, canceled=True),
+        CloseCase("bad_remaining", end, 1, 2, held=True, canceled=True),
+        CloseCase("independent_checksum", start, 1, 1, checksum=257, held=True, canceled=True),
+        CloseCase("accepted_allowed", end, 1, 1, completes=True),
+        CloseCase("inactive_close", start, 1, 1, active=False, held=True),
+        CloseCase("idle_previous_count", start, 257, 0),
+    )
+
+
+def close_state_line(name):
+    address = writes.MONITOR
+    return (f'printf "{name} %x %x %x %x %x %x %x %x %x %x %x\\n", $pc, $r0, *(unsigned int*)&fixture_close_psw, '
+            f"*(unsigned char*){address + 8:#x}, *(unsigned char*){address + 9:#x}, "
+            f"*(unsigned int*){address + 0x830:#x}, *(unsigned int*){address + 0x834:#x}, "
+            f"*(unsigned int*){address + 0x82c:#x}, *(unsigned int*){address + 20:#x}, "
+            f"*(unsigned short*){address + 4:#x}, *(unsigned int*){address:#x}")
+
+
+def check_close(run, work, debugger, symbols, case, psw, lockout):
+    monitor, source = writes.MONITOR, writes.SOURCE
+    width = max(case.total, case.remaining, 1)
+    sentinel = bytes([writes.SENTINEL]) * (width + 2)
+    payload = bytes(0x80 | (i & 0x3f) for i in range(max(width, case.checksum)))
+    (work / "cancel-sentinel.dat").write_bytes(sentinel)
+    (work / "cancel-payload.dat").write_bytes(payload)
+    flags = 0x20 if case.active else 0x10
+    reply = 0x12345678
+    seed = (
+        ("unsigned int", 0x809f9c, 0x809f9c),
+        ("unsigned short", writes.VIRTUAL_SELECT, writes.BANK),
+        ("unsigned char", writes.FCNT1, 1),
+        ("unsigned short", writes.FESBANK1, 0x8000 | writes.BANK),
+        ("unsigned char", monitor + 8, flags),
+        ("unsigned char", monitor + 9, 0x80),
+        ("unsigned int", monitor, reply),
+        ("unsigned int", monitor + 12, source),
+        ("unsigned int", monitor + 16, case.address),
+        ("unsigned int", monitor + 20, source),
+        ("unsigned int", writes.CHECKSUM_REMAINING, case.checksum),
+        ("unsigned int", writes.COPY_REMAINING, case.remaining),
+        ("unsigned int", writes.COPY_REMAINING + 4, case.total),
+    )
+    commands = ["set confirm off", "target sim --memory-size 16M", "load",
+                "tbreak *fixture_ready", "run"]
+    commands.extend(writes.assignment(kind, hex(addr), value) for kind, addr, value in seed)
+    if lockout:
+        commands.append(writes.assignment("unsigned int", hex(writes.SITE), writes.DISABLE_BRANCH))
+    arguments = (writes.ADC0, 0, 0, 0, 0, 1)
+    commands.extend(writes.assignment("unsigned int", f"((char*)&fixture_arguments+{4*i})", value)
+                    for i, value in enumerate(arguments))
+    commands.extend((f"set {{unsigned int}}&fixture_call_psw = {psw:#x}",
+                     f"set {{unsigned int}}&fixture_cancel_mode = {2 if case.held else 1}",
+                     f"restore cancel-sentinel.dat binary {case.address - 1:#x}",
+                     f"restore cancel-payload.dat binary {source:#x}"))
+    if case.held:
+        commands.extend(("tbreak *fixture_held_done", f"tbreak *{writes.COPY_COMPLETE:#x}",
+                         "continue", close_state_line("HELD"), "delete breakpoints"))
+    commands.extend(("tbreak *fixture_close_done", "tbreak *0x2870", "continue", close_state_line("CLOSED"),
+                     "delete breakpoints", "tbreak *fixture_close_done", "tbreak *0x2870", "continue",
+                     close_state_line("REPEATED"), "delete breakpoints",
+                     "tbreak *fixture_adc_done", f"tbreak *{writes.COPY_COMPLETE:#x}",
+                     "tbreak *0x2d88", "continue", close_state_line("ADC"),
+                     f"dump binary memory cancel-result.dat {case.address - 1:#x} {case.address + width + 1:#x}"))
+    (work / "cancel.gdb").write_text("\n".join(commands) + "\n", encoding="ascii")
+    try:
+        output = run(debugger, "--batch", "-nx", "-x", "cancel.gdb", "fixture.elf")
+    except subprocess.CalledProcessError as error:
+        raise ValueError(f"{case.name} PSW={psw:#x} lockout={lockout}: "
+                         + (error.stderr or str(error).encode()).decode(errors="replace")) from error
+
+    def address_of(symbol):
+        return symbols[symbol]["address"]
+
+    before = (flags, 0x80, case.remaining, case.total, case.checksum, source, 0, reply)
+    if case.held:
+        held = writes.observation(output, "HELD")
+        if held[:2] != (address_of("fixture_held_done"), 1) or held[3:] != before:
+            raise ValueError(f"{case.name}: did not enter close with an unchanged held copy: {held}")
+    remaining, total = (0, 0) if case.canceled else (case.remaining, case.total)
+    closed = (0x10, 0x80, remaining, total, case.checksum, source, 0, reply)
+    for tag in ("CLOSED", "REPEATED"):
+        observed = writes.observation(output, tag)
+        if (observed[0] != address_of("fixture_close_done") or observed[2] & 0x40 != psw & 0x40
+                or observed[3:] != closed):
+            raise ValueError(f"{case.name}: {tag.lower()} changed unrelated state: {observed}")
+    adc = writes.observation(output, "ADC")
+    wrote = int(case.completes)
+    summed = min(case.checksum, writes.COPY_SLICE) if case.canceled else 0
+    expected_pc = writes.COPY_COMPLETE if case.completes else address_of("fixture_adc_done")
+    expected_after_adc = (0x10, 0x80, remaining - wrote, total, case.checksum - summed,
+                          source + summed, sum(payload[:summed]) & 0xffff, reply)
+    expected_ram = sentinel if not wrote else sentinel[:1] + payload[:1] + sentinel[2:]
+    if (adc[0] != expected_pc or adc[3:] != expected_after_adc
+            or (not wrote and adc[1] != int(bool(remaining or case.checksum - summed)))
+            or (work / "cancel-result.dat").read_bytes() != expected_ram):
+        raise ValueError(f"{case.name}: unexpected copy completion or ADC0 state: {adc}")
+    return {"case": case.name, "caller_psw": psw, "lockout": lockout, "active_close": case.active,
+            "retired": case.canceled, "pending_before": case.remaining, "pending_after_close": remaining,
+            "checksum_after_close": case.checksum, "adc_stop": hex(adc[0]), "bytes_written": wrote}
 
 
 def check(base,compiler,storage_report):
@@ -82,12 +202,18 @@ def check(base,compiler,storage_report):
         fixture=fixture.replace('fixture_done:\n',
             'fixture_capture_return:\n    mvfc r7,psw\n    ld24 r6,#fixture_return_psw\n    st r7,@r6\nfixture_done:\n')
         fixture=fixture.replace('    .space 24','    .space 24\n    .global fixture_return_psw\nfixture_return_psw:\n    .space 4')
+        fixture=fixture.replace('fixture_dispatch:\n', 'fixture_dispatch:\n'
+            '    ld24 r4,#fixture_cancel_mode\n    ld r4,@r4\n'
+            '    bnez r4,fixture_cancel_sequence\n')
         fixture+=r'''
     .section .fixture_data,"aw",@progbits
-    .global fixture_store_ie,fixture_store_count,fixture_call_psw
+    .global fixture_store_ie,fixture_store_count,fixture_call_psw,fixture_cancel_mode
+    .global fixture_close_psw
 fixture_store_ie: .word 0
 fixture_store_count: .word 0
 fixture_call_psw: .word 0x41
+fixture_cancel_mode: .word 0
+fixture_close_psw: .word 0
     .section .fixture,"ax",@progbits
     .macro store_probe name,source,destination,resume
     .p2align 2
@@ -121,6 +247,41 @@ fixture_call_psw: .word 0x41
 fixture_copy_increment:
     addi r2,#1
     bra.l h03_copy_after_store
+    .p2align 2
+    .global fixture_close_done,fixture_held_done,fixture_adc_done
+fixture_cancel_sequence:
+    addi r4,#-2
+    bnez r4,.Lcancel_close_twice
+    bl fixture_run_adc
+fixture_held_done:
+.Lcancel_close_twice:
+    bl fixture_run_close
+    bl fixture_run_close
+    bl fixture_run_adc
+fixture_adc_done:
+    bra fixture_adc_done
+    .p2align 2
+fixture_run_close:
+    push lr
+    ld24 r4,#fixture_call_psw
+    ld r4,@r4
+    mvtc r4,psw
+    bl.l fixture_close
+    mvfc r6,psw
+    ld24 r7,#fixture_close_psw
+    st r6,@r7
+fixture_close_done:
+    pop lr
+    jmp lr
+    .p2align 2
+fixture_run_adc:
+    push lr
+    ld24 r4,#fixture_call_psw
+    ld r4,@r4
+    mvtc r4,psw
+    bl.l stock_adc0
+    pop lr
+    jmp lr
 '''
         fixture=fixture.replace('.section .oem,"ax",@progbits\n    .incbin "h03.dat"',
             '.section .oem_before,"ax",@progbits\n    .incbin "h03.dat",0,0x20000\n'
@@ -138,9 +299,11 @@ SECTIONS {
 ASSERT(SIZEOF(.guard) <= 0x10000, "Guard exceeds empty model window")
 stock_selector = 0x003550;
 stock_close = 0x002e80;
+stock_adc0 = 0x003608;
 h03_service_direct_after_entry = 0x002928;
 h03_service_stock_span_check = 0x003528;
 h03_service_copy_after_entry = 0x002d20;
+h03_service_close_after_store = 0x002eA0;
 h03_direct_after_store = 0x00297c;
 h03_copy_after_store = 0x002de4;
 ''',encoding='ascii')
@@ -158,7 +321,9 @@ h03_copy_after_store = 0x002de4;
             value=opcode<<24 | (distance&0xFFFFFF)
             patched[address:address+4]=value.to_bytes(4,'big')
             sites.append({'address':hex(address),'original':f'{original:08x}','model_patch':f'{value:08x}','target':hex(target)})
-        instrumented=bytearray(patched)
+        writer_patched=bytearray(patched)
+        writer_patched[CLOSE_STORE:CLOSE_STORE+4]=rom[CLOSE_STORE:CLOSE_STORE+4]
+        instrumented=bytearray(writer_patched)
         # Simulator-only probes preserve registers/PSW and execute the exact
         # displaced store bundle. First run the original stores without probes.
         for address,word,symbol in ((0x2978,0x2104F000,'fixture_direct_store'),
@@ -167,8 +332,14 @@ h03_copy_after_store = 0x002de4;
             target=elf['symbols'][symbol]['address']
             instrumented[address:address+4]=(0xFF000000 | ((target-address)//4 & 0xFFFFFF)).to_bytes(4,'big')
         gdb=compiler.with_name('m32r-elf-gdb'+compiler.suffix)
+        (work/'h03.dat').write_bytes(patched)
+        link()
+        cancel_rows = [check_close(run,work,gdb,elf['symbols'],case,psw,lockout)
+                       for case in close_cases(blocks)
+                       for psw in (0,1,0x40,0x41)
+                       for lockout in (False,True)]
         rows=[]
-        for probes,variant in ((False,patched),(True,instrumented)):
+        for probes,variant in ((False,writer_patched),(True,instrumented)):
             (work/'h03.dat').write_bytes(variant);link()
             for caller_psw in ((0,1,0x40,0x41) if probes else (0x41,)):
                 for case in scenarios(blocks):
@@ -212,11 +383,11 @@ h03_copy_after_store = 0x002de4;
     return {'status':'PASS_SELECTED_WRITERS_MODEL_ONLY','base':identity,
             'policy_ranges':[[hex(a),hex(b)] for a,b in ranges],'native_sites':sites,
             'guard_with_fixture_policy_bytes':guard['size'],'new_mutable_state_bytes':0,
-            'policy_test':policy_test,'native_cases':rows,
+            'policy_test':policy_test,'native_cases':rows,'close_cases':cancel_rows,
             'simulation_only_instrumentation':['Relocated 2978 and 2DE0 store bundles capture PSW/IE and count stores; registers and PSW restored'],
             'input_sha256_lf':{name:sha256((HERE/name).read_bytes().replace(b'\r\n',b'\n')).hexdigest() for name in SOURCES},
-            'limits':['Three hooks below 0x8000; programmer support not established',
-                      'Held copy preserves pending state and returns busy; lifecycle cancellation/recovery is still required',
+            'limits':['Four hooks below 0x8000; programmer support not established',
+                      'A guarded copy stays busy until the accepted session-close path retires it',
                       'Final RAM/stack ranges and all write paths still require qualification',
                       'SBI/DMA, Virtual Flash residency and interrupt latency not proven',
                       'Model code at 0x20000 is isolated; final combined placement is not implemented'],
@@ -238,7 +409,8 @@ def main():
         args.out.parent.mkdir(parents=True,exist_ok=True)
         args.out.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
         print(json.dumps({k:report[k] for k in ('status','guard_with_fixture_policy_bytes','new_mutable_state_bytes','policy_test','flashable_image')}))
-        print('native cases:',len(report['native_cases']))
+        print('native writer cases:',len(report['native_cases']))
+        print('native close cases:',len(report['close_cases']))
     except (OSError,ValueError,subprocess.SubprocessError) as error:
         detail=getattr(error,'stderr',None) or str(error)
         parser.exit(1,(detail.decode(errors='replace') if isinstance(detail,bytes) else detail)+'\n')
