@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 228,
+  "sequence": 229,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -54,7 +54,7 @@
       "stage": "in_progress",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:50:41+00:00",
+      "updated_at": "2026-11-20T16:51:10+00:00",
       "note": "Связка 0x004738 с послотовой точкой 0x001534: парный порядок, подавление первой дублирующей публикации, новый кадр на повторе. Проверка OEM-контекста и маршрута в M32R, только память симулятора.",
       "result": null
     },
@@ -2376,9 +2376,17 @@
       "action": "resume",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "at": "2026-11-20T16:50:41+00:00"
+    },
+    {
+      "operation_id": "c29b42ac03e443369ef2f8acacc1c8b1",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "resume",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:51:10+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:50:41+00:00",
+  "updated_at": "2026-11-20T16:51:10+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
