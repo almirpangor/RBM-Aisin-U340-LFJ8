@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 405,
+  "sequence": 406,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -116,19 +116,29 @@
       "result": null
     },
     "H03-04": {
-      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
-      "label": "Codex — уменьшение Flash H03",
-      "branch": "codex/h03-04-torque-size-01a1f9a2",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "label": "Основной чат — защита памяти",
+      "branch": "codex/integration-01a1f76d-20261120",
       "files": [
-        "docs/lfj8-h03-torque.md",
-        "targets/lfj8/lfj8_h03_torque_can.c"
+        "README.md",
+        "data/project-tasks.json",
+        "docs/project-map.md",
+        "docs/working-set.md",
+        "targets/lfj8/check_h03_service_guard.py",
+        "targets/lfj8/h03_service_guard_fixture.c",
+        "targets/lfj8/h03_service_guard_hooks.S",
+        "targets/lfj8/lfj8_h03_service_guard.c",
+        "targets/lfj8/lfj8_h03_service_guard.h",
+        "verification/project-audit/2026-11-20-service-guard.json",
+        "verification/project-audit/h03-04-service-guard.md",
+        "verification/project-audit/service-guard/"
       ],
-      "stage": "done",
-      "claim_id": "9e93704114d342ff9848b326e2d3d7fc",
-      "claimed_at": "2026-11-20T18:07:03+00:00",
-      "updated_at": "2026-11-20T18:37:08+00:00",
-      "note": "Принято в опубликованную main 760628b. Проверки и ограничения в docs/lfj8-h03-memory-layout.md. Закрыта порция, технический остаток сохранён в прежних карточках; два рабочих BIN ещё не выпущены.",
-      "result": "4ecfdd9de91fd6d3d4160c0fb3b50769c6ded907"
+      "stage": "in_progress",
+      "claim_id": "1589bd1e4830453f8a2572f3c6b98ff0",
+      "claimed_at": "2026-11-20T18:39:50+00:00",
+      "updated_at": "2026-11-20T18:39:50+00:00",
+      "note": "После принятой компоновки беру следующий независимый остаток: защита RAM от прямой и уже принятой отложенной сервисной записи. Новые native wrappers/guard, исходный H03 в M32R и отрицательные проверки. Платформенные binding файлы других чатов не меняю.",
+      "result": null
     },
     "DTC-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -3802,9 +3812,17 @@
       "action": "complete",
       "claim_id": "da83556f0097488ba39c6ee642e4a002",
       "at": "2026-11-20T18:39:34+00:00"
+    },
+    {
+      "operation_id": "f011427051784763ad8d888fbad419ec",
+      "task": "H03-04",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "1589bd1e4830453f8a2572f3c6b98ff0",
+      "at": "2026-11-20T18:39:50+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:39:34+00:00",
+  "updated_at": "2026-11-20T18:39:50+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
