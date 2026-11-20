@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 287,
+  "sequence": 288,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -214,11 +214,11 @@
         "targets/lfj8/lfj8_h03_atf_fault.h",
         "verification/project-audit/dtc03-h03-atf-monitor.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "d048f56f20764374915133ea2b7bbcde",
       "claimed_at": "2026-11-20T16:39:32+00:00",
-      "updated_at": "2026-11-20T16:47:24+00:00",
-      "note": "Передаю интегратору адаптер штатного статуса ATF H03. Код встроен в перемещаемый мост, 20 сценариев и 2 отрицательные проверки M32R, ПК 35 шагов/71 тест, H03 link 17 компонентов PASS. Отчёт verification/project-audit/dtc03-h03-atf-monitor.md. Четыре файла кода внести в общий аудит при приёмке и выполнить complete после публикации main. Штатный вызов, отображение P0710 и стенд открыты.",
+      "updated_at": "2026-11-20T17:40:03+00:00",
+      "note": "Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md.",
       "result": "d487840ba2505064c7f281305a10813cbdf3b695"
     },
     "TOY-02": {
@@ -2866,9 +2866,17 @@
       "action": "complete",
       "claim_id": "8bc1c70042a844479c03009561a5e586",
       "at": "2026-11-20T17:39:43+00:00"
+    },
+    {
+      "operation_id": "a21fe09ed49a42e3a402c8a3fbea2f7f",
+      "task": "DTC-03",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "complete",
+      "claim_id": "d048f56f20764374915133ea2b7bbcde",
+      "at": "2026-11-20T17:40:03+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:39:43+00:00",
+  "updated_at": "2026-11-20T17:40:03+00:00",
   "main_commit": "320b72e41aa4a85815f2db8942f88f7050abb3f0",
   "catalog": [
     {
