@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 108,
+  "sequence": 109,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -116,30 +116,19 @@
       "result": null
     },
     "H03-04": {
-      "owner": "codex-h03-04-01a1f76d-20261120",
-      "label": "Основной чат — память целевого H03",
-      "branch": "codex/h03-04-storage-01a1f76d",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex — сервисные границы RAM H03",
+      "branch": "codex/h03-service-spans-32e6ac79",
       "files": [
-        "README.md",
-        "data/project-tasks.json",
-        "docs/lfj8-h03-ram-audit.md",
-        "docs/project-map.md",
-        "targets/lfj8/check_h03_ram_candidate.py",
-        "targets/lfj8/check_h03_storage.py",
-        "targets/lfj8/h03_storage_layout.c",
-        "targets/lfj8/lfj8_h03_storage.h",
-        "tests/test_h03_storage.py",
-        "verification/e4m3-can-9e1c/h03-storage.json",
-        "verification/project-audit/2026-11-20-h03-storage.json",
-        "verification/project-audit/h03-phase-integration-link.json",
-        "verification/project-audit/h03-storage-tests.txt"
+        "targets/lfj8/check_h03_service_isolation.py",
+        "verification/project-audit/h03-service-ram-spans.md"
       ],
-      "stage": "done",
-      "claim_id": "83b9428ce0f2463f92341fea12156d66",
-      "claimed_at": "2026-11-20T15:53:30+00:00",
-      "updated_at": "2026-11-20T16:07:21+00:00",
-      "note": "Принята в main порция H03-04: актуальные типы, карта и проверки памяти. GitHub Actions 44769703890 PASS. Карточка ТЗ остаётся open до сервисной изоляции, запуска и полного стека. Общие страницы освобождены для других чатов.",
-      "result": "a52ab8ce955959ed109d53e6c554beb68f814c2e"
+      "stage": "in_progress",
+      "claim_id": "a16c78536102430583d910e97b8385d3",
+      "claimed_at": "2026-11-20T16:20:52+00:00",
+      "updated_at": "2026-11-20T16:20:52+00:00",
+      "note": "Сверяю полный диапазон трёх кандидатов RAM с исходной проверкой диапазонов сервисного монитора H03. Проверю граничные пересечения в M32R без вызова записи; внесу отдельное доказательство для интегратора.",
+      "result": null
     },
     "DTC-04": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -1274,9 +1263,17 @@
       "action": "claim",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "at": "2026-11-20T16:20:38+00:00"
+    },
+    {
+      "operation_id": "db985d2cb36944c7b84778ce7312ab8c",
+      "task": "H03-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "a16c78536102430583d910e97b8385d3",
+      "at": "2026-11-20T16:20:52+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:20:38+00:00",
+  "updated_at": "2026-11-20T16:20:52+00:00",
   "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {
