@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 494,
+  "sequence": 495,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -22,11 +22,11 @@
         "verification/project-audit/2026-11-21-integration.json",
         "verification/project-audit/integration-20261121/"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "52e7f6ec20834ce89a8c8faa785fe86b",
       "claimed_at": "2026-11-20T19:11:44+00:00",
-      "updated_at": "2026-11-20T19:31:55+00:00",
-      "note": "28 результатов объединены и проверены; снимок 2026-11-21-integration.json. Полный линк FAIL_BINDINGS; рабочая пара не выпущена.",
+      "updated_at": "2026-11-20T19:32:32+00:00",
+      "note": "Принято в main ae393e8. Сверка и карта всех 34 задач обновлены; неразрешённые функции и физические данные перечислены. Завершена интеграционная порция, не выпуск BIN.",
       "result": "ae393e852fd8e110892c6725f219f3e43585d33c"
     },
     "DTC-02": {
@@ -4512,9 +4512,17 @@
       "action": "review",
       "claim_id": "52e7f6ec20834ce89a8c8faa785fe86b",
       "at": "2026-11-20T19:31:55+00:00"
+    },
+    {
+      "operation_id": "69a8c64c1e474aab82d7669c3b33b362",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "complete",
+      "claim_id": "52e7f6ec20834ce89a8c8faa785fe86b",
+      "at": "2026-11-20T19:32:32+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:31:55+00:00",
+  "updated_at": "2026-11-20T19:32:32+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
