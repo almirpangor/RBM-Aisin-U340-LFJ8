@@ -1,4 +1,4 @@
-"""Run the stock H03 P0745 monitor, arbiter and output path in the M32R simulator."""
+"""Exercise H03 Pressure A and D/E/F fault latches in the M32R simulator."""
 
 import argparse
 from hashlib import sha256
@@ -11,12 +11,28 @@ from tempfile import TemporaryDirectory
 from check_h03_link import identify_h03
 
 
+LATCHES = (
+    (0x0342B0, "shift_d", 0x8063AF),
+    (0x0342C8, "shift_e", 0x8063B7),
+    (0x0342E0, "shift_f", 0x8063C4),
+    (0x03484C, "slt", 0x806356),
+)
+
+
 START = """
     .section .stock,"ax",@progbits
 #if H03_SLT_FAULT_HOOK
-    .incbin "stock.bin",0,0x03484c
-    bra rbm_h03_slt_fault_hook
-    .incbin "stock.bin",0x034850
+    .macro hook site, entry
+    .incbin "stock.bin",stock_cursor,\\site-stock_cursor
+    bra \\entry
+    .set stock_cursor,\\site+4
+    .endm
+    .set stock_cursor,0
+    hook 0x0342b0, rbm_h03_shift_d_fault_hook
+    hook 0x0342c8, rbm_h03_shift_e_fault_hook
+    hook 0x0342e0, rbm_h03_shift_f_fault_hook
+    hook 0x03484c, rbm_h03_slt_fault_hook
+    .incbin "stock.bin",stock_cursor
 #else
     .incbin "stock.bin"
 #endif
@@ -41,6 +57,9 @@ SECTIONS {
   /DISCARD/ : { *(.note*) *(.comment) }
 }
 h03_slt_fault_resume = 0x034850;
+h03_shift_d_fault_resume = 0x0342b4;
+h03_shift_e_fault_resume = 0x0342cc;
+h03_shift_f_fault_resume = 0x0342e4;
 """
 
 FIXTURE = """
@@ -62,6 +81,11 @@ enum {
     ADC0_AN3 = 0x804BC0,
     REMAINING = 0x804EAC,
     P0745 = 0x806356,
+    P0768 = 0x8063AF,
+    P0773 = 0x8063B7,
+    P2709 = 0x8063C4,
+    P13DATA = 0x80070D,
+    P3DATA = 0x800703,
     CLEAR_REQUEST = 0x80637C,
     P10DATA = 0x80070A,
     P10SEL = 0x80074A,
@@ -149,6 +173,13 @@ static unsigned inhibits;
 static unsigned delivered;
 static unsigned fault_notifications;
 static uint32_t notification_ie;
+static uint32_t watched_latch = P0745;
+
+static unsigned fault_count(void)
+{
+    return (RAM8(P0745) != 0u) + (RAM8(P0768) != 0u) +
+        (RAM8(P0773) != 0u) + (RAM8(P2709) != 0u);
+}
 
 static void write_word(void *context, uint32_t address, uint32_t value)
 {
@@ -185,7 +216,7 @@ static void inhibit(void *context)
 {
     (void)context;
     ++inhibits;
-    if (RAM8(P0745)) {
+    if (RAM8(watched_latch)) {
         uint32_t psw;
         __asm__ volatile ("mvfc %0,psw" : "=r"(psw));
         ++fault_notifications;
@@ -193,7 +224,7 @@ static void inhibit(void *context)
     }
 }
 
-static int check_revocation(void)
+static int check_revocation(uint32_t latch, uint8_t bad_feedback)
 {
     static const Lfj8H03TakeoverOps ops = {
         .io = &lfj8_h03_mmio, .write32 = write_word, .clock_ticks = clock_ticks,
@@ -205,31 +236,51 @@ static int check_revocation(void)
         .pressure_request_ma = 1000u, .toyota_compare = 400u,
     };
     Lfj8H03Takeover *state = &rbm_h03_takeover_state;
-    RAM16(STARTUP_COUNT) = 3u;
+    void (*clear)(void) = (void (*)(void))(uintptr_t)0x071FF4;
+    const int pressure = latch == P0745;
+    void (*monitor)(void) = (void (*)(void))(uintptr_t)(pressure ? 0x0346F0 : 0x034120);
+    inhibits = 0;
+    delivered = 0;
+    fault_notifications = 0;
+    notification_ie = 0;
+    watched_latch = latch;
+    RAM8(CLEAR_REQUEST) = 1u;
+    clear();
     RAM8(CLEAR_REQUEST) = 0u;
+    RAM16(STARTUP_COUNT) = 3u;
+    RAM8(P3DATA) = 0;
+    RAM8(P13DATA) = 0;
     RAM16(ADC0_AN3) = 307u << 6;
-    sample(1);
+    RAM32(VOLTAGE_VBAT) = TWELVE_VOLTS;
     if (!lfj8_h03_takeover_init(state, &ops, 10) ||
         !lfj8_h03_takeover_prepare_plan(state, &plan, 1, 100)) {
         return 17;
     }
+    monitor();
     RAM16(ADC0_AN3) = 0;
-    sample(20);
-    if (RAM8(P0745) != 1u || state->pending != 1u - H03_SLT_FAULT_HOOK ||
-        fault_notifications != H03_SLT_FAULT_HOOK || notification_ie != 0u) {
+    RAM8(P13DATA) = bad_feedback;
+    for (unsigned i = 0; i < (pressure ? 19u : 9u); ++i) {
+        monitor();
+    }
+    if (fault_count() || !state->pending || inhibits) {
         return 18;
+    }
+    monitor();
+    if (RAM8(latch) != 1u || fault_count() != 1u || state->pending != 1u - H03_SLT_FAULT_HOOK ||
+        fault_notifications != H03_SLT_FAULT_HOOK || notification_ie != 0u) {
+        return 19;
     }
 
     RAM8(CLEAR_REQUEST) = 1u;
-    ((void (*)(void))(uintptr_t)0x071FF4)();
-    if (RAM8(P0745) || lfj8_h03_takeover_apply(state, 1) != 1 - H03_SLT_FAULT_HOOK ||
+    clear();
+    if (fault_count() || lfj8_h03_takeover_apply(state, 1) != 1 - H03_SLT_FAULT_HOOK ||
         delivered != 1u - H03_SLT_FAULT_HOOK || inhibits != 2u * H03_SLT_FAULT_HOOK) {
-        return 19;
+        return 20;
     }
     if (lfj8_h03_takeover_prepare_plan(state, &plan, 1, 100) ||
         !lfj8_h03_takeover_prepare_plan(state, &plan, 2, 100) ||
         !lfj8_h03_takeover_apply(state, 2) || delivered != 2u - H03_SLT_FAULT_HOOK) {
-        return 20;
+        return 21;
     }
     return 0;
 }
@@ -302,7 +353,18 @@ int main(void)
         return 10;
     }
     const int result = check_actuator_path();
-    return result ? result : check_revocation();
+    if (result) {
+        return result;
+    }
+    static const uint32_t latches[] = {P0745, P0768, P0773, P2709};
+    static const uint8_t bad_feedback[] = {0u, 8u, 4u, 2u};
+    for (unsigned i = 0; i < sizeof(latches) / sizeof(latches[0]); ++i) {
+        const int rejected = check_revocation(latches[i], bad_feedback[i]);
+        if (rejected) {
+            return rejected + 5u * i;
+        }
+    }
+    return 0;
 }
 """
 
@@ -323,14 +385,19 @@ SCENARIOS = (
     "apply_selects_gpio_low_and_updates_reloads",
     "clear_then_apply_keeps_last_zero_result",
     "stock_rearbitration_can_restore_the_old_proposal",
-    "takeover_prepares_one_generation_before_fault",
-    "latch_reaches_revoke_only_in_the_hooked_variant",
-    "cleared_fault_accepts_old_generation_only_without_hook",
-    "duplicate_prepare_rejects_and_next_generation_can_be_applied",
+)
+SCENARIOS += tuple(
+    f"{fault}_{phase}"
+    for fault in ("P0745", "P0768", "P0773", "P2709")
+    for phase in ("prepare_before_fault", "before_debounce_threshold",
+                  "latch_revokes_only_with_hook", "old_generation_after_clear",
+                  "duplicate_rejected_and_next_generation_applied")
 )
 
 
-def probe_fault_hook(run, work, debugger, active):
+def probe_fault_hook(run, work, debugger, latch, *, active=True):
+    site, name, flag = latch
+    resume = site + 4
     script = work / "probe-hook.gdb"
     condition = "!=" if active else "=="
     preserved = [f"$r{i}" for i in range(1, 13)] + ["$fp", "$lr", "$psw", "$accl", "$acch"]
@@ -341,7 +408,7 @@ set confirm off
 set pagination off
 target sim --memory-size 16M
 load
-break *rbm_h03_slt_fault_hook if rbm_h03_takeover_state.ops {condition} 0
+break *rbm_h03_{name}_fault_hook if rbm_h03_takeover_state.ops {condition} 0
 run
 printf "CPU_BEFORE {register_format}\\n", {registers}
 set $start_sp = $sp
@@ -349,7 +416,7 @@ set $low_sp = $sp
 set $steps = 0
 set $mask_start = -1
 set $mask_end = -1
-while $pc != 0x034850 && $steps < 512
+while $pc != {resume:#x} && $steps < 512
   if $pc == &h03_slt_fault_mask_irq
     set $mask_start = $steps
   end
@@ -364,21 +431,21 @@ while $pc != 0x034850 && $steps < 512
 end
 printf "HOOK %08x %08x %08x %08x %d %d %d\\n", $pc, $start_sp, $low_sp, $sp, $steps, $mask_start, $mask_end
 printf "CPU_AFTER {register_format}\\n", {registers}
-printf "LATCH %08x %08x\\n", $r0, *(unsigned char*)0x806356
+printf "LATCH %08x %08x\\n", $r0, *(unsigned char*){flag:#x}
 """, encoding="ascii")
     log = run(debugger, "--batch", "-nx", "-x", script.name, "fixture.elf")
     result = re.search(rb"^HOOK ((?:[0-9a-f]{8} ){4})([0-9-]+ [0-9-]+ [0-9-]+)\r?$", log, re.M)
     if result is None:
-        raise ValueError(f"P0745 hook trace did not complete (owner active={active}): {log[-1200:]!r}")
+        raise ValueError(f"{name} hook trace did not complete (owner active={active}): {log[-1200:]!r}")
     pc, start, low, end = (int(field, 16) for field in result[1].split())
     steps, mask_start, mask_end = (int(field) for field in result[2].split())
-    if pc != 0x034850 or start != end or low >= start or not 0 <= mask_start < mask_end <= steps:
-        raise ValueError(f"Invalid P0745 stack or mask trace (owner active={active}): {result[0]!r}")
+    if pc != resume or start != end or low >= start or not 0 <= mask_start < mask_end <= steps:
+        raise ValueError(f"Invalid {name} stack or mask trace (owner active={active}): {result[0]!r}")
     before = re.search(rb"^CPU_BEFORE ([0-9a-f ]+)\r?$", log, re.M)
     after = re.search(rb"^CPU_AFTER ([0-9a-f ]+)\r?$", log, re.M)
     if before is None or after is None or before[1] != after[1] or (
             re.search(rb"^LATCH 00000001 00000001\r?$", log, re.M) is None):
-        raise ValueError(f"P0745 hook changed the continuation context (owner active={active})")
+        raise ValueError(f"{name} hook changed the continuation context (owner active={active})")
     return {"additional_stack_bytes": start - low, "simulator_steps": steps,
             "mask_through_restore_steps": mask_end - mask_start}
 
@@ -388,8 +455,9 @@ def check(base, compiler):
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
         raise ValueError("H03 changed while the fixture was being prepared")
-    if rom[0x03484C:0x034850] != bytes.fromhex("60012004"):
-        raise ValueError("Unexpected stock P0745 latch word")
+    for site, name, _ in LATCHES:
+        if rom[site:site + 4] != bytes.fromhex("60012004"):
+            raise ValueError(f"Unexpected stock {name} latch word")
 
     with TemporaryDirectory(prefix="rbm-h03-slt-fault-") as directory:
         work = Path(directory)
@@ -420,22 +488,29 @@ def check(base, compiler):
                 "-o", "fixture.elf")
             run(objcopy, "-j", ".stock", "-O", "binary", "fixture.elf", "linked-stock.bin")
             linked = (work / "linked-stock.bin").read_bytes()
-            if len(linked) != len(rom) or linked[:0x03484C] != rom[:0x03484C] or linked[0x034850:] != rom[0x034850:]:
-                raise ValueError("The simulator ROM differs outside the P0745 latch word")
-            if (hooked and linked[0x03484C] != 0xFF) or (not hooked and linked != rom):
-                raise ValueError("P0745 latch was not linked as expected")
+            restored = bytearray(linked)
+            if hooked:
+                for site, name, _ in LATCHES:
+                    if linked[site] != 0xFF:
+                        raise ValueError(f"{name} latch was not linked as a long BRA")
+                    restored[site:site + 4] = rom[site:site + 4]
+            if restored != rom:
+                raise ValueError("The simulator ROM differs outside the output latch words")
             try:
                 run(simulator, "--memory-size", "16M", "fixture.elf")
             except subprocess.CalledProcessError as error:
                 if 0 < error.returncode <= len(SCENARIOS):
                     scenario = SCENARIOS[error.returncode - 1]
-                    raise ValueError(f"Unexpected P0745 result in {scenario} (hooked={hooked})") from error
+                    raise ValueError(f"Unexpected result in {scenario} (hooked={hooked})") from error
                 raise
 
         debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
-        hook_probe = {
-            "owner_uninitialized": probe_fault_hook(run, work, debugger, False),
-            "active_revoke_with_test_inhibit": probe_fault_hook(run, work, debugger, True),
+        slt_latch = LATCHES[-1]
+        hook_probe = {"owner_uninitialized": probe_fault_hook(run, work, debugger, slt_latch, active=False),
+                      "active_revoke_with_test_inhibit": probe_fault_hook(run, work, debugger, slt_latch)}
+        discrete_probes = {
+            latch[1]: probe_fault_hook(run, work, debugger, latch)
+            for latch in LATCHES[:-1]
         }
 
     return {
@@ -456,6 +531,7 @@ def check(base, compiler):
         "takeover_can_apply_old_generation_after_clear_without_latch_hook": True,
         "latch_hook_revokes_old_generation_and_invokes_inhibit": True,
         "latch_hook_probe": hook_probe,
+        "discrete_latch_hook_probes": discrete_probes,
         "hardware_executed": False,
         "target_image_emitted": False,
     }
