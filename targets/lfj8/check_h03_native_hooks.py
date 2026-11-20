@@ -88,8 +88,14 @@ def check_full_phases(run, work, compiler, simulator, gdb, flags):
     )
     for name in (*sources, *(header.name for header in HERE.glob("*.h"))):
         shutil.copyfile(HERE / name, work / name)
-    shutil.copytree(ROOT / "controller/include", work / "controller")
-    shutil.copytree(ROOT / "controller/vendor/toyota/include", work / "toyota")
+    controller = ROOT / "controller"
+    vendor = controller / "vendor/toyota"
+    shutil.copytree(controller / "include", work / "controller")
+    shutil.copytree(vendor / "include", work / "toyota")
+    donor_sources = ("factory_core.c", "factory_outputs.c", "factory_correction.c", "factory_phase_modes.c")
+    for name in (*donor_sources, "donor_calibration.h"):
+        shutil.copyfile(vendor / "src" / name, work / name)
+    shutil.copyfile(controller / "src/rbm_u340e.c", work / "rbm_u340e.c")
 
     cases = {
         "fresh_across_clock_wrap": "SCENARIO_NORMAL",
@@ -100,12 +106,17 @@ def check_full_phases(run, work, compiler, simulator, gdb, flags):
         "repeat_commit": "SCENARIO_REPEAT",
         "startup_cutout": "SCENARIO_STARTUP_SKIP",
         "stock_combined_entry": "SCENARIO_COMBINED_ENTRY",
+        "p3_changed_after_prepare": "SCENARIO_P3_CHANGED",
+        "missing_pressure_calibration": "SCENARIO_NO_CALIBRATION",
+        "unrepresentable_real_edge_order": "SCENARIO_WRONG_ORDER",
     }
     stack_used = {}
     for label, scenario in cases.items():
         run(compiler, *flags, "-std=c11", "-Icontroller", "-Itoyota", "-ffixed-r13", "-DH03_FULL_PHASE_FIXTURE",
+            "-Wno-missing-braces", "-Wno-missing-field-initializers",
             f"-DH03_PHASE_SCENARIO={scenario}", "-Wl,-T,fixture.ld", "h03_native_hooks.S",
-            "h03_native_hooks_fixture.S", *sources, "-ffunction-sections",
+            "h03_native_hooks_fixture.S", *sources, "rbm_u340e.c", *donor_sources,
+            "-ffunction-sections",
             "-fdata-sections", "-Wl,--gc-sections,--undefined=rbm_h03_strategy_hook",
             "-Wl,--undefined=rbm_h03_commit_hook", "-Wl,--start-group", "-lc", "-lgcc",
             "-Wl,--end-group", "-o", "full-phase.elf")
@@ -137,6 +148,10 @@ def check_full_phases(run, work, compiler, simulator, gdb, flags):
         stack_used[label] = len(stack) - first_write
     return {"cases": list(cases), "fixture_state_outside_h03_ram": True,
             "observed_stack_bytes": stack_used,
+            "toyota_output_algorithms_executed": True,
+            "toyota_fixture_raw_slt": 5120,
+            "toyota_expected_compare": 652,
+            "slt_calibration": "synthetic fixture points",
             "physical_inhibit_tested": False,
             "stock_entries": ["0x046804", "0x04682C", "0x036EA4"],
             "address_space": "GNU M32R test ELF with registers backed by simulator memory"}

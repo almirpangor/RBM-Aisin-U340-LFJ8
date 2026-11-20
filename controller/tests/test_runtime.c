@@ -3,6 +3,7 @@
 
 #undef NDEBUG
 #include <assert.h>
+#include <stddef.h>
 #include <string.h>
 #ifndef RBM_TEST_QUIET
 #include <stdio.h>
@@ -35,7 +36,66 @@ static void check_initialization(void)
     assert(!rbm_u340e_runtime_init(&runtime, &gear, &gp));
     assert(rbm_u340e_runtime_snapshot_gears(&runtime, &work));
     assert(work.b4852 == 2);
-    assert(!rbm_u340e_runtime_snapshot_gears(&runtime, &runtime.gear_state));
+}
+
+static void check_compact_storage(void)
+{
+    struct UnalignedState {
+        uint8_t before;
+        RbmU340eRuntime runtime;
+        uint8_t after;
+    };
+    union {
+        uint32_t alignment;
+        struct UnalignedState state;
+    } fixture = {.state = {.before = 0x5au, .after = 0xa5u}};
+    _Static_assert(sizeof(RbmU340eRuntime) == 829u, "runtime persistent bytes");
+    _Static_assert(offsetof(struct UnalignedState, runtime) == 1u, "runtime at an odd address");
+
+    FactoryGearState source = {
+        .v1304 = {0x01234567u}, .v1360 = {0x1357u}, .u7166 = 0x2468u,
+        .u7128 = 0xabceu, .thresholds = {0x65u},
+        .b8880 = 0x17u, .b7419 = 0x29u, .b7193 = 0x31u, .b5722 = 0x43u,
+        .b5297 = 0x53u, .b5153 = 0x67u, .b4839 = 0x74u, .b4837 = 0x81u,
+        .b4828 = 0x94u, .b4821 = 0xa2u, .b4535 = 0xb3u, .b4850 = 0xc4u,
+        .b4533 = 0xd8u, .driver5302 = {0xe9u, 0xfeu},
+    };
+    RbmU340eRuntime *runtime = &fixture.state.runtime;
+    assert(((uintptr_t)runtime & 1u) == 1u);
+    assert(rbm_u340e_runtime_init(runtime, &source, &runtime->gp));
+    FactoryGearState work;
+    memset(&work, 0x5c, sizeof work);
+    assert(rbm_u340e_runtime_snapshot_gears(runtime, &work));
+    assert(memcmp(&source, &work, sizeof work) == 0);
+    assert(fixture.state.before == 0x5au && fixture.state.after == 0xa5u);
+}
+
+static void check_workspace_overlap(void)
+{
+    union {
+        RbmU340eRuntime runtime;
+        FactoryGearState work;
+        FactoryGearWrites writes;
+        struct { uint32_t prefix; FactoryGearState work; } shifted;
+    } overlay = {.runtime = {0}};
+    union {
+        FactoryGearState work;
+        FactoryGearWrites writes;
+    } workspace = {.work = {0}};
+    RbmU340eRuntime *runtime = &overlay.runtime;
+    FactoryGearWrites writes = {.count = 1u};
+    assert(rbm_u340e_runtime_init(runtime, &workspace.work, &runtime->gp));
+    const RbmU340eRuntime before = *runtime;
+    const FactoryGearState before_work = workspace.work;
+
+    assert(!rbm_u340e_runtime_snapshot_gears(runtime, &overlay.work));
+    assert(!rbm_u340e_runtime_snapshot_gears(runtime, &overlay.shifted.work));
+    assert(!rbm_u340e_runtime_gears_outputs(runtime, &overlay.shifted.work, &writes));
+    assert(!writes.count);
+    assert(!rbm_u340e_runtime_gears_outputs(runtime, &workspace.work, &overlay.writes));
+    assert(!rbm_u340e_runtime_gears_outputs(runtime, &workspace.work, &workspace.writes));
+    assert(memcmp(runtime, &before, sizeof before) == 0);
+    assert(memcmp(&workspace.work, &before_work, sizeof before_work) == 0);
 }
 
 static void check_live_stages(void)
@@ -94,9 +154,9 @@ static void check_live_stages(void)
     gear.driver5302[1] = 5;
     assert(!rbm_u340e_runtime_gears_outputs(&runtime, &gear, &writes));
     assert(!writes.count);
-    assert(memcmp(&runtime.gp, &committed.gp, sizeof runtime.gp) == 0);
+    assert(memcmp(&runtime, &committed, sizeof runtime) == 0);
     assert(rbm_u340e_runtime_snapshot_gears(&runtime, &gear));
-    assert(gear.driver5302[1] == 1 && gear.b4841 == 0);
+    assert(gear.driver5302[1] == 1 && gear.driver5314[0] == 1 && gear.b4841 == 0);
 }
 
 static RbmU340eRelease publish_tick(RbmU340eScheduler *schedule)
@@ -243,6 +303,8 @@ static void check_secondary_and_producer_overrun(void)
 void rbm_test_runtime(void)
 {
     check_initialization();
+    check_compact_storage();
+    check_workspace_overlap();
     check_live_stages();
     check_schedule_nominal();
     check_fast_schedule();

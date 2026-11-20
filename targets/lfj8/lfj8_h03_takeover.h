@@ -24,6 +24,7 @@ typedef struct {
     uint32_t command_at;
     uint32_t pressure_word;
     uint8_t shift_mask;
+    uint8_t shift_before;
     uint8_t have_generation;
     uint8_t pending;
 } Lfj8H03Takeover;
@@ -41,8 +42,8 @@ int lfj8_h03_takeover_init(Lfj8H03Takeover *state, const Lfj8H03TakeoverOps *ops
 
 /* Stage and arbitrate one complete generation. shift_mask is the current
  * D/E/F state (bits 0/1/2), including channels absent from the ordered plan.
- * The caller guarantees that the complete state is safe to issue in H03
- * D/E/F order from the last physical state. command_at is the oldest
+ * Replay must reach that state from the current P3DATA command bits.
+ * The caller qualifies the observable output mode. command_at is the oldest
  * required sample in this generation, in clock_ticks
  * units. Pass NULL for a failed plan. The caller provides serialized phase
  * invocations and consecutive generations even when an input is missing.
@@ -51,7 +52,8 @@ int lfj8_h03_takeover_init(Lfj8H03Takeover *state, const Lfj8H03TakeoverOps *ops
 int lfj8_h03_takeover_prepare(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *plan,
                              uint8_t shift_mask, uint32_t generation, uint32_t command_at);
 
-/* Consume a matching generation once. A rejection invokes inhibit. The caller
+/* Consume a matching generation once if the initial P3 command is still the
+ * same. A rejection invokes inhibit. The caller
  * of either phase must skip the original OEM call after this function. */
 int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation);
 

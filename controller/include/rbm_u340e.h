@@ -122,7 +122,8 @@ int rbm_u340e_outputs_init(RbmU340eOutputState *state,
 
 /* Compute logical commands for the caller's qualified hydraulic snapshot.
  * Caller owns donor task timing, state propagation and physical actuation.
- * On failure returns zero, clears output and preserves driver state. */
+ * Output is caller-owned scratch until return. On failure returns zero,
+ * clears output and preserves driver state. */
 int rbm_u340e_outputs_step(RbmU340eOutputState *state,
     const RbmU340eHydraulicInput *input, RbmU340eHydraulicOutput *output);
 

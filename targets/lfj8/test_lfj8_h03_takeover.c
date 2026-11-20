@@ -10,6 +10,7 @@ static const uint32_t word_in[] = {0x80508C, 0x804F6C, 0x804F78, 0x804F84, 0x804
 static const uint32_t word_out[] = {0x805094, 0x804F74, 0x804F80, 0x804F8C, 0x804F9C};
 
 enum {
+    P3DATA = 0x800703,
     BASE = 0x804000,
     LIMIT = 0x808020,
     SAVED_PSW = 0x41,
@@ -19,7 +20,7 @@ typedef struct {
     uint8_t ram[LIMIT - BASE];
     uint32_t now;
     unsigned arbitration_delay, publications, arbitrations, applies, inhibits;
-    uint8_t locked, permitted, disturbed;
+    uint8_t locked, permitted, disturbed, p3;
 } Fixture;
 
 static uint8_t *cell(Fixture *f, uint32_t address)
@@ -30,7 +31,9 @@ static uint8_t *cell(Fixture *f, uint32_t address)
 
 static uint8_t read_byte(void *c, uint32_t address)
 {
-    return *cell(c, address);
+    Fixture *f = c;
+    assert(f->locked);
+    return address == P3DATA ? f->p3 : *cell(f, address);
 }
 
 static uint16_t read_halfword(void *c, uint32_t address)
@@ -118,6 +121,10 @@ static void apply(void *c)
 {
     Fixture *f = c;
     assert(f->locked && f->publications == 0u);
+    f->p3 = (uint8_t)((f->p3 & 0x1fu) |
+        ((unsigned)read_byte(f, shift_out[0]) << 7) |
+        ((unsigned)read_byte(f, shift_out[1]) << 6) |
+        ((unsigned)read_byte(f, shift_out[2]) << 5));
     ++f->applies;
 }
 
@@ -155,30 +162,35 @@ int main(void)
     Lfj8H03OutputPlan plan = {
         .pressure_mailbox = 0x80508C, .pressure_binary32 = 0x3f000000,
         .pressure_request_ma = 500, .toyota_compare = 2200,
-        .discrete = {{.mailbox = 0x8063D5, .on = 1}}, .discrete_count = 1,
+        .discrete = {{.mailbox = 0x8063DB, .on = 1}, {.mailbox = 0x8063D5, .on = 1}},
+        .discrete_count = 2,
     };
     /* Retained flags before publication must not leave a PWM proposal live. */
     memset(&fixture.ram[word_in[1] - BASE], 0x5a, sizeof(uint32_t));
     uint16_t startup_count = 3u;
     memcpy(&fixture.ram[0x80621A - BASE], &startup_count, sizeof(startup_count));
+    /* An early same-level F write can precede the only real D transition. */
+    fixture.p3 = 0x33;
     fixture.now = 1u;
     fixture.permitted = 1;
     assert(lfj8_h03_takeover_prepare(&state, &plan, 5u, UINT32_MAX, UINT32_MAX - 1u));
     assert(!fixture.applies && !fixture.inhibits);
     assert(fixture.ram[shift_in[2] - BASE] == 1u);
     assert(lfj8_h03_takeover_apply(&state, UINT32_MAX));
+    assert(fixture.p3 == 0xB3);
     assert(!lfj8_h03_takeover_apply(&state, UINT32_MAX));
     assert(fixture.applies == 1u && fixture.inhibits == 1u);
 
     /* Allow generation wrap and a generation with no logical write events. */
     plan.discrete_count = 0;
-    assert(lfj8_h03_takeover_prepare(&state, &plan, 2u, 0u, 1u));
+    assert(lfj8_h03_takeover_prepare(&state, &plan, 5u, 0u, 1u));
     assert(lfj8_h03_takeover_apply(&state, 0u));
-    assert(!lfj8_h03_takeover_prepare(&state, &plan, 2u, 0u, 1u));
-    assert(!lfj8_h03_takeover_prepare(&state, &plan, 2u, UINT32_MAX, 1u));
+    assert(!lfj8_h03_takeover_prepare(&state, &plan, 5u, 0u, 1u));
+    assert(!lfj8_h03_takeover_prepare(&state, &plan, 5u, UINT32_MAX, 1u));
 
     fixture.now = 2u;
     plan.discrete_count = 2;
+    plan.discrete[0] = (Lfj8H03DiscreteCommand){.mailbox = 0x8063D5, .on = 1};
     plan.discrete[1] = (Lfj8H03DiscreteCommand){.mailbox = 0x8063D5, .on = 0};
     assert(!lfj8_h03_takeover_prepare(&state, &plan, 5u, 1u, 2u));
     plan.discrete_count = 1;
@@ -221,7 +233,9 @@ int main(void)
     plan.discrete_count = 2;
     plan.discrete[0] = (Lfj8H03DiscreteCommand){.mailbox = 0x8063DB, .on = 1};
     plan.discrete[1] = (Lfj8H03DiscreteCommand){.mailbox = 0x8063D5, .on = 1};
+    fixture.p3 = 0x13;
     assert(!lfj8_h03_takeover_prepare(&state, &plan, 5u, 14u, 18u));
+    fixture.p3 = 0xB3;
     plan.discrete_count = 0;
     assert(lfj8_h03_takeover_prepare(&state, &plan, 5u, 15u, 18u));
     assert(!lfj8_h03_takeover_prepare(&state, &plan, 5u, 16u, 18u));
@@ -236,8 +250,24 @@ int main(void)
     startup_count = UINT16_MAX;
     memcpy(&fixture.ram[0x80621A - BASE], &startup_count, sizeof(startup_count));
     assert(!lfj8_h03_takeover_prepare(&state, &plan, 5u, 21u, 18u));
-    assert(fixture.applies == 3u && fixture.arbitrations == 12u && fixture.inhibits == 24u);
+    startup_count = 3u;
+    memcpy(&fixture.ram[0x80621A - BASE], &startup_count, sizeof(startup_count));
+    fixture.p3 = 0x13;
+    assert(!lfj8_h03_takeover_prepare(&state, &plan, 5u, 22u, 18u));
+
+    plan.discrete_count = 2;
+    plan.discrete[0] = (Lfj8H03DiscreteCommand){.mailbox = 0x8063D5, .on = 1};
+    plan.discrete[1] = (Lfj8H03DiscreteCommand){.mailbox = 0x8063DB, .on = 1};
+    assert(lfj8_h03_takeover_prepare(&state, &plan, 5u, 23u, 18u));
+    fixture.p3 ^= 0x20u;
+    assert(!lfj8_h03_takeover_apply(&state, 23u));
+
+    plan.discrete_count = 0;
+    assert(lfj8_h03_takeover_prepare(&state, &plan, 4u, 24u, 18u));
+    fixture.p3 ^= 1u;
+    assert(lfj8_h03_takeover_apply(&state, 24u));
+    assert(fixture.applies == 4u && fixture.arbitrations == 14u && fixture.inhibits == 26u);
     assert(!fixture.locked);
-    puts("H03 takeover: 8 proposals, guarded apply, generation/clock wrap and failure response PASS");
+    puts("H03 takeover: 8 proposals, P3 transition replay, guarded apply and generation/clock wrap PASS");
     return 0;
 }

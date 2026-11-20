@@ -2,6 +2,7 @@
 
 #define H03_SERVICE_MODE UINT32_C(0x804887)
 #define H03_EVENT_SUSPENDED UINT32_C(0x80801C)
+#define H03_P3DATA UINT32_C(0x800703)
 #define H03_STARTUP_COUNT UINT32_C(0x80621A)
 #define SERIAL_HALF_RANGE UINT32_C(0x80000000)
 
@@ -33,6 +34,12 @@ static int qualified(const Lfj8H03Takeover *state)
         }
     }
     return ops->clock_ticks(context) - state->command_at < state->max_age_ticks;
+}
+
+static uint8_t read_shift_levels(const Lfj8RegisterIo *io)
+{
+    const unsigned p3 = io->read8(io->context, H03_P3DATA);
+    return (uint8_t)((p3 >> 7) | ((p3 >> 5) & 2u) | ((p3 >> 3) & 4u));
 }
 
 static void publish_proposals(const Lfj8H03Takeover *state)
@@ -110,13 +117,17 @@ int lfj8_h03_takeover_prepare(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *p
         state->generation = generation;
         state->have_generation = 1;
         state->command_at = command_at;
-        if (consecutive && !missed_apply && lfj8_h03_output_plan_matches(plan, shift_mask) &&
-            qualified(state)) {
-            state->shift_mask = shift_mask;
-            state->pressure_word = plan->pressure_binary32;
-            publish_proposals(state);
-            ops->arbitrate(context);
-            state->pending = (uint8_t)(matching_commands(state) && qualified(state));
+        if (consecutive && !missed_apply && qualified(state)) {
+            const uint8_t before = read_shift_levels(io);
+            if (lfj8_h03_output_plan_matches(plan, before, shift_mask)) {
+                state->shift_before = before;
+                state->shift_mask = shift_mask;
+                state->pressure_word = plan->pressure_binary32;
+                publish_proposals(state);
+                ops->arbitrate(context);
+                state->pending = (uint8_t)(matching_commands(state) && qualified(state) &&
+                    read_shift_levels(io) == before);
+            }
         }
     }
     const int accepted = state->pending;
@@ -139,7 +150,7 @@ int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation)
     const int pending = state->pending;
     state->pending = 0;
     const int accepted = pending && generation == state->generation &&
-        matching_commands(state) && qualified(state);
+        matching_commands(state) && qualified(state) && read_shift_levels(io) == state->shift_before;
     if (accepted) {
         ops->apply(context);
     } else {

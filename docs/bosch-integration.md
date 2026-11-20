@@ -158,6 +158,18 @@ python targets/bosch/audit_panel_handoff.py --engine $source --s04 $s04 --image 
 python targets/bosch/audit_panel_compare.py --engine $source --s04 $s04 --image "$tx/E4M3_CHERY_RPM_ECT_SPEED_OFFLINE_ONLY.bin" --c167 $c167
 ```
 
+### Вектор CC18 и хранение состояния
+
+Проверка размещает 256 байт инструкций в модельной копии по CPU `066B00–066BFF`. Вектор `00C8` вызывает тестовый обработчик. Он снимает сравнение, публикует пробуждение в слове `E7FE` только из активного состояния при выбранном режиме CC18 и возвращает исходные IP/CSP/PSW по правилам `RETI`. Точки `045AC8` и `045E22` переводят ожидающую фазу в состояние пересчёта и сохраняют соседние каналы. После восстановления регистров они исполняют исходную пару изменения `T78CON` и `FD3C.12`, затем возвращаются к родному потоку. Прошли 48 сценариев смены делителя и 12 сценариев IRQ. Два дополнительных прогона соединяют постановку реального машинного сравнения, обе смены делителя, отбрасывание устаревшего IRQ и новое сравнение для того же срока T4. Оригинальный `BSET/BCLR` исполняется закреплённым моделировщиком. Недостающие `BFLDH` и `RETI` декодируются в тесте по руководству ST, а `ATOMIC` проверяется по байтам. Задержки и вложенные IRQ этой проверкой не моделируются. [Вектор и штатные смены делителя](../targets/bosch/audit_panel_irq.py) · [Руководство по инструкциям ST10][st10-pm]
+
+Пары слов штатного программного планировщика `E338 + 4 × channel` заняты четырьмя каналами. `018DAE` проверяет `channel < 4`. Гипотетический пятый канал занял бы `E348/E34A`, которые штатный код использует для страницы памяти и границы цикла. В существующем резерве свободно только `E7FE`, обнуляемое штатным сбросом `064888`. Оно вмещает состояния отключения, ожидания, пробуждения и пересчёта, но для 32-битного срока и дробного остатка требуются дополнительные слова.
+
+В отдельной копии в памяти проверен вариант с четырьмя дополнительными словами `E7B8–E7BF`. Для этого перенесены 12 подтверждённых значений вершины стека и её программного зеркала. При рабочей вершине `E7B6` оба исходных маршрута инициализации с обоими банками регистров помещают первые шесть слов стека в `E7AA–E7B5`. Исходная вершина `E7BE` пересекает эту область резерва. В модели сошлась 51 контрольная запись, SHA-256 копии с одной резервацией `f08a485e27eecdd898145e1a534d42bdd2946d4412da4afb203803adbd518106`. Полная глубина стека и косвенные обращения на ЭБУ ещё требуют проверки. IRQ также требует выбранной свободной пары `ILVL/GLVL` и общей сериализации с владельцами `P3.6`. Хранение абсолютного срока и управление GPIO на оборудовании пока не подключены.
+
+```powershell
+python targets/bosch/audit_panel_irq.py --engine $source --s04 $s04 --image "$tx/E4M3_CHERY_RPM_ECT_SPEED_OFFLINE_ONLY.bin" --c167 $c167
+```
+
 [r4]: https://github.com/almirpangor/GW4G15-CAN-U340e/tree/dc6b4f08a24e648d3d0dab986c1765abb6fd294a/development/E4M3/engine
 [r3]: https://github.com/almirpangor/Chery-TA2005-U340E/blob/7585de6945b4b6b3ef381c6062070a5f417cf588/tools/c167_subset.py
 [r3-engine-signals]: https://github.com/almirpangor/Chery-TA2005-U340E/blob/7585de6945b4b6b3ef381c6062070a5f417cf588/docs/GW_BENCH_RPM_ECT_RU.md
@@ -175,5 +187,6 @@ python targets/bosch/audit_panel_compare.py --engine $source --s04 $s04 --image 
 [bosch-saipa]: https://www.cargeek.live/docs/Bosch_M797_ECU_saipa_x100.pdf
 [st10]: https://www.st.com/resource/en/datasheet/st10f276e.pdf
 [st10-um]: https://www.st.com/resource/en/user_manual/um0404-high-performance-st10f276z5-and-st10f276e-16bit-microcontrollers--stmicroelectronics.pdf
+[st10-pm]: https://www.st.com/resource/en/programming_manual/pm0036-st10-family-programming-manual-stmicroelectronics.pdf
 [r4-reserve]: https://github.com/almirpangor/GW4G15-CAN-U340e/blob/dc6b4f08a24e648d3d0dab986c1765abb6fd294a/docs/ECU_RESERVE_OUTPUTS_RU.md
 [panel-ti]: https://ru.scribd.com/document/793365395/Электрооборудование-LADA-NIVA

@@ -134,6 +134,15 @@ static void check_output_path(void)
     input.qualified = 0;
     assert(!rbm_u340e_outputs_step(&state, &input, &output));
     assert(!output.write_count && memcmp(&state, &before, sizeof(state)) == 0);
+
+    input.qualified = 1;
+    input.slt_inputs.flags_p1156 = 0;
+    state.driver[2].state_5302 = UINT8_MAX;
+    const RbmU340eOutputState invalid_driver = state;
+    assert(!rbm_u340e_outputs_step(&state, &input, &output));
+    assert(!output.write_count && !output.slt_result.selected_7244 &&
+           !output.writes[0].write_pending && !output.writes[1].write_pending);
+    assert(memcmp(&state, &invalid_driver, sizeof(state)) == 0);
 }
 
 static void check_analog_selector(void)

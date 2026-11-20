@@ -86,9 +86,9 @@ Lfj8H03OutputResult lfj8_h03_plan_outputs(const RbmU340eHydraulicOutput *request
     const Lfj8H03SltCalibration *calibration, Lfj8H03OperatingPoint operating,
     Lfj8H03OutputPlan *plan);
 
-/* A complete state can be staged together only when every ordered write
- * agrees with it and follows H03's D/E/F execution order. A transition
- * requiring both levels on one channel needs separate execution. */
-int lfj8_h03_output_plan_matches(const Lfj8H03OutputPlan *plan, uint8_t shift_mask);
+/* Replay the discrete writes from an observed D/E/F register state to the
+ * proposed state. Independent same-level writes do not count as edges.
+ * Each edge must be representable by one H03 pass in D/E/F order. */
+int lfj8_h03_output_plan_matches(const Lfj8H03OutputPlan *plan, uint8_t before, uint8_t after);
 
 #endif

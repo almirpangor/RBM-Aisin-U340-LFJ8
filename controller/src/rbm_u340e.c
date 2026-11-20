@@ -213,19 +213,21 @@ int rbm_u340e_outputs_step(RbmU340eOutputState *state,
     }
 
     RbmU340eOutputState pending = *state;
-    RbmU340eHydraulicOutput proposal = {.shift = input->shift, .st = input->st, .slt = input->slt};
+    output->shift = input->shift;
+    output->st = input->st;
+    output->slt = input->slt;
     FactoryDriverBatch shift_batch;
     FactoryDriverBatch st_batch;
-    if (!factory_shift_outputs(&proposal.shift, input->driver_status[0], input->driver_status[1], &shift_batch) ||
-        !factory_slt_correction_step(&proposal.slt, &input->slt_inputs, &proposal.slt_result) ||
-        proposal.slt_result.selected_7244 < 0 ||
-        !factory_st_output(&proposal.st, input->driver_status[2], &st_batch) ||
-        !dispatch(&shift_batch, &pending, &proposal) ||
-        !dispatch(&st_batch, &pending, &proposal)) {
+    if (!factory_shift_outputs(&output->shift, input->driver_status[0], input->driver_status[1], &shift_batch) ||
+        !factory_slt_correction_step(&output->slt, &input->slt_inputs, &output->slt_result) ||
+        output->slt_result.selected_7244 < 0 ||
+        !factory_st_output(&output->st, input->driver_status[2], &st_batch) ||
+        !dispatch(&shift_batch, &pending, output) ||
+        !dispatch(&st_batch, &pending, output)) {
+        *output = (RbmU340eHydraulicOutput){0};
         return 0;
     }
 
     *state = pending;
-    *output = proposal;
     return 1;
 }

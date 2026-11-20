@@ -109,9 +109,9 @@ static uint32_t amps_binary32(uint16_t milliamps)
     return (exponent << 23) | (mantissa & UINT32_C(0x7fffff));
 }
 
-int lfj8_h03_output_plan_matches(const Lfj8H03OutputPlan *plan, uint8_t shift_mask)
+int lfj8_h03_output_plan_matches(const Lfj8H03OutputPlan *plan, uint8_t before, uint8_t after)
 {
-    if (!plan || shift_mask > 7u ||
+    if (!plan || before > 7u || after > 7u ||
         plan->pressure_mailbox != UINT32_C(0x80508C) ||
         plan->pressure_request_ma > LFJ8_H03_LPS_MAX_MA ||
         plan->pressure_binary32 != amps_binary32(plan->pressure_request_ma) ||
@@ -119,7 +119,8 @@ int lfj8_h03_output_plan_matches(const Lfj8H03OutputPlan *plan, uint8_t shift_ma
         plan->discrete_count > sizeof(plan->discrete) / sizeof(plan->discrete[0])) {
         return 0;
     }
-    size_t previous_channel = 0;
+    size_t previous_transition = 0;
+    uint8_t levels = before;
     for (size_t i = 0; i < plan->discrete_count; ++i) {
         const Lfj8H03DiscreteCommand command = plan->discrete[i];
         size_t channel = 0;
@@ -127,13 +128,20 @@ int lfj8_h03_output_plan_matches(const Lfj8H03OutputPlan *plan, uint8_t shift_ma
                strategy_mailbox[channel] != command.mailbox) {
             ++channel;
         }
-        if (channel == sizeof(strategy_mailbox) / sizeof(strategy_mailbox[0]) ||
-            channel < previous_channel || command.on != (((unsigned)shift_mask >> channel) & 1u)) {
+        if (channel == sizeof(strategy_mailbox) / sizeof(strategy_mailbox[0]) || command.on > 1u) {
             return 0;
         }
-        previous_channel = channel;
+        const unsigned bit = 1u << channel;
+        if ((levels & bit) == (command.on ? bit : 0u)) {
+            continue;
+        }
+        if (channel < previous_transition || (after & bit) != (command.on ? bit : 0u)) {
+            return 0;
+        }
+        levels ^= (uint8_t)bit;
+        previous_transition = channel;
     }
-    return 1;
+    return levels == after;
 }
 
 Lfj8H03OutputResult lfj8_h03_plan_outputs(const RbmU340eHydraulicOutput *request,
