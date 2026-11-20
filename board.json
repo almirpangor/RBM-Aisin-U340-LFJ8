@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 581,
+  "sequence": 582,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -456,12 +456,12 @@
         "tests/test_bosch_compact_branches.py",
         "verification/project-audit/ecu01-st10-external-branch.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "976c5a059ccb4336b70933d8338d8217",
       "claimed_at": "2026-11-20T20:03:49+00:00",
-      "updated_at": "2026-11-20T20:05:49+00:00",
-      "note": "На исходном компоновщике воспроизведены KeyError и ошибочное сокращение перехода в соседнюю секцию. Шесть новых регрессий прошли, повторяю штатные профили и проверку ST10.",
-      "result": null
+      "updated_at": "2026-11-20T20:09:08+00:00",
+      "note": "Компоновщик сохраняет внешний JMPA и соседнюю секцию, локальные цели проверяются. ПК 41/126, 12 путей ST10, 4 компактных профиля побайтно, CAN-05 f3bb500 профиль побайтно и verify_rx_timestamp PASS. Архив 3256 CRC и 26 команд. Отчёт verification/project-audit/ecu01-st10-external-branch.md.",
+      "result": "d7c0edc021c5caf7f4c03723847a6dcdd6583a81"
     },
     "VSS-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -5230,9 +5230,17 @@
       "action": "heartbeat",
       "claim_id": "e313f0457b4d468897a8179d3615ce3e",
       "at": "2026-11-20T20:08:53+00:00"
+    },
+    {
+      "operation_id": "2d4b680251f540d086d7a0746a09c68f",
+      "task": "ECU-01",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "976c5a059ccb4336b70933d8338d8217",
+      "at": "2026-11-20T20:09:08+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:08:53+00:00",
+  "updated_at": "2026-11-20T20:09:08+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
