@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T17:45:20+00:00**. Изменение № **300**.
+Обновлено UTC: **2026-11-20T17:45:40+00:00**. Изменение № **301**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -36,7 +36,7 @@
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
 | MODE-01 — Логика шести положений и кнопок | Работа завершена | Codex MODE-01 — восстановление кнопок после отказа входа \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode01-button-rebaseline-01a1f9c7 | 2026-11-20T17:43:09+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 6bbc342ce3f6a2a60a9b58f23044e7a6a02fbd31 |
 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | Работа завершена | Codex MODE-02 — публикация ADC H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/mode02-h03-selector-01a1f9c7 | 2026-11-20T17:42:09+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit f92fde84f590460d713dee020ee5ddc6ccd089e4 |
-| MODE-03 — Окончательная политика режимов | На проверке | Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T16:27:03+00:00 | Штатная матрица ПК: 128 конфигураций запуска и 501 760 сценариев заявок PASS. Все 35 шагов ПК прошли; донорский тест S03 повторён отдельно с проверенным входом. Интегратору: учесть новые файлы и отчёт verification/project-audit/mode03-policy-matrix.md в аудите. Политика выпуска и подключение к циклу H03 открыты. / commit dd4fdbc2862093359df9329d7e6e9ab211d13940 |
+| MODE-03 — Окончательная политика режимов | Работа завершена | Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T17:45:40+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit dd4fdbc2862093359df9329d7e6e9ab211d13940 |
 | SRC-01 — Реестр происхождения и контроль исходников | На проверке | Codex SRC-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/src01-donor-pins-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:43:47+00:00 | Проверка pinned Git объектов R1–R4 добавлена. SOURCES: ТЗ, S01–S04, H03 и четыре ревизии PASS; два теста, совместимая команда R1 и отказ для неверного клона проверены. Отчёт verification/project-audit/src01-donor-pins.md; снимок для интегратора. / commit 72f71983154edb4dcc7f0b3dc931bebfdb0d9b6d |
 | AUD-01 — Программный аудит истории E4M3 | На проверке | Codex AUD-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/aud01-pinned-replay-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:47:07+00:00 | Трасса и инструменты из одного R4. Два повтора без checkout совпали с сохранёнными отчётами; 3256 CRC и 26 команд в каждом. Ordinary BOSCH и SOURCES PASS. Отчёт verification/project-audit/aud01-pinned-replay.md; стенд ECU-02 открыт. / commit 6748075bd8cda69a0b6c2b9d6e2a471a00463434 |
 | DTC-01 — Прикладной сеанс и статусы Chery | Работа завершена | Codex — снимок полей модели Chery в H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc01-shared-engine-snapshot-32e6ac79 | 2026-11-20T17:44:35+00:00 | 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 6cdb95e861728cffbc7635d0d9f366a1d0fd51a4 |
@@ -77,14 +77,6 @@
 - tests/test_inspect_lfj8_tcm.py
 - tools/inspect_lfj8_tcm.py
 - verification/project-audit/h03-01-base-guard.md
-
-### MODE-03
-
-Чат: Codex MODE-03 — матрица режимов. Claim ID: b0a3618e8676435c94101b0abb236b6a.
-
-- controller/build.py
-- controller/tests/test_mode_policy.c
-- verification/project-audit/mode03-policy-matrix.md
 
 ### ORG-01
 
@@ -138,6 +130,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T17:45:40+00:00 | MODE-03 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T17:45:20+00:00 | H03-05 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T17:44:55+00:00 | VSS-01 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:44:35+00:00 | DTC-01 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
@@ -167,4 +160,3 @@
 | 2026-11-20T17:11:59+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T17:10:59+00:00 | CAN-02 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T17:09:39+00:00 | TOY-06 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-20T17:08:40+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
