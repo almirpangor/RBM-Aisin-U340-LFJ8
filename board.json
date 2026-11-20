@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 546,
+  "sequence": 547,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -501,12 +501,12 @@
         "verification/project-audit/2026-11-21-toy01-h03-release-clock.json",
         "verification/project-audit/toy01-h03-release-clock.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "65f87fefa9434dd69e6efd740fa10b71",
       "claimed_at": "2026-11-20T19:51:21+00:00",
-      "updated_at": "2026-11-20T19:51:21+00:00",
-      "note": "Нативный источник событий Toyota для H03-03: штатный TML0, независимые сроки, обнаружение пропуска, интерфейс take_toyota, сборка M32R без подстановки периода.",
-      "result": null
+      "updated_at": "2026-11-20T19:57:34+00:00",
+      "note": "Нативный независимый источник Toyota от TML0 включён в H03-мост и проверен через take_toyota, включая пропуск первого события и wrap. 18 стандартных M32R и компоновка прошли в своём объёме. Известные 95394 байта; период, владелец RAM и окончательные привязки остаются открыты.",
+      "result": "c53aaf01d85f38f3fded16ae2c75ef52009f5bd9"
     },
     "ECU-02": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -4957,9 +4957,17 @@
       "action": "heartbeat",
       "claim_id": "3118c56ba79c42ab952bbd17df49ca78",
       "at": "2026-11-20T19:57:26+00:00"
+    },
+    {
+      "operation_id": "2594419ce60f412ea9cd07614a97e181",
+      "task": "TOY-01",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "65f87fefa9434dd69e6efd740fa10b71",
+      "at": "2026-11-20T19:57:34+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:57:26+00:00",
+  "updated_at": "2026-11-20T19:57:34+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
