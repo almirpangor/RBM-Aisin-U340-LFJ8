@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 102,
+  "sequence": 103,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -376,6 +376,22 @@
       "claimed_at": "2026-11-20T16:16:49+00:00",
       "updated_at": "2026-11-20T16:18:17+00:00",
       "note": "Both original failures reproduced on host: foreign TRFIN reported reserved, and BusOff allowed regrant without a new generation. Corrected session/lease handling, targeted PC test PASS. Running PC and M32R suites.",
+      "result": null
+    },
+    "VSS-01": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex VSS-01",
+      "branch": "codex/vss01-exact-arithmetic-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "targets/lfj8/lfj8_bridge.c",
+        "targets/lfj8/test_lfj8_vss_arithmetic.c",
+        "verification/project-audit/vss01-exact-arithmetic.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "698c00d00af84972b5562bc8498c8628",
+      "claimed_at": "2026-11-20T16:18:46+00:00",
+      "updated_at": "2026-11-20T16:18:46+00:00",
+      "note": "Устраняю ложную недостоверность и нулевую скорость при промежуточном переполнении VSS. Сверка с точной дробью и границей 0x1AE.",
       "result": null
     }
   },
@@ -1195,9 +1211,17 @@
       "action": "review",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T16:18:28+00:00"
+    },
+    {
+      "operation_id": "ef04c4f570fa40f3a4cb22548a669eb9",
+      "task": "VSS-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "698c00d00af84972b5562bc8498c8628",
+      "at": "2026-11-20T16:18:46+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:18:28+00:00",
+  "updated_at": "2026-11-20T16:18:46+00:00",
   "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {

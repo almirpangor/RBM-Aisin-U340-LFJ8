@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:18:28+00:00**. Изменение № **102**.
+Обновлено UTC: **2026-11-20T16:18:46+00:00**. Изменение № **103**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -31,7 +31,7 @@
 | H03-04 — Память, стек и сервисные пути | Работа завершена | Основной чат — память целевого H03 \[codex-h03-04-01a1f76d-20261120\] | codex/h03-04-storage-01a1f76d | 2026-11-20T16:07:21+00:00 | Принята в main порция H03-04: актуальные типы, карта и проверки памяти. GitHub Actions 44769703890 PASS. Карточка ТЗ остаётся open до сервисной изоляции, запуска и полного стека. Общие страницы освобождены для других чатов. / commit a52ab8ce955959ed109d53e6c554beb68f814c2e |
 | H03-05 — SLT, силовые выходы и реакция на отказ | Свободна | — | — | — | — |
 | IO-01 — Два дополнительных реле | Отложена владельцем | — | — | — | — |
-| VSS-01 — Точный расчёт VSS и скорость по CAN | Свободна | — | — | — | — |
+| VSS-01 — Точный расчёт VSS и скорость по CAN | Выполняется | Codex VSS-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss01-exact-arithmetic-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:18:46+00:00 | Устраняю ложную недостоверность и нулевую скорость при промежуточном переполнении VSS. Сверка с точной дробью и границей 0x1AE. |
 | VSS-02 — Кинематика и параметры реальной скорости | Свободна | — | — | — | — |
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
 | MODE-01 — Логика шести положений и кнопок | На проверке | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:14:42+00:00 | Staggered Tiptronic plus/minus overlap now blocks manual requests. Original C/Python regressions reproduced. PC 33 steps/66 tests plus dedicated C regression PASS; M32R build, 17 components and dedicated regression PASS. Evidence verification/project-audit/mode01-shift-conflict.md. Integrator to record the audit; physical input and hydraulic execution remain open. / commit ed33ea93653f7bcbc2c6f13736fe1424335085e6 |
@@ -238,10 +238,19 @@
 - targets/lfj8/lfj8_h03_slu.h
 - verification/project-audit/toy06-slu-command.md
 
+### VSS-01
+
+Чат: Codex VSS-01. Claim ID: 698c00d00af84972b5562bc8498c8628.
+
+- targets/lfj8/lfj8_bridge.c
+- targets/lfj8/test_lfj8_vss_arithmetic.c
+- verification/project-audit/vss01-exact-arithmetic.md
+
 ## Последние события
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:18:46+00:00 | VSS-01 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:18:28+00:00 | H03-02 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:18:17+00:00 | DTC-01 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:18:08+00:00 | TOY-06 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -271,4 +280,3 @@
 | 2026-11-20T16:12:16+00:00 | H03-02 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:12:09+00:00 | CAN-04 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:11:52+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
-| 2026-11-20T16:11:44+00:00 | MODE-01 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
