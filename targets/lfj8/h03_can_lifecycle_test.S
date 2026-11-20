@@ -1,3 +1,5 @@
+    .equ SNAPSHOT_BYTES, 140
+
 /* Addresses below are simulated RAM or ROM. No device interface is linked. */
 
     .section .test_start,"ax",@progbits
@@ -14,6 +16,12 @@ _start:
     sth r1,@r0
     ld24 r1,#TEST_STATUS
     sth r1,@(2,r0)
+    ld24 r0,#0x801010
+    ld24 r1,#TEST_MASK
+    sth r1,@r0
+    ld24 r0,#0x80105d
+    ldi r1,#TEST_SLOT13
+    stb r1,@r0
     ld24 r0,#0x806ae6
     ldi r1,#TEST_STATE
     stb r1,@r0
@@ -95,6 +103,8 @@ test_wrapper:
     byte_to_snapshot 0x80105c,116
     mv r1,sp
     st r1,@(120,r0)
+    half_to_snapshot 0x801010,132
+    byte_to_snapshot 0x80105d,136
     pop r1
     pop r0
     pop lr
@@ -125,11 +135,14 @@ test_done:
     ld r1,@r1
     st r1,@(92,r0)
 
+    half_to_snapshot 0x801010,124
+    byte_to_snapshot 0x80105d,128
+
     /* Escape the binary snapshot as ASCII for the simulator stdout. */
     ld24 r1,#snapshot
     ld24 r2,#hex_buffer
     ld24 r3,#hex_digits
-    ldi r4,#124
+    ldi r4,#SNAPSHOT_BYTES
 hex_next:
     ldub r5,@r1
     addi r1,#1
@@ -149,7 +162,7 @@ hex_next:
     ldi r0,#5
     ldi r1,#1
     ld24 r2,#hex_buffer
-    ld24 r3,#248
+    ld24 r3,#(2*SNAPSHOT_BYTES)
     trap #0
     ldi r0,#1
     ldi r1,#0
@@ -158,8 +171,8 @@ hex_next:
     .section .test_data,"aw",@progbits
     .p2align 2
 snapshot:
-    .space 124
+    .space SNAPSHOT_BYTES
 hex_buffer:
-    .space 248
+    .space 2*SNAPSHOT_BYTES
 hex_digits:
     .ascii "0123456789abcdef"

@@ -45,6 +45,7 @@ typedef struct {
     uint8_t coolant_dlc;
     uint8_t coolant_data[8];
     uint8_t coolant_arm_fails;
+    uint8_t rpm_arrives_during_coolant_poll;
     unsigned lock_count;
     unsigned lock_depth;
     unsigned writes;
@@ -77,7 +78,13 @@ static uint8_t read8(void *context, uint32_t address)
     case 0x801028u:
     case 0x801029u: return f->mask_sid[address - 0x801028u];
     case 0x80105Bu: return f->rx_control;
-    case 0x80105Cu: return f->coolant_control;
+    case 0x80105Cu:
+        if (f->rpm_arrives_during_coolant_poll) {
+            assert(f->rx_control == 0x40u);
+            f->rx_control = 0x41u;
+            f->rpm_arrives_during_coolant_poll = 0u;
+        }
+        return f->coolant_control;
     case 0x8011C0u:
     case 0x8011C1u: return f->coolant_sid[address - 0x8011C0u];
     case 0x8011C5u: return f->coolant_dlc;
@@ -314,7 +321,16 @@ static void test_engine_can_lifecycle(void)
     assert(lfj8_h03_engine_rx_poll(&rx, &io, start, 1u, &sample) == 0u && f.writes == 0u);
     f.can_status = 0;
     assert(lfj8_h03_engine_rx_poll(&rx, &io, start, 1u, &sample) == 0u);
-    assert(rx.phase == LFJ8_H03_RX_ACTIVE && f.rx_control == 0x40u && f.coolant_control == 0x40u);
+    assert(f.rx_control == 0x40u && f.coolant_control == 0x40u);
+
+    /* The first samples may not use the anchor tick if the clock has yet
+     * to move. In particular, the raw model bytes must stay unavailable. */
+    f.rx_control = 0x41u;
+    f.rx_timestamp = f.can_timestamp;
+    f.coolant_control = 0x41u;
+    f.coolant_timestamp = f.can_timestamp;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 1u, 1u, &sample) == 0u);
+    assert(!rx.clock_running && sample.model.f9e8 == UINT8_MAX);
 
     f.rx_control = 0x41u;
     f.rx_timestamp = 0xfffeu;
@@ -356,7 +372,7 @@ static void test_engine_can_lifecycle(void)
     assert(rx.phase == LFJ8_H03_RX_WAIT_FOR_OEM);
     assert(sample.model.f9d8 == UINT8_MAX && sample.model.f9e8 == UINT8_MAX && sample.model.f914 == UINT8_MAX);
     assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 60u, 1u, &sample) == 0u);
-    assert(rx.phase == LFJ8_H03_RX_ACTIVE && f.rx_control == 0x40u && f.coolant_control == 0x40u);
+    assert(f.rx_control == 0x40u && f.coolant_control == 0x40u);
 
     /* A skipped poll can leave a frame older than the whole 16-bit clock.
      * Its low stamp alone looks current, so require drainage and a new frame. */
@@ -369,19 +385,37 @@ static void test_engine_can_lifecycle(void)
     assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 10u, 1u, &sample) == 0u);
     assert(rx.phase == LFJ8_H03_RX_DRAIN_PENDING && f.rx_control == 0x40u);
     f.can_timestamp = 25u;
+    f.rx_timestamp = 24u;
+    f.rpm_arrives_during_coolant_poll = 1u;
     assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 20u, 1u, &sample) == 0u);
-    assert(rx.phase == LFJ8_H03_RX_ACTIVE);
+    assert(f.rx_control == 0x41u && f.rpm_arrives_during_coolant_poll == 0u);
+    f.coolant_control = 0x41u;
+    f.coolant_timestamp = 26u;
+    f.can_timestamp = 27u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 25u, 1u, &sample) == TA2005_CHERY_COOLANT);
+    assert(sample.coolant_f9e9 == 137u && sample.model.f9e8 == UINT8_MAX);
+
     f.rx_control = 0x41u;
     f.rx_timestamp = 30u;
     f.can_timestamp = 30u;
-    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 30u, 1u, &sample) == TA2005_CHERY_SPEED);
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 30u, 1u, &sample) == both);
     assert(sample.speed_fad8 == 9600u);
     f.can_timestamp = 130u;
     assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 230u, 1u, &sample) == 0u);
     assert(sample.speed_fad8 == UINT16_MAX && sample.coolant_f9e9 == UINT8_MAX);
     assert(sample.model.f9d8 == UINT8_MAX && sample.model.f9e8 == UINT8_MAX && sample.model.f914 == UINT8_MAX);
+    /* Once the initial window has elapsed, the software clock may wrap
+     * without reapplying the initial anchor to a fresh pending frame. */
+    assert(rx.phase == LFJ8_H03_RX_ACTIVE);
+    rx.time_ticks = UINT32_MAX - 1u;
+    f.rx_control = 0x41u;
+    f.rx_timestamp = 131u;
+    f.can_timestamp = 132u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 234u, 1u, &sample) == TA2005_CHERY_SPEED);
+    assert(rx.time_ticks == 0u && sample.speed_fad8 == 9600u);
+
     f.can_status = 0x4000u;
-    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 231u, 1u, &sample) == 0u);
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 235u, 1u, &sample) == 0u);
     assert(rx.phase == LFJ8_H03_RX_WAIT_FOR_OEM && f.lock_depth == 0u);
 }
 

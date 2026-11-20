@@ -157,6 +157,64 @@ class CoordinationTests(unittest.TestCase):
                                result=result, note="Invalid result")
         self.assertEqual(self.ca.read()[1]["claims"]["TEST-01"]["stage"], "in_progress")
 
+    def test_only_current_review_can_complete(self):
+        record = self.claim()
+        key = {"claim_id": record["claim_id"]}
+        self.run_git(self.a, "push", "origin", self.seed + ":refs/heads/codex/chat-a")
+        with self.assertRaises(Conflict):
+            self.ca.change("complete", "TEST-01", "chat-a", result=self.seed, note="No review", **key)
+        for action in ("resume", "block", "heartbeat"):
+            self.ca.change("review", "TEST-01", "chat-a", result=self.seed, note="Reviewed", **key)
+            kwargs = {"files": ["a.c", "extra.c"]} if action == "heartbeat" else {}
+            updated = self.ca.change(action, "TEST-01", "chat-a", note="New work", **key, **kwargs)
+            self.assertIsNone(updated["result"])
+            self.assertNotEqual(updated["stage"], "review")
+            with self.assertRaises(Conflict):
+                self.ca.change("complete", "TEST-01", "chat-a", result=self.seed, note="Old review", **key)
+        self.ca.change("review", "TEST-01", "chat-a", result=self.seed, note="Reviewed again", **key)
+        same = self.ca.change("heartbeat", "TEST-01", "chat-a", files=["extra.c", "a.c"], **key)
+        self.assertEqual(same["stage"], "review")
+        self.run_git(self.a, "commit", "--allow-empty", "-m", "Different main commit")
+        other = self.run_git(self.a, "rev-parse", "HEAD")
+        self.run_git(self.a, "push", "origin", "main")
+        with self.assertRaises(Conflict):
+            self.ca.change("complete", "TEST-01", "chat-a", result=other, note="Wrong result", **key)
+        self.ca.change("complete", "TEST-01", "chat-a", result=self.seed, note="Exact review", **key)
+
+    def test_resume_racing_with_complete_preserves_new_work(self):
+        record = self.claim()
+        key = {"claim_id": record["claim_id"]}
+        self.run_git(self.a, "push", "origin", self.seed + ":refs/heads/codex/chat-a")
+        self.ca.change("review", "TEST-01", "chat-a", result=self.seed, note="Reviewed", **key)
+        producer = self.cb
+
+        class ResumedBeforePush(TaskBoard):
+            first = True
+            def push(self, commit):
+                if self.first:
+                    self.first = False
+                    producer.change("resume", "TEST-01", "chat-a", note="Continue new work", **key)
+                return super().push(commit)
+
+        with self.assertRaises(Conflict):
+            ResumedBeforePush(self.a).change("complete", "TEST-01", "chat-a", result=self.seed,
+                                            note="Finish stale review", **key)
+        current = self.ca.read()[1]["claims"]["TEST-01"]
+        self.assertEqual(current["stage"], "in_progress")
+        self.assertIsNone(current["result"])
+
+    def test_linked_worktrees_fetch_without_shared_tracking_ref_updates(self):
+        linked = self.root / "linked"
+        self.run_git(self.a, "worktree", "add", "-b", "linked", str(linked))
+        self.run_git(self.b, "commit", "--allow-empty", "-m", "Remote advance")
+        self.run_git(self.b, "push", "origin", "main")
+        tip = self.run_git(self.b, "rev-parse", "HEAD")
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            futures = [pool.submit(TaskBoard(repo).fetch_tip, "main") for repo in (self.a, linked)]
+            self.assertEqual([f.result(timeout=30) for f in futures], [tip, tip])
+        self.assertEqual(self.run_git(self.a, "rev-parse", "refs/remotes/origin/main"), self.seed)
+        self.assertEqual(self.run_git(self.a, "for-each-ref", "refs/rbm-coordination"), "")
+
     def test_unknown_and_deferred_tasks_are_not_claimed(self):
         for task in ("NONE-01", "WAIT-01"):
             with self.assertRaises(CoordinationError):

@@ -89,12 +89,14 @@ Lfj8H03Can13Result lfj8_h03_can13_poll(Lfj8H03Can13 *broker, const Lfj8RegisterI
 
     Lfj8H03Torque *request = &broker->torque.request;
     if (broker->status_in_flight) {
+        const bool loan_expired = now - broker->status_started_us >= broker->torque.max_poll_gap_us;
         if (broker->status_during_reduction) {
-            /* Do not consume a new admission edge during a lower priority TX.
-             * An existing pulse still observes withdrawal and its deadline. */
-            lfj8_h03_torque_poll(request, input->torque, input->torque_calibration, now, NULL, NULL);
+            /* Once the loan exceeds the receive gap, revoke the old torque
+             * confirmation even if the controller still owns the aborted TX. */
+            lfj8_h03_torque_poll(request, loan_expired ? NULL : input->torque,
+                                input->torque_calibration, now, NULL, NULL);
         }
-        const bool cancel = now - broker->status_started_us >= broker->torque.max_poll_gap_us ||
+        const bool cancel = loan_expired ||
             (broker->status_during_reduction && !lfj8_h03_torque_applied(request, now));
         const uint16_t id = broker->status_in_flight == LFJ8_DUE_1AE ? LFJ8_CAN_1AE : LFJ8_CAN_300;
         const Lfj8CanTxStatus status = lfj8_h03_can0_telemetry_status(io, id, cancel);

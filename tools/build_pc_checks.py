@@ -43,6 +43,13 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
                                        "diagnostics/chery_dtc.c", "diagnostics/test_chery_dtc.c",
                                        "-o", str(diagnostic_check)])
         run("Чтение, очистка и повтор DTC", [str(diagnostic_check)])
+        journal_check = output / f"chery_dtc_journal_test{suffix}"
+        run("Сборка журнала истории DTC", [
+            *driver, *common_flags, "-pedantic", "diagnostics/chery_dtc.c",
+            "diagnostics/chery_dtc_journal.c", "diagnostics/test_chery_dtc_journal.c",
+            "-o", str(journal_check),
+        ])
+        run("Восстановление журнала DTC после очистки и сбоя записи", [str(journal_check)])
         diagnostic_can_check = output / f"chery_dtc_can_test{suffix}"
         run("Сборка CAN-кадров диагностики Chery", [
             *driver, *common_flags, "-pedantic", "diagnostics/chery_dtc.c",
