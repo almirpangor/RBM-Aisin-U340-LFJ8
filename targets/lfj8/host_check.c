@@ -333,6 +333,17 @@ static void test_engine_can_lifecycle(void)
     f.can_timestamp = 14u;
     assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 40u, 1u, &sample) == both);
 
+    f.coolant_control = 0x41u;
+    f.coolant_dlc = 7u;
+    f.can_timestamp = 16u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 44u, 1u, &sample) == TA2005_CHERY_SPEED);
+    assert(sample.speed_fad8 == 9600u && sample.coolant_f9e9 == UINT8_MAX);
+    f.coolant_control = 0x41u;
+    f.coolant_dlc = 8u;
+    f.coolant_timestamp = 18u;
+    f.can_timestamp = 18u;
+    assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 47u, 1u, &sample) == both);
+
     /* Catch a complete OEM recovery even if the foreground never saw BusOff. */
     f.rx_control = 0;
     f.coolant_control = 0;

@@ -9,7 +9,7 @@ import shutil
 import subprocess
 from tempfile import TemporaryDirectory
 
-from check_h03_link import identify_h03
+from check_h03_link import FLASH_END, FLASH_START, identify_h03
 
 
 HERE = Path(__file__).resolve().parent
@@ -19,6 +19,14 @@ COMMIT_SITE = 0x07C10C
 OEM_STRATEGY = 0x06FED4
 OEM_ARBITER = 0x0717B8
 OEM_COMMIT = 0x046900
+OEM_SYMBOLS = """
+  h03_stock_strategy = 0x06fed4;
+  h03_stock_arbiter = 0x0717b8;
+  h03_stock_commit = 0x046900;
+  h03_stock_phase3 = 0x046804;
+  h03_stock_phase2 = 0x04682c;
+  h03_stock_combined = 0x036ea4;
+"""
 LAYOUT = """
 ENTRY(_start)
 SECTIONS {
@@ -32,14 +40,36 @@ SECTIONS {
   .data : { *(.data*) }
   .bss (NOLOAD) : { *(.bss*) *(COMMON) }
   /DISCARD/ : { *(.note*) *(.comment) }
-  h03_stock_strategy = 0x06fed4;
-  h03_stock_arbiter = 0x0717b8;
-  h03_stock_commit = 0x046900;
-  h03_stock_phase3 = 0x046804;
-  h03_stock_phase2 = 0x04682c;
-  h03_stock_combined = 0x036ea4;
+""" + OEM_SYMBOLS + """
 }
 """
+
+FULL_PHASE_LAYOUT = ("""
+ENTRY(_start)
+SECTIONS {
+  .h03_image 0x000000 : {
+    KEEP(*(.oem_prefix))
+    h03_payload_start = .;
+    *(.text*) *(.rodata*)
+    h03_payload_end = .;
+    . = FLASH_WINDOW_END;
+    KEEP(*(.oem_before))
+    KEEP(*(.strategy_site))
+    KEEP(*(.oem_between))
+    KEEP(*(.commit_site))
+    KEEP(*(.oem_after))
+  } = 0xffffffff
+  .fixture_start 0x100000 : { *(.fixture_start) }
+  .data : { *(.data*) }
+  .bss (NOLOAD) : { *(.bss*) *(COMMON) }
+  /DISCARD/ : { *(.note*) *(.comment) }
+""" + OEM_SYMBOLS + """
+}
+ASSERT(h03_payload_start == FLASH_WINDOW_START, "Unexpected H03 payload origin")
+ASSERT(h03_payload_end <= FLASH_WINDOW_END, "H03 payload overflow")
+ASSERT(SIZEOF(.h03_image) == 0x80000, "Unexpected H03 image length")
+ASSERT(SIZEOF(.data) == 0, "The phase fixture has initialized writable data")
+""").replace("FLASH_WINDOW_START", hex(FLASH_START)).replace("FLASH_WINDOW_END", hex(FLASH_END))
 
 
 def print_state(label):
@@ -81,7 +111,43 @@ def simulate(run, work, gdb, site, decision, image):
     return states
 
 
-def check_full_phases(run, work, compiler, simulator, gdb, flags):
+def inspect_phase_image(run, work, compiler, rom, image):
+    prefix = "m32r-elf-"
+    nm = compiler.with_name(prefix + "nm" + compiler.suffix)
+    objcopy = compiler.with_name(prefix + "objcopy" + compiler.suffix)
+    symbols = {}
+    for line in run(nm, "--defined-only", image).decode("ascii").splitlines():
+        fields = line.split()
+        if len(fields) == 3 and fields[1] in ("T", "t"):
+            symbols[fields[2]] = int(fields[0], 16)
+
+    run(objcopy, "-O", "binary", "--only-section=.h03_image", image, "h03-image.dat")
+    composed = (work / "h03-image.dat").read_bytes()
+    end = symbols.get("h03_payload_end", 0)
+    if len(composed) != len(rom) or not FLASH_START < end <= FLASH_END:
+        raise ValueError("Invalid linked H03 image extent")
+
+    expected = bytearray(rom)
+    expected[FLASH_START:end] = composed[FLASH_START:end]
+    hook_targets = {}
+    for site, symbol in ((STRATEGY_SITE, "rbm_h03_strategy_hook"), (COMMIT_SITE, "rbm_h03_commit_hook")):
+        target = symbols.get(symbol, 0)
+        if not FLASH_START <= target < end or target % 4:
+            raise ValueError(f"Invalid H03 hook destination for {symbol}: {target:#x}")
+        displacement = (target - site) // 4
+        expected[site:site + 4] = b"\xfe" + displacement.to_bytes(3, "big", signed=True)
+        hook_targets[f"{site:#08x}"] = f"{target:#08x}"
+    if composed != expected:
+        raise ValueError("Linked H03 image differs outside the payload and two checked BL packets")
+
+    return {
+        "sha256": sha256(composed).hexdigest(),
+        "payload_bytes": end - FLASH_START,
+        "hook_targets": hook_targets,
+    }
+
+
+def check_full_phases(run, work, compiler, simulator, gdb, flags, rom):
     sources = (
         "h03_full_phase_fixture.c", "lfj8_h03_takeover.c", "lfj8_h03_outputs.c",
         "lfj8_h03_mmio.c",
@@ -110,16 +176,21 @@ def check_full_phases(run, work, compiler, simulator, gdb, flags):
         "missing_pressure_calibration": "SCENARIO_NO_CALIBRATION",
         "unrepresentable_real_edge_order": "SCENARIO_WRONG_ORDER",
     }
+    (work / "full-phase.ld").write_text(FULL_PHASE_LAYOUT, encoding="ascii")
+    (work / "oem-prefix.dat").write_bytes(rom[:FLASH_START])
+    (work / "oem-before-tail.dat").write_bytes(rom[FLASH_END:STRATEGY_SITE])
     stack_used = {}
+    images = {}
     for label, scenario in cases.items():
         run(compiler, *flags, "-std=c11", "-Icontroller", "-Itoyota", "-ffixed-r13", "-DH03_FULL_PHASE_FIXTURE",
             "-Wno-missing-braces", "-Wno-missing-field-initializers",
-            f"-DH03_PHASE_SCENARIO={scenario}", "-Wl,-T,fixture.ld", "h03_native_hooks.S",
+            f"-DH03_PHASE_SCENARIO={scenario}", "-Wl,-T,full-phase.ld", "h03_native_hooks.S",
             "h03_native_hooks_fixture.S", *sources, "rbm_u340e.c", *donor_sources,
             "-ffunction-sections",
             "-fdata-sections", "-Wl,--gc-sections,--undefined=rbm_h03_strategy_hook",
             "-Wl,--undefined=rbm_h03_commit_hook", "-Wl,--start-group", "-lc", "-lgcc",
             "-Wl,--end-group", "-o", "full-phase.elf")
+        images[label] = inspect_phase_image(run, work, compiler, rom, "full-phase.elf")
         try:
             run(simulator, "--memory-size", "16M", "full-phase.elf")
         except subprocess.CalledProcessError as error:
@@ -148,6 +219,10 @@ def check_full_phases(run, work, compiler, simulator, gdb, flags):
         stack_used[label] = len(stack) - first_write
     return {"cases": list(cases), "fixture_state_outside_h03_ram": True,
             "observed_stack_bytes": stack_used,
+            "verified_rom_start": f"{FLASH_START:#08x}",
+            "exact_image_composition": images,
+            "untouched_original_bytes_verified": True,
+            "hardware_rom_emitted": False,
             "toyota_output_algorithms_executed": True,
             "toyota_fixture_raw_slt": 5120,
             "toyota_expected_compare": 652,
@@ -251,7 +326,7 @@ def check(base, compiler):
                     cases.append({"variant": variant, "hook": name, "decision": decision,
                                   "dispatch": f"0x{destination:06X}", "return": f"0x{site + 4:06X}"})
 
-        phase_program = check_full_phases(run, work, compiler, simulator, gdb, flags)
+        phase_program = check_full_phases(run, work, compiler, simulator, gdb, flags, rom)
 
     return {
         "base": identity,

@@ -119,8 +119,15 @@ fixture_commit_site_call:
     bl rbm_h03_commit_hook
 #endif
 
+#ifdef H03_FULL_PHASE_FIXTURE
+    .section .oem_prefix,"ax",@progbits
+    .incbin "oem-prefix.dat"
+    .section .oem_before,"ax",@progbits
+    .incbin "oem-before-tail.dat"
+#else
     .section .oem_before,"ax",@progbits
     .incbin "oem-before.dat"
+#endif
     .section .oem_between,"ax",@progbits
     .incbin "oem-between.dat"
     .section .oem_after,"ax",@progbits

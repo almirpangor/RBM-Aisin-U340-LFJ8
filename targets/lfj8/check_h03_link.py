@@ -31,6 +31,8 @@ H03_ROOTS = (
     "lfj8_chery_tx_init", "lfj8_chery_tx_poll",
     "rbm_u340e_outputs_init", "rbm_u340e_outputs_step", "lfj8_h03_plan_outputs",
     "rbm_u340e_runtime_init", "rbm_u340e_runtime_snapshot_gears", "rbm_u340e_runtime_gears_outputs",
+    "rbm_u340e_runtime_prepare_engine", "rbm_u340e_runtime_main_coolant",
+    "rbm_u340e_runtime_main_engine_speed",
     "rbm_u340e_schedule_finish_init", "rbm_u340e_schedule_timer_irq",
     "rbm_u340e_schedule_producer_publish", "rbm_u340e_schedule_producer_done",
     "rbm_u340e_schedule_fast_claim", "rbm_u340e_schedule_fast_begin",

@@ -159,6 +159,60 @@ static void check_live_stages(void)
     assert(gear.driver5302[1] == 1 && gear.driver5314[0] == 1 && gear.b4841 == 0);
 }
 
+static void check_engine_main_publications(void)
+{
+    RbmU340eRuntime runtime = {0};
+    FactoryHydraulics gp = {0};
+    FactoryGearState gear = {.b8677 = 0xb5u, .u7164 = 111u, .u7186 = 222u, .u7184 = 333u, .u7202 = 444u};
+    assert(factory_hydraulics_set(&gp, -7164, 2u, gear.u7164));
+    assert(factory_hydraulics_set(&gp, -7186, 2u, gear.u7186));
+    assert(factory_hydraulics_set(&gp, -7184, 2u, gear.u7184));
+    assert(factory_hydraulics_set(&gp, -7202, 2u, gear.u7202));
+    assert(rbm_u340e_runtime_init(&runtime, &gear, &gp));
+
+    RbmU340eQualifiedEngineFeed feed = {.fa62 = 9600u, .f9b8 = 137u};
+    RbmU340eMainEngineInputs prepared = {.speed_9306 = 9u, .coolant_9006 = 12u};
+    const RbmU340eRuntime before = runtime;
+    assert(!rbm_u340e_runtime_prepare_engine(&runtime, &feed, &prepared));
+    assert(memcmp(&runtime, &before, sizeof runtime) == 0);
+    assert(prepared.speed_9306 == 9u && prepared.coolant_9006 == 12u);
+    feed.coherent = 1u;
+
+    assert(rbm_u340e_runtime_prepare_engine(&runtime, &feed, &prepared));
+    assert(prepared.speed_9306 == 1536u && prepared.coolant_9006 == 139u);
+    assert(rbm_u340e_runtime_snapshot_gears(&runtime, &gear));
+    assert(gear.b8677 == 0xa5u && gear.u7164 == 111u && gear.u7186 == 222u);
+    assert(rbm_u340e_runtime_main_coolant(&runtime, &prepared));
+    assert(gp_value(&runtime.gp, -7164, 2u) == 32480u);
+    assert(gp_value(&runtime.gp, -7186, 2u) == 222u);
+    assert(rbm_u340e_runtime_main_engine_speed(&runtime, &prepared));
+    assert(gp_value(&runtime.gp, -7164, 2u) == 32480u && gp_value(&runtime.gp, -7186, 2u) == 3072u);
+    assert(gp_value(&runtime.gp, -7184, 2u) == 333u && gp_value(&runtime.gp, -7202, 2u) == 444u);
+
+    feed.fd10 = 0x1000u;
+    feed.e026 = 2u;
+    assert(rbm_u340e_runtime_prepare_engine(&runtime, &feed, &prepared));
+    assert(prepared.speed_9306 == 0u && prepared.coolant_9006 == 139u);
+    assert(rbm_u340e_runtime_main_coolant(&runtime, &prepared));
+    assert(rbm_u340e_runtime_main_engine_speed(&runtime, &prepared));
+    assert(rbm_u340e_runtime_snapshot_gears(&runtime, &gear));
+    assert(gear.b8677 == 0xb5u && gear.u7164 == 30720u && gear.u7186 == 0u);
+
+    feed.fd10 = 0u;
+    feed.e026 = 0u;
+    feed.f9b8 = UINT8_MAX;
+    feed.fa62 = UINT16_MAX; /* Exercise the arithmetic domain of qualified FA62. */
+    assert(rbm_u340e_runtime_prepare_engine(&runtime, &feed, &prepared));
+    assert(rbm_u340e_runtime_main_coolant(&runtime, &prepared));
+    assert(rbm_u340e_runtime_main_engine_speed(&runtime, &prepared));
+    assert(gp_value(&runtime.gp, -7164, 2u) == 30720u && gp_value(&runtime.gp, -7186, 2u) == 20970u);
+    feed.f9b8 = 9u;
+    assert(rbm_u340e_runtime_prepare_engine(&runtime, &feed, &prepared));
+    assert(prepared.coolant_9006 == 0xffc0u);
+    assert(rbm_u340e_runtime_main_coolant(&runtime, &prepared));
+    assert(gp_value(&runtime.gp, -7164, 2u) == 0u);
+}
+
 static RbmU340eRelease publish_tick(RbmU340eScheduler *schedule)
 {
     assert(rbm_u340e_schedule_timer_irq(schedule) == RBM_U340E_IRQ_PRODUCER);
@@ -306,11 +360,13 @@ void rbm_test_runtime(void)
     check_compact_storage();
     check_workspace_overlap();
     check_live_stages();
+    check_engine_main_publications();
     check_schedule_nominal();
     check_fast_schedule();
     check_secondary_and_producer_overrun();
 #ifndef RBM_TEST_QUIET
     puts("Toyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.");
+    puts("Toyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.");
     puts("Toyota scheduler: event release, FAST phase latch, busy drop and rollover passed.");
 #endif
 }

@@ -264,3 +264,81 @@ int rbm_u340e_runtime_gears_outputs(RbmU340eRuntime *runtime, FactoryGearState *
     *writes = proposal;
     return 1;
 }
+
+enum {
+    TOYOTA_COOLANT_FALLBACK = 0x10,
+    TA2005_COOLANT_FALLBACK = 0x1000,
+    TA2005_ENGINE_SPEED_FAILED = 0x02,
+};
+
+static uint8_t *coolant_source_flags(RbmU340eRuntime *runtime)
+{
+    const size_t member = offsetof(FactoryGearState, b8677);
+    uint8_t *packed = runtime->gear_private;
+    for (size_t i = 0; i < sizeof private_spans / sizeof private_spans[0]; ++i) {
+        const PrivateSpan *span = &private_spans[i];
+        if (member >= span->offset && member - span->offset < span->width) {
+            return packed + (member - span->offset);
+        }
+        packed += span->width;
+    }
+    return NULL;
+}
+
+int rbm_u340e_runtime_prepare_engine(RbmU340eRuntime *runtime,
+                                    const RbmU340eQualifiedEngineFeed *qualified,
+                                    RbmU340eMainEngineInputs *prepared)
+{
+    if (!runtime || runtime->initialized != 1u || !qualified || qualified->coherent != 1u || !prepared ||
+        overlaps(runtime, sizeof *runtime, prepared, sizeof *prepared)) {
+        return 0;
+    }
+    uint8_t *flags = coolant_source_flags(runtime);
+    if (!flags) {
+        return 0;
+    }
+
+    /* TA2005_QUALIFIED_ENGINE_FEED_RU at upstream 08c01a01. Keep the input
+     * words separate so each MAIN consumer still owns its publication. */
+    const unsigned coolant = qualified->f9b8;
+    const unsigned above_minus_40 = coolant >= 10u ? coolant - 10u : 0u;
+    const RbmU340eMainEngineInputs result = {
+        .speed_9306 = qualified->e026 & TA2005_ENGINE_SPEED_FAILED ? 0u :
+            (uint16_t)(((uint32_t)qualified->fa62 * 4u) / 25u),
+        .coolant_9006 = (uint16_t)(above_minus_40 * 8u / 5u - 64u),
+    };
+    uint8_t updated = *flags & (uint8_t)~TOYOTA_COOLANT_FALLBACK;
+    if ((qualified->fd10 & TA2005_COOLANT_FALLBACK) || coolant == UINT8_MAX) {
+        updated |= TOYOTA_COOLANT_FALLBACK;
+    }
+    *prepared = result;
+    *flags = updated;
+    return 1;
+}
+
+int rbm_u340e_runtime_main_coolant(RbmU340eRuntime *runtime,
+                                 const RbmU340eMainEngineInputs *prepared)
+{
+    if (!runtime || runtime->initialized != 1u || !prepared) {
+        return 0;
+    }
+    const uint8_t *flags = coolant_source_flags(runtime);
+    if (!flags) {
+        return 0;
+    }
+    /* 055336 uses a truncated intermediate halfword before scaling. */
+    const uint16_t intermediate = (uint16_t)(((uint32_t)prepared->coolant_9006 + 64u) << 7);
+    const uint16_t coolant = *flags & TOYOTA_COOLANT_FALLBACK ? 30720u :
+        (uint16_t)(((uint32_t)intermediate * 40960u) >> 15);
+    return factory_hydraulics_set(&runtime->gp, -7164, 2u, coolant);
+}
+
+int rbm_u340e_runtime_main_engine_speed(RbmU340eRuntime *runtime,
+                                      const RbmU340eMainEngineInputs *prepared)
+{
+    if (!runtime || runtime->initialized != 1u || !prepared) {
+        return 0;
+    }
+    const uint16_t speed = (uint16_t)((uint32_t)prepared->speed_9306 << 1);
+    return factory_hydraulics_set(&runtime->gp, -7186, 2u, speed);
+}

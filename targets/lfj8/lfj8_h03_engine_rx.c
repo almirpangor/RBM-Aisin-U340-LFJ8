@@ -34,13 +34,15 @@ static void accept_frame(Lfj8H03EngineRx *rx, Lfj8CanRxResult result, const Lfj8
     if (result == LFJ8_CAN_RX_IDLE || result == LFJ8_CAN_RX_RETRY) {
         return;
     }
-    const uint16_t age = (uint16_t)(rx->last_can_tick - frame->timestamp);
-    if (result != LFJ8_CAN_RX_RECEIVED || frame->id != expected_id || age >= rx->max_age_ticks) {
-        rx->inputs.received &= (uint8_t)~signal;
-        return;
+    if (result == LFJ8_CAN_RX_RECEIVED && frame->id == expected_id) {
+        const uint16_t age = (uint16_t)(rx->last_can_tick - frame->timestamp);
+        if (age < rx->max_age_ticks) {
+            const uint32_t captured_at = rx->time_ticks - age;
+            ta2005_chery_inputs_receive(&rx->inputs, frame->id, 8u, frame->payload, &captured_at);
+            return;
+        }
     }
-    const uint32_t captured_at = rx->time_ticks - age;
-    ta2005_chery_inputs_receive(&rx->inputs, frame->id, 8u, frame->payload, &captured_at);
+    rx->inputs.received &= (uint8_t)~signal;
 }
 
 static int unavailable(Lfj8CanRxResult result)

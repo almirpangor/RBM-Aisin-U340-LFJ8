@@ -30,4 +30,4 @@ python -B targets/lfj8/check_h03_flash_residency.py --base $base --gcc $m32r
 python -B targets/lfj8/check_h03_strategy_retention.py --base $base --gcc $m32r
 ```
 
-[Проверка фаз H03](../targets/lfj8/check_h03_flash_residency.py) · [Проверка гистерезиса](../targets/lfj8/check_h03_strategy_retention.py)
+[Проверка фаз H03](../targets/lfj8/check_h03_flash_residency.py) · [Проверка гистерезиса](../targets/lfj8/check_h03_strategy_retention.py) · [Границы изоляции служебного режима](lfj8-h03-service-isolation.md)
