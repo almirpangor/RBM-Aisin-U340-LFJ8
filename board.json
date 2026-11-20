@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 133,
+  "sequence": 134,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -46,12 +46,12 @@
         "verification/project-audit/dtc02-foreground.md",
         "verification/project-audit/dtc02-preclear-capture.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:21:49+00:00",
-      "note": "Добавлен foreground-адаптер очереди к настоящему CAN13. Отдельный прогон ПК и M32R прошёл. Повторяю с регрессией отзыва разрешения и полными проверками на main 4fd3f71.",
-      "result": "a4f93e544a290886df65d8245ea6a91b0c7a4d4d"
+      "updated_at": "2026-11-20T16:26:43+00:00",
+      "note": "Связаны BasicCAN RX, очередь и CAN13 через отдельный foreground-адаптер. 4 сценария на ПК и M32R, ПК 35 шагов и отдельная сверка S03, M32R link 17 и OEM RX 15 — PASS на main 952658b. Доказательства verification/project-audit/dtc02-foreground.md. Интегратору переданы также изменения захвата a4f93e5. Нативные точки вызова, полный стек и стенд открыты.",
+      "result": "689f4e9090b723cdbd49937303dfa5631b93c6ea"
     },
     "CAN-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -1517,9 +1517,17 @@
       "action": "complete",
       "claim_id": "39e9816a3049466a955d4f49cf740da4",
       "at": "2026-11-20T16:26:30+00:00"
+    },
+    {
+      "operation_id": "c71475b6d9e04a43bda12e3e0a04e8e0",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:26:43+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:26:30+00:00",
+  "updated_at": "2026-11-20T16:26:43+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
