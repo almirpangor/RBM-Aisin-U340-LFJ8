@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:06:58+00:00**. Изменение № **59**.
+Обновлено UTC: **2026-11-20T16:07:21+00:00**. Изменение № **60**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -28,7 +28,7 @@
 | H03-01 — Выбранная основа 9E1C и карта подключения | Свободна | — | — | — | — |
 | H03-02 — S51, S83 и температура ATF | Выполняется | Codex — привязка ATF H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-02-atf-01a1f9a2 | 2026-11-20T16:06:43+00:00 | Подключаю ASM к реальному адаптеру ATF и H03 MMIO. Проверяю атомарный снимок и недоступность общей шкалы времени. / commit c2d2c9d2109476c01229f8830fdff21a57362e39 |
 | H03-03 — Единое расписание и запуск приложения H03 | Выполняется | Codex — foreground H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/h03-03-foreground-01a1f99f | 2026-11-20T16:06:05+00:00 | Проверяю ограничение частоты watchdog по меткам времени в цикле ожидания без новой постоянной RAM. / commit 40d391b8eeb33e9e04f13cff5b59908527f6b144 |
-| H03-04 — Память, стек и сервисные пути | На проверке | Основной чат — память целевого H03 \[codex-h03-04-01a1f76d-20261120\] | codex/h03-04-storage-01a1f76d | 2026-11-20T16:05:43+00:00 | В main опубликована карта 2324 байта, дефицит прежней схемы 544 байта. 65 Python-тестов, 6 OEM-прогонов расширенного окна и M32R PASS. Закрыта эта порция расчёта; RAM/Flash-владение, полный стек и запуск открыты. / commit a52ab8ce955959ed109d53e6c554beb68f814c2e |
+| H03-04 — Память, стек и сервисные пути | Работа завершена | Основной чат — память целевого H03 \[codex-h03-04-01a1f76d-20261120\] | codex/h03-04-storage-01a1f76d | 2026-11-20T16:07:21+00:00 | Принята в main порция H03-04: актуальные типы, карта и проверки памяти. GitHub Actions 44769703890 PASS. Карточка ТЗ остаётся open до сервисной изоляции, запуска и полного стека. Общие страницы освобождены для других чатов. / commit a52ab8ce955959ed109d53e6c554beb68f814c2e |
 | H03-05 — SLT, силовые выходы и реакция на отказ | Свободна | — | — | — | — |
 | IO-01 — Два дополнительных реле | Отложена владельцем | — | — | — | — |
 | VSS-01 — Точный расчёт VSS и скорость по CAN | Свободна | — | — | — | — |
@@ -124,24 +124,6 @@
 - verification/e4m3-can-9e1c/h03-phase-wait.json
 - verification/project-audit/2026-11-20-h03-phase-wait.json
 
-### H03-04
-
-Чат: Основной чат — память целевого H03. Claim ID: 83b9428ce0f2463f92341fea12156d66.
-
-- README.md
-- data/project-tasks.json
-- docs/lfj8-h03-ram-audit.md
-- docs/project-map.md
-- targets/lfj8/check_h03_ram_candidate.py
-- targets/lfj8/check_h03_storage.py
-- targets/lfj8/h03_storage_layout.c
-- targets/lfj8/lfj8_h03_storage.h
-- tests/test_h03_storage.py
-- verification/e4m3-can-9e1c/h03-storage.json
-- verification/project-audit/2026-11-20-h03-storage.json
-- verification/project-audit/h03-phase-integration-link.json
-- verification/project-audit/h03-storage-tests.txt
-
 ### MODE-02
 
 Чат: Codex — входы Tiptronic H03. Claim ID: 2b87aa66de244cf9b30a828391ad9001.
@@ -177,6 +159,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:07:21+00:00 | H03-04 | complete | codex-h03-04-01a1f76d-20261120 |
 | 2026-11-20T16:06:58+00:00 | TOY-02 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:06:43+00:00 | H03-02 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:06:28+00:00 | MODE-02 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
@@ -206,4 +189,3 @@
 | 2026-11-20T15:59:02+00:00 | DTC-03 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T15:57:52+00:00 | DTC-03 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T15:57:48+00:00 | CAN-05 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
-| 2026-11-20T15:57:32+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
