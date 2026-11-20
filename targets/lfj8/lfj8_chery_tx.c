@@ -1,5 +1,20 @@
 #include "lfj8_chery_tx.h"
 
+static Lfj8CaptureSnapshot foreground_vss(const Lfj8CapturePair *capture, uint32_t now_us,
+                                         const Lfj8VehicleCalibration *cal, uint8_t stopped)
+{
+    const uint32_t timeout = cal->vss_timeout_ticks;
+    const uint32_t age = now_us - capture->now_tml0;
+    Lfj8CaptureSnapshot sample = capture->vss;
+    if (cal->tick_hz != UINT32_C(1000000) || timeout >= UINT32_C(0x80000000) || age >= timeout ||
+        (sample.state == LFJ8_VSS_VALID &&
+         capture->now_tml0 - capture->vss_at_tml0 >= timeout - age) ||
+        (sample.state == LFJ8_VSS_STOPPED && stopped != 1u)) {
+        sample.state = LFJ8_VSS_UNAVAILABLE;
+    }
+    return sample;
+}
+
 void lfj8_chery_tx_init(Lfj8CheryTx *tx, uint32_t now_us, uint32_t period_1ae_us,
                        uint32_t period_300_us)
 {
@@ -39,8 +54,9 @@ Lfj8CanResult lfj8_chery_tx_poll_status(Lfj8CheryTx *tx, const Lfj8RegisterIo *i
     }
 
     if (selected == LFJ8_DUE_1AE) {
-        const Lfj8CaptureSnapshot sample =
-            lfj8_raw_vss_snapshot_with_standstill(vss, io, cal->vss_timeout_ticks, inputs->stopped);
+        const Lfj8CaptureSnapshot sample = inputs->s51_capture
+            ? foreground_vss(inputs->s51_capture, now_us, cal, inputs->stopped)
+            : lfj8_raw_vss_snapshot_with_standstill(vss, io, cal->vss_timeout_ticks, inputs->stopped);
         const uint16_t raw = lfj8_vss_raw_1ae(sample.interval_ticks, (uint8_t)sample.pulse_window,
                                               cal->tick_hz, cal->wheel_um, cal->wheel_num,
                                               cal->wheel_den, sample.state);

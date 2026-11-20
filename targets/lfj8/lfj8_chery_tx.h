@@ -27,13 +27,18 @@ typedef struct {
     int16_t atf_c;
     uint8_t atf_valid;
     uint8_t stopped; /* Exactly 1 for independently confirmed standstill at this poll. */
+    /* Optional current H03 foreground capture in the same 1 MHz epoch as
+     * now_us. Takes precedence over raw VSS, including on timeout. The
+     * caller must discard the capture on an epoch change. */
+    const Lfj8CapturePair *s51_capture;
 } Lfj8CheryTxInputs;
 
 void lfj8_chery_tx_init(Lfj8CheryTx *tx, uint32_t now_us, uint32_t period_1ae_us,
                        uint32_t period_300_us);
 
 /* Reports the driver's result and sets submitted to the admitted due-mask bit
- * or zero. Returns LFJ8_CAN_READY when no frame is due. */
+ * or zero. Returns LFJ8_CAN_READY when no frame is due. Raw vss may be NULL
+ * when inputs supplies an S51 capture. */
 Lfj8CanResult lfj8_chery_tx_poll_status(Lfj8CheryTx *tx, const Lfj8RegisterIo *io,
                                        uint32_t now_us, uint8_t slot13_owned,
                                        volatile Lfj8RawVss *vss, const Lfj8VehicleCalibration *cal,

@@ -299,11 +299,39 @@ static void test_torque_fault_and_generation_wrap(void)
     assert(h03_can_owner.grant && f.sends == 1u && !f.broker.torque.request.have_status);
 }
 
+static void test_foreground_s51_without_raw_tracker(void)
+{
+    Fixture f;
+    init(&f, 0u);
+    lfj8_chery_tx_init(&f.broker.status, 0u, 1000u, 0u);
+    const Lfj8VehicleCalibration vehicle = {1000000u, 500000u, 2000000u, 1u, 1u};
+    const Lfj8CapturePair capture = {
+        .vss = {.interval_ticks = 26400u, .pulse_window = 1u, .state = LFJ8_VSS_VALID},
+        .now_tml0 = 980u, .vss_at_tml0 = 970u,
+    };
+    const Lfj8CheryTxInputs status = {.s51_capture = &capture};
+    Lfj8H03Can13Input input = {.dtc = &f.dtc, .vehicle = &vehicle, .status = &status};
+    uint16_t stamp = 0u;
+
+    setup();
+    assert(lfj8_h03_can_owner_poll(&h03_can_owner, &f.broker, &f.queue,
+                                    &f.io, &input, &stamp, true).available);
+    f.now_us = input.now_us = 1000u;
+    stamp = can_tick(&f);
+    const Lfj8H03Can13Result result = lfj8_h03_can_owner_poll(
+        &h03_can_owner, &f.broker, &f.queue, &f.io, &input, &stamp, true);
+    assert(result.available && result.status_submitted == LFJ8_DUE_1AE);
+    assert(f.sends == 1u && ((uint16_t)f.slots[0][0] << 6 | f.slots[0][1]) == LFJ8_CAN_1AE);
+    assert(f.slots[0][12] == 0x17u && f.slots[0][13] == 0x70u);
+}
+
 int main(void)
 {
     test_reset_and_irq_orders();
     test_torque_fault_and_generation_wrap();
+    test_foreground_s51_without_raw_tracker();
     printf("H03 CAN owner: setup, BasicCAN drain, both IRQ orders, TX13 and BusOff PASS\n");
+    puts("H03 CAN owner: foreground S51 capture to 0x1AE without raw tracker PASS");
     printf("CAN owner state: %u bytes\n", (unsigned)sizeof(Lfj8H03CanOwner));
     return 0;
 }
