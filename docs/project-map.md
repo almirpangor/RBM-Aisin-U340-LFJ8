@@ -77,19 +77,19 @@
 
 **Завершено в указанном объёме** · ТЗ §1
 
-**Сделано.** ТЗ, журнал решений, исходники и средства проверок хранятся в одном проекте. Работа продолжается от 54b51d5.
+**Сделано.** ТЗ, журнал решений, исходники и результаты опубликованы в одном GitHub-проекте. Добавлен общий учёт исполнителей и файлов в task-board, проверены одновременные запросы двух чатов.
 
 **Осталось.** Окончательный комплект ведётся отдельно в REL-01.
 
 **Критерий результата.** Файлы доступны, источник каждой сборки прослеживается.
 
-**Код.** [tools/package_workset.py](../tools/package_workset.py)
+**Код.** [tools/package_workset.py](../tools/package_workset.py) · [tools/task_coordination.py](../tools/task_coordination.py) · [tests/test_task_coordination.py](../tests/test_task_coordination.py)
 
 **Что настраивать.** Публикация в GitHub возобновлена по указанию владельца 20.11.2026. Учёт чатов отделён от готовности прошивки.
 
-**Проверки.** [SOURCES](#check-sources)
+**Проверки.** [SOURCES](#check-sources) · [COORD](#check-coord)
 
-**Разбор и основания.** [decisions.md](../docs/decisions.md)
+**Разбор и основания.** [decisions.md](../docs/decisions.md) · [multi-chat.md](../docs/multi-chat.md)
 
 <a id="toy-01"></a>
 ## TOY-01 — Перенос ядра и единое состояние Toyota
@@ -839,3 +839,13 @@ python -B targets/lfj8/verify_h03_torque.py --repo $r4 --image verification/e4m3
 См. команды и границы проверок в docs/e4m3-audit.md. В этой сверке заново проверены S04, производный образ и обмен, весь исторический комплект R4 повторно не запускался.
 
 **Последний сохранённый результат.** [e4m3-diff.json](../data/e4m3-diff.json)
+
+<a id="check-coord"></a>
+### COORD — Общий учёт нескольких чатов и переносимость аудита
+
+```powershell
+python -B -m unittest discover -s tests -p test_task_coordination.py -v
+python -B -m unittest discover -s tests -p test_project_status.py -v
+```
+
+**Последний сохранённый результат.** [collaboration-checks.json](../verification/project-audit/collaboration-checks.json)

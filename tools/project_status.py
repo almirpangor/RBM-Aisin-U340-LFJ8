@@ -18,19 +18,22 @@ START = "<!-- PROJECT-STATUS:START -->"
 END = "<!-- PROJECT-STATUS:END -->"
 
 
-def digest(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+def digest(path, normalize=False):
+    content = path.read_bytes()
+    if normalize:
+        content = content.replace(b"\r\n", b"\n")
+    return hashlib.sha256(content).hexdigest()
 
 
-def source_files():
+def source_files(normalize=False):
     """Include production code, fixtures and all local verification tools."""
     result = {}
     for directory in ("controller", "targets", "diagnostics", "model", "tests", "tools"):
         for path in sorted((ROOT / directory).rglob("*")):
             if path.is_file() and path.suffix in (".c", ".h", ".S", ".py"):
-                result[path.relative_to(ROOT).as_posix()] = digest(path)
+                result[path.relative_to(ROOT).as_posix()] = digest(path, normalize)
     path = ROOT / "controller/vendor/toyota/manifest.json"
-    result[path.relative_to(ROOT).as_posix()] = digest(path)
+    result[path.relative_to(ROOT).as_posix()] = digest(path, normalize)
     return dict(sorted(result.items()))
 
 
@@ -271,13 +274,14 @@ def expected_readme(data):
 def audit_errors(data):
     audit = json.loads(local_file(data["audit"]).read_text(encoding="utf-8"))
     errors = []
-    current = source_files()
+    normalize = audit.get("text_hash_format") == "lf"
+    current = source_files(normalize)
     recorded = audit["source_sha256"]
     for name in sorted(set(recorded) | set(current)):
         if recorded.get(name) != current.get(name):
             errors.append(f"Code needs review/retest: {name}")
     for name, expected in audit["evidence_sha256"].items():
-        if digest(local_file(name)) != expected:
+        if digest(local_file(name), normalize) != expected:
             errors.append(f"Evidence changed since the audit: {name}")
     return errors
 

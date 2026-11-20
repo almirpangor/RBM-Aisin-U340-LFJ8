@@ -9,7 +9,7 @@
     "engine": "GW4G15 / Bosch ME7.9.71 E4M3"
   },
   "release_ready": false,
-  "audit": "verification/project-audit/2026-11-20.json",
+  "audit": "verification/project-audit/2026-11-20-collaboration.json",
   "status_labels": {
     "closed": "Завершено в указанном объёме",
     "model": "Проверено программно",
@@ -188,6 +188,13 @@
       "reports": [
         "data/e4m3-diff.json"
       ]
+    },
+    "COORD": {
+      "title": "Общий учёт нескольких чатов и переносимость аудита",
+      "command": "python -B -m unittest discover -s tests -p test_task_coordination.py -v\npython -B -m unittest discover -s tests -p test_project_status.py -v",
+      "reports": [
+        "verification/project-audit/collaboration-checks.json"
+      ]
     }
   },
   "modules": [
@@ -248,18 +255,22 @@
       ],
       "title": "Основа проекта и локальная работа",
       "status": "closed",
-      "current": "ТЗ, журнал решений, исходники и средства проверок хранятся в одном проекте. Работа продолжается от 54b51d5.",
+      "current": "ТЗ, журнал решений, исходники и результаты опубликованы в одном GitHub-проекте. Добавлен общий учёт исполнителей и файлов в task-board, проверены одновременные запросы двух чатов.",
       "remaining": "Окончательный комплект ведётся отдельно в REL-01.",
       "acceptance": "Файлы доступны, источник каждой сборки прослеживается.",
       "code": [
-        "tools/package_workset.py"
+        "tools/package_workset.py",
+        "tools/task_coordination.py",
+        "tests/test_task_coordination.py"
       ],
       "settings": "Публикация в GitHub возобновлена по указанию владельца 20.11.2026. Учёт чатов отделён от готовности прошивки.",
       "checks": [
-        "SOURCES"
+        "SOURCES",
+        "COORD"
       ],
       "docs": [
-        "docs/decisions.md"
+        "docs/decisions.md",
+        "docs/multi-chat.md"
       ],
       "depends": []
     },
