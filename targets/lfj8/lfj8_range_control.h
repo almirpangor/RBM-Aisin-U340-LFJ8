@@ -91,7 +91,9 @@ void lfj8_range_control_disarm_buttons(Lfj8RangeControl *control, Lfj8ButtonFilt
 
 /* Use after initializing both states, in place of lfj8_range_control_step.
  * Pass each coherent capture once, NULL when idle, and valid=0 on known loss
- * or overrun. Unmapped channels must remain released. All times use the ADC
+ * or overrun. An explicit fault or malformed reading disarms the buttons
+ * even without a usable capture time. Only fresh, ordered captures advance
+ * the timestamp. Unmapped channels must remain released. All times use the ADC
  * clock. Reinitialize both states after a clock reset. This path supplies
  * selector, stable_buttons and buttons_valid to the existing controller. */
 int lfj8_range_control_step_with_buttons(Lfj8RangeControl *control, Lfj8SelectorAdcReading selector,
