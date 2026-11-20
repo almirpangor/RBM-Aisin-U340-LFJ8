@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 455,
+  "sequence": 456,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -119,17 +119,14 @@
       "branch": "codex/h03-04-service-cancel-01a1f9c7",
       "files": [
         "targets/lfj8/check_h03_service_guard.py",
-        "targets/lfj8/h03_service_guard_fixture.c",
         "targets/lfj8/h03_service_guard_hooks.S",
-        "targets/lfj8/lfj8_h03_service_guard.c",
-        "targets/lfj8/lfj8_h03_service_guard.h",
         "verification/project-audit/h03-04-service-cancel.md"
       ],
       "stage": "in_progress",
       "claim_id": "4f246c72de0f49dc90a87bed827a9df1",
       "claimed_at": "2026-11-20T18:58:41+00:00",
-      "updated_at": "2026-11-20T18:58:41+00:00",
-      "note": "Выполняю независимый остаток карточки: явная отмена удержанного переноса по проверенному жизненному циклу монитора. Сверяю штатную очистку и исключаю положительный ответ без выполнения.",
+      "updated_at": "2026-11-20T19:03:58+00:00",
+      "note": "Отмена подключена к принятому закрытию 0x002E9C и использует неизменяемую политику целого переноса. Проверяю 56 сценариев закрытия и 240 исходных регрессий M32R.",
       "result": null
     },
     "DTC-04": {
@@ -4203,9 +4200,17 @@
       "action": "review",
       "claim_id": "59327b6eafdb4bdcac7a920397975731",
       "at": "2026-11-20T19:03:09+00:00"
+    },
+    {
+      "operation_id": "c5b2e163f3c146f599349ec2ec0fb1ab",
+      "task": "H03-04",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "heartbeat",
+      "claim_id": "4f246c72de0f49dc90a87bed827a9df1",
+      "at": "2026-11-20T19:03:58+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:03:09+00:00",
+  "updated_at": "2026-11-20T19:03:58+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
