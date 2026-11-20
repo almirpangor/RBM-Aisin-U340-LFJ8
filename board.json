@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 214,
+  "sequence": 215,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -414,12 +414,12 @@
         "targets/lfj8/lfj8_h03_takeover.h",
         "targets/lfj8/test_lfj8_h03_takeover.c"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "claimed_at": "2026-11-20T16:20:38+00:00",
-      "updated_at": "2026-11-20T16:44:55+00:00",
-      "note": "Добавляю проверку целевого ELF против страниц Virtual Flash, выбираемых штатным H03. Тестирую все страницы только в симуляторе.",
-      "result": null
+      "updated_at": "2026-11-20T16:46:58+00:00",
+      "note": "Добавлен ELF-чек размещения: 128 прямых прогонов штатного селектора M32R, реальный ELF H03-05 с 020000/07C118 отклонён, 46 проверок H03-05 PASS. Внешний сервисный допуск и физическое наложение Flash открыты.",
+      "result": "d8e5cd86b369f2d73c9528895811afbc4d3c22e3"
     },
     "MODE-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -2260,9 +2260,17 @@
       "action": "claim",
       "claim_id": "1377d30e649940088e8dccd1a6fae0cf",
       "at": "2026-11-20T16:46:49+00:00"
+    },
+    {
+      "operation_id": "181e9c97e0104827a3b2ae67424c5734",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
+      "at": "2026-11-20T16:46:58+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:46:49+00:00",
+  "updated_at": "2026-11-20T16:46:58+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
