@@ -5,6 +5,7 @@ from hashlib import sha256
 from io import BytesIO
 import json
 from pathlib import Path, PurePosixPath
+import re
 import subprocess
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
@@ -37,17 +38,32 @@ def write_file(archive: ZipFile, name: str, content: bytes) -> dict:
     return {"path": name, "bytes": len(content), "sha256": sha256(content).hexdigest()}
 
 
+def offline_report_hashes(report: object) -> set[str]:
+    hashes = set()
+    if not isinstance(report, dict):
+        return hashes
+    for entry in (report, report.get("bosch_candidate_frame_probe")):
+        if not isinstance(entry, dict):
+            continue
+        status = entry.get("status")
+        if not isinstance(status, str) or "OFFLINE_ONLY" not in status.upper():
+            continue
+        # These fields identify a firmware image, unlike source or base digests.
+        for field in ("sha256", "bosch_sha256", "image_sha256"):
+            digest = entry.get(field)
+            if isinstance(digest, str) and re.fullmatch(r"[0-9a-fA-F]{64}", digest):
+                hashes.add(digest.lower())
+    return hashes
+
+
 def offline_firmware_hashes(source: ZipFile) -> set[str]:
     hashes = set()
     for name in source.namelist():
-        path = PurePosixPath(name)
-        if path.suffix.lower() == ".bin" and "OFFLINE_ONLY" in name.upper():
+        suffix = PurePosixPath(name).suffix.lower()
+        if suffix == ".bin" and "OFFLINE_ONLY" in name.upper():
             hashes.add(sha256(source.read(name)).hexdigest())
-        elif name.startswith("verification/") and path.name == "manifest.json":
-            manifest = json.loads(source.read(name))
-            status = manifest.get("status") if isinstance(manifest, dict) else None
-            if isinstance(status, str) and "OFFLINE_ONLY" in status.upper():
-                hashes.add(manifest["sha256"].lower())
+        elif name.startswith("verification/") and suffix == ".json":
+            hashes.update(offline_report_hashes(json.loads(source.read(name))))
     return hashes
 
 
@@ -66,7 +82,7 @@ def verify_firmware_pair(produced: list[tuple[dict, bytes]], offline_hashes: set
         if any("OFFLINE_ONLY" in label.upper() for label in labels) or content.startswith(b"\x7fELF"):
             raise ValueError(f"Проверочный образ или ELF не подходит для комплекта BIN: {role}")
         if item["sha256"] in offline_hashes:
-            raise ValueError(f"Образ {role} совпадает по SHA-256 с OFFLINE_ONLY исходного коммита")
+            raise ValueError(f"Образ {role} совпадает по SHA-256 с проверочным OFFLINE_ONLY")
         if (item.get("build_verified") is not True or item.get("model_verified") is not True
                 or type(item.get("hardware_verified")) is not bool):
             raise ValueError(f"Требуются подтверждения сборки и модели и отдельный статус стенда: {role}")
@@ -79,16 +95,23 @@ def create_workset(record_path: Path, output: Path, *, firmware_pair: bool = Fal
         raise ValueError("В записи сборки требуется полный SHA коммита")
     source_archive = git("archive", "--format=zip", commit)
     produced = []
+    build_manifests = set()
     for item in record["artifacts"]:
         file = record_path.parent / item["file"]
         content = file.read_bytes()
         if sha256(content).hexdigest() != item["sha256"]:
             raise ValueError(f"Файл сборки отличается от проверенного: {file}")
         produced.append((item, content))
+        if firmware_pair and item["role"] in FIRMWARE_SIZES:
+            build_manifests.add(file.with_name("manifest.json"))
     buffer = BytesIO()
     with ZipFile(BytesIO(source_archive)) as source, ZipFile(buffer, "w") as archive:
         if firmware_pair:
-            verify_firmware_pair(produced, offline_firmware_hashes(source))
+            offline_hashes = offline_firmware_hashes(source)
+            for build_manifest in sorted(build_manifests):
+                if build_manifest.is_file():
+                    offline_hashes.update(offline_report_hashes(json.loads(build_manifest.read_bytes())))
+            verify_firmware_pair(produced, offline_hashes)
         manifest = {key: value for key, value in record.items() if key != "artifacts"}
         manifest["source_commit"] = commit
         manifest["files"] = []

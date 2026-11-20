@@ -64,6 +64,47 @@ class FirmwarePairTests(unittest.TestCase):
         self.assertFalse(output.exists())
         self.package(self.root / "evidence.zip", firmware_pair=False)
 
+    def test_offline_reports_identify_unarchived_images(self):
+        digest = self.artifacts[1]["sha256"]
+        reports = (
+            {"status": "PASS_OFFLINE_ONLY", "sha256": digest},
+            {"status": "PASS_OFFLINE_ONLY", "bosch_sha256": digest.upper()},
+            {"status": "PASS_OFFLINE_ONLY", "image_sha256": digest},
+            {"bosch_candidate_frame_probe": {"status": "OFFLINE_ONLY", "sha256": digest}},
+        )
+        for index, report in enumerate(reports):
+            with self.subTest(report=report):
+                self.source_files["verification/st10/trace.json"] = json.dumps(report).encode()
+                output = self.root / f"pair-{index}.zip"
+                with self.assertRaisesRegex(ValueError, "OFFLINE_ONLY"):
+                    self.package(output)
+                self.assertFalse(output.exists())
+
+    def test_local_offline_manifest_identifies_renamed_image(self):
+        image = self.artifacts[1]
+        build_dir = self.root / "bosch"
+        build_dir.mkdir()
+        (self.root / image["file"]).rename(build_dir / "candidate.bin")
+        image["file"] = "bosch/candidate.bin"
+        (build_dir / "manifest.json").write_text(json.dumps({
+            "status": "OFFLINE_ONLY_NOT_HARDWARE_TESTED",
+            "sha256": image["sha256"],
+        }), encoding="utf-8")
+        output = self.root / "pair.zip"
+        with self.assertRaisesRegex(ValueError, "OFFLINE_ONLY"):
+            self.package(output)
+        self.assertFalse(output.exists())
+        self.package(self.root / "evidence.zip", firmware_pair=False)
+
+    def test_offline_report_does_not_mark_base_or_unrelated_hashes(self):
+        self.source_files["verification/st10/trace.json"] = json.dumps({
+            "status": "PASS_OFFLINE_ONLY",
+            "base_sha256": self.artifacts[0]["sha256"],
+            "source_sha256": self.artifacts[1]["sha256"],
+            "bosch_sha256": "a" * 64,
+        }).encode()
+        self.package(self.root / "pair.zip")
+
     def test_distinct_candidate_is_deterministic(self):
         self.source_files["verification/other_OFFLINE_ONLY.bin"] = b"another artifact"
         first = self.root / "first.zip"
