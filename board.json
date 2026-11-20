@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 628,
+  "sequence": 629,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -394,12 +394,12 @@
         "targets/lfj8/lfj8_h03_dtc_native.h",
         "verification/project-audit/dtc01-h03-t6-clock-source.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
       "claimed_at": "2026-11-20T20:30:38+00:00",
-      "updated_at": "2026-11-20T20:37:53+00:00",
-      "note": "Код TML0→T6 работает в нативном foreground. Прошли 9 событий C0, оба переполнения, 6 отказов настройки, потеря часов и повторный старт. Resident BasicCAN 18/3 прошёл. Повторяю проверки ПК и самостоятельный нативный линк.",
-      "result": null,
+      "updated_at": "2026-11-20T20:48:45+00:00",
+      "note": "Включены сданные DTC-01 и DTC-02. Квалифицированный TML0 даёт дробные тики T6 в нативном CAN foreground. 9 фаз C0, два переполнения, 6 отказов настройки, потеря/явный старт, 18 BasicCAN и 3 обхода M32R; ПК 41/129. Период, фазовая база, RAM и подключение в application_binding открыты. Отчёт dtc01-h03-t6-clock-source.md.",
+      "result": "d3c7cd228e7e7e1b3ecac3986fa828d57712a7f8",
       "based_on_reviews": [
         "0580560d4a0e442cb07862988bd40b0f",
         "f6547625e0dd48c180162a7963424191"
@@ -6310,9 +6310,39 @@
           "ef6ec9b39ec54c5fab41e021568c094f"
         ]
       }
+    },
+    {
+      "operation_id": "f837273948dc4fa682f460010ce6ee47",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
+      "at": "2026-11-20T20:48:45+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-01 — источник T6 от TML0",
+        "branch": "codex/dtc01-t6-clock-source-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_dtc_basiccan.py",
+          "targets/lfj8/h03_dtc_rx_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_dtc_native.c",
+          "targets/lfj8/lfj8_h03_dtc_native.h",
+          "verification/project-audit/dtc01-h03-t6-clock-source.md"
+        ],
+        "stage": "review",
+        "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
+        "claimed_at": "2026-11-20T20:30:38+00:00",
+        "updated_at": "2026-11-20T20:48:45+00:00",
+        "note": "Включены сданные DTC-01 и DTC-02. Квалифицированный TML0 даёт дробные тики T6 в нативном CAN foreground. 9 фаз C0, два переполнения, 6 отказов настройки, потеря/явный старт, 18 BasicCAN и 3 обхода M32R; ПК 41/129. Период, фазовая база, RAM и подключение в application_binding открыты. Отчёт dtc01-h03-t6-clock-source.md.",
+        "result": "d3c7cd228e7e7e1b3ecac3986fa828d57712a7f8",
+        "based_on_reviews": [
+          "0580560d4a0e442cb07862988bd40b0f",
+          "f6547625e0dd48c180162a7963424191"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:48:39+00:00",
+  "updated_at": "2026-11-20T20:48:45+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
@@ -7431,6 +7461,30 @@
       ],
       "task": "DTC-02",
       "submitted_at": "2026-11-20T20:44:17+00:00"
+    },
+    "01d2b08f6a1f402898b40a2c6f302cfe": {
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex DTC-01 — источник T6 от TML0",
+      "branch": "codex/dtc01-t6-clock-source-7bd19ea4",
+      "files": [
+        "targets/lfj8/check_h03_dtc_basiccan.py",
+        "targets/lfj8/h03_dtc_rx_hook_fixture.c",
+        "targets/lfj8/lfj8_h03_dtc_native.c",
+        "targets/lfj8/lfj8_h03_dtc_native.h",
+        "verification/project-audit/dtc01-h03-t6-clock-source.md"
+      ],
+      "stage": "review",
+      "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
+      "claimed_at": "2026-11-20T20:30:38+00:00",
+      "updated_at": "2026-11-20T20:48:45+00:00",
+      "note": "Включены сданные DTC-01 и DTC-02. Квалифицированный TML0 даёт дробные тики T6 в нативном CAN foreground. 9 фаз C0, два переполнения, 6 отказов настройки, потеря/явный старт, 18 BasicCAN и 3 обхода M32R; ПК 41/129. Период, фазовая база, RAM и подключение в application_binding открыты. Отчёт dtc01-h03-t6-clock-source.md.",
+      "result": "d3c7cd228e7e7e1b3ecac3986fa828d57712a7f8",
+      "based_on_reviews": [
+        "0580560d4a0e442cb07862988bd40b0f",
+        "f6547625e0dd48c180162a7963424191"
+      ],
+      "task": "DTC-01",
+      "submitted_at": "2026-11-20T20:48:45+00:00"
     }
   }
 }
