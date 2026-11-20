@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 424,
+  "sequence": 425,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -360,12 +360,12 @@
         "targets/lfj8/test_lfj8_h03_cycle.c",
         "verification/project-audit/toy06-slu-stage-boundaries.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "f9f139056ba24b4a88ede7ceaeb63df1",
       "claimed_at": "2026-11-20T18:42:41+00:00",
-      "updated_at": "2026-11-20T18:46:22+00:00",
-      "note": "05DA44 и 05B6DE подключены вокруг расчёта SLU. R3: 1280 сбросов и 38400 сочетаний диагностики совпали. Цикл ПК подтвердил порядок, пороги, FAST и отказы; повторяю M32R и проверку ELF.",
-      "result": null
+      "updated_at": "2026-11-20T18:48:09+00:00",
+      "note": "Передаю на объединение. 05DA44 очищает входное смещение, 05B6DE ведёт GP−4829.2 с каноническими счётчиками FAST. R3 1280+38400, PC 37/113, M32R 18+17+6, 6 сценариев по адресам PASS. ELF +236 Б, запас prefix 680 Б. Отчёт verification/project-audit/toy06-slu-stage-boundaries.md. Полный снимок и физический SLU открыты.",
+      "result": "021ca3fe3c7c4ee657cb7ebb59a1a4b855c2b6bd"
     },
     "DTC-01": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -3961,9 +3961,17 @@
       "action": "claim",
       "claim_id": "8618b77e068c469baa54217bf3b2f9f2",
       "at": "2026-11-20T18:47:57+00:00"
+    },
+    {
+      "operation_id": "b8d6ac871b0d4a588088f85956d60808",
+      "task": "TOY-06",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "f9f139056ba24b4a88ede7ceaeb63df1",
+      "at": "2026-11-20T18:48:09+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:47:57+00:00",
+  "updated_at": "2026-11-20T18:48:09+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
