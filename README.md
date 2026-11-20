@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T19:28:14+00:00**. Изменение № **486**.
+Обновлено UTC: **2026-11-20T19:28:30+00:00**. Изменение № **487**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -44,7 +44,7 @@
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Свободна для продолжения | Предыдущий: Codex DTC-03 — квалификация P0710 TA2005 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-ta2005-p0710-01a1f9c7 | 2026-11-20T19:25:07+00:00 | Предыдущая порция принята. Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт. / commit 69ccd6c59ad096fd2e1de078955cef8ae6ee1081 |
 | DTC-04 — Хранение DTC после выключения питания | Свободна для продолжения | Предыдущий: Codex — исключение возврата очищенной истории DTC \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-retire-cleared-history-32e6ac79 | 2026-11-20T19:24:07+00:00 | Предыдущая порция принята. Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт. / commit 3f5f8730ab544fc9fb0185138b97b6956e04c377 |
 | REL-01 — Два целевых BIN и воспроизводимый комплект | Свободна для продолжения | Предыдущий: Чат RBM — проверка OFFLINE_ONLY перед упаковкой \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/rel01-offline-report-guard-1120-c7e4 | 2026-11-20T19:23:07+00:00 | Предыдущая порция принята. Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт. / commit 982a46d7af0060426920137e0f130d6215e92d14 |
-| REL-02 — Приёмка новой связки на оборудовании | На проверке | Codex REL-02 H03 application-only isolation \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/rel02-h03-application-isolation-01a1f99f | 2026-11-20T18:31:28+00:00 | PASS 41 exact-H03 CPU probes. Upper-only candidate filters out 602 on both BasicCAN controllers, cancels both pending operations and disables Virtual Flash. OEM CAN setup restores broad masks. Warm reset leaves bank 08 active and a valid marker can still bypass entry. Requires cold access and retention by the CAN owner before a bench image. / commit c8d6d0d7b4852e8cbcf0919ea09d4883e1d608ae |
+| REL-02 — Приёмка новой связки на оборудовании | Свободна для продолжения | Предыдущий: Codex REL-02 H03 application-only isolation \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/rel02-h03-application-isolation-01a1f99f | 2026-11-20T19:28:30+00:00 | Предыдущая порция принята. Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены. / commit c8d6d0d7b4852e8cbcf0919ea09d4883e1d608ae |
 
 ## Что осталось доделать
 
@@ -438,13 +438,13 @@
 </details>
 
 <details>
-<summary>REL-02 — Приёмка новой связки на оборудовании: На проверке</summary>
+<summary>REL-02 — Приёмка новой связки на оборудовании: Свободна для продолжения</summary>
 
 **Сделано.** 41 проба изоляции приложения и остальные программные проверки выполнены. Испытаний новой физической пары нет; завершение программных порций не означает аппаратную приёмку.
 
 **Осталось доделать.** После соответствующего образа проверить входы, CAN, момент, переключения, SLT/SLU, отказы, пуск и штатный сканер по минимальному протоколу.
 
-**Сейчас выполняет.** Codex REL-02 H03 application-only isolation — codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Журналы содержат версии BIN, условия, измерения, допуски и результат. Программные тесты учитываются отдельно.
 
@@ -590,16 +590,6 @@
 - verification/project-audit/2026-11-21-integration.json
 - verification/project-audit/integration-20261121/
 
-### REL-02
-
-Чат: Codex REL-02 H03 application-only isolation. Claim ID: e050fbd1bb5d4d14a3f58aac59b8cf86.
-
-- targets/lfj8/check_h03_application_isolation.py
-- targets/lfj8/lfj8_h03_monitor_quiesce.c
-- targets/lfj8/lfj8_h03_monitor_quiesce.h
-- verification/project-audit/2026-11-20-h03-application-isolation.json
-- verification/project-audit/rel02-h03-application-isolation.md
-
 ### TOY-04
 
 Чат: Codex — размер планировщика выходов H03. Claim ID: 07e364700a914694bb6ff3542e87e98a.
@@ -622,6 +612,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T19:28:30+00:00 | REL-02 | complete | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T19:28:14+00:00 | ECU-02 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T19:27:57+00:00 | TOY-05 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T19:27:40+00:00 | TOY-01 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -651,4 +642,3 @@
 | 2026-11-20T19:06:30+00:00 | ECU-02 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T19:05:48+00:00 | ECU-01 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T19:04:27+00:00 | ECU-02 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-20T19:04:12+00:00 | MODE-01 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |

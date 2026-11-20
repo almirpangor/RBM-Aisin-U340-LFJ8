@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 486,
+  "sequence": 487,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -552,11 +552,11 @@
         "verification/project-audit/2026-11-20-h03-application-isolation.json",
         "verification/project-audit/rel02-h03-application-isolation.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "e050fbd1bb5d4d14a3f58aac59b8cf86",
       "claimed_at": "2026-11-20T18:22:47+00:00",
-      "updated_at": "2026-11-20T18:31:28+00:00",
-      "note": "PASS 41 exact-H03 CPU probes. Upper-only candidate filters out 602 on both BasicCAN controllers, cancels both pending operations and disables Virtual Flash. OEM CAN setup restores broad masks. Warm reset leaves bank 08 active and a valid marker can still bypass entry. Requires cold access and retention by the CAN owner before a bench image.",
+      "updated_at": "2026-11-20T19:28:30+00:00",
+      "note": "Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены.",
       "result": "c8d6d0d7b4852e8cbcf0919ea09d4883e1d608ae"
     }
   },
@@ -4448,9 +4448,17 @@
       "action": "complete",
       "claim_id": "af75614181e6438cbed6652ba8147606",
       "at": "2026-11-20T19:28:14+00:00"
+    },
+    {
+      "operation_id": "0d68444f872f40b6ad1d61c9be8eb1ce",
+      "task": "REL-02",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "e050fbd1bb5d4d14a3f58aac59b8cf86",
+      "at": "2026-11-20T19:28:30+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:28:14+00:00",
+  "updated_at": "2026-11-20T19:28:30+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
