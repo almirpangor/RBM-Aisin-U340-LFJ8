@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 333,
+  "sequence": 334,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -135,14 +135,13 @@
       "branch": "codex/h03-04-torque-size-01a1f9a2",
       "files": [
         "docs/lfj8-h03-torque.md",
-        "targets/lfj8/lfj8_h03_torque.c",
         "targets/lfj8/lfj8_h03_torque_can.c"
       ],
       "stage": "in_progress",
       "claim_id": "9e93704114d342ff9848b326e2d3d7fc",
       "claimed_at": "2026-11-20T18:07:03+00:00",
-      "updated_at": "2026-11-20T18:07:03+00:00",
-      "note": "Уменьшаю код диалога и адаптера CAN момента в хвостовом окне Flash. Сверю тот же набор корней в общей модели и повторю проверки границ и потери CAN. Общую компоновку не меняю.",
+      "updated_at": "2026-11-20T18:09:39+00:00",
+      "note": "Код CAN-адаптера уменьшен на 132 байта, точный состав 116 корней сохранён. Стандартная компоновка и тесты момента/CAN13 прошли. Расширенная модель сохраняет общий дефицит 316 байт.",
       "result": null
     },
     "DTC-04": {
@@ -3240,9 +3239,17 @@
       "action": "claim",
       "claim_id": "7247550aeb1e414987b6eb6a1a7b27bd",
       "at": "2026-11-20T18:09:24+00:00"
+    },
+    {
+      "operation_id": "d5df0ce2fde04edbb54c5964d749df57",
+      "task": "H03-04",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "heartbeat",
+      "claim_id": "9e93704114d342ff9848b326e2d3d7fc",
+      "at": "2026-11-20T18:09:39+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:09:24+00:00",
+  "updated_at": "2026-11-20T18:09:39+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
