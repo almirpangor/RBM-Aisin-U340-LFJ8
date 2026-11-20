@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:30:47+00:00**. Изменение № **152**.
+Обновлено UTC: **2026-11-20T16:30:54+00:00**. Изменение № **153**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -39,7 +39,7 @@
 | MODE-03 — Окончательная политика режимов | На проверке | Codex MODE-03 — матрица режимов \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/mode-03-policy-fea1b366 | 2026-11-20T16:27:03+00:00 | Штатная матрица ПК: 128 конфигураций запуска и 501 760 сценариев заявок PASS. Все 35 шагов ПК прошли; донорский тест S03 повторён отдельно с проверенным входом. Интегратору: учесть новые файлы и отчёт verification/project-audit/mode03-policy-matrix.md в аудите. Политика выпуска и подключение к циклу H03 открыты. / commit dd4fdbc2862093359df9329d7e6e9ab211d13940 |
 | SRC-01 — Реестр происхождения и контроль исходников | Свободна | — | — | — | — |
 | AUD-01 — Программный аудит истории E4M3 | Свободна | — | — | — | — |
-| DTC-01 — Прикладной сеанс и статусы Chery | На проверке | Codex DTC-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/dtc01-1120-c7e4 | 2026-11-20T16:19:32+00:00 | Foreign TX13 completion and BusOff now close DTC session and revoke in-flight ownership until a new CAN generation. Both failures reproduced; PC 33 steps / 65 tests and M32R 17 components PASS. Evidence verification/project-audit/dtc01-session-lease.md. Integrator to record the audit; scanner and hardware open. / commit 79d853bcd09a13b733907eccc3e1ea6dfe642db7 |
+| DTC-01 — Прикладной сеанс и статусы Chery | Работа завершена | Codex DTC-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/dtc01-1120-c7e4 | 2026-11-20T16:30:54+00:00 | Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте. / commit 79d853bcd09a13b733907eccc3e1ea6dfe642db7 |
 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Выполняется | Codex — штатный RX BasicCAN H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T16:29:22+00:00 | Проверяю обёртку штатной попытки RX по 0x001534 с реальной очередью. Сравнение контекста и OEM-трасс с исходником. Подмена только в симуляторе, граница 0x008000 учтена. |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Работа завершена | Codex DTC-03 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/dtc03-table-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:25:38+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit fbeea2ca6b1ceb47be58f4bf05c9f3817c5664a2 |
 | DTC-04 — Хранение DTC после выключения питания | Работа завершена | Codex DTC-04 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/dtc04-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:23:48+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit 4ef63cb5d0a93d31c2db76411890d31593783f2e |
@@ -75,14 +75,6 @@
 - targets/bosch/chery_torque_rx.h
 - targets/bosch/test_chery_torque_rx.c
 - verification/project-audit/can05-rx-age.md
-
-### DTC-01
-
-Чат: Codex DTC-01. Claim ID: 8ca0999c579843d5a6c858b0ba44f0b2.
-
-- targets/lfj8/lfj8_h03_dtc_can.c
-- targets/lfj8/test_lfj8_h03_dtc_can.c
-- verification/project-audit/dtc01-session-lease.md
 
 ### DTC-02
 
@@ -255,6 +247,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:30:54+00:00 | DTC-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:30:47+00:00 | VSS-02 | resume | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:30:41+00:00 | CAN-05 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:30:29+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
@@ -284,4 +277,3 @@
 | 2026-11-20T16:24:53+00:00 | VSS-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:24:42+00:00 | H03-04 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:24:18+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
-| 2026-11-20T16:24:11+00:00 | H03-05 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |

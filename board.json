@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 152,
+  "sequence": 153,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -366,11 +366,11 @@
         "targets/lfj8/test_lfj8_h03_dtc_can.c",
         "verification/project-audit/dtc01-session-lease.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "8ca0999c579843d5a6c858b0ba44f0b2",
       "claimed_at": "2026-11-20T16:16:49+00:00",
-      "updated_at": "2026-11-20T16:19:32+00:00",
-      "note": "Foreign TX13 completion and BusOff now close DTC session and revoke in-flight ownership until a new CAN generation. Both failures reproduced; PC 33 steps / 65 tests and M32R 17 components PASS. Evidence verification/project-audit/dtc01-session-lease.md. Integrator to record the audit; scanner and hardware open.",
+      "updated_at": "2026-11-20T16:30:54+00:00",
+      "note": "Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте.",
       "result": "79d853bcd09a13b733907eccc3e1ea6dfe642db7"
     },
     "VSS-01": {
@@ -1703,9 +1703,17 @@
       "action": "resume",
       "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
       "at": "2026-11-20T16:30:47+00:00"
+    },
+    {
+      "operation_id": "a340c935a063449b92ca5ca198e4d906",
+      "task": "DTC-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "8ca0999c579843d5a6c858b0ba44f0b2",
+      "at": "2026-11-20T16:30:54+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:30:47+00:00",
+  "updated_at": "2026-11-20T16:30:54+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
