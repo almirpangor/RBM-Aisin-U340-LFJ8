@@ -35,7 +35,7 @@ H03_ROOTS = (
     "rbm_u340e_runtime_init", "rbm_u340e_runtime_snapshot_gears", "rbm_u340e_runtime_gears_outputs",
     "rbm_u340e_runtime_prepare_engine", "rbm_u340e_runtime_main_coolant",
     "rbm_u340e_runtime_main_engine_speed",
-    "rbm_u340e_runtime_secondary_load_qualify",
+    "rbm_u340e_runtime_publish_load", "rbm_u340e_runtime_secondary_load_qualify",
     "rbm_u340e_range_fast", "rbm_u340e_runtime_main_range",
     "rbm_u340e_runtime_main_range_complete",
     "rbm_u340e_schedule_finish_init", "rbm_u340e_schedule_timer_irq",

@@ -346,6 +346,44 @@ int rbm_u340e_runtime_main_engine_speed(RbmU340eRuntime *runtime,
     return factory_hydraulics_set(&runtime->gp, -7186, 2u, speed);
 }
 
+int rbm_u340e_runtime_publish_load(RbmU340eRuntime *runtime,
+                                  const RbmU340eQualifiedLoadFeed *feed,
+                                  uint32_t now, uint32_t max_age)
+{
+    if (!runtime || runtime->initialized != 1u || !feed ||
+        overlaps(runtime, sizeof *runtime, feed, sizeof *feed) ||
+        feed->coherent != 1u || feed->fallback_5299_bit1 > 1u ||
+        max_age >= UINT32_C(0x80000000) || now - feed->sampled_at > max_age) {
+        return 0;
+    }
+
+    FactoryHydraulics *gp = &runtime->gp;
+    uint32_t flags;
+    if (!factory_hydraulics_get(gp, -5299, 1u, &flags)) {
+        return 0;
+    }
+    static const int16_t offsets[] = {-8270, -8272, -8306, -8298, -8302, -8310, -9044, -9030};
+    const int16_t values[] = {
+        feed->gp_8270, feed->gp_8272, feed->gp_8306, feed->gp_8298,
+        feed->gp_8302, feed->gp_8310, feed->gp_9044, feed->gp_9030,
+    };
+
+    /* Validate every span before writing any operand. The static GP map
+     * uses the same span lookup for reads and writes. */
+    for (size_t i = 0; i < sizeof offsets / sizeof offsets[0]; ++i) {
+        uint32_t unused;
+        if (!factory_hydraulics_get(gp, offsets[i], 2u, &unused)) {
+            return 0;
+        }
+    }
+    for (size_t i = 0; i < sizeof offsets / sizeof offsets[0]; ++i) {
+        (void)factory_hydraulics_set(gp, offsets[i], 2u, (uint16_t)values[i]);
+    }
+    flags = (flags & ~UINT32_C(2)) | ((uint32_t)feed->fallback_5299_bit1 << 1);
+    (void)factory_hydraulics_set(gp, -5299, 1u, flags);
+    return 1;
+}
+
 static uint8_t qualify_load_bit(uint8_t request, unsigned pending_mask, int32_t load,
                                 int32_t release_threshold, int force_low)
 {
