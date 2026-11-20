@@ -38,4 +38,10 @@ typedef struct {
 int lfj8_h03_button_capture_locked(const Lfj8RegisterIo *io, const Lfj8H03ButtonMap *map,
     const Lfj8H03ButtonSample *sample, uint32_t generation, Lfj8ButtonReading *out);
 
+/* Decode the coherent P1DATA byte published at the H03 AN2 store. This path
+ * accepts a P1-only map. The acquisition owner resets the selector mailbox
+ * on each epoch change before passing its observations to this function. */
+int lfj8_h03_button_decode_p1(const Lfj8H03ButtonMap *map, const Lfj8SelectorAdcReading *reading,
+    Lfj8ButtonReading *out);
+
 #endif

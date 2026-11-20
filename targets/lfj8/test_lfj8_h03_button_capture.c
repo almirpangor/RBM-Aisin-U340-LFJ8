@@ -89,7 +89,7 @@ static uint8_t button_step(Lfj8RangeControl *control, Lfj8ButtonFilter *filter,
     Port port = {.p1 = p1};
     const Lfj8RegisterIo io = {.context = &port, .read8 = read_port};
     const Lfj8H03ButtonSample sample = {time, generation, 1, 3};
-    const Lfj8SelectorAdcReading adc = {time, 500, LFJ8_SELECTOR_ADC_VALUE};
+    const Lfj8SelectorAdcReading adc = {.captured_us = time, .raw = 500, .event = LFJ8_SELECTOR_ADC_VALUE};
     const RbmU340eInput driver = {.actual_gear = 2, .allowed_gears = 15};
     Lfj8ButtonReading reading;
     RbmU340eOutput output;

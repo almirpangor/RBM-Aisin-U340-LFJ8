@@ -32,8 +32,20 @@ int lfj8_h03_input_propose(const Lfj8H03InputBinding *binding, const Lfj8H03Inpu
         return 0;
     }
 
+    Lfj8ButtonReading from_adc;
+    const Lfj8ButtonReading *button_reading = sources->buttons;
+    if (binding->p1_button_map) {
+        if (button_reading || (reading.event != LFJ8_SELECTOR_ADC_NONE &&
+            !lfj8_h03_button_decode_p1(binding->p1_button_map, &reading, &from_adc))) {
+            lfj8_range_control_disarm_buttons(control, buttons);
+            return 0;
+        }
+        if (reading.event != LFJ8_SELECTOR_ADC_NONE) {
+            button_reading = &from_adc;
+        }
+    }
     const Lfj8SelectorAdcReading idle = {.event = LFJ8_SELECTOR_ADC_NONE};
-    if (!lfj8_range_control_step_with_buttons(control, idle, buttons, sources->buttons,
+    if (!lfj8_range_control_step_with_buttons(control, idle, buttons, button_reading,
                                               now, sources->driver, &out->driver) || !buttons->armed) {
         out->driver = (RbmU340eOutput){0};
         return 0;

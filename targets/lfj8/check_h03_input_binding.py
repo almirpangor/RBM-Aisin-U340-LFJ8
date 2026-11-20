@@ -13,7 +13,7 @@ from check_h03_selector_adc import run
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SOURCES = ("lfj8_selector_adc.c", "lfj8_range_control.c",
-           "lfj8_h03_input_binding.c", "test_lfj8_h03_input_binding.c")
+           "lfj8_h03_input_binding.c", "lfj8_h03_button_capture.c", "test_lfj8_h03_input_binding.c")
 FLAGS = ("-std=c11", "-O2", "-Wall", "-Wextra", "-Werror", "-I.")
 M32R = ("-m32r", "-Wa,-EB", "-mmodel=medium", "-msdata=none")
 
