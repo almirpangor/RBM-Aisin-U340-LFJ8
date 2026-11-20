@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 267,
+  "sequence": 268,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -400,12 +400,12 @@
         "targets/lfj8/test_lfj8_vss_arithmetic.c",
         "verification/project-audit/vss01-exact-arithmetic.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "698c00d00af84972b5562bc8498c8628",
       "claimed_at": "2026-11-20T16:18:46+00:00",
-      "updated_at": "2026-11-20T17:03:52+00:00",
-      "note": "Сквозной тест с 8/37 и 3,53 м проходит на ПК. В M32R исследован стек арифметики по дизассемблированию. Запущены согласованные M32R, Bosch и полный PC.",
-      "result": "d05896bcac7b731f8d3f85b9aaebd3394e32473c"
+      "updated_at": "2026-11-20T17:06:35+00:00",
+      "note": "Добавлена проверка профиля мостов 8/37, 3,53 м и кадра 0x1AE. Стек расчёта по листингу 40 против 72 байт. PC 35 шагов/71 тест, M32R 17 компонентов и Bosch 0x179C PASS. Стенд открыт.",
+      "result": "01293a5be56c519cb2b01ad54f82637c0be823f6"
     },
     "H03-05": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -2707,9 +2707,17 @@
       "action": "review",
       "claim_id": "57db4a43b5754a71a19f9ab77e4c69f4",
       "at": "2026-11-20T17:06:16+00:00"
+    },
+    {
+      "operation_id": "9e7106bbced34445a4466d10080eeb3c",
+      "task": "VSS-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "698c00d00af84972b5562bc8498c8628",
+      "at": "2026-11-20T17:06:35+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:06:16+00:00",
+  "updated_at": "2026-11-20T17:06:35+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
