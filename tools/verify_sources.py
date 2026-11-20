@@ -19,14 +19,18 @@ def checked_file(entry: dict, content: bytes) -> bool:
     return matches
 
 
-def verify(donor_repo: Path, lfj8: Path) -> bool:
+def verify(donor_repo: Path, input_images: dict[str, Path]) -> bool:
     registry = json.loads((ROOT / "data/sources.json").read_text(encoding="utf-8"))
     spec = registry["specification"]
     checks = [checked_file(spec, (ROOT / spec["path"]).read_bytes())]
     for entry in registry["firmware"]:
         source = entry["repository"]
         if source is None:
-            checks.append(checked_file(entry, lfj8.read_bytes()))
+            local_path = input_images.get(entry["id"])
+            if local_path is None:
+                print(f"{entry['id']}: no local path supplied; skipped")
+                continue
+            checks.append(checked_file(entry, local_path.read_bytes()))
             continue
 
         revision = registry["repositories"][source]["commit"]
@@ -44,10 +48,14 @@ def verify(donor_repo: Path, lfj8: Path) -> bool:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--donor-repo", required=True, type=Path, help="Local Git clone of R1")
-    parser.add_argument("--lfj8", required=True, type=Path, help="Path to the original S05 dump")
+    parser.add_argument("--pcm-image", "--lfj8", required=True, type=Path, help="Path to the supplied S05 PCM image")
+    parser.add_argument("--tcm-donor", type=Path, help="Path to the approved S06 9E1B donor")
     args = parser.parse_args()
+    input_images = {"S05": args.pcm_image}
+    if args.tcm_donor is not None:
+        input_images["S06"] = args.tcm_donor
     try:
-        return 0 if verify(args.donor_repo, args.lfj8) else 1
+        return 0 if verify(args.donor_repo, input_images) else 1
     except (OSError, subprocess.CalledProcessError, ValueError) as error:
         print(f"Verification failed: {error}", file=sys.stderr)
         return 2
