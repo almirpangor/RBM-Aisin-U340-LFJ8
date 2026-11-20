@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 505,
+  "sequence": 506,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -237,22 +237,29 @@
     },
     "MODE-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
-      "label": "Codex MODE-02 — квалификация сырых входов кнопок",
-      "branch": "codex/mode02-p1data-capture-01a1f9c7",
+      "label": "Codex MODE-02 — штатный общий захват AN2/P1DATA",
+      "branch": "codex/mode02-foreground-input-01a1f9c7",
       "files": [
-        "docs/lfj8-selector.md",
-        "targets/lfj8/check_h03_button_capture.py",
+        "targets/lfj8/check_h03_input_binding.py",
+        "targets/lfj8/check_h03_selector_adc.py",
+        "targets/lfj8/h03_selector_adc_fixture.c",
         "targets/lfj8/lfj8_h03_button_capture.c",
         "targets/lfj8/lfj8_h03_button_capture.h",
+        "targets/lfj8/lfj8_h03_input_binding.c",
+        "targets/lfj8/lfj8_h03_input_binding.h",
+        "targets/lfj8/lfj8_h03_input_target.c",
+        "targets/lfj8/lfj8_selector_adc.c",
+        "targets/lfj8/lfj8_selector_adc.h",
         "targets/lfj8/test_lfj8_h03_button_capture.c",
-        "verification/project-audit/mode02-h03-button-capture.md"
+        "targets/lfj8/test_lfj8_h03_input_binding.c",
+        "verification/project-audit/mode02-native-an2-p1.md"
       ],
-      "stage": "done",
-      "claim_id": "d5aa9e367a344b3f8dbadc189b368dbd",
-      "claimed_at": "2026-11-20T18:36:48+00:00",
-      "updated_at": "2026-11-20T19:27:07+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "3e74c38af4a0084b334b2bc1a8b7b8a9dc35507d"
+      "stage": "in_progress",
+      "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
+      "claimed_at": "2026-11-20T19:39:27+00:00",
+      "updated_at": "2026-11-20T19:39:27+00:00",
+      "note": "Foreground владельца занят TOY-05. Подключаю подтверждённое чтение P1DATA к штатному AN2 по общей микросекундной метке и передаю его нормализатору по явно заданной карте. Жёсткая карта выводов и OD не подставляются.",
+      "result": null
     },
     "TOY-05": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -4602,9 +4609,17 @@
       "action": "claim",
       "claim_id": "4be301294ddc41508ac41d1b94c6b14a",
       "at": "2026-11-20T19:39:22+00:00"
+    },
+    {
+      "operation_id": "af3218a707df4e13bc06969c30fd1d7a",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
+      "at": "2026-11-20T19:39:27+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:39:22+00:00",
+  "updated_at": "2026-11-20T19:39:27+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
