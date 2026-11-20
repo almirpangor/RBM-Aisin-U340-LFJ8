@@ -16,6 +16,7 @@ from lfj8_h03_layout import (PROFILES,Window,PlacementError,read_elf,alloc_secti
                             validate_windows,pack,linker_script,verify_linked,
                             symbol_bytes,raw_reference_patterns)
 import lfj8_h03_sensor_hooks as sensor_hooks
+import lfj8_h03_dtc_rx_placement as dtc_rx
 
 EXTRA_ROOTS=(
     "rbm_u340e_step",
@@ -192,7 +193,16 @@ def build(args):
     if args.with_bindings:
         sensor_hooks.validate_stock(rom)
     windows=PROFILES[args.profile]
-    validate_windows(windows,rom)
+    with_dtc_rx = getattr(args, "with_dtc_rx", False)
+    flash_windows = (*windows, dtc_rx.RX_WINDOW) if with_dtc_rx else windows
+    owner_address = None
+    if with_dtc_rx:
+        if not args.with_bindings or args.storage_report is None:
+            raise ValueError("Resident RX needs --with-bindings and a typed --storage-report")
+        dtc_rx.validate_stock(rom)
+        storage_space(args.storage_report)
+        owner_address = dtc_rx.owner_address(json.loads(args.storage_report.read_text(encoding="utf-8")))
+    validate_windows(flash_windows,rom)
     controller_manifest=json.loads((args.controller.parent/"manifest.json").read_text(encoding="utf-8"))
     bridge_manifest=json.loads((args.bridge.parent/"build-manifest.json").read_text(encoding="utf-8"))
     if (controller_manifest["architecture"]!="m32r" or
@@ -223,17 +233,24 @@ def build(args):
     bindings=[LFJ8/name for name in BINDING_MODULES if (LFJ8/name).is_file()] if args.with_bindings else []
     if args.with_bindings:
         bindings.extend(LFJ8/name for name in SENSOR_ASSEMBLY)
+    if with_dtc_rx:
+        bindings.extend(LFJ8/name for name in dtc_rx.MODULES)
     modules=list(dict.fromkeys([*modules,*bindings]))
     roots=set((*legacy.H03_ROOTS,*legacy.DTC_ROOTS,*legacy.CAN_EXTENSION_ROOTS,*EXTRA_ROOTS))
+    if with_dtc_rx:
+        roots.update(dtc_rx.RX_ROOTS)
     report={"base":identity,"profile":args.profile,"compiler_memory_model":args.memory_model,
             "input_objects":{p.name:digest(p) for p in (args.bridge,args.controller)},
             "input_sources":{p.relative_to(ROOT).as_posix():digest(p) for p in modules},
             "bindings_included":[p.name for p in bindings],
             "bindings_not_present":[name for name in BINDING_MODULES if not (LFJ8/name).is_file()],
-            "raw_reference_patterns":raw_reference_patterns(rom,windows),
+            "raw_reference_patterns":raw_reference_patterns(rom,flash_windows),
             "hardware_verified":False,"target_ownership_verified":False,"flashable_image":None}
     if args.with_bindings:
         path = Path(sensor_hooks.__file__).resolve()
+        report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
+    if with_dtc_rx:
+        path = Path(dtc_rx.__file__).resolve()
         report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
     with TemporaryDirectory(prefix="rbm-h03-placement-") as folder:
         stage=Path(folder)
@@ -271,23 +288,43 @@ def build(args):
         for name in stock_symbols:
             if retained["symbols"].get(name, {}).get("section") != 0:
                 raise ValueError("Unexpected definition or missing reference for H03 sensor continuation: "+name)
+        native_bindings = dict(stock_symbols)
+        if with_dtc_rx:
+            for name in dtc_rx.STOCK_SYMBOLS:
+                if retained["symbols"].get(name, {}).get("section") != 0:
+                    raise ValueError("Unexpected definition or missing reference for DTC RX continuation: "+name)
+            owner_symbol = retained["symbols"].get("h03_can_owner", {})
+            if (owner_symbol.get("section") != 0 and
+                    (owner_symbol.get("section"), owner_symbol.get("address")) != (0xFFF1, owner_address)):
+                raise ValueError("The DTC RX binding must use the existing typed CAN owner")
+            native_bindings.update(dtc_rx.STOCK_SYMBOLS, h03_can_owner=owner_address)
         unresolved=[name for name,symbol in retained["symbols"].items()
-                    if symbol["section"]==0 and name not in stock_symbols]
+                    if symbol["section"]==0 and name not in native_bindings]
         sections=alloc_sections(retained)
         flash=[s for s in sections if not s["flags"]&1]
         ram=[s for s in sections if s["flags"]&1]
         report.update(required_roots=roots,retained_sections=len(sections),
                       flash_payload_bytes=sum(s["size"] for s in flash),
                       new_static_ram_bytes=sum(s["size"] for s in ram))
+        def place_flash():
+            if not with_dtc_rx:
+                return pack(flash,windows)
+            names = dtc_rx.closure_sections(run, args.gcc, flags, stage)
+            resident, upper = dtc_rx.split_flash(flash, names)
+            return pack(resident, (dtc_rx.RX_WINDOW,)) + pack(upper, windows)
+
         if unresolved:
             try:
-                provisional=pack(flash,windows)
+                provisional=place_flash()
                 report["known_sections_candidate_plan"]={"sections":len(provisional),
-                    "capacity_bytes":sum(w.end-w.start for w in windows),
+                    "capacity_bytes":sum(w.end-w.start for w in flash_windows),
                     "payload_bytes":sum(p["bytes"] for p in provisional),
                     "ownership_verified":False,"unresolved_material_counted":False}
                 if stock_symbols:
                     report["sensor_redirects"] = sensor_placement(rom, retained, provisional)
+                if with_dtc_rx:
+                    report["dtc_rx_redirects"] = dtc_rx.describe(
+                        rom, retained, provisional, owner_address, linked=False)
             except PlacementError as error:
                 report["known_sections_candidate_plan"]=error.report
             report.update(status="FAIL_BINDINGS",accepted_layout=False,
@@ -296,7 +333,7 @@ def build(args):
             save(args.out/"layout.json",report)
             raise ValueError("Production bindings unresolved: "+", ".join(sorted(unresolved)))
         try:
-            placement=pack(flash,windows)
+            placement=place_flash()
             if ram:
                 if args.storage_report is None:
                     raise PlacementError("Native writable state needs a prior RAM inventory",
@@ -307,7 +344,7 @@ def build(args):
             report.update(status="FAIL_PLACEMENT",failure=error.report,accepted_layout=False)
             save(args.out/"layout.json",report)
             raise
-        pinned = "".join(f"{name} = {address:#x};\n" for name, address in stock_symbols.items())
+        pinned = "".join(f"{name} = {address:#x};\n" for name, address in native_bindings.items())
         (stage/"placement.ld").write_text(pinned+linker_script(placement),encoding="ascii")
         run(args.gcc,*flags,"-fno-use-linker-plugin","-nostdlib","-Wl,-T,placement.ld",
             "retained.o","-o","layout.elf")
@@ -315,13 +352,15 @@ def build(args):
         verify_linked(linked,placement,roots)
         if stock_symbols:
             report["sensor_redirects"] = sensor_placement(rom, linked)
+        if with_dtc_rx:
+            report["dtc_rx_redirects"] = dtc_rx.describe(rom, linked, placement, owner_address, linked=True)
         tables={}
         for name,size,expected in legacy.S01_LINK_TABLES:
             content=symbol_bytes(linked,name)
             if len(content)!=size or sha256(content).hexdigest()!=expected:
                 raise ValueError("Linked donor calibration changed: "+name)
             tables[name]={"address":linked["symbols"][name]["address"],"bytes":size,"sha256":expected}
-        selected_windows=(*windows,*storage_space(args.storage_report)) if ram else windows
+        selected_windows=(*flash_windows,*storage_space(args.storage_report)) if ram else flash_windows
         window_results={}
         for w in selected_windows:
             placed=[p for p in placement if p["window"]==w.name]
@@ -352,6 +391,8 @@ def main():
     parser.add_argument("--profile",choices=PROFILES,default="two-window")
     parser.add_argument("--memory-model",choices=("medium","small"),default="medium")
     parser.add_argument("--with-bindings",action="store_true")
+    parser.add_argument("--with-dtc-rx", action="store_true",
+                        help="Place the protected BasicCAN RX graph in the lower H03 sector")
     parser.add_argument("--cpu-test",action="store_true")
     parser.add_argument("--storage-report",type=Path)
     args=parser.parse_args()
