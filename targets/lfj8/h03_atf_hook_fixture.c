@@ -1,5 +1,11 @@
 /* Simulator providers for the H03 ATF callback ABI. */
 #include "lfj8_h03_atf_target.h"
+#include "lfj8_h03_input_lifecycle.h"
+
+int lfj8_h03_application_running_locked(void)
+{
+    return 1; /* Standalone ATF probe runs with the application admitted. */
+}
 
 volatile Lfj8H03Atf rbm_h03_atf_state;
 volatile uint8_t rbm_h03_tml0_1mhz_qualified;
