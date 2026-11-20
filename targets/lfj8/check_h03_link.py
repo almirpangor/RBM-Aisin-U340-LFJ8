@@ -59,13 +59,15 @@ DTC_ROOTS = (
     "chery_dtc_link_receive", "chery_dtc_link_confirm_tx",
     "chery_model_monitor_init", "chery_model_monitor_task2",
 )
-CAN_EXTENSION_FILES = ("lfj8_h03_torque.c", "lfj8_h03_dtc_can.c",
+CAN_EXTENSION_FILES = ("lfj8_h03_torque.c", "lfj8_h03_dtc_can.c", "lfj8_h03_dtc_rx_queue.c",
                        "lfj8_h03_torque_can.c", "ta2005_engine_qualifier.c", "lfj8_h03_cycle.c",
                        "lfj8_h03_phase_clock.c", "lfj8_h03_engine_feed.c", "lfj8_h03_can13.c")
 CAN_EXTENSION_ROOTS = (
     "lfj8_h03_torque_demand", "lfj8_h03_torque_init", "lfj8_h03_torque_poll",
     "lfj8_h03_torque_tx_done", "lfj8_h03_torque_receive", "lfj8_h03_torque_applied",
     "lfj8_h03_dtc_can_decode_basic", "lfj8_h03_dtc_can_init", "lfj8_h03_dtc_can_poll",
+    "lfj8_h03_dtc_rx_queue_init", "lfj8_h03_dtc_rx_queue_reset",
+    "lfj8_h03_dtc_rx_queue_publish", "lfj8_h03_dtc_rx_queue_peek", "lfj8_h03_dtc_rx_queue_consume",
     "lfj8_h03_torque_can_init", "lfj8_h03_torque_can_poll",
     "ta2005_engine_qualifier_init", "ta2005_engine_qualifier_task2",
     "lfj8_h03_cycle_init", "lfj8_h03_cycle_tick", "lfj8_h03_cycle_slt_inputs",
@@ -225,7 +227,7 @@ def stage_test(stage, engine_payloads):
     dtc_inputs = [*(diagnostics / name for name in DTC_FILES), *diagnostics.glob("*.h"),
                   diagnostics / "test_chery_dtc_link.c"]
     can_extension = [HERE / name for name in (*CAN_EXTENSION_FILES, "test_lfj8_h03_torque.c",
-                    "test_lfj8_h03_dtc_can.c", "test_lfj8_h03_torque_can.c",
+                    "test_lfj8_h03_dtc_can.c", "test_lfj8_h03_dtc_rx_queue.c", "test_lfj8_h03_torque_can.c",
                     "test_ta2005_engine_qualifier.c", "test_lfj8_h03_cycle.c", "test_lfj8_h03_phase_clock.c",
                     "test_lfj8_h03_engine_feed.c", "test_lfj8_h03_can13.c")]
     for item in (*sources, *headers, *dtc_inputs, *can_extension, HERE / "host_check.c", HERE / "test_lfj8_h03_atf.c",
@@ -420,6 +422,8 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
             ("chery_dtc", "test_chery_dtc_link.c", ("compact-with-dtc.o",)),
             ("h03_torque_can", "test_lfj8_h03_torque.c", ("combined.o", "lfj8_h03_torque.o")),
             ("h03_dtc_can_io", "test_lfj8_h03_dtc_can.c", ("combined.o", *dtc_objects, "lfj8_h03_dtc_can.o")),
+            ("h03_dtc_rx_queue", "test_lfj8_h03_dtc_rx_queue.c",
+             ("combined.o", *dtc_objects, "lfj8_h03_dtc_can.o", "lfj8_h03_dtc_rx_queue.o")),
             ("h03_torque_can_io", "test_lfj8_h03_torque_can.c",
              ("combined.o", "lfj8_h03_torque.o", "lfj8_h03_torque_can.o")),
             ("h03_engine_qualifier", "test_ta2005_engine_qualifier.c", ("combined.o", "ta2005_engine_qualifier.o")),
