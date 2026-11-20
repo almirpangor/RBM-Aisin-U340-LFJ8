@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 501,
+  "sequence": 502,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -46,18 +46,23 @@
       "result": "500b34cb08d9d61ce2016a47e0f09e77132edf21"
     },
     "CAN-03": {
-      "owner": "codex-integration-01a1f76d-20261120",
-      "label": "Основной чат — принятие CAN-03",
-      "branch": "codex/integration-01a1f76d-20261120",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex CAN-03 — поколение штатного запуска CAN",
+      "branch": "codex/can03-guarded-generation-fea1b366",
       "files": [
-        "targets/lfj8/check_h03_can_monitor_startup.py"
+        "targets/lfj8/check_h03_can_monitor_revoke.py",
+        "targets/lfj8/check_h03_can_monitor_startup.py",
+        "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+        "targets/lfj8/lfj8_h03_can_monitor_startup.c",
+        "targets/lfj8/lfj8_h03_can_monitor_startup.h",
+        "verification/project-audit/can03-guarded-generation.md"
       ],
-      "stage": "done",
-      "claim_id": "2ec8aacec9a4492593f09b24555a5f0f",
-      "claimed_at": "2026-11-20T19:32:51+00:00",
-      "updated_at": "2026-11-20T19:33:26+00:00",
-      "note": "Порция и совместимость сборщика приняты в main ae393e8. Установка всех обёрток, целевая платформа и аппаратная проверка остаются в карточке CAN-03.",
-      "result": "ae393e852fd8e110892c6725f219f3e43585d33c"
+      "stage": "in_progress",
+      "claim_id": "ad997bd677c542c682cec961d4619193",
+      "claimed_at": "2026-11-20T19:38:33+00:00",
+      "updated_at": "2026-11-20T19:38:33+00:00",
+      "note": "Подключить публикацию поколения CAN owner к успешному разрешению приёма после штатного старта и восстановления H03; проверить реальные ROM-переходы и отказ настройки.",
+      "result": null
     },
     "TOY-03": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -4562,9 +4567,17 @@
       "action": "claim",
       "claim_id": "f6547625e0dd48c180162a7963424191",
       "at": "2026-11-20T19:38:10+00:00"
+    },
+    {
+      "operation_id": "589bd096ad444a86a7db8a657c7da6f3",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "ad997bd677c542c682cec961d4619193",
+      "at": "2026-11-20T19:38:33+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:38:10+00:00",
+  "updated_at": "2026-11-20T19:38:33+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
