@@ -54,11 +54,38 @@ static int main_step(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
     return 1;
 }
 
+int lfj8_h03_load_oldest_us(const Lfj8H03LoadEvidence *evidence, uint32_t expected_generation,
+                            uint32_t now_us, uint32_t max_age_us, uint32_t *oldest_us)
+{
+    if (!evidence || !oldest_us || max_age_us >= UINT32_C(0x80000000) ||
+        evidence->qualified_groups != LFJ8_H03_LOAD_ALL_GROUPS) {
+        return 0;
+    }
+    uint32_t oldest_age = 0u;
+    for (unsigned i = 0; i < LFJ8_H03_LOAD_GROUPS; ++i) {
+        const Lfj8H03LoadStamp *stamp = &evidence->group[i];
+        const uint32_t age = now_us - stamp->captured_at;
+        if (stamp->generation != expected_generation || age > max_age_us) {
+            return 0;
+        }
+        if (age > oldest_age) {
+            oldest_age = age;
+        }
+    }
+    *oldest_us = now_us - oldest_age;
+    return 1;
+}
+
 static int publish_cycle_load(RbmU340eRuntime *runtime, const Lfj8H03CycleLoad *load,
                               uint32_t *command_at)
 {
     const uint32_t input_age = load->now_us - *command_at;
-    if (input_age >= UINT32_C(0x80000000) ||
+    uint32_t oldest_us;
+    if (input_age >= UINT32_C(0x80000000) || !load->sample ||
+        (load->evidence &&
+         (!lfj8_h03_load_oldest_us(load->evidence, load->generation,
+                                  load->now_us, load->max_age_us, &oldest_us) ||
+          load->sample->sampled_at != oldest_us)) ||
         !rbm_u340e_runtime_publish_load(runtime, load->sample, load->now_us, load->max_age_us)) {
         return 0;
     }
@@ -179,10 +206,13 @@ static Lfj8H03CycleResult cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *runti
         return LFJ8_H03_CYCLE_FAULT;
     }
     uint32_t command_at = input->command_at;
-    if (load && !publish_cycle_load(runtime, load, &command_at)) {
+    const int have_load_evidence = load && load->evidence;
+    if ((cycle->require_load_evidence && !have_load_evidence) ||
+        (load && !publish_cycle_load(runtime, load, &command_at))) {
         cycle->faulted = 1u;
         return LFJ8_H03_CYCLE_FAULT;
     }
+    cycle->require_load_evidence = (uint8_t)have_load_evidence;
     cycle->last_event = input->event;
     cycle->have_event = 1u;
 

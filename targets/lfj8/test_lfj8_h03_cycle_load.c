@@ -145,6 +145,133 @@ static void check_refusals(void)
     }
 }
 
+static Lfj8H03LoadEvidence make_evidence(uint32_t now_us, uint32_t generation)
+{
+    return (Lfj8H03LoadEvidence){
+        .group = {
+            [LFJ8_H03_LOAD_SECONDARY] = {now_us - 1u, generation},
+            [LFJ8_H03_LOAD_MAIN] = {now_us - 3u, generation},
+            [LFJ8_H03_LOAD_MODE] = {now_us - 2u, generation},
+        },
+        .qualified_groups = LFJ8_H03_LOAD_ALL_GROUPS,
+    };
+}
+
+static void check_group_age(void)
+{
+    for (unsigned group = 0; group < LFJ8_H03_LOAD_GROUPS; ++group) {
+        Fixture fixture;
+        init(&fixture);
+        Lfj8H03LoadEvidence evidence;
+        fixture.load.evidence = &evidence;
+        for (unsigned i = 0; i < 17u; ++i) {
+            next_event(&fixture, fixture.load.max_age_us, 1u);
+            evidence = make_evidence(fixture.load.now_us, fixture.load.generation);
+            evidence.group[group].captured_at = fixture.feed.sampled_at;
+            uint32_t oldest_us = fixture.load.now_us;
+            assert(lfj8_h03_load_oldest_us(&evidence, fixture.load.generation, fixture.load.now_us,
+                                           fixture.load.max_age_us, &oldest_us));
+            assert(oldest_us == fixture.feed.sampled_at);
+            const Lfj8H03CycleResult result = poll(&fixture);
+            assert(result != LFJ8_H03_CYCLE_FAULT);
+            if (result == LFJ8_H03_CYCLE_MAIN) {
+                break;
+            }
+        }
+        assert(fixture.result.valid && fixture.result.command_at == fixture.feed.sampled_at);
+        assert(fixture.load.now_us < 17u);
+        assert(read_word(&fixture, -8270) == 79u);
+    }
+}
+
+static void check_group_refusals(void)
+{
+    enum { GROUP_MISSING, EXPIRED, FUTURE, OLD_GENERATION, RELABELLED, CASES };
+    for (unsigned group = 0; group < LFJ8_H03_LOAD_GROUPS; ++group) {
+        for (unsigned scenario = 0; scenario < CASES; ++scenario) {
+            Fixture fixture;
+            init(&fixture);
+            next_main(&fixture, 1u, 1u);
+            const RbmU340eRuntime last_runtime = fixture.runtime;
+            next_event(&fixture, 4u, 1u);
+            const uint32_t now = fixture.load.now_us;
+            Lfj8H03LoadEvidence evidence = make_evidence(now, fixture.load.generation);
+            fixture.load.evidence = &evidence;
+            evidence.group[group].captured_at = now - 4u;
+            fixture.feed.gp_8270 = 901;
+            switch (scenario) {
+            case GROUP_MISSING:
+                evidence.qualified_groups &= (uint8_t)~(1u << group);
+                break;
+            case EXPIRED:
+                evidence.group[group].captured_at = now - fixture.load.max_age_us - 1u;
+                break;
+            case FUTURE:
+                evidence.group[group].captured_at = now + 1u;
+                break;
+            case OLD_GENERATION:
+                evidence.group[group].generation = UINT32_MAX;
+                break;
+            case RELABELLED:
+                fixture.feed.sampled_at = now - 1u;
+                break;
+            }
+            expect_fault(&fixture, &last_runtime);
+        }
+    }
+}
+
+static void check_epoch_restart(void)
+{
+    Fixture fixture;
+    init(&fixture);
+    next_event(&fixture, 3u, 1u);
+    Lfj8H03LoadEvidence evidence = make_evidence(fixture.load.now_us, UINT32_MAX);
+    fixture.load.evidence = &evidence;
+    const RbmU340eRuntime initial_runtime = fixture.runtime;
+    expect_fault(&fixture, &initial_runtime);
+
+    init(&fixture);
+    next_event(&fixture, 3u, 1u);
+    fixture.load.evidence = &evidence;
+    expect_fault(&fixture, &initial_runtime); /* Same clock count, stale acquisition epoch. */
+
+    init(&fixture);
+    next_event(&fixture, 3u, 1u);
+    evidence = make_evidence(fixture.load.now_us, fixture.load.generation);
+    fixture.load.evidence = &evidence;
+    assert(poll(&fixture) == LFJ8_H03_CYCLE_NO_MAIN && fixture.cycle.have_event);
+    assert(read_word(&fixture, -8270) == 79u);
+}
+
+static void check_evidence_loss(void)
+{
+    for (unsigned without_load = 0; without_load <= 1u; ++without_load) {
+        Fixture fixture;
+        init(&fixture);
+        next_event(&fixture, 3u, 1u);
+        const Lfj8H03LoadEvidence evidence = make_evidence(fixture.load.now_us, fixture.load.generation);
+        fixture.load.evidence = &evidence;
+        assert(poll(&fixture) == LFJ8_H03_CYCLE_NO_MAIN);
+        assert(fixture.cycle.require_load_evidence);
+
+        const RbmU340eRuntime last_runtime = fixture.runtime;
+        const uint32_t last_event = fixture.cycle.last_event;
+        next_event(&fixture, 1u, 1u);
+        fixture.feed.gp_8270 = 901;
+        fixture.load.evidence = NULL;
+        if (without_load) {
+            assert(lfj8_h03_cycle_tick(&fixture.cycle, &fixture.runtime, &fixture.input,
+                                       &fixture.work, &fixture.result) == LFJ8_H03_CYCLE_FAULT);
+            assert(fixture.cycle.faulted && fixture.cycle.last_event == last_event);
+            assert(!fixture.result.valid);
+            assert(memcmp(&fixture.runtime, &last_runtime, sizeof last_runtime) == 0);
+        } else {
+            expect_fault(&fixture, &last_runtime);
+        }
+    }
+}
+
 static void check_event_order(void)
 {
     Fixture fixture;
@@ -162,7 +289,11 @@ int main(void)
 {
     check_load_used();
     check_refusals();
+    check_group_age();
+    check_group_refusals();
+    check_epoch_restart();
+    check_evidence_loss();
     check_event_order();
-    puts("H03 qualified load cycle: publication, expiry, clock wrap and event ordering PASS");
+    puts("H03 qualified load cycle: oldest group, expiry, epoch restart, clock wrap and event ordering PASS");
     return 0;
 }
