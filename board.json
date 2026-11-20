@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 244,
+  "sequence": 245,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -290,12 +290,12 @@
         "controller/tests/test_controller.c",
         "verification/project-audit/toy05-recovery-policy.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "5e8a320b9b764646ac4a68af00a061dd",
       "claimed_at": "2026-11-20T16:53:04+00:00",
-      "updated_at": "2026-11-20T16:54:53+00:00",
-      "note": "Политика восстановления реализована; запущены ПК и M32R с прерываниями записи, одиночными инверсиями и сменой поколения.",
-      "result": null
+      "updated_at": "2026-11-20T16:57:10+00:00",
+      "note": "Восстановление после повреждения записи POR проверено на ПК и M32R; отчёт verification/project-audit/toy05-recovery-policy.md. Запуск H03 и страницы NVM открыты. Снимок аудита и реестр передаю интегратору.",
+      "result": "8d6a6f1f62d70c827531f672c98d309e708df595"
     },
     "CAN-04": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -2528,9 +2528,17 @@
       "action": "review",
       "claim_id": "f0173bc6291a4dd2b8fc72ad0de8fffc",
       "at": "2026-11-20T16:57:02+00:00"
+    },
+    {
+      "operation_id": "b244e5ec9eba4d53a193fe81d49b9099",
+      "task": "TOY-05",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "5e8a320b9b764646ac4a68af00a061dd",
+      "at": "2026-11-20T16:57:10+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:57:02+00:00",
+  "updated_at": "2026-11-20T16:57:10+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
