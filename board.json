@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 237,
+  "sequence": 238,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -558,6 +558,22 @@
       "updated_at": "2026-11-20T16:47:07+00:00",
       "note": "Трасса и инструменты из одного R4. Два повтора без checkout совпали с сохранёнными отчётами; 3256 CRC и 26 команд в каждом. Ordinary BOSCH и SOURCES PASS. Отчёт verification/project-audit/aud01-pinned-replay.md; стенд ECU-02 открыт.",
       "result": "6748075bd8cda69a0b6c2b9d6e2a471a00463434"
+    },
+    "REL-02": {
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex REL-02 — проверка записи CAN",
+      "branch": "codex/rel-02-can-trace-fea1b366",
+      "files": [
+        "tests/test_bench_can_trace.py",
+        "tools/check_bench_can_trace.py",
+        "verification/project-audit/rel02-can-trace.md"
+      ],
+      "stage": "in_progress",
+      "claim_id": "9df078bb4f93459f8e1b8d34220dd825",
+      "claimed_at": "2026-11-20T16:54:37+00:00",
+      "updated_at": "2026-11-20T16:54:37+00:00",
+      "note": "Программная подготовка стенда: офлайн-проверка периодических CAN-кадров по записи, целостность 0x1AE и интервалы по заданным допускам. Отдельно фиксирую границы без измерений на блоках.",
+      "result": null
     }
   },
   "events": [
@@ -2456,9 +2472,17 @@
       "action": "heartbeat",
       "claim_id": "8ab2489d68c04ca68447e7036ec190df",
       "at": "2026-11-20T16:54:19+00:00"
+    },
+    {
+      "operation_id": "3e69c21ea3a3441291eb2efd1475c539",
+      "task": "REL-02",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "9df078bb4f93459f8e1b8d34220dd825",
+      "at": "2026-11-20T16:54:37+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:54:19+00:00",
+  "updated_at": "2026-11-20T16:54:37+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {

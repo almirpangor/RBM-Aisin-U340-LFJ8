@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:54:19+00:00**. Изменение № **237**.
+Обновлено UTC: **2026-11-20T16:54:37+00:00**. Изменение № **238**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -44,7 +44,7 @@
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | На проверке | Codex DTC-03 — монитор цепи ATF H03 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-atf-monitor-01a1f9c7 | 2026-11-20T16:47:24+00:00 | Передаю интегратору адаптер штатного статуса ATF H03. Код встроен в перемещаемый мост, 20 сценариев и 2 отрицательные проверки M32R, ПК 35 шагов/71 тест, H03 link 17 компонентов PASS. Отчёт verification/project-audit/dtc03-h03-atf-monitor.md. Четыре файла кода внести в общий аудит при приёмке и выполнить complete после публикации main. Штатный вызов, отображение P0710 и стенд открыты. / commit d487840ba2505064c7f281305a10813cbdf3b695 |
 | DTC-04 — Хранение DTC после выключения питания | На проверке | Codex — подтверждение долговечной очистки DTC \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-durable-clear-32e6ac79 | 2026-11-20T16:43:22+00:00 | Передаю интегратору. При настроенном backend 54 FF 00 выдаётся только после подтверждения пустого журнала. При отказе сохраняется RAM, TX не ставится. 30 прерываний и повтор PASS, PC 35 шагов/71 тест, M32R журнал и 17 компонентов PASS. Отчёт dtc04-durable-clear.md. Носитель и подключение H03 открыты. / commit acd7d12c2e65cbb521331b175365aa2ae8ffc343 |
 | REL-01 — Два целевых BIN и воспроизводимый комплект | На проверке | Codex REL-01 binary identity \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/rel01-bin-identity-1120-c7e4 | 2026-11-20T16:50:31+00:00 | Reject known OFFLINE_ONLY firmware in paired worksets by SHA-256. Two real renamed Bosch artifacts rejected; accepted evidence packaging remains. SOURCES and PC 35 steps/74 tests PASS. Evidence verification/project-audit/rel01-offline-identity.md. Target pair still open. / commit 3fda923bffc63005e8c2372b22e5197f8d4b7db1 |
-| REL-02 — Приёмка новой связки на оборудовании | Свободна | — | — | — | — |
+| REL-02 — Приёмка новой связки на оборудовании | Выполняется | Codex REL-02 — проверка записи CAN \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/rel-02-can-trace-fea1b366 | 2026-11-20T16:54:37+00:00 | Программная подготовка стенда: офлайн-проверка периодических CAN-кадров по записи, целостность 0x1AE и интервалы по заданным допускам. Отдельно фиксирую границы без измерений на блоках. |
 
 ## Зарезервированные файлы
 
@@ -235,6 +235,14 @@
 - tools/package_workset.py
 - verification/project-audit/rel01-offline-identity.md
 
+### REL-02
+
+Чат: Codex REL-02 — проверка записи CAN. Claim ID: 9df078bb4f93459f8e1b8d34220dd825.
+
+- tests/test_bench_can_trace.py
+- tools/check_bench_can_trace.py
+- verification/project-audit/rel02-can-trace.md
+
 ### SRC-01
 
 Чат: Codex SRC-01. Claim ID: abd55696a19e48a1aaf3a4b0e23f7414.
@@ -316,6 +324,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:54:37+00:00 | REL-02 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:54:19+00:00 | TOY-03 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T16:53:57+00:00 | CAN-01 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:53:04+00:00 | TOY-05 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
@@ -345,4 +354,3 @@
 | 2026-11-20T16:45:25+00:00 | CAN-04 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:45:21+00:00 | DTC-03 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T16:45:11+00:00 | AUD-01 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T16:45:02+00:00 | H03-03 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
