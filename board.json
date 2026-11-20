@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 610,
+  "sequence": 611,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -26,22 +26,24 @@
     },
     "DTC-02": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Codex DTC-02 — штатный RX и владелец CAN H03",
-      "branch": "codex/can03-target-binding-1121-c7e4",
+      "label": "Codex DTC-02 — нижние переходы в общей компоновке H03",
+      "branch": "codex/can03-live-native-ready-1121-c7e4",
       "files": [
-        "targets/lfj8/check_h03_dtc_basiccan.py",
-        "targets/lfj8/h03_dtc_rx_hook_fixture.c",
-        "targets/lfj8/h03_dtc_rx_resident.ld",
-        "targets/lfj8/lfj8_h03_dtc_native.c",
-        "targets/lfj8/lfj8_h03_dtc_native.h",
-        "verification/project-audit/dtc02-h03-native-owner.md"
+        "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+        "tests/test_h03_dtc_rx_placement.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/dtc02-resident-rx-integrated-placement.md"
       ],
-      "stage": "review",
-      "claim_id": "0580560d4a0e442cb07862988bd40b0f",
-      "claimed_at": "2026-11-20T19:40:29+00:00",
-      "updated_at": "2026-11-20T19:48:02+00:00",
-      "note": "Проверенный коммит: нижний IRQ H03 и foreground CAN13 используют h03_can_owner и TML0. 18 сравнений M32R, отказы часов, тёплая перепривязка, новое поколение и запись 0x722 прошли. В отчёте указаны вызовы для rbm_h03_application_binding, требуемые T6/native_ready, RAM и итоговая компоновка. Готовность BIN открыта.",
-      "result": "ed5fd7118b1f4296a952a5811a9364d682e6b7a9"
+      "stage": "in_progress",
+      "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
+      "claimed_at": "2026-11-20T20:34:46+00:00",
+      "updated_at": "2026-11-20T20:34:46+00:00",
+      "note": "Включены предыдущие DTC-02, CAN-02, CAN-03, MODE-03 и пересекающийся H03-02. Добавляю нижнее размещение реального графа IRQ и обеих ветвей в общую модель H03. Активные резервы CAN-03, CAN-01 и DTC-01 не затрагиваю.",
+      "result": null,
+      "based_on_reviews": [
+        "0580560d4a0e442cb07862988bd40b0f",
+        "15e6e783e4d74a5b9c000d3658becff0"
+      ]
     },
     "CAN-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -5783,9 +5785,38 @@
           "d06e51f28ad0459dbc4d456c75b56bb4"
         ]
       }
+    },
+    {
+      "operation_id": "9af1485b3bc34ea4ab09ca548d6fc646",
+      "task": "DTC-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "claim",
+      "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
+      "at": "2026-11-20T20:34:46+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex DTC-02 — нижние переходы в общей компоновке H03",
+        "branch": "codex/can03-live-native-ready-1121-c7e4",
+        "files": [
+          "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+          "tests/test_h03_dtc_rx_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/dtc02-resident-rx-integrated-placement.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
+        "claimed_at": "2026-11-20T20:34:46+00:00",
+        "updated_at": "2026-11-20T20:34:46+00:00",
+        "note": "Включены предыдущие DTC-02, CAN-02, CAN-03, MODE-03 и пересекающийся H03-02. Добавляю нижнее размещение реального графа IRQ и обеих ветвей в общую модель H03. Активные резервы CAN-03, CAN-01 и DTC-01 не затрагиваю.",
+        "result": null,
+        "based_on_reviews": [
+          "0580560d4a0e442cb07862988bd40b0f",
+          "15e6e783e4d74a5b9c000d3658becff0"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:33:49+00:00",
+  "updated_at": "2026-11-20T20:34:46+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
