@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 171,
+  "sequence": 172,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -468,12 +468,12 @@
         "targets/lfj8/check_h03_toyota_stack.py",
         "verification/project-audit/toy01-gp-transfer-size.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "4b00bd7fdda2433d8439e95c7b0b1454",
       "claimed_at": "2026-11-20T16:28:35+00:00",
-      "updated_at": "2026-11-20T16:31:17+00:00",
-      "note": "292 переноса и 17 M32R компонентов PASS. Основное окно модели уменьшилось на 628 байт. Резервирую проверку стека Toyota: её изолированная сборка не копирует подключённый заголовок фаз.",
-      "result": null
+      "updated_at": "2026-11-20T16:35:39+00:00",
+      "note": "На b2ca79d карта 292 переносов GP 1752→1168 байт; расширенная модель M32R 628 байт выигрыша и запас окна 732→1360. ПК 35 шагов/71 тест, M32R 17 компонентов, стек до/после 704 байта на 23 992 вызовах. Интегратору: учесть отчёт verification/project-audit/toy01-gp-transfer-size.md и два файла в общем аудите. Реальная компоновка и стенд открыты.",
+      "result": "8fdce1692a27f0bdf5dcbe0c03d962ab4e87ed39"
     },
     "ECU-02": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -1859,9 +1859,17 @@
       "action": "heartbeat",
       "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
       "at": "2026-11-20T16:35:21+00:00"
+    },
+    {
+      "operation_id": "8bf1b3782f6c4ec6abfd19cb68c0d26e",
+      "task": "TOY-01",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "4b00bd7fdda2433d8439e95c7b0b1454",
+      "at": "2026-11-20T16:35:39+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:35:21+00:00",
+  "updated_at": "2026-11-20T16:35:39+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
