@@ -1,25 +1,30 @@
 {
   "schema_version": 1,
-  "sequence": 97,
+  "sequence": 98,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
       "label": "Основной чат — объединение и проверка результатов",
       "branch": "codex/integration-01a1f76d-20261120",
       "files": [
+        "README.md",
+        "data/project-tasks.json",
         "docs/lfj8-h03-ram-audit.md",
         "docs/multi-chat.md",
+        "docs/project-map.md",
+        "docs/working-set.md",
         "targets/lfj8/lfj8_h03_storage.h",
         "tests/test_task_coordination.py",
         "tools/task_coordination.py",
         "verification/e4m3-can-9e1c/h03-storage.json",
+        "verification/project-audit/2026-11-20-integration.json",
         "verification/project-audit/integration/"
       ],
       "stage": "in_progress",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "claimed_at": "2026-11-20T16:10:26+00:00",
-      "updated_at": "2026-11-20T16:12:48+00:00",
-      "note": "Проверяю готовые порции перед объединением. Учту новое состояние фильтра кнопок в целевой карте RAM; общие карточки пока не редактирую.",
+      "updated_at": "2026-11-20T16:17:43+00:00",
+      "note": "12 порций объединены в рабочей ветке, 35 шагов ПК и 17 M32R прошли. Обновляю общий снимок и карточки с точными границами; окончательная компоновка всех новых функций и выпуск BIN ещё открыты.",
       "result": null
     },
     "DTC-02": {
@@ -1153,9 +1158,17 @@
       "action": "resume",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "at": "2026-11-20T16:17:33+00:00"
+    },
+    {
+      "operation_id": "44ee43c244f64ef28a71c64f7d935971",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "heartbeat",
+      "claim_id": "68c8347a91944cb3929878ea53cc9204",
+      "at": "2026-11-20T16:17:43+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:17:33+00:00",
+  "updated_at": "2026-11-20T16:17:43+00:00",
   "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {
