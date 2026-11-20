@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 560,
+  "sequence": 561,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -409,12 +409,12 @@
         "targets/lfj8/test_lfj8_h03_can_owner.c",
         "verification/project-audit/vss01-foreground-capture.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
       "claimed_at": "2026-11-20T19:55:14+00:00",
-      "updated_at": "2026-11-20T19:58:14+00:00",
-      "note": "Доказан отказ прежнего брокера без живого трекера, новая ветвь передаёт захват S51 и проверяет его давность. Идут повторные проверки ПК и M32R.",
-      "result": null
+      "updated_at": "2026-11-20T20:02:07+00:00",
+      "note": "Снимок S51 подключён к 0x1AE через владельца и брокер CAN13. Проверены TTL, будущие метки, независимая остановка. ПК 41/120, M32R 18+8 и адресная модель PASS; +100 Б Flash и +8 Б рабочей RAM. Расширенная модель FAIL_BINDINGS по application_binding и sensor_config. Отчёт verification/project-audit/vss01-foreground-capture.md.",
+      "result": "b48c663b97c1c4d125a4e86396a09f9be979d803"
     },
     "H03-05": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -5065,9 +5065,17 @@
       "action": "claim",
       "claim_id": "9459ef396a854e778a241074b8d5aa57",
       "at": "2026-11-20T20:01:50+00:00"
+    },
+    {
+      "operation_id": "c76235bd307b47ca9cc6303d6280103d",
+      "task": "VSS-01",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "d9e48d584c644fbf9f3cde053b8b8c41",
+      "at": "2026-11-20T20:02:07+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:01:50+00:00",
+  "updated_at": "2026-11-20T20:02:07+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
