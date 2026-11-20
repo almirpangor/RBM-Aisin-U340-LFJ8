@@ -219,6 +219,37 @@ static void test_mode_capture(void)
     assert(!mode_control.manual_gear && poll(1030u) == LFJ8_H03_TOYOTA_FAULT);
 }
 
+static void test_mode_conflict_between_releases(void)
+{
+    const uint8_t released = 8u;
+    const uint8_t down = 8u | 32u;
+    const uint8_t both = 8u | 32u | 64u;
+    start_mode();
+    mode_sample(1021u, both);
+    mode_sample(1022u, both);
+    mode_sample(1023u, down);
+    mode_sample(1024u, down);
+    assert(poll(1030u) == LFJ8_H03_TOYOTA_EVENT && !input.requested_gear);
+    assert(mode_proposal.driver.conflicting_buttons && !mode_control.manual_gear);
+
+    mode_sample(1031u, released);
+    mode_sample(1032u, down); /* The first release bounced. */
+    mode_sample(1033u, down);
+    assert(poll(1040u) == LFJ8_H03_TOYOTA_EVENT && !input.requested_gear);
+    assert(mode_proposal.driver.conflicting_buttons);
+
+    mode_sample(1041u, released);
+    mode_sample(1042u, released);
+    mode_sample(1043u, down);
+    mode_sample(1044u, down);
+    assert(poll(1050u) == LFJ8_H03_TOYOTA_EVENT && input.requested_gear == 1u);
+    assert(!mode_proposal.driver.conflicting_buttons);
+
+    driver.actual_gear = 1u;
+    mode_sample(1051u, down);
+    assert(poll(1060u) == LFJ8_H03_TOYOTA_EVENT && !input.requested_gear);
+}
+
 int main(void)
 {
     __asm__ volatile ("setpsw #0x40" ::: "memory", "cc");
@@ -292,6 +323,7 @@ int main(void)
     assert(poll(1010u) == LFJ8_H03_TOYOTA_FAULT && !release.status && !captures);
     assert(sizeof release == 16u);
     test_mode_capture();
+    test_mode_conflict_between_releases();
     puts("H03 Toyota release: native TML0, fixed deadlines, faults, rollover and manual target PASS");
     return 0;
 }
