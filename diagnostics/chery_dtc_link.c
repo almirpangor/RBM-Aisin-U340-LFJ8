@@ -79,12 +79,13 @@ static CheryDtcLinkResult receive_flow_control(
     return take_next_frame(link, tick, outgoing);
 }
 
-CheryDtcLinkResult chery_dtc_link_receive(
+CheryDtcLinkResult chery_dtc_link_receive_with_store(
     CheryDtcLink *link,
     CheryDtcState *dtc,
     const CheryDtcCanFrame *received,
     uint32_t tick,
-    CheryDtcLinkTx *outgoing
+    CheryDtcLinkTx *outgoing,
+    const CheryDtcClearStore *store
 )
 {
     if (link == NULL || dtc == NULL || received == NULL || outgoing == NULL) {
@@ -120,12 +121,30 @@ CheryDtcLinkResult chery_dtc_link_receive(
             .length = CHERY_DTC_CAN_FRAME_BYTES,
             .data = {0x02u, 0x50u, 0x86u}
         };
-    } else if (chery_dtc_can_format_reply(dtc, link->session, received, &link->reply)
-               != CHERY_DTC_REPLIED) {
-        return CHERY_DTC_LINK_IGNORED;
+    } else {
+        const CheryDtcResult result = chery_dtc_can_format_reply_with_store(
+            dtc, link->session, received, &link->reply, store
+        );
+        if (result == CHERY_DTC_STORAGE_FAILURE) {
+            return CHERY_DTC_LINK_STORAGE_FAILURE;
+        }
+        if (result != CHERY_DTC_REPLIED) {
+            return CHERY_DTC_LINK_IGNORED;
+        }
     }
 
     return take_next_frame(link, tick, outgoing);
+}
+
+CheryDtcLinkResult chery_dtc_link_receive(
+    CheryDtcLink *link,
+    CheryDtcState *dtc,
+    const CheryDtcCanFrame *received,
+    uint32_t tick,
+    CheryDtcLinkTx *outgoing
+)
+{
+    return chery_dtc_link_receive_with_store(link, dtc, received, tick, outgoing, NULL);
 }
 
 CheryDtcLinkResult chery_dtc_link_confirm_tx(

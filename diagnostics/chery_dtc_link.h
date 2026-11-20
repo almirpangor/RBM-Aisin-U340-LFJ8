@@ -14,7 +14,8 @@ typedef enum {
     CHERY_DTC_LINK_WAITING,
     CHERY_DTC_LINK_COMPLETE,
     CHERY_DTC_LINK_ABORTED,
-    CHERY_DTC_LINK_INVALID_ARGUMENT
+    CHERY_DTC_LINK_INVALID_ARGUMENT,
+    CHERY_DTC_LINK_STORAGE_FAILURE
 } CheryDtcLinkResult;
 
 typedef enum {
@@ -48,6 +49,16 @@ CheryDtcLinkResult chery_dtc_link_receive(
     const CheryDtcCanFrame *received,
     uint32_t tick,
     CheryDtcLinkTx *outgoing
+);
+/* A configured store is called only for an authorized clear. If it fails,
+ * the link stays idle and leaves outgoing and the confirmation token alone. */
+CheryDtcLinkResult chery_dtc_link_receive_with_store(
+    CheryDtcLink *link,
+    CheryDtcState *dtc,
+    const CheryDtcCanFrame *received,
+    uint32_t tick,
+    CheryDtcLinkTx *outgoing,
+    const CheryDtcClearStore *store
 );
 CheryDtcLinkResult chery_dtc_link_confirm_tx(
     CheryDtcLink *link,

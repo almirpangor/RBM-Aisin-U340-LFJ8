@@ -50,6 +50,77 @@ static void load_five_records(CheryDtcState *dtc)
     assert(chery_dtc_set_current(dtc, 0x54u, true));
 }
 
+typedef struct {
+    const CheryDtcLink *link;
+    const CheryDtcState *dtc;
+    const CheryDtcState *before;
+    const CheryDtcLinkTx *outgoing;
+    uint32_t token;
+    unsigned calls;
+    bool durable;
+} ClearProbe;
+
+static bool commit_probe(void *context)
+{
+    ClearProbe *probe = context;
+    assert(probe->link->phase == CHERY_DTC_LINK_IDLE && probe->link->reply.count == 0u);
+    assert(probe->link->tx_token == probe->token && probe->outgoing->token == probe->token);
+    assert(memcmp(probe->dtc, probe->before, sizeof(*probe->dtc)) == 0);
+    ++probe->calls;
+    return probe->durable;
+}
+
+static void test_durable_clear_order(void)
+{
+    CheryDtcLink link;
+    CheryDtcState dtc;
+    CheryDtcLinkTx tx = {0};
+    chery_dtc_link_init(&link);
+    load_five_records(&dtc);
+    const CheryDtcState before = dtc;
+    ClearProbe probe = {.link = &link, .dtc = &dtc, .before = &before, .outgoing = &tx};
+    const CheryDtcClearStore store = {.commit_empty = commit_probe, .context = &probe};
+
+    assert(chery_dtc_link_receive_with_store(&link, &dtc, &clear_request, 0u, &tx, &store)
+           == CHERY_DTC_LINK_FRAME_READY);
+    const uint8_t denied[8] = {0x03, 0x7f, 0x14, 0x80};
+    expect_frame(&tx, denied);
+    assert(probe.calls == 0 && memcmp(&dtc, &before, sizeof dtc) == 0);
+    assert(chery_dtc_link_confirm_tx(&link, tx.token, 1u, &tx) == CHERY_DTC_LINK_COMPLETE);
+
+    assert(chery_dtc_link_receive_with_store(&link, &dtc, &open_session, 2u, &tx, &store)
+           == CHERY_DTC_LINK_FRAME_READY);
+    assert(chery_dtc_link_receive_with_store(&link, &dtc, &clear_request, 3u, &tx, &store)
+           == CHERY_DTC_LINK_IGNORED);
+    assert(probe.calls == 0);
+    assert(chery_dtc_link_confirm_tx(&link, tx.token, 4u, &tx) == CHERY_DTC_LINK_COMPLETE);
+    probe.token = tx.token;
+
+    const CheryDtcClearStore unavailable = {0};
+    assert(chery_dtc_link_receive_with_store(&link, &dtc, &clear_request, 5u, &tx, &unavailable)
+           == CHERY_DTC_LINK_STORAGE_FAILURE);
+    assert(chery_dtc_link_receive_with_store(&link, &dtc, &clear_request, 6u, &tx, &store)
+           == CHERY_DTC_LINK_STORAGE_FAILURE);
+    assert(probe.calls == 1 && link.tx_token == probe.token && tx.token == probe.token);
+    assert(link.phase == CHERY_DTC_LINK_IDLE && link.reply.count == 0u);
+    assert(memcmp(&dtc, &before, sizeof dtc) == 0);
+    const uint8_t opened[8] = {0x02, 0x50, 0x86};
+    expect_frame(&tx, opened);
+
+    probe.durable = true;
+    assert(chery_dtc_link_receive_with_store(&link, &dtc, &clear_request, 7u, &tx, &store)
+           == CHERY_DTC_LINK_FRAME_READY);
+    const uint8_t cleared[8] = {0x03, 0x54, 0xff, 0x00};
+    expect_frame(&tx, cleared);
+    assert(probe.calls == 2 && tx.token == probe.token + 1u && dtc.clear_pending);
+    assert(chery_dtc_link_confirm_tx(&link, tx.token, 8u, &tx) == CHERY_DTC_LINK_COMPLETE);
+    assert(chery_dtc_link_receive_with_store(&link, &dtc, &read_request, 9u, &tx, &store)
+           == CHERY_DTC_LINK_FRAME_READY);
+    const uint8_t empty[8] = {0x02, 0x57, 0x00};
+    expect_frame(&tx, empty);
+    assert(probe.calls == 2);
+}
+
 static void test_cold_permission_and_session_end(void)
 {
     CheryDtcLink link;
@@ -266,11 +337,13 @@ static void test_model_field_loss_and_recovery(void)
 
 int main(void)
 {
+    test_durable_clear_order();
     test_cold_permission_and_session_end();
     test_flow_control_and_continuations();
     test_out_of_profile_flow_control();
     test_timeouts_and_wrap();
     test_model_field_loss_and_recovery();
     puts("Chery C0 diagnostic link and independent model-field loss and recovery: passed");
+    puts("Chery C0 durable clear: storage before TX, no acknowledgement on failure, retry passed.");
     return 0;
 }

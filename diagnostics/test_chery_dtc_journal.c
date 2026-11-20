@@ -22,8 +22,84 @@ static void expect_empty(const CheryDtcState *state)
     assert(!state->clear_pending);
 }
 
+typedef struct {
+    const uint8_t *old_record;
+    uint8_t *target;
+    size_t prefix;
+    bool publish;
+    unsigned calls;
+} ClearBackend;
+
+static bool store_empty(void *context)
+{
+    ClearBackend *backend = context;
+    uint8_t body[CHERY_DTC_JOURNAL_BODY_BYTES];
+    CheryDtcState empty;
+    chery_dtc_init(&empty);
+    assert(chery_dtc_journal_encode(&empty, 0u, body));
+    ++backend->calls;
+    memcpy(backend->target, body, backend->prefix);
+    if (!backend->publish) {
+        return false;
+    }
+    assert(backend->prefix == sizeof body);
+    backend->target[sizeof body] = CHERY_DTC_JOURNAL_COMMITTED;
+    CheryDtcState verified;
+    uint32_t generation = UINT32_MAX;
+    assert(chery_dtc_journal_restore(backend->old_record, backend->target, &verified, &generation)
+           == CHERY_DTC_JOURNAL_SLOT_1 && generation == 0u);
+    expect_empty(&verified);
+    return true;
+}
+
+static void test_clear_reply_after_publication(void)
+{
+    Record old_record, target;
+    CheryDtcState active, restored;
+    chery_dtc_init(&active);
+    assert(chery_dtc_raise_c0(&active, 95, false));
+    commit(old_record, &active, UINT32_MAX);
+    const CheryDtcState before = active;
+    ClearBackend backend = {.old_record = old_record, .target = target};
+    const CheryDtcClearStore store = {.commit_empty = store_empty, .context = &backend};
+    const CheryDtcSession session = {0x80u, 0x02u};
+    const uint8_t request[] = {0x14u, 0xffu, 0x00u};
+    const uint8_t sentinel[] = {0x5au, 0x5au, 0x5au};
+    uint8_t reply[sizeof sentinel];
+    memcpy(reply, sentinel, sizeof reply);
+    size_t length = 0;
+    assert(chery_dtc_respond_with_store(&active, session, request, sizeof request, reply,
+                                       sizeof reply - 1u, &length, &store) == CHERY_DTC_SHORT_BUFFER);
+    assert(length == 3u && backend.calls == 0 && memcmp(reply, sentinel, sizeof reply) == 0);
+
+    for (size_t prefix = 0; prefix <= CHERY_DTC_JOURNAL_BODY_BYTES; ++prefix) {
+        memset(target, CHERY_DTC_JOURNAL_UNCOMMITTED, sizeof target);
+        backend.prefix = prefix;
+        assert(chery_dtc_respond_with_store(&active, session, request, sizeof request, reply,
+                                           sizeof reply, &length, &store) == CHERY_DTC_STORAGE_FAILURE);
+        assert(length == 0 && memcmp(reply, sentinel, sizeof reply) == 0);
+        assert(memcmp(&active, &before, sizeof active) == 0);
+        uint32_t generation = 0;
+        assert(chery_dtc_journal_restore(old_record, target, &restored, &generation)
+               == CHERY_DTC_JOURNAL_SLOT_0);
+        assert(generation == UINT32_MAX && restored.snapshot_index[0] == 95);
+    }
+
+    backend.publish = true;
+    assert(chery_dtc_respond_with_store(&active, session, request, sizeof request, reply,
+                                       sizeof reply, &length, &store) == CHERY_DTC_REPLIED);
+    const uint8_t positive[] = {0x54u, 0xffu, 0x00u};
+    assert(length == sizeof positive && memcmp(reply, positive, sizeof positive) == 0);
+    assert(active.clear_pending && backend.calls == CHERY_DTC_JOURNAL_BODY_BYTES + 2u);
+    uint32_t generation = UINT32_MAX;
+    assert(chery_dtc_journal_restore(old_record, target, &restored, &generation) == CHERY_DTC_JOURNAL_SLOT_1);
+    assert(generation == 0u);
+    expect_empty(&restored);
+}
+
 int main(void)
 {
+    test_clear_reply_after_publication();
     Record old_record, clear_record, interrupted;
     CheryDtcState active, restored;
     uint32_t generation = 42;
@@ -100,5 +176,6 @@ int main(void)
     assert(!chery_dtc_journal_encode(&active, 1, clear_record));
 
     puts("DTC journal: restore, wrap, clear, 30 interrupted prefixes and 240 bit faults PASS");
+    puts("DTC journal: 30 unconfirmed clears withheld reply, one durable clear survived restart PASS");
     return 0;
 }

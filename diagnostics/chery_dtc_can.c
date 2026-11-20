@@ -17,11 +17,12 @@ static CheryDtcCanFrame *add_reply_frame(CheryDtcCanReply *reply)
     return frame;
 }
 
-CheryDtcResult chery_dtc_can_format_reply(
+CheryDtcResult chery_dtc_can_format_reply_with_store(
     CheryDtcState *state,
     CheryDtcSession session,
     const CheryDtcCanFrame *request,
-    CheryDtcCanReply *reply
+    CheryDtcCanReply *reply,
+    const CheryDtcClearStore *store
 )
 {
     if (reply == NULL) {
@@ -44,8 +45,8 @@ CheryDtcResult chery_dtc_can_format_reply(
 
     uint8_t pdu[CHERY_DTC_MAX_REPLY_BYTES];
     size_t pdu_length;
-    CheryDtcResult result = chery_dtc_respond(
-        state, session, &request->data[1], request_size, pdu, sizeof(pdu), &pdu_length
+    CheryDtcResult result = chery_dtc_respond_with_store(
+        state, session, &request->data[1], request_size, pdu, sizeof(pdu), &pdu_length, store
     );
     if (result != CHERY_DTC_REPLIED) {
         return result;
@@ -72,4 +73,14 @@ CheryDtcResult chery_dtc_can_format_reply(
         offset += bytes;
     }
     return CHERY_DTC_REPLIED;
+}
+
+CheryDtcResult chery_dtc_can_format_reply(
+    CheryDtcState *state,
+    CheryDtcSession session,
+    const CheryDtcCanFrame *request,
+    CheryDtcCanReply *reply
+)
+{
+    return chery_dtc_can_format_reply_with_store(state, session, request, reply, NULL);
 }

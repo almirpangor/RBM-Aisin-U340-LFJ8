@@ -128,14 +128,15 @@ static size_t build_read_reply(
     return length;
 }
 
-CheryDtcResult chery_dtc_respond(
+CheryDtcResult chery_dtc_respond_with_store(
     CheryDtcState *state,
     CheryDtcSession session,
     const uint8_t *request,
     size_t request_length,
     uint8_t *response,
     size_t response_capacity,
-    size_t *response_length
+    size_t *response_length,
+    const CheryDtcClearStore *store
 )
 {
     if (response_length == NULL) {
@@ -172,14 +173,32 @@ CheryDtcResult chery_dtc_respond(
         }
     }
 
-    *response_length = length;
     if (response_capacity < length) {
+        *response_length = length;
         return CHERY_DTC_SHORT_BUFFER;
     }
     if (clear) {
+        if (store != NULL && (store->commit_empty == NULL || !store->commit_empty(store->context))) {
+            return CHERY_DTC_STORAGE_FAILURE;
+        }
         chery_dtc_init(state);
         state->clear_pending = true;
     }
     memcpy(response, reply, length);
+    *response_length = length;
     return CHERY_DTC_REPLIED;
+}
+
+CheryDtcResult chery_dtc_respond(
+    CheryDtcState *state,
+    CheryDtcSession session,
+    const uint8_t *request,
+    size_t request_length,
+    uint8_t *response,
+    size_t response_capacity,
+    size_t *response_length
+)
+{
+    return chery_dtc_respond_with_store(state, session, request, request_length, response,
+                                       response_capacity, response_length, NULL);
 }
