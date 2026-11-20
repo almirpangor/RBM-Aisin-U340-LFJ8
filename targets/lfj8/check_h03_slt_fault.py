@@ -1,4 +1,4 @@
-"""Run the unchanged H03 P0745 monitor and clear path in the M32R simulator."""
+"""Run the stock H03 P0745 monitor, arbiter and output path in the M32R simulator."""
 
 import argparse
 from hashlib import sha256
@@ -43,7 +43,10 @@ FIXTURE = """
 
 enum {
     VOLTAGE_VBAT = 0x805084,
+    PRESSURE_PROPOSAL = 0x80508C,
     CURRENT_REQUEST = 0x805094,
+    PWM_WIDTH = 0x8048CC,
+    OEM_CRITICAL_STACK = 0x809F9C,
     ADC0_AN3 = 0x804BC0,
     REMAINING = 0x804EAC,
     P0745 = 0x806356,
@@ -69,6 +72,64 @@ static void sample(unsigned count)
     for (unsigned i = 0; i < count; ++i) {
         monitor();
     }
+}
+
+static int check_actuator_path(void)
+{
+    void (*arbitrate)(void) = (void (*)(void))(uintptr_t)0x0717B8;
+    void (*apply)(void) = (void (*)(void))(uintptr_t)0x046900;
+    void (*clear)(void) = (void (*)(void))(uintptr_t)0x071FF4;
+
+    RAM32(OEM_CRITICAL_STACK) = OEM_CRITICAL_STACK;
+    RAM32(PRESSURE_PROPOSAL) = ONE_AMP;
+    RAM32(VOLTAGE_VBAT) = TWELVE_VOLTS;
+    RAM8(P0745) = 0;
+    RAM8(P10SEL) = 0xa0u;
+    RAM8(P10DATA) = 0xf3u;
+    arbitrate();
+    apply();
+    if (RAM32(CURRENT_REQUEST) != ONE_AMP || RAM16(PWM_WIDTH) != 1000u ||
+        RAM8(P10SEL) != 0xa1u || RAM16(TIO4RL1) != 1999u || RAM16(TIO4RL0) != 999u) {
+        return 11;
+    }
+
+    RAM16(ADC0_AN3) = 307u << 6;
+    sample(1);
+    RAM16(ADC0_AN3) = 0;
+    sample(20);
+    if (RAM8(P0745) != 1u || RAM32(CURRENT_REQUEST) != ONE_AMP ||
+        RAM8(P10SEL) != 0xa1u || RAM16(TIO4RL1) != 1999u || RAM16(TIO4RL0) != 999u) {
+        return 12;
+    }
+
+    arbitrate();
+    if (RAM32(CURRENT_REQUEST) != 0u || RAM32(PRESSURE_PROPOSAL) != ONE_AMP ||
+        RAM8(P10SEL) != 0xa1u || RAM16(TIO4RL1) != 1999u || RAM16(TIO4RL0) != 999u) {
+        return 13;
+    }
+
+    apply();
+    if (RAM8(P10SEL) != 0xa0u || RAM8(P10DATA) != 0xf2u ||
+        RAM16(PWM_WIDTH) != 1u || RAM16(TIO4RL1) != 2998u || RAM16(TIO4RL0) != 0u) {
+        return 14;
+    }
+
+    RAM8(CLEAR_REQUEST) = 1;
+    clear();
+    apply();
+    if (RAM8(P0745) || RAM32(CURRENT_REQUEST) != 0u ||
+        RAM8(P10SEL) != 0xa0u || RAM8(P10DATA) != 0xf2u) {
+        return 15;
+    }
+
+    /* Stock arbitration can reuse that proposal after the diagnostic clear. */
+    arbitrate();
+    apply();
+    if (RAM32(CURRENT_REQUEST) != ONE_AMP || RAM8(P10SEL) != 0xa1u ||
+        RAM16(TIO4RL1) != 1999u || RAM16(TIO4RL0) != 999u) {
+        return 16;
+    }
+    return 0;
 }
 
 int main(void)
@@ -138,7 +199,7 @@ int main(void)
     if (RAM32(REMAINING) != FULL_COUNTDOWN || RAM8(P0745)) {
         return 10;
     }
-    return 0;
+    return check_actuator_path();
 }
 """
 
@@ -153,6 +214,12 @@ SCENARIOS = (
     "high_feedback_latches_at_20_calls",
     "voltage_at_8v_does_not_arm_monitor",
     "current_below_arm_threshold_does_not_arm_monitor",
+    "actuator_path_starts_with_pwm_applied",
+    "second_fault_before_arbitration_preserves_pwm",
+    "arbitration_zeroes_request_but_leaves_pwm_until_apply",
+    "apply_selects_gpio_low_and_updates_reloads",
+    "clear_then_apply_keeps_last_zero_result",
+    "stock_rearbitration_can_restore_the_old_proposal",
 )
 
 
@@ -196,6 +263,11 @@ def check(base, compiler):
         "consecutive_out_of_range_calls_before_fault": 20,
         "in_range_feedback_clears_fault": False,
         "latch_writes_actuator_registers": False,
+        "native_pressure_arbiter": "0x0717B8",
+        "native_apply_path": "0x046900",
+        "arbiter_zero_disconnects_pwm_without_apply": False,
+        "apply_after_zero_selects_gpio_low": True,
+        "stock_rearbitration_after_clear_can_reuse_unchanged_proposal": True,
         "hardware_executed": False,
         "target_image_emitted": False,
     }
