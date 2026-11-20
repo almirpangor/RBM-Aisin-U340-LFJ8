@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 575,
+  "sequence": 576,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -576,12 +576,12 @@
         "verification/project-audit/2026-11-21-h03-ram-owner.json",
         "verification/project-audit/rel02-h03-ram-owner.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "3fd1870717ff4cc684af517ec9f56903",
       "claimed_at": "2026-11-20T20:00:42+00:00",
-      "updated_at": "2026-11-20T20:04:56+00:00",
-      "note": "Реальный холодный gate H03 прошёл с проверкой пяти переходов, ссылки на действующую политику и полных защищаемых диапазонов. Известный состав 95826 байт; перепроверяю совместный вариант с H03-03 и TOY-01.",
-      "result": null
+      "updated_at": "2026-11-20T20:07:36+00:00",
+      "note": "Владелец RAM проверен через штатный холодный gate H03. Пять переходов, единая связанная политика, полные диапазоны и остановленные CAN. Совместно с H03-03 и TOY-01 известные 96510 байт, FAIL_BINDINGS. Нижняя запись, аппаратный свидетель RAM и две целевые привязки открыты.",
+      "result": "8fcdf277bebdaac3efa2acb9092f88667367561a"
     }
   },
   "events": [
@@ -5184,9 +5184,17 @@
       "action": "claim",
       "claim_id": "881583aa76814d4da3f768699f01ca29",
       "at": "2026-11-20T20:07:21+00:00"
+    },
+    {
+      "operation_id": "ab54b32877f84b2880fdf2f11e35bb00",
+      "task": "REL-02",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "3fd1870717ff4cc684af517ec9f56903",
+      "at": "2026-11-20T20:07:36+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:07:21+00:00",
+  "updated_at": "2026-11-20T20:07:36+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
