@@ -1,0 +1,99 @@
+{
+  "status": "OFFLINE_ONLY_NOT_HARDWARE_TESTED",
+  "base_sha256": "e25a1c97492ae556b1a52043e6ae85b88d2da86c03a78ef01dc2151c8a0a4a2a",
+  "sha256": "624d47d74bb19a6bdcf8aa662ec0b4e1361c51d635a9495765f36a6d7f0978f0",
+  "bytes": 851968,
+  "changed_bytes": 7819,
+  "regions": {
+    "wrapper": {
+      "cpu": "0x1e200",
+      "offset": "0xe200",
+      "length": 7672
+    },
+    "speed_receiver": {
+      "cpu": "0x66000",
+      "offset": "0x56000",
+      "length": 590
+    },
+    "speed_selector": {
+      "cpu": "0xb8441",
+      "offset": "0xa8441",
+      "length": 1
+    },
+    "engine_signals_tx": {
+      "cpu": "0x66800",
+      "offset": "0x56800",
+      "length": 906
+    }
+  },
+  "checksum_records": 51,
+  "can_standard_id": "0x1ae",
+  "can_object": 13,
+  "stale_service_calls": 32,
+  "panel_output_implemented": false,
+  "speed_receiver_symbols": {
+    "reset": "0x66000",
+    "configure": "0x6602a",
+    "can_enable": "0x66098",
+    "tick": "0x6609e",
+    "age_done": "0x660be",
+    "idle": "0x660de",
+    "complete": "0x6614a",
+    "received": "0x66174",
+    "division": "0x661de",
+    "division_step": "0x661ea",
+    "division_next": "0x661f2",
+    "invalid_speed": "0x66210",
+    "restore_object": "0x6621e",
+    "owned": "0x66242",
+    "free": "0x66248"
+  },
+  "chery_model_payload_bytes": [
+    2,
+    5
+  ],
+  "diagnostic_signals_tx": [
+    {
+      "can_id": "0xfa",
+      "object": 14,
+      "period_t4_ticks": 625
+    },
+    {
+      "can_id": "0x278",
+      "object": 15,
+      "period_t4_ticks": 1250
+    }
+  ],
+  "engine_signals_tx_symbols": {
+    "configure": "0x66800",
+    "configure_rpm": "0x6681a",
+    "configure_coolant": "0x66828",
+    "configure_object": "0x66836",
+    "tick": "0x66880",
+    "check_owner": "0x66892",
+    "rpm_first": "0x668f4",
+    "defer_rpm_first_rpm": "0x66910",
+    "defer_rpm_first_coolant": "0x6692e",
+    "coolant_first": "0x66932",
+    "defer_coolant_first_coolant": "0x66950",
+    "defer_coolant_first_rpm": "0x6696c",
+    "pack_rpm": "0x66970",
+    "rpm_invalid": "0x669aa",
+    "rpm_write": "0x669ae",
+    "model_encode": "0x669f2",
+    "model_now_magnitude": "0x66a00",
+    "model_now_negative": "0x66a2c",
+    "model_now_done": "0x66a3a",
+    "model_limit_magnitude": "0x66a4a",
+    "model_limit_negative": "0x66a76",
+    "model_limit_done": "0x66a84",
+    "model_invalid": "0x66ad2",
+    "model_packed": "0x66ae2",
+    "pack_coolant": "0x66af8",
+    "coolant_invalid": "0x66b32",
+    "coolant_write": "0x66b36",
+    "send": "0x66b62",
+    "free": "0x66b84"
+  },
+  "short_relative_branches": 54
+}
