@@ -8,8 +8,10 @@
  * Call in normal executable Flash mode before starting DTC producers and
  * the service writer. The native IRQ lock covers both journal reads.
  *
- * Returns the journal restore status. A busy, inaccessible, errored or
- * emulated array fails closed. There are no erase or program operations. */
+ * Before and after each slot read, the array must be accessible and idle,
+ * with no Flash error and with all FELBANK/FESBANK enables clear. A refused
+ * read returns LFJ8_H03_NVM_READ_FAILED and clears the cold-start DTC state.
+ * There are no erase or program operations. */
 Lfj8H03NvmResult lfj8_h03_nvm_native_restore_dtc(const uint8_t blocks[2], CheryDtcState *state);
 
 #endif

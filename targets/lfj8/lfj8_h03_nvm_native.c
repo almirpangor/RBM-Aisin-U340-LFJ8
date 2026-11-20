@@ -4,17 +4,26 @@
 #define H03_FMOD UINT32_C(0x8007E0)
 #define H03_FSTAT UINT32_C(0x8007E1)
 #define H03_FCNT1 UINT32_C(0x8007E2)
+#define H03_FELBANK0 UINT32_C(0x8007E8)
+#define H03_FELBANK1 UINT32_C(0x8007EA)
+#define H03_FESBANK0 UINT32_C(0x8007F0)
+#define H03_FESBANK1 UINT32_C(0x8007F2)
 
-enum { FAENS = 0x10, FBUSY_READY = 0x80, ERASE_ERROR = 0x20, WRITE_ERROR = 0x10 };
+enum { FAENS = 0x10, FBUSY_READY = 0x80, ERASE_ERROR = 0x20, WRITE_ERROR = 0x10,
+       FLASH_BANK_ENABLE = 0x8000 };
 
 static bool array_ready(void)
 {
     const Lfj8RegisterIo *const io = &lfj8_h03_mmio;
+    void *const context = io->context;
     const unsigned status_mask = FBUSY_READY | ERASE_ERROR | WRITE_ERROR;
-    /* Normal array access requires both FENTRY and FEMMOD clear. */
-    return io->read8(io->context, H03_FCNT1) == 0u &&
-        (io->read8(io->context, H03_FMOD) & FAENS) != 0u &&
-        (io->read8(io->context, H03_FSTAT) & status_mask) == FBUSY_READY;
+    /* Require normal array access and reject bank enables independently of
+     * FCNT1, as in the H03 RAM owner's plain-Flash gate. */
+    return io->read8(context, H03_FCNT1) == 0u &&
+        (io->read8(context, H03_FMOD) & FAENS) != 0u &&
+        (io->read8(context, H03_FSTAT) & status_mask) == FBUSY_READY &&
+        !((io->read16(context, H03_FELBANK0) | io->read16(context, H03_FELBANK1) |
+           io->read16(context, H03_FESBANK0) | io->read16(context, H03_FESBANK1)) & FLASH_BANK_ENABLE);
 }
 
 static bool read_array(void *context, uint32_t address, uint8_t *data, size_t size)

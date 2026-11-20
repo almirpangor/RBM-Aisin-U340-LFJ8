@@ -8,6 +8,7 @@
 #include <string.h>
 
 #define REG8(address) (*(volatile uint8_t *)(uintptr_t)(address))
+#define REG16(address) (*(volatile uint16_t *)(uintptr_t)(address))
 
 enum { FMOD = 0x8007E0, FSTAT = 0x8007E1, FCNT1 = 0x8007E2 };
 enum { FIRST = 0x006000, SECOND = 0x020000, SLOT_BYTES = 34, PUBLISHED = 30, RETIRED = 32 };
@@ -107,6 +108,23 @@ int main(void)
     REG8(FMOD) = 0x10u;
     REG8(FSTAT) = 0x80u;
     REG8(FCNT1) = 0u;
+    /* Leave a valid published slot in the backing memory. A bank enable
+     * alone must prevent its contents from being accepted as physical Flash. */
+    static const uint32_t banks[] = {0x8007E8, 0x8007EA, 0x8007F0, 0x8007F2};
+    const uint16_t page = 0x0020u;
+    const uint16_t enabled = (uint16_t)(0x8000u | page);
+    for (unsigned i = 0; i < sizeof banks / sizeof banks[0]; ++i) {
+        REG16(banks[i]) = page;
+    }
+    expect_restore(test_blocks, LFJ8_H03_NVM_SLOT_1, &learned, &learned);
+    for (unsigned i = 0; i < sizeof banks / sizeof banks[0]; ++i) {
+        REG16(banks[i]) = enabled;
+        expect_restore(test_blocks, LFJ8_H03_NVM_READ_FAILED, &empty, &learned);
+        assert(REG8(FCNT1) == 0u && REG16(banks[i]) == enabled);
+        REG16(banks[i]) = page;
+        expect_restore(test_blocks, LFJ8_H03_NVM_SLOT_1, &learned, &learned);
+    }
+
     const uint8_t duplicate[] = {4, 4};
     const uint8_t out_of_range[] = {4, LFJ8_H03_NVM_BLOCK_COUNT};
     expect_restore(NULL, LFJ8_H03_NVM_INVALID, &empty, &learned);
@@ -114,6 +132,6 @@ int main(void)
     expect_restore(out_of_range, LFJ8_H03_NVM_INVALID, &empty, &learned);
     assert(lfj8_h03_nvm_native_restore_dtc(test_blocks, NULL) == LFJ8_H03_NVM_INVALID);
     expect_restore(test_blocks, LFJ8_H03_NVM_SLOT_1, &learned, &learned);
-    puts("PASS native H03 array: inaccessible, busy, erase/program error, E/W, Virtual Flash and invalid blocks");
+    puts("PASS native H03 array: inaccessible, busy, erase/program error, E/W, Virtual Flash bank enable with FCNT1 clear, invalid blocks");
     return 0;
 }
