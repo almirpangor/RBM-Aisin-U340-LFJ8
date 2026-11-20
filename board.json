@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 499,
+  "sequence": 500,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -143,22 +143,22 @@
     },
     "H03-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
-      "label": "Codex H03-02 — единый допуск часов датчиков",
-      "branch": "codex/h03-02-shared-clock-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex H03-02 — нативные врезки датчиков в общей компоновке",
+      "branch": "codex/h03-02-sensor-placement-mwp5rm2ofhaxjfi9dss",
       "files": [
-        "targets/lfj8/h03_atf_hook_fixture.c",
-        "targets/lfj8/h03_sensor_hook_fixture.c",
-        "targets/lfj8/lfj8_h03_atf_target.h",
-        "targets/lfj8/lfj8_h03_atf_tml0.c",
-        "targets/lfj8/lfj8_h03_sensor_target.c",
-        "verification/project-audit/h03-02-shared-clock.md"
+        "targets/lfj8/check_h03_atf_native.py",
+        "targets/lfj8/check_h03_sensor_native.py",
+        "targets/lfj8/lfj8_h03_sensor_hooks.py",
+        "tests/test_h03_sensor_hooks.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/h03-02-sensor-placement.md"
       ],
-      "stage": "done",
-      "claim_id": "15ef4cba9c9a49b1acc46893d21aabad",
-      "claimed_at": "2026-11-20T18:57:46+00:00",
-      "updated_at": "2026-11-20T19:24:27+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "5b195f4a2ac6d48862f063e957e07b6ef77db971"
+      "stage": "in_progress",
+      "claim_id": "15e6e783e4d74a5b9c000d3658becff0",
+      "claimed_at": "2026-11-20T19:37:59+00:00",
+      "updated_at": "2026-11-20T19:37:59+00:00",
+      "note": "Включаю нативные обёртки S51/S83 и ATF в общую M32R-компоновку: закреплённые слова OEM, продолжения, расчёт BRA и проверка адресов ELF. Параметры датчиков и целевой binding остаются внешними зависимостями.",
+      "result": null
     },
     "CAN-05": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -4547,9 +4547,17 @@
       "action": "claim",
       "claim_id": "5fcdd962167d41129b445b4ea70a2c80",
       "at": "2026-11-20T19:37:42+00:00"
+    },
+    {
+      "operation_id": "a02243272a1c41e686bfdf286bbf9b39",
+      "task": "H03-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "claim",
+      "claim_id": "15e6e783e4d74a5b9c000d3658becff0",
+      "at": "2026-11-20T19:37:59+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:37:42+00:00",
+  "updated_at": "2026-11-20T19:37:59+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
