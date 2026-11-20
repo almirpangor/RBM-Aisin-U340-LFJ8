@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:35:39+00:00**. Изменение № **172**.
+Обновлено UTC: **2026-11-20T16:35:57+00:00**. Изменение № **173**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -24,7 +24,7 @@
 | CAN-04 — Запрос снижения момента по RB | Работа завершена | Codex CAN-04 — снятие RB-запроса \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-torque-fea1b366 | 2026-11-20T16:30:09+00:00 | Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте. / commit 0a3f6260d1bee66174df70712597fc868777e34b |
 | CAN-05 — Полнота штатного обмена Chery | На проверке | Codex CAN-05 RX age \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can05-rx-age-1120-c7e4 | 2026-11-20T16:34:04+00:00 | Capture-time expiry and ordering for queued 1AE operands. Targeted receiver and all 65536 round-trip vectors PASS, 35 PC steps / 70 tests with S03 rerun, existing ST10 image PASS_OFFLINE_ONLY. Evidence verification/project-audit/can05-rx-age.md. Native capture and calibration remain open. / commit 82947a42cfb33ef5350af1ce98e39055ba6a1508 |
 | ECU-01 — Проверочная сборка Bosch E4M3 | На проверке | Codex ECU-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/ecu01-1120-c7e4 | 2026-11-20T16:25:01+00:00 | E4M3 checksum coverage now requires all 51 exact record offsets. Real omission injection rejected. Eight profiles byte-identical to baseline, 68 unit tests and ordinary compact ST10 PASS_OFFLINE_ONLY. Evidence verification/project-audit/ecu01-checksum-coverage.md. Update shared audit at integration. / commit 84380128b8db2e0a6b24b297dd40aa020598e3ce |
-| ECU-02 — Калибровка момента и работа двигателя | Выполняется | Codex — обороты и отпускание момента Bosch \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/ecu02-torque-rpm-32e6ac79 | 2026-11-20T16:32:33+00:00 | Четыре границы RPM прогнаны точным образом. Проверяю потерю разрешения первой ветвью air/fast/load, нулевой статус, прежний и следующий токены. Идут исторический replay и проверка диалога H03. |
+| ECU-02 — Калибровка момента и работа двигателя | На проверке | Codex — обороты и отпускание момента Bosch \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/ecu02-torque-rpm-32e6ac79 | 2026-11-20T16:35:57+00:00 | Передаю интегратору. Точный обычный компактный образ E4M3 OFFLINE_ONLY: 4 границы RPM, 6 отзывов через air/fast/load, нулевой статус и защита старого токена PASS. Повтор 26 команд и сквозной диалог H03 с потерей статуса PASS. Отчёт ecu02-torque-rpm-guard.md. Аппаратный пуск и калибровки открыты. / commit 06eacf1ff4f42e423886b4b25b849ead054ac924 |
 | H03-01 — Выбранная основа 9E1C и карта подключения | Свободна | — | — | — | — |
 | H03-02 — S51, S83 и температура ATF | На проверке | Codex — привязка ATF H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-02-atf-01a1f9a2 | 2026-11-20T16:18:28+00:00 | Добавлен условный поставщик TML0: PRS1=9, Clock Bus 1 и внешнее подтверждение физического 1 МГц. M32R: 11 пар и 3 отрицательных проверки PASS; стек 92/120/72 байта. Физические 1 МГц, размещение и IRQ остаются. / commit a376f561dacb33793b7bb65e57a2ea18fdcea08d |
 | H03-03 — Единое расписание и запуск приложения H03 | Выполняется | Codex — foreground H03 \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/h03-03-foreground-01a1f99f | 2026-11-20T16:33:25+00:00 | Подключаю проверку фазы к MMIO TML0CT и штатному целевому enter/leave PSW в M32R. / commit 92ee061ae1ea515652fcb04dc2ea5448a6150363 |
@@ -180,6 +180,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:35:57+00:00 | ECU-02 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:35:39+00:00 | TOY-01 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:35:21+00:00 | VSS-02 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:34:59+00:00 | CAN-02 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -209,4 +210,3 @@
 | 2026-11-20T16:29:27+00:00 | ORG-01 | review | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T16:29:22+00:00 | DTC-02 | resume | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T16:29:13+00:00 | H03-05 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
-| 2026-11-20T16:28:50+00:00 | VSS-02 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |

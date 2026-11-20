@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 172,
+  "sequence": 173,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -483,12 +483,12 @@
         "targets/bosch/verify_e4m3_torque_rpm.py",
         "verification/project-audit/ecu02-torque-rpm-guard.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "c8de734571c443c3b11766566ad20891",
       "claimed_at": "2026-11-20T16:30:25+00:00",
-      "updated_at": "2026-11-20T16:32:33+00:00",
-      "note": "Четыре границы RPM прогнаны точным образом. Проверяю потерю разрешения первой ветвью air/fast/load, нулевой статус, прежний и следующий токены. Идут исторический replay и проверка диалога H03.",
-      "result": null
+      "updated_at": "2026-11-20T16:35:57+00:00",
+      "note": "Передаю интегратору. Точный обычный компактный образ E4M3 OFFLINE_ONLY: 4 границы RPM, 6 отзывов через air/fast/load, нулевой статус и защита старого токена PASS. Повтор 26 команд и сквозной диалог H03 с потерей статуса PASS. Отчёт ecu02-torque-rpm-guard.md. Аппаратный пуск и калибровки открыты.",
+      "result": "06eacf1ff4f42e423886b4b25b849ead054ac924"
     }
   },
   "events": [
@@ -1867,9 +1867,17 @@
       "action": "review",
       "claim_id": "4b00bd7fdda2433d8439e95c7b0b1454",
       "at": "2026-11-20T16:35:39+00:00"
+    },
+    {
+      "operation_id": "0d0a047f69834f658f76856574d28a4b",
+      "task": "ECU-02",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "c8de734571c443c3b11766566ad20891",
+      "at": "2026-11-20T16:35:57+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:35:39+00:00",
+  "updated_at": "2026-11-20T16:35:57+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
