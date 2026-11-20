@@ -29,6 +29,7 @@ typedef struct {
     uint8_t slots[2];
     uint8_t data[2 * SLOT_SIZE];
     unsigned lock_depth;
+    unsigned clock_reads;
 } Fixture;
 
 static const Ta2005EngineQualificationContext context = {
@@ -64,7 +65,10 @@ static uint16_t read16(void *context, uint32_t address)
 {
     Fixture *fixture = context;
     assert(fixture->lock_depth > 0);
-    if (address == CAN_COUNTS) return fixture->timestamp;
+    if (address == CAN_COUNTS) {
+        ++fixture->clock_reads;
+        return fixture->timestamp;
+    }
     if (address == CAN_STATUS) return fixture->status;
     if (address == 0x801000u || address == 0x801004u || address == 0x801010u) return 0;
     assert(address == CAN_BYTES + 14 || address == CAN_BYTES + 30);
@@ -92,9 +96,8 @@ static Lfj8RegisterIo registers(Fixture *fixture)
     };
 }
 
-static unsigned task2(Fixture *fixture, uint8_t channels, bool inhibit_history)
+static void next_release(Fixture *fixture, uint8_t channels, const uint8_t *rpm_payload)
 {
-    const Lfj8RegisterIo io = registers(fixture);
     ++fixture->now_us;
     ++fixture->timestamp;
     for (unsigned index = 0; index < 2; ++index) {
@@ -105,10 +108,19 @@ static unsigned task2(Fixture *fixture, uint8_t channels, bool inhibit_history)
             slot[5] = 8u;
             slot[6] = index == 0 ? 0x12u : 180u;
             slot[7] = 0xc0u;
+            if (index == 0 && rpm_payload) {
+                memcpy(slot + 6u, rpm_payload, 8u);
+            }
             slot[14] = (uint8_t)(fixture->timestamp >> 8);
             slot[15] = (uint8_t)fixture->timestamp;
         }
     }
+}
+
+static unsigned task2(Fixture *fixture, uint8_t channels, bool inhibit_history)
+{
+    const Lfj8RegisterIo io = registers(fixture);
+    next_release(fixture, channels, NULL);
     return lfj8_h03_engine_feed_task2(&fixture->receiver, &fixture->qualifier, &fixture->dtc,
         &io, fixture->now_us, 1u, &context, inhibit_history, &fixture->feed);
 }
@@ -248,11 +260,85 @@ static void check_outage_between_releases(void)
     assert(fixture.feed.fa62 == 9600 && fixture.feed.f9b8 == 137);
 }
 
+static Lfj8H03EngineModelSample model_release(Fixture *fixture, const uint8_t *rpm_payload,
+    const Ta2005EngineQualificationContext *signal)
+{
+    const Lfj8RegisterIo io = registers(fixture);
+    Lfj8H03EngineModelSample sample = {
+        .snapshot = {.speed_fad8 = 1000u, .coolant_f9e9 = 50u, .usable = 3u, .model = {1u, 2u, 3u}},
+        .state = LFJ8_H03_MODEL_EVALUATE,
+    };
+    next_release(fixture, rpm_payload ? 1u : 0u, rpm_payload);
+    const unsigned events = lfj8_h03_engine_feed_task2_with_model(
+        &fixture->receiver, &fixture->qualifier, &fixture->dtc, &io, fixture->now_us, 1u,
+        signal, false, &fixture->feed, &sample);
+    assert((events & TA2005_ENGINE_EVALUATED) == (signal->coherent ? TA2005_ENGINE_EVALUATED : 0u));
+    return sample;
+}
+
+static void expect_model(Lfj8H03EngineModelSample sample, uint8_t state,
+                         uint8_t f9d8, uint8_t f9e8, uint8_t f914)
+{
+    const Ta2005CherySnapshot *raw = &sample.snapshot;
+    assert(sample.state == state && raw->model.f9d8 == f9d8 &&
+           raw->model.f9e8 == f9e8 && raw->model.f914 == f914);
+    if (state != LFJ8_H03_MODEL_EVALUATE) {
+        assert(raw->usable == 0u && raw->speed_fad8 == UINT16_MAX && raw->coolant_f9e9 == UINT8_MAX);
+    }
+}
+
+static void check_shared_model_snapshot(void)
+{
+    Fixture fixture;
+    setup(&fixture);
+    /* The next capture crosses both clock wraps. RPM is unavailable and
+     * the middle field is absent, independently of the two other bytes. */
+    const uint8_t model_only[8] = {0xff, 0xff, 0x56, 0xff, 0x99, 0x71, 0, 0};
+    const unsigned before = fixture.clock_reads;
+    const Lfj8H03EngineModelSample sample = model_release(&fixture, model_only, &context);
+    expect_model(sample, LFJ8_H03_MODEL_EVALUATE, 0x56, 0xff, 0x71);
+    assert(sample.snapshot.usable == TA2005_CHERY_COOLANT && sample.snapshot.speed_fad8 == UINT16_MAX);
+    assert(fixture.now_us == 0u && fixture.timestamp == 0u);
+    assert(fixture.clock_reads - before == 2u);
+    assert(fixture.qualifier.rpm_count == 1u);
+    assert(fixture.feed.coherent && fixture.feed.fa62 == 9600u && fixture.feed.f9b8 == 137u);
+    for (unsigned age = 1; age < FRAME_MAX_AGE; ++age) {
+        expect_model(model_release(&fixture, NULL, &context), LFJ8_H03_MODEL_EVALUATE, 0x56, 0xff, 0x71);
+    }
+    expect_model(model_release(&fixture, NULL, &context), LFJ8_H03_MODEL_EVALUATE, 0xff, 0xff, 0xff);
+
+    const uint8_t complete[8] = {0x12, 0xc0, 0x21, 0x32, 0x99, 0x43, 0, 0};
+    Ta2005EngineQualificationContext signal = context;
+    signal.e02b = 4u;
+    expect_model(model_release(&fixture, complete, &signal), LFJ8_H03_MODEL_INHIBITED, 0xff, 0xff, 0xff);
+    assert(fixture.feed.fa62 == 0u);
+    fixture.dtc.current[3] = 0x80u;
+    expect_model(model_release(&fixture, complete, &context), LFJ8_H03_MODEL_INHIBITED, 0xff, 0xff, 0xff);
+    fixture.dtc.current[3] = 0u;
+    expect_model(model_release(&fixture, complete, &context), LFJ8_H03_MODEL_EVALUATE, 0x21, 0x32, 0x43);
+    assert(fixture.feed.fa62 == 9600u && fixture.qualifier.rpm_count == 0u);
+
+    fixture.status = 0x4000u;
+    expect_model(model_release(&fixture, NULL, &context), LFJ8_H03_MODEL_INHIBITED, 0xff, 0xff, 0xff);
+    fixture.status = 0u;
+    memset(fixture.slots, 0, sizeof(fixture.slots));
+    expect_model(model_release(&fixture, NULL, &context), LFJ8_H03_MODEL_INHIBITED, 0xff, 0xff, 0xff);
+    expect_model(model_release(&fixture, complete, &context), LFJ8_H03_MODEL_EVALUATE, 0x21, 0x32, 0x43);
+    assert(fixture.feed.coherent && fixture.feed.fa62 == 9600u && !fixture.dtc.current[2]);
+
+    signal.coherent = 0u;
+    const unsigned at_refusal = fixture.clock_reads;
+    expect_model(model_release(&fixture, NULL, &signal), LFJ8_H03_MODEL_NOT_EVALUATED, 0xff, 0xff, 0xff);
+    assert(!fixture.feed.coherent && fixture.clock_reads == at_refusal);
+}
+
 int main(void)
 {
     check_timeout_and_history();
     check_clear_and_reinit();
     check_outage_between_releases();
+    check_shared_model_snapshot();
     puts("H03 qualified engine feed and Chery clear/fault/recovery passed");
+    puts("H03 shared model snapshot: common RX poll, wrap, expiry, inhibit and recovery passed");
     return 0;
 }

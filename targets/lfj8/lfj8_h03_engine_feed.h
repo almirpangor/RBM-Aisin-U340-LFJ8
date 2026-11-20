@@ -27,4 +27,26 @@ unsigned lfj8_h03_engine_feed_task2(Lfj8H03EngineRx *rx, Ta2005EngineQualifier *
     const Ta2005EngineQualificationContext *context, bool inhibit_history,
     RbmU340eQualifiedEngineFeed *feed);
 
+enum {
+    LFJ8_H03_MODEL_NOT_EVALUATED = 0,
+    LFJ8_H03_MODEL_INHIBITED,
+    LFJ8_H03_MODEL_EVALUATE,
+};
+
+typedef struct {
+    Ta2005CherySnapshot snapshot;
+    uint8_t state;
+} Lfj8H03EngineModelSample;
+
+/* Same release and receiver snapshot as the engine feed, with an optional
+ * disjoint model output. Only EVALUATE admits a model debounce step. In
+ * EVALUATE, FF denotes an unavailable field and is independent of RPM.
+ * INHIBITED denotes the E02B bus-fault path (including local RX or clock
+ * loss). NOT_EVALUATED denotes a refused release. Both clear the snapshot
+ * and must skip the normal model debounce. */
+unsigned lfj8_h03_engine_feed_task2_with_model(Lfj8H03EngineRx *rx,
+    Ta2005EngineQualifier *qualifier, CheryDtcState *dtc, const Lfj8RegisterIo *io,
+    uint32_t now_us, uint8_t slots_owned, const Ta2005EngineQualificationContext *context,
+    bool inhibit_history, RbmU340eQualifiedEngineFeed *feed, Lfj8H03EngineModelSample *model);
+
 #endif
