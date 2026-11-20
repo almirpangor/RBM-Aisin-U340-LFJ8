@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:19:43+00:00**. Изменение № **106**.
+Обновлено UTC: **2026-11-20T16:20:30+00:00**. Изменение № **107**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -31,7 +31,7 @@
 | H03-04 — Память, стек и сервисные пути | Работа завершена | Основной чат — память целевого H03 \[codex-h03-04-01a1f76d-20261120\] | codex/h03-04-storage-01a1f76d | 2026-11-20T16:07:21+00:00 | Принята в main порция H03-04: актуальные типы, карта и проверки памяти. GitHub Actions 44769703890 PASS. Карточка ТЗ остаётся open до сервисной изоляции, запуска и полного стека. Общие страницы освобождены для других чатов. / commit a52ab8ce955959ed109d53e6c554beb68f814c2e |
 | H03-05 — SLT, силовые выходы и реакция на отказ | Свободна | — | — | — | — |
 | IO-01 — Два дополнительных реле | Отложена владельцем | — | — | — | — |
-| VSS-01 — Точный расчёт VSS и скорость по CAN | Выполняется | Codex VSS-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss01-exact-arithmetic-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:18:46+00:00 | Устраняю ложную недостоверность и нулевую скорость при промежуточном переполнении VSS. Сверка с точной дробью и границей 0x1AE. |
+| VSS-01 — Точный расчёт VSS и скорость по CAN | Выполняется | Codex VSS-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss01-exact-arithmetic-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:20:30+00:00 | Переполнение на исходном коде воспроизведено. Переносимая арифметика исправлена, 25 000 сравнений с целочисленным эталоном на ПК прошли. Идут M32R и Bosch. |
 | VSS-02 — Кинематика и параметры реальной скорости | Свободна | — | — | — | — |
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
 | MODE-01 — Логика шести положений и кнопок | На проверке | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:14:42+00:00 | Staggered Tiptronic plus/minus overlap now blocks manual requests. Original C/Python regressions reproduced. PC 33 steps/66 tests plus dedicated C regression PASS; M32R build, 17 components and dedicated regression PASS. Evidence verification/project-audit/mode01-shift-conflict.md. Integrator to record the audit; physical input and hydraulic execution remain open. / commit ed33ea93653f7bcbc2c6f13736fe1424335085e6 |
@@ -250,6 +250,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:20:30+00:00 | VSS-01 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:19:43+00:00 | TOY-06 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:19:32+00:00 | DTC-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:19:02+00:00 | TOY-04 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
@@ -279,4 +280,3 @@
 | 2026-11-20T16:12:48+00:00 | ORG-01 | heartbeat | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T16:12:39+00:00 | TOY-04 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:12:31+00:00 | TOY-05 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T16:12:22+00:00 | DTC-02 | resume | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
