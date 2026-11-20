@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 605,
+  "sequence": 606,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -252,28 +252,29 @@
     },
     "MODE-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
-      "label": "Codex MODE-02 — штатный общий захват AN2/P1DATA",
-      "branch": "codex/mode02-foreground-input-01a1f9c7",
+      "label": "Codex MODE-02 — приём снимка AN2/P1DATA по фазе",
+      "branch": "codex/mode02-phase-sample-lifecycle-01a1f9c7",
       "files": [
-        "targets/lfj8/check_h03_input_binding.py",
         "targets/lfj8/check_h03_selector_adc.py",
-        "targets/lfj8/lfj8_h03_button_capture.c",
-        "targets/lfj8/lfj8_h03_button_capture.h",
+        "targets/lfj8/h03_selector_adc_fixture.c",
         "targets/lfj8/lfj8_h03_input_binding.c",
         "targets/lfj8/lfj8_h03_input_binding.h",
         "targets/lfj8/lfj8_h03_input_target.c",
-        "targets/lfj8/lfj8_selector_adc.c",
-        "targets/lfj8/lfj8_selector_adc.h",
-        "targets/lfj8/test_lfj8_h03_button_capture.c",
+        "targets/lfj8/lfj8_range_control.c",
+        "targets/lfj8/lfj8_range_control.h",
         "targets/lfj8/test_lfj8_h03_input_binding.c",
-        "verification/project-audit/mode02-native-an2-p1.md"
+        "verification/project-audit/mode02-h03-sample-lifecycle.md"
       ],
-      "stage": "review",
-      "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
-      "claimed_at": "2026-11-20T19:39:27+00:00",
-      "updated_at": "2026-11-20T19:50:46+00:00",
-      "note": "Штатный callback AN2 захватывает P1DATA с общей меткой; готовый потребитель применяет явно заданную карту. Шесть пар H03, 41 шаг ПК/120 тестов, 22 нативные группы M32R прошли. RAM 2692; известный Flash 95070. Остаются rbm_h03_application_binding, rbm_h03_sensor_config, измеренная карта/OD и выдача через гидравлику. Отчёт verification/project-audit/mode02-native-an2-p1.md.",
-      "result": "17a65270968bf01097cab53482f094188c0b4aef"
+      "stage": "in_progress",
+      "claim_id": "7b928a7629294ca3950e08c3c64055a4",
+      "claimed_at": "2026-11-20T20:33:07+00:00",
+      "updated_at": "2026-11-20T20:33:07+00:00",
+      "note": "Foreground занят CAN-01. Независимо разделяю приём и квалификацию AN2/P1DATA от шага Toyota и закрываю нативный callback при недопуске RAM. Маршрут проверяю на ПК/M32R.",
+      "result": null,
+      "based_on_reviews": [
+        "81b1f36f00b14bd49f57ba12c0f60bd1",
+        "cd210c0631df4fefa66ec640bb83c6ad"
+      ]
     },
     "TOY-05": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -5633,9 +5634,43 @@
           "881583aa76814d4da3f768699f01ca29"
         ]
       }
+    },
+    {
+      "operation_id": "9bfabd0f368645e4989dac219f2c188e",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "7b928a7629294ca3950e08c3c64055a4",
+      "at": "2026-11-20T20:33:07+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex MODE-02 — приём снимка AN2/P1DATA по фазе",
+        "branch": "codex/mode02-phase-sample-lifecycle-01a1f9c7",
+        "files": [
+          "targets/lfj8/check_h03_selector_adc.py",
+          "targets/lfj8/h03_selector_adc_fixture.c",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/lfj8_h03_input_binding.h",
+          "targets/lfj8/lfj8_h03_input_target.c",
+          "targets/lfj8/lfj8_range_control.c",
+          "targets/lfj8/lfj8_range_control.h",
+          "targets/lfj8/test_lfj8_h03_input_binding.c",
+          "verification/project-audit/mode02-h03-sample-lifecycle.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "7b928a7629294ca3950e08c3c64055a4",
+        "claimed_at": "2026-11-20T20:33:07+00:00",
+        "updated_at": "2026-11-20T20:33:07+00:00",
+        "note": "Foreground занят CAN-01. Независимо разделяю приём и квалификацию AN2/P1DATA от шага Toyota и закрываю нативный callback при недопуске RAM. Маршрут проверяю на ПК/M32R.",
+        "result": null,
+        "based_on_reviews": [
+          "81b1f36f00b14bd49f57ba12c0f60bd1",
+          "cd210c0631df4fefa66ec640bb83c6ad"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:32:35+00:00",
+  "updated_at": "2026-11-20T20:33:07+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
