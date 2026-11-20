@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 154,
+  "sequence": 155,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -462,13 +462,14 @@
       "branch": "codex/toy-01-gp-transfer-fea1b366",
       "files": [
         "controller/hydraulic_port.py",
+        "targets/lfj8/check_h03_toyota_stack.py",
         "verification/project-audit/toy01-gp-transfer-size.md"
       ],
       "stage": "in_progress",
       "claim_id": "4b00bd7fdda2433d8439e95c7b0b1454",
       "claimed_at": "2026-11-20T16:28:35+00:00",
-      "updated_at": "2026-11-20T16:28:35+00:00",
-      "note": "Сокращаю Flash переносимой карты GP Toyota: кодирую порядок байтов в свободных битах смещения, сохраняю проверку всех полей на ПК и M32R и сравниваю компоновку.",
+      "updated_at": "2026-11-20T16:31:17+00:00",
+      "note": "292 переноса и 17 M32R компонентов PASS. Основное окно модели уменьшилось на 628 байт. Резервирую проверку стека Toyota: её изолированная сборка не копирует подключённый заголовок фаз.",
       "result": null
     },
     "ECU-02": {
@@ -1719,9 +1720,17 @@
       "action": "complete",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "at": "2026-11-20T16:31:04+00:00"
+    },
+    {
+      "operation_id": "e5733dcc24fd4731ba5f04808cbe1a30",
+      "task": "TOY-01",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "heartbeat",
+      "claim_id": "4b00bd7fdda2433d8439e95c7b0b1454",
+      "at": "2026-11-20T16:31:17+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:31:04+00:00",
+  "updated_at": "2026-11-20T16:31:17+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
