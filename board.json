@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 352,
+  "sequence": 353,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -104,8 +104,8 @@
       "stage": "in_progress",
       "claim_id": "728ac0bbf9a84b04bfdc5f0fce5a6b1b",
       "claimed_at": "2026-11-20T18:14:59+00:00",
-      "updated_at": "2026-11-20T18:14:59+00:00",
-      "note": "Independently test stock direct and deferred service writes against the H03 RAM address model and qualify the Virtual Flash/PCM Flash limits before packaging.",
+      "updated_at": "2026-11-20T18:18:32+00:00",
+      "note": "36 exact-ROM M32R runs confirm that the overlay lockout leaves both RAM stores reachable and close leaves deferred stores in flight. Recheck native write boundaries and record release prerequisites.",
       "result": null
     },
     "H03-03": {
@@ -3389,9 +3389,17 @@
       "action": "claim",
       "claim_id": "0c37e0c652cd4b8285cdd4458b796cef",
       "at": "2026-11-20T18:18:10+00:00"
+    },
+    {
+      "operation_id": "04ea58130eeb40378d4a59ed8923ac0d",
+      "task": "REL-01",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "heartbeat",
+      "claim_id": "728ac0bbf9a84b04bfdc5f0fce5a6b1b",
+      "at": "2026-11-20T18:18:32+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:18:10+00:00",
+  "updated_at": "2026-11-20T18:18:32+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {

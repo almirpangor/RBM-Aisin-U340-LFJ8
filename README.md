@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:18:10+00:00**. Изменение № **352**.
+Обновлено UTC: **2026-11-20T18:18:32+00:00**. Изменение № **353**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -43,7 +43,7 @@
 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Выполняется | Codex — DTC-02, целевой приём и foreground \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T18:13:23+00:00 | Совместный прогон с CAN-03 720bb64 подтверждён: 18 нативных сценариев, RX 0x732 → TX 0x722, два сравнения обхода. ПК 37/102, M32R 18 и компонентный переход поколения. Готовлю результат к review. |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Выполняется | Codex DTC-03 — квалификация P0710 TA2005 \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/dtc03-ta2005-p0710-01a1f9c7 | 2026-11-20T18:18:10+00:00 | Сверка штатной квалификации P0710 с закреплённым S03 и перенос на нормализованный вход. Подключение к H03 выполняется отдельно. |
 | DTC-04 — Хранение DTC после выключения питания | На проверке | Codex — геометрия NVM и backend DTC H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-h03-nvm-32e6ac79 | 2026-11-20T18:16:11+00:00 | Передаю интегратору геометрию 13 блоков H03, полусловный backend журнала и восстановление перед запуском. ПК 37 шагов и 102 теста, M32R 45 прерываний записи, 33 стирания и 256 битовых отказов, INTEGRATION3 native и components PASS. Expanded повторил дефицит 448 байт. Носитель, физический драйвер и штатный вызов открыты. Отчёт verification/project-audit/dtc04-h03-nvm.md. / commit e54b8051439965f4274969e46af534d4d98284db |
-| REL-01 — Два целевых BIN и воспроизводимый комплект | Выполняется | Codex REL-01 H03 service preflight \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/rel01-h03-service-preflight-01a1f99f | 2026-11-20T18:14:59+00:00 | Independently test stock direct and deferred service writes against the H03 RAM address model and qualify the Virtual Flash/PCM Flash limits before packaging. |
+| REL-01 — Два целевых BIN и воспроизводимый комплект | Выполняется | Codex REL-01 H03 service preflight \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/rel01-h03-service-preflight-01a1f99f | 2026-11-20T18:18:32+00:00 | 36 exact-ROM M32R runs confirm that the overlay lockout leaves both RAM stores reachable and close leaves deferred stores in flight. Recheck native write boundaries and record release prerequisites. |
 | REL-02 — Приёмка новой связки на оборудовании | Свободна для продолжения | Предыдущий: Codex REL-02 — проверка записи CAN \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/rel-02-can-trace-fea1b366 | 2026-11-20T17:48:37+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 2ebae711ad169cf22528a0a7297d8d3b210d4e0a |
 
 ## Что осталось доделать
@@ -709,6 +709,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:18:32+00:00 | REL-01 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:18:10+00:00 | DTC-03 | claim | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T18:16:32+00:00 | CAN-05 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T18:16:11+00:00 | DTC-04 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
@@ -738,4 +739,3 @@
 | 2026-11-20T18:05:38+00:00 | VSS-02 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T18:05:28+00:00 | CAN-03 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T18:05:17+00:00 | DTC-02 | claim | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
-| 2026-11-20T18:04:53+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
