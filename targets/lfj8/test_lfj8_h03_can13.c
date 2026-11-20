@@ -244,6 +244,34 @@ static void test_torque_priority_and_cancel(void)
     assert(f.slot[7] == 0x50 && f.sent == 4);
 }
 
+static void test_telemetry_loan_expires_before_slot_is_idle(void)
+{
+    Fixture f;
+    init(&f, 2000, 0);
+    start_torque(&f);
+    finish(&f, 900);
+    poll(&f, 1000);
+    torque_status(&f, 1400, 0x72, 1, 32, 1);
+    assert(poll(&f, 2500).status_submitted == LFJ8_DUE_1AE);
+    assert(f.broker.torque.request.full_reduction && f.broker.status.counter_f8e4 == 1u);
+
+    f.control = 0x82;
+    const uint32_t deadline = 2500u + f.broker.torque.max_poll_gap_us;
+    assert(poll(&f, deadline - 1u).available && !f.aborts);
+    assert(f.broker.torque.request.full_reduction);
+    assert(poll(&f, deadline).available && f.aborts == 1 && f.control == 2);
+    assert(!f.broker.torque.request.full_reduction);
+    assert(f.broker.torque.request.phase == LFJ8_TORQUE_RELEASING);
+    assert(f.broker.status_in_flight == LFJ8_DUE_1AE);
+
+    poll(&f, deadline + 100u);
+    assert(f.aborts == 1 && f.sent == 2 && !f.broker.torque.request.full_reduction);
+    f.control = 0;
+    assert(poll(&f, deadline + 200u).available);
+    assert(f.broker.status.counter_f8e4 == 0u);
+    assert(active_id(&f) == LFJ8_TORQUE_REQUEST_ID && f.slot[7] == 0 && f.slot[8] == 2);
+}
+
 static void test_diagnostic_flow_and_status_handoff(void)
 {
     Fixture f;
@@ -347,6 +375,7 @@ static void test_status_timeout_and_wrong_completion(void)
 int main(void)
 {
     test_torque_priority_and_cancel();
+    test_telemetry_loan_expires_before_slot_is_idle();
     test_diagnostic_flow_and_status_handoff();
     test_timeout_and_generation();
     test_receive_lease_loss_requires_generation();
