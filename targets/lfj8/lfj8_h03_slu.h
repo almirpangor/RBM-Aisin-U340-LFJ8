@@ -77,4 +77,28 @@ bool lfj8_h03_slu_secondary_from_baseline(const Lfj8H03SluSecondaryInput *input,
                                          Lfj8H03SluSecondaryState *state,
                                          Lfj8H03SluSecondaryResult *result);
 
+/* Operands whose producers are outside the current canonical GP map.
+ * The source qualifies the whole snapshot for the named SECONDARY event. */
+typedef struct {
+    uint32_t event, sampled_at;
+    uint16_t base_7054, override_7082;
+    int16_t trim_7066, offset_7028, offset_7030;
+    uint8_t learning_4616[12];
+    uint8_t mode_4505, flags_1636, selector_4544;
+    uint8_t flags_4828, flags_4827, flags_4825, flags_4822;
+    uint8_t qualified;
+} Lfj8H03SluSnapshot;
+
+typedef struct {
+    Lfj8H03SluBaselineState baseline;
+    uint8_t previous_mode_1637;
+} Lfj8H03SluState;
+
+typedef struct {
+    Lfj8H03SluSecondaryResult result;
+    uint32_t command_at;
+    uint32_t event;
+    uint8_t valid;
+} Lfj8H03SluOutput;
+
 #endif

@@ -106,9 +106,9 @@ def expanded(args):
     )
     link.DTC_FILES += ("chery_dtc_journal.c",)
     link.DTC_ROOTS += ("chery_dtc_journal_encode", "chery_dtc_journal_restore")
-    link.CAN_EXTENSION_FILES += ("lfj8_h03_slu.c", "lfj8_h03_dtc_foreground.c")
+    link.CAN_EXTENSION_FILES += ("lfj8_h03_dtc_foreground.c",)
     link.CAN_EXTENSION_ROOTS += (
-        "lfj8_h03_cycle_tick_with_load", "lfj8_h03_slu_secondary_from_baseline",
+        "lfj8_h03_cycle_tick_with_load", "lfj8_h03_cycle_tick_with_slu",
         "lfj8_h03_dtc_foreground_poll", "lfj8_h03_dtc_rx_queue_capture_basic",
         "lfj8_h03_dtc_rx_dispatch_begin", "lfj8_h03_dtc_rx_dispatch_skip_paired",
         "lfj8_h03_engine_feed_task2_with_model",
@@ -183,7 +183,9 @@ def components(args):
         "journal": ["diagnostics/test_chery_dtc_journal.c", "diagnostics/chery_dtc.c",
                     "diagnostics/chery_dtc_journal.c"],
         "cycle-load": ["targets/lfj8/test_lfj8_h03_cycle_load.c", "targets/lfj8/lfj8_h03_cycle.c",
-                       "targets/lfj8/lfj8_h03_torque.c"],
+                       "targets/lfj8/lfj8_h03_torque.c", "targets/lfj8/lfj8_h03_slu.c"],
+        "cycle-slu": ["targets/lfj8/test_lfj8_h03_cycle.c", "targets/lfj8/lfj8_h03_cycle.c",
+                      "targets/lfj8/lfj8_h03_torque.c", "targets/lfj8/lfj8_h03_slu.c"],
     }
     rows = []
     with TemporaryDirectory(prefix="rbm-integrated-components-") as temp:

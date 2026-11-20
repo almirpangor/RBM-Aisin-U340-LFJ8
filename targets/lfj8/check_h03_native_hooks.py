@@ -181,7 +181,7 @@ def check_full_phases(run, work, compiler, simulator, gdb, flags, rom, controlle
     }
     if controller_object is not None:
         shutil.copyfile(controller_object, work / "donor-controller.o")
-        for source in ("lfj8_h03_cycle.c", "lfj8_h03_torque.c"):
+        for source in ("lfj8_h03_cycle.c", "lfj8_h03_torque.c", "lfj8_h03_slu.c"):
             shutil.copyfile(HERE / source, work / source)
         cases["toyota_main_to_original_outputs"] = "SCENARIO_DONOR_MAIN_TO_OUTPUT"
     (work / "full-phase.ld").write_text(FULL_PHASE_LAYOUT, encoding="ascii")
@@ -190,7 +190,7 @@ def check_full_phases(run, work, compiler, simulator, gdb, flags, rom, controlle
     stack_used = {}
     images = {}
     for label, scenario in cases.items():
-        controller_sources = ("lfj8_h03_cycle.c", "lfj8_h03_torque.c", "donor-controller.o") if (
+        controller_sources = ("lfj8_h03_cycle.c", "lfj8_h03_torque.c", "lfj8_h03_slu.c", "donor-controller.o") if (
             scenario == "SCENARIO_DONOR_MAIN_TO_OUTPUT") else ("rbm_u340e.c", *donor_sources)
         run(compiler, *flags, "-std=c11", "-Icontroller", "-Itoyota", "-ffixed-r13", "-DH03_FULL_PHASE_FIXTURE",
             "-Wno-missing-braces", "-Wno-missing-field-initializers",

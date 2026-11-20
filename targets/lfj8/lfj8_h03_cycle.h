@@ -3,6 +3,7 @@
 
 #include "lfj8_h03_torque.h"
 #include "lfj8_h03_takeover.h"
+#include "lfj8_h03_slu.h"
 #include "rbm_u340e_runtime.h"
 #include "rbm_u340e_scheduler.h"
 
@@ -95,6 +96,23 @@ Lfj8H03CycleResult lfj8_h03_cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *run
 Lfj8H03CycleResult lfj8_h03_cycle_tick_with_load(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
     const Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work, Lfj8H03MainResult *result,
     Lfj8H03CycleLoad load);
+
+typedef struct {
+    const Lfj8H03SluSnapshot *snapshot;
+    Lfj8H03SluState *state;
+    Lfj8H03SluOutput *output;
+} Lfj8H03CycleSlu;
+
+/* Run the numerical SLU chain during each admitted SECONDARY, including
+ * SECONDARY releases without MAIN. The snapshot must match that event.
+ * Use load.now_us and load.max_age_us for the combined oldest operand.
+ * Initialize SLU state and GP-4735 from qualified donor startup state.
+ * This call clears the logical SLU output before processing an event.
+ * On a cycle fault discard the SLU state together with the runtime.
+ * The output has donor units. Physical actuation needs a separate binding. */
+Lfj8H03CycleResult lfj8_h03_cycle_tick_with_slu(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
+    const Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work, Lfj8H03MainResult *result,
+    Lfj8H03CycleLoad load, Lfj8H03CycleSlu slu);
 
 /* Read the SLT operands already published by MAIN. Use them at donor FAST
  * 05AF96/055BF4 with the separately qualified correction state. */
