@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 14,
+  "sequence": 15,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -83,6 +83,20 @@
       "updated_at": "2026-11-20T15:48:28+00:00",
       "note": "Карта битов Toyota, проверка вариантов проводки Mazda и сценарии стенда опубликованы. Проверка реестра и git diff --check PASS. Физические источники целевого жгута пока не подтверждены.",
       "result": "dfc774eee013ba78c6679d3128f493f238f43000"
+    },
+    "REL-01": {
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "label": "Codex — комплект двух BIN",
+      "branch": "codex/rel-01-pair-01a1f9a2",
+      "files": [
+        "tools/package_workset.py"
+      ],
+      "stage": "in_progress",
+      "claim_id": "38bcfd017d9a4719a6054450645d79ab",
+      "claimed_at": "2026-11-20T15:50:42+00:00",
+      "updated_at": "2026-11-20T15:50:42+00:00",
+      "note": "Добавляю проверку комплекта из двух целевых BIN и сверяю доступность сборок.",
+      "result": null
     }
   },
   "events": [
@@ -197,9 +211,17 @@
       "action": "review",
       "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
       "at": "2026-11-20T15:50:27+00:00"
+    },
+    {
+      "operation_id": "e6d23290b2614e329528fa5c9a8cf594",
+      "task": "REL-01",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "claim",
+      "claim_id": "38bcfd017d9a4719a6054450645d79ab",
+      "at": "2026-11-20T15:50:42+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:50:27+00:00",
+  "updated_at": "2026-11-20T15:50:42+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
