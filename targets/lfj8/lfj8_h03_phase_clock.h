@@ -43,6 +43,10 @@ void lfj8_h03_phase_clock_release(volatile Lfj8H03PhaseClock *clock, uint32_t no
  * control registers (apart from the arithmetic condition bit) untouched. */
 void rbm_h03_phase_release_callback(uint32_t released_at);
 
+/* Check the same deadline as take, leaving a fresh event pending.
+ * The caller must serialize this check with the publisher and consumer. */
+Lfj8H03PhaseResult lfj8_h03_phase_clock_check(volatile Lfj8H03PhaseClock *clock, uint32_t now);
+
 /* No backlog is delivered. A missing, late or overwritten event latches a
  * fault until reinitialization with the drivetrain command disabled. Check
  * on each foreground turn, including those with no OEM phase bit pending.

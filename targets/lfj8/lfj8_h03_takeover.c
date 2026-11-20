@@ -190,7 +190,8 @@ int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation)
     return accepted;
 }
 
-Lfj8H03PhaseResult lfj8_h03_takeover_take_phase(Lfj8H03Takeover *state, Lfj8H03PhaseEvent *event)
+static Lfj8H03PhaseResult check_phase(Lfj8H03Takeover *state, Lfj8H03PhaseEvent *event,
+                                     int consume)
 {
     if (!state || !state->ops || !state->ops->phase_clock) {
         if (event) {
@@ -202,12 +203,24 @@ Lfj8H03PhaseResult lfj8_h03_takeover_take_phase(Lfj8H03Takeover *state, Lfj8H03P
     const Lfj8RegisterIo *const io = ops->io;
     void *const context = io->context;
     const uint32_t saved = io->enter(context);
-    const Lfj8H03PhaseResult result =
-        lfj8_h03_phase_clock_take(ops->phase_clock, ops->clock_ticks(context), event);
+    const uint32_t now = ops->clock_ticks(context);
+    const Lfj8H03PhaseResult result = consume
+        ? lfj8_h03_phase_clock_take(ops->phase_clock, now, event)
+        : lfj8_h03_phase_clock_check(ops->phase_clock, now);
     if (result == LFJ8_H03_PHASE_FAULT) {
         state->pending = 0;
         ops->inhibit(context);
     }
     io->leave(context, saved);
     return result;
+}
+
+Lfj8H03PhaseResult lfj8_h03_takeover_check_phase(Lfj8H03Takeover *state)
+{
+    return check_phase(state, NULL, 0);
+}
+
+Lfj8H03PhaseResult lfj8_h03_takeover_take_phase(Lfj8H03Takeover *state, Lfj8H03PhaseEvent *event)
+{
+    return check_phase(state, event, 1);
 }

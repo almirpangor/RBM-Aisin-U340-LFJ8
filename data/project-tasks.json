@@ -9,7 +9,7 @@
     "engine": "GW4G15 / Bosch ME7.9.71 E4M3"
   },
   "release_ready": false,
-  "audit": "verification/project-audit/2026-11-20-dtc02-queue.json",
+  "audit": "verification/project-audit/2026-11-20-h03-storage.json",
   "status_labels": {
     "closed": "Завершено в указанном объёме",
     "model": "Проверено программно",
@@ -134,7 +134,7 @@
       "title": "Сборка и модель M32R",
       "command": "python -B controller/build_target.py m32r --cc $m32rGcc --out local/audit/controller\npython -B targets/lfj8/build.py --output local/audit/bridge --m32r-cc $m32rGcc --base-9e1c $h03\npython -B targets/lfj8/check_h03_link.py --base $h03 --gcc $m32rGcc --bridge local/audit/bridge/lfj8_9e1c_m32r.o --controller local/audit/controller/rbm_u340e_m32r_be.o --out local/audit/h03-link.json --bosch-trace verification/e4m3-can-9e1c/ordinary-model/round-trip.json",
       "reports": [
-        "verification/project-audit/dtc02-h03-link.json"
+        "verification/project-audit/h03-phase-integration-link.json"
       ]
     },
     "PHASE": {
@@ -193,6 +193,14 @@
       "command": "python -B -m unittest discover -s tests -p test_task_coordination.py -v\npython -B -m unittest discover -s tests -p test_project_status.py -v",
       "reports": [
         "verification/project-audit/collaboration-checks.json"
+      ]
+    },
+    "STORAGE": {
+      "title": "Актуальные состояния и кандидаты RAM M32R",
+      "command": "python -B targets/lfj8/check_h03_storage.py --base $h03 --gcc $m32rGcc --out local/audit/h03-storage.json\npython -B -m unittest discover -s tests -p test_h03_storage.py -v",
+      "reports": [
+        "verification/e4m3-can-9e1c/h03-storage.json",
+        "verification/project-audit/h03-storage-tests.txt"
       ]
     }
   },
@@ -692,7 +700,7 @@
       ],
       "title": "Единое расписание и запуск приложения H03",
       "status": "open",
-      "current": "Проверены контроль фаз, семь сравнений вызова таймера, снятие просроченных команд и штатные фазы выдачи в симуляторе.",
+      "current": "Проверены контроль фаз, семь сравнений вызова таймера, снятие просроченных команд и штатные фазы выдачи в симуляторе. Принят API проверки без потребления события; кандидат ожидания 0x008150 прошёл 4 сценария, повторены 17 компонентов M32R и Bosch replay. Рабочий callback не подключён.",
       "remaining": "Подключить foreground-потребителя, начальную инициализацию, владельцев снимков и callback. Раздельно установить ритмы H03 и Toyota, измерить выполнение и IRQ.",
       "acceptance": "Полный цикл вызывается автономно, пропуск обнаруживается и без фазы выдачи, тестовые callbacks заменены подтверждёнными целевыми.",
       "code": [
@@ -700,7 +708,9 @@
         "targets/lfj8/lfj8_h03_phase_clock.c",
         "targets/lfj8/lfj8_h03_takeover.c",
         "targets/lfj8/h03_phase_release_hook.S",
-        "targets/lfj8/h03_native_hooks.S"
+        "targets/lfj8/h03_native_hooks.S",
+        "targets/lfj8/check_h03_phase_wait.py",
+        "targets/lfj8/h03_phase_wait_hook.S"
       ],
       "settings": "min_period/max_period/max_age, Lfj8H03TakeoverOps.phase_clock и callbacks. Частоту Toyota нельзя принять равной фазе H03.",
       "checks": [
@@ -723,20 +733,23 @@
       ],
       "title": "Память, стек и сервисные пути",
       "status": "open",
-      "current": "Двухобластная адресная модель помещается, релокации разрешены. Найдены пересечения с мониторами и Flash overlay, проверена часть защит.",
-      "remaining": "Закрепить исключительное владение Flash/RAM, конечные точки встраивания, запуск после сброса, полный стек с вложенными IRQ и сервисную изоляцию.",
+      "current": "Проверена актуальная раскладка ABI M32R: управление 1048, связь 492, рабочие снимки 784 байта; всего 2324. Прежних окон не хватает на 544 байта. Раздельная расширенная карта прошла компоновку, скан фиксированных ссылок и 6 OEM-инициализаций. Владение RAM и стек ещё не подтверждены.",
+      "remaining": "Закрепить сервисную изоляцию Flash/RAM и запуск после сброса, добавить ещё не определённые состояния CAN/journal/платформы в единый состав, доказать полный стек с вложенными IRQ. Не использовать прежнюю оценку 1080/1116 байт как размер всего приложения.",
       "acceptance": "Карта сборки и анализ всех владельцев, подтверждённый запас стека и измерения. Свободное окно в ELF само по себе не разрешает запись.",
       "code": [
         "targets/lfj8/check_h03_link.py",
         "targets/lfj8/check_h03_ram_candidate.py",
         "targets/lfj8/check_h03_flash_residency.py",
         "targets/lfj8/check_h03_service_isolation.py",
-        "targets/lfj8/audit_h03_irq_stack.py"
+        "targets/lfj8/audit_h03_irq_stack.py",
+        "targets/lfj8/lfj8_h03_storage.h",
+        "targets/lfj8/check_h03_storage.py"
       ],
-      "settings": "Flash [0x020000,0x030000), [0x07C118,0x07FFFC); кандидаты RAM описаны в аудите. FCNT1 и сервисный монитор.",
+      "settings": "Flash [0x020000,0x030000), [0x07C118,0x07FFFC); кандидаты RAM описаны в аудите. FCNT1 и сервисный монитор. Текущая модель RAM: [0x806B40,0x806F58), [0x808E40,0x80902C), [0x80902C,0x80933C). Это кандидаты, не допуск к записи.",
       "checks": [
         "M32R",
-        "NATIVE"
+        "NATIVE",
+        "STORAGE"
       ],
       "docs": [
         "docs/lfj8-h03-ram-audit.md",

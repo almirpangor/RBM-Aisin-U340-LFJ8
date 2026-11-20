@@ -1,0 +1,69 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "oem_instruction_bytes": "[0x040324, 0x04039C)",
+  "oem_instruction_sha256": "7e70dda2170cca67f4af4eeda0a7ed4793853cca2588deca502766b4f6d1c5e2",
+  "call_site": "0x00816C",
+  "call_instruction": "FE00E06E",
+  "pc_at_continuation": "0x008170",
+  "compared_state": [
+    "R0-R15",
+    "CR0",
+    "ACC low word",
+    "ADC result words",
+    "OEM status byte"
+  ],
+  "acc_upper_word_verified": false,
+  "wrapper_frame_bytes_in_test": 72,
+  "adc_word_address": "0x804BC6",
+  "cases": [
+    {
+      "adc2_10bit": 0,
+      "mock_adc2_16bit": "0x003F",
+      "adc_channels_in_order": [
+        2,
+        3,
+        4
+      ],
+      "observer_reads": 1,
+      "observer_adc2": 0,
+      "oem_status_byte_before": 0,
+      "oem_status_byte_after": 1,
+      "psw_at_return": "0x41"
+    },
+    {
+      "adc2_10bit": 347,
+      "mock_adc2_16bit": "0x56FF",
+      "adc_channels_in_order": [
+        2,
+        3,
+        4
+      ],
+      "observer_reads": 1,
+      "observer_adc2": 347,
+      "oem_status_byte_before": 2,
+      "oem_status_byte_after": 0,
+      "psw_at_return": "0x40"
+    },
+    {
+      "adc2_10bit": 1023,
+      "mock_adc2_16bit": "0xFFFF",
+      "adc_channels_in_order": [
+        2,
+        3,
+        4
+      ],
+      "observer_reads": 1,
+      "observer_adc2": 1023,
+      "oem_status_byte_before": 0,
+      "oem_status_byte_after": 1,
+      "psw_at_return": "0x41"
+    }
+  ],
+  "hardware_executed": false,
+  "flashable_image": null
+}

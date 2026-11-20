@@ -34,13 +34,9 @@ void lfj8_h03_phase_clock_release(volatile Lfj8H03PhaseClock *clock, uint32_t no
     clock->have_release = 1u;
 }
 
-Lfj8H03PhaseResult lfj8_h03_phase_clock_take(volatile Lfj8H03PhaseClock *clock,
-                                            uint32_t now, Lfj8H03PhaseEvent *out)
+Lfj8H03PhaseResult lfj8_h03_phase_clock_check(volatile Lfj8H03PhaseClock *clock,
+                                             uint32_t now)
 {
-    if (!out) {
-        return LFJ8_H03_PHASE_FAULT;
-    }
-    *out = (Lfj8H03PhaseEvent){0};
     if (!clock || !clock->min_period || clock->faulted) {
         return LFJ8_H03_PHASE_FAULT;
     }
@@ -50,8 +46,19 @@ Lfj8H03PhaseResult lfj8_h03_phase_clock_take(volatile Lfj8H03PhaseClock *clock,
         clock->faulted = 1u;
         return LFJ8_H03_PHASE_FAULT;
     }
-    if (!pending) {
-        return LFJ8_H03_PHASE_WAIT;
+    return pending ? LFJ8_H03_PHASE_EVENT : LFJ8_H03_PHASE_WAIT;
+}
+
+Lfj8H03PhaseResult lfj8_h03_phase_clock_take(volatile Lfj8H03PhaseClock *clock,
+                                            uint32_t now, Lfj8H03PhaseEvent *out)
+{
+    if (!out) {
+        return LFJ8_H03_PHASE_FAULT;
+    }
+    *out = (Lfj8H03PhaseEvent){0};
+    const Lfj8H03PhaseResult result = lfj8_h03_phase_clock_check(clock, now);
+    if (result != LFJ8_H03_PHASE_EVENT) {
+        return result;
     }
     *out = clock->latest;
     clock->consumed = out->sequence;
