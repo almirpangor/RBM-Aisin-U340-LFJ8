@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 36,
+  "sequence": 37,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -204,12 +204,12 @@
         "tests/test_chery_dtc_table.py",
         "verification/project-audit/dtc03-table.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "b8f5993a9046405492ff005c31e01675",
       "claimed_at": "2026-11-20T15:57:52+00:00",
-      "updated_at": "2026-11-20T15:59:02+00:00",
-      "note": "Все 96 строк совпали с C и с проверенным по SHA-256 S03. Идёт полный прогон ПК.",
-      "result": null
+      "updated_at": "2026-11-20T16:00:19+00:00",
+      "note": "Все 96 индексов сверены с проверенным S03. 33 шага ПК и 61 тест PASS. Отчёт verification/project-audit/dtc03-table.md. Мониторы отказов и привязка H03 открыты; снимок аудита передан интегратору.",
+      "result": "fbeea2ca6b1ceb47be58f4bf05c9f3817c5664a2"
     }
   },
   "events": [
@@ -500,9 +500,17 @@
       "action": "heartbeat",
       "claim_id": "83b9428ce0f2463f92341fea12156d66",
       "at": "2026-11-20T16:00:00+00:00"
+    },
+    {
+      "operation_id": "896194c54ed647ba98a4ef512862fb75",
+      "task": "DTC-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "b8f5993a9046405492ff005c31e01675",
+      "at": "2026-11-20T16:00:19+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:00:00+00:00",
+  "updated_at": "2026-11-20T16:00:19+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
