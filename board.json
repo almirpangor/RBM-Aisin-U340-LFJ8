@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 170,
+  "sequence": 171,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -455,8 +455,8 @@
       "stage": "in_progress",
       "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
       "claimed_at": "2026-11-20T16:24:53+00:00",
-      "updated_at": "2026-11-20T16:33:58+00:00",
-      "note": "Добавлю независимую сверку тактов TML0 с внешним временем и учётом перехода 32-битного счётчика; штатный поставщик H03-02 отдельно.",
+      "updated_at": "2026-11-20T16:35:21+00:00",
+      "note": "11 тестов VSS прошли. Сверка TML0 учитывает перенос, остановку счётчика, отклонение частоты и неоднозначный длинный интервал. Идут полный PC и M32R на актуальной базе.",
       "result": null
     },
     "TOY-01": {
@@ -1851,9 +1851,17 @@
       "action": "complete",
       "claim_id": "c53be951e4c44833aea3f77adecbd92b",
       "at": "2026-11-20T16:34:59+00:00"
+    },
+    {
+      "operation_id": "ff48f19300ff45dabff1f2d59dae7676",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "6514c671a5e342f0bf87a0fcd4a383c0",
+      "at": "2026-11-20T16:35:21+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:34:59+00:00",
+  "updated_at": "2026-11-20T16:35:21+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
