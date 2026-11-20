@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 18,
+  "sequence": 19,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -112,6 +112,25 @@
       "updated_at": "2026-11-20T15:52:36+00:00",
       "note": "Подтверждены три пары foreground-прогонов, фазовый тест PASS. Зафиксированы место вызова и независимый отзыв при остановке публикаций. Целевой callback и стек ещё открыты.",
       "result": "ae5d3e4b0e61c04041145d85d269d18cc7925eef"
+    },
+    "H03-04": {
+      "owner": "codex-h03-04-01a1f76d-20261120",
+      "label": "Основной чат — память целевого H03",
+      "branch": "codex/h03-04-storage-01a1f76d",
+      "files": [
+        "docs/lfj8-h03-ram-audit.md",
+        "targets/lfj8/check_h03_storage.py",
+        "targets/lfj8/h03_storage_layout.c",
+        "targets/lfj8/lfj8_h03_storage.h",
+        "tests/test_h03_storage.py",
+        "verification/e4m3-can-9e1c/h03-storage.json"
+      ],
+      "stage": "in_progress",
+      "claim_id": "83b9428ce0f2463f92341fea12156d66",
+      "claimed_at": "2026-11-20T15:53:30+00:00",
+      "updated_at": "2026-11-20T15:53:30+00:00",
+      "note": "Собираю актуальную карту состояний и рабочего буфера ABI M32R: Toyota, CAN13, DTC, очередь и датчики. Проверяю объём, выравнивание и доступные окна RAM.",
+      "result": null
     }
   },
   "events": [
@@ -258,9 +277,17 @@
       "action": "review",
       "claim_id": "ef041474d8994309836820d6cd886071",
       "at": "2026-11-20T15:52:36+00:00"
+    },
+    {
+      "operation_id": "c86a01c0441843d8ac3b761b2e030057",
+      "task": "H03-04",
+      "owner": "codex-h03-04-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "83b9428ce0f2463f92341fea12156d66",
+      "at": "2026-11-20T15:53:30+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:52:36+00:00",
+  "updated_at": "2026-11-20T15:53:30+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
