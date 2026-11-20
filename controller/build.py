@@ -14,6 +14,8 @@ from hydraulic_port import write_port
 
 CONTROLLER = Path(__file__).resolve().parent
 TOYOTA = CONTROLLER / "vendor" / "toyota"
+CONTROLLER_SOURCES = ("src/rbm_u340e.c", "src/rbm_u340e_runtime.c")
+CONTROLLER_TESTS = ("tests/test_controller.c", "tests/test_runtime.c")
 
 
 def sha256(path: Path) -> str:
@@ -40,8 +42,9 @@ def build(compiler: str, destination: Path) -> None:
     version = subprocess.check_output([resolved, version_flag], text=True).splitlines()[0]
 
     provenance, vendor_files = verify_toyota()
-    sources = [CONTROLLER / "src/rbm_u340e.c", *(p for p in vendor_files if p.suffix == ".c")]
-    test = CONTROLLER / "tests/test_controller.c"
+    sources = [*(CONTROLLER / path for path in CONTROLLER_SOURCES),
+               *(p for p in vendor_files if p.suffix == ".c")]
+    test_sources = [CONTROLLER / path for path in CONTROLLER_TESTS]
     flags = [
         "-std=c11", "-O2", "-Wall", "-Wextra", "-Werror",
         "-I", str(CONTROLLER / "include"),
@@ -62,7 +65,8 @@ def build(compiler: str, destination: Path) -> None:
         source_args = [str(path) for path in sources if path.name != "factory_hydraulics.c"] + [str(port)]
         subprocess.run([*driver, *flags, *shared, *source_args, "-o", str(stage / library)], check=True)
         subprocess.run(
-            [*driver, *flags, "-DRBM_TEST_TRANSFERS", *source_args, str(test), "-o", str(stage / executable)],
+            [*driver, *flags, "-DRBM_TEST_TRANSFERS", "-DRBM_TEST_RUNTIME", *source_args,
+             *map(str, test_sources), "-o", str(stage / executable)],
             check=True,
         )
         tests = subprocess.check_output([str(stage / executable)], text=True).strip()
@@ -80,7 +84,7 @@ def build(compiler: str, destination: Path) -> None:
                     *sources,
                     *sorted((CONTROLLER / "include").glob("*.h")),
                     *(p for p in vendor_files if p.suffix == ".h"),
-                    test,
+                    *test_sources,
                     Path(__file__).resolve(),
                     CONTROLLER / "hydraulic_port.py",
                 )

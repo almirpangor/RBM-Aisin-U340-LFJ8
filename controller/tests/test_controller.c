@@ -253,6 +253,9 @@ static void check_hydraulic_cycle(void)
 #ifdef RBM_TEST_TRANSFERS
 unsigned rbm_test_hydraulic_transfer(void);
 #endif
+#ifdef RBM_TEST_RUNTIME
+void rbm_test_runtime(void);
+#endif
 
 int main(void)
 {
@@ -260,6 +263,9 @@ int main(void)
     check_analog_selector();
     check_output_path();
     check_hydraulic_cycle();
+#ifdef RBM_TEST_RUNTIME
+    rbm_test_runtime();
+#endif
 #ifdef RBM_TEST_TRANSFERS
     const unsigned verified_fields = rbm_test_hydraulic_transfer();
     assert(verified_fields == 292);

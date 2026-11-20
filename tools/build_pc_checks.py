@@ -70,6 +70,15 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
             "targets/bosch/test_panel_gpio.c", "-o", str(panel_gpio_check),
         ])
         run("Фронты панели и приоритет штатного выхода Bosch", [str(panel_gpio_check)])
+        takeover_check = output / f"lfj8_h03_takeover_test{suffix}"
+        run("Сборка передачи управления LFJ8 H03", [
+            *driver, *common_flags, "-pedantic",
+            "-I", "controller/include", "-I", "controller/vendor/toyota/include",
+            "targets/lfj8/lfj8_h03_takeover.c", "targets/lfj8/lfj8_h03_outputs.c",
+            "targets/lfj8/test_lfj8_h03_takeover.c", "controller/vendor/toyota/src/factory_core.c",
+            "-o", str(takeover_check),
+        ])
+        run("Синхронизация команд и блокировки LFJ8 H03", [str(takeover_check)])
         run("Тесты модели", [*python, "-m", "unittest", "discover", "-s", "tests", "-v"])
         integrated = [*python, "-m", "model.run_integrated", "--cc", resolved]
         if bosch is not None:

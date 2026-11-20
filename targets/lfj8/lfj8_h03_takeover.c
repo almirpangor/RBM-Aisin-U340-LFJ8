@@ -1,0 +1,150 @@
+#include "lfj8_h03_takeover.h"
+
+#define H03_SERVICE_MODE UINT32_C(0x804887)
+#define H03_EVENT_SUSPENDED UINT32_C(0x80801C)
+#define H03_STARTUP_COUNT UINT32_C(0x80621A)
+#define SERIAL_HALF_RANGE UINT32_C(0x80000000)
+
+static const uint32_t shift_final[] = {0x8063D7, 0x8063DA, 0x8063DD};
+static const uint32_t pwm_proposal[] = {0x804F6C, 0x804F78, 0x804F84, 0x804F94};
+static const uint32_t pwm_final[] = {0x804F74, 0x804F80, 0x804F8C, 0x804F9C};
+static const uint32_t output_guards[] = {
+    0x8063AF, 0x8063B7, 0x8063C4, 0x806356, 0x8063F2,
+    0x80636E, 0x80636F, 0x806370, 0x80636D,
+    0x8065BA, 0x8065B8, 0x8065B7, 0x8065B6,
+};
+
+static int qualified(const Lfj8H03Takeover *state)
+{
+    const Lfj8H03TakeoverOps *const ops = state->ops;
+    const Lfj8RegisterIo *const io = ops->io;
+    void *const context = io->context;
+
+    const uint16_t startup_count = io->read16(context, H03_STARTUP_COUNT);
+
+    if (ops->qualified(context) != 1 || startup_count <= 2u || startup_count >= 0x8000u ||
+        io->read8(context, H03_SERVICE_MODE) == 4u ||
+        io->read8(context, H03_EVENT_SUSPENDED) != 0u) {
+        return 0;
+    }
+    for (size_t i = 0; i < sizeof(output_guards) / sizeof(output_guards[0]); ++i) {
+        if (io->read8(context, output_guards[i]) != 0u) {
+            return 0;
+        }
+    }
+    return ops->clock_ticks(context) - state->command_at < state->max_age_ticks;
+}
+
+static void publish_proposals(const Lfj8H03Takeover *state)
+{
+    const Lfj8H03TakeoverOps *const ops = state->ops;
+    const Lfj8RegisterIo *const io = ops->io;
+    void *const context = io->context;
+
+    for (size_t i = 0; i < sizeof(shift_final) / sizeof(shift_final[0]); ++i) {
+        io->write8(context, shift_final[i] - 2u, (uint8_t)(((unsigned)state->shift_mask >> i) & 1u));
+    }
+    ops->write32(context, 0x80508C, state->pressure_word);
+    for (size_t i = 0; i < sizeof(pwm_proposal) / sizeof(pwm_proposal[0]); ++i) {
+        ops->write32(context, pwm_proposal[i], 0u);
+    }
+}
+
+static int matching_commands(const Lfj8H03Takeover *state)
+{
+    const Lfj8RegisterIo *const io = state->ops->io;
+    void *const context = io->context;
+
+    for (size_t i = 0; i < sizeof(shift_final) / sizeof(shift_final[0]); ++i) {
+        if (io->read8(context, shift_final[i]) != (((unsigned)state->shift_mask >> i) & 1u)) {
+            return 0;
+        }
+    }
+    if (io->read32(context, 0x805094) != state->pressure_word) {
+        return 0;
+    }
+    for (size_t i = 0; i < sizeof(pwm_final) / sizeof(pwm_final[0]); ++i) {
+        if (io->read32(context, pwm_final[i]) != 0u) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int lfj8_h03_takeover_init(Lfj8H03Takeover *state, const Lfj8H03TakeoverOps *ops,
+                          uint32_t max_age_ticks)
+{
+    if (!state) {
+        return 0;
+    }
+    *state = (Lfj8H03Takeover){0};
+    if (!ops || !ops->io || !ops->io->read8 || !ops->io->read16 ||
+        !ops->io->read32 || !ops->io->write8 || !ops->io->enter || !ops->io->leave ||
+        !ops->write32 || !ops->clock_ticks ||
+        !ops->qualified || !ops->arbitrate || !ops->apply || !ops->inhibit ||
+        ops->isolated_pwm_mask != LFJ8_H03_ALL_SPARE_PWM_ISOLATED ||
+        max_age_ticks == 0u || max_age_ticks >= SERIAL_HALF_RANGE) {
+        return 0;
+    }
+    state->ops = ops;
+    state->max_age_ticks = max_age_ticks;
+    return 1;
+}
+
+int lfj8_h03_takeover_prepare(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *plan,
+                             uint8_t shift_mask, uint32_t generation, uint32_t command_at)
+{
+    if (!state || !state->ops) {
+        return 0;
+    }
+    const Lfj8H03TakeoverOps *const ops = state->ops;
+    const Lfj8RegisterIo *const io = ops->io;
+    void *const context = io->context;
+    const uint32_t saved = io->enter(context);
+    const uint32_t advance = generation - state->generation;
+
+    const int missed_apply = state->pending;
+    const int consecutive = !state->have_generation || advance == 1u;
+    state->pending = 0;
+    if (!state->have_generation || (advance != 0u && advance < SERIAL_HALF_RANGE)) {
+        state->generation = generation;
+        state->have_generation = 1;
+        state->command_at = command_at;
+        if (consecutive && !missed_apply && lfj8_h03_output_plan_matches(plan, shift_mask) &&
+            qualified(state)) {
+            state->shift_mask = shift_mask;
+            state->pressure_word = plan->pressure_binary32;
+            publish_proposals(state);
+            ops->arbitrate(context);
+            state->pending = (uint8_t)(matching_commands(state) && qualified(state));
+        }
+    }
+    const int accepted = state->pending;
+    if (!accepted) {
+        ops->inhibit(context);
+    }
+    io->leave(context, saved);
+    return accepted;
+}
+
+int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation)
+{
+    if (!state || !state->ops) {
+        return 0;
+    }
+    const Lfj8H03TakeoverOps *const ops = state->ops;
+    const Lfj8RegisterIo *const io = ops->io;
+    void *const context = io->context;
+    const uint32_t saved = io->enter(context);
+    const int pending = state->pending;
+    state->pending = 0;
+    const int accepted = pending && generation == state->generation &&
+        matching_commands(state) && qualified(state);
+    if (accepted) {
+        ops->apply(context);
+    } else {
+        ops->inhibit(context);
+    }
+    io->leave(context, saved);
+    return accepted;
+}

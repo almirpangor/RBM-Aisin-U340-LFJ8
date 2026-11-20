@@ -11,6 +11,10 @@ enum {
     LFJ8_H03_PRESSURE_BLOCK = 1 << 3,
 };
 
+static const uint32_t strategy_mailbox[] = {
+    UINT32_C(0x8063D5), UINT32_C(0x8063D8), UINT32_C(0x8063DB),
+};
+
 static uint8_t blocked_channels(const Lfj8H03OemOutputState *oem)
 {
     if (oem->force_zero_a || oem->force_zero_b || oem->force_fallback_a ||
@@ -105,14 +109,38 @@ static uint32_t amps_binary32(uint16_t milliamps)
     return (exponent << 23) | (mantissa & UINT32_C(0x7fffff));
 }
 
+int lfj8_h03_output_plan_matches(const Lfj8H03OutputPlan *plan, uint8_t shift_mask)
+{
+    if (!plan || shift_mask > 7u ||
+        plan->pressure_mailbox != UINT32_C(0x80508C) ||
+        plan->pressure_request_ma > LFJ8_H03_LPS_MAX_MA ||
+        plan->pressure_binary32 != amps_binary32(plan->pressure_request_ma) ||
+        plan->toyota_compare < LFJ8_H03_COMPARE_MIN || plan->toyota_compare > LFJ8_H03_COMPARE_MAX ||
+        plan->discrete_count > sizeof(plan->discrete) / sizeof(plan->discrete[0])) {
+        return 0;
+    }
+    size_t previous_channel = 0;
+    for (size_t i = 0; i < plan->discrete_count; ++i) {
+        const Lfj8H03DiscreteCommand command = plan->discrete[i];
+        size_t channel = 0;
+        while (channel < sizeof(strategy_mailbox) / sizeof(strategy_mailbox[0]) &&
+               strategy_mailbox[channel] != command.mailbox) {
+            ++channel;
+        }
+        if (channel == sizeof(strategy_mailbox) / sizeof(strategy_mailbox[0]) ||
+            channel < previous_channel || command.on != (((unsigned)shift_mask >> channel) & 1u)) {
+            return 0;
+        }
+        previous_channel = channel;
+    }
+    return 1;
+}
+
 Lfj8H03OutputResult lfj8_h03_plan_outputs(const RbmU340eHydraulicOutput *request,
     const Lfj8H03OutputBinding *binding, const Lfj8H03OemOutputState *oem,
     const Lfj8H03SltCalibration *calibration, Lfj8H03OperatingPoint operating,
     Lfj8H03OutputPlan *plan)
 {
-    static const uint32_t strategy_mailbox[] = {
-        UINT32_C(0x8063D5), UINT32_C(0x8063D8), UINT32_C(0x8063DB),
-    };
     uint8_t resolved_channel[sizeof(plan->discrete) / sizeof(plan->discrete[0])];
     uint8_t affected = LFJ8_H03_PRESSURE_BLOCK;
 

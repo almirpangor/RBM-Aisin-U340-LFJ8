@@ -21,6 +21,35 @@ def decoded_operand(raw):
     return min(32767, -result if numerator < 0 else result)
 
 
+def execute_native_qualification(vm):
+    state = {address: 0 for address in (
+        0x8172, 0x8173, 0x8168, 0x8166, 0x8182, 0x8184, 0x8185, 0x8181,
+        0x8CB8, 0x8CBA, 0x8CBB, 0x8CA2, 0x8CA0, 0x8CA1, 0x8CB4, 0x8CB5,
+        0x8CB6, 0x8CB7, 0x8CA4,
+    )}
+    words = {address: 0 for address in (
+        0xFD10, 0xFD74, 0x8C86, 0x8C84, 0x98CA, 0x9822, 0xF7C4, 0x8C96, 0x8C90,
+    )}
+    words[0xFD10] = 0x2000  # Sequence supervision is supplied by the native caller.
+    flags = []
+    for sequence, bad_checksum in enumerate((False,) + (True,) * 4 + (False,) * 4, 1):
+        state.update({0x8173: 40, 0x8172: 60, 0x8168: 0x9B ^ bad_checksum, 0x8166: sequence & 7})
+        vm.reset()
+        for address, value in state.items():
+            vm.write(address, value, 1)
+        for address, value in words.items():
+            vm.write(address, value)
+        vm.run(0x028CD0, stop=0x029128)
+        state = {address: vm.read(address, 1) for address in state}
+        words = {address: vm.read(address) for address in words}
+        assert state[0x8184] == sequence & 7
+        assert [signed_word(words[address]) for address in (0x8C86, 0x8C84)] == [-2621, 2621]
+        flags.append(f"{state[0x8182]:02x}")
+    assert flags == ["00", "01", "01", "99", "b9", "b8", "b8", "b8", "00"]
+    assert [words[address] for address in (0x8C96, 0x8C90)] == [0, 5242]
+    return flags
+
+
 def verify(engine, base, image, model):
     if digest(base) != S04_SHA:
         raise ValueError("Expected the pinned S04 project image")
@@ -47,6 +76,7 @@ def verify(engine, base, image, model):
     # A bijection on bytes varies each channel across its entire range.
     for first in range(256):
         execute_pair(first, (59 * first + 17) & 255)
+    native_qualification = execute_native_qualification(vm)
 
     from audit_machine import Machine
     from test_can_diag import start
@@ -84,7 +114,7 @@ def verify(engine, base, image, model):
         "e4m3_candidate_sha256": manifest["sha256"],
         "donor_pairs_executed": 256,
         "vectors": vectors,
-        "chery_qualification_not_executed_by_this_audit": True,
+        "chery_native_qualification_flags_hex": native_qualification,
         "common_physical_request_units_proven": False,
         "torque_output_implemented_by_candidate": False,
         "hardware_tested": False,

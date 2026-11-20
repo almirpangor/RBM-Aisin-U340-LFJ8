@@ -8,7 +8,7 @@ import shutil
 import subprocess
 from tempfile import TemporaryDirectory
 
-from build import CONTROLLER, TOYOTA, sha256, verify_toyota
+from build import CONTROLLER, CONTROLLER_SOURCES, CONTROLLER_TESTS, TOYOTA, sha256, verify_toyota
 from hydraulic_port import write_port
 
 
@@ -44,14 +44,19 @@ def build(architecture: str, compiler: Path, destination: Path, sh_runner: Path 
         shutil.copytree(CONTROLLER / "include", stage / "include")
         shutil.copytree(TOYOTA / "include", stage / "vendor/include")
         shutil.copytree(TOYOTA / "src", stage / "vendor/src")
-        shutil.copy2(CONTROLLER / "src/rbm_u340e.c", stage / "rbm_u340e.c")
-        shutil.copy2(CONTROLLER / "tests/test_controller.c", stage / "test_controller.c")
+
+        def copy_source(path: str) -> str:
+            name = Path(path).name
+            shutil.copy2(CONTROLLER / path, stage / name)
+            return name
 
         port = write_port(stage / "vendor/src", stage)
-        sources = ["rbm_u340e.c", *(
+        sources = [*map(copy_source, CONTROLLER_SOURCES), *(
             "vendor/src/" + path.name for path in files
             if path.suffix == ".c" and path.name != "factory_hydraulics.c"
         ), port.name]
+        tests = list(map(copy_source, CONTROLLER_TESTS))
+        test_flags = ["-DRBM_TEST_TRANSFERS", "-DRBM_TEST_RUNTIME"]
         objects = []
         compile_flags = [*flags, "-fstack-usage"] if architecture == "sh2" else flags
         for source in sources:
@@ -107,8 +112,8 @@ def build(architecture: str, compiler: Path, destination: Path, sh_runner: Path 
             )
             subprocess.run(
                 [
-                    compiler, *flags, "-DRBM_TEST_TRANSFERS", "-nostartfiles", startup, *sources,
-                    "test_controller.c", "sim_crt.c", "-Wl,-e,_start", "-Wl,--start-group",
+                    compiler, *flags, *test_flags, "-nostartfiles", startup, *sources,
+                    *tests, "sim_crt.c", "-Wl,-e,_start", "-Wl,--start-group",
                     "-lc", "-lgloss", "-lgcc", "-Wl,--end-group", "-o", test_elf.name,
                 ],
                 cwd=stage, env=environment, check=True,
@@ -117,28 +122,37 @@ def build(architecture: str, compiler: Path, destination: Path, sh_runner: Path 
             test_result = subprocess.check_output(
                 [simulator, test_elf.name], cwd=stage, env=environment, text=True, timeout=60,
             ).strip()
-            if "Controller tests passed:" not in test_result:
+            if "Controller tests passed:" not in test_result or "Toyota GP runtime:" not in test_result:
                 raise ValueError(f"M32R simulator did not finish the test: {test_result}")
             artifacts.append(test_elf)
         elif sh_runner is not None:
             for name in ("sh2_sim.c", "sh2_sim.ld"):
                 shutil.copy2(CONTROLLER / "tests" / name, stage / name)
-            test_elf = stage / "u340e_sh2_sim.elf"
-            subprocess.run(
-                [
-                    compiler, *flags, "-DRBM_TEST_TRANSFERS", "-DRBM_TEST_QUIET",
-                    "-fno-use-linker-plugin", "-nostdlib", *sources, "test_controller.c", "sh2_sim.c",
-                    "-Wl,-T,sh2_sim.ld,--gc-sections", "-lgcc", "-o", test_elf.name,
-                ],
-                cwd=stage, env=environment, check=True,
+            # Keep each fixture within the simulator's ROM and stack model.
+            sh_tests = (
+                ("u340e_sh2_sim.elf", "test_controller.c", "-DRBM_TEST_TRANSFERS"),
+                ("u340e_sh2_runtime_sim.elf", "test_runtime.c", "-DRBM_TEST_RUNTIME_STANDALONE"),
             )
-            elf_flags(test_elf, machine, 2)
-            test_result = subprocess.check_output(
-                [sh_runner, test_elf.name], cwd=stage, env=environment, text=True, timeout=60,
-            ).strip()
-            if not test_result.startswith("PASS SuperH test:"):
-                raise ValueError(f"SH2 simulator did not finish the test: {test_result}")
-            artifacts.append(test_elf)
+            results = []
+            for filename, test_source, test_flag in sh_tests:
+                test_elf = stage / filename
+                subprocess.run(
+                    [
+                        compiler, *flags, test_flag, "-DRBM_TEST_QUIET",
+                        "-fno-use-linker-plugin", "-nostdlib", *sources, test_source, "sh2_sim.c",
+                        "-Wl,-T,sh2_sim.ld,--gc-sections", "-lgcc", "-o", test_elf.name,
+                    ],
+                    cwd=stage, env=environment, check=True,
+                )
+                elf_flags(test_elf, machine, 2)
+                result = subprocess.check_output(
+                    [sh_runner, test_elf.name], cwd=stage, env=environment, text=True, timeout=60,
+                ).strip()
+                if not result.startswith("PASS SuperH test:"):
+                    raise ValueError(f"SH2 simulator did not finish the test: {result}")
+                results.append(f"{result} ({filename})")
+                artifacts.append(test_elf)
+            test_result = "\n".join(results)
 
         manifest = {
             "purpose": "relocatable control code and CPU simulation, without board I/O",
