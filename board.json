@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 728,
+  "sequence": 729,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -163,8 +163,8 @@
       "stage": "in_progress",
       "claim_id": "eb973761003948398f33f495758fde06",
       "claimed_at": "2026-11-20T22:37:29+00:00",
-      "updated_at": "2026-11-20T22:37:29+00:00",
-      "note": "Подключаю нативное чтение физического массива к восстановлению DTC. Проверю отказ в E/W, Virtual Flash и при ошибке; два сектора и запись требуют подтверждения.",
+      "updated_at": "2026-11-20T22:40:48+00:00",
+      "note": "Нативный читатель подключён к восстановлению журнала. Прошли модель отказов на ПК/M32R и чтение через настоящий MMIO из памяти симулятора; повторяю проверки CAN и совместимость.",
       "result": null,
       "based_on_reviews": [
         "e72d13fcb2254ca89fd0736136b11462"
@@ -9286,9 +9286,38 @@
           "e2040f38c0804ea1ba66dc3a744de6a4"
         ]
       }
+    },
+    {
+      "operation_id": "4b0ccf22a71f4b57ab55a14e64203808",
+      "task": "DTC-04",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "eb973761003948398f33f495758fde06",
+      "at": "2026-11-20T22:40:48+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-04 — чтение массива H03",
+        "branch": "codex/dtc04-native-array-read-7bd19ea4-v2",
+        "files": [
+          "targets/lfj8/check_h03_nvm.py",
+          "targets/lfj8/h03_nvm_native_fixture.c",
+          "targets/lfj8/lfj8_h03_nvm_native.c",
+          "targets/lfj8/lfj8_h03_nvm_native.h",
+          "verification/project-audit/dtc04-h03-native-array-read.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "eb973761003948398f33f495758fde06",
+        "claimed_at": "2026-11-20T22:37:29+00:00",
+        "updated_at": "2026-11-20T22:40:48+00:00",
+        "note": "Нативный читатель подключён к восстановлению журнала. Прошли модель отказов на ПК/M32R и чтение через настоящий MMIO из памяти симулятора; повторяю проверки CAN и совместимость.",
+        "result": null,
+        "based_on_reviews": [
+          "e72d13fcb2254ca89fd0736136b11462"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:40:04+00:00",
+  "updated_at": "2026-11-20T22:40:48+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
