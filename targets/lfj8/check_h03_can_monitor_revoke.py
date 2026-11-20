@@ -25,18 +25,6 @@ ALIASES = {
     "rbm_h03_main_result": "communication/main_result",
     "rbm_h03_fast_output": "communication/fast_output",
 }
-FIXTURE_WRITER = """
-void rbm_h03_can_monitor_revoke_locked(void)
-{
-    require_lock();
-    ++revoke_count;
-}
-
-void rbm_h03_can_monitor_publish_setup_locked(void)
-{
-    require_lock();
-}
-"""
 BINDINGS = r"""
 #include "lfj8_h03_application.h"
 #include "lfj8_h03_can_owner.h"
@@ -121,22 +109,48 @@ static int released_output_state(int inhibited)
     return 1;
 }
 
+int __real_rbm_h03_can_monitor_cold_owner_init_locked(void);
 void __real_rbm_h03_can_monitor_revoke_locked(void);
+
+int __wrap_rbm_h03_can_monitor_cold_owner_init_locked(void)
+{
+    require_lock();
+    if (release_count || !(HALF(CAN0 + 2) & 0x0100u) || !(HALF(CAN1 + 2) & 0x0100u)) {
+        ++unsafe_writes;
+    }
+    const Lfj8H03CanOwner retained = h03_can_owner;
+    const int ready = __real_rbm_h03_can_monitor_cold_owner_init_locked();
+    if (ready && (!h03_can_owner.initialized || h03_can_owner.grant ||
+                  h03_can_owner.setup_generation || h03_can_owner.admitted_generation)) {
+        ++unsafe_writes;
+    }
+    if (!ready && (h03_can_owner.initialized != retained.initialized ||
+                   h03_can_owner.grant != retained.grant ||
+                   h03_can_owner.setup_generation != retained.setup_generation ||
+                   h03_can_owner.admitted_generation != retained.admitted_generation)) {
+        ++unsafe_writes;
+    }
+    return ready;
+}
 
 void __wrap_rbm_h03_can_monitor_revoke_locked(void)
 {
     require_lock();
     ++revoke_count;
+    const uint32_t generation = h03_can_owner.setup_generation;
+    const uint32_t admitted = h03_can_owner.admitted_generation;
+    const uint8_t grant = h03_can_owner.grant;
     __real_rbm_h03_can_monitor_revoke_locked();
 
     const int owned = fixture_behavior != NO_RAM;
     const int inhibited = fixture_behavior == ACTIVE || fixture_behavior == REPEATED;
     const int active = inhibited || !owned;
+    const int granted = !owned && grant == 1u;
     uint32_t epoch = UINT32_MAX;
-    if (h03_can_owner.grant != !owned || h03_can_owner.setup_generation != 42u ||
-        h03_can_owner.admitted_generation != 42u ||
-        lfj8_h03_can_owner_rx_epoch(&h03_can_owner, &epoch) != !owned ||
-        epoch != (owned ? UINT32_MAX : 42u) ||
+    if (h03_can_owner.grant != (owned ? 0u : grant) || h03_can_owner.setup_generation != generation ||
+        h03_can_owner.admitted_generation != admitted ||
+        lfj8_h03_can_owner_rx_epoch(&h03_can_owner, &epoch) != granted ||
+        epoch != (granted ? generation : UINT32_MAX) ||
         rbm_h03_takeover_state.pending != !owned || rbm_h03_takeover_state.generation != 7u ||
         rbm_h03_application.running != active || rbm_h03_takeover_state.ops != (active ? &commissioned : 0) ||
         rbm_h03_main_result.valid != !owned || rbm_h03_fast_output.valid != !owned ||
@@ -202,9 +216,9 @@ def probe_binding(base, compiler, aliases, addresses):
         raise ValueError("A native word changed before the binding probe")
     asm = startup.FIXTURE.replace("    ld24 fp,#0x808000\nfixture_ready:",
                                   "    ld24 fp,#0x808000\n    bl.l fixture_initialize_outputs\nfixture_ready:")
-    if asm == startup.FIXTURE or FIXTURE_WRITER not in startup.BACKEND:
+    if asm == startup.FIXTURE or not startup.BACKEND.endswith(startup.OWNER_STUBS):
         raise ValueError("The parent simulator entry has changed")
-    stub = startup.BACKEND.replace(FIXTURE_WRITER, "") + BINDINGS
+    stub = startup.BACKEND.removesuffix(startup.OWNER_STUBS) + BINDINGS
 
     with TemporaryDirectory(prefix="rbm-h03-can-revoke-probe-") as directory:
         work = Path(directory)
@@ -233,6 +247,7 @@ def probe_binding(base, compiler, aliases, addresses):
             "-DRBM_H03_MONITOR_STARTUP_SIMULATOR",
             *(option for folder in includes for option in ("-I", folder)),
             "-Wl,--gc-sections,-T,fixture.ld,--wrap=rbm_h03_can_monitor_revoke_locked",
+            "-Wl,--wrap=rbm_h03_can_monitor_cold_owner_init_locked",
             "-Wl,--undefined=fixture_recovery,--undefined=fixture_fault,--undefined=fixture_revoke_once",
             *(f"-Wl,--undefined={name}" for _, _, name, _ in startup.PATCHES),
             "fixture.S", "fixture.c", "parked.S", "aliases.S", *(HERE / name for name in sources),
@@ -259,14 +274,37 @@ def probe_binding(base, compiler, aliases, addresses):
         owner_address = addresses["h03_can_owner"][0]
         denied_ram = ("unsigned int", symbols["fixture_behavior"][0], 1)
         generation = f"*(unsigned int*){owner_address:#x}"
+        grant = f"*(unsigned char*){owner_address + 4:#x}"
+        memory = (*startup.seed(), *startup.patch_words(run, compiler))
+        # Bypass unrelated application startup with a fixture-only BRA.L.
+        app_bridge = ("unsigned int", 0x008100, 0xFF000000 | ((0x00B7CC - 0x008100) // 4))
+        cold, initial_permit = startup.read_probe(
+            run, work, debugger, "0x003DC8", (*memory, app_bridge),
+            ((0x008100, 0x0047D8), (0x00B7FC,)), 0, (generation, grant),
+        )
+        if (cold[0], cold[1:4], cold[-2:]) != (0x008100, (2, 0, 0), (0, 0)):
+            raise ValueError(f"Cold entry did not initialize the CAN owner before releasing RX: {cold}")
+        if initial_permit[1:4] != (4, 0, 1) or initial_permit[-2:] != (1, 0):
+            raise ValueError(f"First stock permit did not publish generation one with TX revoked: {initial_permit}")
+        denied, = startup.read_probe(
+            run, work, debugger, "0x003DC8", (*memory, denied_ram),
+            ((0x008100, 0x0047D8),), 0, (generation, grant),
+        )
+        if (denied[0], denied[1:4], denied[-2:]) != (0x0047D8, (0, 0, 0), (42, 1)) or not (
+            denied[4] & 0x11 and denied[5] & 0x11
+        ):
+            raise ValueError(f"Cold permit without RAM ownership released CAN or wrote retained state: {denied}")
         preserved, = startup.read_probe(
             run, work, debugger, "0x00B7CC",
-            (*startup.seed(), *startup.patch_words(run, compiler), denied_ram),
+            (*memory, denied_ram),
             ((0x00B7FC,),), 0, (generation,),
         )
         if preserved[1:4] != (2, 0, 1) or preserved[-1] != 42:
             raise ValueError(f"Successful stock permit without RAM ownership published target state: {preserved}")
     return {"direct_cases": results, "native_entry_cases": native,
+            "cold_owner_initialized_while_both_can_parked": True,
+            "first_native_setup_generation": 1,
+            "cold_ram_denial_keeps_rx_parked": True,
             "native_permit_preserves_unowned_generation": True,
             "used_actual_inhibit_implementation": True, "physical_output_verified": False}
 

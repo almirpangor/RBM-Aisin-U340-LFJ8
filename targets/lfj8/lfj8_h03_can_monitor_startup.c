@@ -1,6 +1,8 @@
 #include "lfj8_h03_can_monitor_startup.h"
 #include "lfj8_h03_mmio.h"
 
+#include <stdbool.h>
+
 #define CAN0 UINT32_C(0x801000)
 #define CAN1 UINT32_C(0x801400)
 #define H03_FCNT1 UINT32_C(0x8007E2)
@@ -135,7 +137,7 @@ static int park_pair(void)
     return discard_monitor_work();
 }
 
-static int rearm_locked(uint16_t can0_control)
+static int rearm_locked(uint16_t can0_control, bool cold)
 {
     if (!normal_flash()) {
         return 0;
@@ -151,6 +153,9 @@ static int rearm_locked(uint16_t can0_control)
     arm_basiccan(CAN0);
     arm_basiccan(CAN1);
     if (!basiccan_armed_behind_reset(CAN0) || !basiccan_armed_behind_reset(CAN1)) {
+        return 0;
+    }
+    if (cold && !rbm_h03_can_monitor_cold_owner_init_locked()) {
         return 0;
     }
 
@@ -172,7 +177,7 @@ int rbm_h03_can_monitor_rearm(void)
 {
     const Lfj8RegisterIo *const io = monitor->io;
     const uint32_t saved = io->enter(io->context);
-    const int ready = rearm_locked(io->read16(io->context, CAN0));
+    const int ready = rearm_locked(io->read16(io->context, CAN0), true);
     io->leave(io->context, saved);
     return ready;
 }
@@ -182,7 +187,7 @@ int rbm_h03_can_monitor_runtime_rearm(void)
     const Lfj8RegisterIo *const io = monitor->io;
     const uint32_t saved = io->enter(io->context);
     rbm_h03_can_monitor_revoke_locked();
-    const int ready = rearm_locked(CAN_BCM);
+    const int ready = rearm_locked(CAN_BCM, false);
     if (ready) {
         rbm_h03_can_monitor_publish_setup_locked();
     }
