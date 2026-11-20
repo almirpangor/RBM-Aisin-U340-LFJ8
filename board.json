@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 256,
+  "sequence": 257,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -396,11 +396,11 @@
         "targets/lfj8/test_lfj8_vss_arithmetic.c",
         "verification/project-audit/vss01-exact-arithmetic.md"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "698c00d00af84972b5562bc8498c8628",
       "claimed_at": "2026-11-20T16:18:46+00:00",
-      "updated_at": "2026-11-20T16:22:43+00:00",
-      "note": "Точная VSS арифметика устраняет промежуточное переполнение. 25 000 сравнений, PC 33 шага/65 тестов, M32R 17 компонентов, Bosch C7FF/C800/FFFF PASS по ожидаемому поведению. Параметры VSS-02 и стенд открыты. Отчёт verification/project-audit/vss01-exact-arithmetic.md.",
+      "updated_at": "2026-11-20T17:02:42+00:00",
+      "note": "Добавлю сквозную упаковку 0x1AE для профиля мостов УАЗ и сравнение стека и размера расчёта M32R. Рабочие калибровки и общие проверки не меняю.",
       "result": "d05896bcac7b731f8d3f85b9aaebd3394e32473c"
     },
     "H03-05": {
@@ -2615,9 +2615,17 @@
       "action": "heartbeat",
       "claim_id": "57db4a43b5754a71a19f9ab77e4c69f4",
       "at": "2026-11-20T17:02:27+00:00"
+    },
+    {
+      "operation_id": "a7e78ad15e62471dabd62c987505fdeb",
+      "task": "VSS-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "resume",
+      "claim_id": "698c00d00af84972b5562bc8498c8628",
+      "at": "2026-11-20T17:02:42+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:02:27+00:00",
+  "updated_at": "2026-11-20T17:02:42+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
