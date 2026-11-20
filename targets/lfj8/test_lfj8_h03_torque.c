@@ -175,6 +175,75 @@ static void test_loss(void)
     assert(can.submitted == 4); /* The original donor demand never stopped. */
 }
 
+static void test_status_deadline(bool had_progress, uint32_t delay)
+{
+    Lfj8H03Torque link;
+    CanFixture can = {0};
+    FactoryHydraulics gp = initial_gp();
+    const uint32_t start = UINT32_MAX - 10000u;
+    lfj8_h03_torque_init(&link);
+    assert(status(&link, start - 1u, 0, 0, 0, 0, 0, 0));
+    tick(&link, &gp, start - 1u, &bench_profile, &can);
+    request_donor_upshift(&gp);
+    tick(&link, &gp, start, &bench_profile, &can);
+    assert(can.submitted == 1u && can.frame[1] == 1u);
+    lfj8_h03_torque_tx_done(&link, true, start);
+
+    uint32_t latest_progress = start;
+    if (had_progress) {
+        latest_progress += 1000u;
+        assert(status(&link, latest_progress, 1, 2, 7, 1, 32, 0));
+        assert(lfj8_h03_torque_applied(&link, latest_progress));
+        for (uint32_t i = 20000u; i <= 40000u; i += 20000u) {
+            tick(&link, &gp, start + i, &bench_profile, &can);
+            assert(can.frame[1] == 2u);
+            lfj8_h03_torque_tx_done(&link, true, start + i);
+        }
+    }
+
+    /* CAN13 delivers the captured status before polling the requester. */
+    const unsigned before = can.submitted;
+    const uint8_t ack_before = link.ack_seq;
+    const uint32_t received_at = latest_progress + delay;
+    const uint32_t polled_at = latest_progress + (delay < 60000u ? 60000u : delay);
+    assert(status(&link, received_at, 1, 2, 7, link.seq, 32, 0));
+    tick(&link, &gp, polled_at, &bench_profile, &can);
+    assert(can.submitted == before + 1u);
+    if (delay < 60000u) {
+        assert(lfj8_h03_torque_applied(&link, polled_at));
+        assert(can.frame[1] == 2u && link.progress_at == received_at);
+    } else {
+        assert(link.phase == LFJ8_TORQUE_RELEASING && link.failed && !link.full_reduction);
+        assert(link.ack_seq == ack_before && !lfj8_h03_torque_applied(&link, polled_at));
+        assert(can.frame[1] == 0u);
+        lfj8_h03_torque_tx_done(&link, true, polled_at);
+        assert(status(&link, polled_at + 1u, 1, 0, 0, link.seq, 0, 8));
+        assert(link.phase == LFJ8_TORQUE_FAILED);
+    }
+}
+
+static void test_first_status_at_pulse_end(void)
+{
+    Lfj8H03Torque link;
+    CanFixture can = {0};
+    FactoryHydraulics gp = initial_gp();
+    Lfj8TorqueCalibration short_profile = bench_profile;
+    short_profile.up[1].duration = 3;
+    lfj8_h03_torque_init(&link);
+    assert(status(&link, 0, 0, 0, 0, 0, 0, 0));
+    tick(&link, &gp, 0, &short_profile, &can);
+    request_donor_upshift(&gp);
+    tick(&link, &gp, 1, &short_profile, &can);
+    lfj8_h03_torque_tx_done(&link, true, 1);
+    assert(status(&link, 30001u, 1, 2, 7, 1, 32, 0));
+    tick(&link, &gp, 30001u, &short_profile, &can);
+    assert(link.phase == LFJ8_TORQUE_RELEASING && !link.reached_full);
+    assert(!lfj8_h03_torque_applied(&link, 30001u) && can.frame[1] == 0u);
+    lfj8_h03_torque_tx_done(&link, true, 30002u);
+    assert(status(&link, 30003u, 1, 0, 0, 2, 0, 8));
+    assert(link.phase == LFJ8_TORQUE_FAILED);
+}
+
 static void test_admission(void)
 {
     Lfj8H03Torque link;
@@ -277,8 +346,8 @@ static int bosch_fixture(void)
     FactoryHydraulics gp = initial_gp();
     lfj8_h03_torque_init(&link);
     unsigned long tick_us;
-    char rx[17];
-    while (scanf("%lu %16s", &tick_us, rx) == 2) {
+    char rx[18];
+    while (scanf("%lu %17s", &tick_us, rx) == 2) {
         const uint32_t now = (uint32_t)tick_us;
         if (now == 400000) {
             request_donor_upshift(&gp);
@@ -289,13 +358,18 @@ static int bosch_fixture(void)
         }
         if (rx[0] != '-') {
             uint8_t bytes[8];
-            assert(strlen(rx) == 16);
+            /* A prefixed frame was captured in this poll. The regular
+             * stream carries the frame from the previous ST10 step. */
+            const bool captured_now = rx[0] == '!';
+            const char *wire = rx + captured_now;
+            assert(strlen(wire) == 16);
             for (unsigned i = 0; i < 8; ++i) {
                 unsigned byte;
-                assert(sscanf(rx + 2 * i, "%2x", &byte) == 1);
+                assert(sscanf(wire + 2 * i, "%2x", &byte) == 1);
                 bytes[i] = (uint8_t)byte;
             }
-            assert(lfj8_h03_torque_receive(&link, LFJ8_TORQUE_STATUS_ID, 8, bytes, now - 2000));
+            const uint32_t captured_at = captured_now ? now : now - 2000u;
+            assert(lfj8_h03_torque_receive(&link, LFJ8_TORQUE_STATUS_ID, 8, bytes, captured_at));
         }
         const unsigned sent = can.submitted;
         tick(&link, &gp, now, &bench_profile, &can);
@@ -320,6 +394,11 @@ int main(int argc, char **argv)
     }
     test_full_dialogue();
     test_loss();
+    for (uint32_t delay = 59999u; delay <= 60001u; ++delay) {
+        test_status_deadline(false, delay);
+        test_status_deadline(true, delay);
+    }
+    test_first_status_at_pulse_end();
     test_admission();
     const Lfj8TorqueCalibration disabled = {0};
     Lfj8TorqueCalibration changed = bench_profile;
@@ -334,6 +413,7 @@ int main(int argc, char **argv)
     changed.up[1].levels |= 1u << 4;
     test_profile_revocation(&changed, false);
     test_profile_revocation(NULL, false);
+    puts("H03 torque: 6 status deadline cases and pulse-end status passed.");
     puts("H03 shift torque provenance, protocol and release passed.");
     return 0;
 }

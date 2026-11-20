@@ -59,6 +59,17 @@ static bool running(const Lfj8H03Torque *link)
     return link->phase == LFJ8_TORQUE_WAITING || link->phase == LFJ8_TORQUE_ACTIVE;
 }
 
+static uint32_t pulse_duration_us(const Lfj8H03Torque *link)
+{
+    return (uint32_t)link->profile.duration * DURATION_UNIT;
+}
+
+static bool progress_timed_out(const Lfj8H03Torque *link, uint32_t at_us)
+{
+    const uint32_t last_progress = link->have_ack ? link->progress_at : link->started_at;
+    return at_us - last_progress >= PROGRESS_TIMEOUT;
+}
+
 static void release(Lfj8H03Torque *link, bool failed, uint32_t now_us)
 {
     link->full_reduction = false;
@@ -162,7 +173,7 @@ void lfj8_h03_torque_poll(Lfj8H03Torque *link, const Lfj8TorqueInput *input,
                          Lfj8TorqueSubmit submit, void *context)
 {
     const uint32_t elapsed = now_us - link->started_at;
-    const uint32_t duration = (uint32_t)link->profile.duration * DURATION_UNIT;
+    const uint32_t duration = pulse_duration_us(link);
     if (elapsed >= duration + COOLDOWN) {
         link->cooling_down = false;
     }
@@ -176,7 +187,7 @@ void lfj8_h03_torque_poll(Lfj8H03Torque *link, const Lfj8TorqueInput *input,
         bool same_demand = is_fresh && input->demand.active && input->demand.from_gear == link->from_gear &&
                            input->demand.to_gear == link->to_gear &&
                            admits_level(link->profile, input->demand.level);
-        bool timed_out = now_us - (link->have_ack ? link->progress_at : link->started_at) >= PROGRESS_TIMEOUT;
+        const bool timed_out = progress_timed_out(link, now_us);
         if (!eligible || !same_profile || timed_out || !same_demand || elapsed >= duration) {
             release(link, timed_out || !eligible || !same_profile, now_us);
         }
@@ -241,6 +252,13 @@ bool lfj8_h03_torque_receive(Lfj8H03Torque *link, uint16_t standard_id, unsigned
     }
     if (running(link) && link->seq && data[2] && behind <= 3u &&
         received_at_us - link->started_at <= INT32_MAX) {
+        /* CAN13 delivers RX before poll. Apply both deadlines to the
+         * capture time before updating the pulse's progress or result. */
+        const bool timed_out = progress_timed_out(link, received_at_us);
+        if (timed_out || received_at_us - link->started_at >= pulse_duration_us(link)) {
+            release(link, timed_out, received_at_us);
+            return true;
+        }
         const unsigned progress = (uint8_t)(data[2] - link->ack_seq);
         if (link->have_ack && progress > 4u) {
             return true;
@@ -273,5 +291,5 @@ bool lfj8_h03_torque_applied(const Lfj8H03Torque *link, uint32_t now_us)
 {
     return link->phase == LFJ8_TORQUE_ACTIVE && link->full_reduction &&
            now_us - link->progress_at < PROGRESS_TIMEOUT &&
-           now_us - link->started_at < (uint32_t)link->profile.duration * DURATION_UNIT;
+           now_us - link->started_at < pulse_duration_us(link);
 }
