@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 9,
+  "sequence": 10,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -44,11 +44,11 @@
         "tools/build_pc_checks.py",
         "verification/project-audit/"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "ed274f83f44345a3b9d759cf44aa6541",
       "claimed_at": "2026-11-20T15:39:41+00:00",
-      "updated_at": "2026-11-20T15:47:17+00:00",
-      "note": "Опубликована очередь DTC: 33 шага ПК, 59 Python-тестов и 17 компонентов M32R PASS. Карточка остаётся open: нативный захват BasicCAN и foreground ещё не подключены.",
+      "updated_at": "2026-11-20T15:48:07+00:00",
+      "note": "В main принята часть DTC-02: очередь с проверкой давности и поколения. 33 шага ПК, 17 M32R и GitHub Actions 44766797993 PASS. Остаток DTC-02 открыт: штатный когерентный RX, OEM-сервис и foreground. Резерв файлов освобождён.",
       "result": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d"
     },
     "CAN-03": {
@@ -159,10 +159,18 @@
       "action": "review",
       "claim_id": "ed274f83f44345a3b9d759cf44aa6541",
       "at": "2026-11-20T15:47:17+00:00"
+    },
+    {
+      "operation_id": "6263eba450e0485797c7c76571e781d9",
+      "task": "DTC-02",
+      "owner": "codex-dtc02-01a1f76d-20261120",
+      "action": "complete",
+      "claim_id": "ed274f83f44345a3b9d759cf44aa6541",
+      "at": "2026-11-20T15:48:07+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:47:17+00:00",
-  "main_commit": "2875ed80264fd7714d44047f849e2df4b04123ef",
+  "updated_at": "2026-11-20T15:48:07+00:00",
+  "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
       "id": "ORG-01",
