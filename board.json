@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 234,
+  "sequence": 235,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -281,19 +281,21 @@
       "result": "f92fde84f590460d713dee020ee5ddc6ccd089e4"
     },
     "TOY-05": {
-      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
-      "label": "Codex TOY-05",
-      "branch": "codex/toy05-adaptation-mwp5rm2ofhaxjfi9dss",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex — восстановление адаптаций Toyota",
+      "branch": "codex/toy05-safe-restore-32e6ac79",
       "files": [
+        "controller/include/rbm_u340e_runtime.h",
+        "controller/src/rbm_u340e_runtime.c",
         "controller/tests/test_controller.c",
-        "verification/project-audit/toy05-adaptation-store.md"
+        "verification/project-audit/toy05-recovery-policy.md"
       ],
-      "stage": "done",
-      "claim_id": "2bd31f54ff254c59802d402cf6dabb9b",
-      "claimed_at": "2026-11-20T16:08:20+00:00",
-      "updated_at": "2026-11-20T16:33:11+00:00",
-      "note": "Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте.",
-      "result": "dbc1762ffa86d37e2901b3a62f60b57a71763c24"
+      "stage": "in_progress",
+      "claim_id": "5e8a320b9b764646ac4a68af00a061dd",
+      "claimed_at": "2026-11-20T16:53:04+00:00",
+      "updated_at": "2026-11-20T16:53:04+00:00",
+      "note": "Проверяю восстановление H03 при повреждении опубликованной записи адаптаций; исходный снимок передаёт вызывающий код.",
+      "result": null
     },
     "CAN-04": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -2430,9 +2432,17 @@
       "action": "claim",
       "claim_id": "f0173bc6291a4dd2b8fc72ad0de8fffc",
       "at": "2026-11-20T16:52:48+00:00"
+    },
+    {
+      "operation_id": "c66c0d7fb21b4379a4b227bf1fe77ed5",
+      "task": "TOY-05",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "5e8a320b9b764646ac4a68af00a061dd",
+      "at": "2026-11-20T16:53:04+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:52:48+00:00",
+  "updated_at": "2026-11-20T16:53:04+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {

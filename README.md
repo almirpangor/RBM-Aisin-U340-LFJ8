@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:52:48+00:00**. Изменение № **234**.
+Обновлено UTC: **2026-11-20T16:53:04+00:00**. Изменение № **235**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -16,7 +16,7 @@
 | TOY-02 — Подтверждённая нагрузка двигателя для Toyota | На проверке | Codex TOY-02 — допуск нагрузки в цикл \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-02-cycle-load-fea1b366 | 2026-11-20T16:52:23+00:00 | Квалифицированный вход цикла публикует нагрузку до расписания и учитывает старейшую метку; отказ отзывает результат. ПК 37 шагов/71 тест, M32R целевой сценарий +17 компонентов, SIGNALS PASS. Второе окно +168 байт; прежняя точка 720 байт наблюдаемого стека. Интегратору: отчёт verification/project-audit/toy02-cycle-load-gate.md. Источник/шкалы Bosch, бюджет давности и foreground остаются открыты. / commit 3acdebe7db08758da32805ec04bd77ff9e3ba329 |
 | TOY-03 — Независимые разрешающие сигналы диапазона | Выполняется | Codex TOY-03 — квалификация независимых входов \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/toy03-range-freshness-01a1f9c7 | 2026-11-20T16:51:17+00:00 | Собираю GP−5722 и GP−5250.2 из уже нормализованных независимых входов с проверкой поколения и давности. Проверка ПК и M32R. Карта физических цепей, полярности и интервалы остаются внешними. |
 | TOY-04 — Полная последовательность переключений | На проверке | Codex — переключения Toyota под нагрузкой \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy04-loaded-map-32e6ac79 | 2026-11-20T16:50:12+00:00 | Передаю интегратору. 24 точки D при двух синтетических нагрузках, пороги из S01, GP из квалифицированного снимка, логические S1/S2 и потеря события PASS. PC 35 шагов/71 тест, M32R 17 компонентов, NATIVE 16+15. Отчёт toy04-loaded-gears.md. Физическая нагрузка, R, ручное управление и гидравлика открыты. / commit 08b06eb14f7ccb6f46b3589f7f0131e143d529d8 |
-| TOY-05 — Обучение и сохранение адаптаций | Работа завершена | Codex TOY-05 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/toy05-adaptation-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:33:11+00:00 | Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте. / commit dbc1762ffa86d37e2901b3a62f60b57a71763c24 |
+| TOY-05 — Обучение и сохранение адаптаций | Выполняется | Codex — восстановление адаптаций Toyota \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy05-safe-restore-32e6ac79 | 2026-11-20T16:53:04+00:00 | Проверяю восстановление H03 при повреждении опубликованной записи адаптаций; исходный снимок передаёт вызывающий код. |
 | TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — давление SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-pressure-fea1b366 | 2026-11-20T16:44:18+00:00 | 05DCE8 → 055C5E: 15 760 сочетаний совпали с R3, общие 35 шагов ПК/71 тест PASS. M32R: 11 случаев/2 отказа и 17 компонентных прогонов PASS. Расширенная модель: +356 байт во втором окне, запас 324. Интегратору: отчёт verification/project-audit/toy06-slu-pressure.md для общего аудита. 05DC5E, снимок SECONDARY и физический канал открыты. / commit 583cf4a14897616018a6e08ee84dfa5c627b84b9 |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Выполняется | Codex CAN-01 FullCAN coherence \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-rx-coherence-1120-c7e4 | 2026-11-20T16:52:48+00:00 | Revalidate FullCAN receive-mode control and frame format after the volatile copy before publishing RPM/ECT or RB status. Exercise invalidation during the copy on host and M32R. |
 | CAN-02 — Общий диспетчер CAN13 | Работа завершена | Codex CAN-02 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/can02-telemetry-timeout-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:34:59+00:00 | Принято в опубликованную main b2ca79d после независимых и общих проверок. Аудит integration-2 содержит результаты и ограничения. Технические остатки ТЗ остаются открытыми. / commit b48b4e50878c8173a40d65134213fbb8fdc37aa1 |
@@ -277,6 +277,15 @@
 - targets/lfj8/test_lfj8_h03_cycle.c
 - verification/project-audit/toy04-loaded-gears.md
 
+### TOY-05
+
+Чат: Codex — восстановление адаптаций Toyota. Claim ID: 5e8a320b9b764646ac4a68af00a061dd.
+
+- controller/include/rbm_u340e_runtime.h
+- controller/src/rbm_u340e_runtime.c
+- controller/tests/test_controller.c
+- verification/project-audit/toy05-recovery-policy.md
+
 ### TOY-06
 
 Чат: Codex TOY-06 — давление SLU. Claim ID: a8e9ff099358496bacacf60bfcc8aa84.
@@ -307,6 +316,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:53:04+00:00 | TOY-05 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:52:48+00:00 | CAN-01 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:52:23+00:00 | TOY-02 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:51:27+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
@@ -336,4 +346,3 @@
 | 2026-11-20T16:45:02+00:00 | H03-03 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:44:55+00:00 | H03-05 | resume | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:44:18+00:00 | TOY-06 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-20T16:44:10+00:00 | DTC-03 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
