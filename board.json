@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 409,
+  "sequence": 410,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -251,6 +251,7 @@
       "label": "Codex MODE-02 — квалификация сырых входов кнопок",
       "branch": "codex/mode02-p1data-capture-01a1f9c7",
       "files": [
+        "docs/lfj8-selector.md",
         "targets/lfj8/check_h03_button_capture.py",
         "targets/lfj8/lfj8_h03_button_capture.c",
         "targets/lfj8/lfj8_h03_button_capture.h",
@@ -260,8 +261,8 @@
       "stage": "in_progress",
       "claim_id": "d5aa9e367a344b3f8dbadc189b368dbd",
       "claimed_at": "2026-11-20T18:36:48+00:00",
-      "updated_at": "2026-11-20T18:40:01+00:00",
-      "note": "Декодер и негативные сценарии готовы. Нашёл дополнительные штатные проекции P1DATA. Сверяю все 256 байтов на инструкциях H03 и передачу в существующий фильтр.",
+      "updated_at": "2026-11-20T18:41:01+00:00",
+      "note": "Найдено различие двух условий: штатный выбор проекции использует ROM[0x013874]=2 через RAM 0x8061E4, а ROM[0x01652A]=1 относится к запасной ветви. Резервирую страницу селектора для исправления после воспроизведения инструкций.",
       "result": null
     },
     "TOY-05": {
@@ -3844,9 +3845,17 @@
       "action": "heartbeat",
       "claim_id": "ba6497ac9d4a4fb380b163c8abb7d2d2",
       "at": "2026-11-20T18:40:34+00:00"
+    },
+    {
+      "operation_id": "d0e9f5a273434344b8466c6ae261ca01",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "heartbeat",
+      "claim_id": "d5aa9e367a344b3f8dbadc189b368dbd",
+      "at": "2026-11-20T18:41:01+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:40:34+00:00",
+  "updated_at": "2026-11-20T18:41:01+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
