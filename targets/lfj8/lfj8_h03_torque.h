@@ -97,6 +97,10 @@ void lfj8_h03_torque_init(Lfj8H03Torque *link);
 void lfj8_h03_torque_poll(Lfj8H03Torque *link, const Lfj8TorqueInput *input,
                          const Lfj8TorqueCalibration *cal, uint32_t now_us,
                          Lfj8TorqueSubmit submit, void *context);
+/* Before checking TX completion, request hardware abort of a pending START
+ * or REFRESH whose authorization ended. CANCEL retains its transport timeout. */
+bool lfj8_h03_torque_should_abort_tx(const Lfj8H03Torque *link, const Lfj8TorqueInput *input,
+                                    const Lfj8TorqueCalibration *cal, uint32_t now_us);
 void lfj8_h03_torque_tx_done(Lfj8H03Torque *link, bool transmitted, uint32_t now_us);
 bool lfj8_h03_torque_receive(Lfj8H03Torque *link, uint16_t standard_id, unsigned dlc,
                             const uint8_t *data, uint32_t received_at_us);

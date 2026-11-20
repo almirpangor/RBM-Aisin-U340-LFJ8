@@ -150,13 +150,18 @@ static void expect_request(const CanRegisters *can, uint8_t op, uint8_t seq)
 
 static const Lfj8TorqueCalibration calibration = {.up = {[1] = {0x20, 32u, 20u}}};
 
+static uint32_t time_at(uint32_t step_us)
+{
+    return UINT32_MAX - 999u + step_us;
+}
+
 static Lfj8H03TorqueCanSlot poll(Lfj8H03TorqueCan *link, const Lfj8RegisterIo *io,
                                 uint32_t step_us, bool demand, bool yield, uint8_t lease,
                                 uint32_t generation)
 {
     CanRegisters *can = io->context;
     can->tick = tick_at(step_us);
-    const uint32_t now_us = UINT32_MAX - 999u + step_us;
+    const uint32_t now_us = time_at(step_us);
     const Lfj8TorqueInput input = {
         .demand = {(uint8_t)demand, 2u, 3u, 5u},
         .captured_at_us = now_us, .engine_rpm = 2000u, .observed_gear = 2u, .permitted = true,
@@ -210,10 +215,70 @@ static void test_inflight_lease_loss(bool bus_off)
     assert(!link.lease_lost && !link.request.pending && !link.request.have_status && can.sent == 2u);
 }
 
+static void test_pending_revoke(bool refresh)
+{
+    CanRegisters can = {.irq_mask = 0x8003, .global_mask = 0x1f};
+    const Lfj8RegisterIo io = {.context = &can, .read8 = read_byte, .read16 = read_halfword,
+                             .write8 = write_byte, .enter = lock_irq, .leave = restore_irq};
+    Lfj8H03TorqueCan link;
+    assert(lfj8_h03_torque_can_init(&link, 4000u, 10000u, 2u));
+    poll(&link, &io, 0u, false, false, 1, 1u);
+    poll(&link, &io, 100u, false, false, 1, 1u);
+    status(&can, 120u, 0, 0, 0, 0);
+    poll(&link, &io, 300u, false, false, 1, 1u);
+    poll(&link, &io, 500u, true, false, 1, 1u);
+    expect_request(&can, 1u, 1u);
+
+    uint32_t step_us = 600u;
+    Lfj8TorqueInput input = {.demand = {1u, 2u, 3u, 5u}, .engine_rpm = 2000u,
+                            .observed_gear = 2u};
+    if (refresh) {
+        finish(&can, 900u);
+        poll(&link, &io, 1000u, true, false, 1, 1u);
+        status(&can, 1400u, 0x72, 1, 32, 1);
+        poll(&link, &io, 1500u, true, false, 1, 1u);
+        poll(&link, &io, 9500u, true, false, 1, 1u);
+        poll(&link, &io, 17500u, true, false, 1, 1u);
+        poll(&link, &io, 20500u, true, false, 1, 1u);
+        expect_request(&can, 2u, 2u);
+        can.control |= 2u;
+        step_us = 20600u;
+        input.permitted = true;
+        input.captured_at_us = time_at(step_us) - 99999u;
+        can.tick = tick_at(step_us);
+        lfj8_h03_torque_can_poll(&link, &io, 1u, false, 1u, time_at(step_us), &input, &calibration);
+        assert(!can.aborted && link.request.full_reduction);
+        ++step_us;
+    } else {
+        input.captured_at_us = time_at(step_us);
+    }
+
+    can.tick = tick_at(step_us);
+    lfj8_h03_torque_can_poll(&link, &io, 1u, false, 1u, time_at(step_us), &input, &calibration);
+    assert(can.aborted == 1u && can.control == (refresh ? 2u : 0u));
+    assert(link.request.pending && !link.request.full_reduction &&
+           link.request.phase == LFJ8_TORQUE_RELEASING);
+    if (refresh) {
+        /* Arbitration was in progress. The slot cannot be reused until its
+         * completion, even when the abort and TRFIN race. */
+        poll(&link, &io, step_us + 100u, false, false, 1, 1u);
+        assert(link.request.pending && can.sent == 2u);
+        stamp(&can, step_us + 120u);
+        can.control = 1u;
+    }
+    poll(&link, &io, step_us + 200u, false, false, 1, 1u);
+    expect_request(&can, 0u, refresh ? 3u : 2u);
+    poll(&link, &io, step_us + 300u, false, false, 1, 1u);
+    assert(can.aborted == 1u && link.request.pending);
+    expect_request(&can, 0u, refresh ? 3u : 2u);
+}
+
 int main(void)
 {
     test_inflight_lease_loss(false);
     test_inflight_lease_loss(true);
+    test_pending_revoke(false);
+    test_pending_revoke(true);
     CanRegisters can = {.irq_mask = 0x8007, .global_mask = 0x1f};
     const Lfj8RegisterIo io = {.context = &can, .read8 = read_byte, .read16 = read_halfword,
                              .write8 = write_byte, .enter = lock_irq, .leave = restore_irq};
@@ -287,5 +352,6 @@ int main(void)
     assert(!link.lease_lost && !link.request.pending && !link.request.have_status);
 
     puts("H03 torque CAN13: lease, TX/RX switch, freshness, arbitration, release and restart PASS");
+    puts("H03 torque CAN13: pending START/REFRESH revoke and preservation of CANCEL PASS");
     return 0;
 }

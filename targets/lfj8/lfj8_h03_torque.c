@@ -109,6 +109,34 @@ static const Lfj8TorqueProfile *shift_profile(const Lfj8TorqueCalibration *cal, 
     return NULL;
 }
 
+typedef enum { KEEP_PULSE, END_PULSE, FAIL_PULSE } PulseAction;
+
+static PulseAction pulse_action(const Lfj8H03Torque *link, const Lfj8TorqueInput *input,
+                                const Lfj8TorqueCalibration *cal, uint32_t now_us, bool eligible)
+{
+    const Lfj8TorqueProfile *profile = shift_profile(cal, link->from_gear, link->to_gear);
+    if (!eligible || !profile || profile->levels != link->profile.levels ||
+        profile->reduction_q8 != link->profile.reduction_q8 ||
+        profile->duration != link->profile.duration || progress_timed_out(link, now_us)) {
+        return FAIL_PULSE;
+    }
+    if (!input->demand.active || input->demand.from_gear != link->from_gear ||
+        input->demand.to_gear != link->to_gear || !admits_level(link->profile, input->demand.level) ||
+        now_us - link->started_at >= pulse_duration_us(link)) {
+        return END_PULSE;
+    }
+    return KEEP_PULSE;
+}
+
+bool lfj8_h03_torque_should_abort_tx(const Lfj8H03Torque *link, const Lfj8TorqueInput *input,
+                                    const Lfj8TorqueCalibration *cal, uint32_t now_us)
+{
+    /* begin() resets releases; submitting a CANCEL increments it. */
+    return link->pending && link->releases == 0u &&
+        (!running(link) || pulse_action(link, input, cal, now_us,
+                                      fresh(input, now_us) && permitted(input)) != KEEP_PULSE);
+}
+
 static void begin(Lfj8H03Torque *link, const Lfj8TorqueInput *input,
                   const Lfj8TorqueCalibration *cal, uint32_t now_us)
 {
@@ -177,19 +205,12 @@ void lfj8_h03_torque_poll(Lfj8H03Torque *link, const Lfj8TorqueInput *input,
     if (elapsed >= duration + COOLDOWN) {
         link->cooling_down = false;
     }
-    bool is_fresh = fresh(input, now_us);
-    bool eligible = is_fresh && permitted(input);
+    const bool is_fresh = fresh(input, now_us);
+    const bool eligible = is_fresh && permitted(input);
     if (running(link)) {
-        const Lfj8TorqueProfile *profile = shift_profile(cal, link->from_gear, link->to_gear);
-        const bool same_profile = profile && profile->levels == link->profile.levels &&
-                                  profile->reduction_q8 == link->profile.reduction_q8 &&
-                                  profile->duration == link->profile.duration;
-        bool same_demand = is_fresh && input->demand.active && input->demand.from_gear == link->from_gear &&
-                           input->demand.to_gear == link->to_gear &&
-                           admits_level(link->profile, input->demand.level);
-        const bool timed_out = progress_timed_out(link, now_us);
-        if (!eligible || !same_profile || timed_out || !same_demand || elapsed >= duration) {
-            release(link, timed_out || !eligible || !same_profile, now_us);
+        const PulseAction action = pulse_action(link, input, cal, now_us, eligible);
+        if (action != KEEP_PULSE) {
+            release(link, action == FAIL_PULSE, now_us);
         }
     }
     if (link->phase == LFJ8_TORQUE_RELEASING && now_us - link->release_at >= RELEASE_TIMEOUT) {
