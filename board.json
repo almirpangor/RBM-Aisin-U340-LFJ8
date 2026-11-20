@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 77,
+  "sequence": 78,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -262,12 +262,12 @@
         "controller/tests/test_controller.c",
         "verification/project-audit/toy05-adaptation-store.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "2bd31f54ff254c59802d402cf6dabb9b",
       "claimed_at": "2026-11-20T16:08:20+00:00",
-      "updated_at": "2026-11-20T16:09:48+00:00",
-      "note": "Симулятор M32R подтвердил 96 прерываний и 768 одиночных повреждений. Зафиксирован откат на предыдущий слот при порче записи сброса. Идут PC и H03 link.",
-      "result": null
+      "updated_at": "2026-11-20T16:12:31+00:00",
+      "note": "96 прерываний и 768 битовых повреждений проверены на ПК и M32R. PC 33 шага/65 тестов и H03 link PASS. Зафиксирован возврат прежних коррекций при повреждении уже записанного сброса. NVM и политика сброса H03 открыты. Отчёт verification/project-audit/toy05-adaptation-store.md.",
+      "result": "dbc1762ffa86d37e2901b3a62f60b57a71763c24"
     },
     "CAN-04": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -921,9 +921,17 @@
       "action": "resume",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "at": "2026-11-20T16:12:22+00:00"
+    },
+    {
+      "operation_id": "76276801c4d54691a348b573da1a89dc",
+      "task": "TOY-05",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "2bd31f54ff254c59802d402cf6dabb9b",
+      "at": "2026-11-20T16:12:31+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:12:22+00:00",
+  "updated_at": "2026-11-20T16:12:31+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
