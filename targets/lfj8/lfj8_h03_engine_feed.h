@@ -9,8 +9,10 @@
  * RX polling, diagnostic requests and this step. A successful 14 FF 00 event
  * resets the engine debouncers before any timing/context checks, including
  * when context or io is unavailable. Initialize the qualifier and the DTC
- * store together on cold startup. On a CAN-only reset, reinitialize the RX
- * state and retain the qualifier and DTC store.
+ * store together on cold startup. A receiver bound to the CAN setup
+ * generation invalidates old data during its normal poll. Without the
+ * binding, reinitialize RX on CAN-only reset. Retain the qualifier and
+ * DTC store in either case.
  *
  * The shared DTC current byte corresponding to E02B and context->e02b
  * both contribute bus inhibit conditions. Local ownership/clock loss
