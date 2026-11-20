@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 454,
+  "sequence": 455,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -176,12 +176,12 @@
         "targets/bosch/audit_chery_rx_clock.py",
         "verification/project-audit/can05-st10-rx-clock.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "59327b6eafdb4bdcac7a920397975731",
       "claimed_at": "2026-11-20T18:54:59+00:00",
-      "updated_at": "2026-11-20T19:01:19+00:00",
-      "note": "Новый аудит проходит 75 сценариев T4, 9 сценариев IF1, пять отказов, отдельный приход второго кадра и три восстановления. Базовый Bosch OFFLINE_ONLY воспроизведён. Завершаю проверку ПК и публикую отчёт.",
-      "result": null
+      "updated_at": "2026-11-20T19:03:09+00:00",
+      "note": "ST10/C_CAN: штатный T4 018BFC, пустой опрос 06611E, IF1 066174. 75 проверок T4, 9 приёмов, 5 отказов и 3 восстановления. Bosch OFFLINE_ONLY воспроизведён, ПК 37 шагов, 113 unittest с отдельным прогоном S03, 65536 пар 0x1AE. Остались машинный производитель, RAM, реальные окна и подключение потребителя. Отчёт can05-st10-rx-clock.md.",
+      "result": "f8fe149c4bc99eb33eca239d85436b0adc29ab1f"
     },
     "DTC-03": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -4195,9 +4195,17 @@
       "action": "review",
       "claim_id": "15ef4cba9c9a49b1acc46893d21aabad",
       "at": "2026-11-20T19:02:49+00:00"
+    },
+    {
+      "operation_id": "6d2daede9b2b4169aae2c0d03c477e56",
+      "task": "CAN-05",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "59327b6eafdb4bdcac7a920397975731",
+      "at": "2026-11-20T19:03:09+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:02:49+00:00",
+  "updated_at": "2026-11-20T19:03:09+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
