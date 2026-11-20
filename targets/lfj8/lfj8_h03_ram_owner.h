@@ -6,6 +6,7 @@
 typedef struct {
     Lfj8H03ServiceRange control, communication, workspace, dtc_irq_pointer;
     Lfj8H03ServiceRange spi, psw;
+    uint32_t spi_reserve_bytes, psw_reserve_bytes;
     uint32_t direct_hook, span_hook, copy_hook, close_hook;
     void *platform;
     int (*boot_and_other_writers_owned)(void *platform);
@@ -16,6 +17,9 @@ typedef struct {
  * The boot witness must already have a safe stack and verify that other
  * writers (including SBI and DMA) and the initial IRQ ordering are covered.
  * It must not inspect project RAM to decide whether RAM can be accessed.
+ * Supply the required remaining SPI/PSW reserves in bytes for the final
+ * image. The native check reads CR2 and the OEM PSW cursor under the lock.
+ * It assumes the existing entry frame was already placed safely.
  * The caller must close the lifecycle gate before allowing a service owner
  * or a different memory map. CAN may be parked while this probe runs. */
 int lfj8_h03_ram_owned(void *context);

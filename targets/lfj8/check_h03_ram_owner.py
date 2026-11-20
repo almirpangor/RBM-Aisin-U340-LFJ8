@@ -1,8 +1,10 @@
 """Test the H03 RAM owner against linked service veneers and the real cold gate."""
 
 import argparse
+from hashlib import sha256
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
@@ -20,6 +22,88 @@ CONTINUATIONS = {
     "h03_service_close_after_store": 0x002EA0,
     "rbm_h03_service_policy": 0x030000,
 }
+
+
+SBI_FRAGMENTS = {
+    "vector": (0x000010, 0x000014), "psw": (0x003E50, 0x003E78),
+    "sbi": (0x003F50, 0x003FCC),
+}
+SBI_ENTRY_SPI = 0x809EFC
+SBI_ENTRY_CURSOR = 0x809F9C
+SBI_AFTER_SAVE = 0x003F80
+SBI_STOP = 0x003FC4
+
+
+def probe_sbi(base, compiler):
+    rom = base.read_bytes()
+    with TemporaryDirectory(prefix="rbm-h03-sbi-stack-") as directory:
+        folder = Path(directory)
+        source = """
+    .text
+    .p2align 2
+    .global _start
+_start:
+    ld24 sp,#0x809efc
+    ld24 r0,#0x809f9c
+    st r0,@r0
+    ldi r1,#1
+    mvtc r1,psw
+    bra.l stock_vector
+"""
+        linker_sections = []
+        fragments = {}
+        for name, (first, end) in SBI_FRAGMENTS.items():
+            data = rom[first:end]
+            (folder / f"{name}.dat").write_bytes(data)
+            fragments[name] = {"range": [f"{first:#08x}", f"{end:#08x}"],
+                               "sha256": sha256(data).hexdigest()}
+            source += f"""
+    .section .stock_{name},"ax"
+    .p2align 2
+stock_{name}:
+    .incbin "{name}.dat"
+"""
+            linker_sections.append(f"-Wl,--section-start=.stock_{name}={first:#x}")
+        (folder / "sbi.S").write_text(source, encoding="ascii")
+        def run(*items):
+            return subprocess.run([str(item) for item in items], cwd=folder, check=True,
+                                  capture_output=True, timeout=90).stdout
+
+        run(compiler, *TARGET, "-nostdlib", "-Wl,-e,_start,-Ttext=0x10000", *linker_sections,
+            "sbi.S", "-o", "sbi.elf")
+        debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
+        def observe(address):
+            (folder / "observe.gdb").write_text(
+                "set confirm off\ntarget sim --memory-size 16M\nload\n"
+                f"tbreak *{address:#x}\nrun\n"
+                'printf "SBI_STACK %x %x %x %x\\n", $pc, $sp, '
+                '*(unsigned int*)0x809f9c, *(unsigned int*)0x809f98\n', encoding="ascii")
+            output = run(debugger, "--batch", "-nx", "-x", "observe.gdb", "sbi.elf")
+            match = re.search(rb"^SBI_STACK ([0-9a-f]+) ([0-9a-f]+) ([0-9a-f]+) ([0-9a-f]+)\r?$",
+                              output, re.M)
+            if not match:
+                raise ValueError(f"The original SBI path did not reach {address:#x} in M32R")
+            return tuple(int(value, 16) for value in match.groups())
+
+        saved = observe(SBI_AFTER_SAVE)
+        stopped = observe(SBI_STOP)
+    pc, spi, cursor, saved_psw = saved
+    if saved != (SBI_AFTER_SAVE, SBI_ENTRY_SPI - 40, SBI_ENTRY_CURSOR - 4, 1):
+        raise ValueError(f"Unexpected stock SBI stack after save: {saved}")
+    if stopped[0] != SBI_STOP or stopped[2:] != (cursor, saved_psw):
+        raise ValueError(f"Unexpected stock SBI terminal stop observation: {stopped}")
+    return {
+        "original_fragments": fragments,
+        "pc_after_save": f"{pc:#08x}",
+        "terminal_loop_pc": f"{stopped[0]:#08x}",
+        "terminal_sample_spi": f"{stopped[1]:#08x}",
+        "spi_before_and_after": [f"{SBI_ENTRY_SPI:#08x}", f"{spi:#08x}"],
+        "psw_cursor_before_and_after": [f"{SBI_ENTRY_CURSOR:#08x}", f"{cursor:#08x}"],
+        "spi_consumed_bytes": SBI_ENTRY_SPI - spi,
+        "psw_consumed_bytes": SBI_ENTRY_CURSOR - cursor,
+        "entry_with_ie_masked": True,
+        "external_sbi_trigger_simulated": False,
+    }
 
 
 def simulate(base, compiler):
@@ -49,7 +133,7 @@ def simulate(base, compiler):
             "-Wl,--start-group", "-lc", "-lgloss", "-lgcc", "-Wl,--end-group", "-o", elf)
         simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")
         result = run(simulator, "--memory-size=16M", elf)
-        if result != "H03 RAM owner: cold gate, native service words and protected bounds PASS":
+        if result != "H03 RAM owner: cold gate, native service words and live stacks PASS":
             raise ValueError(f"Unexpected M32R result: {result}")
         return result
 
@@ -62,6 +146,7 @@ def check(args):
     compiler = args.gcc.resolve()
     _, aliases = aliases_for(args.base, compiler, args.storage_report)
     result = simulate(args.base, compiler)
+    sbi = probe_sbi(args.base, compiler)
     old_modules = layout.BINDING_MODULES
     layout.BINDING_MODULES += ("lfj8_h03_ram_owner.c",)
     try:
@@ -71,6 +156,7 @@ def check(args):
     return {
         "base": identity,
         "m32r": result,
+        "stock_sbi": sbi,
         "stock_hook_sites_checked": [f"0x{address:06X}" for address in SITES.values()],
         "linked_service_veneers_and_real_cold_gate": True,
         "external_writers_qualification_supplied_by_fixture": True,

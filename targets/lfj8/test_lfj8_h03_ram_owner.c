@@ -30,6 +30,29 @@ static RbmU340eRuntime runtime;
 static unsigned inhibit_count;
 static unsigned rebase_count;
 static int platform_owned;
+static uint32_t entry_spi = 0x809efcu;
+
+void fixture_cold_gate(uint32_t spi);
+
+__asm__(
+    ".text\n.p2align 2\n"
+    ".global fixture_cold_gate\n"
+    "fixture_cold_gate:\n"
+    "mvfc r2,psw\n"
+    "clrpsw #0x80\n"
+    "mvfc r3,cr2\n"
+    "mv sp,r0\n"
+    "push r3\n"
+    "push r2\n"
+    "push lr\n"
+    "bl.l rbm_h03_application_cold_gate\n"
+    "pop lr\n"
+    "pop r2\n"
+    "pop r3\n"
+    "mvtc r3,cr2\n"
+    "mvtc r2,psw\n"
+    "jmp lr\n"
+);
 
 static const uint32_t sites[] = {0x2924u, 0x294cu, 0x2d1cu, 0x2e9cu, 0x3568u};
 static const uint32_t original[] = {ROM_DIRECT, ROM_SPAN, ROM_COPY, ROM_CLOSE, ROM_VIRTUAL};
@@ -75,7 +98,7 @@ static void require_cold_gate(int accepted)
     runtime.initialized = 1u;
     inhibit_count = 0u;
     rebase_count = 0u;
-    rbm_h03_application_cold_gate();
+    fixture_cold_gate(entry_spi);
     assert(irq_enabled());
     assert(rbm_h03_application.running == !accepted && takeover.pending == !accepted &&
            takeover.ops == (accepted ? NULL : &ops) && result.valid == !accepted &&
@@ -97,12 +120,14 @@ static void fixture_map(void)
         .workspace = {workspace, workspace + sizeof(Lfj8H03WorkspaceStorage)},
         .dtc_irq_pointer = {IRQ_ADDRESS, IRQ_ADDRESS + 4u},
         .spi = {0x809700u, 0x809efcu}, .psw = {0x809f00u, 0x809fa0u},
+        .spi_reserve_bytes = 0x100u, .psw_reserve_bytes = 8u,
         .direct_hook = (uint32_t)(uintptr_t)&rbm_h03_service_direct_hook,
         .span_hook = (uint32_t)(uintptr_t)&rbm_h03_service_span_hook,
         .copy_hook = (uint32_t)(uintptr_t)&rbm_h03_service_copy_hook,
         .close_hook = (uint32_t)(uintptr_t)&rbm_h03_service_close_hook,
         .platform = &platform_owned, .boot_and_other_writers_owned = boot_ready,
     };
+    WORD(0x809f9cu) = 0x809f9cu;
     POLICY = (Lfj8H03ServicePolicy){
         .count = 4u,
         .ranges = {{CONTROL_ADDRESS, OWNER.control.end}, {0x808578u, 0x808db4u},
@@ -212,6 +237,27 @@ int main(void)
     HALF(0x801002u) = 0x0100u; /* CAN0/1 still parked. */
     HALF(0x801402u) = 0x0100u;
     require_cold_gate(1);
-    puts("H03 RAM owner: cold gate, native service words and protected bounds PASS");
+    entry_spi = 0x809780u;
+    require_cold_gate(0);
+    entry_spi = 0x809efcu;
+    OWNER.spi_reserve_bytes = 36u;
+    require_cold_gate(0);
+    fixture_map();
+    OWNER.spi_reserve_bytes += 1u;
+    require_cold_gate(0);
+    fixture_map();
+    WORD(0x809f9cu) = 0x809fa0u;
+    require_cold_gate(0);
+    WORD(0x809f9cu) = 0x809f09u;
+    require_cold_gate(0);
+    WORD(0x809f9cu) = 0x809f04u;
+    require_cold_gate(0);
+    WORD(0x809f9cu) = 0x809f08u;
+    require_cold_gate(1); /* Exact remaining PSW reserve. */
+    OWNER.psw_reserve_bytes = 0u;
+    require_cold_gate(0);
+    fixture_map();
+    require_cold_gate(1);
+    puts("H03 RAM owner: cold gate, native service words and live stacks PASS");
     return 0;
 }

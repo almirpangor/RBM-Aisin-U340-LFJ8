@@ -8,6 +8,9 @@
 #define H03_RAM_END UINT32_C(0x80A000)
 #define H03_SPI_START UINT32_C(0x809EFC)
 #define H03_PSW_CURSOR UINT32_C(0x809F9C)
+#define H03_SBI_SPI_BYTES UINT32_C(40)
+#define H03_SBI_PSW_BYTES UINT32_C(4)
+#define H03_PSW_IE_OR_SM UINT32_C(0xC0)
 #define H03_MONITOR_FIRST UINT32_C(0x808578)
 #define H03_MONITOR_END UINT32_C(0x808DB4)
 
@@ -39,6 +42,30 @@ static int in_application_flash(uintptr_t address, uint32_t bytes)
 static uint32_t read_word(uint32_t address)
 {
     return lfj8_h03_mmio.read32(lfj8_h03_mmio.context, address);
+}
+
+static int has_stack_room(Lfj8H03ServiceRange bounds, uint32_t current,
+                          uint32_t top, uint32_t reserve)
+{
+    return !(current & 3u) && current <= top && current <= bounds.end &&
+           current >= bounds.first && current - bounds.first >= reserve;
+}
+
+static int live_stacks_ready(const Lfj8H03RamOwner *owner)
+{
+    uint32_t psw;
+    uint32_t spi;
+    __asm__ volatile ("mvfc %0,psw\n\tmvfc %1,cr2"
+                      : "=r"(psw), "=r"(spi) : : "memory");
+    if ((psw & H03_PSW_IE_OR_SM) ||
+        (owner->spi_reserve_bytes | owner->psw_reserve_bytes) & 3u ||
+        owner->spi_reserve_bytes < H03_SBI_SPI_BYTES ||
+        owner->psw_reserve_bytes < H03_SBI_PSW_BYTES ||
+        !has_stack_room(owner->spi, spi, H03_SPI_START, owner->spi_reserve_bytes)) {
+        return 0;
+    }
+    return has_stack_room(owner->psw, read_word(H03_PSW_CURSOR), H03_PSW_CURSOR,
+                          owner->psw_reserve_bytes);
 }
 
 static int plain_flash(void)
@@ -142,7 +169,7 @@ int lfj8_h03_ram_owned(void *context)
 {
     const Lfj8H03RamOwner *const owner = context;
     if (!in_application_flash((uintptr_t)owner, sizeof *owner) ||
-        !owner->boot_and_other_writers_owned || !plain_flash() ||
+        !owner->boot_and_other_writers_owned || !plain_flash() || !live_stacks_ready(owner) ||
         owner->boot_and_other_writers_owned(owner->platform) != 1) {
         return 0;
     }
