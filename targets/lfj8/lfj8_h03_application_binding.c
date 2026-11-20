@@ -1,10 +1,62 @@
 #include "lfj8_h03_application_binding.h"
+#include "lfj8_h03_atf_target.h"
+#include "lfj8_h03_mmio.h"
+#include "lfj8_h03_output_inhibit.h"
 #include "lfj8_selector_adc.h"
 
 #ifndef RBM_H03_APPLICATION_PROFILE
 #error "Define RBM_H03_APPLICATION_PROFILE as an explicit, qualified profile header"
 #else
 #include RBM_H03_APPLICATION_PROFILE
+
+#if defined(RBM_H03_PROFILE_OUTPUT_ISOLATION_MASK) || defined(RBM_H03_PROFILE_OUTPUT_PHASE_CLOCK)
+#if !defined(RBM_H03_PROFILE_OUTPUT_ISOLATION_MASK) || !defined(RBM_H03_PROFILE_OUTPUT_PHASE_CLOCK)
+#error "Native H03 output operations require both the isolation mask and owned phase clock"
+#else
+/* This profile opts into the commissioned H03 D/E/F and Pressure A path.
+ * The mask attests wiring isolation, including TIO9/P97, which stock apply
+ * can drive independently and which the software inhibit does not touch. */
+_Static_assert(RBM_H03_PROFILE_OUTPUT_ISOLATION_MASK == LFJ8_H03_ALL_SPARE_PWM_ISOLATED,
+               "Native H03 outputs require all spare drivers isolated");
+
+static void output_write32(void *context, uint32_t address, uint32_t value)
+{
+    (void)context;
+    *(volatile uint32_t *)(uintptr_t)address = value;
+}
+
+static int output_qualified(void *context)
+{
+    (void)context;
+    return lfj8_h03_application_running_locked() &&
+        rbm_h03_tml0_1mhz_qualified == 1u && lfj8_h03_sensor_clock_registers_match();
+}
+
+static void output_arbitrate(void *context)
+{
+    (void)context;
+    ((void (*)(void))(uintptr_t)UINT32_C(0x0717B8))();
+}
+
+static void output_apply(void *context)
+{
+    (void)context;
+    ((void (*)(void))(uintptr_t)UINT32_C(0x046900))();
+}
+
+const Lfj8H03TakeoverOps rbm_h03_target_takeover_ops = {
+    .io = &lfj8_h03_mmio,
+    .write32 = output_write32,
+    .clock_ticks = lfj8_h03_tml0ct_m32r,
+    .qualified = output_qualified,
+    .arbitrate = output_arbitrate,
+    .apply = output_apply,
+    .inhibit = lfj8_h03_output_inhibit_locked,
+    .isolated_pwm_mask = RBM_H03_PROFILE_OUTPUT_ISOLATION_MASK,
+    .phase_clock = &RBM_H03_PROFILE_OUTPUT_PHASE_CLOCK,
+};
+#endif
+#endif
 
 static int initialize_target(void *context)
 {

@@ -41,6 +41,7 @@ bool lfj8_h03_dtc_can_init(Lfj8H03DtcCan *state, uint16_t max_receive_age_bits)
     state->first_frame_finished_at = 0;
     state->submission = EMPTY;
     state->session_clock_seen = false;
+    state->require_durable_clear = false;
     return true;
 }
 
@@ -164,7 +165,14 @@ Lfj8H03DtcSlotUse lfj8_h03_dtc_can_poll(Lfj8H03DtcCan *state, CheryDtcState *dtc
     }
 
     if (state->submission == EMPTY && receive_current(state, received, now)) {
-        queue_next(state, chery_dtc_link_receive(&state->link, dtc, &received->frame, tick, &outgoing));
+        /* A native clear must wait for a qualified persistent backend. The
+         * existing storage-failure path leaves DTC state and TX unchanged.
+         * This poll runs under the native CAN lock. */
+        static const CheryDtcClearStore unavailable_store = {0};
+        const CheryDtcClearStore *const store =
+            state->require_durable_clear ? &unavailable_store : NULL;
+        queue_next(state, chery_dtc_link_receive_with_store(
+            &state->link, dtc, &received->frame, tick, &outgoing, store));
     }
     if (state->submission != QUEUED) {
         return LFJ8_H03_DTC_SLOT_FREE;

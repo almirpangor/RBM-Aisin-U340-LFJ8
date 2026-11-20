@@ -24,8 +24,9 @@ typedef struct {
     uint16_t max_poll_gap_us;
     /* Called under the application I/O lock on an admitted Task 2 release.
      * Return 1 with coherent qualifier context, history policy and a
-     * conservative oldest TML0 timestamp for the engine operands, covering
-     * any retained or fallback inputs. Refuse if that bound is unavailable.
+     * conservative oldest TML0 timestamp for the context operands, including
+     * fallback inputs. The receiver adds its CAN and retained RPM timestamps.
+     * Refuse if the context bound is unavailable.
      * This callback must not advance the qualifier or consume a CAN frame. */
     int (*context_for_task2)(void *context, const Lfj8H03SensorSnapshot *sensors,
         Ta2005EngineQualificationContext *engine, bool *inhibit_history, uint32_t *oldest_us);
