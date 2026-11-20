@@ -3,6 +3,7 @@
 
 #include "lfj8_h03_cycle.h"
 #include "lfj8_h03_phase_startup.h"
+#include "lfj8_h03_sensor_feed.h"
 
 typedef struct {
     uint32_t last_toyota_at;
@@ -36,6 +37,10 @@ typedef struct {
      * read retained RAM. If unavailable there, access must stay blocked
      * until startup can clear the gate. Keep ownership while running. */
     int (*ram_owned)(void *context);
+    /* Independently qualify continuous TML0 and TML1 at 1 MHz. The
+     * application owns the sensor epoch. Close its gate before resetting or
+     * reconfiguring either timer, then use the normal startup path to rearm.
+     * The platform must use the native H03 lock for all sensor producers. */
     int (*clock_ready)(void *context);
 
     /* Called in serialized foreground with the gate closed and outputs
@@ -48,15 +53,19 @@ typedef struct {
      * ticks. Keep input.command_at and the load timestamps in microseconds.
      * Report any lost release, including loss before the first delivery.
      * A repeated sequence must retain its original producer timestamp.
-     * Keep load->sample stable until the consumer returns. */
-    Lfj8H03ToyotaEvent (*take_toyota)(void *context, Lfj8H03CycleInput *input,
+     * Keep load->sample stable until the consumer returns. sensors is valid
+     * during the call; qualify its individual channels before using them. */
+    Lfj8H03ToyotaEvent (*take_toyota)(void *context, const Lfj8H03SensorSnapshot *sensors,
+                                     Lfj8H03CycleInput *input,
                                      Lfj8H03CycleLoad *load, uint32_t *released_at);
 
     /* Serialized foreground, with interrupts enabled as in the OEM caller.
      * main is valid only during this call and is NULL unless this turn ran
      * Toyota MAIN. Output consumers must recheck the event under the output
-     * lock, convert sample ages and use the takeover guard. */
+     * lock, convert sample ages and use the takeover guard. sensors is the
+     * same snapshot as take_toyota received and is valid only during this call. */
     void (*service_phase)(void *context, const Lfj8H03PhaseEvent *phase,
+                          const Lfj8H03SensorSnapshot *sensors,
                           const Lfj8H03MainResult *main);
 } Lfj8H03ApplicationBinding;
 

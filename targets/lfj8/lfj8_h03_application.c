@@ -1,4 +1,6 @@
 #include "lfj8_h03_application.h"
+#include "lfj8_h03_atf_target.h"
+#include "lfj8_h03_sensor_target.h"
 
 #define SERIAL_HALF_RANGE UINT32_C(0x80000000)
 
@@ -18,6 +20,7 @@ int lfj8_h03_application_running_locked(void)
 static void close_gate_locked(const Lfj8RegisterIo *io)
 {
     app->running = 0u;
+    rbm_h03_sensor_clock_rebase(0);
     binding->takeover->ops = NULL;
     binding->takeover->pending = 0u;
     binding->main->valid = 0u;
@@ -60,10 +63,12 @@ void rbm_h03_phase_startup_callback(void)
     saved = io->enter(context);
     if (owns_ram(io)) {
         if (binding->clock_ready(context) == 1 &&
+            rbm_h03_sensor_clock_rebase(1) &&
             lfj8_h03_phase_startup(binding->takeover, ops, &binding->phase_config)) {
             app->last_toyota_at = ops->phase_clock->latest.released_at;
             app->running = 1u;
         } else {
+            rbm_h03_sensor_clock_rebase(0);
             binding->runtime->initialized = 0u;
         }
     }
@@ -84,6 +89,7 @@ void rbm_h03_phase_release_callback(uint32_t released_at)
 static void fault_locked(void)
 {
     app->running = 0u;
+    rbm_h03_sensor_clock_rebase(0);
     binding->takeover_ops->phase_clock->faulted = 1u;
     binding->cycle->faulted = 1u;
     binding->runtime->initialized = 0u;
@@ -99,7 +105,7 @@ static Lfj8H03PhaseResult check_locked(Lfj8H03PhaseEvent *event)
     const Lfj8H03TakeoverOps *const ops = binding->takeover_ops;
     void *const context = ops->io->context;
     const uint32_t now = ops->clock_ticks(context);
-    if (binding->clock_ready(context) != 1 ||
+    if (rbm_h03_tml0_1mhz_qualified != 1u || binding->clock_ready(context) != 1 ||
         now - app->last_toyota_at > binding->toyota_max_period_ticks) {
         fault_locked();
         return LFJ8_H03_PHASE_FAULT;
@@ -121,11 +127,12 @@ void rbm_h03_phase_wait_callback(void)
     io->leave(io->context, saved);
 }
 
-static Lfj8H03CycleResult run_toyota(void *context)
+static Lfj8H03CycleResult run_toyota(void *context, const Lfj8H03SensorSnapshot *sensors)
 {
     Lfj8H03CycleLoad load = {0};
     uint32_t released_at = app->last_toyota_at;
-    const Lfj8H03ToyotaEvent result = binding->take_toyota(context, binding->input, &load, &released_at);
+    const Lfj8H03ToyotaEvent result = binding->take_toyota(
+        context, sensors, binding->input, &load, &released_at);
     if (result == LFJ8_H03_TOYOTA_WAIT) {
         return LFJ8_H03_CYCLE_NO_MAIN;
     }
@@ -155,14 +162,22 @@ void rbm_h03_application_foreground_callback(void)
     const Lfj8RegisterIo *const io = ops->io;
     void *const context = io->context;
     Lfj8H03PhaseEvent phase;
+    Lfj8H03SensorSnapshot sensors;
     uint32_t saved = io->enter(context);
     const Lfj8H03PhaseResult status = check_locked(&phase);
-    io->leave(context, saved);
     if (status != LFJ8_H03_PHASE_EVENT) {
+        io->leave(context, saved);
         return;
     }
+    /* No independent standstill input is bound yet. An absent pulse is not zero speed. */
+    if (rbm_h03_sensor_foreground(0, &sensors) != LFJ8_H03_SENSOR_SNAPSHOT) {
+        fault_locked();
+        io->leave(context, saved);
+        return;
+    }
+    io->leave(context, saved);
 
-    const Lfj8H03CycleResult result = run_toyota(context);
+    const Lfj8H03CycleResult result = run_toyota(context, &sensors);
     saved = io->enter(context);
     if (lfj8_h03_application_running_locked() &&
         (result == LFJ8_H03_CYCLE_FAULT || ops->phase_clock->latest.sequence != phase.sequence)) {
@@ -171,6 +186,7 @@ void rbm_h03_application_foreground_callback(void)
     const int running = check_locked(NULL) != LFJ8_H03_PHASE_FAULT;
     io->leave(context, saved);
     if (running) {
-        binding->service_phase(context, &phase, result == LFJ8_H03_CYCLE_MAIN ? binding->main : NULL);
+        binding->service_phase(context, &phase, &sensors,
+                               result == LFJ8_H03_CYCLE_MAIN ? binding->main : NULL);
     }
 }
