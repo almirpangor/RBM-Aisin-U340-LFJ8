@@ -3,9 +3,28 @@
 #undef NDEBUG
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
+static void check_uaz_axle_profile(void)
+{
+    const Lfj8Chery1ae status = {
+        .byte1 = 0x32, .byte4 = 0x35, .byte3_high = 3,
+        .flag_fd18_4 = 1, .flag_fd10_7 = 1,
+    };
+    const uint8_t expected[] = {0x08, 0x32, 0x13, 0x39, 0x35, 0, 0x17, 0x9c};
+    uint8_t payload[8];
+    /* Fixture clock 1 MHz, S51 at 100 Hz, Z25 and UAZ 37/8. */
+    for (uint8_t pulses = 1; pulses <= 4; pulses <<= 1) {
+        const uint16_t raw = lfj8_vss_raw_1ae(10000u * pulses, pulses, 1000000u,
+                                              3530000u, 8u, 37u, LFJ8_VSS_VALID);
+        assert(raw == 6044u);
+        assert(lfj8_pack_1ae(payload, &status, raw) == 1u);
+        assert(memcmp(payload, expected, sizeof expected) == 0);
+    }
+}
 int main(void)
 {
+    check_uaz_axle_profile();
     static const struct {
         uint32_t ticks;
         uint32_t tick_hz;
