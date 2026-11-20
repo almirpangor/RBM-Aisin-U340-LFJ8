@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 100,
+  "sequence": 101,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -374,8 +374,8 @@
       "stage": "in_progress",
       "claim_id": "8ca0999c579843d5a6c858b0ba44f0b2",
       "claimed_at": "2026-11-20T16:16:49+00:00",
-      "updated_at": "2026-11-20T16:16:49+00:00",
-      "note": "Close the diagnostic session and revoke its TX lease after a foreign TRFIN or CAN failure in flight. Test regrant, stale requests and recovery. Separate from CAN-02 broker and DTC-02 RX queue.",
+      "updated_at": "2026-11-20T16:18:17+00:00",
+      "note": "Both original failures reproduced on host: foreign TRFIN reported reserved, and BusOff allowed regrant without a new generation. Corrected session/lease handling, targeted PC test PASS. Running PC and M32R suites.",
       "result": null
     }
   },
@@ -1179,9 +1179,17 @@
       "action": "heartbeat",
       "claim_id": "8e012ef2677942af9da51dd6b630b99f",
       "at": "2026-11-20T16:18:08+00:00"
+    },
+    {
+      "operation_id": "d57632e17028437f9a98ebf70f1d417a",
+      "task": "DTC-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "8ca0999c579843d5a6c858b0ba44f0b2",
+      "at": "2026-11-20T16:18:17+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:18:08+00:00",
+  "updated_at": "2026-11-20T16:18:17+00:00",
   "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {

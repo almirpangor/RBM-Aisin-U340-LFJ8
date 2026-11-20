@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:18:08+00:00**. Изменение № **100**.
+Обновлено UTC: **2026-11-20T16:18:17+00:00**. Изменение № **101**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -39,7 +39,7 @@
 | MODE-03 — Окончательная политика режимов | Свободна | — | — | — | — |
 | SRC-01 — Реестр происхождения и контроль исходников | Свободна | — | — | — | — |
 | AUD-01 — Программный аудит истории E4M3 | Свободна | — | — | — | — |
-| DTC-01 — Прикладной сеанс и статусы Chery | Выполняется | Codex DTC-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/dtc01-1120-c7e4 | 2026-11-20T16:16:49+00:00 | Close the diagnostic session and revoke its TX lease after a foreign TRFIN or CAN failure in flight. Test regrant, stale requests and recovery. Separate from CAN-02 broker and DTC-02 RX queue. |
+| DTC-01 — Прикладной сеанс и статусы Chery | Выполняется | Codex DTC-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/dtc01-1120-c7e4 | 2026-11-20T16:18:17+00:00 | Both original failures reproduced on host: foreign TRFIN reported reserved, and BusOff allowed regrant without a new generation. Corrected session/lease handling, targeted PC test PASS. Running PC and M32R suites. |
 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Выполняется | Codex — штатный RX BasicCAN H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T16:17:33+00:00 | Продолжаю после review a4f93e5. Соединяю очередь и существующий CAN13 в отдельном foreground-адаптере. Проверка реального диспетчера в модели, без правок файлов CAN-02 и H03-03. / commit a4f93e544a290886df65d8245ea6a91b0c7a4d4d |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | На проверке | Codex DTC-03 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/dtc03-table-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:00:19+00:00 | Все 96 индексов сверены с проверенным S03. 33 шага ПК и 61 тест PASS. Отчёт verification/project-audit/dtc03-table.md. Мониторы отказов и привязка H03 открыты; снимок аудита передан интегратору. / commit fbeea2ca6b1ceb47be58f4bf05c9f3817c5664a2 |
 | DTC-04 — Хранение DTC после выключения питания | На проверке | Codex DTC-04 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/dtc04-mwp5rm2ofhaxjfi9dss | 2026-11-20T15:56:49+00:00 | Журнал DTC опубликован. ПК: 35 шагов и 59 тестов PASS. Модель: прерывание записи и очистка; H03 NVM, порядок подтверждения и стенд открыты. Доказательства: verification/project-audit/dtc04-journal.md. Общий снимок и реестр переданы интегратору. / commit 4ef63cb5d0a93d31c2db76411890d31593783f2e |
@@ -242,6 +242,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:18:17+00:00 | DTC-01 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:18:08+00:00 | TOY-06 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:18:01+00:00 | H03-03 | claim | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:17:43+00:00 | ORG-01 | heartbeat | codex-integration-01a1f76d-20261120 |
@@ -271,4 +272,3 @@
 | 2026-11-20T16:11:52+00:00 | H03-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:11:44+00:00 | MODE-01 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:10:33+00:00 | MODE-02 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
-| 2026-11-20T16:10:26+00:00 | ORG-01 | claim | codex-integration-01a1f76d-20261120 |
