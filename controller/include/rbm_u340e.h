@@ -89,7 +89,9 @@ typedef struct {
 } RbmU340eOutput;
 
 /* Both calls return 1 on success. Init validates every policy field. Step
- * requires an initialized controller and returns a proposal in gear units. */
+ * requires an initialized controller and returns a proposal in gear units.
+ * If an input snapshot is absent or rejected, the next valid button sample
+ * establishes the baseline, with the current mode and Overdrive retained. */
 int rbm_u340e_init(RbmU340eController *controller, const RbmU340ePolicy *policy);
 int rbm_u340e_step(RbmU340eController *controller, const RbmU340eInput *input,
     RbmU340eOutput *output);
