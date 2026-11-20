@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 180,
+  "sequence": 181,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -137,22 +137,26 @@
       "result": "e4ac4b09967f7edf86cf2c1911218ba34e260b24"
     },
     "DTC-04": {
-      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
-      "label": "Codex DTC-04",
-      "branch": "codex/dtc04-mwp5rm2ofhaxjfi9dss",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex — подтверждение долговечной очистки DTC",
+      "branch": "codex/dtc04-durable-clear-32e6ac79",
       "files": [
-        "diagnostics/chery_dtc_journal.c",
-        "diagnostics/chery_dtc_journal.h",
+        "diagnostics/chery_dtc.c",
+        "diagnostics/chery_dtc.h",
+        "diagnostics/chery_dtc_can.c",
+        "diagnostics/chery_dtc_can.h",
+        "diagnostics/chery_dtc_link.c",
+        "diagnostics/chery_dtc_link.h",
         "diagnostics/test_chery_dtc_journal.c",
-        "tools/build_pc_checks.py",
-        "verification/project-audit/dtc04-journal.md"
+        "diagnostics/test_chery_dtc_link.c",
+        "verification/project-audit/dtc04-durable-clear.md"
       ],
-      "stage": "done",
-      "claim_id": "b714560b3e9a4abba849b7ea649a1622",
-      "claimed_at": "2026-11-20T15:53:33+00:00",
-      "updated_at": "2026-11-20T16:23:48+00:00",
-      "note": "Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена.",
-      "result": "4ef63cb5d0a93d31c2db76411890d31593783f2e"
+      "stage": "in_progress",
+      "claim_id": "08c2265b7b3d431fb60bc73ce5c54109",
+      "claimed_at": "2026-11-20T16:38:27+00:00",
+      "updated_at": "2026-11-20T16:38:27+00:00",
+      "note": "Добавляю программную цепочку 14 FF 00: ответ 54 FF 00 только после подтверждения записи пустого журнала; при ошибке сохраняется RAM и ответ не ставится в TX. NVM H03 остаётся открыта.",
+      "result": null
     },
     "H03-02": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -1929,9 +1933,17 @@
       "action": "resume",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "at": "2026-11-20T16:38:16+00:00"
+    },
+    {
+      "operation_id": "37dd8f5e05b246c99b75267b9b5596f3",
+      "task": "DTC-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "08c2265b7b3d431fb60bc73ce5c54109",
+      "at": "2026-11-20T16:38:27+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:38:16+00:00",
+  "updated_at": "2026-11-20T16:38:27+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {

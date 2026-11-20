@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:38:16+00:00**. Изменение № **180**.
+Обновлено UTC: **2026-11-20T16:38:27+00:00**. Изменение № **181**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -42,7 +42,7 @@
 | DTC-01 — Прикладной сеанс и статусы Chery | Работа завершена | Codex DTC-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/dtc01-1120-c7e4 | 2026-11-20T16:30:54+00:00 | Порция принята в main b2ca79d. Совместные проверки и границы: verification/project-audit/2026-11-20-integration-2.json и предшествующий снимок. Технические остатки и отсутствие двух рабочих BIN сохранены в карте. / commit 79d853bcd09a13b733907eccc3e1ea6dfe642db7 |
 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Выполняется | Codex — штатный RX BasicCAN H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/dtc02-basiccan-7bd19ea4 | 2026-11-20T16:32:20+00:00 | 15 пар штатный RX/обёртка прошли: очередь, контекст и штатная трасса. Снимаю отметки глубины стека и повторяю проверки на main b2ca79d. |
 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Работа завершена | Codex DTC-03 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/dtc03-table-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:25:38+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit fbeea2ca6b1ceb47be58f4bf05c9f3817c5664a2 |
-| DTC-04 — Хранение DTC после выключения питания | Работа завершена | Codex DTC-04 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/dtc04-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:23:48+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit 4ef63cb5d0a93d31c2db76411890d31593783f2e |
+| DTC-04 — Хранение DTC после выключения питания | Выполняется | Codex — подтверждение долговечной очистки DTC \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/dtc04-durable-clear-32e6ac79 | 2026-11-20T16:38:27+00:00 | Добавляю программную цепочку 14 FF 00: ответ 54 FF 00 только после подтверждения записи пустого журнала; при ошибке сохраняется RAM и ответ не ставится в TX. NVM H03 остаётся открыта. |
 | REL-01 — Два целевых BIN и воспроизводимый комплект | Работа завершена | Codex — комплект двух BIN \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/rel-01-pair-01a1f9a2 | 2026-11-20T16:23:09+00:00 | Порция принята в main 952658b после совместных ПК/M32R проверок. Актуальные доказательства: verification/project-audit/2026-11-20-integration.json. Технические остатки сохранены в карте задач; готовность двух BIN не заявлена. / commit b174397fe79ebdb0d0749bcee31fe7f198435a28 |
 | REL-02 — Приёмка новой связки на оборудовании | Свободна | — | — | — | — |
 
@@ -84,6 +84,20 @@
 - verification/project-audit/dtc02-foreground.md
 - verification/project-audit/dtc02-native-rx-hook.md
 - verification/project-audit/dtc02-preclear-capture.md
+
+### DTC-04
+
+Чат: Codex — подтверждение долговечной очистки DTC. Claim ID: 08c2265b7b3d431fb60bc73ce5c54109.
+
+- diagnostics/chery_dtc.c
+- diagnostics/chery_dtc.h
+- diagnostics/chery_dtc_can.c
+- diagnostics/chery_dtc_can.h
+- diagnostics/chery_dtc_link.c
+- diagnostics/chery_dtc_link.h
+- diagnostics/test_chery_dtc_journal.c
+- diagnostics/test_chery_dtc_link.c
+- verification/project-audit/dtc04-durable-clear.md
 
 ### ECU-01
 
@@ -198,6 +212,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:38:27+00:00 | DTC-04 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:38:16+00:00 | H03-03 | resume | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T16:37:36+00:00 | MODE-02 | review | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-20T16:37:13+00:00 | VSS-02 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -227,4 +242,3 @@
 | 2026-11-20T16:31:04+00:00 | ORG-01 | complete | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T16:30:54+00:00 | DTC-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T16:30:47+00:00 | VSS-02 | resume | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T16:30:41+00:00 | CAN-05 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
