@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 451,
+  "sequence": 452,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -88,12 +88,12 @@
         "tools/package_workset.py",
         "verification/project-audit/rel01-offline-report-guard.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "955fa03480184bffadb909ff493f7946",
       "claimed_at": "2026-11-20T18:57:39+00:00",
-      "updated_at": "2026-11-20T18:59:17+00:00",
-      "note": "Пять сценариев упаковки переименованного OFFLINE_ONLY воспроизведены до исправления. После исправления шесть тестов упаковщика прошли. Проверяю реальный манифест Bosch и полный набор ПК.",
-      "result": null
+      "updated_at": "2026-11-20T19:02:12+00:00",
+      "note": "Упаковщик пары BIN распознаёт OFFLINE_ONLY по SHA из отчётов ST10 и соседнего manifest.json. 6 тестов упаковщика, ПК 37/116, сверка источников PASS. Реальный переименованный альтернативный Bosch отклонён; два ZIP доказательств совпали. Отчёт verification/project-audit/rel01-offline-report-guard.md. Целевая пара BIN открыта.",
+      "result": "982a46d7af0060426920137e0f130d6215e92d14"
     },
     "H03-03": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -4171,9 +4171,17 @@
       "action": "review",
       "claim_id": "aca1f05a2e5746a0b71ab9ad1476a5ba",
       "at": "2026-11-20T19:01:49+00:00"
+    },
+    {
+      "operation_id": "26e35643d333497b945a41d5b22d1e11",
+      "task": "REL-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "955fa03480184bffadb909ff493f7946",
+      "at": "2026-11-20T19:02:12+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:01:49+00:00",
+  "updated_at": "2026-11-20T19:02:12+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {
