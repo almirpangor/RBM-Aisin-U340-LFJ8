@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 397,
+  "sequence": 398,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -136,21 +136,20 @@
     },
     "DTC-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex — геометрия NVM и backend DTC H03",
-      "branch": "codex/dtc04-h03-nvm-32e6ac79",
+      "label": "Codex — исключение возврата очищенной истории DTC",
+      "branch": "codex/dtc04-retire-cleared-history-32e6ac79",
       "files": [
-        "targets/lfj8/check_h03_nvm.py",
         "targets/lfj8/lfj8_h03_nvm.c",
         "targets/lfj8/lfj8_h03_nvm.h",
         "targets/lfj8/test_lfj8_h03_nvm.c",
-        "verification/project-audit/dtc04-h03-nvm.md"
+        "verification/project-audit/dtc04-retired-history.md"
       ],
-      "stage": "done",
-      "claim_id": "df8ec9e7df1a4383b71e3070e9462547",
-      "claimed_at": "2026-11-20T18:06:13+00:00",
-      "updated_at": "2026-11-20T18:35:09+00:00",
-      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
-      "result": "e54b8051439965f4274969e46af534d4d98284db"
+      "stage": "in_progress",
+      "claim_id": "649f9eb04dd24d0ea547f2886878f0b0",
+      "claimed_at": "2026-11-20T18:38:10+00:00",
+      "updated_at": "2026-11-20T18:38:10+00:00",
+      "note": "После проверенной пустой записи вывожу прежний слот из восстановления до подтверждения очистки. Проверяю потерю новой записи и сбои отметки, без изменения транспорта, адресов NVM или TOY-05.",
+      "result": null
     },
     "H03-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -3738,9 +3737,17 @@
       "action": "complete",
       "claim_id": "7247550aeb1e414987b6eb6a1a7b27bd",
       "at": "2026-11-20T18:37:51+00:00"
+    },
+    {
+      "operation_id": "a1b0052a375843d79f3066893151fac0",
+      "task": "DTC-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "649f9eb04dd24d0ea547f2886878f0b0",
+      "at": "2026-11-20T18:38:10+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:37:51+00:00",
+  "updated_at": "2026-11-20T18:38:10+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
