@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 753,
+  "sequence": 754,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -29,22 +29,27 @@
       "based_on_reviews": []
     },
     "DTC-02": {
-      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
-      "label": "Codex DTC-02 — регистры банков Flash",
-      "branch": "codex/dtc02-flash-bank-admission-922b7b11",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "label": "Codex DTC-02 — нижние переходы в общей компоновке",
+      "branch": "codex/can01-h03-engine-owner-b0157640",
       "files": [
-        "targets/lfj8/check_h03_dtc_service_gate.py",
-        "targets/lfj8/h03_dtc_rx_hook.S",
-        "verification/project-audit/dtc02-flash-bank-admission.md"
+        "targets/lfj8/h03_dtc_rx_redirects.S",
+        "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+        "tests/test_h03_dtc_rx_placement.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/dtc02-linked-lower-redirects.md"
       ],
-      "stage": "review",
-      "claim_id": "702717949ca545219ea4fbe0c6486d2c",
-      "claimed_at": "2026-11-20T22:41:20+00:00",
-      "updated_at": "2026-11-20T22:45:52+00:00",
-      "note": "Обе нижние обёртки BasicCAN проверяют бит включения FELBANK0/1 и FESBANK0/1 перед доступом к проектному RX, включая FCNT1=0. Девять сценариев M32R и 18+18 BasicCAN, четыре проверки размещения, совместный прогон с dc2afd9 PASS. +72 байта Flash, RAM 2728 байт. Общая линковка требует прежних платформенных привязок; аппаратное наложение и размещение переходов требуют подтверждения. Отчёт verification/project-audit/dtc02-flash-bank-admission.md.",
-      "result": "1e27a0f6dc02d66f62edbd3724af9d55b17d3e44",
+      "stage": "in_progress",
+      "claim_id": "7d595279d73d44b882c2a6d929c481bb",
+      "claimed_at": "2026-11-20T23:06:45+00:00",
+      "updated_at": "2026-11-20T23:06:45+00:00",
+      "note": "База 3ef0e6e; включены сданные DTC-02, VSS-02 и H03-03. Добавляю две секции переходов на OEM-адресах, сверку итоговых ELF-байтов и повтор RX→CAN13/Virtual Flash. Без прошивки и подстановки профиля.",
+      "result": null,
       "based_on_reviews": [
-        "5bb09a6c858e41d7a7b760ee40373d75"
+        "5bb09a6c858e41d7a7b760ee40373d75",
+        "702717949ca545219ea4fbe0c6486d2c",
+        "8b0ce759514b4c68b04d002b192f50ff",
+        "96f93fae25924717a50bf354ff863f44"
       ]
     },
     "CAN-03": {
@@ -10022,9 +10027,41 @@
           "9436326dc3784bbe994f50e6dce8e9c0"
         ]
       }
+    },
+    {
+      "operation_id": "1784bccbb37b4d6eae10005034226714",
+      "task": "DTC-02",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "claim",
+      "claim_id": "7d595279d73d44b882c2a6d929c481bb",
+      "at": "2026-11-20T23:06:45+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex DTC-02 — нижние переходы в общей компоновке",
+        "branch": "codex/can01-h03-engine-owner-b0157640",
+        "files": [
+          "targets/lfj8/h03_dtc_rx_redirects.S",
+          "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+          "tests/test_h03_dtc_rx_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/dtc02-linked-lower-redirects.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "7d595279d73d44b882c2a6d929c481bb",
+        "claimed_at": "2026-11-20T23:06:45+00:00",
+        "updated_at": "2026-11-20T23:06:45+00:00",
+        "note": "База 3ef0e6e; включены сданные DTC-02, VSS-02 и H03-03. Добавляю две секции переходов на OEM-адресах, сверку итоговых ELF-байтов и повтор RX→CAN13/Virtual Flash. Без прошивки и подстановки профиля.",
+        "result": null,
+        "based_on_reviews": [
+          "5bb09a6c858e41d7a7b760ee40373d75",
+          "702717949ca545219ea4fbe0c6486d2c",
+          "8b0ce759514b4c68b04d002b192f50ff",
+          "96f93fae25924717a50bf354ff863f44"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:52:33+00:00",
+  "updated_at": "2026-11-20T23:06:45+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
