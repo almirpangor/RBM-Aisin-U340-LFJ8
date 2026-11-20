@@ -31,6 +31,11 @@ void rbm_h03_can_monitor_revoke_locked(void)
     require_lock();
     ++revoke_count;
 }
+
+void rbm_h03_can_monitor_publish_setup_locked(void)
+{
+    require_lock();
+}
 """
 BINDINGS = r"""
 #include "lfj8_h03_application.h"
@@ -239,7 +244,7 @@ def probe_binding(base, compiler, aliases, addresses):
         for name, (start, _) in addresses.items():
             if symbols[name] != (start, b"A"):
                 raise ValueError(f"{name} allocated new storage or changed address")
-        native = startup.observations(run, work, compiler)
+        native = startup.observations(run, work, compiler, can_owner=addresses["h03_can_owner"][0])
         debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
         results = []
         for mode, name in enumerate(("active", "denied_ram", "cold", "stale_takeover_ops",
@@ -251,7 +256,18 @@ def probe_binding(base, compiler, aliases, addresses):
                 raise ValueError(f"Unexpected output/lease state for {name}: {observed}")
             results.append({"case": name, "software_grant_withdrawn": name != "denied_ram",
                             "inhibit_mmio_verified": name in ("active", "repeat")})
+        owner_address = addresses["h03_can_owner"][0]
+        denied_ram = ("unsigned int", symbols["fixture_behavior"][0], 1)
+        generation = f"*(unsigned int*){owner_address:#x}"
+        preserved, = startup.read_probe(
+            run, work, debugger, "0x00B7CC",
+            (*startup.seed(), *startup.patch_words(run, compiler), denied_ram),
+            ((0x00B7FC,),), 0, (generation,),
+        )
+        if preserved[1:4] != (2, 0, 1) or preserved[-1] != 42:
+            raise ValueError(f"Successful stock permit without RAM ownership published target state: {preserved}")
     return {"direct_cases": results, "native_entry_cases": native,
+            "native_permit_preserves_unowned_generation": True,
             "used_actual_inhibit_implementation": True, "physical_output_verified": False}
 
 

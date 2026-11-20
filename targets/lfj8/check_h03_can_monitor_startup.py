@@ -192,6 +192,11 @@ void rbm_h03_can_monitor_revoke_locked(void)
     require_lock();
     ++revoke_count;
 }
+
+void rbm_h03_can_monitor_publish_setup_locked(void)
+{
+    require_lock();
+}
 """
 
 
@@ -227,9 +232,9 @@ WATCH = (
 )
 
 
-def read_probe(run, work, debugger, entry, memory, stops, fault):
+def read_probe(run, work, debugger, entry, memory, stops, fault, extra_fields=()):
     fields = ("$pc", "release_count", "unsafe_writes", "revoke_count",
-              *(f"*({kind}*){address:#x}" for kind, address in WATCH))
+              *(f"*({kind}*){address:#x}" for kind, address in WATCH), *extra_fields)
     commands = ["set confirm off", "target sim --memory-size 16M", "load",
                 "tbreak *fixture_ready", "run", f"set fixture_target = {entry}", f"set fixture_fault = {fault:#x}"]
     commands.extend(set_memory(*word) for word in memory)
@@ -263,13 +268,16 @@ def seed():
     )
 
 
-def observations(run, work, compiler):
+def observations(run, work, compiler, can_owner=None):
     debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
     patches = patch_words(run, compiler)
+    owner_fields = () if can_owner is None else (
+        f"*(unsigned int*){can_owner:#x}", f"*(unsigned char*){can_owner + 4:#x}",
+    )
 
     def execute(entry, stops, fault=0, extra=(), *, patched=True):
         return read_probe(run, work, debugger, entry, (*seed(), *(patches if patched else ()), *extra),
-                          stops, fault)
+                          stops, fault, owner_fields)
 
     stock, = execute("&fixture_recovery", ((0x0012B4,),), patched=False,
                      extra=(("unsigned short", 0x801002, 0x0100),))
@@ -314,8 +322,15 @@ def observations(run, work, compiler):
             raise ValueError(f"{name}: wrong fallback PC: {last}")
         if not success and revoke and name != "recovery_prepare_timeout" and not (last[4] & 0x11):
             raise ValueError(f"{name}: failed release did not retain reset: {last}")
-        rows.append({"case": name, "stop": f"0x{last[0]:06X}", "qualified_receive_releases": last[1],
-                     "revoke_calls": last[3], "lower_setup_stayed_parked": len(result) == 2})
+        row = {"case": name, "stop": f"0x{last[0]:06X}", "qualified_receive_releases": last[1],
+               "revoke_calls": last[3], "lower_setup_stayed_parked": len(result) == 2}
+        if owner_fields:
+            if len(result) == 2 and result[0][-2:] != (42, 0):
+                raise ValueError(f"{name}: parked setup published a generation or left an active grant")
+            if last[-2:] != (42 + int(bool(success and revoke)), int(not revoke)):
+                raise ValueError(f"{name}: wrong CAN owner generation/grant after permit: {last[-2:]}")
+            row.update(setup_generation=last[-2], can13_grant=last[-1])
+        rows.append(row)
     return {"original_early_receive": f"0x{stock[0]:06X}", "cases": rows}
 
 
