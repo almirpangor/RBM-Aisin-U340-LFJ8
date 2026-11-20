@@ -116,7 +116,7 @@ def verify(engine, base, image, model):
         "vectors": vectors,
         "chery_native_qualification_flags_hex": native_qualification,
         "common_physical_request_units_proven": False,
-        "torque_output_implemented_by_candidate": False,
+        "chery_1ae_operands_drive_torque_in_candidate": False,
         "hardware_tested": False,
     }
 
