@@ -67,7 +67,11 @@ typedef struct {
 
     /* Called in serialized foreground with the gate closed and outputs
      * inhibited. Reset producer queues and initialize their single objects,
-     * including any adaptation read state, before returning success. */
+     * including any adaptation read state. Return RBM_U340E_STARTUP_PREPARED
+     * for a complete snapshot, RBM_U340E_STARTUP_S01_COLD only when the
+     * platform has qualified the S01 cold precondition, or
+     * RBM_U340E_STARTUP_UNQUALIFIED on failure. Both successful kinds need
+     * complete startup_gear and startup_gp snapshots. */
     int (*initialize)(void *context);
 
     /* Optional service close, under the native lock and owned RAM. Called
