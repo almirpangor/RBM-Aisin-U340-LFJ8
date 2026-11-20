@@ -11,6 +11,18 @@ from tools.verify_sources import git_command
 
 ROOT = Path(__file__).resolve().parents[1]
 
+REQUIRED_COMPARISONS = {
+    ("REV8", "E4M2"),
+    ("REV8", "E4M3"),
+    ("E4M2", "E4M3"),
+}
+REQUIRED_COPY_GROUPS = (
+    frozenset(("REV8", "REV8_E4R32")),
+    frozenset(("E4M2", "E4M2_E4R32")),
+    frozenset(("E4M3", "E4M3_PUBLICATION", "E4M3_E4R32")),
+)
+REQUIRED_IMAGES = {"S02"} | set().union(*REQUIRED_COPY_GROUPS)
+
 
 def read_image(name, entry, repositories):
     repo, pinned_commit = repositories[entry["repository"]]
@@ -48,14 +60,38 @@ def changed_ranges(old: bytes, new: bytes) -> list[list[int]]:
     return ranges
 
 
+def require_archive_coverage(files, groups, comparisons):
+    missing_images = REQUIRED_IMAGES.difference(files)
+    if missing_images:
+        raise ValueError(f"Missing archived image entries: {', '.join(sorted(missing_images))}")
+
+    pairs = [(row["old"], row["new"]) for row in comparisons]
+    observed_pairs = set(pairs)
+    missing_pairs = REQUIRED_COMPARISONS - observed_pairs
+    if missing_pairs:
+        missing = ", ".join(f"{old} -> {new}" for old, new in sorted(missing_pairs))
+        raise ValueError(f"Missing archived comparisons: {missing}")
+    if len(pairs) != len(observed_pairs):
+        raise ValueError("Duplicate archived comparison")
+
+    copy_groups = [frozenset(group) for group in groups]
+    for required in REQUIRED_COPY_GROUPS:
+        if not any(required <= observed for observed in copy_groups):
+            missing = ", ".join(sorted(required))
+            raise ValueError(f"Missing or incomplete archived copy group: {missing}")
+    if len(copy_groups) != len(set(copy_groups)) or any(
+        len(group) != len(members) for group, members in zip(groups, copy_groups)
+    ):
+        raise ValueError("Duplicate archived copy group or member")
+
+
 def verify(manifest, registry, r1, r4):
     if manifest["schema_version"] != 1:
         raise ValueError("Unsupported E4M3 audit schema")
     files = manifest["files"]
     groups = manifest["byte_identical_groups"]
     comparisons = manifest["comparisons"]
-    if not groups or not comparisons:
-        raise ValueError("E4M3 audit must include equality groups and comparisons")
+    require_archive_coverage(files, groups, comparisons)
 
     repositories = {}
     for identifier, directory in (("R1", r1), ("R4", r4)):
