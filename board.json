@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 46,
+  "sequence": 47,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -214,8 +214,8 @@
       "stage": "in_progress",
       "claim_id": "04163e758d304ae28f99c09cf17d8d25",
       "claimed_at": "2026-11-20T16:01:53+00:00",
-      "updated_at": "2026-11-20T16:01:53+00:00",
-      "note": "Перенос когерентного снимка подтверждённых операндов нагрузки в GP Toyota с проверкой давности и отказа. Источники GW и калибровки остаются открытыми.",
+      "updated_at": "2026-11-20T16:04:06+00:00",
+      "note": "Публикация одного снимка нагрузки и проверки отказа реализованы. Контроллер собран и проверен в M32R. Идут H03 link, ПК и повтор аудита Bosch.",
       "result": null
     },
     "CAN-01": {
@@ -604,9 +604,17 @@
       "action": "claim",
       "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
       "at": "2026-11-20T16:04:02+00:00"
+    },
+    {
+      "operation_id": "c0cb681d777543b5922da4de96a49251",
+      "task": "TOY-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "04163e758d304ae28f99c09cf17d8d25",
+      "at": "2026-11-20T16:04:06+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:04:02+00:00",
+  "updated_at": "2026-11-20T16:04:06+00:00",
   "main_commit": "9fa9c8aa18cd88543ba464f98fc8f7fc6a21a7d1",
   "catalog": [
     {
