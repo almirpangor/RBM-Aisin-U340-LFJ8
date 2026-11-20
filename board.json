@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 506,
+  "sequence": 507,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -96,22 +96,25 @@
       "result": "982a46d7af0060426920137e0f130d6215e92d14"
     },
     "H03-03": {
-      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
-      "label": "Codex H03-02/H03-03 — снимок в foreground",
-      "branch": "codex/h03-03-sensor-foreground-mwp5rm2ofhaxjfi9dss",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex H03-03 native input lifecycle",
+      "branch": "codex/h03-target-startup-01a1f99f",
       "files": [
-        "targets/lfj8/check_h03_phase_boot.py",
-        "targets/lfj8/h03_phase_boot_fixture.c",
-        "targets/lfj8/lfj8_h03_application.c",
-        "targets/lfj8/lfj8_h03_application.h",
-        "verification/project-audit/h03-03-sensor-foreground.md"
+        "targets/lfj8/check_h03_input_lifecycle.py",
+        "targets/lfj8/h03_atf_hook_fixture.c",
+        "targets/lfj8/h03_sensor_hook_fixture.c",
+        "targets/lfj8/lfj8_h03_atf_target.c",
+        "targets/lfj8/lfj8_h03_input_lifecycle.h",
+        "targets/lfj8/lfj8_h03_sensor_target.c",
+        "verification/project-audit/2026-11-21-h03-native-input-lifecycle.json",
+        "verification/project-audit/h03-03-native-input-lifecycle.md"
       ],
-      "stage": "done",
-      "claim_id": "ba6497ac9d4a4fb380b163c8abb7d2d2",
-      "claimed_at": "2026-11-20T18:35:39+00:00",
-      "updated_at": "2026-11-20T19:23:27+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "391a5514f65fddb1041cfd7b7ee8018c10110c30"
+      "stage": "in_progress",
+      "claim_id": "c7107b9bc8974c67b7113c75529f935c",
+      "claimed_at": "2026-11-20T19:39:33+00:00",
+      "updated_at": "2026-11-20T19:39:33+00:00",
+      "note": "Связываю штатные callbacks S51/S83 и ATF с существующим допуском приложения и владельцем RAM. Использую реальные обёртки; не пересекаюсь с резервами H03-02 и TOY-05.",
+      "result": null
     },
     "H03-04": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -4617,9 +4620,17 @@
       "action": "claim",
       "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
       "at": "2026-11-20T19:39:27+00:00"
+    },
+    {
+      "operation_id": "d9690a00bf9d4d9283e38a8a30fbdf3b",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "c7107b9bc8974c67b7113c75529f935c",
+      "at": "2026-11-20T19:39:33+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:39:27+00:00",
+  "updated_at": "2026-11-20T19:39:33+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
