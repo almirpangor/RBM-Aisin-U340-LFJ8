@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 493,
+  "sequence": 494,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -22,12 +22,12 @@
         "verification/project-audit/2026-11-21-integration.json",
         "verification/project-audit/integration-20261121/"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "52e7f6ec20834ce89a8c8faa785fe86b",
       "claimed_at": "2026-11-20T19:11:44+00:00",
-      "updated_at": "2026-11-20T19:15:59+00:00",
-      "note": "28 результатов объединены. 22 нативных проверки и 8 дополнительных компонентов прошли; 6 прогонов размещённого кода прошли. Исправляю компоновку CAN для кириллического пути после явной передачи CAN-03.",
-      "result": null
+      "updated_at": "2026-11-20T19:31:55+00:00",
+      "note": "28 результатов объединены и проверены; снимок 2026-11-21-integration.json. Полный линк FAIL_BINDINGS; рабочая пара не выпущена.",
+      "result": "ae393e852fd8e110892c6725f219f3e43585d33c"
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -4504,9 +4504,17 @@
       "action": "complete",
       "claim_id": "69ac904b985641cea43c72eba859a273",
       "at": "2026-11-20T19:30:28+00:00"
+    },
+    {
+      "operation_id": "e0f18089705a48e2ae320c24dfc7b1e1",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "review",
+      "claim_id": "52e7f6ec20834ce89a8c8faa785fe86b",
+      "at": "2026-11-20T19:31:55+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:30:28+00:00",
+  "updated_at": "2026-11-20T19:31:55+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
