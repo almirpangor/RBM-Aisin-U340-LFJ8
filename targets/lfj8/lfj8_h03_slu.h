@@ -37,6 +37,9 @@ typedef struct {
     bool qualified;
 } Lfj8H03SluSecondaryInput;
 
+/* Apply 05DA44 to the owner's private SECONDARY input before 05DC5E. */
+void lfj8_h03_slu_reset_secondary(Lfj8H03SluSecondaryInput *input);
+
 typedef struct {
     uint8_t previous_mode_1637;
     uint8_t timer_4735;
@@ -46,6 +49,15 @@ typedef struct {
     uint16_t pressure_7136;
     Lfj8H03SluCommand command;
 } Lfj8H03SluSecondaryResult;
+
+typedef struct {
+    uint8_t flags_4829;
+    uint8_t low_age_4741, high_age_4740;
+} Lfj8H03SluDiagnostics;
+
+/* Apply 05B6DE to the selected Toyota command word. FAST advances both
+ * counters in GP. This stage resets the opposite counter and owns bit 2. */
+void lfj8_h03_slu_update_diagnostics(Lfj8H03SluDiagnostics *state, uint16_t selected_7246);
 
 /* Execute donor 05DCE8 and the numerical part of 055C5E on one snapshot.
  * The caller supplies the post-05DC5E baseline and serializes the state
@@ -78,7 +90,7 @@ bool lfj8_h03_slu_secondary_from_baseline(const Lfj8H03SluSecondaryInput *input,
                                          Lfj8H03SluSecondaryResult *result);
 
 /* Operands whose producers are outside the current canonical GP map.
- * The source qualifies the whole snapshot for the named SECONDARY event. */
+ * The source qualifies the whole snapshot before 05DA44 for the named event. */
 typedef struct {
     uint32_t event, sampled_at;
     uint16_t base_7054, override_7082;
@@ -99,6 +111,10 @@ typedef struct {
     uint32_t command_at;
     uint32_t event;
     uint8_t valid;
+    /* Values after 05DA44 for the owner of the external fields.
+     * They are available only with a valid SECONDARY publication. */
+    uint8_t post_reset_flags_1636;
+    int16_t post_reset_offset_7028;
 } Lfj8H03SluOutput;
 
 #endif

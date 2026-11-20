@@ -4,6 +4,28 @@
 
 #include "factory_core.h"
 
+void lfj8_h03_slu_reset_secondary(Lfj8H03SluSecondaryInput *input)
+{
+    input->flags_1636 &= (uint8_t)~0x02u;
+    input->offset_7028 = 0;
+}
+
+void lfj8_h03_slu_update_diagnostics(Lfj8H03SluDiagnostics *state, uint16_t selected_7246)
+{
+    /* Toyota ROM maps 00211C and 002128 are flat at 12 and 4. */
+    if (selected_7246 > 2560u) {
+        state->low_age_4741 = 0u;
+        if (state->high_age_4740 >= 12u) {
+            state->flags_4829 |= 0x04u;
+        }
+    } else {
+        state->high_age_4740 = 0u;
+        if (state->low_age_4741 >= 4u) {
+            state->flags_4829 &= (uint8_t)~0x04u;
+        }
+    }
+}
+
 bool lfj8_h03_slu_command(const Lfj8H03SluInput *input, Lfj8H03SluCommand *command)
 {
     if (!command) {
