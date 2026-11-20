@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 115,
+  "sequence": 116,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -17,15 +17,17 @@
         "tests/test_task_coordination.py",
         "tools/task_coordination.py",
         "verification/e4m3-can-9e1c/h03-storage.json",
+        "verification/project-audit/2026-11-20-integration-2.json",
         "verification/project-audit/2026-11-20-integration.json",
+        "verification/project-audit/integration-2/",
         "verification/project-audit/integration/"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "claimed_at": "2026-11-20T16:10:26+00:00",
-      "updated_at": "2026-11-20T16:21:14+00:00",
-      "note": "Опубликовано объединение 12 порций с повторными ПК/M32R проверками, свежим аудитом и картой памяти. 226 исходных и 48 доказательных хешей совпали с Git-архивом. Оба рабочих BIN ещё отсутствуют; границы явно записаны.",
-      "result": "952658bff619a36f4921d637a2f0efae621f416d"
+      "updated_at": "2026-11-20T16:22:32+00:00",
+      "note": "Первая интеграция 952658b в main, CI PASS. Беру следующую опубликованную порцию CAN-02/04, DTC-01, MODE-01, TOY-04/05/06: совместная проверка и обновление карты.",
+      "result": null
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -1351,9 +1353,17 @@
       "action": "review",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "at": "2026-11-20T16:22:22+00:00"
+    },
+    {
+      "operation_id": "4fb8a249d8414608a0ebbe01dcaacd14",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "resume",
+      "claim_id": "68c8347a91944cb3929878ea53cc9204",
+      "at": "2026-11-20T16:22:32+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:22:22+00:00",
+  "updated_at": "2026-11-20T16:22:32+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
