@@ -52,6 +52,16 @@ static void stop_session(Lfj8H03DtcCan *state)
     }
 }
 
+static Lfj8H03DtcSlotUse lose_ownership(Lfj8H03DtcCan *state)
+{
+    stop_session(state);
+    if (state->submission == DRAINING) {
+        /* Only a new generation proves the previous TX was reset or drained. */
+        state->submission = LEASE_LOST;
+    }
+    return LFJ8_H03_DTC_NO_OWNERSHIP;
+}
+
 static void queue_next(Lfj8H03DtcCan *state, CheryDtcLinkResult result)
 {
     if (result == CHERY_DTC_LINK_FRAME_READY) {
@@ -83,17 +93,10 @@ Lfj8H03DtcSlotUse lfj8_h03_dtc_can_poll(Lfj8H03DtcCan *state, CheryDtcState *dtc
         state->generation = generation;
         state->submission = EMPTY;
     }
-    if (owns_slot13 != 1u) {
-        stop_session(state);
-        if (state->submission == DRAINING) {
-            state->submission = LEASE_LOST;
-        }
-        return LFJ8_H03_DTC_NO_OWNERSHIP;
-    }
     uint16_t now;
-    if (state->submission == LEASE_LOST || !lfj8_h03_can0_read_timestamp(io, &now)) {
-        stop_session(state);
-        return LFJ8_H03_DTC_NO_OWNERSHIP;
+    if (owns_slot13 != 1u || state->submission == LEASE_LOST ||
+        !lfj8_h03_can0_read_timestamp(io, &now)) {
+        return lose_ownership(state);
     }
 
     if (chery_dtc_link_expire(&state->link, tick)) {
@@ -105,10 +108,10 @@ Lfj8H03DtcSlotUse lfj8_h03_dtc_can_poll(Lfj8H03DtcCan *state, CheryDtcState *dtc
         uint16_t finished_at;
         const Lfj8CanTxStatus status =
             lfj8_h03_can0_diag_status(io, state->submission == DRAINING, &finished_at);
-        if (status == LFJ8_CAN_TX_PENDING || status == LFJ8_CAN_TX_UNAVAILABLE) {
-            if (status == LFJ8_CAN_TX_UNAVAILABLE) {
-                stop_session(state);
-            }
+        if (status == LFJ8_CAN_TX_UNAVAILABLE) {
+            return lose_ownership(state);
+        }
+        if (status == LFJ8_CAN_TX_PENDING) {
             return LFJ8_H03_DTC_SLOT_RESERVED;
         }
         if (status == LFJ8_CAN_TX_FINISHED && state->submission == SUBMITTED) {
@@ -137,8 +140,7 @@ Lfj8H03DtcSlotUse lfj8_h03_dtc_can_poll(Lfj8H03DtcCan *state, CheryDtcState *dtc
     if (sent == LFJ8_CAN_SUBMITTED) {
         state->submission = SUBMITTED;
     } else if (sent != LFJ8_CAN_SLOT_BUSY) {
-        stop_session(state);
-        return LFJ8_H03_DTC_NO_OWNERSHIP;
+        return lose_ownership(state);
     }
     return LFJ8_H03_DTC_SLOT_RESERVED;
 }

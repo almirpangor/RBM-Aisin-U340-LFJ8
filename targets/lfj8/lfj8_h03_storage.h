@@ -8,6 +8,7 @@
 #include "lfj8_h03_atf.h"
 #include "lfj8_range_control.h"
 #include "lfj8_gear_observer.h"
+#include "lfj8_h03_slu.h"
 
 /* Typed inventory of CURRENT components, not approved RAM addresses or a
  * startup initializer. Initialize each component through its own API.
@@ -46,6 +47,8 @@
     X(cycle_input, Lfj8H03CycleInput) \
     X(load_feed, RbmU340eQualifiedLoadFeed) \
     X(button_reading, Lfj8ButtonReading) \
+    X(slu_input, Lfj8H03SluInput) \
+    X(slu_command, Lfj8H03SluCommand) \
     X(dtc_delivery, Lfj8H03DtcRxDelivery) \
     X(atf_sample, Lfj8H03AtfSample) \
     X(engine_context, Ta2005EngineQualificationContext) \

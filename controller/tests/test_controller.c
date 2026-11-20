@@ -259,6 +259,114 @@ static void check_hydraulic_cycle(void)
     assert(saved.down_counts[0] == 0x4e && saved.down_counts[1] == 0xb1);
 }
 
+typedef struct {
+    uint8_t records[2][FACTORY_ADAPT_RECORD_BYTES];
+    unsigned prefix;
+    unsigned writes;
+    int corrupt_after_write;
+} AdaptationStoreModel;
+
+static const uint8_t *adaptation_read(void *context, unsigned slot)
+{
+    AdaptationStoreModel *store = context;
+    assert(slot < 2);
+    return store->records[slot];
+}
+
+static int adaptation_write(void *context, unsigned slot, const uint8_t *record, unsigned bytes)
+{
+    AdaptationStoreModel *store = context;
+    assert(slot < 2 && bytes == FACTORY_ADAPT_RECORD_BYTES && store->prefix <= bytes);
+    ++store->writes;
+    memset(store->records[slot], 0xFF, bytes);
+    memcpy(store->records[slot], record, store->prefix);
+    if (store->corrupt_after_write) {
+        store->records[slot][48] ^= 1u; /* First payload byte. */
+    }
+    return store->prefix == bytes;
+}
+
+static void check_adaptation_store(void)
+{
+    const FactoryAdaptation learned = {
+        .learned_flags = {0xA3, 0x5C}, .up_counts = {1, 2, 3, 4, 5, 6},
+        .down_counts = {7, 8}, .down = {-40, 40, -3, 0, 13}, .down_seen = 0x81,
+    };
+    const FactoryAdaptation reset_fixture = {0};
+    AdaptationStoreModel store = {.prefix = FACTORY_ADAPT_RECORD_BYTES};
+    memset(store.records, 0xFF, sizeof store.records);
+
+    FactoryAdaptation loaded = learned;
+    uint32_t generation = 42;
+    assert(factory_adaptation_load(store.records[0], store.records[1], &loaded, &generation) == -1);
+    assert(generation == 42 && memcmp(&loaded, &learned, sizeof loaded) == 0);
+
+    FactoryAdaptation invalid = learned;
+    invalid.down[0] = -41;
+    assert(!factory_adaptation_valid(&invalid));
+    invalid.down[0] = 41;
+    assert(!factory_adaptation_save(&invalid, 1, adaptation_read, adaptation_write, &store));
+    assert(!factory_adaptation_save(&learned, 0, adaptation_read, adaptation_write, &store));
+    assert(store.writes == 0);
+    assert(factory_adaptation_save(&learned, 1, adaptation_read, adaptation_write, &store) == 1);
+    assert(factory_adaptation_save(&learned, 1, adaptation_read, adaptation_write, &store) == 2);
+    assert(store.writes == 1);
+    assert(factory_adaptation_load(store.records[0], store.records[1], &loaded, &generation) == 0);
+    assert(generation == 1 && memcmp(&loaded, &learned, sizeof loaded) == 0);
+
+    uint8_t first[FACTORY_ADAPT_RECORD_BYTES];
+    memcpy(first, store.records[0], sizeof first);
+    for (unsigned cut = 0; cut < FACTORY_ADAPT_RECORD_BYTES; ++cut) {
+        store.prefix = cut;
+        assert(!factory_adaptation_save(&reset_fixture, 1, adaptation_read, adaptation_write, &store));
+        assert(memcmp(store.records[0], first, sizeof first) == 0);
+        assert(factory_adaptation_load(store.records[0], store.records[1], &loaded, &generation) == 0);
+        assert(generation == 1 && memcmp(&loaded, &learned, sizeof loaded) == 0);
+    }
+    store.prefix = FACTORY_ADAPT_RECORD_BYTES;
+    store.corrupt_after_write = 1;
+    assert(!factory_adaptation_save(&reset_fixture, 1, adaptation_read, adaptation_write, &store));
+    assert(factory_adaptation_load(store.records[0], store.records[1], &loaded, &generation) == 0);
+    assert(generation == 1 && memcmp(&loaded, &learned, sizeof loaded) == 0);
+    store.corrupt_after_write = 0;
+
+    assert(factory_adaptation_encode(store.records[0], &learned, UINT32_MAX));
+    assert(factory_adaptation_save(&reset_fixture, 1, adaptation_read, adaptation_write, &store) == 1);
+    assert(factory_adaptation_load(store.records[0], store.records[1], &loaded, &generation) == 1);
+    assert(generation == 0 && memcmp(&loaded, &reset_fixture, sizeof loaded) == 0);
+
+    FactoryHydraulics restarted = {0};
+    assert(factory_hydraulics_set(&restarted, -7184, 2, 0x1153u));
+    assert(factory_hydraulics_restore(&restarted, &learned));
+    assert(factory_hydraulics_restore(&restarted, &loaded));
+    factory_hydraulics_capture(&restarted, &loaded);
+    assert(memcmp(&loaded, &reset_fixture, sizeof loaded) == 0);
+    uint32_t unrelated;
+    assert(factory_hydraulics_get(&restarted, -7184, 2, &unrelated) && unrelated == 0x1153u);
+
+    /* A damaged newest record triggers the donor's fallback to older data,
+     * including when the newest record contained a reset. */
+    for (unsigned byte = 0; byte < FACTORY_ADAPT_RECORD_BYTES; ++byte) {
+        for (unsigned bit = 0; bit < 8; ++bit) {
+            const uint8_t mask = (uint8_t)(1u << bit);
+            store.records[1][byte] ^= mask;
+            assert(factory_adaptation_load(store.records[0], store.records[1], &loaded, &generation) == 0);
+            assert(generation == UINT32_MAX && memcmp(&loaded, &learned, sizeof loaded) == 0);
+            store.records[1][byte] ^= mask;
+        }
+    }
+
+    assert(factory_adaptation_encode(store.records[0], &learned, UINT32_C(0x80000000)));
+    assert(factory_adaptation_load(store.records[0], store.records[1], &loaded, &generation) == -1);
+    assert(generation == UINT32_MAX && memcmp(&loaded, &learned, sizeof loaded) == 0);
+    const unsigned writes = store.writes;
+    assert(!factory_adaptation_save(&reset_fixture, 1, adaptation_read, adaptation_write, &store));
+    assert(store.writes == writes);
+#ifndef RBM_TEST_QUIET
+    puts("Toyota adaptation store: 96 write cuts, 768 bit faults, reset and rollover passed.");
+#endif
+}
+
 #ifdef RBM_TEST_TRANSFERS
 unsigned rbm_test_hydraulic_transfer(void);
 #endif
@@ -272,6 +380,7 @@ int main(void)
     check_analog_selector();
     check_output_path();
     check_hydraulic_cycle();
+    check_adaptation_store();
 #ifdef RBM_TEST_RUNTIME
     rbm_test_runtime();
 #endif

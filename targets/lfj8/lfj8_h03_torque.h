@@ -86,8 +86,9 @@ typedef bool (*Lfj8TorqueSubmit)(void *context, uint16_t id, const uint8_t data[
  * callback returns. Exactly one completion is required after each accepted
  * submit, including TX abort during controller reset. No queueing by callback
  * before exclusive torque authority and an operational link are established.
- * A NULL input signals unavailable data. Use zero calibration to disable
- * requests. Poll can still transmit cancel after input loss when TX permits.
+ * A NULL input signals unavailable data. A NULL calibration or a zero profile
+ * disables requests. Changing the selected profile ends the current pulse.
+ * Poll can transmit CANCEL after input or profile loss when TX permits.
  */
 void lfj8_h03_torque_init(Lfj8H03Torque *link);
 void lfj8_h03_torque_poll(Lfj8H03Torque *link, const Lfj8TorqueInput *input,

@@ -153,7 +153,7 @@
 
 **Требуется разработка** · ТЗ §2, §8
 
-**Сделано.** В модели проверены P/N→D, заполнение, первая, 1→2 и различие D/2/L. Диалог момента 2→3 проверен отдельно.
+**Сделано.** Помимо N→D и 1→2 проверены 12 точек карты D: 2→3, 3→4, понижения, холодный запрет четвёртой и потеря события до выдачи. ПК и M32R прошли при нулевой модельной нагрузке. Матрица под нагрузкой, R, ручные заявки и вся гидравлика ещё открыты.
 
 **Осталось.** Связать оставшиеся стадии и входы. Проверить R, 2→3, 3→4, понижения, холодные/горячие режимы, ручные запросы и защитные переходы целым циклом.
 
@@ -163,9 +163,9 @@
 
 **Что настраивать.** Раздельные расписания Toyota FAST/SECONDARY/MAIN и H03, начальное состояние GP.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [NATIVE](#check-native)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [NATIVE](#check-native) · [INTEGRATION2](#check-integration2)
 
-**Разбор и основания.** [lfj8-h03-control-cycle.md](../docs/lfj8-h03-control-cycle.md)
+**Разбор и основания.** [lfj8-h03-control-cycle.md](../docs/lfj8-h03-control-cycle.md) · [toy04-upper-gears.md](../verification/project-audit/toy04-upper-gears.md)
 
 **Зависит от.** [TOY-02](#toy-02), [TOY-03](#toy-03), [H03-03](#h03-03), [MODE-02](#mode-02)
 
@@ -174,19 +174,19 @@
 
 **Требуется разработка** · ТЗ §2, §5
 
-**Сделано.** Код донорского обучения и формата хранения присутствует в перенесённом ядре.
+**Сделано.** Донорский формат адаптаций проверен на ПК/M32R: 96 прерываний записи, 768 повреждений битов, пределы, переход поколения и восстановление GP. Повреждение записи сброса возвращает предыдущие коррекции — это открытый вопрос политики H03.
 
-**Осталось.** Связать условия обучения со всеми рабочими фазами, назначить постоянное хранилище H03 и восстановление после прерванной записи.
+**Осталось.** Связать обучение со всеми фазами, назначить NVM H03, исходное состояние сброса, условия износа и долговечную политику сброса без возврата отменённых коррекций.
 
 **Критерий результата.** Проверены пределы коррекции, повторный пуск, повреждённая запись и сброс адаптаций.
 
-**Код.** [controller/vendor/toyota/src/factory_learning.c](../controller/vendor/toyota/src/factory_learning.c) · [controller/vendor/toyota/src/factory_adaptation_store.c](../controller/vendor/toyota/src/factory_adaptation_store.c)
+**Код.** [controller/vendor/toyota/src/factory_learning.c](../controller/vendor/toyota/src/factory_learning.c) · [controller/vendor/toyota/src/factory_adaptation_store.c](../controller/vendor/toyota/src/factory_adaptation_store.c) · [controller/tests/test_controller.c](../controller/tests/test_controller.c)
 
 **Что настраивать.** Контракты factory_learning.h и factory_adaptation_store.h. Область NVM ещё не назначена.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION2](#check-integration2)
 
-**Разбор и основания.** [toyota-integration.md](../docs/toyota-integration.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md)
+**Разбор и основания.** [toyota-integration.md](../docs/toyota-integration.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [toy05-adaptation-store.md](../verification/project-audit/toy05-adaptation-store.md)
 
 **Зависит от.** [TOY-04](#toy-04), [H03-04](#h03-04)
 
@@ -195,19 +195,19 @@
 
 **Требуется разработка** · ТЗ §2, §5
 
-**Сделано.** Донорская функция 055C5E проверена на 65 536 входных словах и режимах драйвера.
+**Сделано.** Добавлен расчёт численной команды 055C5E на квалифицированном снимке. На ПК совпали 65536 слов и 2560 сочетаний условий с R3; M32R выполнил 65536 слов по точной кривой S01, force и инвалидирование. Компонент включён в расширенную адресную модель. Снимок SECONDARY и физический SLU ещё не привязаны.
 
 **Осталось.** Включить SLU в полный цикл, установить канал H03, измерить характеристики и условия снятия блокировки.
 
 **Критерий результата.** Трасса от квалифицированных входов до канала H03, проверка скольжения, удержания и снятия по отказу.
 
-**Код.** [targets/lfj8/check_toyota_slu.py](../targets/lfj8/check_toyota_slu.py) · [targets/lfj8/lfj8_h03_cycle.c](../targets/lfj8/lfj8_h03_cycle.c) · [targets/lfj8/lfj8_h03_outputs.h](../targets/lfj8/lfj8_h03_outputs.h)
+**Код.** [targets/lfj8/check_toyota_slu.py](../targets/lfj8/check_toyota_slu.py) · [targets/lfj8/lfj8_h03_cycle.c](../targets/lfj8/lfj8_h03_cycle.c) · [targets/lfj8/lfj8_h03_outputs.h](../targets/lfj8/lfj8_h03_outputs.h) · [targets/lfj8/lfj8_h03_slu.c](../targets/lfj8/lfj8_h03_slu.c) · [targets/lfj8/lfj8_h03_slu.h](../targets/lfj8/lfj8_h03_slu.h)
 
 **Что настраивать.** Целевой адаптер SLU ещё отсутствует. Результат сравнения регистров Toyota не задаёт ток канала H03.
 
-**Проверки.** [SLU](#check-slu)
+**Проверки.** [SLU](#check-slu) · [INTEGRATION2](#check-integration2)
 
-**Разбор и основания.** [toyota-integration.md](../docs/toyota-integration.md) · [lfj8-9e1c-minimum-bench.md](../docs/lfj8-9e1c-minimum-bench.md)
+**Разбор и основания.** [toyota-integration.md](../docs/toyota-integration.md) · [lfj8-9e1c-minimum-bench.md](../docs/lfj8-9e1c-minimum-bench.md) · [toy06-slu-command.md](../verification/project-audit/toy06-slu-command.md)
 
 **Зависит от.** [TOY-02](#toy-02), [H03-05](#h03-05)
 
@@ -235,7 +235,7 @@
 
 **Проверено программно** · ТЗ §3
 
-**Сделано.** Проверены конкуренция момента, диагностики и телеметрии, TRFIN, отмена, ранний Flow Control и смена поколения.
+**Сделано.** Телеметрия 0x1AE/0x300 и приоритеты CAN13 проверены. При превышении срока временной передачи телеметрии старое подтверждение снижения момента отзывается сразу, даже пока передатчик завершает отмену. Сценарии ПК/M32R прошли.
 
 **Осталось.** Физическое владение ящиком ведётся в CAN-03.
 
@@ -245,9 +245,9 @@
 
 **Что настраивать.** Lfj8H03Can13, предел опроса, лимиты возраста и повторная инициализация.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION2](#check-integration2)
 
-**Разбор и основания.** [lfj8-h03-torque.md](../docs/lfj8-h03-torque.md)
+**Разбор и основания.** [lfj8-h03-torque.md](../docs/lfj8-h03-torque.md) · [can02-loan-timeout.md](../verification/project-audit/can02-loan-timeout.md)
 
 <a id="can-03"></a>
 ## CAN-03 — Штатный запуск, IRQ и восстановление CAN0
@@ -275,7 +275,7 @@
 
 **Проверено программно** · ТЗ §3, §4
 
-**Сделано.** Toyota формирует запрос, Bosch подтверждает и снимает его. В модели проверены обычное завершение и потеря статуса, использована историческая трасса E4M3.
+**Сделано.** Клиент RB теперь снимает запрос при отзыве или изменении выбранного профиля. Проверены START в передаче, поздний ответ, CANCEL и отсутствие повторного импульса для той же заявки. Текущий ordinary Bosch побайтно восстановлен и прошёл обычный диалог и потерю статуса с обновлённым C-клиентом.
 
 **Осталось.** Целевые величины снижения и соответствие штатному Chery остаются ECU-02/CAN-05.
 
@@ -285,9 +285,9 @@
 
 **Что настраивать.** Lfj8TorqueCalibration.up/down, levels, reduction_q8, duration. 32/256 и 200 мс в тесте — испытательный профиль.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [TORQUE](#check-torque)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [TORQUE](#check-torque) · [INTEGRATION2](#check-integration2)
 
-**Разбор и основания.** [lfj8-h03-torque.md](../docs/lfj8-h03-torque.md)
+**Разбор и основания.** [lfj8-h03-torque.md](../docs/lfj8-h03-torque.md) · [can04-torque-revocation.md](../verification/project-audit/can04-torque-revocation.md)
 
 <a id="can-05"></a>
 ## CAN-05 — Полнота штатного обмена Chery
@@ -414,7 +414,7 @@
 
 **Требуется разработка** · ТЗ §5
 
-**Сделано.** После объединения кнопок и нагрузки ABI M32R: управление 1072, связь 492, рабочие снимки 816 байт; всего 2380. Прежних окон не хватает на 600 байт. Раздельная карта прошла компоновку, скан ссылок и 6 OEM-инициализаций. Владение RAM и полный стек ещё не подтверждены.
+**Сделано.** Актуальная ABI M32R с SLU: управление 1072, связь 492, рабочие снимки 832 байта; всего 2396. Прежних окон не хватает на 616 байт. Кандидаты RAM проверены по компоновке и 6 OEM-инициализациям. Расширенная модель ROM с кнопками, журналом и SLU оставляет 732/680 байт, без окончательных привязок.
 
 **Осталось.** Закрепить сервисную изоляцию Flash/RAM и запуск после сброса, добавить ещё не определённые состояния CAN/journal/платформы в единый состав, доказать полный стек с вложенными IRQ. Не использовать прежнюю оценку 1080/1116 байт как размер всего приложения.
 
@@ -424,7 +424,7 @@
 
 **Что настраивать.** Flash [0x020000,0x030000), [0x07C118,0x07FFFC); кандидаты RAM описаны в аудите. FCNT1 и сервисный монитор. Текущая модель RAM: [0x806B40,0x806F58), [0x808E40,0x80902C), [0x80902C,0x80933C). Это кандидаты, не допуск к записи.
 
-**Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native) · [STORAGE](#check-storage) · [INTEGRATION](#check-integration)
+**Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native) · [STORAGE](#check-storage) · [INTEGRATION](#check-integration) · [INTEGRATION2](#check-integration2)
 
 **Разбор и основания.** [lfj8-h03-ram-audit.md](../docs/lfj8-h03-ram-audit.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [lfj8-h03-service-isolation.md](../docs/lfj8-h03-service-isolation.md)
 
@@ -528,19 +528,19 @@
 
 **Проверено программно** · ТЗ §8
 
-**Сделано.** Проверены шесть окон ADC, одно переключение режима на нажатие, удержание, +/− и Overdrive как логические предложения.
+**Сделано.** Auto/Tiptronic и OD проверены программно. Перекрытие удерживаемой кнопки с противоположной теперь блокирует заявку в C и Python; после отпускания нужен новый фронт. Отдельные регрессии ПК/M32R прошли.
 
 **Осталось.** Довести физические входы и применение результата в MODE-02, правила поставки в MODE-03.
 
 **Критерий результата.** Компонентный requested_gear не равен выполненному гидравлическому переключению.
 
-**Код.** [controller/src/rbm_u340e.c](../controller/src/rbm_u340e.c) · [targets/lfj8/lfj8_range_control.c](../targets/lfj8/lfj8_range_control.c) · [targets/lfj8/lfj8_selector_adc.c](../targets/lfj8/lfj8_selector_adc.c)
+**Код.** [controller/src/rbm_u340e.c](../controller/src/rbm_u340e.c) · [targets/lfj8/lfj8_range_control.c](../targets/lfj8/lfj8_range_control.c) · [targets/lfj8/lfj8_selector_adc.c](../targets/lfj8/lfj8_selector_adc.c) · [controller/tests/test_shift_buttons.c](../controller/tests/test_shift_buttons.c)
 
 **Что настраивать.** RbmU340ePolicy, стабильные кнопки до rbm_u340e_step, окна ADC. Расчётные 2=200 Ом, L=91 Ом требуют проверки.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION2](#check-integration2)
 
-**Разбор и основания.** [lfj8-selector.md](../docs/lfj8-selector.md)
+**Разбор и основания.** [lfj8-selector.md](../docs/lfj8-selector.md) · [mode01-shift-conflict.md](../verification/project-audit/mode01-shift-conflict.md)
 
 <a id="mode-02"></a>
 ## MODE-02 — Подключение селектора, Tiptronic и Overdrive
@@ -625,7 +625,7 @@
 
 **Проверено программно** · ТЗ §11
 
-**Сделано.** Проверены 0x732/0x722, 10 86, чтение 17, очистка 14 FF 00, ограниченный FC 30 00 00, активные и исторические RPM/ОЖ.
+**Сделано.** Прикладной Chery C0 проверен; чужое завершение TX13 и BusOff закрывают сеанс и отзывают владение до нового поколения CAN. Повторены сценарии на ПК и M32R. Физический сканер и NVM ещё не проверены.
 
 **Осталось.** Native RX, прочие мониторы, сохранение и сканер ведутся отдельно.
 
@@ -635,9 +635,9 @@
 
 **Что настраивать.** Пять исторических слотов, таблица 96 индексов S03, возраст FC и таймеры сеанса.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION2](#check-integration2)
 
-**Разбор и основания.** [diagnostics-integration.md](../docs/diagnostics-integration.md)
+**Разбор и основания.** [diagnostics-integration.md](../docs/diagnostics-integration.md) · [dtc01-session-lease.md](../verification/project-audit/dtc01-session-lease.md)
 
 <a id="dtc-02"></a>
 ## DTC-02 — Штатный приём BasicCAN для диагностического сеанса
@@ -868,3 +868,12 @@ python -B -m unittest discover -s tests -p test_h03_storage.py -v
 ```
 
 **Последний сохранённый результат.** [pc-checks.json](../verification/project-audit/integration/pc-checks.json) · [m32r-link.json](../verification/project-audit/integration/m32r-link.json) · [roundtrip.json](../verification/project-audit/integration/roundtrip.json) · [atf.txt](../verification/project-audit/integration/atf.txt) · [basiccan.json](../verification/project-audit/integration/basiccan.json) · [service.json](../verification/project-audit/integration/service.json) · [phase-wait.json](../verification/project-audit/integration/phase-wait.json) · [package-check.json](../verification/project-audit/integration/package-check.json) · [dtc-table.txt](../verification/project-audit/integration/dtc-table.txt) · [m32r-expanded-link.json](../verification/project-audit/integration/m32r-expanded-link.json) · [can05-roundtrip.txt](../verification/project-audit/integration/can05-roundtrip.txt) · [journal-m32r.txt](../verification/project-audit/integration/journal-m32r.txt)
+
+<a id="check-integration2"></a>
+### INTEGRATION2 — Совместная проверка момента, диапазонов и SLU
+
+```powershell
+Команды ПК и M32R прежние; дополнительные источники и сохранённые точки входа описаны в docs/working-set.md. Проверка SLU на M32R сохранена как fixture вместе с результатом.
+```
+
+**Последний сохранённый результат.** [pc-checks.json](../verification/project-audit/integration-2/pc-checks.json) · [m32r-expanded-link.json](../verification/project-audit/integration-2/m32r-expanded-link.json) · [torque-dialogue.json](../verification/project-audit/integration-2/torque-dialogue.json) · [shift-buttons.json](../verification/project-audit/integration-2/shift-buttons.json) · [slu.json](../verification/project-audit/integration-2/slu.json) · [slu-m32r.txt](../verification/project-audit/integration-2/slu-m32r.txt)
