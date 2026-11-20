@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 477,
+  "sequence": 478,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -406,11 +406,11 @@
         "verification/project-audit/2026-11-20-h03-can-revoke-bindings.json",
         "verification/project-audit/h03-05-can-revoke-bindings.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "8618b77e068c469baa54217bf3b2f9f2",
       "claimed_at": "2026-11-20T18:47:57+00:00",
-      "updated_at": "2026-11-20T18:54:35+00:00",
-      "note": "Результат опубликован поверх CAN-03 и REL-02. Отзыв CAN, запрет выходов и девять привязок полей RAM подтверждены в M32R. В компоновке остались rbm_h03_application_binding и rbm_h03_sensor_config. В отчёте есть результаты и условия для итоговой линковки, PCM Flash и стенда.",
+      "updated_at": "2026-11-20T19:25:58+00:00",
+      "note": "Порция принята в main ae393e8 после общей проверки. Результаты: verification/project-audit/2026-11-21-integration.json. Незавершённая функция ТЗ сохранена в карточке; два рабочих BIN ещё не выпущены.",
       "result": "df043312dba7646d04e59b21a984bc411da20029"
     },
     "MODE-03": {
@@ -4376,9 +4376,17 @@
       "action": "complete",
       "claim_id": "f685f2c55ce644bd9790da0a174088e9",
       "at": "2026-11-20T19:25:41+00:00"
+    },
+    {
+      "operation_id": "777b0342e2514124ac9cb54d642ee2c8",
+      "task": "H03-05",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "8618b77e068c469baa54217bf3b2f9f2",
+      "at": "2026-11-20T19:25:58+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:25:41+00:00",
+  "updated_at": "2026-11-20T19:25:58+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
