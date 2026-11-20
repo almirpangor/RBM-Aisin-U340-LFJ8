@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 713,
+  "sequence": 714,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -149,12 +149,12 @@
         "targets/lfj8/lfj8_h03_dtc_native.h",
         "verification/project-audit/dtc04-native-clear-admission.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "e72d13fcb2254ca89fd0736136b11462",
       "claimed_at": "2026-11-20T21:52:52+00:00",
-      "updated_at": "2026-11-20T21:52:52+00:00",
-      "note": "Подключаю к реальной нативной CAN-привязке существующий отказ очистки при отсутствии подтверждённого NVM. Проверю запросы очистки и чтения от BasicCAN RX до TX13. Физические блоки и драйвер требуют H03-04.",
-      "result": null,
+      "updated_at": "2026-11-20T22:01:30+00:00",
+      "note": "Нативная привязка H03 запрещает подтверждение очистки DTC при отсутствии постоянного носителя. В M32R запрос 14 FF 00 поглощается без TX13, следующий ответ 17 FF 00 сохраняет P0710. Пройдены BasicCAN, foreground, ATF, NVM, RAM и отзыв разрешения CAN. Полная линковка имеет те же отсутствующие привязки, что чистая main. Остались два подтверждённых стираемых блока и право записи H03-04, физический драйвер, загрузочное восстановление и фиксация очистки вне блокировки CAN. Отчёт verification/project-audit/dtc04-native-clear-admission.md.",
+      "result": "dc2afd95a829473823c05f10eabd66142177a0dc",
       "based_on_reviews": []
     },
     "H03-02": {
@@ -8844,9 +8844,37 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "c908c119a6c7411db46369564df19dd7",
+      "task": "DTC-04",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "review",
+      "claim_id": "e72d13fcb2254ca89fd0736136b11462",
+      "at": "2026-11-20T22:01:30+00:00",
+      "record": {
+        "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "label": "Codex DTC-04 — запрет ложной очистки в H03",
+        "branch": "codex/target-continuation-922b7b11",
+        "files": [
+          "targets/lfj8/check_h03_dtc_basiccan.py",
+          "targets/lfj8/lfj8_h03_dtc_can.c",
+          "targets/lfj8/lfj8_h03_dtc_can.h",
+          "targets/lfj8/lfj8_h03_dtc_native.c",
+          "targets/lfj8/lfj8_h03_dtc_native.h",
+          "verification/project-audit/dtc04-native-clear-admission.md"
+        ],
+        "stage": "review",
+        "claim_id": "e72d13fcb2254ca89fd0736136b11462",
+        "claimed_at": "2026-11-20T21:52:52+00:00",
+        "updated_at": "2026-11-20T22:01:30+00:00",
+        "note": "Нативная привязка H03 запрещает подтверждение очистки DTC при отсутствии постоянного носителя. В M32R запрос 14 FF 00 поглощается без TX13, следующий ответ 17 FF 00 сохраняет P0710. Пройдены BasicCAN, foreground, ATF, NVM, RAM и отзыв разрешения CAN. Полная линковка имеет те же отсутствующие привязки, что чистая main. Остались два подтверждённых стираемых блока и право записи H03-04, физический драйвер, загрузочное восстановление и фиксация очистки вне блокировки CAN. Отчёт verification/project-audit/dtc04-native-clear-admission.md.",
+        "result": "dc2afd95a829473823c05f10eabd66142177a0dc",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:01:26+00:00",
+  "updated_at": "2026-11-20T22:01:30+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -10425,6 +10453,28 @@
       "based_on_reviews": [],
       "task": "VSS-02",
       "submitted_at": "2026-11-20T22:01:03+00:00"
+    },
+    "e72d13fcb2254ca89fd0736136b11462": {
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "label": "Codex DTC-04 — запрет ложной очистки в H03",
+      "branch": "codex/target-continuation-922b7b11",
+      "files": [
+        "targets/lfj8/check_h03_dtc_basiccan.py",
+        "targets/lfj8/lfj8_h03_dtc_can.c",
+        "targets/lfj8/lfj8_h03_dtc_can.h",
+        "targets/lfj8/lfj8_h03_dtc_native.c",
+        "targets/lfj8/lfj8_h03_dtc_native.h",
+        "verification/project-audit/dtc04-native-clear-admission.md"
+      ],
+      "stage": "review",
+      "claim_id": "e72d13fcb2254ca89fd0736136b11462",
+      "claimed_at": "2026-11-20T21:52:52+00:00",
+      "updated_at": "2026-11-20T22:01:30+00:00",
+      "note": "Нативная привязка H03 запрещает подтверждение очистки DTC при отсутствии постоянного носителя. В M32R запрос 14 FF 00 поглощается без TX13, следующий ответ 17 FF 00 сохраняет P0710. Пройдены BasicCAN, foreground, ATF, NVM, RAM и отзыв разрешения CAN. Полная линковка имеет те же отсутствующие привязки, что чистая main. Остались два подтверждённых стираемых блока и право записи H03-04, физический драйвер, загрузочное восстановление и фиксация очистки вне блокировки CAN. Отчёт verification/project-audit/dtc04-native-clear-admission.md.",
+      "result": "dc2afd95a829473823c05f10eabd66142177a0dc",
+      "based_on_reviews": [],
+      "task": "DTC-04",
+      "submitted_at": "2026-11-20T22:01:30+00:00"
     }
   }
 }
