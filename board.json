@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 498,
+  "sequence": 499,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -249,21 +249,21 @@
     },
     "TOY-05": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex — исходный снимок адаптаций S01",
-      "branch": "codex/toy05-startup-baseline-32e6ac79",
+      "label": "Codex TOY-05 — восстановление адаптаций на запуске H03",
+      "branch": "codex/toy05-h03-boot-restore-32e6ac79",
       "files": [
-        "controller/include/rbm_u340e_runtime.h",
-        "controller/src/rbm_u340e_runtime.c",
-        "controller/tests/test_controller.c",
-        "targets/lfj8/check_toyota_adaptation_baseline.py",
-        "verification/project-audit/toy05-s01-baseline.md"
+        "targets/lfj8/check_h03_phase_boot.py",
+        "targets/lfj8/h03_phase_boot_fixture.c",
+        "targets/lfj8/lfj8_h03_application.c",
+        "targets/lfj8/lfj8_h03_application.h",
+        "verification/project-audit/toy05-h03-boot-restore.md"
       ],
-      "stage": "done",
-      "claim_id": "94acefd328f147ea988bf6d03a41c5f7",
-      "claimed_at": "2026-11-20T18:25:22+00:00",
-      "updated_at": "2026-11-20T19:27:57+00:00",
-      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
-      "result": "a806502d631248ae4a1c49396f05034c18d600dd"
+      "stage": "in_progress",
+      "claim_id": "5fcdd962167d41129b445b4ea70a2c80",
+      "claimed_at": "2026-11-20T19:37:42+00:00",
+      "updated_at": "2026-11-20T19:37:42+00:00",
+      "note": "Подключаю подтверждённую базу S01 и чтение двух устойчивых снимков к штатному запуску H03 до допуска фаз. Повреждение и отсутствие NVM проверю на целевом пути. Физические блоки и запись остаются за подтверждённым владельцем носителя.",
+      "result": null
     },
     "CAN-04": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -4539,9 +4539,17 @@
       "action": "complete",
       "claim_id": "2ec8aacec9a4492593f09b24555a5f0f",
       "at": "2026-11-20T19:33:26+00:00"
+    },
+    {
+      "operation_id": "8338e41659034e4cbf81e8e47a16e6d9",
+      "task": "TOY-05",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "5fcdd962167d41129b445b4ea70a2c80",
+      "at": "2026-11-20T19:37:42+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:33:26+00:00",
+  "updated_at": "2026-11-20T19:37:42+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
