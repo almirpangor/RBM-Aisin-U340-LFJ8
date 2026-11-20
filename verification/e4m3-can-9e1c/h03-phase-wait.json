@@ -9,31 +9,55 @@
   "native_continuation": "0x008160",
   "cases": [
     {
-      "initial_ready": false,
-      "initial_carry": 0,
-      "callback_calls": 3,
-      "stock_flag_cleared": true
-    },
-    {
-      "initial_ready": false,
-      "initial_carry": 1,
-      "callback_calls": 3,
-      "stock_flag_cleared": true
-    },
-    {
-      "initial_ready": true,
+      "scenario": "ready",
       "initial_carry": 0,
       "callback_calls": 1,
-      "stock_flag_cleared": true
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
     },
     {
-      "initial_ready": true,
+      "scenario": "ready",
       "initial_carry": 1,
       "callback_calls": 1,
-      "stock_flag_cleared": true
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "delayed",
+      "initial_carry": 0,
+      "callback_calls": 3,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "delayed",
+      "initial_carry": 1,
+      "callback_calls": 3,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "stalled",
+      "initial_carry": 0,
+      "callback_calls": 5,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "stalled",
+      "initial_carry": 1,
+      "callback_calls": 5,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
     }
   ],
-  "scope": "Mock callback and RAM flag. Original clear instruction executed.",
+  "scope": "Real C phase clock and takeover check; synthetic clock, OEM flag and inhibit.",
   "hardware_executed": false,
   "flashable_image": null
 }

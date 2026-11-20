@@ -1,4 +1,4 @@
-"""Exercise the H03 foreground wait candidate against the stock flag clear."""
+"""Exercise the H03 wait hook and production phase deadline check in M32R."""
 
 import argparse
 from hashlib import sha256
@@ -12,6 +12,7 @@ from check_h03_link import identify_h03
 
 
 HERE = Path(__file__).resolve().parent
+CONTROLLER = HERE.parent.parent / "controller"
 WAIT = 0x8150
 CLEAR = 0x815C
 CONTINUE = 0x8160
@@ -21,17 +22,16 @@ FIXTURE = r"""
     .global _start
 _start:
     ld24 sp,#0x9ffffc
+    bl.l fixture_init
+    bnez r0,entry_initialized
+    bra.l fail
+entry_initialized:
     ld24 lr,#0x123400
     ld24 r1,#0x654321
     ld24 r2,#0x789abc
     mvtaclo r2
     ldi r2,#0x40+CARRY
     mvtc r2,psw
-#if READY
-    ld24 r4,#0x804ade
-    ldi r0,#1
-    stb r0,@r4
-#endif
     bra phase_wait_site
 
     .section .wait,"ax"
@@ -47,20 +47,10 @@ h03_stock_phase_clear:
     .text
     .global rbm_h03_phase_wait_callback
 rbm_h03_phase_wait_callback:
-    ld24 r0,#0x804ade
-    ldub r1,@r0
-    ld24 r2,#calls
-    ld r3,@r2
-    addi r3,#1
-    st r3,@r2
-#if !READY
-    bnez r1,fail
-    ldi r1,#3
-    bne r3,r1,callback_return
-    ldi r1,#1
-    stb r1,@r0
-#endif
-callback_return:
+    push lr
+    bl fixture_poll
+    pop lr
+    beqz r0,fail
     ldi r0,#0
     mvtaclo r0
     mvtachi r0
@@ -91,10 +81,8 @@ check_return:
     mvfaclo r3
     ld24 r2,#0x789abc
     bne r3,r2,fail
-    ld24 r2,#calls
-    ld r3,@r2
-    ldi r2,#(3-2*READY)
-    bne r3,r2,fail
+    bl fixture_finish
+    beqz r0,fail
     ldi r1,#0
     bra finish
 fail:
@@ -102,19 +90,16 @@ fail:
 finish:
     ldi r0,#1
     trap #0
-
-    .data
-    .p2align 2
-calls:
-    .long 0
 """
 LAYOUT = """ENTRY(_start)
 SECTIONS {
   .entry 0x1000 : { *(.entry) }
   .wait 0x8150 : { *(.wait) }
+  ASSERT(SIZEOF(.wait) == 4, "The replacement branch must fit one word")
   .clear 0x815c : { *(.clear) }
-  .text 0x60000 : { *(.text) }
-  .data 0x100000 : { *(.data) }
+  .text 0x60000 : { *(.text .text.*) *(.rodata .rodata.*) }
+  .data 0x100000 : { *(.data .data.*) }
+  .bss : { *(.bss .bss.*) }
 }
 """
 
@@ -135,20 +120,30 @@ def check(base, compiler):
         (work / "clear.dat").write_bytes(wait_code[CLEAR - WAIT:])
         simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")
         results = []
-        for ready in (0, 1):
+        sources = [HERE / name for name in (
+            "h03_phase_wait_fixture.c", "lfj8_h03_phase_clock.c", "lfj8_h03_takeover.c",
+        )]
+        for scenario, name, calls in ((0, "ready", 1), (1, "delayed", 3), (2, "stalled", 5)):
             for carry in (0, 1):
                 subprocess.run(
-                    [compiler, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,fixture.ld",
-                     f"-DREADY={ready}", f"-DCARRY={carry}", "fixture.S", "hook.S", "-o", "fixture.elf"],
+                    [compiler, "-m32r", "-Wa,-EB", "-mmodel=medium", "-msdata=none", "-std=c99", "-Os", "-Wall", "-Wextra", "-Werror",
+                     "-ffunction-sections", "-fdata-sections", "-nostdlib", "-Wl,--gc-sections,-T,fixture.ld",
+                     "-I", CONTROLLER / "include", "-I", CONTROLLER / "vendor" / "toyota" / "include",
+                     f"-DSCENARIO={scenario}", f"-DCARRY={carry}",
+                     "fixture.S", "hook.S", *sources, "-lc", "-lgcc", "-o", "fixture.elf"],
                     cwd=work, check=True, capture_output=True, timeout=15,
                 )
-                subprocess.run([simulator, "--memory-size", "16M", "fixture.elf"],
-                               cwd=work, check=True, capture_output=True, timeout=15)
-                results.append({"initial_ready": bool(ready), "initial_carry": carry,
-                                "callback_calls": 1 if ready else 3, "stock_flag_cleared": True})
+                try:
+                    subprocess.run([simulator, "--memory-size", "16M", "fixture.elf"],
+                                   cwd=work, check=True, capture_output=True, timeout=15)
+                except subprocess.CalledProcessError as error:
+                    raise ValueError(f"Wait fixture assertions failed: {name}, carry={carry}") from error
+                results.append({"scenario": name, "initial_carry": carry, "callback_calls": calls,
+                                "stock_flag_cleared": True, "phase_consumed": scenario != 2,
+                                "command_revoked": scenario == 2})
     return {"base": identity, "wait": f"0x{WAIT:06X}", "stock_clear": f"0x{CLEAR:06X}",
             "native_continuation": f"0x{CONTINUE:06X}", "cases": results,
-            "scope": "Mock callback and RAM flag. Original clear instruction executed.",
+            "scope": "Real C phase clock and takeover check; synthetic clock, OEM flag and inhibit.",
             "hardware_executed": False, "flashable_image": None}
 
 
