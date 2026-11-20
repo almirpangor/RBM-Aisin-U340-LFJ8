@@ -208,7 +208,7 @@ def run_probe(run, work, debugger, commands, elf="fixture.elf"):
 
 def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
              compare_dispatch=False, high_probe=False, setup=(), target=False, foreground=False,
-             reset_owner=False, warm_rebind=False):
+             reset_owner=False, warm_rebind=False, target_start=(), target_steps=()):
     pending = sum(slot_mask(slot) for slot in case.slots)
     commands = [
         "set confirm off", "target sim --memory-size 16M", "load",
@@ -226,6 +226,7 @@ def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
             "set {unsigned int}0x8003e0 = 5000",
             f"set {{unsigned char}}{MSC + 14:#x} = 0x40",
             f"set {{unsigned char}}{MSC + 15:#x} = 0x40",
+            *target_start,
             "tbreak *fixture_target_ready", "continue",
             trace("startup", "fixture_foreground_result.available",
                   "fixture_target.queue.generation", "fixture_target.queue.count"),
@@ -369,6 +370,7 @@ def simulate(run, work, debugger, case, *, compare_hook=False, patches=None,
                   "fixture_target.queue.count", "fixture_foreground_result.diagnostic_consumed",
                   "*(unsigned char*)0x80105d", "broker.diagnostic.link.session.mode_bits"),
         ]
+    commands.extend(target_steps)
     events = []
     elf = "fixture-patched.elf" if linked else "fixture.elf"
     for line in run_probe(run, work, debugger, commands, elf).splitlines():
@@ -822,6 +824,91 @@ def probe_lower_page_selections(run, work, debugger):
     return selections
 
 
+def check_native_t6(run, work, debugger, patches, case):
+    start_us = 0xFFFFFFFE
+    start = (
+        "set fixture_t6_action = 1", "set fixture_t6_initial = 0xffffffff",
+        f"set {{unsigned int}}0x8003e0 = {start_us:#x}",
+    )
+    observation = trace(
+        "t6", "fixture_t6_started", "fixture_t6_clock.active", "fixture_t6_clock.tick",
+        "fixture_t6_clock.remainder", "h03_can_owner.grant",
+        "broker.diagnostic.link.session_steps_left", "broker.diagnostic.link.session.mode_bits",
+    )
+
+    def turn(elapsed, *before):
+        return (
+            f"set {{unsigned int}}0x8003e0 = {(start_us + elapsed) & 0xffffffff:#x}",
+            f"set {{unsigned short}}0x801008 = {0x1400 + elapsed // 2:#x}",
+            *before, "tbreak *fixture_target_done", "continue", observation,
+        )
+
+    def run_clock(startup=start, steps=(), *, with_foreground=True):
+        return simulate(
+            run, work, debugger, case, compare_hook=True, patches=patches, compare_dispatch=True,
+            target=True, foreground=with_foreground, target_start=startup, target_steps=steps,
+        )
+
+    steps = [observation, *turn(2, "set {unsigned char}0x80105d = 0x81"),
+             *turn(3, "set fixture_t6_action = 1")]
+    expected = [
+        ("t6", 1, 1, 0xFFFFFFFF, 0, 1, 9, 0x90),
+        ("t6", 1, 1, 0xFFFFFFFF, 4, 1, 9, 0x90),
+        ("t6", 0, 1, 0, 1, 1, 9, 0x90),
+    ]
+    for event in range(9):
+        tick = 64 + 128 * event
+        elapsed = ((tick + 1) * 5 + 1) // 2
+        steps.extend(turn(elapsed))
+        expected.append(("t6", 0, 1, tick, elapsed * 2 % 5, 1, 8 - event,
+                         0x90 if event < 8 else 0x9F))
+    steps.extend(turn(elapsed + 1000))
+    steps.extend(turn(elapsed + 2001))
+    expected += [
+        ("t6", 0, 1, tick + 400, elapsed * 2 % 5, 1, 0, 0x9F),
+        ("t6", 0, 0, tick + 400, elapsed * 2 % 5, 0, 0, 0x9F),
+    ]
+    actual = [row for row in run_clock(steps=steps) if row[0] == "t6"]
+    if actual != expected:
+        raise ValueError(f"T6 clock did not deliver the expected phase/expiry: {actual}")
+
+    refused = {
+        "zero_denominator": ("set fixture_t6_config.period_us_denominator = 0",),
+        "sub_microsecond_period": ("set fixture_t6_config.period_us_numerator = 1",),
+        "zero_gap": ("set fixture_t6_config.max_sample_gap_us = 0",),
+        "half_range_gap": ("set fixture_t6_config.max_sample_gap_us = 0x80000000",),
+        "scaled_gap_overflow": (
+            "set fixture_t6_config.period_us_denominator = 0x200000",
+            "set fixture_t6_config.period_us_numerator = 0x200000",
+            "set fixture_t6_config.max_sample_gap_us = 0x10000",
+        ),
+        "unqualified_timer": ("set {unsigned char}0x8003eb = 0",),
+    }
+    for name, commands in refused.items():
+        refused_trace = run_clock(start + commands, (observation,), with_foreground=False)
+        if [row for row in refused_trace if row[0] == "t6"] != [("t6", 0, 0, 0, 0, 0, 0, 0x9F)]:
+            raise ValueError(f"Invalid T6 setup admitted CAN: {name}")
+
+    loss = (
+        *turn(2, "set {unsigned char}0x8003eb = 0"),
+        *turn(3, "set {unsigned char}0x8003eb = 1",
+              "set rbm_h03_tml0_1mhz_qualified = 1", "set h03_can_owner.setup_generation = 8",
+              "set {unsigned char}0x80105d = 0"),
+        *turn(4, "set fixture_t6_action = 1"),
+    )
+    actual_loss = [row for row in run_clock(steps=loss) if row[0] == "t6"]
+    if actual_loss != [
+        ("t6", 1, 0, 0xFFFFFFFF, 0, 0, 0, 0x9F),
+        ("t6", 1, 0, 0xFFFFFFFF, 0, 0, 0, 0x9F),
+        ("t6", 1, 1, 0xFFFFFFFF, 0, 1, 0, 0x9F),
+    ]:
+        raise ValueError(f"T6 clock resumed without qualification and a new start: {actual_loss}")
+    return {"synthetic_period_us": [5, 2], "session_release_events": 9,
+            "tml0_and_t6_wrap": True, "live_rephase_refused": True,
+            "excessive_gap_revoked": True, "explicit_restart_after_clock_loss": True,
+            "startup_refusals": list(refused)}
+
+
 def check_target_foreground(run, work, debugger, patches, with_can_owner=False):
     case = next(case for case in cases() if case.name == "rx14_session")
     trace_events = simulate(run, work, debugger, case, compare_hook=True, patches=patches,
@@ -885,6 +972,7 @@ def check_target_foreground(run, work, debugger, patches, with_can_owner=False):
             "new_generation": 8, "old_frames_retained": 0, "default_session_mode": "0x9F",
             "post_reset_tx13_submission": False,
         }
+        result["native_t6_clock"] = check_native_t6(run, work, debugger, patches, case)
     return result
 
 

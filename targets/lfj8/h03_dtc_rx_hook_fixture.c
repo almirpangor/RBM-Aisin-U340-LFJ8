@@ -11,6 +11,11 @@ Lfj8H03CanOwner h03_can_owner;
 volatile uint8_t rbm_h03_tml0_1mhz_qualified;
 uint8_t fixture_native_bound;
 volatile uint8_t fixture_rebind;
+volatile uint8_t fixture_t6_action;
+uint8_t fixture_t6_started;
+uint32_t fixture_t6_initial;
+Lfj8H03DtcT6Config fixture_t6_config;
+Lfj8H03DtcT6Clock fixture_t6_clock;
 #endif
 
 Lfj8H03DtcTarget fixture_target;
@@ -74,6 +79,7 @@ void fixture_rx_init(void)
     h03_can_owner.setup_generation = 7; /* The model supplies the setup notification. */
     fixture_qualify_clock();
     fixture_native_bound = lfj8_h03_dtc_native_bind(&fixture_target, &broker, 4);
+    fixture_t6_config = (Lfj8H03DtcT6Config){5, 2, 1000}; /* Arbitrary model units. */
 #else
     lfj8_h03_dtc_target_unbind();
     if (lfj8_h03_dtc_target_init(&fixture_target, &broker, &lfj8_h03_mmio, &owner_ops,
@@ -92,7 +98,14 @@ void fixture_rx_foreground(void)
         lfj8_h03_dtc_native_unbind();
         fixture_native_bound = lfj8_h03_dtc_native_bind(&fixture_target, &broker, 4);
     }
-    fixture_foreground_result = lfj8_h03_dtc_native_poll(&fixture_target, &input, true);
+    if (fixture_t6_action == 1u) {
+        fixture_t6_started = lfj8_h03_dtc_native_start_t6(
+            &fixture_t6_clock, &fixture_t6_config, fixture_t6_initial);
+        fixture_t6_action = 2u;
+    }
+    fixture_foreground_result = fixture_t6_action
+        ? lfj8_h03_dtc_native_poll_t6(&fixture_target, &input, true, &fixture_t6_clock)
+        : lfj8_h03_dtc_native_poll(&fixture_target, &input, true);
 #else
     fixture_foreground_result = lfj8_h03_dtc_target_poll(&fixture_target, &input, true);
 #endif
