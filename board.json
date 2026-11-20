@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 404,
+  "sequence": 405,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -459,11 +459,11 @@
         "targets/lfj8/test_lfj8_h03_sensor_feed.c",
         "verification/project-audit/vss02-common-sensor.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "da83556f0097488ba39c6ee642e4a002",
       "claimed_at": "2026-11-20T18:01:39+00:00",
-      "updated_at": "2026-11-20T18:05:38+00:00",
-      "note": "Поставщик S51/S83/ATF в одной эпохе TML0. ПК и отдельный M32R PASS: потеря, остановка, первый фронт, wrap, reset, ATF. База H03 18 компонентов, INTEGRATION3 5 PASS. Отчёт verification/project-audit/vss02-common-sensor.md. Вызовы и размещение H03-02 открыты.",
+      "updated_at": "2026-11-20T18:39:34+00:00",
+      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
       "result": "5cfe81106f0401ebbd4cabb2fce1b8d00929aead"
     },
     "TOY-01": {
@@ -3794,9 +3794,17 @@
       "action": "resume",
       "claim_id": "c7748c04f5024bd6a2b2ff2914153463",
       "at": "2026-11-20T18:39:30+00:00"
+    },
+    {
+      "operation_id": "ad8ac9e5b3a2456bacbb64db8981e644",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "da83556f0097488ba39c6ee642e4a002",
+      "at": "2026-11-20T18:39:34+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:39:30+00:00",
+  "updated_at": "2026-11-20T18:39:34+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {
