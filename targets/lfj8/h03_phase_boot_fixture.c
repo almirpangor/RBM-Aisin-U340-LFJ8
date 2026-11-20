@@ -5,10 +5,14 @@
 #include "lfj8_h03_mmio.h"
 #include "lfj8_h03_sensor_target.h"
 
+#include <string.h>
+
 enum {
     STOCK, OWNED, INVALID_PERIOD, UNOWNED, BAD_HEADER, BAD_TRAILER, PARTIAL,
     STOPPED_H03, DUPLICATE, TOYOTA_GAP, RESTART, STOPPED_TOYOTA, BAD_CLOCK,
     NO_PROVIDER, COALESCED, OVERTAKEN, SENSOR_CLOCK_CHANGED, SENSOR_BAD_CONFIG, SENSOR_BAD_STARTUP,
+    ADAPT_NO_STORE, ADAPT_ERASED, ADAPT_SAVED, ADAPT_CORRUPT, ADAPT_TORN, ADAPT_UNREADABLE,
+    ADAPT_RESET, ADAPT_RESTART, ADAPT_ALIAS,
 };
 
 #define MMIO8(address) (*(volatile uint8_t *)(uintptr_t)(address))
@@ -31,7 +35,10 @@ static const FactoryGearState gear = {
     .periods = {65535, 65535, 65535, 65535, 65535, 65535},
 };
 
-Lfj8H03Application rbm_h03_application = {.running = 1u}; /* Retained RAM. */
+_Static_assert(sizeof(Lfj8H03Application) == 8u, "Application RAM map");
+Lfj8H03Application rbm_h03_application = {
+    .running = 1u, .adaptation_status = RBM_U340E_ADAPTATION_LOADED,
+}; /* Retained RAM. */
 Lfj8H03SensorTarget rbm_h03_sensor_state = {.feed = {.epoch = 19u}};
 volatile Lfj8H03Atf rbm_h03_atf_state;
 volatile uint8_t rbm_h03_tml0_1mhz_qualified = 1u;
@@ -47,6 +54,14 @@ static unsigned source_calls, advances;
 static uint32_t last_release;
 static int unexpected, wake_after_inhibit, replay_old;
 static const Lfj8H03SensorSnapshot *last_sensors;
+
+static const FactoryAdaptation saved_adaptation = {
+    .learned_flags = {0x83u, 0x12u}, .up_counts = {1u, 2u}, .down_counts = {3u, 4u},
+    .down = {-40, 40}, .down_seen = 1u,
+};
+static uint8_t adaptation_slots[2][FACTORY_ADAPT_RECORD_BYTES];
+static unsigned adaptation_reads;
+static int peer_unreadable;
 
 void fixture_publish_first_phase(void);
 void fixture_run_wait(void);
@@ -141,6 +156,7 @@ static void inhibit(void *context)
         ++cold_inhibit;
         rbm_h03_phase_release_callback(*timer);
         if (phase.min_period != 0xbau || phase.have_release || rbm_h03_application.running ||
+            rbm_h03_application.adaptation_status != RBM_U340E_ADAPTATION_INVALID ||
             takeover.pending || takeover.ops || rbm_h03_tml0_1mhz_qualified) {
             unexpected = 1;
         }
@@ -152,6 +168,51 @@ static void inhibit(void *context)
         }
         *oem_flag = 1u;
     }
+}
+
+static int prepare_adaptation(void)
+{
+    if (!factory_hydraulics_restore(&startup_gp, &saved_adaptation)) {
+        return 0;
+    }
+    if (initialize_calls != 1u || BOOT_CASE == ADAPT_NO_STORE) {
+        return 1;
+    }
+    memset(adaptation_slots, UINT8_MAX, sizeof adaptation_slots);
+    if (BOOT_CASE == ADAPT_ERASED) {
+        return 1;
+    }
+    const FactoryAdaptation *baseline = rbm_u340e_s01_adaptation_baseline();
+    const FactoryAdaptation *first = BOOT_CASE == ADAPT_RESET ? &saved_adaptation : baseline;
+    const FactoryAdaptation *second = BOOT_CASE == ADAPT_RESET ? baseline : &saved_adaptation;
+    if (!factory_adaptation_encode(adaptation_slots[0], first, UINT32_MAX) ||
+        !factory_adaptation_encode(adaptation_slots[1], second, 0u)) {
+        return 0;
+    }
+    if (BOOT_CASE == ADAPT_CORRUPT) {
+        adaptation_slots[1][48] ^= 1u; /* Payload under the CRC. */
+    }
+    if (BOOT_CASE == ADAPT_TORN) {
+        adaptation_slots[1][FACTORY_ADAPT_RECORD_BYTES - 1u] = UINT8_MAX;
+    }
+    peer_unreadable = BOOT_CASE == ADAPT_UNREADABLE;
+    return 1;
+}
+
+static const uint8_t *read_adaptation(void *context, unsigned slot)
+{
+    (void)context;
+    if (slot != (adaptation_reads & 1u) || !runtime.initialized || takeover.ops ||
+        rbm_h03_application.running || rbm_h03_tml0_1mhz_qualified ||
+        rbm_h03_application.adaptation_status != RBM_U340E_ADAPTATION_INVALID) {
+        unexpected = 1;
+        return NULL;
+    }
+    ++adaptation_reads;
+    if (slot == 0u || BOOT_CASE == ADAPT_ALIAS) {
+        return adaptation_slots[0];
+    }
+    return peer_unreadable ? NULL : adaptation_slots[1];
 }
 
 static int initialize(void *context)
@@ -168,7 +229,7 @@ static int initialize(void *context)
     MMIO8(0x800203) = 9u;
     MMIO8(0x8003EB) = 0x01u;
     MMIO8(0x800FEB) = BOOT_CASE == SENSOR_BAD_STARTUP ? 0x30u : 0x31u;
-    return BOOT_CASE != PARTIAL &&
+    return BOOT_CASE != PARTIAL && (BOOT_CASE < ADAPT_NO_STORE || prepare_adaptation()) &&
         factory_hydraulics_set(&startup_gp, -7184, 2u, gear.u7184) &&
         factory_hydraulics_set(&startup_gp, -7164, 2u, gear.u7164) &&
         factory_hydraulics_set(&startup_gp, -7186, 2u, gear.u7186);
@@ -266,6 +327,7 @@ const Lfj8H03ApplicationBinding rbm_h03_application_binding = {
     .main = &main_result, .input = &input, .startup_gear = &gear, .startup_gp = &startup_gp,
     .toyota_max_period_ticks = 23u,
     .ram_owned = ram_owned, .clock_ready = clock_ready, .initialize = initialize,
+    .read_adaptation = BOOT_CASE > ADAPT_NO_STORE ? read_adaptation : NULL,
     .take_toyota = BOOT_CASE == NO_PROVIDER ? NULL : take_toyota,
     .service_phase = service_phase,
 };
@@ -281,6 +343,7 @@ static void next_phase(void)
 static int still_stale(void)
 {
     return rbm_h03_application.running && phase.min_period == 0xbau &&
+        rbm_h03_application.adaptation_status == RBM_U340E_ADAPTATION_LOADED &&
         takeover.command_at == 0xdeadu && takeover.pending && !takeover.ops &&
         rbm_h03_tml0_1mhz_qualified && rbm_h03_sensor_state.feed.epoch == 19u;
 }
@@ -288,7 +351,49 @@ static int still_stale(void)
 static int rejected(void)
 {
     return !rbm_h03_application.running && !takeover.pending && phase.faulted &&
+        rbm_h03_application.adaptation_status == RBM_U340E_ADAPTATION_INVALID &&
         !main_result.valid && cycle.faulted && !runtime.initialized && !rbm_h03_tml0_1mhz_qualified;
+}
+
+static int adaptation_matches(RbmU340eAdaptationResult result, const FactoryAdaptation *expected)
+{
+    FactoryAdaptation actual;
+    uint32_t temperature;
+    factory_hydraulics_capture(&runtime.gp, &actual);
+    return rbm_h03_application.running && runtime.initialized && !phase.have_release &&
+        !main_result.valid && rbm_h03_application.adaptation_status == result &&
+        memcmp(&actual, expected, sizeof actual) == 0 &&
+        factory_hydraulics_get(&runtime.gp, -7184, 2u, &temperature) &&
+        temperature == gear.u7184;
+}
+
+static int check_adaptation_boot(void)
+{
+    const FactoryAdaptation *baseline = rbm_u340e_s01_adaptation_baseline();
+    const unsigned expected_reads = BOOT_CASE == ADAPT_NO_STORE ? 0u : 2u;
+    RbmU340eAdaptationResult result = RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED;
+    const FactoryAdaptation *expected = baseline;
+    if (BOOT_CASE == ADAPT_ERASED) {
+        result = RBM_U340E_ADAPTATION_BASELINE_UNPUBLISHED;
+    } else if (BOOT_CASE == ADAPT_SAVED || BOOT_CASE == ADAPT_RESET || BOOT_CASE == ADAPT_RESTART) {
+        result = RBM_U340E_ADAPTATION_LOADED;
+        if (BOOT_CASE != ADAPT_RESET) {
+            expected = &saved_adaptation;
+        }
+    }
+    if (adaptation_reads != expected_reads || initialize_calls != 1u ||
+        !adaptation_matches(result, expected)) {
+        return 8;
+    }
+    if (BOOT_CASE == ADAPT_RESTART) {
+        peer_unreadable = 1;
+        rbm_h03_phase_startup_callback();
+        if (initialize_calls != 2u || adaptation_reads != 4u || inhibit_calls != 3u ||
+            !adaptation_matches(RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED, baseline)) {
+            return 9;
+        }
+    }
+    return unexpected || phase_calls || source_calls;
 }
 
 int fixture_complete(void)
@@ -313,10 +418,18 @@ int fixture_complete(void)
             takeover.pending || initialize_calls != expected_init || rbm_h03_tml0_1mhz_qualified ||
             (BOOT_CASE == INVALID_PERIOD && !phase.faulted);
     }
+    if (BOOT_CASE == ADAPT_ALIAS) {
+        return adaptation_reads != 2u || initialize_calls != 1u || rbm_h03_application.running ||
+            rbm_h03_application.adaptation_status != RBM_U340E_ADAPTATION_INVALID ||
+            runtime.initialized || takeover.ops || takeover.pending || rbm_h03_tml0_1mhz_qualified;
+    }
     if (!rbm_h03_application.running || !runtime.initialized || phase.have_release ||
         initialize_calls != 1u || takeover.pending || lfj8_h03_takeover_check_phase(&takeover) !=
         LFJ8_H03_PHASE_WAIT) {
         return 3;
+    }
+    if (BOOT_CASE >= ADAPT_NO_STORE) {
+        return check_adaptation_boot();
     }
     fixture_run_foreground(); /* OEM startup bit has no project event. */
     if (phase_calls || source_calls) {

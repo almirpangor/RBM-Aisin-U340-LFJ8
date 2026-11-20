@@ -45,9 +45,11 @@ STUBS = (0x00B704, 0x0404C4, 0x04054C, 0x04050C, 0x0089EC,
 CASES = ("stock", "owned", "invalid_period", "unowned", "bad_header", "bad_trailer",
          "partial", "stopped_h03", "duplicate", "toyota_gap", "restart", "stopped_toyota",
          "bad_clock", "no_provider", "coalesced", "overtaken", "sensor_clock_changed",
-         "sensor_bad_config", "sensor_bad_startup")
+         "sensor_bad_config", "sensor_bad_startup", "adapt_no_store", "adapt_erased",
+         "adapt_saved", "adapt_corrupt", "adapt_torn", "adapt_unreadable", "adapt_reset",
+         "adapt_restart", "adapt_alias")
 CLOSED_AT_START = {"invalid_period", "unowned", "partial", "bad_clock", "no_provider",
-                   "sensor_bad_startup"}
+                   "sensor_bad_startup", "adapt_alias"}
 CANDIDATE_START, CANDIDATE_END = 0x20000, 0x30000
 FIXTURE = r"""
     .section .entry,"ax"
@@ -504,18 +506,25 @@ def check(base, compiler, controller=None):
             "lfj8_donor_io.c", "lfj8_bridge.c", "lfj8_h03_atf.c", "lfj8_h03_atf_target.c",
             "lfj8_h03_atf_tml0.c",
         )]
+        fixture = HERE / "h03_phase_boot_fixture.c"
+        flags = (*TARGET, "-Os", "-g", "-Wall", "-Wextra", "-Werror", "-std=c99",
+                 "-Wno-missing-braces", "-Wno-missing-field-initializers",
+                 "-ffunction-sections", "-fdata-sections", "-I", CONTROLLER / "include",
+                 "-I", CONTROLLER / "vendor" / "toyota" / "include")
+        # Only boot.S and the fixture depend on the per-case defines.
+        common = [source for source in sources if source != fixture]
+        run(compiler, *flags, "-c", *common, timeout=120)
+        inputs = [source if source == fixture else source.with_suffix(".o").name for source in sources]
         cases = []
         for initial_max in (2, 11):
             stock = None
             for number, name in enumerate(CASES):
-                run(compiler, *TARGET, "-Os", "-g", "-Wall", "-Wextra", "-Werror", "-std=c99",
-                    "-Wno-missing-braces", "-Wno-missing-field-initializers",
-                    "-ffunction-sections", "-fdata-sections", "-nostdlib",
+                run(compiler, *flags, "-nostdlib",
                     "-Wl,--gc-sections,-T,boot.ld,--wrap=rbm_h03_phase_startup_callback",
-                    "-I", CONTROLLER / "include", "-I", CONTROLLER / "vendor" / "toyota" / "include",
-                    f"-DBOOT_CASE={number}", f"-DINITIAL_MAX={initial_max}", "boot.S", *sources,
-                    controller, "-lc", "-lgcc", "-o", "boot.elf")
-                output = run(debugger, "--batch", "-nx", "-x", "boot.gdb", "boot.elf").replace(b"\r", b"")
+                    f"-DBOOT_CASE={number}", f"-DINITIAL_MAX={initial_max}", "boot.S", *inputs,
+                    controller, "-lc", "-lgcc", "-o", "boot.elf", timeout=60)
+                output = run(debugger, "--batch", "-nx", "-x", "boot.gdb", "boot.elf",
+                             timeout=30).replace(b"\r", b"")
                 if name in ("bad_header", "bad_trailer"):
                     recovery = re.search(rb"^RESULT 0 [0-9a-f]+ 0 ([0-9a-f]+) 0$", output, re.M)
                     if not recovery or int(recovery[1], 16) != initial_max:
