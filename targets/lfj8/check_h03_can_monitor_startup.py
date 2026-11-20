@@ -372,6 +372,24 @@ def check(base, compiler):
             "physical_reset_and_filters_verified": False, "flashable_image": None}
 
 
+def inline_parked_setup(rom):
+    """Keep the pinned slices portable without absolute .incbin filenames."""
+    pattern = r'\.incbin "h03-before.dat",(0x[0-9a-f]+),(0x[0-9a-f]+)-(0x[0-9a-f]+)'
+
+    def emit(match):
+        start, end, repeated_start = (int(value, 16) for value in match.groups())
+        if start != repeated_start or not 0 <= start < end <= len(rom):
+            raise ValueError("Invalid parked CAN slice")
+        data = rom[start:end]
+        return "\n".join("    .byte " + ",".join(f"0x{value:02x}" for value in data[i:i + 16])
+                         for i in range(0, len(data), 16))
+
+    assembly, count = re.subn(pattern, emit, PARKED_SETUP)
+    if count != 7 or ".incbin" in assembly:
+        raise ValueError("The pinned parked CAN slice list changed")
+    return assembly
+
+
 def aggregate_placement(args):
     """Retain the exact tree plus the real veneers and generated parked setup."""
     sys.path.insert(0, str(ROOT))
@@ -386,12 +404,10 @@ def aggregate_placement(args):
     original_modules = layout.BINDING_MODULES
     with TemporaryDirectory(prefix="rbm-can-placement-", dir=local) as directory:
         work = Path(directory)
-        image = work / "h03-before.dat"
-        image.write_bytes(rom[:CANDIDATE_START])
         native = work / "can-monitor-parked-setup.S"
         symbols = "\n".join(f".global {name}\n.set {name}, {value}"
                             for name, value in re.findall(r"(\w+)\s*=\s*(0x[0-9a-fA-F]+);", LINK_SYMBOLS))
-        native.write_text(PARKED_SETUP.replace("h03-before.dat", image.as_posix()) + symbols + "\n",
+        native.write_text(inline_parked_setup(rom) + symbols + "\n",
                           encoding="ascii")
         extra_modules = (
             "lfj8_h03_monitor_quiesce.c",

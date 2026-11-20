@@ -19,7 +19,8 @@ from lfj8_h03_layout import (PROFILES,Window,PlacementError,read_elf,alloc_secti
 EXTRA_ROOTS=(
     "rbm_u340e_step",
     "lfj8_button_filter_init","lfj8_range_control_step_with_buttons","lfj8_h03_range_snapshot",
-    "rbm_u340e_runtime_restore_adaptation","lfj8_h03_atf_circuit_after_monitor",
+    "rbm_u340e_runtime_restore_adaptation","rbm_u340e_s01_adaptation_baseline",
+    "lfj8_h03_atf_circuit_after_monitor",
     "chery_dtc_journal_encode","chery_dtc_journal_restore",
     "lfj8_h03_cycle_tick_with_load","lfj8_h03_cycle_tick_with_slu",
     "lfj8_h03_slu_secondary_from_baseline",
@@ -34,7 +35,7 @@ BINDING_MODULES=(
     "lfj8_h03_can_owner.c","lfj8_h03_dtc_target.c","lfj8_h03_input_binding.c",
     "lfj8_h03_input_target.c","lfj8_h03_nvm.c","lfj8_h03_sensor_target.c",
     "lfj8_h03_atf_target.c","lfj8_h03_atf_tml0.c",
-    "lfj8_h03_service_guard.c",
+    "lfj8_h03_service_guard.c", "lfj8_h03_button_capture.c",
 )
 
 

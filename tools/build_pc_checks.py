@@ -179,6 +179,17 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
             "targets/lfj8/test_lfj8_h03_phase_clock.c", "-o", str(phase_clock_check),
         ])
         run("Очередность, пропуск и давность тактов H03", [str(phase_clock_check)])
+        for name, sources in (
+            ("chery_atf_circuit", ["diagnostics/chery_atf_circuit.c", "diagnostics/test_chery_atf_circuit.c",
+                                    "diagnostics/chery_dtc.c"]),
+            ("h03_button_capture", ["targets/lfj8/lfj8_h03_button_capture.c",
+                                    "targets/lfj8/test_lfj8_h03_button_capture.c", "targets/lfj8/lfj8_range_control.c"]),
+        ):
+            executable = controller_dir / (name + suffix)
+            run("Сборка " + name, [*driver, *common_flags, "-pedantic", "-I", "controller/include",
+                "-I", "controller/vendor/toyota/include", *sources, str(library), *runtime_link,
+                "-o", str(executable)])
+            run("Проверка " + name, [str(executable)])
         run("Тесты модели", [*python, "-m", "unittest", "discover", "-s", "tests", "-v"])
         integrated = [*python, "-m", "model.run_integrated", "--cc", resolved]
         if bosch is not None:

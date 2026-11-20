@@ -1,0 +1,27 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "voltage_routine": "0x034D14",
+  "range_routine": "0x03AC28",
+  "range_window_routine": "0x039DAC",
+  "p_or_n_flag": "0x806446",
+  "adc_codes_checked": 1024,
+  "voltage_history_samples": 4,
+  "stock_sequence": [
+    "D",
+    "P",
+    "N",
+    "R",
+    "D"
+  ],
+  "stock_range_calls": 20,
+  "stock_an2_writes_during_replay": 5,
+  "unclassified_calls_per_transition": 3,
+  "simulator_rom_override_calls": 4,
+  "simulator_override_voltage": 3.25,
+  "simulator_override_decoded_as": "N"
+}

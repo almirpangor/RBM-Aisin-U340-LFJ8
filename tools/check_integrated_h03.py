@@ -31,6 +31,11 @@ def native(args):
         ("phase-boot", "check_h03_phase_boot.py", [*common, "--out", str(args.out / "phase-boot.json")]),
         ("phase-wait", "check_h03_phase_wait.py", [*common, "--out", str(args.out / "phase-wait.json")]),
         ("selector", "check_h03_selector_adc.py", common),
+        ("range-pnp", "check_h03_range_pnp.py", common),
+        ("application-isolation", "check_h03_application_isolation.py",
+         [*common, "--out", str(args.out / "application-isolation.json")]),
+        ("can-monitor-startup", "check_h03_can_monitor_startup.py",
+         [*common, "--out", str(args.out / "can-monitor-startup.json")]),
         ("slt-fault", "check_h03_slt_fault.py", common),
         ("vflash-lockout", "check_h03_vflash_lockout.py", [*common, "--out", str(args.out / "vflash-lockout.json")]),
         ("native-hooks", "check_h03_native_hooks.py", [*common, "--controller", str(args.controller)]),
@@ -56,8 +61,13 @@ def native(args):
         for future in as_completed([pool.submit(run, case) for case in cases]):
             rows.append(future.result())
     if next(row for row in rows if row["name"] == "storage")["exit_code"] == 0:
-        rows.append(run(("service", "check_h03_service_isolation.py",
-                         [*common, "--storage-report", str(args.out / "storage.json")])))
+        for name, script in (("service", "check_h03_service_isolation.py"),
+                             ("service-guard", "check_h03_service_guard.py"),
+                             ("can-monitor-revoke", "check_h03_can_monitor_revoke.py")):
+            options = [*common, "--storage-report", str(args.out / "storage.json")]
+            if name != "service":
+                options += ["--out", str(args.out / (name + ".json"))]
+            rows.append(run((name, script, options)))
     rows.sort(key=lambda row: row["name"])
     return {"checks": rows, "passed": all(row["exit_code"] == 0 for row in rows)}
 
@@ -182,6 +192,10 @@ def components(args):
         "mode-policy": ["controller/tests/test_mode_policy.c"],
         "journal": ["diagnostics/test_chery_dtc_journal.c", "diagnostics/chery_dtc.c",
                     "diagnostics/chery_dtc_journal.c"],
+        "atf-circuit": ["diagnostics/test_chery_atf_circuit.c", "diagnostics/chery_atf_circuit.c",
+                        "diagnostics/chery_dtc.c"],
+        "button-capture": ["targets/lfj8/test_lfj8_h03_button_capture.c",
+                           "targets/lfj8/lfj8_h03_button_capture.c", "targets/lfj8/lfj8_range_control.c"],
         "cycle-load": ["targets/lfj8/test_lfj8_h03_cycle_load.c", "targets/lfj8/lfj8_h03_cycle.c",
                        "targets/lfj8/lfj8_h03_torque.c", "targets/lfj8/lfj8_h03_slu.c"],
         "cycle-slu": ["targets/lfj8/test_lfj8_h03_cycle.c", "targets/lfj8/lfj8_h03_cycle.c",

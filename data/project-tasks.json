@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "date": "2026-11-20",
+  "date": "2026-11-21",
   "target": {
     "tcm": "LFJ8-18-9E1C",
     "base": "H03 / LFJ8-T-D.bin",
@@ -9,7 +9,7 @@
     "engine": "GW4G15 / Bosch ME7.9.71 E4M3"
   },
   "release_ready": false,
-  "audit": "verification/project-audit/2026-11-20-service-guard.json",
+  "audit": "verification/project-audit/2026-11-21-integration.json",
   "status_labels": {
     "closed": "Завершено в указанном объёме",
     "model": "Проверено программно",
@@ -18,11 +18,11 @@
     "deferred": "Отложено владельцем"
   },
   "next": [
-    "H03-04",
     "H03-03",
+    "H03-04",
     "TOY-02",
-    "CAN-03",
-    "DTC-02"
+    "CAN-05",
+    "DTC-04"
   ],
   "sections": [
     {
@@ -60,7 +60,7 @@
     {
       "id": 5,
       "title": "Целевой блок 9E1C",
-      "summary": "Штатные пути проверены в модели. Выявлены дефицит Flash и незавершённое владение ресурсами.",
+      "summary": "Привязки объединены; полная компоновка отклонена. Память, запуск и силовые калибровки открыты.",
       "prefixes": [
         "H03"
       ]
@@ -109,7 +109,7 @@
     {
       "id": 11,
       "title": "Диагностика Chery",
-      "summary": "Ограниченный сеанс проверен. Все отказы, хранение и сканер открыты.",
+      "summary": "Мониторы и долговечная очистка проверены на модели. Реальный носитель и общий сеанс открыты.",
       "prefixes": [
         "DTC"
       ]
@@ -265,6 +265,19 @@
         "verification/project-audit/service-guard/native.json",
         "verification/project-audit/service-guard/all-bindings.json"
       ]
+    },
+    "INTEGRATION21": {
+      "title": "28 новых результатов и общая проверка 21.11.2026",
+      "command": "Команды и границы: docs/lfj8-h03-memory-layout.md. Итоговая компоновка ожидаемо FAIL_BINDINGS; готовый BIN не создан.",
+      "reports": [
+        "verification/project-audit/2026-11-21-integration.json",
+        "verification/project-audit/integration-20261121/pc/PC-CHECKS.json",
+        "verification/project-audit/integration-20261121/standard-link.json",
+        "verification/project-audit/integration-20261121/native/summary.json",
+        "verification/project-audit/integration-20261121/components/summary.json",
+        "verification/project-audit/integration-20261121/bindings.json",
+        "verification/project-audit/integration-20261121/extra/summary.json"
+      ]
     }
   },
   "modules": [
@@ -357,8 +370,8 @@
       ],
       "title": "Перенос ядра и единое состояние Toyota",
       "status": "model",
-      "current": "Карта 292 переносов GP сокращена с 1752 до 1168 байт. M32R сохраняет общие getq/putq и границы inc/down_observer: дополнительно сэкономлено 1440 байт. Vendor неизменен, CPU-проверки и стек повторены.",
-      "remaining": "Довести полный рабочий цикл в TOY-04 и H03-03.",
+      "current": "Трёхбайтовые дескрипторы GP объединены; свежая сборка M32R сверила 292 поля и пять снимков. Полный цикл и адресный код прошли программные проверки.",
+      "remaining": "Довести полный рабочий цикл и его производителей в TOY-04/H03-03; сокращение таблиц не подтверждает всю программу автомобиля.",
       "acceptance": "Программный результат относится к проверенным функциям, а не ко всем режимам АКПП.",
       "code": [
         "controller/src/rbm_u340e_runtime.c",
@@ -371,11 +384,13 @@
       "checks": [
         "PC",
         "M32R",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/toyota-integration.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/toy01-gp-descriptor-size.md"
       ],
       "depends": []
     },
@@ -388,8 +403,8 @@
       ],
       "title": "Подтверждённая нагрузка двигателя для Toyota",
       "status": "open",
-      "current": "Квалифицированная нагрузка публикуется перед новым событием цикла; MAIN учитывает старейшую метку. Просрочка, wrap, повтор и потеря события проверены на ПК и M32R. Источники и шкалы Bosch открыты.",
-      "remaining": "Определить источник и шкалы GP−9046/−8288/−8330 и флаги режимов либо полные результаты арбитража. Подключить квалификацию и отказы.",
+      "current": "Исходные производители Bosch и шкалы Toyota сверены. Два архива дают 13 553 быстрых кадра и 10 START, но ни одного парного снимка GP. Поле нагрузки CAN неоднозначно.",
+      "remaining": "Определить источник и шкалы GP−9046/−8288/−8330 и флаги режимов, включая переходные режимы; подключить квалификацию и отказы.",
       "acceptance": "Трасса происхождения каждого операнда, сравнение с S01 и отдельные переходные режимы. Одного TPS и кадров RPM/ОЖ недостаточно.",
       "code": [
         "controller/src/rbm_u340e_runtime.c",
@@ -397,25 +412,30 @@
         "targets/bosch/audit_bosch_signal_transport.py",
         "targets/bosch/audit_toyota_load_inputs.py",
         "controller/include/rbm_u340e_runtime.h",
-        "controller/tests/test_runtime.c"
+        "controller/tests/test_runtime.c",
+        "targets/bosch/audit_toyota_load_producers.py",
+        "targets/bosch/audit_toyota_load_traces.py"
       ],
       "settings": "GP−8270/−8272/−8306/−8298/−8302/−8310, −9044/−9030, −5299.1 и −5250.2. Тестовые слова не являются настройкой выпуска.",
       "checks": [
         "SIGNALS",
         "M32R",
         "INTEGRATION",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/toyota-integration.md",
         "docs/bosch-integration.md",
         "verification/project-audit/toy02-load-feed.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/toy02-bosch-load-producers.md",
+        "verification/project-audit/toy02-load-traces.md"
       ],
       "depends": [],
       "continuation": {
         "order": 10,
-        "action": "Установить источники и шкалы нагрузки Bosch, довести их до квалифицированного GP Toyota и повторить сквозной обмен.",
+        "action": "Определить источник и шкалы GP−9046/−8288/−8330 и флаги режимов, включая переходные режимы; подключить квалификацию и отказы.",
         "chat_label": "Основной чат — нагрузка Bosch"
       }
     },
@@ -427,23 +447,26 @@
       ],
       "title": "Независимые разрешающие сигналы диапазона",
       "status": "open",
-      "current": "Пять независимых входов GP−5722/GP−5250.2 проходят проверку поколения и отдельной давности. 32 сочетания проверены на M32R. Физические производители не подключены.",
-      "remaining": "Установить соответствующие входы H03, условия обновления и недостоверности.",
+      "current": "Штатный признак P/N восстановлен из AN2: 1024 кода и нативные ветви проверены. Отдельный контакт разрешения пуска остаётся кандидатом.",
+      "remaining": "Подтвердить физический источник P/N/разрешения пуска и включить квалифицированные диапазоны в общий цикл.",
       "acceptance": "Для каждого бита известны источник, шкала времени и реакция на отказ. Проверка P/N не проверяет сама себя.",
       "code": [
         "targets/lfj8/lfj8_h03_cycle.h",
-        "controller/src/rbm_u340e_runtime.c"
+        "controller/src/rbm_u340e_runtime.c",
+        "targets/lfj8/check_h03_range_pnp.py"
       ],
       "settings": "Lfj8H03CycleInput.range_5722 и inhibit_5250.",
       "checks": [
         "M32R",
         "INTEGRATION",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-h03-input-paths.md",
         "docs/toyota-integration.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/toy03-h03-pnp-source.md"
       ],
       "depends": []
     },
@@ -455,14 +478,15 @@
       ],
       "title": "Полная последовательность переключений",
       "status": "open",
-      "current": "24 точки D при двух синтетических нагрузках проверены в общем цикле: повышения, понижения, холодный запрет четвёртой, потеря события. R, ручное управление и вся гидравлика открыты.",
-      "remaining": "Связать оставшиеся стадии и входы. Проверить R, 2→3, 3→4, понижения, холодные/горячие режимы, ручные запросы и защитные переходы целым циклом.",
+      "current": "Оптимизация планировщика выходов объединена. Общие сценарии D, 2/L, нагрузки, переключений и потери события прошли на ПК и M32R.",
+      "remaining": "Связать оставшиеся стадии и входы, провести ручные заявки через гидравлику; проверить R, 2→3, 3→4, понижения и защитные переходы целым целевым циклом.",
       "acceptance": "Матрица режимов с ожидаемыми результатами S01 и сквозными трассами. Отдельный тест момента не закрывает всё переключение 2→3.",
       "code": [
         "targets/lfj8/lfj8_h03_cycle.c",
         "controller/src/rbm_u340e_runtime.c",
         "controller/tests/test_runtime.c",
-        "targets/lfj8/test_lfj8_h03_cycle.c"
+        "targets/lfj8/test_lfj8_h03_cycle.c",
+        "targets/lfj8/lfj8_h03_outputs.c"
       ],
       "settings": "Раздельные расписания Toyota FAST/SECONDARY/MAIN и H03, начальное состояние GP.",
       "checks": [
@@ -470,12 +494,14 @@
         "M32R",
         "NATIVE",
         "INTEGRATION2",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-h03-control-cycle.md",
         "verification/project-audit/toy04-upper-gears.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/toy04-output-flash-size.md"
       ],
       "depends": [
         "TOY-02",
@@ -485,7 +511,7 @@
       ],
       "continuation": {
         "order": 5,
-        "action": "Замкнуть оставшиеся стадии полного цикла, R и ручные запросы; затем подключить SLU SECONDARY и назначить одного владельца таймера в TOY-06.",
+        "action": "Связать оставшиеся стадии и входы, провести ручные заявки через гидравлику; проверить R, 2→3, 3→4, понижения и защитные переходы целым целевым циклом.",
         "chat_label": "Чат переключений Toyota",
         "chat_id": "01a1f9b5-5d41-79e0-8cd2-3dadc922f1ce"
       }
@@ -498,26 +524,31 @@
       ],
       "title": "Обучение и сохранение адаптаций",
       "status": "open",
-      "current": "Повреждённые адаптации восстанавливаются из исходного снимка вызывающего кода. M32R: 96 прерываний записи, повреждения битов и wrap поколения прошли. NVM и запуск H03 не подключены.",
-      "remaining": "Подтвердить исходный снимок сброса, назначить NVM, подключить восстановление к запуску H03 и сохранение адаптаций полного цикла. Проверить долговечность сброса.",
+      "current": "34 байта холодной базы адаптаций подтверждены по S01; 288 сравнений и восстановление контроллера прошли. Запись и сброс всё ещё проверяются на модели носителя.",
+      "remaining": "Назначить NVM, подключить холодную базу и восстановление к запуску H03, сохранение адаптаций полного цикла и долговечный сброс.",
       "acceptance": "Проверены пределы коррекции, повторный пуск, повреждённая запись и сброс адаптаций.",
       "code": [
         "controller/vendor/toyota/src/factory_learning.c",
         "controller/vendor/toyota/src/factory_adaptation_store.c",
-        "controller/tests/test_controller.c"
+        "controller/tests/test_controller.c",
+        "controller/include/rbm_u340e_runtime.h",
+        "controller/src/rbm_u340e_runtime.c",
+        "targets/lfj8/check_toyota_adaptation_baseline.py"
       ],
       "settings": "Контракты factory_learning.h и factory_adaptation_store.h. Область NVM ещё не назначена.",
       "checks": [
         "PC",
         "M32R",
         "INTEGRATION2",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/toyota-integration.md",
         "docs/lfj8-h03-flash.md",
         "verification/project-audit/toy05-adaptation-store.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/toy05-s01-baseline.md"
       ],
       "depends": [
         "TOY-04",
@@ -532,29 +563,32 @@
       ],
       "title": "Блокировка гидротрансформатора SLU",
       "status": "open",
-      "current": "SLU включён в SECONDARY, его канонический таймер продвигается FAST. Общий цикл проверен по новым адресам: пять публикаций и семь отказов.",
-      "remaining": "Подключить полный целевой снимок, установить физический канал SLU и измерить удержание/снятие блокировки.",
+      "current": "В SECONDARY добавлены штатный сброс смещения и диагностика GP−4829.2; FAST ведёт канонические счётчики. Повторены сравнения R3 и общий цикл SLU.",
+      "remaining": "Подключить полный целевой снимок и физический канал SLU; установить масштабы и проверить удержание/снятие блокировки.",
       "acceptance": "Трасса от квалифицированных входов до канала H03, проверка скольжения, удержания и снятия по отказу.",
       "code": [
         "targets/lfj8/check_toyota_slu.py",
         "targets/lfj8/lfj8_h03_cycle.c",
         "targets/lfj8/lfj8_h03_outputs.h",
         "targets/lfj8/lfj8_h03_slu.c",
-        "targets/lfj8/lfj8_h03_slu.h"
+        "targets/lfj8/lfj8_h03_slu.h",
+        "targets/lfj8/test_lfj8_h03_cycle.c"
       ],
       "settings": "Целевой адаптер SLU ещё отсутствует. Результат сравнения регистров Toyota не задаёт ток канала H03.",
       "checks": [
         "SLU",
         "INTEGRATION2",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/toyota-integration.md",
         "docs/lfj8-9e1c-minimum-bench.md",
         "verification/project-audit/toy06-slu-command.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/toy06-slu-stage-boundaries.md"
       ],
       "depends": [
         "TOY-02",
@@ -568,14 +602,18 @@
       ],
       "title": "Форматы CAN и квалификация RPM/ОЖ",
       "status": "model",
-      "current": "Повторная проверка RR/EXTID после копирования не допускает принятия исчезнувшего кадра. ПК/M32R и сквозное сравнение с точным Bosch прошли.",
-      "remaining": "Подключить к штатному запуску и измеренному времени в CAN-03. Остальные поля ведутся в CAN-05.",
+      "current": "Приём RPM/ОЖ отзывает данные при изменении поколения CAN и требует повторного подключения. Регрессии прошли; RAM выросла на восемь байт.",
+      "remaining": "В штатном запуске связать engine_rx с setup_generation владельца CAN, общими часами и остальными входами.",
       "acceptance": "Результат ограничен перечисленными полями и сценариями приёма.",
       "code": [
         "targets/lfj8/ta2005_chery_inputs.c",
         "targets/lfj8/ta2005_engine_qualifier.c",
         "targets/lfj8/lfj8_h03_engine_feed.c",
-        "targets/lfj8/lfj8_chery_tx.c"
+        "targets/lfj8/lfj8_chery_tx.c",
+        "targets/lfj8/lfj8_h03_engine_feed.h",
+        "targets/lfj8/lfj8_h03_engine_rx.c",
+        "targets/lfj8/lfj8_h03_engine_rx.h",
+        "targets/lfj8/test_lfj8_h03_engine_feed.c"
       ],
       "settings": "Возраст кадра, поколение CAN, период task2 и разрешение записи истории.",
       "checks": [
@@ -583,13 +621,15 @@
         "M32R",
         "BOSCH",
         "INTEGRATION",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/chery-can-dtc.md",
         "docs/toyota-integration.md",
         "verification/project-audit/can01-rx-epoch.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/can01-engine-rx-generation.md"
       ],
       "depends": []
     },
@@ -600,13 +640,14 @@
       ],
       "title": "Общий диспетчер CAN13",
       "status": "model",
-      "current": "Сохранены отзыв владения/момента и диагностическая очередь; оптимизация диспетчера дала 48 байт, адаптера момента — 132. Проверки объединённой сборки пройдены.",
-      "remaining": "Окончательное аппаратное владение и вызовы ведутся в CAN-03/H03-03.",
+      "current": "Ошибка отправки теперь отзывает владение CAN13 и подтверждение момента в том же опросе; занятой слот допускает повтор. Общие проверки прошли.",
+      "remaining": "Установить обёртки владения и измерить окна TX/RX в окончательной программе.",
       "acceptance": "Программные тесты не заменяют измерение окон приёма 0x5E9.",
       "code": [
         "targets/lfj8/lfj8_h03_can13.c",
         "targets/lfj8/lfj8_h03_torque_can.c",
-        "targets/lfj8/lfj8_h03_dtc_can.c"
+        "targets/lfj8/lfj8_h03_dtc_can.c",
+        "targets/lfj8/test_lfj8_h03_can13.c"
       ],
       "settings": "Lfj8H03Can13, предел опроса, лимиты возраста и повторная инициализация.",
       "checks": [
@@ -614,13 +655,15 @@
         "M32R",
         "INTEGRATION2",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-h03-torque.md",
         "verification/project-audit/can02-loan-timeout.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/can02-torque-submit.md"
       ],
       "depends": []
     },
@@ -632,8 +675,8 @@
       ],
       "title": "Штатный запуск, IRQ и восстановление CAN0",
       "status": "open",
-      "current": "Реализован единый владелец поколения для setup/TX gate, очистка BasicCAN и отзыв CAN13. Его состояние 12 байт включено в общий учёт RAM; целевые проверки прошли.",
-      "remaining": "Привязать владельца и единые часы к окончательному приложению, установить все обёртки и измерить окна TX/RX.",
+      "current": "Штатный холодный вход и восстановление закрывают приём до фильтров и очистки. Проверки исходного H03 и реального запрета выходов прошли. Исправлена компоновка для кириллицы с побайтовым сравнением ассемблера.",
+      "remaining": "Установить все переходы в итоговый образ, связать единственный CAN owner, RAM, очереди и время с приложением; проверить восстановление и окна передачи.",
       "acceptance": "Штатная ветвь не перезаписывает CAN13, старые кадры не принимаются после сброса, сохранена диагностика и отмена.",
       "code": [
         "targets/lfj8/check_h03_can_lifecycle.py",
@@ -641,27 +684,33 @@
         "targets/lfj8/lfj8_h03_can13.c",
         "targets/lfj8/lfj8_donor_io.c",
         "targets/lfj8/lfj8_h03_can_owner.c",
-        "targets/lfj8/lfj8_h03_can_owner.h"
+        "targets/lfj8/lfj8_h03_can_owner.h",
+        "targets/lfj8/check_h03_can_monitor_startup.py",
+        "targets/lfj8/h03_can_monitor_startup_hooks.S",
+        "targets/lfj8/lfj8_h03_can_monitor_startup.c",
+        "targets/lfj8/lfj8_h03_can_monitor_startup.h"
       ],
       "settings": "CAN0SLIMK/SLIST, флаг владельца, поколение, RX11/12 и TX/RX13.",
       "checks": [
         "M32R",
         "INTEGRATION",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-9e1c-base.md",
         "docs/lfj8-h03-torque.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/can03-h03-monitor-startup.md"
       ],
       "depends": [
         "H03-04"
       ],
       "continuation": {
         "order": 2,
-        "action": "Связать готового CAN owner и RX target с общим временем/запуском; установить setup/TX gate, проверить потерю/возврат допуска.",
+        "action": "Установить все переходы в итоговый образ, связать единственный CAN owner, RAM, очереди и время с приложением; проверить восстановление и окна передачи.",
         "chat_label": "Чат CAN",
         "chat_id": "01a1f9ab-19c7-72c0-ac90-6aa98e4aa488"
       }
@@ -674,13 +723,15 @@
       ],
       "title": "Запрос снижения момента по RB",
       "status": "model",
-      "current": "BusOff и чужое завершение TX13 отзывают подтверждение момента. Повторены нормальный диалог и потеря статуса с точным ordinary Bosch OFFLINE_ONLY.",
-      "remaining": "Целевые величины снижения и соответствие штатному Chery остаются ECU-02/CAN-05.",
+      "current": "Статус момента на границе срока больше не возобновляет подтверждение. Шесть границ, конец импульса и общая регрессия прошли; ST10 проверил потерю REFRESH.",
+      "remaining": "Подключить реальные временные метки и подтверждённый профиль снижения момента; измерить его действие в целевой паре.",
       "acceptance": "Протокол 0x5E8/0x5E9 является RB. Его успешный тест не означает полного штатного Chery CAN.",
       "code": [
         "targets/lfj8/lfj8_h03_torque.c",
         "targets/lfj8/verify_h03_torque.py",
-        "targets/bosch/replay_e4m3_torque.py"
+        "targets/bosch/replay_e4m3_torque.py",
+        "targets/lfj8/lfj8_h03_torque.h",
+        "targets/lfj8/test_lfj8_h03_torque.c"
       ],
       "settings": "Lfj8TorqueCalibration.up/down, levels, reduction_q8, duration. 32/256 и 200 мс в тесте — испытательный профиль.",
       "checks": [
@@ -688,12 +739,14 @@
         "M32R",
         "TORQUE",
         "INTEGRATION2",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-h03-torque.md",
         "verification/project-audit/can04-torque-revocation.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/can04-progress-deadline.md"
       ],
       "depends": []
     },
@@ -705,8 +758,8 @@
       ],
       "title": "Полнота штатного обмена Chery",
       "status": "open",
-      "current": "C-приёмник Bosch сбрасывает операнды при смене поколения и отклоняет старые кадры 0x1AE; проверены 65536 пар. C-проверка отделена от машинного Bosch OFFLINE_ONLY.",
-      "remaining": "Подключить штатного производителя времени/поколения Bosch, недостающие поля, рабочий арбитраж момента и окончательный контракт двух BIN.",
+      "current": "В ST10 проверены штатный T4, пустой опрос объекта 13 и завершение IF1; наблюдатель обнаруживает возраст, потери и новое поколение. Машинный производитель ещё не установлен.",
+      "remaining": "Встроить производителя возраста/поколения и отзыв квалификации в BIN Bosch, выделить RAM, связать C-потребителя и подтвердить интервалы под нагрузкой.",
       "acceptance": "Для каждого требуемого поля есть источник, единицы, период, недостоверность и проверенный потребитель. Замена штатного протокола отдельным RB не считается закрытием §3.",
       "code": [
         "targets/lfj8/lfj8_bridge.h",
@@ -714,7 +767,8 @@
         "targets/bosch/chery_torque_rx.c",
         "targets/bosch/tx.py",
         "targets/bosch/test_chery_1ae_roundtrip.c",
-        "tests/test_chery_1ae_roundtrip.py"
+        "tests/test_chery_1ae_roundtrip.py",
+        "targets/bosch/audit_chery_rx_clock.py"
       ],
       "settings": "Lfj8Chery1ae.byte1/byte3_high/byte4 и флаги. Не заполнять неизвестные поля правдоподобными константами.",
       "checks": [
@@ -722,14 +776,16 @@
         "BOSCH",
         "INTEGRATION",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/chery-can-dtc.md",
         "docs/bosch-integration.md",
         "verification/project-audit/can05-1ae-roundtrip.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/can05-st10-rx-clock.md"
       ],
       "depends": [
         "TOY-02"
@@ -742,22 +798,25 @@
       ],
       "title": "Проверочная сборка Bosch E4M3",
       "status": "model",
-      "current": "Сверяются все 51 точная запись целостности E4M3. Ordinary образ восстановлен побайтно; ST10, обмен и историческая трасса повторены. Статус OFFLINE_ONLY.",
-      "remaining": "Окончательный профиль после CAN-05/ECU-02 и выпуск REL-01.",
+      "current": "Сборщик Bosch проверяет перекрытия секций и таблицу целостности. Обычный профиль воспроизведён и прошёл ST10; его статус остаётся OFFLINE_ONLY.",
+      "remaining": "Завершить CAN-05/ECU-02, собрать согласованный целевой профиль и проверить происхождение обоих итоговых образов.",
       "acceptance": "Это образ OFFLINE_ONLY, сохранение всех функций двигателя на машине не подтверждено.",
       "code": [
         "targets/bosch/build.py",
         "targets/bosch/tx.py",
-        "targets/bosch/compact_branches.py"
+        "targets/bosch/compact_branches.py",
+        "tests/test_bosch_build_integrity.py"
       ],
       "settings": "Опции with-model-fields, with-ordinary-model-field и compact. Профиль cruise=false/override=false явно ограничен.",
       "checks": [
         "BOSCH",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/bosch-integration.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/ecu01-bosch-section-layout.md"
       ],
       "depends": []
     },
@@ -769,23 +828,26 @@
       ],
       "title": "Калибровка момента и работа двигателя",
       "status": "measure",
-      "current": "Проверены границы RPM, снятие момента по трём путям и старый токен; повторены 3256 CRC и 26 команд. Измерений новой пары нет.",
-      "remaining": "Проверить фактическое уменьшение момента для профилей переключений, пуск, впрыск, зажигание и потерю связи на новой паре. Сверить S04 с действующим образом.",
+      "current": "Точный Bosch проверен при потере REFRESH, переполнении T4 и приёме на границе срока. Сквозная модель и архивный диалог момента прошли.",
+      "remaining": "Завершить машинный арбитраж с квалифицированными входами и подтвердить действие/снятие момента на новой паре блоков.",
       "acceptance": "Протокол с идентифицированными BIN и измеренным результатом. Исторический стенд STM32 не переносит автоматически приёмку на LFJ8.",
       "code": [
         "targets/lfj8/lfj8_h03_torque.h",
-        "targets/bosch/chery_torque_rx.c"
+        "targets/bosch/chery_torque_rx.c",
+        "targets/bosch/verify_e4m3_torque_rpm.py"
       ],
       "settings": "Шесть профилей up/down в Lfj8TorqueCalibration и применимость E4M3 к конкретному ЭБУ.",
       "checks": [
         "TORQUE",
         "E4AUDIT",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/e4m3-audit.md",
         "docs/lfj8-9e1c-minimum-bench.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/ecu02-rb-lease-timeout.md"
       ],
       "depends": [
         "CAN-05"
@@ -825,8 +887,8 @@
       ],
       "title": "S51, S83 и температура ATF",
       "status": "model",
-      "current": "Реализованы нативные события S51/S83, единый снимок S51/S83/ATF и владелец эпохи. Сравнения исходного/изменённого пути и общего времени прошли.",
-      "remaining": "Установить вызовы и единственные состояния в финальном приложении, подтвердить частоты таймеров и датчики U340E.",
+      "current": "S51/S83/ATF используют единый допуск часов; приложение управляет эпохой. Нативный foreground прошёл 38 сценариев и 80 IRQ/RTE.",
+      "remaining": "Задать подтверждённую частоту обоих таймеров, пороги свежести и масштабы U340E; установить захват в окончательном образе.",
       "acceptance": "Компоненты не подменяют окончательную установку обработчиков в BIN.",
       "code": [
         "targets/lfj8/lfj8_donor_io.c",
@@ -838,20 +900,25 @@
         "targets/lfj8/check_h03_atf_native.py",
         "targets/lfj8/lfj8_h03_sensor_target.c",
         "targets/lfj8/h03_sensor_hooks.S",
-        "targets/lfj8/check_h03_sensor_native.py"
+        "targets/lfj8/check_h03_sensor_native.py",
+        "targets/lfj8/h03_atf_hook_fixture.c",
+        "targets/lfj8/h03_sensor_hook_fixture.c",
+        "targets/lfj8/lfj8_h03_atf_tml0.c"
       ],
       "settings": "Lfj8GearCalibration, частоты таймеров, число фронтов S83, max_age_us/max_skew_us, тарировка ATF.",
       "checks": [
         "M32R",
         "INTEGRATION",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-h03-input-paths.md",
         "docs/lfj8-h03-atf-native.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/h03-02-shared-clock.md"
       ],
       "depends": []
     },
@@ -863,8 +930,8 @@
       ],
       "title": "Единое расписание и запуск приложения H03",
       "status": "open",
-      "current": "Холодный запуск и foreground имеют владельца приложения; проверены 32 сценария и штатные пути. Объединённая линковка теперь выдаёт точные отсутствующие определения платформы.",
-      "remaining": "Определить application_binding, назначить состояния/настройки датчиков, initialize/take_toyota/service_phase и подтверждённые часы; включить все обёртки в итоговую карту.",
+      "current": "Foreground передаёт единый снимок датчиков. Девять символов RAM привязаны к существующим полям в адресной модели. Полный линк остаётся FAIL_BINDINGS.",
+      "remaining": "Реализовать rbm_h03_application_binding: владельца RAM, initialize/take_toyota/service_phase, запуск, расписание и часы. Вместе с H03-02/VSS-02 определить rbm_h03_sensor_config и установить все обёртки.",
       "acceptance": "Полный цикл вызывается автономно, пропуск обнаруживается и без фазы выдачи, тестовые callbacks заменены подтверждёнными целевыми.",
       "code": [
         "targets/lfj8/lfj8_h03_cycle.c",
@@ -876,7 +943,9 @@
         "targets/lfj8/h03_phase_wait_hook.S",
         "targets/lfj8/lfj8_h03_application.c",
         "targets/lfj8/lfj8_h03_application.h",
-        "targets/lfj8/h03_application_hooks.S"
+        "targets/lfj8/h03_application_hooks.S",
+        "targets/lfj8/check_h03_phase_boot.py",
+        "targets/lfj8/h03_phase_boot_fixture.c"
       ],
       "settings": "min_period/max_period/max_age, Lfj8H03TakeoverOps.phase_clock и callbacks. Частоту Toyota нельзя принять равной фазе H03.",
       "checks": [
@@ -886,19 +955,21 @@
         "NATIVE",
         "INTEGRATION",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-h03-control-cycle.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/h03-03-sensor-foreground.md"
       ],
       "depends": [
         "H03-04"
       ],
       "continuation": {
         "order": 1,
-        "action": "Определить семь перечисленных привязок, единственные состояния, initialize/take_toyota/service_phase и исходные часы/снимки; объединить нативные обёртки.",
+        "action": "Реализовать rbm_h03_application_binding: владельца RAM, initialize/take_toyota/service_phase, запуск, расписание и часы. Вместе с H03-02/VSS-02 определить rbm_h03_sensor_config и установить все обёртки.",
         "chat_label": "Чат запуска H03",
         "chat_id": "01a1f99f-5cb5-70e0-afd0-60e6b41a5d51"
       }
@@ -910,8 +981,8 @@
       ],
       "title": "Память, стек и сервисные пути",
       "status": "open",
-      "current": "Собрана адресная модель 118 корней с остатком 916 байт. Учёт RAM — 2684 + 4 байта. Добавлен запрет двух сервисных писателей: 240 нативных сценариев и 20 проверок границ прошли. Обёртки и модельная политика занимают 436 байт, новых постоянных переменных нет. Известный C-состав с guard — 89388 байт; полная платформа ещё не связана.",
-      "remaining": "Назначить окончательные объекты и rbm_h03_service_policy, установить обёртки, реализовать явную отмену удержанного запроса. Проверить прочие писатели, SBI/DMA, Virtual Flash, длительность запрета IRQ и полный стек; повторить окончательную компоновку.",
+      "current": "Инвентарь RAM — 2692 + 4 байта. 240 сценариев писателей, 56 закрытия и 20 границ прошли; закрытие сеанса отменяет удержанное копирование. Известный расширенный состав — 94770 байт, остаток 7586 до недостающей обвязки.",
+      "remaining": "Установить окончательную политику памяти и все обёртки; проверить остальные писатели, SBI/DMA, Virtual Flash, холодный/тёплый старт, время запрета IRQ и полный стек. Два неразрешённых объекта расширенного состава не исчерпывают оставшуюся платформу.",
       "acceptance": "Карта сборки и анализ всех владельцев, подтверждённый запас стека и измерения. Свободное окно в ELF само по себе не разрешает запись.",
       "code": [
         "targets/lfj8/check_h03_link.py",
@@ -930,7 +1001,7 @@
         "targets/lfj8/h03_service_guard_hooks.S",
         "targets/lfj8/check_h03_service_guard.py"
       ],
-      "settings": "Flash: prefix-candidate [0x1F7D0,0x30000), [0x7C118,0x7FFFC), только модель. RAM: [0x806B40,0x806F8C), [0x808E40,0x809054), [0x809054,0x809470); ещё 4 байта native BSS и полный стек вне инвентаря. FF и успешный ELF не подтверждают владение.",
+      "settings": "RAM 2692 + 4 Б: [0x806B40,0x806F8C), [0x808E40,0x80905C), [0x80905C,0x809478). Известный расширенный Flash-состав 94770 Б, номинальный остаток 7586 до окончательной обвязки; владение не подтверждено.",
       "checks": [
         "M32R",
         "NATIVE",
@@ -939,7 +1010,8 @@
         "INTEGRATION2",
         "INTEGRATION3",
         "MEMORY4",
-        "SERVICE_GUARD"
+        "SERVICE_GUARD",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-h03-ram-audit.md",
@@ -947,12 +1019,13 @@
         "docs/lfj8-h03-service-isolation.md",
         "docs/integration-next-tasks.md",
         "docs/lfj8-h03-memory-layout.md",
-        "verification/project-audit/h03-04-service-guard.md"
+        "verification/project-audit/h03-04-service-guard.md",
+        "verification/project-audit/h03-04-service-cancel.md"
       ],
       "depends": [],
       "continuation": {
         "order": 9,
-        "action": "Включить guard и неизменяемую политику по итоговой карте, добавить явную отмену удержанного запроса; доказать резидентность, остальные пути записи, время запрета IRQ и полный стек.",
+        "action": "Установить окончательную политику памяти и все обёртки; проверить остальные писатели, SBI/DMA, Virtual Flash, холодный/тёплый старт, время запрета IRQ и полный стек. Два неразрешённых объекта расширенного состава не исчерпывают оставшуюся платформу.",
         "chat_label": "Основной чат — общая сборка"
       }
     },
@@ -964,33 +1037,37 @@
       ],
       "title": "SLT, силовые выходы и реакция на отказ",
       "status": "measure",
-      "current": "Целевой inhibit отзывает D/E/F и Pressure A, очищает оба банка команд; нативные проверки переходов прошли. Физическая калибровка остаётся открытой.",
-      "remaining": "Подключить inhibit к финальному запуску; подтвердить каналы/полярность, q Toyota→ток→давление→H03 и реакцию при остановке CPU.",
+      "current": "Отзыв CAN проверен вместе с настоящим кодом запрета выходов в модели регистров. Холодный и сервисный входы закрывают дальнейшую выдачу.",
+      "remaining": "Подтвердить силовую карту U340E, полярности, ток–давление SLT, физический канал SLU и реакцию выходов на отказ.",
       "acceptance": "Измеренные таблицы в допустимой области питания/ATF, реакция каждого выхода и гидравлики на отказ, отсутствие старой команды после восстановления.",
       "code": [
         "targets/lfj8/lfj8_h03_outputs.c",
         "targets/lfj8/lfj8_h03_takeover.c",
         "targets/lfj8/check_h03_slt_fault.py",
-        "targets/lfj8/lfj8_h03_output_inhibit.c"
+        "targets/lfj8/lfj8_h03_output_inhibit.c",
+        "targets/lfj8/check_h03_can_monitor_revoke.py",
+        "targets/lfj8/lfj8_h03_can_monitor_revoke.c"
       ],
       "settings": "Lfj8H03OutputBinding, Lfj8H03SltCalibration, рабочая область ATF/питания и Lfj8H03TakeoverOps.inhibit. Тестовые 500 мА не являются калибровкой.",
       "checks": [
         "M32R",
         "NATIVE",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-slt-calibration.md",
         "docs/lfj8-h03-output-adapter.md",
         "docs/lfj8-9e1c-minimum-bench.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/h03-05-can-revoke-bindings.md"
       ],
       "depends": [],
       "continuation": {
         "order": 3,
-        "action": "Подключить готовый inhibit в application_binding; квалифицировать полярность и ток–давление отдельно от трасс регистров.",
+        "action": "Подтвердить силовую карту U340E, полярности, ток–давление SLT, физический канал SLU и реакцию выходов на отказ.",
         "chat_label": "Чат силовых выходов",
         "chat_id": "01a1f9a2-d0ae-78d3-86f1-21b27426fd3f"
       }
@@ -1026,24 +1103,30 @@
       ],
       "title": "Точный расчёт VSS и скорость по CAN",
       "status": "model",
-      "current": "Устранено промежуточное переполнение; 25000 сравнений и профиль 37/8, 3,53 м прошли на ПК/M32R. Bosch принимает кадр скорости. Параметры реального времени и машины учитываются отдельно.",
-      "remaining": "Рабочие параметры машины ведутся в VSS-02, штатная установка в CAN-03/H03-03.",
+      "current": "Устранена передача ложного нуля 0x1AE после первого фронта S51. Повторены арифметика, квалификация остановки и двусторонняя модель Bosch.",
+      "remaining": "Привязать независимое подтверждение остановки и параметры машины, проверить реальную скорость по CAN.",
       "acceptance": "Округление 4,545 не используется как расчётный коэффициент.",
       "code": [
         "targets/lfj8/lfj8_bridge.c",
         "targets/lfj8/lfj8_chery_tx.c",
-        "targets/bosch/build.py"
+        "targets/bosch/build.py",
+        "targets/lfj8/host_check.c",
+        "targets/lfj8/lfj8_chery_tx.h",
+        "targets/lfj8/lfj8_donor_io.c",
+        "targets/lfj8/lfj8_donor_io.h"
       ],
       "settings": "lfj8_vss_raw_1ae(ticks,pulse_count,tick_hz,wheel_um,wheel_num,wheel_den,capture_state).",
       "checks": [
         "PC",
         "M32R",
         "BOSCH",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "targets/lfj8/README.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/vss01-standstill-guard.md"
       ],
       "depends": []
     },
@@ -1054,30 +1137,33 @@
       ],
       "title": "Кинематика и параметры реальной скорости",
       "status": "measure",
-      "current": "Общий снимок S51/S83/ATF и эпоха таймера проверены при потере, остановке, wrap и сбросе. Физические частоты и кинематика ещё не измерены.",
-      "remaining": "Задать подтверждённые тайм-ауты, окружность/передаточное отношение, частоты и независимый критерий остановки; связать с приложением H03-03.",
+      "current": "Исходная ROM подтверждает штатные времена 225/500 мс и выбор тактов TML0/TML1. Добавлена проверка обоих счётчиков по общей внешней опоре; значения U340E не подставлялись.",
+      "remaining": "Определить rbm_h03_sensor_config по частотам, числу фронтов, рабочему диапазону, возрасту ATF и окну чтения; подтвердить механические параметры скорости.",
       "acceptance": "Скорость совпадает с эталоном в согласованном диапазоне, потеря импульсов отличается от остановки.",
       "code": [
         "targets/lfj8/lfj8_bridge.h",
         "targets/lfj8/lfj8_donor_io.h",
         "targets/lfj8/lfj8_gear_observer.h",
-        "targets/lfj8/lfj8_h03_sensor_feed.c"
+        "targets/lfj8/lfj8_h03_sensor_feed.c",
+        "targets/lfj8/check_h03_sensor_config.py"
       ],
       "settings": "wheel_um, wheel_num/wheel_den, частота счётчика, тайм-ауты; 100/22 уже задано.",
       "checks": [
         "M32R",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-9e1c-minimum-bench.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/vss02-h03-sensor-config.md"
       ],
       "depends": [],
       "continuation": {
         "order": 4,
-        "action": "Связать sensor_target/config с H03-03, установить подтверждённые частоты/тайм-ауты и критерий остановки.",
+        "action": "Определить rbm_h03_sensor_config по частотам, числу фронтов, рабочему диапазону, возрасту ATF и окну чтения; подтвердить механические параметры скорости.",
         "chat_label": "Чат датчиков",
         "chat_id": "01a1f9a8-7b61-7763-adaa-0e3e11d1dbf4"
       }
@@ -1113,26 +1199,30 @@
       ],
       "title": "Логика шести положений и кнопок",
       "status": "model",
-      "current": "Восстановление после отказа снимка больше не создаёт ложных фронтов кнопок. Удержание требует отпускания и нового нажатия; восемь сценариев ПК/M32R прошли.",
-      "remaining": "Довести физические входы и применение результата в MODE-02, правила поставки в MODE-03.",
+      "current": "Отказ источника сбрасывает допуск кнопок независимо от пригодности метки. 15 сценариев и восстановление после отпускания проверены на ПК/M32R.",
+      "remaining": "Подключить реальный захват к foreground и провести ручную заявку через весь гидравлический цикл.",
       "acceptance": "Компонентный requested_gear не равен выполненному гидравлическому переключению.",
       "code": [
         "controller/src/rbm_u340e.c",
         "targets/lfj8/lfj8_range_control.c",
         "targets/lfj8/lfj8_selector_adc.c",
-        "controller/tests/test_shift_buttons.c"
+        "controller/tests/test_shift_buttons.c",
+        "targets/lfj8/lfj8_range_control.h",
+        "tests/u340_integration_host.c"
       ],
       "settings": "RbmU340ePolicy, стабильные кнопки до rbm_u340e_step, окна ADC. Расчётные 2=200 Ом, L=91 Ом требуют проверки.",
       "checks": [
         "PC",
         "M32R",
         "INTEGRATION2",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-selector.md",
         "verification/project-audit/mode01-shift-conflict.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/mode01-button-source-loss.md"
       ],
       "depends": []
     },
@@ -1144,8 +1234,8 @@
       ],
       "title": "Подключение селектора, Tiptronic и Overdrive",
       "status": "open",
-      "current": "Целевой callback AN2 и общая заявка используют независимые GP−5722/GP−5250.2; ПК/M32R и пять пар исходного ADC прошли.",
-      "remaining": "Назначить состояния/часы, физические Tiptronic/OD и провести принятую requested_gear через весь гидравлический цикл.",
+      "current": "Декодер P1DATA прошёл 512 сочетаний, штатный H03 — 256 байтов и обе проекции. Карта штатных битов исправлена; ADC для шести диапазонов сохранён.",
+      "remaining": "Подтвердить физическую карту/OD, вызвать захват из H03-03 и проверить селектор и кнопки до фактической выдачи команды.",
       "acceptance": "Реальные нажатия проходят до исполнения запроса в полном цикле, дребезг/обрыв не создают повторных команд.",
       "code": [
         "targets/lfj8/lfj8_selector_adc.c",
@@ -1153,7 +1243,11 @@
         "controller/src/rbm_u340e.c",
         "targets/lfj8/lfj8_h03_cycle.c",
         "targets/lfj8/lfj8_h03_input_binding.c",
-        "targets/lfj8/lfj8_h03_input_target.c"
+        "targets/lfj8/lfj8_h03_input_target.c",
+        "targets/lfj8/check_h03_button_capture.py",
+        "targets/lfj8/lfj8_h03_button_capture.c",
+        "targets/lfj8/lfj8_h03_button_capture.h",
+        "targets/lfj8/test_lfj8_h03_button_capture.c"
       ],
       "settings": "AD0DT2, событие 0x804BC6, P1DATA и вход Overdrive. max_age_us задаётся по фактическому ритму ADC.",
       "checks": [
@@ -1161,21 +1255,23 @@
         "M32R",
         "INTEGRATION",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-selector.md",
         "docs/lfj8-h03-input-paths.md",
         "verification/project-audit/mode02-button-input.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/mode02-h03-button-capture.md"
       ],
       "depends": [
         "H03-03"
       ],
       "continuation": {
         "order": 6,
-        "action": "Связать физические AN2/Tiptronic/OD и независимые разрешения с общей заявкой; продолжить независимые входы TOY-03.",
+        "action": "Подтвердить физическую карту/OD, вызвать захват из H03-03 и проверить селектор и кнопки до фактической выдачи команды.",
         "chat_label": "Чат селектора и кнопок",
         "chat_id": "01a1f9c7-675a-78c3-be98-5bd65e44995c"
       }
@@ -1187,22 +1283,27 @@
       ],
       "title": "Окончательная политика режимов",
       "status": "open",
-      "current": "128 конфигураций и 501760 заявок прошли на ПК и M32R. Политика выпуска и привязка к целевому циклу открыты.",
-      "remaining": "Определить режим после питания, сохранение выбора, разрешённые положения и ограничения +/−/OD для выпуска.",
+      "current": "Общий контроллер и H03 одинаково подавляют конфликтные заявки. Модель политики, компонентные и размещённые сценарии прошли.",
+      "remaining": "Зафиксировать начальный режим, сохранение OD, допустимые ручные диапазоны и ограничения окончательного профиля; связать с реальными входами.",
       "acceptance": "Политика согласована с донорской логикой и подтверждена матрицей режимов. Тестовые defaults не выдаются за решение владельца.",
       "code": [
         "controller/include/rbm_u340e.h",
-        "controller/src/rbm_u340e.c"
+        "controller/src/rbm_u340e.c",
+        "controller/tests/test_mode_policy.c",
+        "targets/lfj8/lfj8_h03_input_binding.c",
+        "targets/lfj8/test_lfj8_h03_input_binding.c"
       ],
       "settings": "initial_mode, initial_overdrive_enabled, manual_selectors, overdrive_limit_modes, allowed_gears.",
       "checks": [
         "PC",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/decisions.md",
         "docs/lfj8-selector.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/mode03-conflict-policy.md"
       ],
       "depends": []
     },
@@ -1267,27 +1368,35 @@
       ],
       "title": "Прикладной сеанс и статусы Chery",
       "status": "model",
-      "current": "Общий снимок H03 снабжает RPM, ОЖ и модель Chery; BusOff и сбой часов приостанавливают обработку. Общий набор прошёл; штатный вызов и сканер открыты.",
-      "remaining": "Native RX, прочие мониторы, сохранение и сканер ведутся отдельно.",
+      "current": "Период сеанса подтверждён по S03; реализованы шаг и отзыв TX13. Сброс таймера сохраняет историю. Общие тесты прошли.",
+      "remaining": "Привязать событие H03 и очистку ожидающего RX, проверить весь сеанс и очистку штатным сканером.",
       "acceptance": "Поддержан конкретный профиль CAN C0. Остальные FC/сервисы и K-Line не объявлены реализованными.",
       "code": [
         "diagnostics/chery_dtc.c",
         "diagnostics/chery_dtc_can.c",
         "diagnostics/chery_dtc_link.c",
         "diagnostics/chery_model_monitor.c",
-        "targets/lfj8/lfj8_h03_engine_feed.c"
+        "targets/lfj8/lfj8_h03_engine_feed.c",
+        "diagnostics/chery_dtc_link.h",
+        "diagnostics/test_chery_dtc_link.c",
+        "diagnostics/verify_c0_session_timer.py",
+        "targets/lfj8/lfj8_h03_dtc_can.c",
+        "targets/lfj8/lfj8_h03_dtc_can.h",
+        "targets/lfj8/test_lfj8_h03_dtc_can.c"
       ],
       "settings": "Пять исторических слотов, таблица 96 индексов S03, возраст FC и таймеры сеанса.",
       "checks": [
         "PC",
         "M32R",
         "INTEGRATION2",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/diagnostics-integration.md",
         "verification/project-audit/dtc01-session-lease.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/dtc01-c0-session-timer.md"
       ],
       "depends": []
     },
@@ -1299,8 +1408,8 @@
       ],
       "title": "Штатный приём BasicCAN для диагностического сеанса",
       "status": "open",
-      "current": "Реализованы целевые RX callbacks и foreground с единым CAN owner. В общей сборке проверен путь RX 0x732 → TX 0x722, перезапись, поколения и парный обход.",
-      "remaining": "Установить нижние обёртки и единственный DTC target/IRQ binding, связать непрерывное время и окончательный CAN foreground; проверить границы записи блока.",
+      "current": "Целевой RX с CAN owner размещён в нижней Flash: 3176 байт. Повторены 18 сравнений, обходы и приём после удаления верхнего кода в симуляторе.",
+      "remaining": "Установить нижние переходы и единственный DTC target/IRQ binding, связать время и foreground; завершить RAM/Virtual Flash и итоговый диапазон записи.",
       "acceptance": "Прогон оригинального пути RX с потерей/перезаписью и ложными кадрами. Учтена граница приложения 0x008000.",
       "code": [
         "targets/lfj8/lfj8_h03_dtc_can.c",
@@ -1311,7 +1420,8 @@
         "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
         "targets/lfj8/check_h03_dtc_basiccan.py",
         "targets/lfj8/lfj8_h03_dtc_target.c",
-        "targets/lfj8/lfj8_h03_dtc_target.h"
+        "targets/lfj8/lfj8_h03_dtc_target.h",
+        "targets/lfj8/h03_dtc_rx_resident.ld"
       ],
       "settings": "RX14/15 0x001500–0x0016F4, копия 0x808526, разбор около 0x001578. Прямой перехват затрагивает область ниже приложения. Очередь: max_age_bits < 32768 и не больше бюджета CAN13, bit_time_us из настройки шины; непрерывное время микросекунд. Конкретное размещение RAM открыто.",
       "checks": [
@@ -1319,19 +1429,21 @@
         "M32R",
         "INTEGRATION",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/diagnostics-integration.md",
         "docs/lfj8-h03-flash.md",
         "verification/project-audit/dtc02-basiccan.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/dtc02-resident-target-rx.md"
       ],
       "depends": [],
       "continuation": {
         "order": 7,
-        "action": "Привязать единственный DTC target и IRQ pointer, время/поколение; включить проверенные нижние обёртки в окончательный образ.",
+        "action": "Установить нижние переходы и единственный DTC target/IRQ binding, связать время и foreground; завершить RAM/Virtual Flash и итоговый диапазон записи.",
         "chat_label": "Чат диагностики",
         "chat_id": "01a1f9ae-4a7e-7e31-951a-f6383e1831ee"
       }
@@ -1343,26 +1455,32 @@
       ],
       "title": "Все диагностические события и соответствия Toyota/Chery",
       "status": "open",
-      "current": "Нативный монитор ATF включён в перемещаемый мост; 20 сценариев и отрицательные проверки M32R прошли. Другие мониторы и соответствия Chery открыты.",
-      "remaining": "Завершить и согласовать соответствия ATF, скоростей, соленоидов, давления, SLU и двигателя. Реализовать условия обнаружения/сохранения/сброса.",
+      "current": "Переносимый P0710 повторил 6920 сравнений с S03 и тесты ПК/M32R. Численные пороги донора не назначались калибровками LFJ8.",
+      "remaining": "Подтвердить диапазоны датчика/опоры и период вызова, включить монитор и остальные отказы в H03, проверить статусы сканером.",
       "acceptance": "Код соответствует фактическому отказу и узлу, статусы подтверждены. Отсутствующий прямой аналог явно обозначен.",
       "code": [
         "diagnostics/chery_dtc.c",
         "targets/lfj8/lfj8_h03_engine_feed.c",
         "docs/ta2005-diagnostic-code-table.csv",
-        "tests/test_chery_dtc_table.py"
+        "tests/test_chery_dtc_table.py",
+        "diagnostics/chery_atf_circuit.c",
+        "diagnostics/chery_atf_circuit.h",
+        "diagnostics/test_chery_atf_circuit.c",
+        "diagnostics/verify_atf_circuit.py"
       ],
       "settings": "Индекс DTC, маски current/history, разрешение записи и пороги монитора.",
       "checks": [
         "PC",
         "M32R",
         "INTEGRATION",
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/diagnostics-integration.md",
         "verification/project-audit/dtc03-table.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/dtc03-ta2005-p0710.md"
       ],
       "depends": [
         "H03-05",
@@ -1377,8 +1495,8 @@
       ],
       "title": "Хранение DTC после выключения питания",
       "status": "open",
-      "current": "Восстановлена геометрия 13 блоков H03 и реализован полусловный backend журнала. ПК/M32R: 45 прерываний записи, 33 стирания, 256 битовых отказов и восстановление прошли.",
-      "remaining": "Назначить носитель/блоки, физический драйвер, исключительное владение и политику износа; подключить долговечную очистку и восстановление перед запуском.",
+      "current": "Очистка подтверждает пустую запись и исключение старого слота до положительного ответа. Разрывы записи/стирания и повреждения прошли на модели ПК/M32R.",
+      "remaining": "Выделить независимые стираемые блоки, реализовать физический драйвер и политику износа, подключить восстановление/очистку к штатному запуску.",
       "acceptance": "Перезапуск и прерванная запись не восстанавливают очищенную или повреждённую историю.",
       "code": [
         "diagnostics/chery_dtc.h",
@@ -1387,28 +1505,32 @@
         "diagnostics/chery_dtc_journal.h",
         "diagnostics/test_chery_dtc_journal.c",
         "targets/lfj8/lfj8_h03_nvm.c",
-        "targets/lfj8/check_h03_nvm.py"
+        "targets/lfj8/check_h03_nvm.py",
+        "targets/lfj8/lfj8_h03_nvm.h",
+        "targets/lfj8/test_lfj8_h03_nvm.c"
       ],
       "settings": "Целевая область NVM и политика износа ещё не назначены.",
       "checks": [
         "PC",
         "INTEGRATION",
         "INTEGRATION3",
-        "MEMORY4"
+        "MEMORY4",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/diagnostics-integration.md",
         "docs/lfj8-h03-flash.md",
         "verification/project-audit/dtc04-journal.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/dtc04-retired-history.md"
       ],
       "depends": [
         "H03-04"
       ],
       "continuation": {
         "order": 8,
-        "action": "Назначить носитель и два стираемых блока либо иной обоснованный backend, реализовать физический драйвер и подключить восстановление при старте.",
+        "action": "Выделить независимые стираемые блоки, реализовать физический драйвер и политику износа, подключить восстановление/очистку к штатному запуску.",
         "chat_label": "Чат постоянной памяти",
         "chat_id": "01a1f9b1-c11a-7b23-abcf-3214ce643805"
       }
@@ -1423,14 +1545,15 @@
       ],
       "title": "Два целевых BIN и воспроизводимый комплект",
       "status": "open",
-      "current": "Объединены 13 порций, пройдены общие проверки и 240 сценариев нового запрета сервисных записей. Окончательная платформа, политика памяти и аппаратные калибровки открыты. TCM BIN отсутствует, Bosch остаётся OFFLINE_ONLY.",
-      "remaining": "Завершить привязки и защиту памяти, источники/масштабы входов, арбитраж Bosch, NVM и аппаратные калибровки; затем собрать два целевых BIN и манифест.",
+      "current": "Объединены 28 новых результатов; повторены 41 этап ПК/120 тестов, 18 компонентных, 22 нативные и 8 дополнительные группы M32R, 6 прогонов размещённого кода. Расширенный линк отказал: два объекта платформы не определены. TCM BIN отсутствует; Bosch OFFLINE_ONLY.",
+      "remaining": "Завершить целевое приложение, карту/защиту памяти, входы и арбитраж Bosch, NVM и калибровки. Затем собрать два исполняемых BIN, проверить целостность, запуск и комплект.",
       "acceptance": "Оба образа соответствуют выбранным основам и закрытому объёму первого файла, связаны с исходниками и фактическими результатами проверки.",
       "code": [
         "controller/build_target.py",
         "targets/lfj8/check_h03_link.py",
         "targets/bosch/build.py",
-        "tools/package_workset.py"
+        "tools/package_workset.py",
+        "tests/test_package_workset.py"
       ],
       "settings": "Отдельные поля build_verified, model_verified и hardware_verified. Не переименовывать ELF/тестовый BIN в рабочую прошивку.",
       "checks": [
@@ -1442,13 +1565,15 @@
         "INTEGRATION",
         "INTEGRATION3",
         "MEMORY4",
-        "SERVICE_GUARD"
+        "SERVICE_GUARD",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/verification.md",
         "docs/working-set.md",
         "docs/integration-next-tasks.md",
-        "docs/lfj8-h03-memory-layout.md"
+        "docs/lfj8-h03-memory-layout.md",
+        "verification/project-audit/rel01-offline-report-guard.md"
       ],
       "depends": [
         "TOY-04",
@@ -1468,7 +1593,7 @@
       ],
       "continuation": {
         "order": 11,
-        "action": "После закрытия обязательных привязок собрать два целевых BIN, проверить запуск, целостность и отсутствие тестовых функций.",
+        "action": "Завершить целевое приложение, карту/защиту памяти, входы и арбитраж Bosch, NVM и калибровки. Затем собрать два исполняемых BIN, проверить целостность, запуск и комплект.",
         "chat_label": "Основной чат — выпуск"
       }
     },
@@ -1485,20 +1610,25 @@
       ],
       "title": "Приёмка новой связки на оборудовании",
       "status": "measure",
-      "current": "Разбор CANHacker TRC проверяет четыре периодических ID, сроки, контроль и счётчик 0x1AE. Архив и отрицательные случаи проверены; испытаний новой пары не было.",
-      "remaining": "После подготовки соответствующего образа выполнить входы, CAN, момент, переключения, SLT/SLU, отказы, пуск и проверку сканером в режиме Chery.",
+      "current": "41 проба изоляции приложения и остальные программные проверки выполнены. Испытаний новой физической пары нет; завершение программных порций не означает аппаратную приёмку.",
+      "remaining": "После соответствующего образа проверить входы, CAN, момент, переключения, SLT/SLU, отказы, пуск и штатный сканер по минимальному протоколу.",
       "acceptance": "Журналы содержат версии BIN, условия, измерения, допуски и результат. Программные тесты учитываются отдельно.",
       "code": [
         "docs/lfj8-9e1c-minimum-bench.md",
-        "docs/verification.md"
+        "docs/verification.md",
+        "targets/lfj8/check_h03_application_isolation.py",
+        "targets/lfj8/lfj8_h03_monitor_quiesce.c",
+        "targets/lfj8/lfj8_h03_monitor_quiesce.h"
       ],
       "settings": "Приборы, температуры/нагрузки и численные допуски должны иметь источник. Реле и панель исключены из первой приёмки.",
       "checks": [
-        "INTEGRATION3"
+        "INTEGRATION3",
+        "INTEGRATION21"
       ],
       "docs": [
         "docs/lfj8-9e1c-minimum-bench.md",
-        "docs/integration-next-tasks.md"
+        "docs/integration-next-tasks.md",
+        "verification/project-audit/rel02-h03-application-isolation.md"
       ],
       "depends": [
         "REL-01"
