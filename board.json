@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 298,
+  "sequence": 299,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -399,11 +399,11 @@
         "targets/lfj8/test_lfj8_vss_arithmetic.c",
         "verification/project-audit/vss01-exact-arithmetic.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "698c00d00af84972b5562bc8498c8628",
       "claimed_at": "2026-11-20T16:18:46+00:00",
-      "updated_at": "2026-11-20T17:06:35+00:00",
-      "note": "Добавлена проверка профиля мостов 8/37, 3,53 м и кадра 0x1AE. Стек расчёта по листингу 40 против 72 байт. PC 35 шагов/71 тест, M32R 17 компонентов и Bosch 0x179C PASS. Стенд открыт.",
+      "updated_at": "2026-11-20T17:44:55+00:00",
+      "note": "袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md.",
       "result": "01293a5be56c519cb2b01ad54f82637c0be823f6"
     },
     "H03-05": {
@@ -2954,9 +2954,17 @@
       "action": "complete",
       "claim_id": "57db4a43b5754a71a19f9ab77e4c69f4",
       "at": "2026-11-20T17:44:35+00:00"
+    },
+    {
+      "operation_id": "5f5b412f44a2437f897f4bc5fc62805d",
+      "task": "VSS-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "698c00d00af84972b5562bc8498c8628",
+      "at": "2026-11-20T17:44:55+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:44:35+00:00",
+  "updated_at": "2026-11-20T17:44:55+00:00",
   "main_commit": "48e51c80bac085fe67f60e1b399328879916dd28",
   "catalog": [
     {
