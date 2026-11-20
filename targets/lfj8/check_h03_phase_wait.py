@@ -23,6 +23,11 @@ PSW_HELPERS_START = 0x3E50
 PSW_HELPERS_END = 0x3E78
 TOP8_START = 0xACD8
 TOP8_END = 0xB1C0
+RELEASE_SITE = 0x040424
+STOCK_RELEASES = (
+    ("stock_release", 0x040468, 0x0404C4),
+    ("stock_release_helper", 0x00A06C, 0x00A0B0),
+)
 STOCK_WAIT = bytes.fromhex("E4804ADE2094F000B080FFFE60002004")
 FIXTURE = r"""
 
@@ -161,6 +166,47 @@ finish:
 fixture_exit:
     trap #0
 
+#if NATIVE_PUBLISH
+    .section .text.fixture_native_publish,"ax"
+    .p2align 2
+    .global fixture_native_publish
+fixture_native_publish:
+    push lr
+    push r9
+    ld24 r4,#0x804862
+    ldi r0,#0
+    stb r0,@r4
+    ld24 r4,#0x804861
+    ldi r0,#7
+    stb r0,@r4
+    ld24 r4,#0x804864
+    ldi r0,#5
+    stb r0,@r4
+    ld24 r4,#0x800745
+    ldi r0,#0x10
+    stb r0,@r4
+    ld24 r9,#.Lnative_release_return
+    bra.l fixture_native_release_site
+    .p2align 2
+.Lnative_release_return:
+    pop r9
+    pop lr
+    jmp lr
+
+    .section .native_release_site,"ax"
+fixture_native_release_site:
+    bl.l rbm_h03_phase_release_hook
+    jmp r9 || nop
+
+    .section .stock_release,"ax"
+    .global h03_stock_phase_release
+h03_stock_phase_release:
+    .incbin "stock_release.dat"
+
+    .section .stock_release_helper,"ax"
+    .incbin "stock_release_helper.dat"
+#endif
+
     .section .trap_vector,"ax"
     bra.l h03_stock_irq
 
@@ -220,7 +266,10 @@ SECTIONS {
   .wait 0x8150 : { *(.wait) }
   ASSERT(SIZEOF(.wait) == 4, "The replacement branch must fit one word")
   .clear 0x815c : { *(.clear) }
+  .stock_release_helper 0xa06c : { KEEP(*(.stock_release_helper)) }
   .oem_top8 0xacd8 : { KEEP(*(.oem_top8)) }
+  .native_release_site 0x40424 : { KEEP(*(.native_release_site)) }
+  .stock_release 0x40468 : { KEEP(*(.stock_release)) }
   .text 0x60000 : { *(.text .text.*) *(.rodata .rodata.*) }
   .data 0x100000 : { *(.data .data.*) }
   .bss : { *(.bss .bss.*) }
@@ -355,6 +404,8 @@ def check(base, compiler):
     wait_code = rom[WAIT:CONTINUE]
     if wait_code != STOCK_WAIT:
         raise ValueError("Unexpected instructions at the H03 foreground wait")
+    if rom[RELEASE_SITE:RELEASE_SITE + 4] != bytes.fromhex("7E11F000"):
+        raise ValueError("Unexpected instructions at the H03 publication call")
     with TemporaryDirectory(prefix="rbm-h03-wait-") as directory:
         work = Path(directory)
         shutil.copyfile(HERE / "h03_phase_wait_hook.S", work / "hook.S")
@@ -364,6 +415,8 @@ def check(base, compiler):
         (work / "irq.dat").write_bytes(rom[IRQ_START:IRQ_END])
         (work / "psw-helpers.dat").write_bytes(rom[PSW_HELPERS_START:PSW_HELPERS_END])
         (work / "top8.dat").write_bytes(rom[TOP8_START:TOP8_END])
+        for name, start, end in STOCK_RELEASES:
+            (work / f"{name}.dat").write_bytes(rom[start:end])
         (work / "tick-driver.gdb").write_text(TICK_DRIVER, encoding="ascii")
         debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
         compiler_version = subprocess.run(
@@ -374,14 +427,19 @@ def check(base, compiler):
             "h03_phase_wait_fixture.c", "lfj8_h03_phase_clock.c", "lfj8_h03_takeover.c",
             "lfj8_h03_mmio.c",
         )]
-        for scenario, name, calls, samples, nested, top8_status in (
-            (0, "ready", 1, 0, False, None), (1, "delayed_across_wrap", 3, 8, False, None),
-            (2, "stalled", 6, 20, False, None), (3, "flag_before_next_poll", 2, 2, False, None),
-            (2, "stalled_nested_irq", 6, 20, True, None),
-            (2, "stalled_nested_top8_idle", 6, 20, True, 0x08),
-            (2, "stalled_nested_top8_pending", 6, 20, True, 0x18),
+        for scenario, name, calls, samples, nested, top8_status, native in (
+            (0, "ready", 1, 0, False, None, False), (1, "delayed_across_wrap", 3, 8, False, None, False),
+            (2, "stalled", 6, 20, False, None, False), (3, "flag_before_next_poll", 2, 2, False, None, False),
+            (2, "stalled_nested_irq", 6, 20, True, None, False),
+            (2, "stalled_nested_top8_idle", 6, 20, True, 0x08, False),
+            (2, "stalled_nested_top8_pending", 6, 20, True, 0x18, False),
+            (0, "native_ready", 1, 0, False, None, True),
+            (1, "native_delayed_across_wrap", 3, 8, False, None, True),
+            (2, "native_stalled_then_late", 6, 20, False, None, True),
+            (4, "native_coalesced", 1, 0, False, None, True),
         ):
             top8 = top8_status is not None
+            release_hook = [HERE / "h03_phase_release_hook.S"] if native else []
             for carry, marker in enumerate(MARKERS):
                 (work / "stack-marker.bin").write_bytes(
                     marker.to_bytes(4, "big") * (PROBE_BYTES // 4)
@@ -392,8 +450,9 @@ def check(base, compiler):
                      "-ffunction-sections", "-fdata-sections", "-nostdlib", "-Wl,--gc-sections,-T,fixture.ld",
                      "-I", CONTROLLER / "include", "-I", CONTROLLER / "vendor" / "toyota" / "include",
                      f"-DSCENARIO={scenario}", f"-DCARRY={carry}", f"-DOEM_TOP8={int(top8)}",
+                     f"-DNATIVE_PUBLISH={int(native)}",
                      f"-Wl,--defsym,h03_phase_wait_interval_ticks={POLL_INTERVAL}",
-                     "fixture.S", "hook.S", *sources, "-lc", "-lgcc", "-o", "fixture.elf"],
+                     "fixture.S", "hook.S", *sources, *release_hook, "-lc", "-lgcc", "-o", "fixture.elf"],
                     cwd=work, check=True, capture_output=True, timeout=15,
                 )
                 output = subprocess.run(
@@ -420,8 +479,9 @@ def check(base, compiler):
                                 "callback_stack_written_bytes": depths,
                                 "oem_irq_levels_injected": returns,
                                 "oem_top8_status_before": top8_status,
-                                "stock_flag_cleared": True, "phase_consumed": scenario != 2,
-                                "command_revoked": scenario == 2})
+                                "native_release_callbacks": (2 if scenario == 4 else 1) if native else 0,
+                                "stock_flag_cleared": True, "phase_consumed": scenario not in (2, 4),
+                                "command_revoked": scenario in (2, 4)})
     return {"base": identity, "compiler": compiler_version, "wait": f"0x{WAIT:06X}", "stock_clear": f"0x{CLEAR:06X}",
             "native_continuation": f"0x{CONTINUE:06X}", "cases": results,
             "test_poll_interval_ticks": POLL_INTERVAL, "extra_persistent_ram_bytes": 0,
@@ -431,7 +491,7 @@ def check(base, compiler):
                 "marked_below_callback_entry_bytes": PROBE_BYTES, "guard_bytes": GUARD_BYTES,
                 "maximum_written_depth_bytes": max(
                     max(case["callback_stack_written_bytes"]) for case in results
-                    if not case["oem_irq_levels_injected"]
+                    if not case["oem_irq_levels_injected"] and not case["native_release_callbacks"]
                 ),
                 "interrupts_injected": False,
             },
@@ -459,6 +519,15 @@ def check(base, compiler):
                 "pending_timer_state": {"status_before": 0x18, "status_after": 0x28,
                                         "compare": 1249, "next_state": 1},
                 "scope": "Synthetic outer handler; original TOP8/9 idle and pending state-0 paths.",
+            },
+            "native_release_probe": {
+                "hook_call": f"0x{RELEASE_SITE:06X}",
+                "oem_fragments": {
+                    name: {"range": [f"0x{start:06X}", f"0x{end:06X}"],
+                           "sha256": sha256(rom[start:end]).hexdigest()}
+                    for name, start, end in STOCK_RELEASES
+                },
+                "scope": "Native phase publisher and foreground wait with common RAM-backed TML0CT.",
             },
             "platform_io": {"clock_address": "0x8003E0", "clock_read_bits": 32,
                             "checks_interrupt_mask_and_restore": True},

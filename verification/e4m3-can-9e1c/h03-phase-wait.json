@@ -19,6 +19,7 @@
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -33,6 +34,7 @@
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -49,6 +51,7 @@
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -65,6 +68,7 @@
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -84,6 +88,7 @@
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": false,
       "command_revoked": true
@@ -103,6 +108,7 @@
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": false,
       "command_revoked": true
@@ -118,6 +124,7 @@
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -133,6 +140,7 @@
       ],
       "oem_irq_levels_injected": 0,
       "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": true,
       "command_revoked": false
@@ -152,6 +160,7 @@
       ],
       "oem_irq_levels_injected": 2,
       "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": false,
       "command_revoked": true
@@ -171,6 +180,7 @@
       ],
       "oem_irq_levels_injected": 2,
       "oem_top8_status_before": null,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": false,
       "command_revoked": true
@@ -190,6 +200,7 @@
       ],
       "oem_irq_levels_injected": 2,
       "oem_top8_status_before": 8,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": false,
       "command_revoked": true
@@ -209,6 +220,7 @@
       ],
       "oem_irq_levels_injected": 2,
       "oem_top8_status_before": 8,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": false,
       "command_revoked": true
@@ -228,6 +240,7 @@
       ],
       "oem_irq_levels_injected": 2,
       "oem_top8_status_before": 24,
+      "native_release_callbacks": 0,
       "stock_flag_cleared": true,
       "phase_consumed": false,
       "command_revoked": true
@@ -247,6 +260,141 @@
       ],
       "oem_irq_levels_injected": 2,
       "oem_top8_status_before": 24,
+      "native_release_callbacks": 0,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "native_ready",
+      "initial_carry": 0,
+      "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
+      "callback_stack_written_bytes": [
+        116
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 1,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "native_ready",
+      "initial_carry": 1,
+      "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
+      "callback_stack_written_bytes": [
+        116
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 1,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "native_delayed_across_wrap",
+      "initial_carry": 0,
+      "callback_calls": 3,
+      "clock_samples_while_waiting": 8,
+      "callback_stack_written_bytes": [
+        116,
+        116,
+        180
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 1,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "native_delayed_across_wrap",
+      "initial_carry": 1,
+      "callback_calls": 3,
+      "clock_samples_while_waiting": 8,
+      "callback_stack_written_bytes": [
+        116,
+        116,
+        180
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 1,
+      "stock_flag_cleared": true,
+      "phase_consumed": true,
+      "command_revoked": false
+    },
+    {
+      "scenario": "native_stalled_then_late",
+      "initial_carry": 0,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        124,
+        124,
+        124,
+        124,
+        124,
+        188
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 1,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "native_stalled_then_late",
+      "initial_carry": 1,
+      "callback_calls": 6,
+      "clock_samples_while_waiting": 20,
+      "callback_stack_written_bytes": [
+        124,
+        124,
+        124,
+        124,
+        124,
+        188
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 1,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "native_coalesced",
+      "initial_carry": 0,
+      "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
+      "callback_stack_written_bytes": [
+        116
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 2,
+      "stock_flag_cleared": true,
+      "phase_consumed": false,
+      "command_revoked": true
+    },
+    {
+      "scenario": "native_coalesced",
+      "initial_carry": 1,
+      "callback_calls": 1,
+      "clock_samples_while_waiting": 0,
+      "callback_stack_written_bytes": [
+        116
+      ],
+      "oem_irq_levels_injected": 0,
+      "oem_top8_status_before": null,
+      "native_release_callbacks": 2,
       "stock_flag_cleared": true,
       "phase_consumed": false,
       "command_revoked": true
@@ -303,6 +451,26 @@
       "next_state": 1
     },
     "scope": "Synthetic outer handler; original TOP8/9 idle and pending state-0 paths."
+  },
+  "native_release_probe": {
+    "hook_call": "0x040424",
+    "oem_fragments": {
+      "stock_release": {
+        "range": [
+          "0x040468",
+          "0x0404C4"
+        ],
+        "sha256": "797b440ddcb28edacbca68b0be4c8b7a307ceba10ba64c55b07bd35b16edc0d1"
+      },
+      "stock_release_helper": {
+        "range": [
+          "0x00A06C",
+          "0x00A0B0"
+        ],
+        "sha256": "d8938d834b8cbc235038ee6fe9ea3590ead1556a94915efbd48eca9e25f023fc"
+      }
+    },
+    "scope": "Native phase publisher and foreground wait with common RAM-backed TML0CT."
   },
   "platform_io": {
     "clock_address": "0x8003E0",

@@ -7,6 +7,7 @@ enum {
     DELAYED = 1,
     STALLED = 2,
     EARLY_FLAG = 3,
+    COALESCED = 4,
     EARLY_RELEASE_AGE = 7,
     RELEASE_AGE = 8,
     LAST_VALID_AGE = 12,
@@ -60,10 +61,31 @@ static const Lfj8H03TakeoverOps ops = {
 /* Begin with a staged command. Its prepare/apply path has separate tests. */
 static Lfj8H03Takeover state = {.ops = &ops, .pending = 1};
 
+#if NATIVE_PUBLISH
+static unsigned native_releases;
+
+void fixture_native_publish(void);
+
+void rbm_h03_phase_release_callback(uint32_t now)
+{
+    const uint8_t divider = lfj8_h03_mmio.read8(0, 0x804862);
+    const uint8_t count_61 = lfj8_h03_mmio.read8(0, 0x804861);
+    const uint8_t count_64 = lfj8_h03_mmio.read8(0, 0x804864);
+    invalid |= !*oem_flag || divider != 10 || count_61 != 6 || count_64 != 4 ||
+        now != lfj8_h03_tml0ct_m32r(0);
+    ++native_releases;
+    lfj8_h03_phase_clock_release(&phase, now);
+}
+#endif
+
 static void publish(void)
 {
+#if NATIVE_PUBLISH
+    fixture_native_publish();
+#else
     lfj8_h03_phase_clock_release(&phase, lfj8_h03_tml0ct_m32r(0));
     *oem_flag = 1;
+#endif
 }
 
 int fixture_init(void)
@@ -75,6 +97,12 @@ int fixture_init(void)
         *timer_shadow = origin + RELEASE_AGE;
         expected_checks = 1;
         publish();
+    } else if (SCENARIO == COALESCED) {
+        *timer_shadow = origin + RELEASE_AGE;
+        publish();
+        *timer_shadow = origin + RELEASE_AGE + 10u;
+        publish();
+        expected_checks = 1;
     } else if (SCENARIO == STALLED) {
         *timer_shadow = origin + 6u;
         expected_checks = 6;
@@ -117,6 +145,9 @@ int fixture_poll(void)
     if (invalid || !interrupts_enabled() || phase.consumed != 0) {
         return 0;
     }
+    if (SCENARIO == COALESCED) {
+        return result == LFJ8_H03_PHASE_FAULT && phase.faulted && !state.pending && inhibits == 1;
+    }
     if (SCENARIO == STALLED && age > LAST_VALID_AGE) {
         return result == LFJ8_H03_PHASE_FAULT && phase.faulted &&
             !state.pending && inhibits == (age - LAST_VALID_AGE) / POLL_INTERVAL;
@@ -130,6 +161,15 @@ int fixture_finish(void)
     enable_fixture_interrupts();
     if (*oem_flag || invalid || !interrupts_enabled() || checks != expected_checks) {
         return 0;
+    }
+#if NATIVE_PUBLISH
+    if (native_releases != (SCENARIO == COALESCED ? 2u : 1u)) {
+        return 0;
+    }
+#endif
+    if (SCENARIO == COALESCED) {
+        return inhibits == 1 && phase.faulted && phase.latest.sequence == 1 &&
+            phase.consumed == 0 && !state.pending;
     }
     if (SCENARIO == STALLED) {
         return inhibits == 2 && phase.faulted &&
