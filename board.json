@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 735,
+  "sequence": 736,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -296,15 +296,14 @@
       "files": [
         "controller/include/rbm_u340e_runtime.h",
         "controller/src/rbm_u340e_runtime.c",
-        "controller/tests/test_runtime.c",
-        "targets/lfj8/check_toyota_cold_init.py",
+        "controller/tests/test_controller.c",
         "verification/project-audit/toy05-qualified-startup-seed.md"
       ],
       "stage": "in_progress",
       "claim_id": "6ce7588d41534bb3aae313663fe29f1a",
       "claimed_at": "2026-11-20T22:42:18+00:00",
-      "updated_at": "2026-11-20T22:42:18+00:00",
-      "note": "Подключаю существующую S01-проекцию к самостоятельному пути подготовки пары startup_gear/gp с явным cold/warm и проверкой полей. Общая привязка зарезервирована; поставщиков недостающих исходных данных не подменяю.",
+      "updated_at": "2026-11-20T22:43:12+00:00",
+      "note": "Собираю последовательность validated init → квалифицированная cold-проекция → чтение/восстановление адаптаций, с отдельными проверками старта на ПК и M32R.",
       "result": null,
       "based_on_reviews": [
         "ddeb80aa0d00427f9cdc2ac2b6ee7241"
@@ -9489,9 +9488,37 @@
           "77033e38e60445f2addf6c2c8e536996"
         ]
       }
+    },
+    {
+      "operation_id": "685b7b345d6e4fbaabd535585f15d46e",
+      "task": "TOY-05",
+      "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "action": "heartbeat",
+      "claim_id": "6ce7588d41534bb3aae313663fe29f1a",
+      "at": "2026-11-20T22:43:12+00:00",
+      "record": {
+        "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+        "label": "Codex TOY-05 — квалифицированный стартовый снимок",
+        "branch": "codex/toy05-startup-seed-01a1fa79",
+        "files": [
+          "controller/include/rbm_u340e_runtime.h",
+          "controller/src/rbm_u340e_runtime.c",
+          "controller/tests/test_controller.c",
+          "verification/project-audit/toy05-qualified-startup-seed.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "6ce7588d41534bb3aae313663fe29f1a",
+        "claimed_at": "2026-11-20T22:42:18+00:00",
+        "updated_at": "2026-11-20T22:43:12+00:00",
+        "note": "Собираю последовательность validated init → квалифицированная cold-проекция → чтение/восстановление адаптаций, с отдельными проверками старта на ПК и M32R.",
+        "result": null,
+        "based_on_reviews": [
+          "ddeb80aa0d00427f9cdc2ac2b6ee7241"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:43:00+00:00",
+  "updated_at": "2026-11-20T22:43:12+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
