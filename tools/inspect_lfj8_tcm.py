@@ -47,7 +47,7 @@ def inspect(image: bytes, expected: str) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("image", type=Path)
-    parser.add_argument("--expect", default="LFJ8-18-9E1D", help="expected embedded TCM part number")
+    parser.add_argument("--expect", default="LFJ8-18-9E1C", help="expected embedded TCM part number")
     args = parser.parse_args()
     try:
         record = inspect(args.image.read_bytes(), args.expect.strip().upper())

@@ -61,7 +61,8 @@ def verified_9e1c_base(image):
         "software": identity["software"],
         "bytes": identity["bytes"],
         "sha256": identity["sha256"],
-        "physical_9e1d_compatibility_verified": False,
+        "target_id": "LFJ8-18-9E1C",
+        "target_hardware_tested": False,
     }
 
 
