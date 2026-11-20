@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 464,
+  "sequence": 465,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -56,11 +56,11 @@
         "verification/project-audit/2026-11-20-h03-can-monitor-startup.json",
         "verification/project-audit/can03-h03-monitor-startup.md"
       ],
-      "stage": "review",
+      "stage": "released",
       "claim_id": "941f259113e042a39db21686bc935bc8",
       "claimed_at": "2026-11-20T18:34:34+00:00",
-      "updated_at": "2026-11-20T18:45:27+00:00",
-      "note": "12 H03 CPU guard cases plus original early-enable control PASS. Native cold path and both permits install filters and drain before reception; parked recovery avoids the 0x0012B0 opening. New veneers above 0x008000, 161 roots and 93324 known Flash bytes; 11688-byte deficit in old windows and 8 missing bindings in extended plan. No flashable pair.",
+      "updated_at": "2026-11-20T19:15:26+00:00",
+      "note": "Интегратор принял опубликованный 89d0ed8 в общее дерево 2b7be4b. Передаю только исправление верификатора для пути проекта с кириллицей основному чату; исходный результат сохранён.",
       "result": "89d0ed83d5e9c84a2834a95fb1bf01a8e67aae59"
     },
     "TOY-03": {
@@ -4271,9 +4271,17 @@
       "action": "claim",
       "claim_id": "52e7f6ec20834ce89a8c8faa785fe86b",
       "at": "2026-11-20T19:11:44+00:00"
+    },
+    {
+      "operation_id": "fb0f12a65fd34c4db33ed39464455a7e",
+      "task": "CAN-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "release",
+      "claim_id": "941f259113e042a39db21686bc935bc8",
+      "at": "2026-11-20T19:15:26+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:11:44+00:00",
+  "updated_at": "2026-11-20T19:15:26+00:00",
   "main_commit": "5e3ac748843f3a7326ad070b47f6c3b137e32289",
   "catalog": [
     {

@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T19:11:44+00:00**. Изменение № **464**.
+Обновлено UTC: **2026-11-20T19:15:26+00:00**. Изменение № **465**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -20,7 +20,7 @@
 | TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — границы стадий SLU \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-slu-stage-boundaries-fea1b366 | 2026-11-20T18:48:09+00:00 | Передаю на объединение. 05DA44 очищает входное смещение, 05B6DE ведёт GP−4829.2 с каноническими счётчиками FAST. R3 1280+38400, PC 37/113, M32R 18+17+6, 6 сценариев по адресам PASS. ELF +236 Б, запас prefix 680 Б. Отчёт verification/project-audit/toy06-slu-stage-boundaries.md. Полный снимок и физический SLU открыты. / commit 021ca3fe3c7c4ee657cb7ebb59a1a4b855c2b6bd |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Чат CAN — поколение RPM/ОЖ H03 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-engine-rx-generation-1120-c7e4 | 2026-11-20T18:27:55+00:00 | RX11/12 detects native CAN generation changes in its ordinary poll and revokes RPM, ECT and model fields until reattachment. PC 37/102, M32R 18 components +17 native, Bosch PASS_OFFLINE_ONLY. RAM +8 B, code +76 B in bound sizing model. Integration call after init: lfj8_h03_engine_rx_bind_generation(rx, &amp;h03_can_owner.setup_generation). Evidence verification/project-audit/can01-engine-rx-generation.md. Target startup and hardware open. / commit c14dbfda51b20fe58b904f8d220e3d35e63ff5dd |
 | CAN-02 — Общий диспетчер CAN13 | На проверке | Codex CAN-02 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-02-torque-submit-fea1b366 | 2026-11-20T19:00:23+00:00 | Адаптер отзывает владение CAN13 и подтверждение момента в том же опросе при ошибке отправки, SLOT_BUSY допускает повтор. ПК 37 шагов и 113 тестов, M32R 18 компонентов, native 17 и components 6, prefix-candidate PASS. Доказательства verification/project-audit/can02-torque-submit.md. Аппаратные окна и владение требуют проверки. / commit 9ad7feedbace41a44cccab0f2ead94b1d5a7425f |
-| CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex CAN-03 monitor admission \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can03-h03-monitor-startup-01a1f99f | 2026-11-20T18:45:27+00:00 | 12 H03 CPU guard cases plus original early-enable control PASS. Native cold path and both permits install filters and drain before reception; parked recovery avoids the 0x0012B0 opening. New veneers above 0x008000, 161 roots and 93324 known Flash bytes; 11688-byte deficit in old windows and 8 missing bindings in extended plan. No flashable pair. / commit 89d0ed83d5e9c84a2834a95fb1bf01a8e67aae59 |
+| CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Свободна для продолжения | Предыдущий: Codex CAN-03 monitor admission \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can03-h03-monitor-startup-01a1f99f | 2026-11-20T19:15:26+00:00 | Интегратор принял опубликованный 89d0ed8 в общее дерево 2b7be4b. Передаю только исправление верификатора для пути проекта с кириллицей основному чату; исходный результат сохранён. / commit 89d0ed83d5e9c84a2834a95fb1bf01a8e67aae59 |
 | CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 — срок подтверждения момента \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-progress-deadline-fea1b366 | 2026-11-20T18:40:13+00:00 | Передаю на объединение. Статус в срок захвата ≥60 мс и на конце импульса не подтверждает момент. 6 границ + срок импульса, ПК 37 шагов/113 тестов, M32R 18 компонентов и 17 штатных групп. Два ST10 OFFLINE_ONLY: раньше 3 REFRESH, теперь CANCEL в 460 мс, ноль при 510. Prefix ELF +48 Б, запас 868. Отчёт verification/project-audit/can04-progress-deadline.md. Реальные метки и калибровка открыты. / commit 07fc25af65515ddd77b680b37423ddbce80f4d55 |
 | CAN-05 — Полнота штатного обмена Chery | На проверке | Codex CAN-05 — часы Bosch для 0x1AE \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/can05-st10-rx-clock-7bd19ea4 | 2026-11-20T19:03:09+00:00 | ST10/C_CAN: штатный T4 018BFC, пустой опрос 06611E, IF1 066174. 75 проверок T4, 9 приёмов, 5 отказов и 3 восстановления. Bosch OFFLINE_ONLY воспроизведён, ПК 37 шагов, 113 unittest с отдельным прогоном S03, 65536 пар 0x1AE. Остались машинный производитель, RAM, реальные окна и подключение потребителя. Отчёт can05-st10-rx-clock.md. / commit f8fe149c4bc99eb33eca239d85436b0adc29ab1f |
 | ECU-01 — Проверочная сборка Bosch E4M3 | На проверке | Codex ECU-01 — размещение секций Bosch \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/ecu01-bosch-layout-01a1f9a2 | 2026-11-20T19:05:48+00:00 | Сборщик Bosch отклоняет перекрытие секций, выход из непрерывного Flash и запись поверх кода момента или таблицы целостности. Реальная сборка отвергла тестовую коллизию. Все 8 профилей совпали побайтно, 51 запись на каждом, ST10 PASS_OFFLINE_ONLY, ПК 37 шагов и 117 тестов. Отчёт ecu01-bosch-section-layout.md. Окончательный профиль ждёт CAN-05/ECU-02 и выпуска REL-01. / commit 7fa849a631f1ba25e4fb7680008a7c2aca57399a |
@@ -56,7 +56,7 @@
 | Задача | Сейчас | Следующий шаг | Кому удобно продолжить |
 | --- | --- | --- | --- |
 | [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#h03-03) | На проверке | Определить семь перечисленных привязок, единственные состояния, initialize/take_toyota/service_phase и исходные часы/снимки; объединить нативные обёртки. | Чат запуска H03 |
-| [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#can-03) | На проверке | Связать готового CAN owner и RX target с общим временем/запуском; установить setup/TX gate, проверить потерю/возврат допуска. | Чат CAN |
+| [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#can-03) | Свободна для продолжения | Связать готового CAN owner и RX target с общим временем/запуском; установить setup/TX gate, проверить потерю/возврат допуска. | Чат CAN |
 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#h03-05) | На проверке | Подключить готовый inhibit в application_binding; квалифицировать полярность и ток–давление отдельно от трасс регистров. | Чат силовых выходов |
 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#vss-02) | На проверке | Связать sensor_target/config с H03-03, установить подтверждённые частоты/тайм-ауты и критерий остановки. | Чат датчиков |
 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/5e3ac748843f3a7326ad070b47f6c3b137e32289/docs/project-map.md#toy-04) | На проверке | Замкнуть оставшиеся стадии полного цикла, R и ручные запросы; затем подключить SLU SECONDARY и назначить одного владельца таймера в TOY-06. | Чат переключений Toyota |
@@ -89,7 +89,7 @@
 </details>
 
 <details>
-<summary>CAN-03 — Штатный запуск, IRQ и восстановление CAN0: На проверке</summary>
+<summary>CAN-03 — Штатный запуск, IRQ и восстановление CAN0: Свободна для продолжения</summary>
 
 **Сделано.** Реализован единый владелец поколения для setup/TX gate, очистка BasicCAN и отзыв CAN13. Его состояние 12 байт включено в общий учёт RAM; целевые проверки прошли.
 
@@ -99,7 +99,7 @@
 
 **Рекомендуемый чат.** Чат CAN — 01a1f9ab-19c7-72c0-ac90-6aa98e4aa488.
 
-**Сейчас выполняет.** Codex CAN-03 monitor admission — codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Штатная ветвь не перезаписывает CAN13, старые кадры не принимаются после сброса, сохранена диагностика и отмена.
 
@@ -549,17 +549,6 @@
 - targets/lfj8/test_lfj8_h03_can13.c
 - verification/project-audit/can02-torque-submit.md
 
-### CAN-03
-
-Чат: Codex CAN-03 monitor admission. Claim ID: 941f259113e042a39db21686bc935bc8.
-
-- targets/lfj8/check_h03_can_monitor_startup.py
-- targets/lfj8/h03_can_monitor_startup_hooks.S
-- targets/lfj8/lfj8_h03_can_monitor_startup.c
-- targets/lfj8/lfj8_h03_can_monitor_startup.h
-- verification/project-audit/2026-11-20-h03-can-monitor-startup.json
-- verification/project-audit/can03-h03-monitor-startup.md
-
 ### CAN-04
 
 Чат: Codex CAN-04 — срок подтверждения момента. Claim ID: 001fe3e513b645ef9370cb6af6d76bc2.
@@ -811,6 +800,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T19:15:26+00:00 | CAN-03 | release | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T19:11:44+00:00 | ORG-01 | claim | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T19:07:53+00:00 | ECU-02 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T19:07:18+00:00 | MODE-01 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
@@ -840,4 +830,3 @@
 | 2026-11-20T18:57:29+00:00 | CAN-05 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T18:57:11+00:00 | MODE-03 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T18:56:53+00:00 | VSS-02 | claim | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
-| 2026-11-20T18:56:05+00:00 | CAN-02 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
