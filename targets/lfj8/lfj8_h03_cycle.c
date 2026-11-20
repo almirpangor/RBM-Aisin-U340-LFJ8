@@ -81,14 +81,15 @@ static int secondary_slu(FactoryHydraulics *gp, uint32_t event, uint32_t command
         return 0;
     }
 
-    uint32_t gear, speed, nt, temperature, flags_4834, flags_4829, timer;
+    uint32_t gear, speed, nt, temperature, flags_4834, flags_4829, timer, ages;
     if (!factory_hydraulics_get(gp, -4852, 1u, &gear) ||
         !factory_hydraulics_get(gp, -7200, 2u, &speed) ||
         !factory_hydraulics_get(gp, -7204, 2u, &nt) ||
         !factory_hydraulics_get(gp, -7184, 2u, &temperature) ||
         !factory_hydraulics_get(gp, -4834, 1u, &flags_4834) ||
         !factory_hydraulics_get(gp, -4829, 1u, &flags_4829) ||
-        !factory_hydraulics_get(gp, -4735, 1u, &timer)) {
+        !factory_hydraulics_get(gp, -4735, 1u, &timer) ||
+        !factory_hydraulics_get(gp, -4741, 2u, &ages)) {
         return 0;
     }
     Lfj8H03SluBaselineInput baseline = {
@@ -98,7 +99,7 @@ static int secondary_slu(FactoryHydraulics *gp, uint32_t event, uint32_t command
     for (unsigned i = 0; i < sizeof baseline.learning_4616; ++i) {
         baseline.learning_4616[i] = sample->learning_4616[i];
     }
-    const Lfj8H03SluSecondaryInput input = {
+    Lfj8H03SluSecondaryInput input = {
         .override_7082 = sample->override_7082, .temperature_7184 = (uint16_t)temperature,
         .offset_7028 = sample->offset_7028, .offset_7030 = sample->offset_7030,
         .flags_1636 = sample->flags_1636, .mode_4505 = sample->mode_4505,
@@ -107,6 +108,7 @@ static int secondary_slu(FactoryHydraulics *gp, uint32_t event, uint32_t command
         .flags_4829 = (uint8_t)flags_4829, .flags_4825 = sample->flags_4825,
         .flags_4822 = sample->flags_4822, .qualified = true,
     };
+    lfj8_h03_slu_reset_secondary(&input);
     Lfj8H03SluSecondaryState state = {slu->state->previous_mode_1637, (uint8_t)timer};
     if (!lfj8_h03_slu_secondary_from_baseline(&input, &baseline, &slu->state->baseline,
                                               &state, &slu->output->result)) {
@@ -117,9 +119,21 @@ static int secondary_slu(FactoryHydraulics *gp, uint32_t event, uint32_t command
     if (state.timer_4735 != timer && !factory_hydraulics_set(gp, -4735, 1u, state.timer_4735)) {
         return 0;
     }
+    Lfj8H03SluDiagnostics diagnostic = {
+        .flags_4829 = (uint8_t)flags_4829, .low_age_4741 = (uint8_t)ages,
+        .high_age_4740 = (uint8_t)(ages >> 8),
+    };
+    lfj8_h03_slu_update_diagnostics(&diagnostic, slu->output->result.command.selected_7246);
+    const uint32_t updated_ages = diagnostic.low_age_4741 | ((uint32_t)diagnostic.high_age_4740 << 8);
+    if (!factory_hydraulics_set(gp, -4741, 2u, updated_ages) ||
+        !factory_hydraulics_set(gp, -4829, 1u, diagnostic.flags_4829)) {
+        return 0;
+    }
     slu->state->previous_mode_1637 = state.previous_mode_1637;
     slu->output->event = event;
     slu->output->command_at = sample_age > cycle_age ? sample->sampled_at : command_at;
+    slu->output->post_reset_flags_1636 = input.flags_1636;
+    slu->output->post_reset_offset_7028 = input.offset_7028;
     return 1;
 }
 

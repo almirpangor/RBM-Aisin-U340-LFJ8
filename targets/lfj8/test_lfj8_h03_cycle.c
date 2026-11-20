@@ -235,7 +235,7 @@ static void seed_slu(SluFixture *fixture)
     fixture->load.coherent = 1u;
     fixture->sample = (Lfj8H03SluSnapshot){
         .base_7054 = 10000u, .mode_4505 = 1u, .selector_4544 = 0xa5u,
-        .flags_4828 = 0x80u, .flags_1636 = 2u, .offset_7028 = -1000, .offset_7030 = 2000,
+        .flags_4828 = 0x80u, .flags_1636 = 0xa7u, .offset_7028 = -1000, .offset_7030 = 2000,
         .learning_4616 = {128}, .qualified = 1u,
     };
     fixture->now = UINT32_MAX - 4990u;
@@ -262,8 +262,12 @@ static Lfj8H03CycleResult tick_slu(SluFixture *fixture, const Lfj8H03SluSnapshot
 
 static void test_slu_schedule(void)
 {
-    static const uint16_t pressure[] = {2560u, 23040u, 23040u, 9000u, 12800u};
+    static const uint16_t pressure[] = {2560u, 23040u, 23040u, 12000u, 12800u};
     static const uint8_t timer[] = {255u, 0u, 1u, 2u, 3u};
+    static const uint16_t ages_in[] = {0x0b07u, 0x1703u, 0x1704u, 0x0c07u, 0xff02u};
+    static const uint16_t ages_out[] = {0x0b00u, 0x0003u, 0x0004u, 0x0c00u, 0xff00u};
+    static const uint8_t flags_in[] = {0xa1u, 0xa5u, 0xa5u, 0xa1u, 0xadu};
+    static const uint8_t flags_out[] = {0xa1u, 0xa5u, 0xa1u, 0xa5u, 0xadu};
     SluFixture fixture;
     seed_slu(&fixture);
     for (unsigned step = 0; step <= 36u; ++step) {
@@ -271,11 +275,12 @@ static void test_slu_schedule(void)
         const unsigned index = step / 8u;
         prepare_slu(&fixture);
         if (secondary) {
-            /* Donor-domain operands from the stages ahead of 05DC5E. */
+            /* Donor-domain operands from the stages ahead of 05DA44. */
             assert(factory_hydraulics_set(&fixture.runtime.gp, -4852, 1u, 1u));
             assert(factory_hydraulics_set(&fixture.runtime.gp, -7200, 2u, 0u));
             assert(factory_hydraulics_set(&fixture.runtime.gp, -7184, 2u, 2560u));
-            assert(factory_hydraulics_set(&fixture.runtime.gp, -4829, 1u, index == 4u ? 8u : 0u));
+            assert(factory_hydraulics_set(&fixture.runtime.gp, -4829, 1u, flags_in[index]));
+            assert(factory_hydraulics_set(&fixture.runtime.gp, -4741, 2u, ages_in[index]));
             fixture.sample.mode_4505 = index == 0u ? 1u : 2u;
             fixture.sample.override_7082 = 12800u;
             fixture.sample.flags_4822 = index == 4u ? 0x80u : 0u;
@@ -284,6 +289,8 @@ static void test_slu_schedule(void)
             }
         }
         const uint32_t before = read_gp(&fixture.runtime, -4735, 1u);
+        const uint32_t low_age = read_gp(&fixture.runtime, -4741, 1u);
+        const uint32_t high_age = read_gp(&fixture.runtime, -4740, 1u);
         const unsigned phase = read_gp(&fixture.runtime, 1060, 1u);
         const Lfj8H03CycleResult result = tick_slu(&fixture, secondary ? &fixture.sample : NULL);
         assert(result == (secondary && (index & 1u) == 0u ? LFJ8_H03_CYCLE_MAIN : LFJ8_H03_CYCLE_NO_MAIN));
@@ -293,12 +300,23 @@ static void test_slu_schedule(void)
             assert(fixture.output.result.pressure_7136 == pressure[index]);
             assert(fixture.output.result.command.selected_7246 == 25600u - pressure[index]);
             assert(fixture.output.result.command.force == (index == 4u));
+            assert(fixture.output.post_reset_flags_1636 == 0xa5u &&
+                   fixture.output.post_reset_offset_7028 == 0);
+            assert(fixture.sample.flags_1636 == 0xa7u && fixture.sample.offset_7028 == -1000);
             assert(read_gp(&fixture.runtime, -4735, 1u) == timer[index]);
+            assert(read_gp(&fixture.runtime, -4741, 2u) == ages_out[index]);
+            /* MAIN also owns bit zero, independently of the SLU diagnostic bit. */
+            const unsigned mask = result == LFJ8_H03_CYCLE_MAIN ? 0xfeu : 0xffu;
+            assert((read_gp(&fixture.runtime, -4829, 1u) & mask) == (flags_out[index] & mask));
             assert(tick_slu(&fixture, NULL) == LFJ8_H03_CYCLE_NO_MAIN);
             assert(!fixture.output.valid && read_gp(&fixture.runtime, -4735, 1u) == timer[index]);
+            assert(read_gp(&fixture.runtime, -4741, 2u) == ages_out[index]);
         } else {
-            const unsigned increments = (step & 3u) == 2u && (phase & 1u) == 0u && before < 255u;
-            assert(!fixture.output.valid && read_gp(&fixture.runtime, -4735, 1u) == before + increments);
+            const bool advances = (step & 3u) == 2u && (phase & 1u) == 0u;
+            assert(!fixture.output.valid);
+            assert(read_gp(&fixture.runtime, -4735, 1u) == before + (advances && before < 255u));
+            assert(read_gp(&fixture.runtime, -4741, 1u) == low_age + (advances && low_age < 255u));
+            assert(read_gp(&fixture.runtime, -4740, 1u) == high_age + (advances && high_age < 255u));
         }
     }
     prepare_slu(&fixture);
@@ -317,6 +335,8 @@ static void test_slu_refusals(void)
             prepare_slu(&fixture);
             assert(tick_slu(&fixture, NULL) == LFJ8_H03_CYCLE_NO_MAIN);
         }
+        assert(factory_hydraulics_set(&fixture.runtime.gp, -4829, 1u, 0xa5u));
+        assert(factory_hydraulics_set(&fixture.runtime.gp, -4741, 2u, 0x1704u));
         prepare_slu(&fixture);
         switch (which) {
         case 1: fixture.sample.qualified = 0u; break;
@@ -326,11 +346,17 @@ static void test_slu_refusals(void)
         case 5: fixture.input.command_at = fixture.now - 41u; break;
         default: break;
         }
-        fixture.output = (Lfj8H03SluOutput){.valid = 1u, .result.pressure_7136 = 9999u};
+        fixture.output = (Lfj8H03SluOutput){
+            .valid = 1u, .result.pressure_7136 = 9999u,
+            .post_reset_flags_1636 = 0xffu, .post_reset_offset_7028 = 123,
+        };
         assert(tick_slu(&fixture, which ? &fixture.sample : NULL) == LFJ8_H03_CYCLE_FAULT);
         assert(fixture.cycle.faulted && !fixture.result.valid && !fixture.output.valid);
         assert(fixture.output.result.pressure_7136 == 0u && fixture.slu.previous_mode_1637 == 0u);
+        assert(fixture.output.post_reset_flags_1636 == 0u && fixture.output.post_reset_offset_7028 == 0);
         assert(read_gp(&fixture.runtime, -4735, 1u) == 255u);
+        assert(read_gp(&fixture.runtime, -4829, 1u) == 0xa5u);
+        assert(read_gp(&fixture.runtime, -4741, 2u) == 0x1704u);
     }
 }
 
@@ -338,7 +364,7 @@ int main(void)
 {
     test_slu_schedule();
     test_slu_refusals();
-    puts("SLU SECONDARY: 5 publications, canonical FAST timer and 7 refusals PASS");
+    puts("SLU SECONDARY: 5 publications, reset, diagnostic gates, FAST timers and 7 refusals PASS");
     test_range(RBM_U340E_SELECTOR_P, RBM_U340E_SELECTOR_D, 0u, 1u);
     test_range(RBM_U340E_SELECTOR_N, RBM_U340E_SELECTOR_D, 0u, 1u);
     test_range(RBM_U340E_SELECTOR_N, RBM_U340E_SELECTOR_2, 2u, 1u);

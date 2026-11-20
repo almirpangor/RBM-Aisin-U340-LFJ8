@@ -27,6 +27,11 @@ BASELINE_SOURCE = "research/probes/c167_secondary_slu_baseline.c"
 BASELINE_INPUTS = (BASELINE_SOURCE, "research/probes/c167_secondary_slu_baseline.h",
                    "research/probes/c167_fast_oscillation.h")
 BASELINE_DEPENDENCY = "research/probes/ta2005_compact_input_projection.h"
+RESET_PROOF = "research/results/C167_SECONDARY_SLU_RESET_PROBE.json"
+RESET_SOURCE = "research/probes/c167_secondary_slu_reset.c"
+DIAGNOSTIC_PROOF = "research/results/C167_SECONDARY_SLU_DIAGNOSTICS_PROBE.json"
+DIAGNOSTIC_SOURCE = "research/probes/c167_secondary_slu_diagnostics.c"
+DIAGNOSTIC_HEADER = "research/probes/c167_secondary_slu_diagnostics.h"
 ENTRY = 0x055C5E
 GP = 12288
 CTRL, PERIOD, CMP, ENABLE = 0xFFFFF602, 0xFFFFF614, 0xFFFFF616, 0xFFFFF41E
@@ -74,6 +79,56 @@ class BaselineInput(C.Structure):
 
 class BaselineState(C.Structure):
     _fields_ = [("baseline_7026", C.c_uint16), ("adjustment_7032", C.c_int16)]
+
+
+class SluDiagnostics(C.Structure):
+    _fields_ = [("flags_4829", C.c_uint8), ("low_age_4741", C.c_uint8), ("high_age_4740", C.c_uint8)]
+
+
+def compare_stage_boundaries(reference, h03):
+    context = (C.c_uint8 * 11)()
+    reset_reference = reference.probe_secondary_slu_reset
+    reset_reference.argtypes = [type(context)]
+    reset_reference.restype = C.c_int
+    reset = h03.lfj8_h03_slu_reset_secondary
+    reset.argtypes = [C.POINTER(SecondaryInput)]
+    reset.restype = None
+
+    reset_cases = 0
+    for flags, offset in product(range(256), (-32768, -1, 0, 1, 32767)):
+        context[0] = flags
+        context[5:7] = offset.to_bytes(2, "little", signed=True)
+        assert reset_reference(context) == 1
+        actual = SecondaryInput(flags_1636=flags, offset_7028=offset, offset_7030=-2000,
+                                mode_4505=2, override_7082=0xa1b2, qualified=True)
+        expected = SecondaryInput.from_buffer_copy(actual)
+        expected.flags_1636 = context[0]
+        expected.offset_7028 = int.from_bytes(context[5:7], "little", signed=True)
+        reset(C.byref(actual))
+        assert bytes(actual) == bytes(expected), (flags, offset)
+        reset_cases += 1
+
+    core = (C.c_uint8 * 843)()
+    slu = (C.c_uint8 * 20)()
+    diagnose_reference = reference.probe_secondary_slu_diagnostics
+    diagnose_reference.argtypes = [type(core), type(slu)]
+    diagnose_reference.restype = C.c_int
+    diagnose = h03.lfj8_h03_slu_update_diagnostics
+    diagnose.argtypes = [C.POINTER(SluDiagnostics), C.c_uint16]
+    diagnose.restype = None
+
+    diagnostic_cases = 0
+    commands = (0, 2559, 2560, 2561, 25600, 65535)
+    for flags, selected, low, high in product(range(256), commands, (0, 3, 4, 5, 255), (0, 11, 12, 13, 255)):
+        core[241] = flags
+        core[321:323] = low, high
+        slu[4:6] = selected.to_bytes(2, "little")
+        assert diagnose_reference(core, slu) == 1
+        actual = SluDiagnostics(flags, low, high)
+        diagnose(C.byref(actual), selected)
+        assert tuple(bytes(actual)) == (core[241], core[321], core[322]), (flags, selected, low, high)
+        diagnostic_cases += 1
+    return {"05DA44_reset_cases": reset_cases, "05B6DE_diagnostic_cases": diagnostic_cases}
 
 
 def compare_baseline_flow(compare_case, combined):
@@ -453,12 +508,17 @@ def verify(r1, r3, compiler, m32r=None):
     chain_bytes = git_bytes(r3, f"{r3_commit}:{CHAIN_PROOF}")
     pressure_bytes = git_bytes(r3, f"{r3_commit}:{PRESSURE_PROOF}")
     baseline_bytes = git_bytes(r3, f"{r3_commit}:{BASELINE_PROOF}")
+    reset_bytes = git_bytes(r3, f"{r3_commit}:{RESET_PROOF}")
+    diagnostic_bytes = git_bytes(r3, f"{r3_commit}:{DIAGNOSTIC_PROOF}")
     analog, chain, pressure = json.loads(analog_bytes), json.loads(chain_bytes), json.loads(pressure_bytes)
     baseline = json.loads(baseline_bytes)
+    reset, diagnostic = json.loads(reset_bytes), json.loads(diagnostic_bytes)
     assert analog["donor_sha256"] == s01["sha256"] and analog["status"] == "passed"
     assert chain["comparisons"] == 3072 and chain["physical_slu_output_bound"] is False
     assert pressure["entry"] == "05DCE8" and pressure["next_entry"] == "055C5E"
     assert baseline["original_entries"] == ["05DC5E", "05DCE8"] and baseline["next_entry"] == "055C5E"
+    assert reset["original_entry"] == "05DA44" and reset["next_entry"] == "05DC5E"
+    assert diagnostic["original_entry"] == "05B6DE" and diagnostic["next_entry"] == "060A62"
 
     analog_source = "toyota_isolation/output_analog.c"
     core_source = "u340e_logic/factory/src/factory_core.c"
@@ -471,6 +531,9 @@ def verify(r1, r3, compiler, m32r=None):
         sources = dict(analog["input_sha256"])
         sources.update({filename: pressure["input_sha256"][filename] for filename in PRESSURE_INPUTS})
         sources.update({filename: baseline["input_sha256"][filename] for filename in BASELINE_INPUTS})
+        sources[RESET_SOURCE] = reset["input_sha256"][RESET_SOURCE]
+        sources.update({filename: diagnostic["input_sha256"][filename]
+                        for filename in (DIAGNOSTIC_SOURCE, DIAGNOSTIC_HEADER)})
         for filename, expected in sources.items():
             source = git_bytes(r3, f"{r3_commit}:{filename}")
             if sha256(source).hexdigest() != expected:
@@ -494,13 +557,20 @@ def verify(r1, r3, compiler, m32r=None):
             '_Static_assert(sizeof(FactoryTcuState) == 843, "R3 GP state ABI");\n'
             '_Static_assert(sizeof(ToyotaSluPressureState) == 11, "R3 pressure context ABI");\n'
             '_Static_assert(sizeof(ToyotaSecondarySlu) == 20, "R3 SLU state ABI");\n'
+            '_Static_assert(offsetof(ToyotaSecondarySlu, selected_7246) == 4, "R3 selected word ABI");\n'
+            '_Static_assert(offsetof(ToyotaSluPressureState, offset_7028) == 5, "R3 reset word ABI");\n'
             '_Static_assert(sizeof(ToyotaSluBaselineState) == 18, "R3 baseline state ABI");\n'
             '_Static_assert(sizeof(ToyotaFastOscillation) == 39, "R3 oscillator state ABI");\n'
             '_Static_assert(offsetof(ToyotaFastOscillation, flags_4825) == 30, "R3 oscillator flag ABI");\n',
             encoding="ascii",
         )
-        subprocess.run([*shared_flags, "-I", str(staged / headers), str(staged / analog_source),
+        # The C167 oracle's uint16_t expression promotes to signed int on
+        # the host. It is always between 0 and 65535, so the comparison
+        # remains exact. Keep the pinned source and allow that warning here.
+        subprocess.run([*shared_flags, "-Wno-error=sign-compare", "-I", str(staged / headers),
+                        str(staged / analog_source),
                         str(staged / core_source), str(staged / PRESSURE_SOURCE), str(staged / BASELINE_SOURCE),
+                        str(staged / RESET_SOURCE), str(staged / DIAGNOSTIC_SOURCE),
                         str(abi_check),
                         "-o", str(shared)], check=True)
         vendor = ROOT / "controller/vendor/toyota"
@@ -511,6 +581,7 @@ def verify(r1, r3, compiler, m32r=None):
         projection = C.CDLL(str(h03_shared))
         try:
             coverage = compare(library, projection, rom)
+            coverage["stage_boundaries"] = compare_stage_boundaries(library, projection)
         finally:
             if os.name == "nt":
                 from _ctypes import FreeLibrary
@@ -529,12 +600,16 @@ def verify(r1, r3, compiler, m32r=None):
         "upstream_055c5e_oracle_cases": next(x["cases"] for x in analog["operations"] if x["entry"] == "055C5E"),
         "upstream_05dce8_oracle_cases": pressure["comparisons"],
         "upstream_05dc5e_05dce8_oracle_cases": baseline["comparisons"],
+        "upstream_05da44_oracle_cases": reset["evidence"]["comparisons"],
+        "upstream_05b6de_oracle_cases": diagnostic["evidence"]["comparisons"],
         "upstream_secondary_slu_chain_cases": chain["comparisons"],
         "upstream_secondary_slu_chain_call_boundaries": chain["compared_call_boundaries"],
         "upstream_proof_sha256": {ANALOG_PROOF: sha256(analog_bytes).hexdigest(),
                                   CHAIN_PROOF: sha256(chain_bytes).hexdigest(),
                                   PRESSURE_PROOF: sha256(pressure_bytes).hexdigest(),
-                                  BASELINE_PROOF: sha256(baseline_bytes).hexdigest()},
+                                  BASELINE_PROOF: sha256(baseline_bytes).hexdigest(),
+                                  RESET_PROOF: sha256(reset_bytes).hexdigest(),
+                                  DIAGNOSTIC_PROOF: sha256(diagnostic_bytes).hexdigest()},
         "h03_scheduler_or_snapshot_bound": False,
         "h03_physical_channel_current_or_failure_bound": False,
         "ready_for_flash": False,
