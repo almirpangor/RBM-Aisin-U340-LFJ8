@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 96,
+  "sequence": 97,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -28,17 +28,22 @@
       "branch": "codex/dtc02-basiccan-7bd19ea4",
       "files": [
         "targets/lfj8/check_h03_dtc_basiccan.py",
+        "targets/lfj8/check_h03_dtc_foreground.py",
+        "targets/lfj8/lfj8_h03_dtc_foreground.c",
+        "targets/lfj8/lfj8_h03_dtc_foreground.h",
         "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
         "targets/lfj8/lfj8_h03_dtc_rx_queue.h",
+        "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
         "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
         "verification/project-audit/dtc02-basiccan.md",
+        "verification/project-audit/dtc02-foreground.md",
         "verification/project-audit/dtc02-preclear-capture.md"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:15:44+00:00",
-      "note": "RX14/15: добавлен захват до очистки TRFIN с проверкой MSC и поколения, только чтение CAN0. Перезапись на 16 границах, ПК 33 шага/65 тестов, M32R 17 компонентов и оригинальный H03 15 сценариев — PASS. Доказательства verification/project-audit/dtc02-preclear-capture.md. Привязка ниже 0x008000, foreground и стенд открыты. Общий снимок и карточка переданы интегратору.",
+      "updated_at": "2026-11-20T16:17:33+00:00",
+      "note": "Продолжаю после review a4f93e5. Соединяю очередь и существующий CAN13 в отдельном foreground-адаптере. Проверка реального диспетчера в модели, без правок файлов CAN-02 и H03-03.",
       "result": "a4f93e544a290886df65d8245ea6a91b0c7a4d4d"
     },
     "CAN-03": {
@@ -1140,9 +1145,17 @@
       "action": "complete",
       "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
       "at": "2026-11-20T16:17:17+00:00"
+    },
+    {
+      "operation_id": "b96fa08afee24392a39c6ffd823ad02f",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "resume",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:17:33+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:17:17+00:00",
+  "updated_at": "2026-11-20T16:17:33+00:00",
   "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {
