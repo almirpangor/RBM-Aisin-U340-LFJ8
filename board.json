@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 514,
+  "sequence": 515,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -264,8 +264,8 @@
       "stage": "in_progress",
       "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
       "claimed_at": "2026-11-20T19:39:27+00:00",
-      "updated_at": "2026-11-20T19:39:27+00:00",
-      "note": "Foreground владельца занят TOY-05. Подключаю подтверждённое чтение P1DATA к штатному AN2 по общей микросекундной метке и передаю его нормализатору по явно заданной карте. Жёсткая карта выводов и OD не подставляются.",
+      "updated_at": "2026-11-20T19:44:21+00:00",
+      "note": "Штатный callback AN2 читает P1DATA в том же критическом участке. Шесть парных M32R прогонов прошли. Проверяю сквозной декодер и обновляю модель компоновки.",
       "result": null
     },
     "TOY-05": {
@@ -4688,9 +4688,17 @@
       "action": "heartbeat",
       "claim_id": "c7107b9bc8974c67b7113c75529f935c",
       "at": "2026-11-20T19:42:35+00:00"
+    },
+    {
+      "operation_id": "45d35d5a5b5c4fae9b91e5ee66bbe50b",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "heartbeat",
+      "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
+      "at": "2026-11-20T19:44:21+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:42:35+00:00",
+  "updated_at": "2026-11-20T19:44:21+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
