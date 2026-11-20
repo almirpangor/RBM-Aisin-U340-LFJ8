@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 95,
+  "sequence": 96,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -101,11 +101,11 @@
         "verification/e4m3-can-9e1c/h03-phase-wait.json",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
       "claimed_at": "2026-11-20T16:04:02+00:00",
-      "updated_at": "2026-11-20T16:16:11+00:00",
-      "note": "24 вызова в 8 M32R-сценариях: глубина записи 112/120 байт вместе с обёрткой, без IRQ. Контроль guard, 65 тестов и project_status PASS. Аппаратный inhibit и вложенный IRQ остаются открыты.",
+      "updated_at": "2026-11-20T16:17:17+00:00",
+      "note": "Принято в main после независимого повторения 8 сценариев M32R и project_status. Измеренная глубина относится к модели без IRQ; аппаратный inhibit и общие часы остаются открыты. Общий реестр освобождён для интегратора.",
       "result": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659"
     },
     "H03-04": {
@@ -1132,10 +1132,18 @@
       "action": "review",
       "claim_id": "c53be951e4c44833aea3f77adecbd92b",
       "at": "2026-11-20T16:16:53+00:00"
+    },
+    {
+      "operation_id": "c1404e4a9b5f4ee3a0623407e1335a09",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "1d3260143aa94ebf9474e17cf1deacb7",
+      "at": "2026-11-20T16:17:17+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:16:53+00:00",
-  "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
+  "updated_at": "2026-11-20T16:17:17+00:00",
+  "main_commit": "4fd3f71ed547520d5c489f29f0b29e6e1d6b0659",
   "catalog": [
     {
       "id": "ORG-01",
