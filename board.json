@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 599,
+  "sequence": 600,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -45,22 +45,25 @@
     },
     "CAN-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
-      "label": "Codex CAN-03 — поколение штатного запуска CAN",
-      "branch": "codex/can03-guarded-generation-fea1b366",
+      "label": "Codex CAN-03 — холодный сброс владельца CAN",
+      "branch": "codex/can03-cold-owner-fea1b366",
       "files": [
         "targets/lfj8/check_h03_can_monitor_revoke.py",
         "targets/lfj8/check_h03_can_monitor_startup.py",
         "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
         "targets/lfj8/lfj8_h03_can_monitor_startup.c",
         "targets/lfj8/lfj8_h03_can_monitor_startup.h",
-        "verification/project-audit/can03-guarded-generation.md"
+        "verification/project-audit/can03-cold-owner.md"
       ],
-      "stage": "review",
-      "claim_id": "ad997bd677c542c682cec961d4619193",
-      "claimed_at": "2026-11-20T19:38:33+00:00",
-      "updated_at": "2026-11-20T19:52:21+00:00",
-      "note": "Подключена публикация setup_generation после разрешений 0x00B7F8/0x00B880. Допуск выдаёт foreground после очистки. ПК 41/120, M32R 18+8 компонентов, 21 нативная группа и повтор phase-boot 38; прямые и ROM-проверки CAN PASS. Расширенная сборка 94850 Б, FAIL_BINDINGS по application_binding и sensor_config. Доказательства verification/project-audit/can03-guarded-generation.md.",
-      "result": "1876a8c6ca973baec3a804d034aa7495e7105458"
+      "stage": "in_progress",
+      "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
+      "claimed_at": "2026-11-20T20:30:28+00:00",
+      "updated_at": "2026-11-20T20:30:28+00:00",
+      "note": "Инициализация единственного CAN owner под блокировкой до первого разрешения RX на холодном пути с проверкой права записи в RAM.",
+      "result": null,
+      "based_on_reviews": [
+        "ad997bd677c542c682cec961d4619193"
+      ]
     },
     "TOY-03": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -5444,9 +5447,39 @@
           "881583aa76814d4da3f768699f01ca29"
         ]
       }
+    },
+    {
+      "operation_id": "30c24cf11cd94037b2b38a1565019ea3",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
+      "at": "2026-11-20T20:30:28+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — холодный сброс владельца CAN",
+        "branch": "codex/can03-cold-owner-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/check_h03_can_monitor_startup.py",
+          "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+          "targets/lfj8/lfj8_h03_can_monitor_startup.c",
+          "targets/lfj8/lfj8_h03_can_monitor_startup.h",
+          "verification/project-audit/can03-cold-owner.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "ef6ec9b39ec54c5fab41e021568c094f",
+        "claimed_at": "2026-11-20T20:30:28+00:00",
+        "updated_at": "2026-11-20T20:30:28+00:00",
+        "note": "Инициализация единственного CAN owner под блокировкой до первого разрешения RX на холодном пути с проверкой права записи в RAM.",
+        "result": null,
+        "based_on_reviews": [
+          "ad997bd677c542c682cec961d4619193"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:30:13+00:00",
+  "updated_at": "2026-11-20T20:30:28+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
