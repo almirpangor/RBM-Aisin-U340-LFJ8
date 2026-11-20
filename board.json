@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 293,
+  "sequence": 294,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -315,11 +315,11 @@
         "controller/tests/test_shift_buttons.c",
         "verification/project-audit/mode01-button-rebaseline.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "7dfd6790e36a47d2a1e356338ffe82e8",
       "claimed_at": "2026-11-20T17:01:37+00:00",
-      "updated_at": "2026-11-20T17:05:57+00:00",
-      "note": "Передаю исправление ложных фронтов после отклонённого или отсутствующего снимка. На исходной версии ошибка воспроизведена на ПК/M32R. Исправление: 8 сценариев ПК и M32R, полный ПК 35 шагов/71 тест, 17 компонентов M32R PASS. Отчёт verification/project-audit/mode01-button-rebaseline.md. При принятии учесть 3 изменённых файла в аудите и выполнить complete после публикации main. Оборудование и привязка MODE-02 открыты.",
+      "updated_at": "2026-11-20T17:43:09+00:00",
+      "note": "袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md.",
       "result": "6bbc342ce3f6a2a60a9b58f23044e7a6a02fbd31"
     },
     "TOY-04": {
@@ -2914,9 +2914,17 @@
       "action": "complete",
       "claim_id": "8ac9d38cec054d318a8eb919f6783de2",
       "at": "2026-11-20T17:42:49+00:00"
+    },
+    {
+      "operation_id": "be4eeb8b5c4a49c9bd5f6bbf568fa897",
+      "task": "MODE-01",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "complete",
+      "claim_id": "7dfd6790e36a47d2a1e356338ffe82e8",
+      "at": "2026-11-20T17:43:09+00:00"
     }
   ],
-  "updated_at": "2026-11-20T17:42:49+00:00",
+  "updated_at": "2026-11-20T17:43:09+00:00",
   "main_commit": "320b72e41aa4a85815f2db8942f88f7050abb3f0",
   "catalog": [
     {
