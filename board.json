@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 615,
+  "sequence": 616,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -396,8 +396,8 @@
       "stage": "in_progress",
       "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
       "claimed_at": "2026-11-20T20:30:38+00:00",
-      "updated_at": "2026-11-20T20:30:38+00:00",
-      "note": "Подключаю вычисление непрерывных тиков T6 к нативному CAN foreground из квалифицированного TML0. Период и начальная фаза обязательны в конфигурации приложения. Сданные DTC-01 и DTC-02 включены.",
+      "updated_at": "2026-11-20T20:37:53+00:00",
+      "note": "Код TML0→T6 работает в нативном foreground. Прошли 9 событий C0, оба переполнения, 6 отказов настройки, потеря часов и повторный старт. Resident BasicCAN 18/3 прошёл. Повторяю проверки ПК и самостоятельный нативный линк.",
       "result": null,
       "based_on_reviews": [
         "0580560d4a0e442cb07862988bd40b0f",
@@ -5932,9 +5932,39 @@
           "d06e51f28ad0459dbc4d456c75b56bb4"
         ]
       }
+    },
+    {
+      "operation_id": "905d20c8dc6244ef9fc47999bdea4c20",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
+      "at": "2026-11-20T20:37:53+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-01 — источник T6 от TML0",
+        "branch": "codex/dtc01-t6-clock-source-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_dtc_basiccan.py",
+          "targets/lfj8/h03_dtc_rx_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_dtc_native.c",
+          "targets/lfj8/lfj8_h03_dtc_native.h",
+          "verification/project-audit/dtc01-h03-t6-clock-source.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "01d2b08f6a1f402898b40a2c6f302cfe",
+        "claimed_at": "2026-11-20T20:30:38+00:00",
+        "updated_at": "2026-11-20T20:37:53+00:00",
+        "note": "Код TML0→T6 работает в нативном foreground. Прошли 9 событий C0, оба переполнения, 6 отказов настройки, потеря часов и повторный старт. Resident BasicCAN 18/3 прошёл. Повторяю проверки ПК и самостоятельный нативный линк.",
+        "result": null,
+        "based_on_reviews": [
+          "0580560d4a0e442cb07862988bd40b0f",
+          "f6547625e0dd48c180162a7963424191"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:37:34+00:00",
+  "updated_at": "2026-11-20T20:37:53+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
