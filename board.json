@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 58,
+  "sequence": 59,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -215,12 +215,12 @@
         "targets/lfj8/check_h03_link.py",
         "verification/project-audit/toy02-load-feed.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "04163e758d304ae28f99c09cf17d8d25",
       "claimed_at": "2026-11-20T16:01:53+00:00",
-      "updated_at": "2026-11-20T16:04:41+00:00",
-      "note": "Резервирую H03 link checker: отдельный CPU-тест новых операндов требует полный объект контроллера, поскольку компоновщик исключает пока неподключённый вход из компактной модели.",
-      "result": null
+      "updated_at": "2026-11-20T16:06:58+00:00",
+      "note": "Публикация квалифицированной нагрузки в GP проверена. PC 33 шага/59 тестов, M32R и 17 компонентов, три профиля SIGNALS PASS. Источники GW, бюджет возраста и допуск H03 открыты. Отчёт verification/project-audit/toy02-load-feed.md, общий снимок для интегратора.",
+      "result": "ff7f42b48d58831a8d7a396711042fc45685acd3"
     },
     "CAN-01": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -721,9 +721,17 @@
       "action": "resume",
       "claim_id": "11e70992d32245529e20626f4b9bd867",
       "at": "2026-11-20T16:06:43+00:00"
+    },
+    {
+      "operation_id": "d6be4f31afc14022909399921fc814fc",
+      "task": "TOY-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "04163e758d304ae28f99c09cf17d8d25",
+      "at": "2026-11-20T16:06:58+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:06:43+00:00",
+  "updated_at": "2026-11-20T16:06:58+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
