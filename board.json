@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 517,
+  "sequence": 518,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -252,7 +252,6 @@
       "files": [
         "targets/lfj8/check_h03_input_binding.py",
         "targets/lfj8/check_h03_selector_adc.py",
-        "targets/lfj8/h03_selector_adc_fixture.c",
         "targets/lfj8/lfj8_h03_button_capture.c",
         "targets/lfj8/lfj8_h03_button_capture.h",
         "targets/lfj8/lfj8_h03_input_binding.c",
@@ -267,8 +266,8 @@
       "stage": "in_progress",
       "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
       "claimed_at": "2026-11-20T19:39:27+00:00",
-      "updated_at": "2026-11-20T19:44:21+00:00",
-      "note": "Штатный callback AN2 читает P1DATA в том же критическом участке. Шесть парных M32R прогонов прошли. Проверяю сквозной декодер и обновляю модель компоновки.",
+      "updated_at": "2026-11-20T19:46:18+00:00",
+      "note": "Захват, декодирование, повторная квалификация и инвентарь RAM прошли. Общая модель содержит 95070 байт известных секций, из неопределённых символов по-прежнему остались application_binding и sensor_config. Завершаю общую регрессию.",
       "result": null
     },
     "TOY-05": {
@@ -4715,9 +4714,17 @@
       "action": "claim",
       "claim_id": "ebbc89327d9e4b49b347e3a90c5e208e",
       "at": "2026-11-20T19:45:11+00:00"
+    },
+    {
+      "operation_id": "2e026c7b30814869b181e25a57090170",
+      "task": "MODE-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "heartbeat",
+      "claim_id": "cd210c0631df4fefa66ec640bb83c6ad",
+      "at": "2026-11-20T19:46:18+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:45:11+00:00",
+  "updated_at": "2026-11-20T19:46:18+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
