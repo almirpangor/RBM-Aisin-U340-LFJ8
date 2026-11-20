@@ -2,6 +2,8 @@
 
 #include <stddef.h>
 
+enum { ATF_CIRCUIT_DTC = 0x04, ATF_CAPTURE_SUSPENDED = UINT8_MAX };
+
 static Lfj8H03DtcTarget *volatile irq_target;
 
 void lfj8_h03_dtc_target_unbind(void)
@@ -29,11 +31,64 @@ bool lfj8_h03_dtc_target_init(Lfj8H03DtcTarget *target, Lfj8H03Can13 *broker,
     target->io = io;
     target->can_owner = can_owner;
     target->clock_us = clock_us;
+    target->atf_config = NULL;
+    target->atf_pending = LFJ8_H03_ATF_CIRCUIT_UNKNOWN;
     target->max_clock_span_us = max_clock_span_us;
     const uint32_t saved = io->enter(io->context);
     irq_target = target;
     io->leave(io->context, saved);
     return true;
+}
+
+bool lfj8_h03_dtc_target_enable_atf(Lfj8H03DtcTarget *target,
+                                  const Lfj8H03DtcAtfConfig *config)
+{
+    if (!target || irq_target != target || !config || !config->inhibit_history ||
+        !config->max_age_us || config->max_age_us >= UINT32_C(0x80000000)) {
+        return false;
+    }
+    target->atf_pending = LFJ8_H03_ATF_CIRCUIT_UNKNOWN;
+    target->atf_config = config;
+    return true;
+}
+
+void rbm_h03_dtc_atf_capture(Lfj8H03AtfCircuitStatus status)
+{
+    Lfj8H03DtcTarget *target = irq_target;
+    if (target && target->atf_config && target->atf_pending != ATF_CAPTURE_SUSPENDED) {
+        if (status != LFJ8_H03_ATF_CIRCUIT_UNKNOWN) {
+            target->atf_observed_us = target->clock_us(target->io->context);
+        }
+        target->atf_pending = (uint8_t)status;
+    }
+}
+
+static void service_atf(Lfj8H03DtcTarget *target, CheryDtcState *dtc)
+{
+    const Lfj8RegisterIo *io = target->io;
+    const uint32_t saved = io->enter(io->context);
+    const uint8_t pending = target->atf_pending;
+    const bool ready = !dtc->clear_pending;
+    const bool fresh = ready && pending != ATF_CAPTURE_SUSPENDED &&
+        pending != LFJ8_H03_ATF_CIRCUIT_UNKNOWN &&
+        target->clock_us(io->context) - target->atf_observed_us < target->atf_config->max_age_us;
+    target->atf_pending = ready ? LFJ8_H03_ATF_CIRCUIT_UNKNOWN : ATF_CAPTURE_SUSPENDED;
+    io->leave(io->context, saved);
+    if (!fresh) {
+        return;
+    }
+    switch ((Lfj8H03AtfCircuitStatus)pending) {
+    case LFJ8_H03_ATF_CIRCUIT_LOW:
+    case LFJ8_H03_ATF_CIRCUIT_HIGH:
+    case LFJ8_H03_ATF_CIRCUIT_BOTH:
+        chery_dtc_raise_c0(dtc, ATF_CIRCUIT_DTC, target->atf_config->inhibit_history(io->context));
+        break;
+    case LFJ8_H03_ATF_CIRCUIT_NO_CURRENT_FAULT:
+        chery_dtc_set_current(dtc, ATF_CIRCUIT_DTC, false);
+        break;
+    default:
+        break;
+    }
 }
 
 static bool sample_clocks(const Lfj8H03DtcTarget *target, uint32_t *now_us, uint16_t *can_now)
@@ -97,7 +152,22 @@ Lfj8H03Can13Result lfj8_h03_dtc_target_poll(Lfj8H03DtcTarget *target,
     }
     uint16_t can_now;
     const bool paired = sample_clocks(target, &input->now_us, &can_now);
+    CheryDtcState *const dtc = input->dtc;
+    const bool atf_enabled = target->atf_config && dtc;
+    if (atf_enabled) {
+        service_atf(target, dtc);
+    }
     const Lfj8H03DtcCanOwnerOps *owner = target->can_owner;
-    return owner->poll(owner->owner, target->broker, &target->queue, target->io,
-                       input, paired ? &can_now : NULL, native_ready);
+    const Lfj8H03Can13Result result = owner->poll(
+        owner->owner, target->broker, &target->queue, target->io,
+        input, paired ? &can_now : NULL, native_ready);
+    if (atf_enabled && dtc->clear_pending) {
+        /* Drop captures from the CAN transaction and suspend until foreground
+         * observes that the engine qualification owner consumed the clear. */
+        const Lfj8RegisterIo *io = target->io;
+        const uint32_t saved = io->enter(io->context);
+        target->atf_pending = ATF_CAPTURE_SUSPENDED;
+        io->leave(io->context, saved);
+    }
+    return result;
 }
