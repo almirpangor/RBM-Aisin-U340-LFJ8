@@ -38,10 +38,6 @@ int lfj8_h03_input_propose(const Lfj8H03InputBinding *binding, const Lfj8H03Inpu
         out->driver = (RbmU340eOutput){0};
         return 0;
     }
-    if (out->driver.conflicting_buttons) {
-        out->driver.requested_gear = 0;
-        out->driver.auto_request_valid = 0;
-    }
     /* The H03 application does not route the deferred auxiliary relays. */
     out->driver.relay_mask = 0;
 

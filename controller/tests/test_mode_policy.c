@@ -110,6 +110,40 @@ static unsigned check_range_matrix(const RbmU340ePolicy *policy, const uint8_t d
     return cases;
 }
 
+static void check_auto_conflicts(RbmU340ePolicy policy)
+{
+    RbmU340eController controller;
+    RbmU340eInput input = {
+        .selector = RBM_U340E_SELECTOR_D, .actual_gear = 3, .allowed_gears = 15,
+        .buttons_valid = 1, .auto_request_valid = 1, .auto_request.speed_4549 = 254,
+    };
+    assert(rbm_u340e_init(&controller, &policy));
+    const uint8_t normal = !policy.initial_overdrive_enabled &&
+        (policy.overdrive_limit_modes & RBM_U340E_OVERDRIVE_AUTO) ? 3u : 4u;
+    RbmU340eOutput output = sample(&controller, &input, 0);
+    assert(output.requested_gear == (policy.initial_mode == RBM_U340E_AUTO ? normal : 0u));
+
+    const uint8_t mode = RBM_U340E_BUTTON_MODE;
+    const uint8_t up = RBM_U340E_BUTTON_UP;
+    const uint8_t down = RBM_U340E_BUTTON_DOWN;
+    const uint8_t conflict = policy.initial_mode == RBM_U340E_AUTO ? up | down : mode | up;
+
+    output = sample(&controller, &input, conflict);
+    assert(output.mode == RBM_U340E_AUTO && output.conflicting_buttons);
+    assert(!output.requested_gear && !output.auto_request_valid);
+    assert(output.overdrive_enabled == policy.initial_overdrive_enabled);
+
+    output = sample(&controller, &input, up | down);
+    assert(output.conflicting_buttons && !output.requested_gear && !output.auto_request_valid);
+    output = sample(&controller, &input, up | down);
+    assert(output.conflicting_buttons && !output.requested_gear && !output.auto_request_valid);
+
+    output = sample(&controller, &input, up);
+    assert(!output.conflicting_buttons && output.requested_gear == normal && output.auto_request_valid);
+    output = sample(&controller, &input, 0);
+    assert(!output.conflicting_buttons && output.requested_gear == normal && output.auto_request_valid);
+}
+
 int main(void)
 {
     FactoryRequestState donor = {0};
@@ -130,12 +164,13 @@ int main(void)
                      ++policy.initial_overdrive_enabled) {
                     check_restart(&policy);
                     ++restart_cases;
+                    check_auto_conflicts(policy);
                     range_cases += check_range_matrix(&policy, donor_speeds);
                 }
             }
         }
     }
-    printf("MODE-03 policy: %u restart profiles and %u gear proposal cases PASS.\n",
-           restart_cases, range_cases);
+    printf("MODE-03 policy: %u restart profiles, %u conflict profiles and %u gear proposal cases PASS.\n",
+           restart_cases, restart_cases, range_cases);
     return 0;
 }
