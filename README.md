@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:08:50+00:00**. Изменение № **332**.
+Обновлено UTC: **2026-11-20T18:09:24+00:00**. Изменение № **333**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -11,7 +11,7 @@
 
 | Задача | Ход работы | Текущий / предыдущий чат | Ветка | Обновление UTC | Что делает / результат |
 | --- | --- | --- | --- | --- | --- |
-| ORG-01 — Основа проекта и локальная работа | Закрыта по текущему объёму | Предыдущий: Основной чат — продолжения в общем списке \[codex-integration-01a1f76d-20261120\] | codex/integration-01a1f76d-20261120 | 2026-11-20T17:58:22+00:00 | Предыдущая порция принята. Продолжения опубликованы в существующий общий список. Всем чатам подходит один текст из docs/multi-chat.md; состояние прошивки не менялось. / commit e24ae2ca05677df9e3a2326e43b9cbc6c67e23db |
+| ORG-01 — Основа проекта и локальная работа | Выполняется | Основной чат — общая компоновка и интеграция \[codex-integration-01a1f76d-20261120\] | codex/integration-01a1f76d-20261120 | 2026-11-20T18:09:24+00:00 | По поручению владельца продолжаю общую память и сборку. H03-04 сокращает диалог момента; здесь независимый размещатель ELF/Flash/RAM, новые файлы проверки и интеграция опубликованных review. Не меняю файлы TOY-06 и работающих владельцев. |
 | TOY-01 — Перенос ядра и единое состояние Toyota | Свободна для продолжения | Предыдущий: Codex TOY-01 — карта переносов GP \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-01-gp-transfer-fea1b366 | 2026-11-20T17:46:57+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 8fdce1692a27f0bdf5dcbe0c03d962ab4e87ed39 |
 | TOY-02 — Подтверждённая нагрузка двигателя для Toyota | Свободна для продолжения | Предыдущий: Codex TOY-02 — допуск нагрузки в цикл \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-02-cycle-load-fea1b366 | 2026-11-20T17:40:25+00:00 | Предыдущая порция принята. Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit 3acdebe7db08758da32805ec04bd77ff9e3ba329 |
 | TOY-03 — Независимые разрешающие сигналы диапазона | Свободна для продолжения | Предыдущий: Codex TOY-03 — квалификация независимых входов \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/toy03-range-freshness-01a1f9c7 | 2026-11-20T17:37:42+00:00 | Предыдущая порция принята. Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit e7264c651d3fafe77e4bbff78e5a8fd8aa4e25ee |
@@ -628,6 +628,25 @@
 - targets/lfj8/test_lfj8_h03_input_binding.c
 - verification/project-audit/mode02-h03-input-binding.md
 
+### ORG-01
+
+Чат: Основной чат — общая компоновка и интеграция. Claim ID: 7247550aeb1e414987b6eb6a1a7b27bd.
+
+- README.md
+- controller/build_target.py
+- controller/size_port.py
+- data/project-tasks.json
+- docs/lfj8-h03-memory-layout.md
+- docs/project-map.md
+- docs/working-set.md
+- targets/lfj8/check_h03_storage.py
+- targets/lfj8/lfj8_h03_layout.py
+- targets/lfj8/lfj8_h03_storage.h
+- tests/test_h03_layout.py
+- tools/check_h03_image_layout.py
+- verification/project-audit/2026-11-20-memory-layout.json
+- verification/project-audit/memory-layout/
+
 ### TOY-06
 
 Чат: Codex TOY-06 — SLU в SECONDARY. Claim ID: 2b42f17a3d734aa29534d7fcee10f2ea.
@@ -656,6 +675,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:09:24+00:00 | ORG-01 | claim | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T18:08:50+00:00 | CAN-03 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-20T18:08:03+00:00 | H03-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T18:07:39+00:00 | H03-03 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
@@ -685,4 +705,3 @@
 | 2026-11-20T17:47:37+00:00 | H03-01 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T17:47:17+00:00 | ECU-02 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T17:46:57+00:00 | TOY-01 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-20T17:46:37+00:00 | VSS-02 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |

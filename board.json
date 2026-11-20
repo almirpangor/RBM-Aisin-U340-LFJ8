@@ -1,31 +1,33 @@
 {
   "schema_version": 1,
-  "sequence": 332,
+  "sequence": 333,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
-      "label": "Основной чат — продолжения в общем списке",
+      "label": "Основной чат — общая компоновка и интеграция",
       "branch": "codex/integration-01a1f76d-20261120",
       "files": [
-        "AGENTS.md",
         "README.md",
+        "controller/build_target.py",
+        "controller/size_port.py",
         "data/project-tasks.json",
-        "docs/integration-next-tasks.md",
-        "docs/multi-chat.md",
+        "docs/lfj8-h03-memory-layout.md",
         "docs/project-map.md",
-        "tests/test_project_status.py",
-        "tests/test_task_coordination.py",
-        "tools/project_status.py",
-        "tools/task_coordination.py",
-        "verification/project-audit/2026-11-20-task-board-continuations.json",
-        "verification/project-audit/task-board-continuations/"
+        "docs/working-set.md",
+        "targets/lfj8/check_h03_storage.py",
+        "targets/lfj8/lfj8_h03_layout.py",
+        "targets/lfj8/lfj8_h03_storage.h",
+        "tests/test_h03_layout.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/2026-11-20-memory-layout.json",
+        "verification/project-audit/memory-layout/"
       ],
-      "stage": "done",
-      "claim_id": "d172b8b15e634c75ade19c907f4a8594",
-      "claimed_at": "2026-11-20T17:52:56+00:00",
-      "updated_at": "2026-11-20T17:58:22+00:00",
-      "note": "Продолжения опубликованы в существующий общий список. Всем чатам подходит один текст из docs/multi-chat.md; состояние прошивки не менялось.",
-      "result": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db"
+      "stage": "in_progress",
+      "claim_id": "7247550aeb1e414987b6eb6a1a7b27bd",
+      "claimed_at": "2026-11-20T18:09:24+00:00",
+      "updated_at": "2026-11-20T18:09:24+00:00",
+      "note": "По поручению владельца продолжаю общую память и сборку. H03-04 сокращает диалог момента; здесь независимый размещатель ELF/Flash/RAM, новые файлы проверки и интеграция опубликованных review. Не меняю файлы TOY-06 и работающих владельцев.",
+      "result": null
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -3230,9 +3232,17 @@
       "action": "review",
       "claim_id": "dcf0c14e62c842e1a210b316e85b93fa",
       "at": "2026-11-20T18:08:50+00:00"
+    },
+    {
+      "operation_id": "452dccfe08a14155b6b74d51e5f7c2df",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "7247550aeb1e414987b6eb6a1a7b27bd",
+      "at": "2026-11-20T18:09:24+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:08:50+00:00",
+  "updated_at": "2026-11-20T18:09:24+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
