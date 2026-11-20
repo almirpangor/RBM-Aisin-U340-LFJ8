@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 340,
+  "sequence": 341,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -365,9 +365,9 @@
       "files": [
         "targets/lfj8/check_h03_link.py",
         "targets/lfj8/check_h03_native_hooks.py",
+        "targets/lfj8/check_h03_toyota_stack.py",
         "targets/lfj8/lfj8_h03_cycle.c",
         "targets/lfj8/lfj8_h03_cycle.h",
-        "targets/lfj8/lfj8_h03_slu.c",
         "targets/lfj8/lfj8_h03_slu.h",
         "targets/lfj8/test_lfj8_h03_cycle.c",
         "tools/build_pc_checks.py",
@@ -377,8 +377,8 @@
       "stage": "in_progress",
       "claim_id": "2b42f17a3d734aa29534d7fcee10f2ea",
       "claimed_at": "2026-11-20T18:04:06+00:00",
-      "updated_at": "2026-11-20T18:11:43+00:00",
-      "note": "Подтверждён GP−4735 в банке FAST; SECONDARY пишет только донорский сброс. Привязка и типизированная выдача реализованы, отдельно проверяю строгую компоновку, полный состав, ПК/M32R и отказы.",
+      "updated_at": "2026-11-20T18:12:33+00:00",
+      "note": "6 групп M32R и строгая модель прошли. Добавляю точную зависимость SLU в существующую проверку стека, чтобы она повторялась с новым тестом цикла. lfj8_h03_slu.c освобождаю, численная реализация сохранена.",
       "result": null
     },
     "DTC-01": {
@@ -3295,9 +3295,17 @@
       "action": "claim",
       "claim_id": "fbadfbdf06d745cf885f45918e8b9a03",
       "at": "2026-11-20T18:12:06+00:00"
+    },
+    {
+      "operation_id": "7306534fae81444fb7c521a78cacecf7",
+      "task": "TOY-06",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "heartbeat",
+      "claim_id": "2b42f17a3d734aa29534d7fcee10f2ea",
+      "at": "2026-11-20T18:12:33+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:12:06+00:00",
+  "updated_at": "2026-11-20T18:12:33+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
