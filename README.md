@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T19:01:09+00:00**. Изменение № **448**.
+Обновлено UTC: **2026-11-20T19:01:19+00:00**. Изменение № **449**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -22,7 +22,7 @@
 | CAN-02 — Общий диспетчер CAN13 | На проверке | Codex CAN-02 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-02-torque-submit-fea1b366 | 2026-11-20T19:00:23+00:00 | Адаптер отзывает владение CAN13 и подтверждение момента в том же опросе при ошибке отправки, SLOT_BUSY допускает повтор. ПК 37 шагов и 113 тестов, M32R 18 компонентов, native 17 и components 6, prefix-candidate PASS. Доказательства verification/project-audit/can02-torque-submit.md. Аппаратные окна и владение требуют проверки. / commit 9ad7feedbace41a44cccab0f2ead94b1d5a7425f |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | На проверке | Codex CAN-03 monitor admission \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can03-h03-monitor-startup-01a1f99f | 2026-11-20T18:45:27+00:00 | 12 H03 CPU guard cases plus original early-enable control PASS. Native cold path and both permits install filters and drain before reception; parked recovery avoids the 0x0012B0 opening. New veneers above 0x008000, 161 roots and 93324 known Flash bytes; 11688-byte deficit in old windows and 8 missing bindings in extended plan. No flashable pair. / commit 89d0ed83d5e9c84a2834a95fb1bf01a8e67aae59 |
 | CAN-04 — Запрос снижения момента по RB | На проверке | Codex CAN-04 — срок подтверждения момента \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/can-04-progress-deadline-fea1b366 | 2026-11-20T18:40:13+00:00 | Передаю на объединение. Статус в срок захвата ≥60 мс и на конце импульса не подтверждает момент. 6 границ + срок импульса, ПК 37 шагов/113 тестов, M32R 18 компонентов и 17 штатных групп. Два ST10 OFFLINE_ONLY: раньше 3 REFRESH, теперь CANCEL в 460 мс, ноль при 510. Prefix ELF +48 Б, запас 868. Отчёт verification/project-audit/can04-progress-deadline.md. Реальные метки и калибровка открыты. / commit 07fc25af65515ddd77b680b37423ddbce80f4d55 |
-| CAN-05 — Полнота штатного обмена Chery | Выполняется | Codex CAN-05 — часы Bosch для 0x1AE \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/can05-st10-rx-clock-7bd19ea4 | 2026-11-20T18:57:29+00:00 | В закреплённом Bosch подтверждена точка после освобождения IF1 и штатный 32-битный читатель T4. Проверяю доказательство давности при задержке IF1 и запрет публикации при MSGLST/смене поколения. |
+| CAN-05 — Полнота штатного обмена Chery | Выполняется | Codex CAN-05 — часы Bosch для 0x1AE \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | codex/can05-st10-rx-clock-7bd19ea4 | 2026-11-20T19:01:19+00:00 | Новый аудит проходит 75 сценариев T4, 9 сценариев IF1, пять отказов, отдельный приход второго кадра и три восстановления. Базовый Bosch OFFLINE_ONLY воспроизведён. Завершаю проверку ПК и публикую отчёт. |
 | ECU-01 — Проверочная сборка Bosch E4M3 | Свободна для продолжения | Предыдущий: Codex ECU-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/ecu01-1120-c7e4 | 2026-11-20T17:46:01+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 84380128b8db2e0a6b24b297dd40aa020598e3ce |
 | ECU-02 — Калибровка момента и работа двигателя | Свободна для продолжения | Предыдущий: Codex — обороты и отпускание момента Bosch \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/ecu02-torque-rpm-32e6ac79 | 2026-11-20T17:47:17+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit 06eacf1ff4f42e423886b4b25b849ead054ac924 |
 | H03-01 — Выбранная основа 9E1C и карта подключения | Закрыта по текущему объёму | Предыдущий: Codex H03-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/h03-01-base-guard-mwp5rm2ofhaxjfi9dss | 2026-11-20T17:47:37+00:00 | Предыдущая порция принята. 袩芯褉褑懈褟 锌褉懈薪褟褌邪 胁 main 320b72e 锌芯褋谢械 芯斜褖械泄 锌褉芯胁械褉泻懈. 袚芯褌芯胁薪芯褋褌褜 孝袟 薪械 蟹邪泻褉褘褌邪 邪胁褌芯屑邪褌懈褔械褋泻懈; 芯褋褌邪褌泻懈 懈 薪芯胁褘械 蟹邪写邪薪懈褟: docs/integration-next-tasks.md. / commit cf488af90f0e7beca13fe3c02599cd4854f3668e |
@@ -772,6 +772,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T19:01:19+00:00 | CAN-05 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-20T19:01:09+00:00 | MODE-03 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T19:00:23+00:00 | CAN-02 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T19:00:03+00:00 | H03-02 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -801,4 +802,3 @@
 | 2026-11-20T18:46:22+00:00 | TOY-06 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T18:45:27+00:00 | CAN-03 | review | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:45:07+00:00 | DTC-04 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
-| 2026-11-20T18:44:53+00:00 | MODE-02 | review | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
