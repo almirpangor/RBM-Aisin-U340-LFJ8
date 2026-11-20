@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 211,
+  "sequence": 212,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -322,18 +322,18 @@
     },
     "TOY-04": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex — цикл переключений Toyota",
-      "branch": "codex/toy04-cycle-32e6ac79",
+      "label": "Codex — переключения Toyota под нагрузкой",
+      "branch": "codex/toy04-loaded-map-32e6ac79",
       "files": [
         "targets/lfj8/test_lfj8_h03_cycle.c",
-        "verification/project-audit/toy04-upper-gears.md"
+        "verification/project-audit/toy04-loaded-gears.md"
       ],
-      "stage": "done",
-      "claim_id": "66ff2c9c89284dcaba9ce91746f4bde4",
-      "claimed_at": "2026-11-20T16:12:39+00:00",
-      "updated_at": "2026-11-20T16:34:19+00:00",
-      "note": "Порция с переходами D принята в опубликованную main b2ca79d. Резерв освобождаю. Полный гидравлический цикл, измерения, нагрузка и R остаются открыты.",
-      "result": "439188ac7049314db5c94d261f8e9570092d514b"
+      "stage": "in_progress",
+      "claim_id": "5e4502867edb4625887df3f56fafb8b0",
+      "claimed_at": "2026-11-20T16:45:43+00:00",
+      "updated_at": "2026-11-20T16:45:43+00:00",
+      "note": "Проверяю карту D при ненулевой нагрузке через квалифицированную публикацию операндов и цикл Toyota. Пороговые точки сверяю с S01. Физический источник нагрузки и характеристики АКПП не подставляю.",
+      "result": null
     },
     "CAN-02": {
       "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
@@ -2237,9 +2237,17 @@
       "action": "review",
       "claim_id": "8ac9d38cec054d318a8eb919f6783de2",
       "at": "2026-11-20T16:45:25+00:00"
+    },
+    {
+      "operation_id": "3c53380d7dd74b3289a0332c92cd11d4",
+      "task": "TOY-04",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "5e4502867edb4625887df3f56fafb8b0",
+      "at": "2026-11-20T16:45:43+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:45:25+00:00",
+  "updated_at": "2026-11-20T16:45:43+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
