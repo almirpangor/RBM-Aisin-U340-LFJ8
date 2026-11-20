@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 618,
+  "sequence": 619,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -37,8 +37,8 @@
       "stage": "in_progress",
       "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
       "claimed_at": "2026-11-20T20:34:46+00:00",
-      "updated_at": "2026-11-20T20:34:46+00:00",
-      "note": "Включены предыдущие DTC-02, CAN-02, CAN-03, MODE-03 и пересекающийся H03-02. Добавляю нижнее размещение реального графа IRQ и обеих ветвей в общую модель H03. Активные резервы CAN-03, CAN-01 и DTC-01 не затрагиваю.",
+      "updated_at": "2026-11-20T20:38:58+00:00",
+      "note": "Общий линкер выделяет нижний сектор отдельно, сохраняет граф IRQ и обе ветви. Предварительный расчёт получен; проверяю совместную компоновку, запрет неверных адресов и неизменность обычного профиля.",
       "result": null,
       "based_on_reviews": [
         "0580560d4a0e442cb07862988bd40b0f",
@@ -6019,9 +6019,38 @@
           "ad997bd677c542c682cec961d4619193"
         ]
       }
+    },
+    {
+      "operation_id": "340ab50836604a0ba5b93a9af9d7d3eb",
+      "task": "DTC-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
+      "at": "2026-11-20T20:38:58+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex DTC-02 — нижние переходы в общей компоновке H03",
+        "branch": "codex/can03-live-native-ready-1121-c7e4",
+        "files": [
+          "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+          "tests/test_h03_dtc_rx_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/dtc02-resident-rx-integrated-placement.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "ae0aa09617874ca8bcc10362dcb84b80",
+        "claimed_at": "2026-11-20T20:34:46+00:00",
+        "updated_at": "2026-11-20T20:38:58+00:00",
+        "note": "Общий линкер выделяет нижний сектор отдельно, сохраняет граф IRQ и обе ветви. Предварительный расчёт получен; проверяю совместную компоновку, запрет неверных адресов и неизменность обычного профиля.",
+        "result": null,
+        "based_on_reviews": [
+          "0580560d4a0e442cb07862988bd40b0f",
+          "15e6e783e4d74a5b9c000d3658becff0"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T20:38:24+00:00",
+  "updated_at": "2026-11-20T20:38:58+00:00",
   "main_commit": "20bf48d15b27608a39876bc96aacae68c705863a",
   "catalog": [
     {
