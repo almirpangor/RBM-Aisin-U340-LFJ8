@@ -1,33 +1,28 @@
 {
   "schema_version": 1,
-  "sequence": 592,
+  "sequence": 593,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
-      "label": "Основной чат — объединение и два BIN",
+      "label": "Основной чат — свободное продолжение review",
       "branch": "codex/integration-01a1f76d-20261120",
       "files": [
+        "AGENTS.md",
         "README.md",
         "data/project-tasks.json",
-        "docs/lfj8-h03-memory-layout.md",
+        "docs/multi-chat.md",
         "docs/project-map.md",
-        "docs/working-set.md",
-        "targets/lfj8/check_h03_can_monitor_startup.py",
-        "targets/lfj8/check_h03_storage.py",
-        "targets/lfj8/h03_storage_layout.c",
-        "targets/lfj8/lfj8_h03_storage.h",
-        "tools/build_pc_checks.py",
-        "tools/check_h03_image_layout.py",
-        "tools/check_integrated_h03.py",
-        "verification/project-audit/2026-11-21-integration.json",
-        "verification/project-audit/integration-20261121/"
+        "tests/test_task_coordination.py",
+        "tools/task_coordination.py",
+        "verification/project-audit/2026-11-21-coordination-review.json",
+        "verification/project-audit/review-continuations/"
       ],
-      "stage": "done",
-      "claim_id": "52e7f6ec20834ce89a8c8faa785fe86b",
-      "claimed_at": "2026-11-20T19:11:44+00:00",
-      "updated_at": "2026-11-20T19:32:32+00:00",
-      "note": "Принято в main ae393e8. Сверка и карта всех 34 задач обновлены; неразрешённые функции и физические данные перечислены. Завершена интеграционная порция, не выпуск BIN.",
-      "result": "ae393e852fd8e110892c6725f219f3e43585d33c"
+      "stage": "in_progress",
+      "claim_id": "306818fa765b49debcd6e61e0420d8f9",
+      "claimed_at": "2026-11-20T20:16:50+00:00",
+      "updated_at": "2026-11-20T20:16:50+00:00",
+      "note": "Разделяю очередь проверки неизменяемых коммитов и активные резервы. Review освободит продолжение; новая работа сохранит зависимость от сданного кода. Проверю гонки и перенос текущей доски.",
+      "result": null
     },
     "DTC-02": {
       "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
@@ -5323,9 +5318,17 @@
       "action": "review",
       "claim_id": "afe9090e65ce4d9caf011f47cdcfe67a",
       "at": "2026-11-20T20:16:35+00:00"
+    },
+    {
+      "operation_id": "f4b2ccd55fc84c5b9405a3ecef05e549",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "306818fa765b49debcd6e61e0420d8f9",
+      "at": "2026-11-20T20:16:50+00:00"
     }
   ],
-  "updated_at": "2026-11-20T20:16:35+00:00",
+  "updated_at": "2026-11-20T20:16:50+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
