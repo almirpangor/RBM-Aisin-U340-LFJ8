@@ -393,13 +393,13 @@
 
 **Требуется разработка** · ТЗ §2, §5
 
-**Сделано.** Проверены контроль фаз, семь сравнений вызова таймера, снятие просроченных команд и штатные фазы выдачи в симуляторе.
+**Сделано.** Проверены контроль фаз, семь сравнений вызова таймера, снятие просроченных команд и штатные фазы выдачи в симуляторе. Принят API проверки без потребления события; кандидат ожидания 0x008150 прошёл 4 сценария, повторены 17 компонентов M32R и Bosch replay. Рабочий callback не подключён.
 
 **Осталось.** Подключить foreground-потребителя, начальную инициализацию, владельцев снимков и callback. Раздельно установить ритмы H03 и Toyota, измерить выполнение и IRQ.
 
 **Критерий результата.** Полный цикл вызывается автономно, пропуск обнаруживается и без фазы выдачи, тестовые callbacks заменены подтверждёнными целевыми.
 
-**Код.** [targets/lfj8/lfj8_h03_cycle.c](../targets/lfj8/lfj8_h03_cycle.c) · [targets/lfj8/lfj8_h03_phase_clock.c](../targets/lfj8/lfj8_h03_phase_clock.c) · [targets/lfj8/lfj8_h03_takeover.c](../targets/lfj8/lfj8_h03_takeover.c) · [targets/lfj8/h03_phase_release_hook.S](../targets/lfj8/h03_phase_release_hook.S) · [targets/lfj8/h03_native_hooks.S](../targets/lfj8/h03_native_hooks.S)
+**Код.** [targets/lfj8/lfj8_h03_cycle.c](../targets/lfj8/lfj8_h03_cycle.c) · [targets/lfj8/lfj8_h03_phase_clock.c](../targets/lfj8/lfj8_h03_phase_clock.c) · [targets/lfj8/lfj8_h03_takeover.c](../targets/lfj8/lfj8_h03_takeover.c) · [targets/lfj8/h03_phase_release_hook.S](../targets/lfj8/h03_phase_release_hook.S) · [targets/lfj8/h03_native_hooks.S](../targets/lfj8/h03_native_hooks.S) · [targets/lfj8/check_h03_phase_wait.py](../targets/lfj8/check_h03_phase_wait.py) · [targets/lfj8/h03_phase_wait_hook.S](../targets/lfj8/h03_phase_wait_hook.S)
 
 **Что настраивать.** min_period/max_period/max_age, Lfj8H03TakeoverOps.phase_clock и callbacks. Частоту Toyota нельзя принять равной фазе H03.
 
@@ -414,17 +414,17 @@
 
 **Требуется разработка** · ТЗ §5
 
-**Сделано.** Двухобластная адресная модель помещается, релокации разрешены. Найдены пересечения с мониторами и Flash overlay, проверена часть защит.
+**Сделано.** Проверена актуальная раскладка ABI M32R: управление 1048, связь 492, рабочие снимки 784 байта; всего 2324. Прежних окон не хватает на 544 байта. Раздельная расширенная карта прошла компоновку, скан фиксированных ссылок и 6 OEM-инициализаций. Владение RAM и стек ещё не подтверждены.
 
-**Осталось.** Закрепить исключительное владение Flash/RAM, конечные точки встраивания, запуск после сброса, полный стек с вложенными IRQ и сервисную изоляцию.
+**Осталось.** Закрепить сервисную изоляцию Flash/RAM и запуск после сброса, добавить ещё не определённые состояния CAN/journal/платформы в единый состав, доказать полный стек с вложенными IRQ. Не использовать прежнюю оценку 1080/1116 байт как размер всего приложения.
 
 **Критерий результата.** Карта сборки и анализ всех владельцев, подтверждённый запас стека и измерения. Свободное окно в ELF само по себе не разрешает запись.
 
-**Код.** [targets/lfj8/check_h03_link.py](../targets/lfj8/check_h03_link.py) · [targets/lfj8/check_h03_ram_candidate.py](../targets/lfj8/check_h03_ram_candidate.py) · [targets/lfj8/check_h03_flash_residency.py](../targets/lfj8/check_h03_flash_residency.py) · [targets/lfj8/check_h03_service_isolation.py](../targets/lfj8/check_h03_service_isolation.py) · [targets/lfj8/audit_h03_irq_stack.py](../targets/lfj8/audit_h03_irq_stack.py)
+**Код.** [targets/lfj8/check_h03_link.py](../targets/lfj8/check_h03_link.py) · [targets/lfj8/check_h03_ram_candidate.py](../targets/lfj8/check_h03_ram_candidate.py) · [targets/lfj8/check_h03_flash_residency.py](../targets/lfj8/check_h03_flash_residency.py) · [targets/lfj8/check_h03_service_isolation.py](../targets/lfj8/check_h03_service_isolation.py) · [targets/lfj8/audit_h03_irq_stack.py](../targets/lfj8/audit_h03_irq_stack.py) · [targets/lfj8/lfj8_h03_storage.h](../targets/lfj8/lfj8_h03_storage.h) · [targets/lfj8/check_h03_storage.py](../targets/lfj8/check_h03_storage.py)
 
-**Что настраивать.** Flash [0x020000,0x030000), [0x07C118,0x07FFFC); кандидаты RAM описаны в аудите. FCNT1 и сервисный монитор.
+**Что настраивать.** Flash [0x020000,0x030000), [0x07C118,0x07FFFC); кандидаты RAM описаны в аудите. FCNT1 и сервисный монитор. Текущая модель RAM: [0x806B40,0x806F58), [0x808E40,0x80902C), [0x80902C,0x80933C). Это кандидаты, не допуск к записи.
 
-**Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native)
+**Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native) · [STORAGE](#check-storage)
 
 **Разбор и основания.** [lfj8-h03-ram-audit.md](../docs/lfj8-h03-ram-audit.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [lfj8-h03-service-isolation.md](../docs/lfj8-h03-service-isolation.md)
 
@@ -775,7 +775,7 @@ python -B targets/lfj8/build.py --output local/audit/bridge --m32r-cc $m32rGcc -
 python -B targets/lfj8/check_h03_link.py --base $h03 --gcc $m32rGcc --bridge local/audit/bridge/lfj8_9e1c_m32r.o --controller local/audit/controller/rbm_u340e_m32r_be.o --out local/audit/h03-link.json --bosch-trace verification/e4m3-can-9e1c/ordinary-model/round-trip.json
 ```
 
-**Последний сохранённый результат.** [dtc02-h03-link.json](../verification/project-audit/dtc02-h03-link.json)
+**Последний сохранённый результат.** [h03-phase-integration-link.json](../verification/project-audit/h03-phase-integration-link.json)
 
 <a id="check-phase"></a>
 ### PHASE — Штатная публикация и потери событий
@@ -849,3 +849,13 @@ python -B -m unittest discover -s tests -p test_project_status.py -v
 ```
 
 **Последний сохранённый результат.** [collaboration-checks.json](../verification/project-audit/collaboration-checks.json)
+
+<a id="check-storage"></a>
+### STORAGE — Актуальные состояния и кандидаты RAM M32R
+
+```powershell
+python -B targets/lfj8/check_h03_storage.py --base $h03 --gcc $m32rGcc --out local/audit/h03-storage.json
+python -B -m unittest discover -s tests -p test_h03_storage.py -v
+```
+
+**Последний сохранённый результат.** [h03-storage.json](../verification/e4m3-can-9e1c/h03-storage.json) · [h03-storage-tests.txt](../verification/project-audit/h03-storage-tests.txt)
