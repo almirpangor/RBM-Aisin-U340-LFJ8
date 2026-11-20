@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 742,
+  "sequence": 743,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -186,8 +186,8 @@
       "stage": "in_progress",
       "claim_id": "da533c7a58aa441b9ba639bc0ad0992e",
       "claimed_at": "2026-11-20T22:42:30+00:00",
-      "updated_at": "2026-11-20T22:42:30+00:00",
-      "note": "Проверяю допуск S51/ATF на конце окна TML0 и сохраняю преобразование S83 по середине окна с погрешностью. Без новых калибровок, отдельно от RAM/запуска.",
+      "updated_at": "2026-11-20T22:46:53+00:00",
+      "note": "Воспроизведена регрессия S51. После правки прошли сборка моста, модель S51/S83/ATF на ПК и M32R и штатные hooks датчиков. Идут проверки компоновки и запуска.",
       "result": null,
       "based_on_reviews": []
     },
@@ -9690,9 +9690,36 @@
           "8b0ce759514b4c68b04d002b192f50ff"
         ]
       }
+    },
+    {
+      "operation_id": "43afc6c1ea054c829e9a4ca32e38af8d",
+      "task": "H03-02",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "heartbeat",
+      "claim_id": "da533c7a58aa441b9ba639bc0ad0992e",
+      "at": "2026-11-20T22:46:53+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex H03-02 — граница свежести общего снимка S51/S83/ATF",
+        "branch": "codex/h03-02-capture-end-age-32e6ac79",
+        "files": [
+          "targets/lfj8/host_check.c",
+          "targets/lfj8/lfj8_donor_io.c",
+          "targets/lfj8/lfj8_donor_io.h",
+          "targets/lfj8/test_lfj8_h03_sensor_feed.c",
+          "verification/project-audit/h03-02-capture-end-age.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "da533c7a58aa441b9ba639bc0ad0992e",
+        "claimed_at": "2026-11-20T22:42:30+00:00",
+        "updated_at": "2026-11-20T22:46:53+00:00",
+        "note": "Воспроизведена регрессия S51. После правки прошли сборка моста, модель S51/S83/ATF на ПК и M32R и штатные hooks датчиков. Идут проверки компоновки и запуска.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:46:14+00:00",
+  "updated_at": "2026-11-20T22:46:53+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
