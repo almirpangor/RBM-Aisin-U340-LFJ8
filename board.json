@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 116,
+  "sequence": 117,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -378,12 +378,12 @@
         "targets/lfj8/test_lfj8_vss_arithmetic.c",
         "verification/project-audit/vss01-exact-arithmetic.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "698c00d00af84972b5562bc8498c8628",
       "claimed_at": "2026-11-20T16:18:46+00:00",
-      "updated_at": "2026-11-20T16:20:30+00:00",
-      "note": "Переполнение на исходном коде воспроизведено. Переносимая арифметика исправлена, 25 000 сравнений с целочисленным эталоном на ПК прошли. Идут M32R и Bosch.",
-      "result": null
+      "updated_at": "2026-11-20T16:22:43+00:00",
+      "note": "Точная VSS арифметика устраняет промежуточное переполнение. 25 000 сравнений, PC 33 шага/65 тестов, M32R 17 компонентов, Bosch C7FF/C800/FFFF PASS по ожидаемому поведению. Параметры VSS-02 и стенд открыты. Отчёт verification/project-audit/vss01-exact-arithmetic.md.",
+      "result": "d05896bcac7b731f8d3f85b9aaebd3394e32473c"
     },
     "H03-05": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -1361,9 +1361,17 @@
       "action": "resume",
       "claim_id": "68c8347a91944cb3929878ea53cc9204",
       "at": "2026-11-20T16:22:32+00:00"
+    },
+    {
+      "operation_id": "74c3932c580c41c1b53309d602f0f52e",
+      "task": "VSS-01",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "698c00d00af84972b5562bc8498c8628",
+      "at": "2026-11-20T16:22:43+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:22:32+00:00",
+  "updated_at": "2026-11-20T16:22:43+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {

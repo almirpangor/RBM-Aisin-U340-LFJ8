@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T16:22:32+00:00**. Изменение № **116**.
+Обновлено UTC: **2026-11-20T16:22:43+00:00**. Изменение № **117**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -31,7 +31,7 @@
 | H03-04 — Память, стек и сервисные пути | Выполняется | Codex — сервисные границы RAM H03 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/h03-service-spans-32e6ac79 | 2026-11-20T16:20:52+00:00 | Сверяю полный диапазон трёх кандидатов RAM с исходной проверкой диапазонов сервисного монитора H03. Проверю граничные пересечения в M32R без вызова записи; внесу отдельное доказательство для интегратора. |
 | H03-05 — SLT, силовые выходы и реакция на отказ | На проверке | Codex — штатное отключение SLT \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/h03-05-p0745-01a1f9a2 | 2026-11-20T16:22:22+00:00 | P0745: 16 проверок M32R и native hooks PASS. Подтверждены снятие PWM на этапе применения и повтор старого предложения после очистки с новым штатным арбитражем; физический inhibit и ток остаются. / commit bf4720ec65f4f5e8f32ce3368c873fd865e1ae41 |
 | IO-01 — Два дополнительных реле | Отложена владельцем | — | — | — | — |
-| VSS-01 — Точный расчёт VSS и скорость по CAN | Выполняется | Codex VSS-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss01-exact-arithmetic-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:20:30+00:00 | Переполнение на исходном коде воспроизведено. Переносимая арифметика исправлена, 25 000 сравнений с целочисленным эталоном на ПК прошли. Идут M32R и Bosch. |
+| VSS-01 — Точный расчёт VSS и скорость по CAN | На проверке | Codex VSS-01 \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | codex/vss01-exact-arithmetic-mwp5rm2ofhaxjfi9dss | 2026-11-20T16:22:43+00:00 | Точная VSS арифметика устраняет промежуточное переполнение. 25 000 сравнений, PC 33 шага/65 тестов, M32R 17 компонентов, Bosch C7FF/C800/FFFF PASS по ожидаемому поведению. Параметры VSS-02 и стенд открыты. Отчёт verification/project-audit/vss01-exact-arithmetic.md. / commit d05896bcac7b731f8d3f85b9aaebd3394e32473c |
 | VSS-02 — Кинематика и параметры реальной скорости | Свободна | — | — | — | — |
 | PANEL-01 — Импульсы Bosch на приборную панель | Отложена владельцем | — | — | — | — |
 | MODE-01 — Логика шести положений и кнопок | На проверке | Codex MODE-01 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/mode01-1120-c7e4 | 2026-11-20T16:14:42+00:00 | Staggered Tiptronic plus/minus overlap now blocks manual requests. Original C/Python regressions reproduced. PC 33 steps/66 tests plus dedicated C regression PASS; M32R build, 17 components and dedicated regression PASS. Evidence verification/project-audit/mode01-shift-conflict.md. Integrator to record the audit; physical input and hydraulic execution remain open. / commit ed33ea93653f7bcbc2c6f13736fe1424335085e6 |
@@ -276,6 +276,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T16:22:43+00:00 | VSS-01 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-20T16:22:32+00:00 | ORG-01 | resume | codex-integration-01a1f76d-20261120 |
 | 2026-11-20T16:22:22+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T16:22:02+00:00 | TOY-03 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
@@ -305,4 +306,3 @@
 | 2026-11-20T16:15:26+00:00 | TOY-06 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T16:15:18+00:00 | TOY-04 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T16:15:07+00:00 | CAN-02 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-20T16:14:42+00:00 | MODE-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
