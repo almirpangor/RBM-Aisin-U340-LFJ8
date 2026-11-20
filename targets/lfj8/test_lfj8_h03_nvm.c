@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-enum { SLOT_BYTES = 32, MARKER_OFFSET = 30, LARGE_BLOCK_BYTES = 0x10000 };
+enum { MARKER_OFFSET = 30, RETIRED_OFFSET = 32, SLOT_BYTES = 34, LARGE_BLOCK_BYTES = 0x10000 };
 enum { COMPLETE, FAIL_BEFORE, FAIL_PARTIAL, FAIL_AFTER };
 
 typedef struct {
@@ -16,6 +16,7 @@ typedef struct {
     unsigned erase_prefix;
     unsigned fail_read;
     unsigned mismatch_read;
+    unsigned write_blocked;
     bool idle;
 } Fixture;
 
@@ -44,7 +45,7 @@ static bool allow_write(void *context, unsigned block)
 {
     Fixture *fixture = context;
     assert(block == 4u || block == 7u);
-    return fixture->idle;
+    return fixture->idle && block != fixture->write_blocked;
 }
 
 static unsigned cut_mode(Fixture *fixture)
@@ -72,7 +73,7 @@ static bool program_halfword(void *context, uint32_t first, uint16_t value)
     Fixture *fixture = context;
     const unsigned slot = first < address[1] ? 0u : 1u;
     const uint32_t offset = first - address[slot];
-    assert(offset <= MARKER_OFFSET && (offset & 1u) == 0u);
+    assert(offset <= RETIRED_OFFSET && (offset & 1u) == 0u);
     uint8_t *target = flash[slot] + offset;
     assert(target[0] == UINT8_MAX && target[1] == UINT8_MAX && value != UINT16_MAX);
     const unsigned cut = cut_mode(fixture);
@@ -121,6 +122,7 @@ static void install_record(unsigned slot, const CheryDtcState *state, uint32_t g
     assert(chery_dtc_journal_encode(state, generation, flash[slot]));
     flash[slot][29] = UINT8_MAX;
     flash[slot][30] = flash[slot][31] = 0u;
+    flash[slot][32] = flash[slot][33] = UINT8_MAX;
 }
 
 static void request_clear(Lfj8H03Nvm *nvm, CheryDtcState *live, bool success)
@@ -181,11 +183,16 @@ static void check_layout_and_restart(void)
     install_record(0u, &learned, UINT32_MAX);
     state = learned;
     request_clear(&nvm, &state, true);
+    assert(flash[0][RETIRED_OFFSET] == 0u && flash[0][RETIRED_OFFSET + 1u] == 0u);
     assert(lfj8_h03_nvm_restore_dtc(&nvm, &state) == LFJ8_H03_NVM_SLOT_1);
     expect_empty(&state);
     for (unsigned i = 4u; i < 8u; ++i) {
         assert(flash[1][i] == 0u);
     }
+    assert(lfj8_h03_nvm_save_dtc(&nvm, &learned));
+    assert(flash[0][RETIRED_OFFSET] == UINT8_MAX && flash[0][RETIRED_OFFSET + 1u] == UINT8_MAX);
+    assert(lfj8_h03_nvm_restore_dtc(&nvm, &state) == LFJ8_H03_NVM_SLOT_0);
+    expect_history(&state, &learned);
 }
 
 static unsigned check_interrupted_clear(void)
@@ -198,21 +205,24 @@ static unsigned check_interrupted_clear(void)
     install_record(0u, &learned, 1u);
     request_clear(&nvm, &state, true);
     const unsigned clear_changes = fixture.changes;
-    assert(clear_changes <= 17u && clear_changes > 2u);
+    assert(clear_changes <= 18u && clear_changes > 3u);
+    const unsigned publish = clear_changes - 1u;
 
     for (unsigned cut = 1u; cut <= clear_changes; ++cut) {
         for (unsigned mode = FAIL_BEFORE; mode <= FAIL_AFTER; ++mode) {
             memset(flash[1], 0xff, length[1]);
+            install_record(0u, &learned, 1u);
             fixture = (Fixture){.idle = true, .cut_on = cut, .cut_mode = mode, .erase_prefix = 31u};
             state = learned;
             request_clear(&nvm, &state, false);
             assert(fixture.changes == cut);
             const Lfj8H03NvmResult result = lfj8_h03_nvm_restore_dtc(&nvm, &state);
-            if (cut < clear_changes || mode == FAIL_BEFORE) {
+            if (cut < publish || (cut == publish && mode == FAIL_BEFORE)) {
                 assert(result == LFJ8_H03_NVM_SLOT_0);
                 expect_history(&state, &learned);
             } else {
-                assert(result == (mode == FAIL_PARTIAL ? LFJ8_H03_NVM_CORRUPT : LFJ8_H03_NVM_SLOT_1));
+                assert(result == (cut == publish && mode == FAIL_PARTIAL ?
+                                  LFJ8_H03_NVM_CORRUPT : LFJ8_H03_NVM_SLOT_1));
                 expect_empty(&state);
             }
         }
@@ -225,14 +235,16 @@ static void check_after_durable_clear(void)
     Fixture fixture = {.idle = true};
     Lfj8H03Nvm nvm = medium(&fixture);
     const CheryDtcState learned = history();
-    CheryDtcState empty, state;
-    chery_dtc_init(&empty);
+    CheryDtcState state;
     memset(flash, 0xff, sizeof flash);
-    install_record(1u, &empty, 2u);
+    install_record(0u, &learned, 1u);
+    state = learned;
+    request_clear(&nvm, &state, true);
     flash[1][length[1] - 1u] = 0x57u;
 
     for (unsigned prefix = 0u; prefix <= SLOT_BYTES; ++prefix) {
         install_record(0u, &learned, 1u);
+        flash[0][RETIRED_OFFSET] = flash[0][RETIRED_OFFSET + 1u] = 0u;
         fixture = (Fixture){.idle = true, .cut_on = 1u, .cut_mode = FAIL_PARTIAL, .erase_prefix = prefix};
         assert(!lfj8_h03_nvm_save_dtc(&nvm, &learned) && fixture.changes == 1u);
         const Lfj8H03NvmResult result = lfj8_h03_nvm_restore_dtc(&nvm, &state);
@@ -242,7 +254,8 @@ static void check_after_durable_clear(void)
     }
 
     install_record(0u, &learned, 1u);
-    for (unsigned offset = 0u; offset < SLOT_BYTES; ++offset) {
+    flash[0][RETIRED_OFFSET] = flash[0][RETIRED_OFFSET + 1u] = 0u;
+    for (unsigned offset = 0u; offset < RETIRED_OFFSET; ++offset) {
         for (unsigned bit = 0u; bit < 8u; ++bit) {
             const uint8_t mask = (uint8_t)(1u << bit);
             flash[1][offset] ^= mask;
@@ -270,6 +283,15 @@ static void check_read_back_and_retry(void)
     assert(flash[1][MARKER_OFFSET] == 0u);
     assert(lfj8_h03_nvm_restore_dtc(&nvm, &state) == LFJ8_H03_NVM_SLOT_1);
     expect_empty(&state);
+    const unsigned before_retirement = fixture.changes;
+    fixture.write_blocked = 4u;
+    request_clear(&nvm, &state, false);
+    assert(fixture.changes == before_retirement && flash[0][RETIRED_OFFSET] == UINT8_MAX);
+
+    fixture.write_blocked = 0u;
+    fixture.fail_read = fixture.reads + 3u;
+    request_clear(&nvm, &state, false);
+    assert(fixture.changes == before_retirement + 1u && flash[0][RETIRED_OFFSET] == 0u);
     const unsigned written = fixture.changes;
     request_clear(&nvm, &state, true);
     assert(fixture.changes == written);
@@ -282,6 +304,65 @@ static void check_read_back_and_retry(void)
     assert(!lfj8_h03_nvm_save_dtc(&nvm, &learned) && fixture.changes == written);
 }
 
+static void check_lost_clear(void)
+{
+    Fixture fixture = {.idle = true};
+    Lfj8H03Nvm nvm = medium(&fixture);
+    const CheryDtcState learned = history();
+    for (unsigned previous = 0; previous < 2u; ++previous) {
+        const unsigned cleared = 1u - previous;
+        for (unsigned loss = 0; loss < 2u; ++loss) {
+            memset(flash, 0xff, sizeof flash);
+            install_record(previous, &learned, 1u);
+            CheryDtcState state = learned;
+            request_clear(&nvm, &state, true);
+            if (loss == 0u) {
+                memset(flash[cleared] + MARKER_OFFSET, 0xff, 2u);
+            } else {
+                memset(flash[cleared], 0xff, length[cleared]);
+            }
+            assert(lfj8_h03_nvm_restore_dtc(&nvm, &state) == LFJ8_H03_NVM_EMPTY);
+            expect_empty(&state);
+            for (unsigned bit = 0u; bit < 16u; ++bit) {
+                uint8_t *byte = flash[previous] + RETIRED_OFFSET + bit / 8u;
+                const uint8_t mask = (uint8_t)(1u << (bit % 8u));
+                *byte ^= mask;
+                assert(lfj8_h03_nvm_restore_dtc(&nvm, &state) == LFJ8_H03_NVM_EMPTY);
+                expect_empty(&state);
+                *byte ^= mask;
+            }
+        }
+    }
+}
+
+static void check_retirement_retry(void)
+{
+    Fixture fixture = {.idle = true};
+    Lfj8H03Nvm nvm = medium(&fixture);
+    const CheryDtcState learned = history();
+    CheryDtcState empty;
+    chery_dtc_init(&empty);
+    for (unsigned cut = FAIL_BEFORE; cut <= FAIL_AFTER; ++cut) {
+        memset(flash, 0xff, sizeof flash);
+        install_record(0u, &learned, 1u);
+        install_record(1u, &empty, 2u);
+        flash[0][RETIRED_OFFSET] = 0u; /* A previous retirement tore. */
+        flash[1][length[1] - 1u] = 0x57u;
+        fixture = (Fixture){.idle = true, .cut_on = 1u, .cut_mode = cut, .erase_prefix = SLOT_BYTES - 1u};
+        CheryDtcState state = learned;
+        request_clear(&nvm, &state, false);
+        assert(fixture.changes == 1u);
+        assert(lfj8_h03_nvm_restore_dtc(&nvm, &state) == LFJ8_H03_NVM_SLOT_1);
+        expect_empty(&state);
+
+        request_clear(&nvm, &state, true);
+        assert(flash[1][length[1] - 1u] == 0x57u);
+        memset(flash[1], 0xff, length[1]);
+        assert(lfj8_h03_nvm_restore_dtc(&nvm, &state) == LFJ8_H03_NVM_EMPTY);
+        expect_empty(&state);
+    }
+}
+
 int main(void)
 {
     printf("H03 erase ends:");
@@ -292,9 +373,12 @@ int main(void)
     }
     putchar('\n');
     check_layout_and_restart();
+    check_lost_clear();
     const unsigned clear_cuts = check_interrupted_clear();
     check_after_durable_clear();
     check_read_back_and_retry();
-    printf("H03 DTC NVM: %u write cuts, 33 erase prefixes, 256 bit faults and restart PASS\n", clear_cuts);
+    check_retirement_retry();
+    puts("H03 DTC NVM: four replacement losses, 64 retirement bit faults and three interrupted retries PASS");
+    printf("H03 DTC NVM: %u write cuts, 35 erase prefixes, 256 bit faults and restart PASS\n", clear_cuts);
     return 0;
 }

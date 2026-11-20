@@ -43,13 +43,17 @@ typedef enum {
  * and the electrical/idle conditions throughout the transaction. */
 Lfj8H03NvmResult lfj8_h03_nvm_restore_dtc(const Lfj8H03Nvm *nvm, CheryDtcState *state);
 
-/* Save only on a history change. Retry after an uncertain operation by
- * reading both blocks again, once the device can safely return array data.
- * Corrupt or unreadable storage refuses further writes. */
+/* Save only on a history change. Use commit_empty_dtc for an authorized
+ * clear. Retry after an uncertain operation by reading both blocks again,
+ * once the device can safely return array data. Corrupt or unreadable
+ * storage refuses further writes. */
 bool lfj8_h03_nvm_save_dtc(const Lfj8H03Nvm *nvm, const CheryDtcState *state);
 
 /* CheryDtcClearStore callback. context is the same configured Lfj8H03Nvm.
- * The caller owns the live DTC state and exposes the reply after success. */
+ * Verify the empty record before retiring its peer. A retired record cannot
+ * be restored if the replacement disappears. Verify the retirement before
+ * allowing the caller to publish a positive reply. Retrying a partial
+ * retirement can erase the peer when the write owner permits it. */
 bool lfj8_h03_nvm_commit_empty_dtc(void *context);
 
 #endif
