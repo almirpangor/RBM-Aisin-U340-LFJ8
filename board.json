@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 691,
+  "sequence": 692,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -239,26 +239,25 @@
       "based_on_reviews": []
     },
     "CAN-01": {
-      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
-      "label": "Codex CAN-01 — запуск и foreground двигателя H03",
-      "branch": "codex/can01-h03-engine-owner-b0157640",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "label": "Codex CAN-01 — возраст операндов двигателя на Task 2",
+      "branch": "codex/can01-target-engine-1121-c7e4",
       "files": [
-        "targets/lfj8/check_h03_phase_boot.py",
         "targets/lfj8/h03_phase_boot_fixture.c",
         "targets/lfj8/lfj8_h03_application.c",
         "targets/lfj8/lfj8_h03_application.h",
-        "verification/project-audit/can01-h03-app-lifecycle.md"
+        "targets/lfj8/lfj8_h03_engine_feed.c",
+        "targets/lfj8/lfj8_h03_engine_feed.h",
+        "targets/lfj8/test_lfj8_h03_engine_feed.c",
+        "verification/project-audit/can01-h03-operand-age.md"
       ],
-      "stage": "released",
-      "claim_id": "4cb1fd3d23724b58bd2c94a052794a65",
-      "claimed_at": "2026-11-20T20:31:55+00:00",
-      "updated_at": "2026-11-20T21:38:01+00:00",
-      "note": "Интегратор освобождает резерв по поручению владельца обновить очередь. Чат 10 idle/completed; рабочая копия чистая, HEAD 84b4433 уже включён в опубликованную main da6b13b. Незавершённых локальных изменений нет. Продолжение CAN-01 свободно; это не закрытие CAN по ТЗ.",
+      "stage": "in_progress",
+      "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
+      "claimed_at": "2026-11-20T21:52:45+00:00",
+      "updated_at": "2026-11-20T21:52:45+00:00",
+      "note": "Подключаю нижнюю границу времени CAN RPM/ECT и удержанных оборотов в действующий Task 2 H03. Измеренные пределы и контекст профиля остаются явными входами.",
       "result": null,
-      "based_on_reviews": [
-        "5fcdd962167d41129b445b4ea70a2c80",
-        "6293ebe446574c9ab1fce23fa806e922"
-      ]
+      "based_on_reviews": []
     },
     "MODE-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -8259,9 +8258,38 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "c1ef690128c24eeaa722bca8a188dc96",
+      "task": "CAN-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "claim",
+      "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
+      "at": "2026-11-20T21:52:45+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex CAN-01 — возраст операндов двигателя на Task 2",
+        "branch": "codex/can01-target-engine-1121-c7e4",
+        "files": [
+          "targets/lfj8/h03_phase_boot_fixture.c",
+          "targets/lfj8/lfj8_h03_application.c",
+          "targets/lfj8/lfj8_h03_application.h",
+          "targets/lfj8/lfj8_h03_engine_feed.c",
+          "targets/lfj8/lfj8_h03_engine_feed.h",
+          "targets/lfj8/test_lfj8_h03_engine_feed.c",
+          "verification/project-audit/can01-h03-operand-age.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
+        "claimed_at": "2026-11-20T21:52:45+00:00",
+        "updated_at": "2026-11-20T21:52:45+00:00",
+        "note": "Подключаю нижнюю границу времени CAN RPM/ECT и удержанных оборотов в действующий Task 2 H03. Измеренные пределы и контекст профиля остаются явными входами.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-20T21:52:15+00:00",
+  "updated_at": "2026-11-20T21:52:45+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
