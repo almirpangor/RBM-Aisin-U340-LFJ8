@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 399,
+  "sequence": 400,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -355,11 +355,11 @@
         "tools/check_integrated_h03.py",
         "verification/project-audit/toy06-slu-schedule.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "2b42f17a3d734aa29534d7fcee10f2ea",
       "claimed_at": "2026-11-20T18:04:06+00:00",
-      "updated_at": "2026-11-20T18:15:57+00:00",
-      "note": "Передаю на объединение. SLU в SECONDARY, GP−4735 продвигает FAST, SECONDARY сбрасывает; 5 публикаций/7 отказов. ПК 37 шагов/102 теста, M32R 6 компонентных групп, 17 штатных групп, строгая модель 18 компонентов PASS. Расширенное окно −2652 Б (+808 Б к дефициту базы). Отчёт verification/project-audit/toy06-slu-schedule.md. Владелец H03, полный снимок, компоновка и физический SLU открыты.",
+      "updated_at": "2026-11-20T18:38:46+00:00",
+      "note": "Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке.",
       "result": "fd1c4a7fd479934eb2d6d0266462ad16a0b5a539"
     },
     "DTC-01": {
@@ -3753,9 +3753,17 @@
       "action": "complete",
       "claim_id": "80dd331a4841414ab2e1eea82dfb693b",
       "at": "2026-11-20T18:38:24+00:00"
+    },
+    {
+      "operation_id": "7f936006217343dcb4a67e5c197cc073",
+      "task": "TOY-06",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "2b42f17a3d734aa29534d7fcee10f2ea",
+      "at": "2026-11-20T18:38:46+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:38:24+00:00",
+  "updated_at": "2026-11-20T18:38:46+00:00",
   "main_commit": "760628bd249b19051339403f5663e78187d12a9a",
   "catalog": [
     {

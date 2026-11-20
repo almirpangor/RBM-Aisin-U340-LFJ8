@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-20T18:38:24+00:00**. Изменение № **399**.
+Обновлено UTC: **2026-11-20T18:38:46+00:00**. Изменение № **400**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -17,7 +17,7 @@
 | TOY-03 — Независимые разрешающие сигналы диапазона | Свободна для продолжения | Предыдущий: Codex TOY-03 — квалификация независимых входов \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | codex/toy03-range-freshness-01a1f9c7 | 2026-11-20T17:37:42+00:00 | Предыдущая порция принята. Порция принята в main 320b72e после общей проверки. Готовность ТЗ не закрыта автоматически; остатки и новые задания: docs/integration-next-tasks.md. / commit e7264c651d3fafe77e4bbff78e5a8fd8aa4e25ee |
 | TOY-04 — Полная последовательность переключений | На проверке | Codex — размер планировщика выходов H03 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/toy04-output-flash-01a1f9a2 | 2026-11-20T18:27:21+00:00 | Планировщик выходов освобождает 108 байт. Общий small с CAN-02/H03-04/H03-05: 117 точек, запас 228/140, ноль релокаций. Пройдены 18 компонентных и 15 штатных сценариев M32R. На ПК совпали 888888 последовательностей и 65536 сочетаний блокировок. Планировщик и доказательства готовы к объединению. / commit c2eee31f06230b7d060d88bb051721a1cdf30445 |
 | TOY-05 — Обучение и сохранение адаптаций | На проверке | Codex — исходный снимок адаптаций S01 \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | codex/toy05-startup-baseline-32e6ac79 | 2026-11-20T18:35:22+00:00 | 34 байта холодного fallback подтверждены по ROM S01 и закреплённому V850-отчёту R3. Новый снимок доступен контроллеру. ПК 37 шагов/113 тестов, R3 288 сравнений, M32R 18+6 программных и 17 штатных групп, размещение 119 корней. Отчёт verification/project-audit/toy05-s01-baseline.md. Носитель, штатный запуск и долговечный сброс на блоке открыты. Передаю интегратору. / commit a806502d631248ae4a1c49396f05034c18d600dd |
-| TOY-06 — Блокировка гидротрансформатора SLU | На проверке | Codex TOY-06 — SLU в SECONDARY \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-secondary-schedule-fea1b366 | 2026-11-20T18:15:57+00:00 | Передаю на объединение. SLU в SECONDARY, GP−4735 продвигает FAST, SECONDARY сбрасывает; 5 публикаций/7 отказов. ПК 37 шагов/102 теста, M32R 6 компонентных групп, 17 штатных групп, строгая модель 18 компонентов PASS. Расширенное окно −2652 Б (+808 Б к дефициту базы). Отчёт verification/project-audit/toy06-slu-schedule.md. Владелец H03, полный снимок, компоновка и физический SLU открыты. / commit fd1c4a7fd479934eb2d6d0266462ad16a0b5a539 |
+| TOY-06 — Блокировка гидротрансформатора SLU | Свободна для продолжения | Предыдущий: Codex TOY-06 — SLU в SECONDARY \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | codex/toy-06-secondary-schedule-fea1b366 | 2026-11-20T18:38:46+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit fd1c4a7fd479934eb2d6d0266462ad16a0b5a539 |
 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | На проверке | Чат CAN — поколение RPM/ОЖ H03 \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | codex/can01-engine-rx-generation-1120-c7e4 | 2026-11-20T18:27:55+00:00 | RX11/12 detects native CAN generation changes in its ordinary poll and revokes RPM, ECT and model fields until reattachment. PC 37/102, M32R 18 components +17 native, Bosch PASS_OFFLINE_ONLY. RAM +8 B, code +76 B in bound sizing model. Integration call after init: lfj8_h03_engine_rx_bind_generation(rx, &amp;h03_can_owner.setup_generation). Evidence verification/project-audit/can01-engine-rx-generation.md. Target startup and hardware open. / commit c14dbfda51b20fe58b904f8d220e3d35e63ff5dd |
 | CAN-02 — Общий диспетчер CAN13 | Свободна для продолжения | Предыдущий: Codex — размер диспетчера CAN13 \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | codex/can02-broker-size-01a1f9a2 | 2026-11-20T18:38:24+00:00 | Предыдущая порция принята. Принято в main f366131. Общая проверка: 37 этапов ПК/113 тестов, 18 M32R компонентов, 17 native и 6 дополнительных групп. Новые отдельные проверки и границы: docs/lfj8-h03-memory-layout.md. Завершена порция; оставшиеся требования ТЗ сохранены в карточке. / commit 9cd6fb79735af38f699a39e655d414a45966376e |
 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Выполняется | Codex CAN-03 monitor admission \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | codex/can03-h03-monitor-startup-01a1f99f | 2026-11-20T18:34:34+00:00 | Integrate the REL-02 monitor protection candidate with cold start and native CAN recovery barriers. Replay original receive-enable sites and measure linked Flash/RAM without touching shared owner files. |
@@ -498,13 +498,13 @@
 </details>
 
 <details>
-<summary>TOY-06 — Блокировка гидротрансформатора SLU: На проверке</summary>
+<summary>TOY-06 — Блокировка гидротрансформатора SLU: Свободна для продолжения</summary>
 
 **Сделано.** SLU включён в SECONDARY, его канонический таймер продвигается FAST. Общий цикл проверен по новым адресам: пять публикаций и семь отказов.
 
 **Осталось доделать.** Подключить полный целевой снимок, установить физический канал SLU и измерить удержание/снятие блокировки.
 
-**Сейчас выполняет.** Codex TOY-06 — SLU в SECONDARY — codex-fea1b366-66b6-4667-8206-915153ca1033.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Трасса от квалифицированных входов до канала H03, проверка скольжения, удержания и снятия по отказу.
 
@@ -663,21 +663,6 @@
 - targets/lfj8/check_toyota_adaptation_baseline.py
 - verification/project-audit/toy05-s01-baseline.md
 
-### TOY-06
-
-Чат: Codex TOY-06 — SLU в SECONDARY. Claim ID: 2b42f17a3d734aa29534d7fcee10f2ea.
-
-- targets/lfj8/check_h03_link.py
-- targets/lfj8/check_h03_native_hooks.py
-- targets/lfj8/check_h03_toyota_stack.py
-- targets/lfj8/lfj8_h03_cycle.c
-- targets/lfj8/lfj8_h03_cycle.h
-- targets/lfj8/lfj8_h03_slu.h
-- targets/lfj8/test_lfj8_h03_cycle.c
-- tools/build_pc_checks.py
-- tools/check_integrated_h03.py
-- verification/project-audit/toy06-slu-schedule.md
-
 ### VSS-02
 
 Чат: Codex — общий снимок S51/S83/ATF. Claim ID: da83556f0097488ba39c6ee642e4a002.
@@ -691,6 +676,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-20T18:38:46+00:00 | TOY-06 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T18:38:24+00:00 | CAN-02 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T18:38:10+00:00 | DTC-04 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T18:37:51+00:00 | ORG-01 | complete | codex-integration-01a1f76d-20261120 |
@@ -720,4 +706,3 @@
 | 2026-11-20T18:29:23+00:00 | TOY-05 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-20T18:29:08+00:00 | REL-02 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-20T18:29:01+00:00 | TOY-01 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-20T18:27:55+00:00 | CAN-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
