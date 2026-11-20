@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 249,
+  "sequence": 250,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -113,26 +113,14 @@
       "label": "Codex — foreground H03",
       "branch": "codex/h03-03-foreground-01a1f99f",
       "files": [
-        "docs/lfj8-h03-control-cycle.md",
-        "targets/lfj8/check_h03_link.py",
-        "targets/lfj8/check_h03_phase_boot.py",
-        "targets/lfj8/check_h03_phase_wait.py",
-        "targets/lfj8/h03_phase_boot_fixture.c",
-        "targets/lfj8/h03_phase_startup_hook.S",
-        "targets/lfj8/h03_phase_wait_fixture.c",
-        "targets/lfj8/lfj8_h03_mmio.c",
-        "targets/lfj8/lfj8_h03_mmio.h",
-        "targets/lfj8/lfj8_h03_phase_startup.c",
-        "targets/lfj8/lfj8_h03_phase_startup.h",
-        "verification/e4m3-can-9e1c/h03-phase-boot.json",
-        "verification/e4m3-can-9e1c/h03-phase-wait.json",
+        "docs/lfj8-9e1c-minimum-bench.md",
         "verification/project-audit/2026-11-20-h03-wait-stack.json"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
       "claimed_at": "2026-11-20T16:18:01+00:00",
-      "updated_at": "2026-11-20T16:56:43+00:00",
-      "note": "Подключён reset→00814C→008150 в ELF M32R, первая штатная публикация принята. 12 boot, 22 wait, Flash policy, отрицательные проверки, 65 Python и реестр PASS. Подставлены ранняя периферия и RAM-допуск; реальный inhibit и два BIN открыты.",
+      "updated_at": "2026-11-20T17:00:11+00:00",
+      "note": "Повторяю допуск RAM, отключение выходов и проверку наложения на текущем ELF; сверяю протокол CANHacker.",
       "result": "42a4ffecdb9f99004aa0c5b4d9e889fc90658738"
     },
     "H03-04": {
@@ -2570,9 +2558,17 @@
       "action": "heartbeat",
       "claim_id": "9df078bb4f93459f8e1b8d34220dd825",
       "at": "2026-11-20T16:59:29+00:00"
+    },
+    {
+      "operation_id": "f92712692537420b8a59c9faec41dec8",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "resume",
+      "claim_id": "4998c6dec95f4b50b8a66b64e5679c7d",
+      "at": "2026-11-20T17:00:11+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:59:29+00:00",
+  "updated_at": "2026-11-20T17:00:11+00:00",
   "main_commit": "b2ca79d006426a9839d64e8553cd81bf71953fe9",
   "catalog": [
     {
