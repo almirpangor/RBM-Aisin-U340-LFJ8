@@ -71,6 +71,7 @@ CAN_EXTENSION_ROOTS = (
     "lfj8_h03_cycle_init", "lfj8_h03_cycle_tick", "lfj8_h03_cycle_slt_inputs",
     "lfj8_h03_cycle_prepare_outputs",
     "lfj8_h03_phase_clock_init", "lfj8_h03_phase_clock_release", "lfj8_h03_phase_clock_take",
+    "lfj8_h03_takeover_take_phase",
     "lfj8_h03_engine_feed_task2", "lfj8_h03_can13_init", "lfj8_h03_can13_poll",
 )
 S01_LINK_TABLES = (
@@ -163,6 +164,7 @@ SECTIONS {{
     *(.text.lfj8_h03_can0_diag_* .text.lfj8_h03_can0_telemetry_status
       .text.lfj8_h03_can0_slot13_timestamp .text.slot13_status)
     *(.text.rbm_u340e_runtime_secondary_load_qualify .text.rbm_u340e_hydraulics_control_main_workspace)
+    *(.text.lfj8_h03_takeover_take_phase)
   }}
   .text {FLASH_START:#x} : {{ *(.text .text.*) }}
   .rodata : {{ *(.rodata .rodata.*) }}
@@ -412,7 +414,8 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
             ("h03_mmio", "test_lfj8_h03_mmio.c", ("compact.o",)),
             ("gear_observer", "test_lfj8_gear_observer.c", ("compact.o",)),
             ("h03_output_plan", "test_lfj8_h03_outputs.c", ("compact.o",)),
-            ("h03_takeover", "test_lfj8_h03_takeover.c", ("compact.o",)),
+            ("h03_takeover", "test_lfj8_h03_takeover.c",
+             ("combined.o", "takeover.o", "lfj8_h03_phase_clock.o")),
             ("toyota_gp_runtime", "test_runtime.c", ("compact.o",)),
             ("chery_dtc", "test_chery_dtc_link.c", ("compact-with-dtc.o",)),
             ("h03_torque_can", "test_lfj8_h03_torque.c", ("combined.o", "lfj8_h03_torque.o")),
@@ -421,7 +424,8 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
              ("combined.o", "lfj8_h03_torque.o", "lfj8_h03_torque_can.o")),
             ("h03_engine_qualifier", "test_ta2005_engine_qualifier.c", ("combined.o", "ta2005_engine_qualifier.o")),
             ("h03_cycle", "test_lfj8_h03_cycle.c",
-             ("combined.o", "takeover.o", "lfj8_h03_torque.o", "lfj8_h03_cycle.o")),
+             ("combined.o", "takeover.o", "lfj8_h03_phase_clock.o", "lfj8_h03_torque.o",
+              "lfj8_h03_cycle.o")),
             ("h03_phase_clock", "test_lfj8_h03_phase_clock.c", ("lfj8_h03_phase_clock.o",)),
             ("h03_engine_feed", "test_lfj8_h03_engine_feed.c",
              ("combined.o", "chery_dtc.o", "ta2005_engine_qualifier.o", "lfj8_h03_engine_feed.o")),

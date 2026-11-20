@@ -150,7 +150,7 @@ def inspect_phase_image(run, work, compiler, rom, image):
 def check_full_phases(run, work, compiler, simulator, gdb, flags, rom, controller_object):
     sources = (
         "h03_full_phase_fixture.c", "lfj8_h03_takeover.c", "lfj8_h03_outputs.c",
-        "lfj8_h03_mmio.c",
+        "lfj8_h03_mmio.c", "lfj8_h03_phase_clock.c",
     )
     for name in (*sources, *(header.name for header in HERE.glob("*.h"))):
         shutil.copyfile(HERE / name, work / name)

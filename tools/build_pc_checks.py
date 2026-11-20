@@ -76,6 +76,7 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
             *driver, *common_flags, "-pedantic",
             "-I", "controller/include", "-I", "controller/vendor/toyota/include",
             "targets/lfj8/lfj8_h03_takeover.c", "targets/lfj8/lfj8_h03_outputs.c",
+            "targets/lfj8/lfj8_h03_phase_clock.c",
             "targets/lfj8/test_lfj8_h03_takeover.c", "controller/vendor/toyota/src/factory_core.c",
             "-o", str(takeover_check),
         ])
@@ -143,6 +144,7 @@ def build(compiler: str, output: Path, bosch: tuple[Path, Path, Path] | None) ->
             *driver, *common_flags, "-pedantic", "-I", "controller/include",
             "-I", "controller/vendor/toyota/include", "targets/lfj8/lfj8_h03_cycle.c",
             "targets/lfj8/lfj8_h03_torque.c", "targets/lfj8/lfj8_h03_takeover.c",
+            "targets/lfj8/lfj8_h03_phase_clock.c",
             "targets/lfj8/lfj8_h03_outputs.c", "targets/lfj8/test_lfj8_h03_cycle.c",
             str(library), *runtime_link, "-o", str(cycle_check),
         ])

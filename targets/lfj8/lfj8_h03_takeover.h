@@ -3,6 +3,7 @@
 
 #include "lfj8_donor_io.h"
 #include "lfj8_h03_outputs.h"
+#include "lfj8_h03_phase_clock.h"
 
 enum { LFJ8_H03_ALL_SPARE_PWM_ISOLATED = 0x0f };
 
@@ -15,6 +16,7 @@ typedef struct {
     void (*apply)(void *context);
     void (*inhibit)(void *context);
     uint8_t isolated_pwm_mask;
+    volatile Lfj8H03PhaseClock *phase_clock;
 } Lfj8H03TakeoverOps;
 
 typedef struct {
@@ -39,6 +41,9 @@ typedef struct {
  * inhibit carries out the commissioned failure response even when previous
  * outputs are latched. Arbitration and apply use the H03 OEM functions 0717B8
  * and 046900 respectively.
+ * With phase_clock set, clock_ticks uses the phase publication timebase;
+ * the I/O lock must also exclude that publisher. A command may advance only
+ * after the current phase has been taken and while it is fresh.
  * isolated_pwm_mask is the hardware qualification for unused A/B/C/PC-B. */
 int lfj8_h03_takeover_init(Lfj8H03Takeover *state, const Lfj8H03TakeoverOps *ops,
                           uint32_t max_age_ticks);
@@ -64,5 +69,12 @@ int lfj8_h03_takeover_prepare_plan(Lfj8H03Takeover *state, const Lfj8H03OutputPl
  * same. A rejection invokes inhibit. The caller
  * of either phase must skip the original OEM call after this function. */
 int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation);
+
+/* Foreground check with the same lock used for apply. Call while waiting for
+ * the stock flag as well as when it is set. Revokes a staged command and
+ * invokes the qualified failure response on a missing or invalid phase.
+ * While recovering, reinitialize both the takeover and phase clock under
+ * the owner lock with command authority withdrawn. */
+Lfj8H03PhaseResult lfj8_h03_takeover_take_phase(Lfj8H03Takeover *state, Lfj8H03PhaseEvent *event);
 
 #endif

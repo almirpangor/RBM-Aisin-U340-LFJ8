@@ -37,6 +37,12 @@ int lfj8_h03_phase_clock_init(volatile Lfj8H03PhaseClock *clock, uint32_t now,
  * This event belongs to the H03 output phases. Toyota Task 2 has its own cadence. */
 void lfj8_h03_phase_clock_release(volatile Lfj8H03PhaseClock *clock, uint32_t now);
 
+/* Platform callback for h03_phase_release_hook.S. TML0CT is sampled after
+ * the original publication. Call phase_clock_release only for initialized,
+ * owned RAM and a running timebase. Keep this IRQ callback bounded and leave
+ * control registers (apart from the arithmetic condition bit) untouched. */
+void rbm_h03_phase_release_callback(uint32_t released_at);
+
 /* No backlog is delivered. A missing, late or overwritten event latches a
  * fault until reinitialization with the drivetrain command disabled. Check
  * on each foreground turn, including those with no OEM phase bit pending.

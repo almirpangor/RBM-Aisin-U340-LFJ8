@@ -44,7 +44,12 @@ static int qualified(const Lfj8H03Takeover *state)
             return 0;
         }
     }
-    return ops->clock_ticks(context) - state->command_at < state->max_age_ticks;
+    const uint32_t now = ops->clock_ticks(context);
+    const volatile Lfj8H03PhaseClock *const phase = ops->phase_clock;
+    return now - state->command_at < state->max_age_ticks &&
+        (!phase || (phase->have_release && !phase->faulted &&
+                    phase->latest.sequence == phase->consumed &&
+                    now - phase->latest.released_at <= phase->max_age));
 }
 
 static uint8_t read_shift_levels(const Lfj8RegisterIo *io)
@@ -183,4 +188,26 @@ int lfj8_h03_takeover_apply(Lfj8H03Takeover *state, uint32_t generation)
     }
     io->leave(context, saved);
     return accepted;
+}
+
+Lfj8H03PhaseResult lfj8_h03_takeover_take_phase(Lfj8H03Takeover *state, Lfj8H03PhaseEvent *event)
+{
+    if (!state || !state->ops || !state->ops->phase_clock) {
+        if (event) {
+            *event = (Lfj8H03PhaseEvent){0};
+        }
+        return LFJ8_H03_PHASE_FAULT;
+    }
+    const Lfj8H03TakeoverOps *const ops = state->ops;
+    const Lfj8RegisterIo *const io = ops->io;
+    void *const context = io->context;
+    const uint32_t saved = io->enter(context);
+    const Lfj8H03PhaseResult result =
+        lfj8_h03_phase_clock_take(ops->phase_clock, ops->clock_ticks(context), event);
+    if (result == LFJ8_H03_PHASE_FAULT) {
+        state->pending = 0;
+        ops->inhibit(context);
+    }
+    io->leave(context, saved);
+    return result;
 }
