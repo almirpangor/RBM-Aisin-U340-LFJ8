@@ -256,6 +256,73 @@ static void test_timeouts_and_wrap(void)
     assert(link.phase == CHERY_DTC_LINK_IDLE && link.session.permission_bits == 0x08u);
 }
 
+static void count_to_last_session_step(CheryDtcLink *link)
+{
+    for (unsigned event = 1; event < CHERY_DTC_LINK_SESSION_STEPS; ++event) {
+        assert(!chery_dtc_link_session_step(link));
+        assert(link->session.permission_bits == 0x08);
+    }
+}
+
+static void test_session_timer_reload_and_expiry(void)
+{
+    CheryDtcLink link;
+    CheryDtcState dtc;
+    CheryDtcLinkTx tx;
+    chery_dtc_link_init(&link);
+    chery_dtc_init(&dtc);
+    assert(!chery_dtc_link_session_step(NULL) && !chery_dtc_link_session_step(&link));
+    assert(chery_dtc_store_snapshot(&dtc, 0, 4));
+    open_authorized(&link, &dtc, 0);
+    assert(!chery_dtc_link_expire(&link, 2000)); /* Idle transport uses no session steps. */
+    count_to_last_session_step(&link);
+
+    CheryDtcCanFrame unsupported = {
+        .id = CHERY_DTC_CAN_REQUEST_ID, .length = 2, .data = {1, 0x99},
+    };
+    assert(chery_dtc_link_receive(&link, &dtc, &unsupported, 2001, &tx) == CHERY_DTC_LINK_IGNORED);
+    count_to_last_session_step(&link); /* The unsupported SID reached the dispatcher. */
+    unsupported.id = 0x733;
+    assert(chery_dtc_link_receive(&link, &dtc, &unsupported, 2002, &tx) == CHERY_DTC_LINK_IGNORED);
+    unsupported.id = CHERY_DTC_CAN_REQUEST_ID;
+    unsupported.data[0] = 2; /* Declared payload exceeds DLC. */
+    assert(chery_dtc_link_receive(&link, &dtc, &unsupported, 2003, &tx) == CHERY_DTC_LINK_IGNORED);
+    assert(chery_dtc_link_session_step(&link) && !chery_dtc_link_session_step(&link));
+    assert(link.session.mode_bits == 0x9f && link.session.permission_bits == 0x11);
+
+    const CheryDtcCanFrame clear = {
+        .id = CHERY_DTC_CAN_REQUEST_ID, .length = 4, .data = {3, 0x14, 0xff, 0},
+    };
+    assert(chery_dtc_link_receive(&link, &dtc, &clear, 2004, &tx) == CHERY_DTC_LINK_FRAME_READY);
+    expect_frame(&tx, (const uint8_t[8]){3, 0x7f, 0x14, 0x80});
+    assert(dtc.snapshot_index[0] == 4);
+}
+
+static void test_session_timer_discards_segmented_reply(void)
+{
+    CheryDtcLink link;
+    CheryDtcState dtc;
+    CheryDtcLinkTx tx;
+    chery_dtc_link_init(&link);
+    chery_dtc_init(&dtc);
+    load_five_records(&dtc);
+    open_authorized(&link, &dtc, 0);
+    const CheryDtcCanFrame read = {
+        .id = CHERY_DTC_CAN_REQUEST_ID, .length = 4, .data = {3, 0x17, 0xff, 0},
+    };
+    assert(chery_dtc_link_receive(&link, &dtc, &read, 2, &tx) == CHERY_DTC_LINK_FRAME_READY);
+    const uint32_t first_frame = tx.token;
+    assert(chery_dtc_link_confirm_tx(&link, first_frame, 3, &tx) == CHERY_DTC_LINK_WAITING);
+    count_to_last_session_step(&link);
+    assert(chery_dtc_link_session_step(&link));
+    const CheryDtcCanFrame fc = {
+        .id = CHERY_DTC_CAN_REQUEST_ID, .length = 3, .data = {0x30, 0, 0},
+    };
+    assert(chery_dtc_link_receive(&link, &dtc, &fc, 4, &tx) == CHERY_DTC_LINK_IGNORED);
+    assert(chery_dtc_link_confirm_tx(&link, first_frame, 5, &tx) == CHERY_DTC_LINK_IGNORED);
+    assert(link.phase == CHERY_DTC_LINK_IDLE && link.session.mode_bits == 0x9f);
+}
+
 static void expect_model_records(CheryDtcLink *link, CheryDtcState *dtc, uint32_t tick,
                                  uint8_t limit_status, uint8_t now_status)
 {
@@ -342,6 +409,8 @@ int main(void)
     test_flow_control_and_continuations();
     test_out_of_profile_flow_control();
     test_timeouts_and_wrap();
+    test_session_timer_reload_and_expiry();
+    test_session_timer_discards_segmented_reply();
     test_model_field_loss_and_recovery();
     puts("Chery C0 diagnostic link and independent model-field loss and recovery: passed");
     puts("Chery C0 durable clear: storage before TX, no acknowledgement on failure, retry passed.");

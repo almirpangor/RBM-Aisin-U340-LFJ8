@@ -5,7 +5,8 @@
 
 enum {
     CHERY_DTC_LINK_TX_CONFIRM_TICKS = 180,
-    CHERY_DTC_LINK_FLOW_CONTROL_TICKS = 200
+    CHERY_DTC_LINK_FLOW_CONTROL_TICKS = 200,
+    CHERY_DTC_LINK_SESSION_STEPS = 9
 };
 
 typedef enum {
@@ -31,6 +32,7 @@ typedef struct {
 
 typedef struct {
     CheryDtcSession session;
+    uint8_t session_steps_left;
     CheryDtcLinkPhase phase;
     CheryDtcCanReply reply;
     size_t next_frame;
@@ -42,6 +44,23 @@ typedef struct {
  * FRAME_READY yields one frame and its unique confirmation token. */
 void chery_dtc_link_init(CheryDtcLink *link);
 void chery_dtc_link_end_session(CheryDtcLink *link);
+/* Call once per consumed TA2005 task 12 event, before dispatching the next
+ * request when it expires. This clock is separate from the T6 transport
+ * deadlines. True means the application session has ended and any pending
+ * reply must be abandoned. The caller owns hardware TX abort/drain. */
+static inline bool chery_dtc_link_session_step(CheryDtcLink *link)
+{
+    if (link == NULL || link->session_steps_left == 0) {
+        return false;
+    }
+    --link->session_steps_left;
+    if (link->session_steps_left != 0) {
+        return false;
+    }
+    chery_dtc_link_end_session(link);
+    return true;
+}
+
 bool chery_dtc_link_expire(CheryDtcLink *link, uint32_t tick);
 CheryDtcLinkResult chery_dtc_link_receive(
     CheryDtcLink *link,

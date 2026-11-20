@@ -296,12 +296,57 @@ static void test_foreign_completion_revokes_session(void)
     assert(!dtc.clear_pending && dtc.snapshot_index[0] == 0x15);
 }
 
+static void run_session_deadline(Lfj8H03DtcCan *adapter)
+{
+    for (unsigned event = 1; event < CHERY_DTC_LINK_SESSION_STEPS; ++event) {
+        assert(!lfj8_h03_dtc_can_session_step(adapter));
+    }
+    assert(lfj8_h03_dtc_can_session_step(adapter));
+}
+
+static void test_session_expiry_drains_only_own_reply(void)
+{
+    CanShadow shadow = {.oem_state = 6, .now = 1000, .control = 0x80};
+    const Lfj8RegisterIo io = {.context = &shadow, .read8 = read8, .read16 = read16,
+                             .write8 = write8, .enter = enter, .leave = leave};
+    Lfj8H03DtcCan adapter;
+    CheryDtcState dtc;
+    assert(lfj8_h03_dtc_can_init(&adapter, 100));
+    chery_dtc_init(&dtc);
+    assert(chery_dtc_store_snapshot(&dtc, 0, 4));
+    const Lfj8H03DtcReceive start = rx(1, 995, 3, 2, 0x10, 0x86);
+
+    /* A pending telemetry TX leaves the diagnostic reply queued. */
+    assert(lfj8_h03_dtc_can_poll(&adapter, &dtc, &io, 1, 1, 0, &start) == LFJ8_H03_DTC_SLOT_RESERVED);
+    run_session_deadline(&adapter);
+    assert(lfj8_h03_dtc_can_poll(&adapter, &dtc, &io, 1, 1, 1, NULL) == LFJ8_H03_DTC_SLOT_FREE);
+    assert(shadow.writes == 0 && shadow.control == 0x80);
+    complete(&shadow, 1001, 0x81);
+    shadow.now = 1002;
+
+    assert(lfj8_h03_dtc_can_poll(&adapter, &dtc, &io, 1, 1, 2, &start) == LFJ8_H03_DTC_SLOT_RESERVED);
+    assert(shadow.requests == 1);
+    shadow.control = 0x82;
+    const unsigned writes = shadow.writes;
+    run_session_deadline(&adapter);
+    assert(shadow.writes == writes && shadow.aborts == 0 && adapter.link.session.mode_bits == 0x9f);
+    assert(lfj8_h03_dtc_can_poll(&adapter, &dtc, &io, 1, 1, 3, NULL) == LFJ8_H03_DTC_SLOT_RESERVED);
+    assert(shadow.aborts == 1 && shadow.control == 2 && shadow.requests == 1);
+    complete(&shadow, 1003, 1);
+    shadow.now = 1004;
+    const Lfj8H03DtcReceive clear = rx(1, 1004, 4, 3, 0x14, 0xff);
+    assert(lfj8_h03_dtc_can_poll(&adapter, &dtc, &io, 1, 1, 4, &clear) == LFJ8_H03_DTC_SLOT_RESERVED);
+    expect_reply(&shadow, (const uint8_t[8]){3, 0x7f, 0x14, 0x80});
+    assert(dtc.snapshot_index[0] == 4);
+}
+
 int main(void)
 {
     test_basiccan_decode();
     test_segmented_read();
     test_foreign_completion_revokes_session();
     test_timeout_abort_and_recovery();
+    test_session_expiry_drains_only_own_reply();
     puts("H03 CAN0 diagnostic TX13 completion, stale Flow Control, abort and recovery: PASS");
     return 0;
 }

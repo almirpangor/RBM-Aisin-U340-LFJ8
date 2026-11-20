@@ -42,14 +42,28 @@ bool lfj8_h03_dtc_can_init(Lfj8H03DtcCan *state, uint16_t max_receive_age_bits)
     return true;
 }
 
-static void stop_session(Lfj8H03DtcCan *state)
+static void discard_submission(Lfj8H03DtcCan *state)
 {
-    chery_dtc_link_end_session(&state->link);
     if (state->submission == SUBMITTED) {
         state->submission = DRAINING;
     } else if (state->submission == QUEUED) {
         state->submission = EMPTY;
     }
+}
+
+static void stop_session(Lfj8H03DtcCan *state)
+{
+    chery_dtc_link_end_session(&state->link);
+    discard_submission(state);
+}
+
+bool lfj8_h03_dtc_can_session_step(Lfj8H03DtcCan *state)
+{
+    if (!state || !chery_dtc_link_session_step(&state->link)) {
+        return false;
+    }
+    discard_submission(state);
+    return true;
 }
 
 static Lfj8H03DtcSlotUse lose_ownership(Lfj8H03DtcCan *state)

@@ -28,6 +28,11 @@ typedef enum {
  * below half a wrap. Reinitialize only after CAN reset or a drained slot. */
 bool lfj8_h03_dtc_can_init(Lfj8H03DtcCan *state, uint16_t max_receive_age_bits);
 
+/* One consumed session scheduler event, serialized with poll and CAN
+ * reinitialization. Deliver due expiry before the next request. On expiry
+ * poll drains an outstanding submission with the normal TX13 lease rules. */
+bool lfj8_h03_dtc_can_session_step(Lfj8H03DtcCan *state);
+
 /* Decode a coherent 16-byte copy of BasicCAN slot 14/15. Supply the
  * control byte captured before clearing TRFIN and the slot's EXTID bit.
  * The dispatcher validates that the slot stayed stable during the copy. */
