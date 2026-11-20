@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 87,
+  "sequence": 88,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -333,8 +333,8 @@
       "stage": "in_progress",
       "claim_id": "c53be951e4c44833aea3f77adecbd92b",
       "claimed_at": "2026-11-20T16:13:59+00:00",
-      "updated_at": "2026-11-20T16:13:59+00:00",
-      "note": "Проверяю отзыв подтверждения снижения момента, когда заём CAN13 под телеметрию превышает допустимый интервал и отмена ещё не освободила слот.",
+      "updated_at": "2026-11-20T16:15:07+00:00",
+      "note": "Регрессия воспроизведена до исправления: подтверждение оставалось активным после истечения срока. Внесён отзыв с ожиданием освобождения слота; идут ПК и M32R.",
       "result": null
     }
   },
@@ -1034,9 +1034,17 @@
       "action": "review",
       "claim_id": "5a7d7e355e8042b7b3e05cdba92c350f",
       "at": "2026-11-20T16:14:42+00:00"
+    },
+    {
+      "operation_id": "a4b1eeecb2844c968ba8040c258e9891",
+      "task": "CAN-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "c53be951e4c44833aea3f77adecbd92b",
+      "at": "2026-11-20T16:15:07+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:14:42+00:00",
+  "updated_at": "2026-11-20T16:15:07+00:00",
   "main_commit": "a52ab8ce955959ed109d53e6c554beb68f814c2e",
   "catalog": [
     {
