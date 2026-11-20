@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 144,
+  "sequence": 145,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -36,6 +36,8 @@
       "files": [
         "targets/lfj8/check_h03_dtc_basiccan.py",
         "targets/lfj8/check_h03_dtc_foreground.py",
+        "targets/lfj8/h03_dtc_rx_hook.S",
+        "targets/lfj8/h03_dtc_rx_hook_fixture.c",
         "targets/lfj8/lfj8_h03_dtc_foreground.c",
         "targets/lfj8/lfj8_h03_dtc_foreground.h",
         "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
@@ -44,14 +46,15 @@
         "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
         "verification/project-audit/dtc02-basiccan.md",
         "verification/project-audit/dtc02-foreground.md",
+        "verification/project-audit/dtc02-native-rx-hook.md",
         "verification/project-audit/dtc02-preclear-capture.md"
       ],
-      "stage": "review",
+      "stage": "in_progress",
       "claim_id": "36f7538204a944d68df89f474cc590e4",
       "claimed_at": "2026-11-20T16:00:26+00:00",
-      "updated_at": "2026-11-20T16:26:43+00:00",
-      "note": "Связаны BasicCAN RX, очередь и CAN13 через отдельный foreground-адаптер. 4 сценария на ПК и M32R, ПК 35 шагов и отдельная сверка S03, M32R link 17 и OEM RX 15 — PASS на main 952658b. Доказательства verification/project-audit/dtc02-foreground.md. Интегратору переданы также изменения захвата a4f93e5. Нативные точки вызова, полный стек и стенд открыты.",
-      "result": "689f4e9090b723cdbd49937303dfa5631b93c6ea"
+      "updated_at": "2026-11-20T16:29:22+00:00",
+      "note": "Проверяю обёртку штатной попытки RX по 0x001534 с реальной очередью. Сравнение контекста и OEM-трасс с исходником. Подмена только в симуляторе, граница 0x008000 учтена.",
+      "result": null
     },
     "CAN-03": {
       "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
@@ -1621,9 +1624,17 @@
       "action": "resume",
       "claim_id": "806db3cf9bd24f39aaf4b40aeb1d341b",
       "at": "2026-11-20T16:29:13+00:00"
+    },
+    {
+      "operation_id": "fe3229140c2f4aed990478718ddf55bc",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "resume",
+      "claim_id": "36f7538204a944d68df89f474cc590e4",
+      "at": "2026-11-20T16:29:22+00:00"
     }
   ],
-  "updated_at": "2026-11-20T16:29:13+00:00",
+  "updated_at": "2026-11-20T16:29:22+00:00",
   "main_commit": "952658bff619a36f4921d637a2f0efae621f416d",
   "catalog": [
     {
