@@ -108,7 +108,8 @@ def build_embedded(compiler, work, architecture, sh_cpu, use_9e1c_base=False):
             raise ValueError(f"Expected M32R compiler. Detected {triple}")
         sources = CORE + DONOR_ADAPTER
         if use_9e1c_base:
-            sources.extend((H03_ATF, H03_ATF_FAULT, H03_ENGINE_RX, H03_MMIO, H03_GEAR))
+            sources.extend((H03_ATF, H03_ATF_FAULT, H03_ENGINE_RX, H03_MMIO, H03_GEAR,
+                            "lfj8_h03_toyota_source.c"))
         target_flags = ["-m32r", "-mmodel=medium", "-msdata=none"]
         assembler_flags = ["-Wa,-EB"]
         output_name = "lfj8_9e1c_m32r.o" if use_9e1c_base else "lfj8_m32r.o"
@@ -124,11 +125,15 @@ def build_embedded(compiler, work, architecture, sh_cpu, use_9e1c_base=False):
         expected_machine = 42
         expected_sh_flags = {"m2": 2, "m2e": 11}[sh_cpu]
 
+    includes = ["-I", "."]
+    if architecture == "m32r" and use_9e1c_base:
+        includes.extend(("-I", PROJECT / "controller/include",
+                         "-I", PROJECT / "controller/vendor/toyota/include"))
     objects = []
     for source in sources:
         obj = work / f"{architecture}-{Path(source).stem}.o"
         command(compiler, *target_flags, *assembler_flags, *FREESTANDING, *WARNINGS,
-                "-I", ".", "-c", source, "-o", obj)
+                *includes, "-c", source, "-o", obj)
         objects.append(obj)
 
     output = work / output_name
@@ -186,6 +191,9 @@ def main():
                "host_check.c", "build.py",
                "lfj8_bridge.h", "lfj8_donor_io.h", "lfj8_chery_tx.h", "lfj8_selector_adc.h",
                "ta2005_chery_inputs.h"]
+    if args.base_9e1c:
+        sources.extend(("lfj8_h03_toyota_source.c", "lfj8_h03_toyota_source.h",
+                        "lfj8_h03_application.h", "lfj8_h03_cycle.h"))
     manifest = {"sources": {name: summary(ROOT / name) for name in sources}, "artifacts": {}}
     if args.sh_cc:
         s05_files = [*S05_ADAPTER, "../pcm-s05/native/s05_chery.h"]
