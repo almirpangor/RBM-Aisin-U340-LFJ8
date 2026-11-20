@@ -16,7 +16,10 @@ MONITOR_GATE, MONITOR_DISPATCH = 0x0034A0, 0x0034B4
 ADDRESS_CHECK = 0x003528
 INSTALL_BEGIN, INSTALL_ACCEPT, INSTALL_DENY = 0x004F54, 0x004F84, 0x004F7C
 SERVICE_CONFIG = 0x000201
-RAM_START, RAM_LIMIT = 0x806B40, 0x807000
+PRIMARY_CANDIDATE_START, PRIMARY_CANDIDATE_LIMIT = 0x806B40, 0x807000
+H03_RAM = (0x804000, 0x80A000)
+PROTECTED_START, PROTECTED_LIMIT = 0x808578, 0x808DB4
+MAX_SPAN = 0xFF  # The stock checker truncates its count operand to one byte.
 
 FIXTURE = """
     .section .fixture,"ax",@progbits
@@ -70,11 +73,62 @@ def observe(run, work, gdb, entry, args, stops, config):
     return pc, r0
 
 
-def check(base, compiler):
+def storage_blocks(raw, identity):
+    report = json.loads(raw)
+    if (not isinstance(report, dict) or report.get("base") != identity or
+            report.get("artifact_kind") != "M32R_ABI_storage_address_model"):
+        raise ValueError("Expected an M32R storage address model for the selected H03")
+    blocks = report.get("blocks")
+    if not isinstance(blocks, dict) or not blocks:
+        raise ValueError("Storage report has no address blocks")
+    ranges = {}
+    for name, block in blocks.items():
+        if not isinstance(block, dict):
+            raise ValueError(f"Invalid storage block: {name}")
+        start, end, size = (block.get(key) for key in ("address", "end_exclusive", "bytes"))
+        if (any(type(value) is not int for value in (start, end, size)) or
+                not H03_RAM[0] <= start < end <= H03_RAM[1] or size != end - start):
+            raise ValueError(f"Invalid H03 RAM interval: {name}")
+        ranges[name] = (start, end)
+    ordered = sorted(ranges.values())
+    if any(end > next_start for (_, end), (next_start, _) in zip(ordered, ordered[1:])):
+        raise ValueError("Storage blocks overlap")
+    return ranges
+
+
+def check_storage_spans(run, work, gdb, blocks):
+    def check_span(start, count):
+        # 0x003528 requires a strict comparison of start+count at the lower edge.
+        expected = start + count < PROTECTED_START or start >= PROTECTED_LIMIT
+        pc, result = observe(run, work, gdb, ADDRESS_CHECK, (start, count, 0), ("fixture_return",), 1)
+        if pc < 0x100000 or result != int(expected):
+            raise ValueError(f"Unexpected monitor span decision for {start:#x} + {count}")
+        return {"address": f"0x{start:06X}", "bytes": count, "accepted": bool(result)}
+
+    boundary_cases = [check_span(start, count) for start, count in (
+        (PROTECTED_START - 2, 1), (PROTECTED_START - 1, 1), (PROTECTED_START, 1),
+        (PROTECTED_START - MAX_SPAN - 1, MAX_SPAN), (PROTECTED_START - MAX_SPAN, MAX_SPAN),
+        (PROTECTED_LIMIT - 1, 1), (PROTECTED_LIMIT - 1, MAX_SPAN), (PROTECTED_LIMIT, 1),
+    )]
+    coverage = {}
+    for name, (start, end) in blocks.items():
+        cases = [check_span(address, min(MAX_SPAN, end - address))
+                 for address in range(start, end, MAX_SPAN)]
+        coverage[name] = {"start": f"0x{start:06X}", "end_exclusive": f"0x{end:06X}",
+                          "tested_bytes": end - start,
+                          "bytes_in_accepted_spans": sum(case["bytes"] for case in cases if case["accepted"]),
+                          "cases": cases}
+    return {"stock_protected_ram": [f"0x{PROTECTED_START:06X}", f"0x{PROTECTED_LIMIT:06X}"],
+            "boundary_cases": boundary_cases, "blocks": coverage, "ram_ownership_verified": False}
+
+
+def check(base, compiler, storage_report=None):
     identity = identify_h03(base)
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"] or rom[SERVICE_CONFIG] != 1:
         raise ValueError("The H03 service configuration or source differs")
+    storage_raw = storage_report.read_bytes() if storage_report is not None else None
+    blocks = storage_blocks(storage_raw, identity) if storage_raw is not None else None
 
     admission = []
     install = []
@@ -111,24 +165,30 @@ def check(base, compiler):
                     raise ValueError(f"Unexpected update boundary for {address:#x}")
                 install.append({"config": config, "start": f"0x{address:06X}", "accepted": allowed})
 
-        for start, allowed in ((RAM_START, True), (RAM_LIMIT - 1, True), (0x808578, False), (0x808DB3, False)):
+        for start, allowed in ((PRIMARY_CANDIDATE_START, True), (PRIMARY_CANDIDATE_LIMIT - 1, True),
+                               (PROTECTED_START, False), (PROTECTED_LIMIT - 1, False)):
             pc, result = observe(run, work, gdb, ADDRESS_CHECK, (start, 1, 0), ("fixture_return",), 1)
             if pc < 0x100000 or result != int(allowed):
                 raise ValueError(f"Unexpected monitor's address decision for {start:#x}")
             memory_bounds.append({"address": f"0x{start:06X}", "accepted": allowed})
+        spans = check_storage_spans(run, work, gdb, blocks) if blocks is not None else None
 
-    return {"base": identity, "monitor_config_cases": admission, "update_boundary_cases": install,
-            "monitor_address_cases": memory_bounds, "transport_executed": False,
-            "flash_or_ram_write_routine_executed": False, "hardware_executed": False}
+    report = {"base": identity, "monitor_config_cases": admission, "update_boundary_cases": install,
+              "monitor_address_cases": memory_bounds, "transport_executed": False,
+              "flash_or_ram_write_routine_executed": False, "hardware_executed": False}
+    if spans is not None:
+        report["monitor_storage_spans"] = {"storage_report_sha256": sha256(storage_raw).hexdigest(), **spans}
+    return report
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base", required=True, type=Path)
     parser.add_argument("--gcc", required=True, type=Path)
+    parser.add_argument("--storage-report", type=Path, help="also check spans from check_h03_storage.py")
     args = parser.parse_args()
     try:
-        print(json.dumps(check(args.base, args.gcc.resolve()), indent=2))
+        print(json.dumps(check(args.base, args.gcc.resolve(), args.storage_report), indent=2))
     except subprocess.CalledProcessError as error:
         parser.exit(1, (error.stderr or error.stdout or str(error).encode()).decode(errors="replace") + "\n")
     except (OSError, ValueError, subprocess.TimeoutExpired) as error:
