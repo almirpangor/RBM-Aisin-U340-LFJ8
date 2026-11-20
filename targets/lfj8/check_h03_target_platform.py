@@ -4,10 +4,15 @@ import argparse
 import json
 from pathlib import Path
 import subprocess
+import sys
 from tempfile import TemporaryDirectory
 
 from check_h03_link import HERE, ROOT, TARGET
 from lfj8_h03_layout import alloc_sections, read_elf
+
+
+RELEASE_SYMBOL = "rbm_h03_toyota_release_state"
+PLATFORM_ENTRIES = ("rbm_h03_target_initialize", "rbm_h03_target_take_toyota")
 
 
 # Only this simulator translates the profile to the stand-in input and clock providers.
@@ -31,7 +36,73 @@ extern const Lfj8H03TargetServiceConfig test_can_service_config;
 """
 
 
-def check(compiler, controller, bridge):
+def common_placement(run, work, base, compiler, controller, bridge, profile):
+    storage = work / "storage.json"
+    layout = work / "layout"
+    run(sys.executable, "-B", HERE / "check_h03_storage.py", "--base", base, "--gcc", compiler,
+        "--out", storage)
+    attempt = run(sys.executable, "-B", ROOT / "tools/check_h03_image_layout.py",
+                  "--base", base, "--gcc", compiler, "--controller", controller, "--bridge", bridge,
+                  "--profile", "padding-candidate", "--with-bindings", "--with-dtc-rx",
+                  "--storage-report", storage, "--application-profile", profile, "--out", layout,
+                  checked=False)
+    report_path = layout / "layout.json"
+    if not report_path.is_file():
+        attempt.check_returncode()
+        raise ValueError("Common layout did not produce an address report")
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    if attempt.returncode and report["status"] != "FAIL_BINDINGS":
+        attempt.check_returncode()
+    target = report["target_platform"]
+    unresolved = report.get("unresolved_symbols", [])
+    release = target["release_ram"]
+    if (not release or release["symbol"] != RELEASE_SYMBOL or release["bytes"] != 16 or
+            release["alignment"] != 4 or release["address"] % 4 or
+            any(symbol in unresolved for symbol in (RELEASE_SYMBOL, *PLATFORM_ENTRIES))):
+        raise ValueError("Common layout did not resolve the platform and its typed Toyota release RAM")
+    return {**target, "common_layout_status": report["status"], "unresolved_symbols": unresolved,
+            "base_sha256": report["base"]["sha256"],
+            "common_flash_bytes": report["flash_payload_bytes"],
+            "typed_inventory_bytes": json.loads(storage.read_text(encoding="utf-8"))["storage_bytes"]}
+
+
+def placed_objects(run, compiler, flags, profile_flag, sources, sections, placement):
+    flash = placement.get("flash_placements", [])
+    expected = {section["name"]: (section["size"], section["flags"]) for section in sections}
+    actual = {item["section"]: (item["bytes"], item["flags"]) for item in flash}
+    if actual != expected or len(flash) != len(expected):
+        raise ValueError("Common layout does not cover the compiled platform sections exactly")
+
+    objcopy = run(compiler, "-print-prog-name=objcopy").stdout.strip()
+    names = {item["section"]: f".platform_at_{index}" for index, item in enumerate(flash)}
+    run(objcopy, *(f"--rename-section={old}={new}" for old, new in names.items()),
+        "platform.o", "placed-platform.o")
+    run(*flags, profile_flag, "-fno-common", "-c", sources[0], "-o", "fixture.o")
+    # Replace the fixture's ordinary allocation with the common layout's absolute alias.
+    run(objcopy, f"--weaken-symbol={RELEASE_SYMBOL}", "fixture.o", "placed-fixture.o")
+    address = placement["release_ram"]["address"]
+    options = ["-Wl,-N", f"-Wl,--defsym={RELEASE_SYMBOL}={address:#x}"]
+    options.extend(f'-Wl,--section-start={names[item["section"]]}={item["address"]:#x}' for item in flash)
+    return ("placed-platform.o", "placed-fixture.o", *sources[1:]), options, names
+
+
+def verify_placed_elf(linked, placement, names):
+    sections = {section["name"]: section for section in linked["sections"]}
+    for item in placement["flash_placements"]:
+        section = sections[names[item["section"]]]
+        if (section["address"], section["size"], section["flags"]) != (
+                item["address"], item["bytes"], item["flags"]):
+            raise ValueError("Simulator ELF moved platform section " + item["section"])
+    address = placement["release_ram"]["address"]
+    release = linked["symbols"][RELEASE_SYMBOL]
+    if (release["section"], release["address"]) != (0xFFF1, address):
+        raise ValueError("Simulator ELF did not bind the absolute Toyota release address")
+    descriptor = sections[names[".rodata.toyota_source"]]["data"]
+    if int.from_bytes(descriptor[:4], "big") != address:
+        raise ValueError("Linked Toyota source descriptor does not point to the typed release field")
+
+
+def check(compiler, controller, bridge, *, base=None):
     source = HERE / "lfj8_h03_target_platform.c"
     with TemporaryDirectory(prefix="rbm-h03-target-platform-") as directory:
         work = Path(directory)
@@ -74,7 +145,7 @@ def check(compiler, controller, bridge):
         shim = work / "sim-crt.c"
         shim.write_text("void __init(void) {}\nvoid __fini(void) {}\n", encoding="ascii")
         crt = run(compiler, *TARGET, "-print-file-name=crt0.o").stdout.strip()
-        sources = (
+        source_names = (
             "test_lfj8_h03_target_platform.c", "h03_application_hooks.S", "h03_phase_startup_hook.S",
             "h03_phase_release_hook.S", "lfj8_h03_application_binding.c",
             "lfj8_h03_application.c", "lfj8_h03_phase_startup.c", "lfj8_h03_phase_clock.c",
@@ -82,15 +153,26 @@ def check(compiler, controller, bridge):
             "lfj8_h03_sensor_target.c", "lfj8_h03_sensor_feed.c", "lfj8_h03_atf_tml0.c",
             "lfj8_h03_engine_feed.c", "ta2005_engine_qualifier.c",
         )
-        run(*flags, profile_flag, "-nostartfiles", crt, "platform.o", *(HERE / name for name in sources),
+        sources = tuple(HERE / name for name in source_names)
+        objects = ("platform.o", *sources)
+        placed = None
+        link_options = []
+        if base is not None:
+            placed = common_placement(run, work, base, compiler, controller, bridge, profile)
+            objects, link_options, names = placed_objects(
+                run, compiler, flags, profile_flag, sources, sections, placed)
+        run(*flags, profile_flag, "-nostartfiles", crt, *objects, *link_options,
             ROOT / "diagnostics/chery_dtc.c", shim, bridge, controller,
             "-Wl,--gc-sections,-e,_start,--start-group", "-lc", "-lgloss", "-lgcc", "-Wl,--end-group",
             "-o", "platform.elf")
         linked = read_elf(work / "platform.elf", 2)
-        release = linked["symbols"]["rbm_h03_toyota_release_state"]
-        if (release["size"] != 16 or release["address"] % 4 or
-                not linked["sections"][release["section"]]["flags"] & 1):
-            raise ValueError("The simulator release alias disagrees with the target RAM requirement")
+        if placed is not None:
+            verify_placed_elf(linked, placed, names)
+        else:
+            release = linked["symbols"][RELEASE_SYMBOL]
+            if (release["size"] != 16 or release["address"] % 4 or
+                    not linked["sections"][release["section"]]["flags"] & 1):
+                raise ValueError("The simulator release alias disagrees with the target RAM requirement")
         simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")
         output = run(simulator, "--memory-size=16M", "platform.elf").stdout.strip()
         expected = "H03 target platform: native startup, CAN service lifecycle, Toyota rollover and inhibition PASS"
@@ -100,26 +182,29 @@ def check(compiler, controller, bridge):
                 "missing_can_service_profile_refused": True,
                 "flash_section_bytes": flash,
                 "required_release_alias_bytes": 16, "platform_object_writable_bytes": 0,
-                "hardware_tested": False, "flashable_image": None}
+                "placed_model": placed, "hardware_tested": False, "flashable_image": None}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("gcc", "controller", "bridge", "out"):
         parser.add_argument(f"--{name}", type=Path, required=True)
+    parser.add_argument("--base", type=Path, help="Also run the M32R model at the common layout's Flash and typed RAM addresses")
     args = parser.parse_args()
     inputs = [getattr(args, name).resolve() for name in ("gcc", "controller", "bridge")]
+    base = args.base.resolve() if args.base else None
     if args.out.suffix.lower() != ".json" or any(args.out.resolve() == path or
-            (args.out.exists() and path.exists() and args.out.samefile(path)) for path in inputs):
+            (args.out.exists() and path.exists() and args.out.samefile(path))
+            for path in (*inputs, base) if path is not None):
         parser.error("Use a separate JSON report")
     try:
-        report = check(*inputs)
+        report = check(*inputs, base=base)
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         print(report["m32r"])
     except subprocess.CalledProcessError as error:
         parser.exit(1, (error.stderr or error.stdout or str(error)) + "\n")
-    except (OSError, ValueError, subprocess.TimeoutExpired) as error:
+    except (KeyError, OSError, ValueError, subprocess.TimeoutExpired) as error:
         parser.exit(1, f"{error}\n")
 
 
