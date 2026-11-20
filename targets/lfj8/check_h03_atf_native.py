@@ -21,6 +21,13 @@ HOOKS = (
     (0x03B218, "filtered", "2044f000"),
     (0x03B21C, "end", "28ef2eef"),
 )
+TML0_EVIDENCE = (
+    (0x009E78, "e4800202602720046109440121044078"),  # PRS1 = 9 at initialization
+    (0x009F18, "e180020320916209b00200022201f000"),  # restore PRS1 if changed
+    (0x00A82C, "e28003e021c22140"),                 # stock 32-bit counter read
+    (0x00A86C, "e48003eb60012004"),                 # select Clock Bus 1
+    (0x00A92C, "e18003eb20916201b00200022201f000"),  # restore TML0CR if changed
+)
 FIXTURE_FIELDS = (
     "irq_enabled", "acquisitions", "reads", "site", "source", "valid", "sample_us", "q8",
 )
@@ -42,7 +49,7 @@ def run(*command, directory):
 
 
 def emulate(directory, debugger, patches, mode, fault, phase, divider, rom_override=None,
-            clock_fail=0, stack_word=0xA55A6996):
+            clock_fail=0, adc_us=100, publish_us=102, *, stack_word=0xA55A6996):
     stack_seed = stack_word.to_bytes(4, "big") * ((STACK_END - STACK_FLOOR) // 4)
     (directory / "stack.seed").write_bytes(stack_seed)
     seed_stack = f"restore stack.seed binary {STACK_FLOOR:#x}"
@@ -61,6 +68,8 @@ def emulate(directory, debugger, patches, mode, fault, phase, divider, rom_overr
         f"set {{unsigned short}}0x80621a = {phase}",
         f"set {{unsigned short}}0x806234 = {divider}",
         f"set atf_fixture_clock_fail = {clock_fail}",
+        f"set atf_fixture_adc_us = {adc_us:#x}",
+        f"set atf_fixture_publish_us = {publish_us:#x}",
     ]
     commands.extend(f"set {{unsigned int}}{site:#x} = {branch:#x}" for site, branch in patches.items())
     if rom_override is not None:
@@ -154,6 +163,10 @@ def check(base, gcc):
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
         raise ValueError("H03 changed after identification")
+    for address, instruction in TML0_EVIDENCE:
+        expected = bytes.fromhex(instruction)
+        if rom[address:address + len(expected)] != expected:
+            raise ValueError(f"Unexpected stock TML0 setup at {address:#x}")
     debugger = gcc.with_name(f"m32r-elf-gdb{gcc.suffix}")
     measured_voltage = 0x3FC4E000  # 315 * 5 / 1024 as binary32
     rom_voltage = int.from_bytes(rom[0x016840:0x016844], "big")
@@ -167,11 +180,13 @@ def check(base, gcc):
          (0x03B130, 0x03B1A4), measured_voltage),
         ("new AN1 with identical bits", (0, 0, 0, 0),
          (0x03B138, 0x03B1A4), measured_voltage),
-        ("clock absent at ADC", (0, 0, 0, 0, None, 1),
+        ("clock unqualified at ADC", (0, 0, 0, 0, None, 1),
          (0x03B138, 0x03B1A4), measured_voltage),
-        ("clock lost at publication", (0, 0, 0, 0, None, 2),
+        ("PRS1 changed at publication", (0, 0, 0, 0, None, 2),
          (0x03B138, 0x03B1A4), measured_voltage),
-        ("clock lost at foreground read", (0, 0, 0, 0, None, 4),
+        ("TML0 source changed at foreground read", (0, 0, 0, 0, None, 4),
+         (0x03B138, 0x03B1A4), measured_voltage),
+        ("TML0 rollover", (0, 0, 0, 0, None, 0, 0xFFFFFFFE, 1),
          (0x03B138, 0x03B1A4), measured_voltage),
     )
     with TemporaryDirectory(prefix="rbm-h03-atf-") as temp:
@@ -205,8 +220,10 @@ def check(base, gcc):
             "-ffunction-sections", "-fdata-sections", "-nostdlib",
             "-Wl,-T,stock.ld,--gc-sections", "-Wl,--wrap=rbm_h03_atf_adc_callback",
             "-Wl,--wrap=rbm_h03_atf_source_callback", "-Wl,--wrap=rbm_h03_atf_publish_callback",
+            "-Wl,--wrap=rbm_h03_atf_now_us",
             "stock.S", here / "h03_atf_hooks.S", here / "h03_atf_hook_fixture.c",
-            here / "lfj8_h03_atf_target.c", here / "lfj8_h03_atf.c", here / "lfj8_h03_mmio.c",
+            here / "lfj8_h03_atf_target.c", here / "lfj8_h03_atf_tml0.c",
+            here / "lfj8_h03_atf.c", here / "lfj8_h03_mmio.c",
             "-o", "stock.elf", directory=directory)
         patches, replacement = branch_patches(rom, directory, gcc)
         temperatures = {}
@@ -231,12 +248,14 @@ def check(base, gcc):
                 raise ValueError(f"{label}: unexpected sequence of OEM continuations")
             temperatures[label] = temperature
             site = expected[-1] if label != "skipped" else 0
-            measured = label in ("direct", "filtered")
-            source_read = measured or replaced or label in ("clock lost at publication", "clock lost at foreground read")
-            source = 100 if source_read else (0xFFFFFFFF if site else 0)
-            q8 = {"direct": 25600, "filtered": 16640}.get(label, 0)
-            acquisitions = 2 if replaced else int(label != "clock absent at ADC")
-            if fixture != (0, acquisitions, reads, site, source, int(measured), 100 if measured else 0, q8):
+            clock_fail = inputs[5] if len(inputs) > 5 else 0
+            adc_us = inputs[6] if len(inputs) > 6 else 100
+            source_read = reads and site in (0x03B1A4, 0x03B218) and clock_fail != 1
+            source = adc_us if source_read else (0xFFFFFFFF if site else 0)
+            measured = source_read and not replaced and not clock_fail
+            q8 = {0x03B1A4: 25600, 0x03B218: 16640}[site] if measured else 0
+            acquisitions = 2 if replaced else int(clock_fail != 1)
+            if fixture != (0, acquisitions, reads, site, source, int(measured), adc_us if measured else 0, q8):
                 raise ValueError(f"{label}: unexpected adapter outcome (IRQ, ADC, read, publication): {fixture!r}")
             print(f"{label}: stock {stock_stack}, hooked {hooked_stack} bytes "
                   "(AN1 / temperature / foreground read)")
