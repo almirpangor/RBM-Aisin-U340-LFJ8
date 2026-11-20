@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 487,
+  "sequence": 488,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -281,11 +281,11 @@
         "targets/lfj8/verify_h03_torque.py",
         "verification/project-audit/can04-progress-deadline.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "001fe3e513b645ef9370cb6af6d76bc2",
       "claimed_at": "2026-11-20T18:33:48+00:00",
-      "updated_at": "2026-11-20T18:40:13+00:00",
-      "note": "Передаю на объединение. Статус в срок захвата ≥60 мс и на конце импульса не подтверждает момент. 6 границ + срок импульса, ПК 37 шагов/113 тестов, M32R 18 компонентов и 17 штатных групп. Два ST10 OFFLINE_ONLY: раньше 3 REFRESH, теперь CANCEL в 460 мс, ноль при 510. Prefix ELF +48 Б, запас 868. Отчёт verification/project-audit/can04-progress-deadline.md. Реальные метки и калибровка открыты.",
+      "updated_at": "2026-11-20T19:28:47+00:00",
+      "note": "Порция принята в опубликованную main ae393e8. Общие проверки: 41 этап ПК/120 тестов, 18+8 компонентных, 22 нативные и 6 размещённых M32R. Технический остаток ТЗ сохранён в прежней карточке; выпуск двух BIN открыт.",
       "result": "07fc25af65515ddd77b680b37423ddbce80f4d55"
     },
     "MODE-01": {
@@ -4456,9 +4456,17 @@
       "action": "complete",
       "claim_id": "e050fbd1bb5d4d14a3f58aac59b8cf86",
       "at": "2026-11-20T19:28:30+00:00"
+    },
+    {
+      "operation_id": "379254c308bb4f429218ab7b930b7c0d",
+      "task": "CAN-04",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "001fe3e513b645ef9370cb6af6d76bc2",
+      "at": "2026-11-20T19:28:47+00:00"
     }
   ],
-  "updated_at": "2026-11-20T19:28:30+00:00",
+  "updated_at": "2026-11-20T19:28:47+00:00",
   "main_commit": "ae393e852fd8e110892c6725f219f3e43585d33c",
   "catalog": [
     {
