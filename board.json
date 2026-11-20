@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 736,
+  "sequence": 737,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -66,8 +66,8 @@
       "stage": "in_progress",
       "claim_id": "2101184d356545bfa9a1e0bd6716a9ee",
       "claimed_at": "2026-11-20T22:38:33+00:00",
-      "updated_at": "2026-11-20T22:38:33+00:00",
-      "note": "Включены сданные CAN-03/H03-03/CAN-01/H03-05 и DTC. Подключаю сервис к реальному startup и отзыву при закрытии приложения, проверяю обе ветки на M32R.",
+      "updated_at": "2026-11-20T22:43:26+00:00",
+      "note": "Подготовка CAN выполняется из штатного target_initialize; приложение отзывает сервис до сброса времени. Связываю оба модуля в проверке точного H03 и гоняю регрессию.",
       "result": null,
       "based_on_reviews": [
         "1b7a53b2c91c49d481c892507323d9d9",
@@ -9516,9 +9516,46 @@
           "ddeb80aa0d00427f9cdc2ac2b6ee7241"
         ]
       }
+    },
+    {
+      "operation_id": "631d6a272240460eb2a2fd29f3cd4cf5",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "heartbeat",
+      "claim_id": "2101184d356545bfa9a1e0bd6716a9ee",
+      "at": "2026-11-20T22:43:26+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — запуск и остановка сервиса",
+        "branch": "codex/can03-platform-lifecycle-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/check_h03_target_platform.py",
+          "targets/lfj8/lfj8_h03_application.c",
+          "targets/lfj8/lfj8_h03_application.h",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_storage.h",
+          "targets/lfj8/lfj8_h03_target_platform.c",
+          "targets/lfj8/lfj8_h03_target_platform.h",
+          "targets/lfj8/test_lfj8_h03_target_platform.c",
+          "verification/project-audit/can03-target-platform-lifecycle.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "2101184d356545bfa9a1e0bd6716a9ee",
+        "claimed_at": "2026-11-20T22:38:33+00:00",
+        "updated_at": "2026-11-20T22:43:26+00:00",
+        "note": "Подготовка CAN выполняется из штатного target_initialize; приложение отзывает сервис до сброса времени. Связываю оба модуля в проверке точного H03 и гоняю регрессию.",
+        "result": null,
+        "based_on_reviews": [
+          "1b7a53b2c91c49d481c892507323d9d9",
+          "43d58327bd434219b328d74d652d3be9",
+          "77033e38e60445f2addf6c2c8e536996",
+          "9436326dc3784bbe994f50e6dce8e9c0"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T22:43:12+00:00",
+  "updated_at": "2026-11-20T22:43:26+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
