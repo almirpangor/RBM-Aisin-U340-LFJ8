@@ -78,9 +78,7 @@ static void start_drain(Lfj8H03EngineRx *rx, uint16_t tick)
 static unsigned poll_rx(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
                         uint32_t now_us, uint8_t slots_owned, Ta2005CherySnapshot *snapshot)
 {
-    snapshot->speed_fad8 = UINT16_MAX;
-    snapshot->coolant_f9e9 = UINT8_MAX;
-    snapshot->usable = 0u;
+    ta2005_chery_snapshot_clear(snapshot);
     if (slots_owned != 1u || rx->max_age_ticks == 0u) {
         reset_rx(rx);
         return 0u;

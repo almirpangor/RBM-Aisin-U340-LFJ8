@@ -61,6 +61,8 @@ def replay(repo, image):
     base = (engine / "firmware/GW4G15_REV8_CAN_TORQUE_E4_BENCH.bin").read_bytes()
     rebuilt, manifest, _, _ = build(engine, base, with_engine_signals_tx=True)
     if rebuilt != image:
+        rebuilt, manifest, _, _ = build(engine, base, model_fields=True, compact=True)
+    if rebuilt != image:
         raise ValueError("Image differs from the exact RX/TX build")
     from audit_machine import Machine, seed
     import test_torque as q

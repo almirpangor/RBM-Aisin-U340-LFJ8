@@ -296,7 +296,7 @@ static void test_engine_can_lifecycle(void)
         .coolant_after = 0x40u,
         .rx_dlc = 8u,
         .coolant_dlc = 8u,
-        .rx_data = {0x12u, 0xc0u},
+        .rx_data = {0x12u, 0xc0u, 0x27u, 0x96u, 0x7fu, 0x11u},
         .coolant_data = {0xb4u},
         .stock_can_state = 4u,
         .can_timestamp = 0xfffau,
@@ -323,11 +323,13 @@ static void test_engine_can_lifecycle(void)
     f.can_timestamp = 4u;
     assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 20u, 1u, &sample) == both);
     assert(sample.speed_fad8 == 9600u && sample.coolant_f9e9 == 137u && rx.time_ticks == 10u);
+    assert(sample.model.f9d8 == 0x27u && sample.model.f9e8 == 0x96u && sample.model.f914 == 0x11u);
 
     f.rx_control = 0x45u;
     f.can_timestamp = 10u;
     assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 32u, 1u, &sample) == TA2005_CHERY_COOLANT);
     assert(sample.speed_fad8 == UINT16_MAX && f.rx_control == 0x40u);
+    assert(sample.model.f9d8 == UINT8_MAX && sample.model.f9e8 == UINT8_MAX && sample.model.f914 == UINT8_MAX);
     f.rx_control = 0x41u;
     f.rx_timestamp = 14u;
     f.can_timestamp = 14u;
@@ -338,6 +340,7 @@ static void test_engine_can_lifecycle(void)
     f.can_timestamp = 16u;
     assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 44u, 1u, &sample) == TA2005_CHERY_SPEED);
     assert(sample.speed_fad8 == 9600u && sample.coolant_f9e9 == UINT8_MAX);
+    assert(sample.model.f9e8 == 0x96u);
     f.coolant_control = 0x41u;
     f.coolant_dlc = 8u;
     f.coolant_timestamp = 18u;
@@ -351,6 +354,7 @@ static void test_engine_can_lifecycle(void)
     f.stock_can_state = 7u;
     assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 50u, 1u, &sample) == 0u);
     assert(rx.phase == LFJ8_H03_RX_WAIT_FOR_OEM);
+    assert(sample.model.f9d8 == UINT8_MAX && sample.model.f9e8 == UINT8_MAX && sample.model.f914 == UINT8_MAX);
     assert(lfj8_h03_engine_rx_poll(&rx, &io, start + 60u, 1u, &sample) == 0u);
     assert(rx.phase == LFJ8_H03_RX_ACTIVE && f.rx_control == 0x40u && f.coolant_control == 0x40u);
 
@@ -375,6 +379,7 @@ static void test_engine_can_lifecycle(void)
     f.can_timestamp = 130u;
     assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 230u, 1u, &sample) == 0u);
     assert(sample.speed_fad8 == UINT16_MAX && sample.coolant_f9e9 == UINT8_MAX);
+    assert(sample.model.f9d8 == UINT8_MAX && sample.model.f9e8 == UINT8_MAX && sample.model.f914 == UINT8_MAX);
     f.can_status = 0x4000u;
     assert(lfj8_h03_engine_rx_poll(&rx, &io, resumed + 231u, 1u, &sample) == 0u);
     assert(rx.phase == LFJ8_H03_RX_WAIT_FOR_OEM && f.lock_depth == 0u);
@@ -678,6 +683,12 @@ static void test_engine_receive(void)
     for (unsigned int raw = 0; raw <= UINT16_MAX; ++raw) {
         frame[0] = (uint8_t)(raw >> 8);
         frame[1] = (uint8_t)raw;
+        frame[2] = (uint8_t)(raw >> 8);
+        frame[3] = (uint8_t)(raw ^ (raw >> 8));
+        frame[5] = (uint8_t)(raw + 1u);
+        frame[4] = (uint8_t)~frame[2];
+        frame[6] = (uint8_t)~frame[3];
+        frame[7] = (uint8_t)~frame[5];
         assert(ta2005_chery_inputs_receive(&receiver, 0x0fau, 8, frame, &received_at) ==
                TA2005_CHERY_SPEED);
         const unsigned int expected = raw == UINT16_MAX ? UINT16_MAX :
@@ -685,6 +696,8 @@ static void test_engine_receive(void)
         const unsigned int valid = ta2005_chery_inputs_snapshot(&receiver, &now, 5, &snapshot);
         assert(valid == (raw == UINT16_MAX ? 0u : TA2005_CHERY_SPEED));
         assert(snapshot.speed_fad8 == expected);
+        assert(snapshot.model.f9d8 == frame[2] && snapshot.model.f9e8 == frame[3] &&
+               snapshot.model.f914 == frame[5]);
     }
 
     for (unsigned int raw = 0; raw <= UINT8_MAX; ++raw) {
@@ -711,6 +724,8 @@ static void test_engine_receive(void)
     assert(ta2005_chery_inputs_snapshot(&receiver, &now, 5, &snapshot) ==
            (TA2005_CHERY_SPEED | TA2005_CHERY_COOLANT));
     assert(snapshot.speed_fad8 == 9600u && snapshot.coolant_f9e9 == 137u);
+    assert(snapshot.model.f9d8 == UINT8_MAX && snapshot.model.f9e8 == UINT8_MAX &&
+           snapshot.model.f914 == UINT8_MAX);
     now = 6;
     assert(ta2005_chery_inputs_snapshot(&receiver, &now, 5, &snapshot) == TA2005_CHERY_COOLANT);
     now = 7;

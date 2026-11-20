@@ -76,6 +76,8 @@ def run(compiler: str, bosch: tuple[Path, Path, Path] | None = None,
             raise ValueError("The Bosch TX report must contain both eight-byte engine frames")
         engine_vectors = (by_id[0x0FA].hex(), by_id[0x278].hex())
     host = run_c_scenario(compiler, engine_vectors)
+    if engine_vectors and host["tc_rx_model_codes"] != [by_id[0x0FA][i] for i in (2, 3, 5)]:
+        raise RuntimeError("LFJ8 model operands differ from the executed Bosch payload")
     speed_frame = frame_from_c(0x1AE, host["0x1AE"])
     speed = decode_chery_frame(speed_frame)
     if speed.status is not DecodeStatus.DECODED or speed.reading is None or speed.fields_1ae is None:

@@ -12,8 +12,9 @@ from verify import SPEED_PHYS, calls, payload
 V3_SHA = "cde5d04fb871043ffcc387d4cb1e7087659745ca0f4b0cf406604fd76facf4b3"
 
 
-def verify_transmitter(engine, base, candidate, *, compact=False):
-    expected, manifest, _, _ = build(engine, base, with_engine_signals_tx=True, compact=compact)
+def verify_transmitter(engine, base, candidate, *, compact=False, model_fields=False):
+    expected, manifest, _, _ = build(engine, base, with_engine_signals_tx=True,
+                                    compact=compact, model_fields=model_fields)
     assert expected == candidate, "Candidate differs from its exact rebuild"
     v3, v3_manifest, _, _ = build(engine, base)
     assert v3_manifest["sha256"] == V3_SHA, "Default speed-only output changed"
@@ -63,6 +64,9 @@ def verify_transmitter(engine, base, candidate, *, compact=False):
         machine.poke(0xF7C4, 4800)
         machine.poke(0xF0382, 180, 1)
         machine.poke(0xF32F4, 0)
+        if model_fields:
+            machine.poke(0xF325A, 1)
+            machine.poke(0xF32B0, 1)
         frames = exercise(machine, 240, speed=True)
         assert machine.get(SPEED_PHYS) == 7680, ("speed RX", delay)
         rpm_frames = [frame["data"] for frame in frames if frame["id"] == RPM.identifier]

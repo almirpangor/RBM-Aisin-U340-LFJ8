@@ -111,6 +111,8 @@ int main(int argc, char **argv)
     assert(ta2005_chery_inputs_snapshot(&engine_receiver, &tick, 5, &engine_inputs) ==
            (TA2005_CHERY_SPEED | TA2005_CHERY_COOLANT));
     assert(engine_inputs.speed_fad8 == 9600 && engine_inputs.coolant_f9e9 == 137);
+    assert(engine_inputs.model.f9d8 == rpm_frame[2] && engine_inputs.model.f9e8 == rpm_frame[3] &&
+           engine_inputs.model.f914 == rpm_frame[5]);
 
     const RbmU340ePolicy policy = {
         .manual_selectors = 1u << RBM_U340E_SELECTOR_D,
@@ -180,8 +182,11 @@ int main(int argc, char **argv)
     print_payload(atf_frame);
     printf("\",\"panel_input_speed_q7\":%u,\"panel_period_ticks_1mhz\":%lu,"
            "\"tc_rx_rpm_q3\":%u,\"tc_rx_coolant_plus_50\":%u,"
+           "\"tc_rx_model_codes\":[%u,%u,%u],"
            "\"selector_adc_events\":\"PASS\",\"selector_timeout\":\"PASS\"}\n",
            speed_q7, (unsigned long)pulse.period_field,
-           (unsigned int)engine_inputs.speed_fad8, (unsigned int)engine_inputs.coolant_f9e9);
+           (unsigned int)engine_inputs.speed_fad8, (unsigned int)engine_inputs.coolant_f9e9,
+           (unsigned int)engine_inputs.model.f9d8, (unsigned int)engine_inputs.model.f9e8,
+           (unsigned int)engine_inputs.model.f914);
     return 0;
 }

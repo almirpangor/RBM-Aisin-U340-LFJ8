@@ -48,7 +48,9 @@ def probe_frame(engine, s04, image, frame, *, compact=False):
     if image != expected:
         expected, manifest, _, _ = build(engine, s04, with_engine_signals_tx=True, compact=compact)
         if image != expected:
-            raise ValueError("Image differs from both reproducible Bosch candidates")
+            expected, manifest, _, _ = build(engine, s04, model_fields=True, compact=True)
+            if image != expected:
+                raise ValueError("Image differs from the reproducible Bosch candidates")
     from audit_machine import Machine
     from test_can_diag import start
 

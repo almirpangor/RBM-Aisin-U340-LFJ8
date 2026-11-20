@@ -220,7 +220,7 @@ def revised_wrapper(diag, labels):
     return namespace["assemble"](torque=True)
 
 
-def build(engine, s04, *, with_engine_signals_tx=False, compact=False):
+def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fields=False):
     if digest(s04) != S04_SHA:
         raise ValueError("S04 SHA-256 does not match the pinned E4M3 image")
     sys.path.insert(0, str(engine / "tools"))
@@ -237,14 +237,14 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False):
     if not (torque.START_CALL_AGE < AGE < PHASE < DEFER < BUSY < torque.RAM_END):
         raise ValueError("Upstream torque state conflicts with the reserved receiver state")
     tx_part, tx_code = None, b""
-    if with_engine_signals_tx:
+    if with_engine_signals_tx or model_fields:
         from tx import assemble
         for start, end in ((0x02519E, 0x0251A2), (0x030DC8, 0x030FA4),
                            (0x052A50, 0x052A6E), (0x0539D2, 0x0539D6), (0x093E90, 0x093E94)):
             span = slice(diag.offset(start), diag.offset(end))
             if s04[span] != base[span]:
                 raise ValueError(f"E4M3 native producer differs from REV8 at {start:#x}")
-        tx_part, tx_code = assemble(diag, torque)
+        tx_part, tx_code = assemble(diag, torque, model_fields=model_fields)
         if compact:
             tx_code = compact_local_branches(tx_part, tx_code)
     speed, speed_code = assemble_speed(diag, torque, tx_part)
@@ -308,6 +308,8 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False):
     }
     if tx_part:
         from tx import COOLANT, RPM
+        if model_fields:
+            manifest["chery_model_payload_bytes"] = [2, 5]
         manifest["diagnostic_signals_tx"] = [
             {"can_id": hex(x.identifier), "object": x.object_number, "period_t4_ticks": x.period}
             for x in (RPM, COOLANT)
@@ -328,17 +330,21 @@ def main():
     parser.add_argument("--s04", required=True, type=Path)
     parser.add_argument("--outdir", required=True, type=Path)
     parser.add_argument("--with-engine-signals-tx", action="store_true")
+    parser.add_argument("--with-model-fields", action="store_true",
+                        help="Also transmit the two Chery engine model differences in 0x0FA")
     parser.add_argument("--compact", action="store_true", help="Shorten local RX/TX branches")
     args = parser.parse_args()
     image, manifest, wrapper, speed = build(
         args.engine.resolve(), args.s04.read_bytes(), with_engine_signals_tx=args.with_engine_signals_tx,
-        compact=args.compact,
+        compact=args.compact, model_fields=args.with_model_fields,
     )
     try:
         args.outdir.mkdir(parents=True)
     except FileExistsError:
         parser.error("Use a new output directory")
     filename = TX_OUTPUT if args.with_engine_signals_tx else OUTPUT
+    if args.with_model_fields:
+        filename = "E4M3_CHERY_MODEL_FIELDS_OFFLINE_ONLY.bin"
     if args.compact:
         filename = filename.replace("_OFFLINE_ONLY", "_COMPACT_OFFLINE_ONLY")
     (args.outdir / filename).write_bytes(image)

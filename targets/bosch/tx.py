@@ -21,7 +21,77 @@ RPM = Signal("rpm", 0x0FA, 14, 40, RPM_LAST, 625)
 COOLANT = Signal("coolant", 0x278, 15, 41, COOLANT_LAST, 1250)
 
 
-def assemble(diag, torque):
+def encode_model_delta(a, source, name):
+    # S02 0A18F8 and 0A1956, calibration bytes 25/40. Compute the high
+    # word of abs(source-base)*125 without changing the MCU's MD registers.
+    a.rr(4, source)
+    a.sub(4, 12)
+    a.branch(9, name + "_magnitude")
+    a.imm(4, 0)
+    a.sub(4, source)
+    a.add(4, 12)
+    a.label(name + "_magnitude")
+    a.rr(5, 4)
+    a.andi(4, 255)
+    a.shift(5, 8)
+    for reg in (4, 5):
+        a.rr(6, reg)
+        a.shift(reg, 7, left=True)
+        a.sub(reg, 6)
+        a.sub(reg, 6)
+        a.sub(reg, 6)
+    a.shift(4, 8)
+    a.add(4, 5)
+    a.shift(4, 8)
+    a.cmpreg(source, 12)
+    a.branch(8, name + "_negative")
+    a.addi(4, 50)
+    a.branch(0, name + "_done")
+    a.label(name + "_negative")
+    a.imm(6, 50)
+    a.sub(6, 4)
+    a.rr(4, 6)
+    a.branch(9, name + "_done")  # MOV preserves the subtraction carry.
+    a.imm(4, 0)
+    a.label(name + "_done")
+
+
+def pack_model_fields(a):
+    # Physical addresses on the selected GW image. R9 is the TX clock.
+    words = ((10, 0xF16FC), (11, 0xF165A), (12, 0xF1680))
+    flags = ((13, 0xF325A), (14, 0xF32B0))
+    for reg, address in flags + words:
+        a.physical(reg, address)
+    a.rr(4, 13)
+    a.andi(4, 1)
+    a.cmp(4, 0)
+    a.branch(2, "model_encode")
+    a.rr(4, 14)
+    a.andi(4, 1)
+    a.cmp(4, 0)
+    a.branch(3, "model_invalid")
+    a.label("model_encode")
+    encode_model_delta(a, 10, "model_now")
+    a.rr(15, 4)
+    encode_model_delta(a, 11, "model_limit")
+    a.shift(4, 8, left=True)
+    a.rr(7, 4)
+    # A changing input during the calculation invalidates the pair together.
+    for reg, address in words + flags:
+        a.physical(4, address)
+        a.cmpreg(4, reg)
+        a.branch(3, "model_invalid")
+    a.ori(15, 0xFF00)  # The independently produced byte 3 is unavailable.
+    a.st(0xEF20, 15)
+    a.st(0xEF22, 7)
+    a.branch(0, "model_packed")
+    a.label("model_invalid")
+    a.set(0xEF20, 0xFFFF)
+    a.set(0xEF22, 0xFF00)
+    a.label("model_packed")
+
+
+def assemble(diag, torque, *, model_fields=False):
     a = diag.Asm(ORIGIN, LIMIT)
 
     a.label("configure")
@@ -109,8 +179,11 @@ def assemble(diag, torque):
     a.imm(4, 0xFFFF)
     a.label("rpm_write")
     a.st(0xEF1E, 4)
-    a.set(0xEF20, 0xFFFF)
-    a.set(0xEF22, 0xFF00)
+    if model_fields:
+        pack_model_fields(a)
+    else:
+        a.set(0xEF20, 0xFFFF)
+        a.set(0xEF22, 0xFF00)
     a.zero(0xEF24)
     a.st(RPM.last_tick, 9)
     a.set(PREFER_COOLANT, 1)
