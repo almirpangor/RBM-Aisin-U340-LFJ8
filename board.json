@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 350,
+  "sequence": 351,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -191,12 +191,12 @@
         "targets/bosch/test_chery_torque_rx.c",
         "verification/project-audit/can05-rx-generation.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "fbadfbdf06d745cf885f45918e8b9a03",
       "claimed_at": "2026-11-20T18:12:06+00:00",
-      "updated_at": "2026-11-20T18:14:07+00:00",
-      "note": "Приёмник Bosch сбрасывает квалификацию при смене поколения и проверяет поколение захвата отдельно от возраста. Тест границы CAN и 65 536 пар 0x1AE прошли. Повторяю общий набор ПК и обычный профиль ST10.",
-      "result": null
+      "updated_at": "2026-11-20T18:16:32+00:00",
+      "note": "Приёмник Bosch отбрасывает отложенный 0x1AE чужого поколения и сбрасывает операнды при смене поколения. Целевой тест, 65 536 пар, ПК 37/102, Bosch PASS_OFFLINE_ONLY. Отчёт verification/project-audit/can05-rx-generation.md. Штатный производитель тика и поколения, калибровки и стенд открыты.",
+      "result": "1b7de46a4d9078d3ef8d46fa4ac724ae5eb20150"
     },
     "DTC-03": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
@@ -3373,9 +3373,17 @@
       "action": "review",
       "claim_id": "df8ec9e7df1a4383b71e3070e9462547",
       "at": "2026-11-20T18:16:11+00:00"
+    },
+    {
+      "operation_id": "8b13459adbe3421c9d2ccf322f362e21",
+      "task": "CAN-05",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "fbadfbdf06d745cf885f45918e8b9a03",
+      "at": "2026-11-20T18:16:32+00:00"
     }
   ],
-  "updated_at": "2026-11-20T18:16:11+00:00",
+  "updated_at": "2026-11-20T18:16:32+00:00",
   "main_commit": "e24ae2ca05677df9e3a2326e43b9cbc6c67e23db",
   "catalog": [
     {
