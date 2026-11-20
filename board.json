@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 4,
+  "sequence": 5,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -50,6 +50,27 @@
       "updated_at": "2026-11-20T15:39:41+00:00",
       "note": "Реализую очередь между захватом BasicCAN и CAN13: целостность публикации, срок годности, переполнение и поколение после сброса. Штатный перехват RX исследуется отдельно.",
       "result": null
+    },
+    "CAN-03": {
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex — CAN0 H03",
+      "branch": "codex/can-03-h03-01a1f99f",
+      "files": [
+        "docs/lfj8-h03-torque.md",
+        "targets/lfj8/check_h03_can_lifecycle.py",
+        "targets/lfj8/check_h03_torque_tx_gate.py",
+        "targets/lfj8/h03_can_lifecycle_test.S",
+        "targets/lfj8/lfj8_donor_io.c",
+        "targets/lfj8/lfj8_h03_can13.c",
+        "targets/lfj8/lfj8_h03_can13.h",
+        "verification/e4m3-can-9e1c/h03-can-lifecycle.json"
+      ],
+      "stage": "in_progress",
+      "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
+      "claimed_at": "2026-11-20T15:44:32+00:00",
+      "updated_at": "2026-11-20T15:44:32+00:00",
+      "note": "Сверяю штатные пути CAN0 H03 и проверку восстановления CAN13.",
+      "result": null
     }
   },
   "events": [
@@ -84,9 +105,17 @@
       "action": "claim",
       "claim_id": "ed274f83f44345a3b9d759cf44aa6541",
       "at": "2026-11-20T15:39:41+00:00"
+    },
+    {
+      "operation_id": "0bdbbe60a4724682a1c4f66831a14a7b",
+      "task": "CAN-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "a73f1e3a06f84907b57da164cb6018f5",
+      "at": "2026-11-20T15:44:32+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:39:41+00:00",
+  "updated_at": "2026-11-20T15:44:32+00:00",
   "main_commit": "2875ed80264fd7714d44047f849e2df4b04123ef",
   "catalog": [
     {
