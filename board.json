@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "sequence": 20,
+  "sequence": 21,
   "claims": {
     "ORG-01": {
       "owner": "codex-coordination-27a510e",
@@ -148,6 +148,22 @@
       "claimed_at": "2026-11-20T15:53:33+00:00",
       "updated_at": "2026-11-20T15:53:33+00:00",
       "note": "Формат и восстановление истории DTC, модель прерванной записи и очистки.",
+      "result": null
+    },
+    "H03-02": {
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "label": "Codex — привязка ATF H03",
+      "branch": "codex/h03-02-atf-01a1f9a2",
+      "files": [
+        "targets/lfj8/lfj8_h03_atf.c",
+        "targets/lfj8/lfj8_h03_atf.h",
+        "targets/lfj8/test_lfj8_h03_atf.c"
+      ],
+      "stage": "in_progress",
+      "claim_id": "11e70992d32245529e20626f4b9bd867",
+      "claimed_at": "2026-11-20T15:54:09+00:00",
+      "updated_at": "2026-11-20T15:54:09+00:00",
+      "note": "Добавляю захват происхождения отсчёта ATF для будущего OEM hook и проверяю гонку с новой конверсией.",
       "result": null
     }
   },
@@ -311,9 +327,17 @@
       "action": "claim",
       "claim_id": "b714560b3e9a4abba849b7ea649a1622",
       "at": "2026-11-20T15:53:33+00:00"
+    },
+    {
+      "operation_id": "687704fd4a834428bcf854ee4d472e96",
+      "task": "H03-02",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "claim",
+      "claim_id": "11e70992d32245529e20626f4b9bd867",
+      "at": "2026-11-20T15:54:09+00:00"
     }
   ],
-  "updated_at": "2026-11-20T15:53:33+00:00",
+  "updated_at": "2026-11-20T15:54:09+00:00",
   "main_commit": "264f2498002dbd7ee0d0ca8723ccbb88632ec11d",
   "catalog": [
     {
