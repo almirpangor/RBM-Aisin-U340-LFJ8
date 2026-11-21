@@ -88,6 +88,42 @@ class ServicePlacementTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Unreachable M32R service target"):
                 site.branch(address)
 
+    def common_writer_model(self):
+        resident = service.Window("resident", 0x6000, 0x8000)
+        guard_start = 0x6400
+        self.guard["address"] = guard_start
+        self.symbols["rbm_h03_service_policy"]["address"] = guard_start + 16
+        for name in service.STOCK_TARGETS:
+            self.symbols[name]["section"] = 0xFFF1
+        for index, (site, name) in enumerate(zip(service.SITES, service.WRITER_ROOTS, strict=True)):
+            if site != service.LOCKOUT:
+                self.symbols[site.target]["address"] = guard_start + 4 * index
+            section = self.sections[index + 1]
+            section["data"] = site.branch(self.symbols[site.target]["address"])
+            self.symbols[name] = {"address": site.address, "size": 4, "section": index + 2}
+        return {"sections": [{}, *self.sections], "symbols": self.symbols}, resident
+
+    def test_common_writers_pin_all_sites_and_hold_targets_below_application(self):
+        elf, resident = self.common_writer_model()
+        patches = service.verify_writers(self.rom, elf, self.ranges, resident)
+        self.assertEqual([item["address"] for item in patches], [site.address for site in service.SITES])
+        self.assertEqual(patches[-1]["target"], 0x3594)
+        self.assertTrue(all(resident.start <= item["target"] < resident.end for item in patches[:-1]))
+        self.symbols[service.WRITER_SITES[0].target]["address"] = resident.end
+        with self.assertRaisesRegex(ValueError, "escaped resident Flash"):
+            service.verify_writers(self.rom, elf, self.ranges, resident)
+
+    def test_common_writer_rejects_modified_call_word_and_wrong_policy(self):
+        elf, resident = self.common_writer_model()
+        span = self.sections[2]
+        original = span["data"]
+        span["data"] = b"\xff" + original[1:]
+        with self.assertRaisesRegex(ValueError, "Incorrect H03 service writer redirect"):
+            service.verify_writers(self.rom, elf, self.ranges, resident)
+        span["data"] = original
+        with self.assertRaisesRegex(ValueError, "Incorrect resident H03 service policy"):
+            service.verify_writers(self.rom, elf, self.ranges[:-1], resident)
+
 
 if __name__ == "__main__":
     unittest.main()

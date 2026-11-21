@@ -162,7 +162,7 @@ def check_close(run, work, debugger, symbols, case, psw, lockout, *, lockout_ins
             "checksum_after_close": case.checksum, "adc_stop": hex(adc[0]), "bytes_written": wrote}
 
 
-def check(base,compiler,storage_report,placed_elf=None):
+def check(base,compiler,storage_report,placed_elf=None, *, common_layout=None):
     identity=identify_h03(base)
     rom=base.read_bytes()
     if sha256(rom).hexdigest() != identity['sha256']:
@@ -171,7 +171,28 @@ def check(base,compiler,storage_report,placed_elf=None):
     if set(blocks)!={'control','communication','workspace'}:
         raise ValueError('Expected the three measured storage groups')
     service.verify_stock(rom, service.WRITER_SITES)
-    if placed_elf is not None:
+    pointer = None
+    scenario_blocks = blocks
+    if common_layout is not None:
+        if placed_elf is None:
+            raise ValueError("Common layout replay requires its placed early IRQ ELF")
+        report = json.loads(common_layout.read_text(encoding="utf-8"))
+        model = report.get("early_irq_model", {})
+        if report.get("base") != identity or not model.get("service_writers"):
+            raise ValueError("Common H03 layout has no linked resident service writers for this ROM")
+        pointer = model["irq_pointer"]
+        policy = service.policy_ranges(blocks, ((pointer, pointer + 4),))
+        if model["policy_ranges"] != [list(span) for span in policy]:
+            raise ValueError("Common service policy differs from the supplied RAM inventory")
+        candidate = service.early_overlay(rom, placed_elf, model)
+        placement = {"elf_sha256": model["elf_sha256"], "guard_bytes": report["service_writer_resident_bytes"],
+                     "policy_ranges": policy, "sites": model["service_writers"], "irq_pointer": pointer,
+                     "scope": "common_early_irq"}
+        start, end = blocks["control"]
+        if end == pointer:
+            # The contiguous pointer extends the protected control interval.
+            scenario_blocks = dict(blocks, control=(start, pointer + 4))
+    elif placed_elf is not None:
         candidate, placement = service.verify_and_overlay(rom, placed_elf, service.policy_ranges(blocks))
     # Existing monitor protection is also applied to PREPARED copies, which
     # originally bypass it. No production range is guessed in this fixture.
@@ -321,16 +342,21 @@ h03_copy_after_store = 0x002de4;
             # Measure writers with the session open. The separate close cases
             # exercise its cancellation of an otherwise unchanged pending copy.
             stack_start, stack_end = service.CONDITIONAL_STACK_AND_PSW
-            placed_cases = [replace(case, close=False) for case in scenarios(blocks)]
+            placed_cases = [replace(case, close=False) for case in scenarios(scenario_blocks)]
             placed_cases.extend((
                 writes.Case('conditional_stack_edge_direct', writes.DIRECT, stack_start, 1, (0,)),
                 writes.Case('conditional_stack_crossing_direct', writes.DIRECT, stack_start - 1, 2, (0,)),
                 writes.Case('conditional_psw_edge_deferred', writes.ADC0, stack_end - 1, 1, (0,)),
             ))
+            if pointer is not None:
+                placed_cases.extend((
+                    writes.Case("early_irq_pointer_direct", writes.DIRECT, pointer, 4, (0,)),
+                    writes.Case("early_irq_pointer_deferred", writes.ADC0, pointer, 4, (0,)),
+                ))
             rows = [writes.run_case(run,work,gdb,case,True,lockout_installed=True)
                     for case in placed_cases]
             close_rows = [check_close(run,work,gdb,symbols,case,psw,True,lockout_installed=True)
-                          for case in close_cases(blocks) for psw in (0,1,0x40,0x41)]
+                          for case in close_cases(scenario_blocks) for psw in (0,1,0x40,0x41)]
             return {'status':'PASS_PLACED_SERVICE_GUARD_MODEL_ONLY','base':identity,
                     'placement':placement,'guard_with_fixture_policy_bytes':placement['guard_bytes'],
                     'new_mutable_state_bytes':0,'policy_test':policy_test,'native_cases':rows,
@@ -425,8 +451,9 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('base','gcc','storage-report','out'): parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--placed-elf', type=Path, help='replay the exact linked service protection')
+    parser.add_argument('--common-layout', type=Path, help='layout.json for a common early IRQ ELF')
     args=parser.parse_args()
-    inputs = [p for p in (args.base,args.gcc,args.storage_report,args.placed_elf) if p is not None]
+    inputs = [p for p in (args.base,args.gcc,args.storage_report,args.placed_elf,args.common_layout) if p is not None]
     if args.out.suffix.lower()!='.json' or any(args.out.resolve()==p.resolve() for p in inputs):
         parser.error('Use a separate JSON report')
     if args.out.exists():
@@ -434,13 +461,14 @@ def main():
             parser.error('The report must not alias an input')
         args.out.unlink()
     try:
-        report=check(args.base,args.gcc.resolve(),args.storage_report,args.placed_elf)
+        report=check(args.base,args.gcc.resolve(),args.storage_report,args.placed_elf,
+                     common_layout=args.common_layout)
         args.out.parent.mkdir(parents=True,exist_ok=True)
         args.out.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
         print(json.dumps({k:report[k] for k in ('status','guard_with_fixture_policy_bytes','new_mutable_state_bytes','policy_test','flashable_image')}))
         print('native writer cases:',len(report['native_cases']))
         print('native close cases:',len(report['close_cases']))
-    except (OSError,ValueError,subprocess.SubprocessError) as error:
+    except (KeyError,OSError,ValueError,subprocess.SubprocessError) as error:
         detail=getattr(error,'stderr',None) or str(error)
         parser.exit(1,(detail.decode(errors='replace') if isinstance(detail,bytes) else detail)+'\n')
 
