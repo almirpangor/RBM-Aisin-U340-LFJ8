@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 843,
+  "sequence": 844,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -19,11 +19,11 @@
         "verification/project-audit/2026-11-20.json",
         "verification/project-audit/integration-39-20261121/"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "9a8eca1841da444399a297ba0f3124f0",
       "claimed_at": "2026-11-21T07:32:05+00:00",
-      "updated_at": "2026-11-21T07:42:09+00:00",
-      "note": "39 порций объединены и проверены; исправлен API RAM-теста. Полная композиция FAIL_BINDINGS/Flash overflow; 2 рабочих BIN не выпущены. Отчёт integration-39-20261121.",
+      "updated_at": "2026-11-21T07:49:05+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
       "based_on_reviews": [
         "0f2e91c7274b44688d2514bece8ba6e8",
@@ -12995,9 +12995,53 @@
         "task": "MODE-02",
         "submitted_at": "2026-11-21T07:28:18+00:00"
       }
+    },
+    {
+      "operation_id": "f3e72b8d568840b980c2bc208d24fdf4",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "complete",
+      "claim_id": "9a8eca1841da444399a297ba0f3124f0",
+      "at": "2026-11-21T07:49:05+00:00",
+      "record": {
+        "owner": "codex-integration-01a1f76d-20261120",
+        "label": "Общая сборка 39 результатов",
+        "branch": "codex/integration-01a1f76d-20261120",
+        "files": [
+          "README.md",
+          "data/project-tasks.json",
+          "docs/integration-next-tasks.md",
+          "docs/project-map.md",
+          "docs/working-set.md",
+          "targets/lfj8/check_h03_ram_owner.py",
+          "tools/build_pc_checks.py",
+          "tools/check_h03_image_layout.py",
+          "tools/check_integrated_h03.py",
+          "verification/project-audit/2026-11-20.json",
+          "verification/project-audit/integration-39-20261121/"
+        ],
+        "stage": "done",
+        "claim_id": "9a8eca1841da444399a297ba0f3124f0",
+        "claimed_at": "2026-11-21T07:32:05+00:00",
+        "updated_at": "2026-11-21T07:49:05+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
+        "based_on_reviews": [
+          "0f2e91c7274b44688d2514bece8ba6e8",
+          "51ce545a28f949a48fa5a995230c2ba7",
+          "79e878898f8d4435a7240ad9a30071db",
+          "7d595279d73d44b882c2a6d929c481bb",
+          "8b0ce759514b4c68b04d002b192f50ff",
+          "96f93fae25924717a50bf354ff863f44",
+          "b2ca152193a145f6a7e8665645cfcb0b",
+          "e2040f38c0804ea1ba66dc3a744de6a4"
+        ],
+        "task": "ORG-01",
+        "submitted_at": "2026-11-21T07:42:09+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:48:55+00:00",
+  "updated_at": "2026-11-21T07:49:05+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -15471,11 +15515,11 @@
         "verification/project-audit/2026-11-20.json",
         "verification/project-audit/integration-39-20261121/"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "9a8eca1841da444399a297ba0f3124f0",
       "claimed_at": "2026-11-21T07:32:05+00:00",
-      "updated_at": "2026-11-21T07:42:09+00:00",
-      "note": "39 порций объединены и проверены; исправлен API RAM-теста. Полная композиция FAIL_BINDINGS/Flash overflow; 2 рабочих BIN не выпущены. Отчёт integration-39-20261121.",
+      "updated_at": "2026-11-21T07:49:05+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
       "based_on_reviews": [
         "0f2e91c7274b44688d2514bece8ba6e8",
