@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 930,
+  "sequence": 931,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -31,26 +31,24 @@
     },
     "DTC-02": {
       "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
-      "label": "Codex чат 10 — диагностика H03 для стенда",
+      "label": "Codex чат 10 — чтение статуса NVM",
       "branch": "codex/can01-h03-engine-owner-b0157640",
       "files": [
-        "diagnostics/chery_dtc_link.c",
-        "diagnostics/chery_dtc_link.h",
         "targets/lfj8/check_h03_dtc_basiccan.py",
         "targets/lfj8/lfj8_h03_bench_diag.c",
-        "targets/lfj8/lfj8_h03_bench_diag.h",
-        "targets/lfj8/lfj8_h03_dtc_can.c",
         "targets/lfj8/test_lfj8_h03_bench_diag.c",
         "verification/bench-wave/chat-10/diagnostic-readout.md",
         "verification/bench-wave/chat-10/handoff.json"
       ],
-      "stage": "review",
-      "claim_id": "8d2e9979b8b94adab47c6ca68b65d7f6",
-      "claimed_at": "2026-11-21T08:51:01+00:00",
-      "updated_at": "2026-11-21T09:10:43+00:00",
-      "note": "Чат 10. Нативный стендовый readout 13 страниц через BasicCAN/C0/TX13, включая полный 3-кадровый ответ TML0/TML1 с Flow Control. 41 этап ПК, S03 96, 18 сравнений IRQ, 9 сервисных и 40 ATF проверок. История сохраняется и ACK не выдаётся без DTC-04 backend. Интеграция --binding-source, +1064 байта Flash к той же модели, RAM без прироста, FAIL_BINDINGS. Контракт verification/bench-wave/chat-10/handoff.json. Без прошивки.",
-      "result": "a1e173336874cb52dae2bb75f4cf4287df105dff",
-      "based_on_reviews": []
+      "stage": "in_progress",
+      "claim_id": "01ed3d5484bc4ed8ba80d481a8f6bf41",
+      "claimed_at": "2026-11-21T09:12:26+00:00",
+      "updated_at": "2026-11-21T09:12:26+00:00",
+      "note": "Поверх сданного a1e1733 включён DTC-04 4842a32. Добавляю условную страницу статуса NVM/SFR для no-media профиля, проверяю реальные ответы через TX13. Без чтения массива, записи и положительного ACK очистки.",
+      "result": null,
+      "based_on_reviews": [
+        "8d2e9979b8b94adab47c6ca68b65d7f6"
+      ]
     },
     "CAN-03": {
       "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
@@ -15676,9 +15674,38 @@
         "result": "7a7ac7f97d328cd6f5de88f02c043b1f8b21efac",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "4d7950584332499aa8f15a1534aba963",
+      "task": "DTC-02",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "claim",
+      "claim_id": "01ed3d5484bc4ed8ba80d481a8f6bf41",
+      "at": "2026-11-21T09:12:26+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex чат 10 — чтение статуса NVM",
+        "branch": "codex/can01-h03-engine-owner-b0157640",
+        "files": [
+          "targets/lfj8/check_h03_dtc_basiccan.py",
+          "targets/lfj8/lfj8_h03_bench_diag.c",
+          "targets/lfj8/test_lfj8_h03_bench_diag.c",
+          "verification/bench-wave/chat-10/diagnostic-readout.md",
+          "verification/bench-wave/chat-10/handoff.json"
+        ],
+        "stage": "in_progress",
+        "claim_id": "01ed3d5484bc4ed8ba80d481a8f6bf41",
+        "claimed_at": "2026-11-21T09:12:26+00:00",
+        "updated_at": "2026-11-21T09:12:26+00:00",
+        "note": "Поверх сданного a1e1733 включён DTC-04 4842a32. Добавляю условную страницу статуса NVM/SFR для no-media профиля, проверяю реальные ответы через TX13. Без чтения массива, записи и положительного ACK очистки.",
+        "result": null,
+        "based_on_reviews": [
+          "8d2e9979b8b94adab47c6ca68b65d7f6"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T09:12:07+00:00",
+  "updated_at": "2026-11-21T09:12:26+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
