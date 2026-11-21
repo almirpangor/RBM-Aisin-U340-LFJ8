@@ -684,6 +684,32 @@ Lfj8CanTxStatus lfj8_h03_can0_torque_status(const Lfj8RegisterIo *io, uint8_t tx
     return result;
 }
 
+static int tx13_idle(uint8_t control)
+{
+    return control == 0u || control == CAN_SLOT_TRFIN ||
+           control == (CAN_SLOT_TR | CAN_SLOT_TRFIN);
+}
+
+int lfj8_h03_can0_retire_tx13_locked(const Lfj8RegisterIo *io)
+{
+    if (torque_slot_available(io) != LFJ8_CAN_READY) {
+        return 0;
+    }
+    const uint8_t control = io->read8(io->context, LFJ8_CAN0_SLOT13_CNT);
+    if (tx13_idle(control)) {
+        return h03_can0_operational(io);
+    }
+    if (control == CAN_SLOT_TR || control == (CAN_SLOT_TR | CAN_SLOT_TRSTAT)) {
+        /* 32176 manual §13.5.3: abort a transmit request. An active
+         * transfer can still complete; only read the control register. */
+        io->write8(io->context, LFJ8_CAN0_SLOT13_CNT, CAN_SLOT_ABORT_TX);
+    } else if (pause_torque_listener(io) != LFJ8_CAN_READY) {
+        return 0;
+    }
+    return tx13_idle(io->read8(io->context, LFJ8_CAN0_SLOT13_CNT)) &&
+           torque_slot_available(io) == LFJ8_CAN_READY;
+}
+
 int lfj8_h03_can0_epoch_drained(const Lfj8RegisterIo *io)
 {
     if (torque_slot_available(io) != LFJ8_CAN_READY ||
@@ -693,7 +719,7 @@ int lfj8_h03_can0_epoch_drained(const Lfj8RegisterIo *io)
     const uint8_t tx = io->read8(io->context, LFJ8_CAN0_SLOT13_CNT);
     /* A completed OEM TX can retain TR. There is no project submission
      * until the broker enters the new generation and replaces the slot. */
-    return (tx == 0u || tx == CAN_SLOT_TRFIN || tx == (CAN_SLOT_TR | CAN_SLOT_TRFIN)) &&
+    return tx13_idle(tx) &&
            io->read8(io->context, LFJ8_CAN0_SLOT_CNT + 14u) == CAN_SLOT_RR &&
            io->read8(io->context, LFJ8_CAN0_SLOT_CNT + 15u) == CAN_SLOT_RR &&
            (io->read16(io->context, LFJ8_CAN0_SLIST) & LFJ8_CAN0_BASIC_RX_BITS) == 0u &&

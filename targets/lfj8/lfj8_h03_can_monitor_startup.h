@@ -17,6 +17,11 @@ int rbm_h03_can_monitor_cold_owner_init_locked(void);
  * output inhibit. Never called by the cold entry before RAM ownership. */
 void rbm_h03_can_monitor_revoke_locked(void);
 
+/* Caller holds native exclusion and owns the RAM. The cold entry has
+ * initialized the owner. Retire an old fenced TX13 after lease withdrawal;
+ * programming, a pending abort or unqualified hardware retain the fence. */
+void rbm_h03_can_monitor_retire_tx13_locked(void);
+
 /* Runtime permit only, after both controllers pass release readback.
  * Publish a setup generation without granting RX/TX. The foreground owner
  * admits it after the OEM tail and the hardware drain check. */
