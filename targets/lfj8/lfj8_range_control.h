@@ -9,8 +9,12 @@ typedef struct {
     RbmU340eSelectorInput filter;
     uint32_t max_age_us;
     uint32_t last_sample_us;
+    uint32_t manual_started_us;
+    uint32_t manual_generation;
     uint8_t sampled;
     uint8_t selector;
+    uint8_t manual_gear;
+    uint8_t manual_selector;
 } Lfj8RangeControl;
 
 typedef struct {
