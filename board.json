@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 825,
+  "sequence": 826,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12368,9 +12368,50 @@
         "task": "TOY-05",
         "submitted_at": "2026-11-20T22:52:22+00:00"
       }
+    },
+    {
+      "operation_id": "4c672b40bd7846a792040deb4895f8cc",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "2101184d356545bfa9a1e0bd6716a9ee",
+      "at": "2026-11-21T07:46:00+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — запуск и остановка сервиса",
+        "branch": "codex/can03-platform-lifecycle-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/check_h03_target_platform.py",
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "targets/lfj8/lfj8_h03_application.c",
+          "targets/lfj8/lfj8_h03_application.h",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_storage.h",
+          "targets/lfj8/lfj8_h03_target_platform.c",
+          "targets/lfj8/lfj8_h03_target_platform.h",
+          "targets/lfj8/test_lfj8_h03_target_platform.c",
+          "verification/project-audit/can03-target-platform-lifecycle.md"
+        ],
+        "stage": "done",
+        "claim_id": "2101184d356545bfa9a1e0bd6716a9ee",
+        "claimed_at": "2026-11-20T22:38:33+00:00",
+        "updated_at": "2026-11-21T07:46:00+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "b0c2eda629743ede633049fbc60256734b8575b7",
+        "based_on_reviews": [
+          "1b7a53b2c91c49d481c892507323d9d9",
+          "43d58327bd434219b328d74d652d3be9",
+          "77033e38e60445f2addf6c2c8e536996",
+          "8b0ce759514b4c68b04d002b192f50ff",
+          "9436326dc3784bbe994f50e6dce8e9c0"
+        ],
+        "task": "CAN-03",
+        "submitted_at": "2026-11-20T22:52:33+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:45:51+00:00",
+  "updated_at": "2026-11-21T07:46:00+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -14361,11 +14402,11 @@
         "targets/lfj8/test_lfj8_h03_target_platform.c",
         "verification/project-audit/can03-target-platform-lifecycle.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "2101184d356545bfa9a1e0bd6716a9ee",
       "claimed_at": "2026-11-20T22:38:33+00:00",
-      "updated_at": "2026-11-20T22:52:33+00:00",
-      "note": "Связан штатный target_initialize, сервис CAN и остановка перед сбросом TML0. M32R 22/22, связанный сценарий 14+2, 62 boot, ПК 41/179, Bosch PASS_OFFLINE_ONLY. Открыты рабочий профиль, финальный линк и физическая отмена уже выставленного TX13 при закрытии. Отчёт can03-target-platform-lifecycle.md.",
+      "updated_at": "2026-11-21T07:46:00+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "b0c2eda629743ede633049fbc60256734b8575b7",
       "based_on_reviews": [
         "1b7a53b2c91c49d481c892507323d9d9",
