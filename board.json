@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 846,
+  "sequence": 847,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -151,7 +151,7 @@
       "label": "Codex H03-04 — сервисные переходы в общей компоновке",
       "branch": "codex/h03-04-common-service-resident-7bd19ea4",
       "files": [
-        "targets/lfj8/check_h03_service_writes.py",
+        "targets/lfj8/check_h03_service_guard.py",
         "targets/lfj8/lfj8_h03_service_placement.py",
         "tests/test_h03_service_placement.py",
         "tools/check_h03_image_layout.py",
@@ -160,8 +160,8 @@
       "stage": "in_progress",
       "claim_id": "fe45b2270ed1477d94fcc54c637fa138",
       "claimed_at": "2026-11-21T07:52:59+00:00",
-      "updated_at": "2026-11-21T07:52:59+00:00",
-      "note": "Подключаю готовые ограничения сервисных записей и Virtual Flash к общему H03 linker plan. Проверю адреса, единый RAM policy, нижнюю резидентность и расходы памяти.",
+      "updated_at": "2026-11-21T07:54:37+00:00",
+      "note": "Сервисные переходы включены в общий план. Резервирую проверку GDB на том же раннем ELF.",
       "result": null,
       "based_on_reviews": []
     },
@@ -13099,9 +13099,36 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "99864c062137467092216dc2bd341a95",
+      "task": "H03-04",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "fe45b2270ed1477d94fcc54c637fa138",
+      "at": "2026-11-21T07:54:37+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex H03-04 — сервисные переходы в общей компоновке",
+        "branch": "codex/h03-04-common-service-resident-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_service_guard.py",
+          "targets/lfj8/lfj8_h03_service_placement.py",
+          "tests/test_h03_service_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-04-common-service-writers.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "fe45b2270ed1477d94fcc54c637fa138",
+        "claimed_at": "2026-11-21T07:52:59+00:00",
+        "updated_at": "2026-11-21T07:54:37+00:00",
+        "note": "Сервисные переходы включены в общий план. Резервирую проверку GDB на том же раннем ELF.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:54:10+00:00",
+  "updated_at": "2026-11-21T07:54:37+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
