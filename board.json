@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 884,
+  "sequence": 885,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -14202,9 +14202,38 @@
         "task": "H03-03",
         "submitted_at": "2026-11-21T08:01:57+00:00"
       }
+    },
+    {
+      "operation_id": "ee78d466d5af4516a6cf3ae12d9673cf",
+      "task": "H03-04",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "complete",
+      "claim_id": "fe45b2270ed1477d94fcc54c637fa138",
+      "at": "2026-11-21T08:36:13+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex H03-04 — сервисные переходы в общей компоновке",
+        "branch": "codex/h03-04-common-service-resident-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_service_guard.py",
+          "targets/lfj8/lfj8_h03_service_placement.py",
+          "tests/test_h03_service_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-04-common-service-writers.md"
+        ],
+        "stage": "done",
+        "claim_id": "fe45b2270ed1477d94fcc54c637fa138",
+        "claimed_at": "2026-11-21T07:52:59+00:00",
+        "updated_at": "2026-11-21T08:36:13+00:00",
+        "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
+        "result": "1cf7aa5eb5c8ead6866eb1be12a7a3fad8f6fbbe",
+        "based_on_reviews": [],
+        "task": "H03-04",
+        "submitted_at": "2026-11-21T08:03:37+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:34:56+00:00",
+  "updated_at": "2026-11-21T08:36:13+00:00",
   "main_commit": "abd3cba0093cf834950d7883fcc6cbacec4420d3",
   "catalog": [
     {
@@ -16728,11 +16757,11 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/h03-04-common-service-writers.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "fe45b2270ed1477d94fcc54c637fa138",
       "claimed_at": "2026-11-21T07:52:59+00:00",
-      "updated_at": "2026-11-21T08:03:37+00:00",
-      "note": "Пять сервисных переходов связаны в общем H03 с единой защитой RAM/DMA4. Ранний ELF: 29 сценариев записи, 28 закрытий, ранний IRQ и DMA4; 22 проверки размещения. Известная верхняя часть 102224/102356, 28 ссылок ещё открыты. Без выпуска BIN.",
+      "updated_at": "2026-11-21T08:36:13+00:00",
+      "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
       "result": "1cf7aa5eb5c8ead6866eb1be12a7a3fad8f6fbbe",
       "based_on_reviews": [],
       "task": "H03-04",
