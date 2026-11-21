@@ -13,30 +13,21 @@ import check_h03_can_monitor_startup as startup
 from check_h03_link import HERE, ROOT, TARGET, identify_h03
 from check_h03_dtc_foreground import DIAGNOSTIC_SOURCES, LFJ8_SOURCES
 from check_h03_storage import check as check_storage
+from lfj8_h03_can_service_placement import SERVICE_MODULES, SERVICE_RAM_FIELDS, typed_alias_ranges
 sys.path.insert(0, str(ROOT / "controller"))
 from hydraulic_port import write_port
 
 
 ALIASES = {
-    "rbm_h03_application": "control/application",
+    **SERVICE_RAM_FIELDS,
     "rbm_h03_atf_state": "control/atf",
     "rbm_h03_selector_adc_state": "control/selector_adc",
-    "rbm_h03_sensor_state": "control/sensors",
-    "rbm_h03_tml0_1mhz_qualified": "control/clock_qualified",
     "rbm_h03_takeover_state": "control/takeover",
     "rbm_h03_runtime_state": "control/runtime",
     "rbm_h03_cycle_state": "control/cycle",
     "rbm_h03_toyota_release_state": "control/toyota_release",
-    "h03_can_owner": "communication/can_owner",
     "rbm_h03_main_result": "communication/main_result",
-    "rbm_h03_fast_output": "communication/fast_output",
-    "rbm_h03_dtc_target": "communication/dtc_target",
-    "rbm_h03_can13": "communication/can13",
     "fixture_shared_dtc": "communication/dtc",
-    "rbm_h03_can_service": "communication/can_service",
-    "rbm_h03_can13_input": "workspace/can13_input",
-    "rbm_h03_tx_input": "workspace/tx_input",
-    "rbm_h03_torque_input": "workspace/torque_input",
     "rbm_h03_cycle_workspace": "workspace/toyota",
     "rbm_h03_cycle_input": "workspace/cycle_input",
 }
@@ -647,17 +638,7 @@ def aliases_for(base, compiler, storage_report):
     for field in ("base", "artifact_kind", "blocks", "fields", "input_sha256"):
         if expected[field] != actual[field]:
             raise ValueError(f"The H03 RAM report differs from a fresh M32R inventory: {field}")
-    addresses = {}
-    for symbol, qualified in ALIASES.items():
-        group = qualified.split("/", 1)[0]
-        field = actual["fields"][qualified]
-        block = actual["blocks"][group]
-        address = block["address"] + field["offset"]
-        if address % field["alignment"] or not block["address"] <= address < address + field["bytes"] <= block["end_exclusive"]:
-            raise ValueError(f"The RAM address of {symbol} violates its typed block")
-        if any(start < address + field["bytes"] and address < end for start, end in addresses.values()):
-            raise ValueError(f"Overlapping native symbol {symbol}")
-        addresses[symbol] = (address, address + field["bytes"])
+    addresses = typed_alias_ranges(actual, ALIASES)
     text = "\n".join(f".global {symbol}\n.set {symbol}, {start:#x}"
                      for symbol, (start, _) in addresses.items()) + "\n"
     return addresses, text
@@ -838,9 +819,7 @@ def aggregate_placement(args, aliases):
         alias_path = Path(directory) / "h03-typed-aliases.S"
         alias_path.write_text(aliases + "\n.global h03_tx_writer_resume\n.set h03_tx_writer_resume, 0xC350\n",
                               encoding="ascii")
-        layout.BINDING_MODULES += ("lfj8_h03_can_monitor_revoke.c", "lfj8_h03_can_target.c",
-                                   "lfj8_h03_target_service.c", "lfj8_h03_atf_feed.c",
-                                   "h03_can13_tx_gate.S",
+        layout.BINDING_MODULES += (*SERVICE_MODULES, "h03_can13_tx_gate.S",
                                    Path(os.path.relpath(alias_path, HERE)).as_posix())
         layout.build = include_resident_rx
         try:
@@ -856,6 +835,62 @@ def aggregate_placement(args, aliases):
         row["nominal_flash_margin_before_alignment_and_missing_material"] += room
     result["service_and_resident_rx_without_monitor_veneers"] = result.pop("main_baseline")
     return result
+
+
+def profiled_service_placement(args, addresses):
+    """Measure the real CAN service with the profiled application and resident RX."""
+    sys.path.insert(0, str(ROOT))
+    from tools import check_h03_image_layout as layout
+
+    bindings = {name: addresses[name][0] for name in SERVICE_RAM_FIELDS}
+    bindings["h03_tx_writer_resume"] = 0xC350
+    local = ROOT / "local"
+    local.mkdir(exist_ok=True)
+    before = layout.BINDING_MODULES
+    with TemporaryDirectory(prefix="rbm-profiled-can-", dir=local) as directory:
+        work = Path(directory)
+        alias_path = work / "can-service-anchors.S"
+        alias_path.write_text("".join(f".global {name}\n.set {name}, {address:#x}\n"
+                                      for name, address in bindings.items()), encoding="ascii")
+        profile = work / "service-profile.h"
+        profile.write_text(FIXTURE_PROFILE, encoding="ascii")
+        out = work / "placement"
+        out.mkdir()
+        options = argparse.Namespace(
+            base=args.base.resolve(), gcc=args.gcc.resolve(), controller=args.controller.resolve(),
+            bridge=args.bridge.resolve(), storage_report=args.storage_report.resolve(), out=out,
+            profile="padding-candidate", memory_model="medium", with_bindings=True,
+            with_dtc_rx=True, application_profile=profile, cpu_test=False,
+        )
+        alias_source = Path(os.path.relpath(alias_path, HERE)).as_posix()
+        try:
+            layout.BINDING_MODULES = (*before, *SERVICE_MODULES, "h03_can13_tx_gate.S", alias_source)
+            report = layout.build(options)
+        except ValueError:
+            report_path = out / "layout.json"
+            if not report_path.is_file():
+                raise
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            if report["status"] != "FAIL_BINDINGS":
+                raise
+        finally:
+            layout.BINDING_MODULES = before
+
+    entries = {
+        "lfj8_h03_target_service_prepare_locked", "rbm_h03_target_service_phase",
+        "lfj8_h03_target_service_stop_locked", "rbm_h03_can_monitor_retire_tx13_locked", "h03_can13_tx_gate",
+    }
+    missing = set(report.get("unresolved_symbols", ()))
+    if not entries.issubset(report["required_roots"]) or missing & (entries | bindings.keys()):
+        raise ValueError("The profiled address model is missing a CAN service entry or RAM alias")
+    candidate = report.get("known_sections_candidate_plan", {})
+    if not report["accepted_layout"] and "sections" not in candidate:
+        raise ValueError("The retained CAN service composition did not fit the H03 address model")
+    return {"status": report["status"], "known_flash_bytes": report["flash_payload_bytes"],
+            "known_static_ram_bytes": report["new_static_ram_bytes"], "service_entries": sorted(entries),
+            "typed_addresses": {name: [f"0x{start:06X}", f"0x{end:06X}"]
+                                for name, (start, end) in addresses.items() if name in SERVICE_RAM_FIELDS},
+            "missing_symbols": sorted(missing), "hardware_verified": False, "flashable_image": None}
 
 
 def main():
@@ -879,6 +914,7 @@ def main():
                   "fixture": probe_binding(args.base, compiler, assembly, addresses), "flashable_image": None}
         if args.controller:
             report["aggregate_placement"] = aggregate_placement(args, assembly)
+            report["profiled_service_placement"] = profiled_service_placement(args, addresses)
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     except subprocess.CalledProcessError as error:
