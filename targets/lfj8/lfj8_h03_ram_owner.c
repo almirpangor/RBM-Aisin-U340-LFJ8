@@ -28,6 +28,9 @@
 #define H03_CLOSE_SITE UINT32_C(0x002E9C)
 #define H03_VIRTUAL_SITE UINT32_C(0x003568)
 #define H03_VIRTUAL_DISABLE UINT32_C(0x003594)
+#define H03_EARLY_IRQ_SITE UINT32_C(0x003DBC)
+#define H03_EARLY_IRQ_RESIDENT_START UINT32_C(0x006000)
+#define H03_DMA4_SITE UINT32_C(0x00CF0C)
 #define LONG_BRA UINT32_C(0xFF000000)
 #define LONG_BL UINT32_C(0xFE000000)
 #define LD24_R0 UINT32_C(0xE0000000)
@@ -171,6 +174,37 @@ static int branch_matches(uint32_t at, uint32_t target, uint32_t opcode)
     return read_word(at) == (opcode | (((target - at) >> 2) & LOW_24_BITS));
 }
 
+static int boot_routes_installed(const Lfj8H03RamOwner *owner,
+                                 const Lfj8H03ServicePolicy *policy)
+{
+    const uint32_t early = owner->early_irq_hook;
+    const uint32_t dma4 = owner->dma4_hook;
+
+    /* The lower veneer must clear the linked IRQ pointer before setting IE. */
+    if ((early & 3u) || early < H03_EARLY_IRQ_RESIDENT_START ||
+        early > H03_APPLICATION_START - 0x18u ||
+        !branch_matches(H03_EARLY_IRQ_SITE, early, LONG_BRA) ||
+        read_word(early) != UINT32_C(0x217FF000) ||
+        read_word(early + 0x04u) != (LD24_R0 | owner->dtc_irq_pointer.first) ||
+        read_word(early + 0x08u) != UINT32_C(0x61002140) ||
+        read_word(early + 0x0cu) != UINT32_C(0x21EFF000) ||
+        read_word(early + 0x10u) != UINT32_C(0x604010A0) ||
+        !branch_matches(early + 0x14u, H03_EARLY_IRQ_SITE + 4u, LONG_BRA)) {
+        return 0;
+    }
+
+    /* Check the policy call, its denial branch, and resumption of the setter. */
+    return in_application_flash(dma4, 0x80u) &&
+           branch_matches(H03_DMA4_SITE, dma4, LONG_BRA) &&
+           read_word(dma4 + 0x04u) == UINT32_C(0x18907240) &&
+           read_word(dma4 + 0x3cu) == (LD24_R0 | (uint32_t)(uintptr_t)policy) &&
+           branch_matches(dma4 + 0x40u,
+                          (uint32_t)(uintptr_t)&lfj8_h03_service_span_allowed, LONG_BL) &&
+           read_word(dma4 + 0x44u) == UINT32_C(0xB0800009) &&
+           branch_matches(dma4 + 0x64u, H03_DMA4_SITE + 4u, LONG_BRA) &&
+           read_word(dma4 + 0x7cu) == UINT32_C(0x2EEF1FCE);
+}
+
 static const Lfj8H03ServicePolicy *installed_policy(const Lfj8H03RamOwner *owner)
 {
     if (!in_application_flash(owner->direct_hook, 4u) ||
@@ -257,10 +291,10 @@ int lfj8_h03_ram_owned(void *context)
     const Lfj8H03RamOwner *const owner = context;
     if (!in_application_flash((uintptr_t)owner, sizeof *owner) ||
         !owner->boot_and_other_writers_owned || !plain_flash() || !live_stacks_ready(owner) ||
-        !stock_sbi_words_match() ||
-        owner->boot_and_other_writers_owned(owner->platform) != 1) {
+        !stock_sbi_words_match()) {
         return 0;
     }
     const Lfj8H03ServicePolicy *const policy = installed_policy(owner);
-    return qualified_layout(owner, policy) && dma_safe_locked(policy);
+    return qualified_layout(owner, policy) && boot_routes_installed(owner, policy) &&
+           dma_safe_locked(policy) && owner->boot_and_other_writers_owned(owner->platform) == 1;
 }

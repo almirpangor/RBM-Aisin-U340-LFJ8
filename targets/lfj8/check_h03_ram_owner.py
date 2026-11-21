@@ -18,7 +18,8 @@ from lfj8_h03_layout import alloc_sections, read_elf
 
 
 SITES = {"DIRECT": 0x002924, "SPAN": 0x00294C, "COPY": 0x002D1C,
-         "CLOSE": 0x002E9C, "VIRTUAL": 0x003568}
+         "CLOSE": 0x002E9C, "VIRTUAL": 0x003568,
+         "EARLY_IRQ": 0x003DBC, "DMA4": 0x00CF0C}
 SBI_SITES = {"SBI_VECTOR": 0x000010, "SBI_MASK_READ": 0x003E5C,
              "SBI_PSW_SAVE": 0x003E60, "SBI_SAVE_CALL": 0x003F7C,
              "SBI_LAST_STORE": 0x003FC0, "SBI_STOP": 0x003FC4}
@@ -28,6 +29,8 @@ CONTINUATIONS = {
     "h03_service_copy_after_entry": 0x002D20,
     "h03_service_close_after_store": 0x002EA0,
     "rbm_h03_service_policy": 0x030000,
+    "h03_early_irq_after_entry": 0x003DC0,
+    "h03_dma4_after_entry": 0x00CF10,
 }
 
 
@@ -125,14 +128,14 @@ def simulate(base, compiler, blocks):
                 ROOT / "diagnostics")
     sources = ("test_lfj8_h03_ram_owner.c", "lfj8_h03_ram_owner.c", "lfj8_h03_target_memory.c",
                "lfj8_h03_application.c", "h03_application_hooks.S", "lfj8_h03_mmio.c",
-               "lfj8_h03_service_guard.c", "h03_service_guard_hooks.S")
+               "lfj8_h03_service_guard.c", "h03_service_guard_hooks.S", "h03_dma4_guard.S")
     # Derive the state ranges from the checked M32R inventory. Stack bounds,
     # remaining reserves and the IRQ pointer here are only fixture geometry.
     ranges = {name: (block["address"], block["end_exclusive"])
               for name, block in blocks.items()}
-    ranges.update(dtc_irq_pointer=(0x8094c0, 0x8094c4),
-                  spi=(0x809700, 0x809efc), psw=(0x809f00, 0x809fa0))
-    symbols = dict(CONTINUATIONS, rbm_h03_ram_spi_reserve=0x100, rbm_h03_ram_psw_reserve=8)
+    ranges.update(spi=(0x809700, 0x809efc), psw=(0x809f00, 0x809fa0))
+    symbols = dict(CONTINUATIONS, rbm_h03_ram_spi_reserve=0x100,
+                   rbm_h03_ram_psw_reserve=8, h03_dtc_irq_pointer=ranges["workspace"][1])
     for name, (first, end) in ranges.items():
         symbols[f"rbm_h03_ram_{name}_first"] = first
         symbols[f"rbm_h03_ram_{name}_end"] = end
@@ -140,14 +143,20 @@ def simulate(base, compiler, blocks):
         folder = Path(directory)
         shim = folder / "crt.c"
         shim.write_text("void __init(void) {}\nvoid __fini(void) {}\n", encoding="ascii")
+        resident = folder / "resident.ld"
+        resident.write_text(
+            "SECTIONS { .h03_early 0x6000 : { *(.text.rbm_h03_early_irq_gate) } } "
+            "INSERT BEFORE .text;\n", encoding="ascii")
         elf = folder / "ram-owner.elf"
         run(compiler, *TARGET, "-Os", "-std=c11", "-Wall", "-Wextra", "-Werror",
             "-ffunction-sections", "-fdata-sections",
+            "-DRBM_H03_COMMON_DMA4_GUARD=1",
             *(option for path in includes for option in ("-I", path)),
             *(f"-DROM_{name}=0x{rom[address:address + 4].hex()}u"
               for name, address in (SITES | SBI_SITES).items()),
             "-nostartfiles", crt, *(HERE / source for source in sources), shim,
             "-Wl,-e,_start,-Ttext=0x10000,--gc-sections",
+            f"-Wl,-T,{resident}",
             *(f"-Wl,--defsym={name}={address:#x}" for name, address in symbols.items()),
             "-Wl,--start-group", "-lc", "-lgloss", "-lgcc", "-Wl,--end-group", "-o", elf)
         simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")

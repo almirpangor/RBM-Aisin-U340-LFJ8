@@ -10,21 +10,23 @@
 DECLARE_RANGE(control);
 DECLARE_RANGE(communication);
 DECLARE_RANGE(workspace);
-DECLARE_RANGE(dtc_irq_pointer);
 DECLARE_RANGE(spi);
 DECLARE_RANGE(psw);
+extern const uint8_t h03_dtc_irq_pointer[];
 extern const uint8_t rbm_h03_ram_spi_reserve[], rbm_h03_ram_psw_reserve[];
 
 void rbm_h03_service_direct_hook(void);
 void rbm_h03_service_span_hook(void);
 void rbm_h03_service_copy_hook(void);
 void rbm_h03_service_close_hook(void);
+void rbm_h03_early_irq_gate(void);
+void rbm_h03_dma4_guard(void);
 
 static const Lfj8H03RamOwner target_owner = {
     .control = RANGE(control),
     .communication = RANGE(communication),
     .workspace = RANGE(workspace),
-    .dtc_irq_pointer = RANGE(dtc_irq_pointer),
+    .dtc_irq_pointer = {ADDRESS(h03_dtc_irq_pointer), ADDRESS(h03_dtc_irq_pointer) + sizeof(void *)},
     .spi = RANGE(spi),
     .psw = RANGE(psw),
     .spi_reserve_bytes = ADDRESS(rbm_h03_ram_spi_reserve),
@@ -33,6 +35,8 @@ static const Lfj8H03RamOwner target_owner = {
     .span_hook = ADDRESS(rbm_h03_service_span_hook),
     .copy_hook = ADDRESS(rbm_h03_service_copy_hook),
     .close_hook = ADDRESS(rbm_h03_service_close_hook),
+    .early_irq_hook = ADDRESS(rbm_h03_early_irq_gate),
+    .dma4_hook = ADDRESS(rbm_h03_dma4_guard),
     .boot_and_other_writers_owned = rbm_h03_boot_writers_owned,
 };
 

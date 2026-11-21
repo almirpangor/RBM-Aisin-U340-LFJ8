@@ -8,6 +8,7 @@ typedef struct {
     Lfj8H03ServiceRange spi, psw;
     uint32_t spi_reserve_bytes, psw_reserve_bytes;
     uint32_t direct_hook, span_hook, copy_hook, close_hook;
+    uint32_t early_irq_hook, dma4_hook;
     void *platform;
     int (*boot_and_other_writers_owned)(void *platform);
 } Lfj8H03RamOwner;
@@ -16,8 +17,9 @@ typedef struct {
  * read-only linker-bound context and holds the native interrupt exclusion.
  * The boot witness must already have a safe stack and verify that other
  * writers and the initial IRQ ordering are covered. The native DMA check
- * reads live destinations and counts only. The boot witness must guarantee
- * that subsequent DMA reconfiguration is contained and that other writers,
+ * reads live destinations and counts. The early BasicCAN gate and DMA4 guard
+ * must use the same pointer and policy as the rest of the layout. The boot
+ * witness must cover remaining DMA reconfiguration and other writers,
  * including SBI, remain covered. It must not inspect project RAM to decide
  * whether RAM can be accessed.
  * Supply the required remaining SPI/PSW reserves in bytes for the final
