@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 866,
+  "sequence": 867,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -517,12 +517,12 @@
         "targets/lfj8/test_lfj8_h03_target_platform.c",
         "verification/project-audit/vss02-h03-live-clock-continuity.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "1d81829ef6454d6589be1c0367f123d1",
       "claimed_at": "2026-11-21T07:54:10+00:00",
-      "updated_at": "2026-11-21T08:06:48+00:00",
-      "note": "Прошли финальные 22 native, 8 компонентов M32R и 6 групп размещённого ядра. Сравнение с 06ab447: +168 Flash, +12 типизированной RAM, +8 в кадрах foreground. Верхние окна требуют 102596 при 102356. Дожидаюсь полного прогона ПК.",
-      "result": null,
+      "updated_at": "2026-11-21T08:07:28+00:00",
+      "note": "Штатный foreground отзывает эпоху и очищает S51/S83/ATF при разрыве относительного хода TML0/TML1. Воспроизведён дефект 06ab447. Прошли ПК 41/194, M32R 22+8, 68 startup и 6 групп размещённого ядра. +168 байт Flash, +12 типизированной RAM и +8 в кадрах foreground. Общий FAIL_BINDINGS, 32 ссылки и дефицит верхней Flash 240 байт. Нужны реальные замеры и выпускной профиль. Отчёт verification/project-audit/vss02-h03-live-clock-continuity.md.",
+      "result": "9235b22a1f5a1c455cb33a45d21b58c13d17bd52",
       "based_on_reviews": []
     },
     "TOY-01": {
@@ -13648,9 +13648,42 @@
         "result": "e207a57f970e99f015115d89bcd3e320e6d0fb81",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "f28c0db81b664495818f21a4256d620b",
+      "task": "VSS-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "review",
+      "claim_id": "1d81829ef6454d6589be1c0367f123d1",
+      "at": "2026-11-21T08:07:28+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex VSS-02 — согласованность таймеров в foreground",
+        "branch": "codex/vss02-h03-live-clock-continuity-01a1f9c7",
+        "files": [
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "targets/lfj8/h03_phase_boot_fixture.c",
+          "targets/lfj8/h03_sensor_hook_fixture.c",
+          "targets/lfj8/lfj8_donor_io.c",
+          "targets/lfj8/lfj8_donor_io.h",
+          "targets/lfj8/lfj8_h03_sensor_feed.c",
+          "targets/lfj8/lfj8_h03_sensor_feed.h",
+          "targets/lfj8/lfj8_h03_sensor_target.c",
+          "targets/lfj8/test_lfj8_h03_sensor_feed.c",
+          "targets/lfj8/test_lfj8_h03_target_platform.c",
+          "verification/project-audit/vss02-h03-live-clock-continuity.md"
+        ],
+        "stage": "review",
+        "claim_id": "1d81829ef6454d6589be1c0367f123d1",
+        "claimed_at": "2026-11-21T07:54:10+00:00",
+        "updated_at": "2026-11-21T08:07:28+00:00",
+        "note": "Штатный foreground отзывает эпоху и очищает S51/S83/ATF при разрыве относительного хода TML0/TML1. Воспроизведён дефект 06ab447. Прошли ПК 41/194, M32R 22+8, 68 startup и 6 групп размещённого ядра. +168 байт Flash, +12 типизированной RAM и +8 в кадрах foreground. Общий FAIL_BINDINGS, 32 ссылки и дефицит верхней Flash 240 байт. Нужны реальные замеры и выпускной профиль. Отчёт verification/project-audit/vss02-h03-live-clock-continuity.md.",
+        "result": "9235b22a1f5a1c455cb33a45d21b58c13d17bd52",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:07:17+00:00",
+  "updated_at": "2026-11-21T08:07:28+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -16236,6 +16269,33 @@
       "based_on_reviews": [],
       "task": "CAN-03",
       "submitted_at": "2026-11-21T08:07:17+00:00"
+    },
+    "1d81829ef6454d6589be1c0367f123d1": {
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "label": "Codex VSS-02 — согласованность таймеров в foreground",
+      "branch": "codex/vss02-h03-live-clock-continuity-01a1f9c7",
+      "files": [
+        "targets/lfj8/h03_application_binding_fixture.c",
+        "targets/lfj8/h03_phase_boot_fixture.c",
+        "targets/lfj8/h03_sensor_hook_fixture.c",
+        "targets/lfj8/lfj8_donor_io.c",
+        "targets/lfj8/lfj8_donor_io.h",
+        "targets/lfj8/lfj8_h03_sensor_feed.c",
+        "targets/lfj8/lfj8_h03_sensor_feed.h",
+        "targets/lfj8/lfj8_h03_sensor_target.c",
+        "targets/lfj8/test_lfj8_h03_sensor_feed.c",
+        "targets/lfj8/test_lfj8_h03_target_platform.c",
+        "verification/project-audit/vss02-h03-live-clock-continuity.md"
+      ],
+      "stage": "review",
+      "claim_id": "1d81829ef6454d6589be1c0367f123d1",
+      "claimed_at": "2026-11-21T07:54:10+00:00",
+      "updated_at": "2026-11-21T08:07:28+00:00",
+      "note": "Штатный foreground отзывает эпоху и очищает S51/S83/ATF при разрыве относительного хода TML0/TML1. Воспроизведён дефект 06ab447. Прошли ПК 41/194, M32R 22+8, 68 startup и 6 групп размещённого ядра. +168 байт Flash, +12 типизированной RAM и +8 в кадрах foreground. Общий FAIL_BINDINGS, 32 ссылки и дефицит верхней Flash 240 байт. Нужны реальные замеры и выпускной профиль. Отчёт verification/project-audit/vss02-h03-live-clock-continuity.md.",
+      "result": "9235b22a1f5a1c455cb33a45d21b58c13d17bd52",
+      "based_on_reviews": [],
+      "task": "VSS-02",
+      "submitted_at": "2026-11-21T08:07:28+00:00"
     }
   }
 }
