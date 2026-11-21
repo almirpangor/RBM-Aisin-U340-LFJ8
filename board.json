@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 870,
+  "sequence": 871,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -137,6 +137,8 @@
       "label": "Codex H03-04 — подтверждённые RAM/SPI/PSW алиасы",
       "branch": "codex/h03-04-verified-ram-aliases-7bd19ea4",
       "files": [
+        "targets/lfj8/check_h03_ram_owner.py",
+        "targets/lfj8/lfj8_h03_ram_owner.c",
         "targets/lfj8/lfj8_h03_ram_placement.py",
         "tests/test_h03_ram_placement.py",
         "tools/check_h03_image_layout.py",
@@ -145,8 +147,8 @@
       "stage": "in_progress",
       "claim_id": "a20975afc98c4d39aaad95e3eb018a5c",
       "claimed_at": "2026-11-21T08:07:13+00:00",
-      "updated_at": "2026-11-21T08:07:13+00:00",
-      "note": "Подключаю типизированные диапазоны RAM и исходные вершины SPI/PSW к общему линку. Неподтверждённые нижние пределы, запасы и boot_writers_owned оставляю открытыми.",
+      "updated_at": "2026-11-21T08:08:26+00:00",
+      "note": "Подключаю подтверждённые RAM-алиасы. Добавил проверку размещения сервисных защит в резидентном диапазоне для владельца RAM.",
       "result": null,
       "based_on_reviews": [
         "fe45b2270ed1477d94fcc54c637fa138"
@@ -13761,9 +13763,39 @@
         "result": "94f93c6067d338290333a1fa45f39787476a2d62",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "0c8b6b2c9192472bb4f5e08b0242c494",
+      "task": "H03-04",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "a20975afc98c4d39aaad95e3eb018a5c",
+      "at": "2026-11-21T08:08:26+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex H03-04 — подтверждённые RAM/SPI/PSW алиасы",
+        "branch": "codex/h03-04-verified-ram-aliases-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_placement.py",
+          "tests/test_h03_ram_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-04-common-ram-aliases.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "a20975afc98c4d39aaad95e3eb018a5c",
+        "claimed_at": "2026-11-21T08:07:13+00:00",
+        "updated_at": "2026-11-21T08:08:26+00:00",
+        "note": "Подключаю подтверждённые RAM-алиасы. Добавил проверку размещения сервисных защит в резидентном диапазоне для владельца RAM.",
+        "result": null,
+        "based_on_reviews": [
+          "fe45b2270ed1477d94fcc54c637fa138"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:08:12+00:00",
+  "updated_at": "2026-11-21T08:08:26+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
