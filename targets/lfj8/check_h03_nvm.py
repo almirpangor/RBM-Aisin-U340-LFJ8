@@ -1,4 +1,4 @@
-"""Check H03 erase geometry and run the DTC journal backend without hardware."""
+"""Check H03 geometry, the DTC journal model and native array reads without hardware."""
 
 import argparse
 import json
@@ -80,10 +80,33 @@ def run_backend_checks(cc, gcc):
         elf, _ = elf_info(stage / "nvm.elf", 2)
         m32r = run(str(gcc.with_name("m32r-elf-run" + gcc.suffix)), "nvm.elf")
 
+        native_sources = ("lfj8_h03_nvm_native.c", "lfj8_h03_mmio.c", "h03_nvm_native_fixture.c")
+        native_headers = ("lfj8_h03_nvm_native.h", "lfj8_h03_mmio.h", "lfj8_h03_engine_rx.h",
+                          "lfj8_donor_io.h", "ta2005_chery_inputs.h")
+        for name in (*native_sources, *native_headers):
+            shutil.copyfile(HERE / name, stage / name)
+        native_flags = (*TARGET, *flags, "-ffunction-sections", "-fdata-sections")
+        run(str(gcc), *native_flags, "-c", "lfj8_h03_nvm_native.c")
+        native_object, _ = elf_info(stage / "lfj8_h03_nvm_native.o", 1)
+        run(str(gcc), *native_flags, "-nostartfiles", crt,
+            "lfj8_h03_nvm.c", "chery_dtc.c", "chery_dtc_journal.c", "lfj8_h03_nvm_native.o",
+            *native_sources[1:], hooks.name,
+            "-Wl,-Ttext,0x100000,--gc-sections,-e,_start,--start-group", "-lc", "-lgloss", "-lgcc",
+            "-Wl,--end-group", "-o", "nvm-native.elf")
+        _, allocated = elf_info(stage / "nvm-native.elf", 2)
+        if any(address < ERASE_ENDS[-1] + 2 for address, _, _ in allocated):
+            raise ValueError("Simulator ELF overlaps the H03 flash used by the read fixture")
+        native = run(str(gcc.with_name("m32r-elf-run" + gcc.suffix)),
+                     "--memory-size", "16M", "nvm-native.elf")
+
     expected = "H03 erase ends:" + "".join(f" {end:05X}" for end in ERASE_ENDS)
     if pc != m32r or not pc.startswith(expected + "\n") or not pc.endswith("restart PASS"):
         raise ValueError("PC/M32R backend checks disagree or did not finish")
-    return {"pc": pc.splitlines(), "m32r": m32r.splitlines(), "m32r_simulator_elf": elf}
+    native_lines = native.splitlines()
+    if len(native_lines) != 2 or not all(line.startswith("PASS native H03 array:") for line in native_lines):
+        raise ValueError("Native H03 array checks did not finish")
+    return {"pc": pc.splitlines(), "m32r": m32r.splitlines(), "m32r_simulator_elf": elf,
+            "m32r_native_read": native_lines, "m32r_native_reader_object": native_object}
 
 
 def main():
