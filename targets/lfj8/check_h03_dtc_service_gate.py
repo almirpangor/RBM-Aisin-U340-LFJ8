@@ -1,4 +1,4 @@
-"""Exercise both linked lower BasicCAN redirects in the H03 service mode."""
+"""Exercise both linked lower BasicCAN redirects under H03 service and Flash gates."""
 
 import argparse
 from hashlib import sha256
@@ -15,6 +15,8 @@ CALLBACKS = {
     "observe_callback": "rbm_h03_dtc_rx_observe",
 }
 OBSERVER_EVENTS = {*CALLBACKS, "target_queue", "delivery"}
+BANK_REGISTERS = {"felbank0": 0x8007E8, "felbank1": 0x8007EA,
+                  "fesbank0": 0x8007F0, "fesbank1": basiccan.FESBANK1}
 
 
 def check(base, gcc):
@@ -41,11 +43,22 @@ def check(base, gcc):
         (work / "erased-app.dat").write_bytes(b"\xff" * (basiccan.FLASH_LIMIT - basiccan.APP_START))
         callback_probes = [command for event, symbol in CALLBACKS.items()
                            for command in basiccan.at(f"*{symbol}", basiccan.trace(event, "$pc"))]
+        contexts = [
+            ("ordinary_mode", 0, False, {}, False),
+            ("mode_3", 3, False, {}, False),
+            ("service_mode", 4, False, {}, True),
+            ("service_mode_erased_application", 4, True, {}, True),
+            ("disabled_bank_selectors", 0, False, dict.fromkeys(BANK_REGISTERS, 0x20), False),
+        ]
+        contexts.extend((f"{name}_enabled_only", 0, False, {name: 0x8020}, True)
+                        for name in BANK_REGISTERS)
         trials = []
-        for mode, erase_app in ((0, False), (3, False), (4, False), (4, True)):
+        for name, mode, erase_app, banks, bypass in contexts:
             setup = [f"set {{unsigned char}}0x804887 = {mode}",
                      f"set {{unsigned char}}{basiccan.PROGRAMMING_MODE:#x} = 0",
-                     f"set {{unsigned char}}{basiccan.FCNT1:#x} = 0"]
+                     f"set {{unsigned char}}{basiccan.FCNT1:#x} = 0",
+                     *(f"set {{unsigned short}}{address:#x} = {banks.get(bank, 0):#x}"
+                       for bank, address in BANK_REGISTERS.items())]
             if erase_app:
                 setup.append(f"restore erased-app.dat binary {basiccan.APP_START:#x}")
             opts = {"compare_hook": True, "compare_dispatch": True, "target": True}
@@ -61,13 +74,14 @@ def check(base, gcc):
                 raise ValueError("The fixture did not admit CAN and exercise the OEM retry")
             if ([row for row in hooked if row[0] not in OBSERVER_EVENTS] !=
                     [row for row in stock if row[0] not in OBSERVER_EVENTS]):
-                raise ValueError(f"Mode {mode} changed the OEM BasicCAN path")
-            if mode == 4:
+                raise ValueError(f"{name} changed the OEM BasicCAN path")
+            if bypass:
                 if any(callbacks.values()) or deliveries or hooked[-1] != ("target_queue", 0, 0):
-                    raise ValueError(f"Service mode reached a project RX callback: {callbacks}")
+                    raise ValueError(f"{name} reached a project RX callback: {callbacks}")
             elif callbacks != {"dispatch_callback": 1, "observe_callback": attempts} or deliveries != 3:
-                raise ValueError(f"Mode {mode} did not preserve normal project RX: {callbacks}")
-            trials.append({"service_mode": mode, "application_erased": erase_app,
+                raise ValueError(f"{name} did not preserve normal project RX: {callbacks}")
+            trials.append({"case": name, "service_mode": mode, "application_erased": erase_app,
+                           "bank_registers": banks,
                            "oem_attempts": attempts, "callbacks": callbacks, "deliveries": deliveries,
                            "stock_stack_bytes": stock_depth, "hooked_stack_bytes": hooked_depth})
 
