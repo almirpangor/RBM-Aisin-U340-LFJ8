@@ -183,6 +183,7 @@ def verify_common(rom, elf, ranges, irq_pointer):
         raise ValueError("The H03 service policy must cover the BasicCAN pointer")
     if symbol_bytes(elf, "rbm_h03_service_policy") != policy_bytes(ranges):
         raise ValueError("Incorrect common H03 service policy bytes")
+    bench_latch_addresses(elf, ranges, irq_pointer)
     patches = []
     for site, name in COMMON_REDIRECTS:
         hook = symbols[site.target]
@@ -197,6 +198,33 @@ def verify_common(rom, elf, ranges, irq_pointer):
         patches.append({"address": site.address, "stock": f"{site.stock:08x}",
                         "branch": branch.hex(), "target": target})
     return patches
+
+
+def bench_latch_addresses(elf, ranges, irq_pointer):
+    """Validate the optional bench variant of the lower reset gate."""
+    symbols = elf["symbols"]
+    if "rbm_h03_early_irq_bench_latches" not in symbols:
+        return ()
+    gate = symbols["rbm_h03_early_irq_gate"]["address"]
+    if symbols["rbm_h03_early_irq_bench_latches"]["address"] != gate + 0x0C:
+        raise ValueError("H03 bench reset latch marker moved")
+    addresses = []
+    for name, offset in (("rbm_h03_application", 4), ("rbm_h03_tml0_1mhz_qualified", 0)):
+        symbol = symbols.get(name, {})
+        if symbol.get("section") != 0xFFF1:
+            raise ValueError(f"H03 bench reset latch needs a typed alias: {name}")
+        address = symbol["address"] + offset
+        if not any(first <= address < end for first, end in ranges):
+            raise ValueError(f"H03 bench reset latch is not covered by service policy: {name}")
+        addresses.append(address)
+    running, clock = addresses
+    words = (0x217FF000, 0xE0000000 | irq_pointer, 0x61002140,
+             0xE0000000 | running, 0x2100F000, 0xE0000000 | clock,
+             0x210021EF, 0x604010A0)
+    resume = Site(gate + 0x20, 0, "h03_early_irq_after_entry").branch(0x3DC0)
+    if symbol_bytes(elf, "rbm_h03_early_irq_gate") != pack(">8I", *words) + resume:
+        raise ValueError("H03 bench reset must clear the linked latches before enabling IRQ")
+    return tuple(addresses)
 
 
 def early_overlay(rom, elf_path, model):
@@ -230,6 +258,15 @@ def early_overlay(rom, elf_path, model):
         result[start:stop] = section["data"]
         end = stop
     return bytes(result)
+
+
+def early_service_overlay(rom, elf_path, model, blocks):
+    """Replay the common guards against the selected and verified RAM inventory."""
+    pointer = model["irq_pointer"]
+    policy = policy_ranges(blocks, ((pointer, pointer + 4),))
+    if model["policy_ranges"] != [list(span) for span in policy]:
+        raise ValueError("Common service policy differs from the supplied RAM inventory")
+    return early_overlay(rom, elf_path, model), policy
 
 
 def write_redirects(path, sites, roots=()):

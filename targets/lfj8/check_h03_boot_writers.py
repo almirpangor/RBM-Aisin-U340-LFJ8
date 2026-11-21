@@ -10,7 +10,7 @@ from tempfile import TemporaryDirectory
 
 from check_h03_link import TARGET, identify_h03
 from lfj8_h03_layout import read_elf
-from lfj8_h03_service_placement import early_overlay
+from lfj8_h03_service_placement import bench_latch_addresses, early_overlay
 
 
 RESET_VECTORS = (0x000000, 0x000020)
@@ -38,6 +38,7 @@ def check_common(base, compiler, placed_elf, layout_report):
     rom = early_overlay(source, placed_elf, model)
     pointer = model["irq_pointer"]
     elf = read_elf(placed_elf, 2)
+    latches = bench_latch_addresses(elf, model["policy_ranges"], pointer)
     dispatch = elf["symbols"]["rbm_h03_dtc_rx_begin"]["address"]
     observe = elf["symbols"]["rbm_h03_dtc_rx_observe"]["address"]
     debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
@@ -87,6 +88,8 @@ fixture_after_allowed:
 """, encoding="ascii")
         results = []
         read_pointer = f"*(unsigned int*){pointer:#x}"
+        read_latches = "".join(f", *(unsigned char*){addr:#x}" for addr in latches)
+        latch_formats = " %x" * len(latches)
         for vector in RESET_VECTORS:
             run(compiler, *TARGET, "-nostdlib",
                 "-Wl,-Ttext=0x80000,--section-start=.h03=0,-e,_start",
@@ -104,9 +107,9 @@ fixture_after_allowed:
             commands = [
                 "set confirm off", "target sim --memory-fill 0xa5 --memory-region 0x0,0x1000000",
                 "load", f"tbreak *{IE_BEFORE:#x}", "run",
-                f'printf "BEFORE %x %x %x\\n", $psw, $sp, {read_pointer}',
+                f'printf "BEFORE %x %x %x{latch_formats}\\n", $psw, $sp, {read_pointer}{read_latches}',
                 f"tbreak *{IE_AFTER:#x}", "continue",
-                f'printf "AFTER %x %x %x\\n", $psw, $sp, {read_pointer}',
+                f'printf "AFTER %x %x %x{latch_formats}\\n", $psw, $sp, {read_pointer}{read_latches}',
                 # Force the early OEM CAN entry in the simulator. Plain Flash
                 # selects the real callback, which finds no bound application.
                 "set {unsigned char}0x80801c = 0", "set {unsigned char}0x804887 = 0",
@@ -142,8 +145,8 @@ fixture_after_allowed:
                 if name in rows:
                     rows[name][0] &= BREAKPOINT_SAVED_IE
             expected = {
-                "BEFORE": [0, SPI_TOP, 0xA5A5A5A5],
-                "AFTER": [BREAKPOINT_SAVED_IE, SPI_TOP, 0],
+                "BEFORE": [0, SPI_TOP, 0xA5A5A5A5] + [0xA5] * len(latches),
+                "AFTER": [BREAKPOINT_SAVED_IE, SPI_TOP, 0] + [0] * len(latches),
                 "DISPATCH": [dispatch, 0], "OEM": [0x0013F0],
                 "OBSERVE": [observe, 0], "RESUME": [0x001538, 14],
                 "DENIED": [0x25, 7, 0x683B, 0], "ALLOWED": [0x6D, 1, 0x683A, 0],
@@ -152,7 +155,8 @@ fixture_after_allowed:
                 raise ValueError(f"Unexpected H03 reset, early IRQ or DMA4 observations from {vector:#x}: {rows}")
             results.append({"reset_vector": vector, "observations": rows})
     return {"base": identity, "early_model_sha256": model["elf_sha256"],
-            "irq_pointer": pointer, "cases": results, "hardware_irq_or_dma_triggered": False,
+            "irq_pointer": pointer, "reset_latch_addresses": latches,
+            "cases": results, "hardware_irq_or_dma_triggered": False,
             "full_boot_writer_ownership_verified": False, "flashable_image": None}
 
 

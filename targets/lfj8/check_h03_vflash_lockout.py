@@ -29,18 +29,27 @@ VIRTUAL_RAM_BASE = 0x807000
 PAGE_SIZE = 0x1000
 
 
-def check(base, compiler, placed_elf=None, storage_report=None):
+def check(base, compiler, placed_elf=None, storage_report=None, *, common_layout=None):
     identity = identify_h03(base)
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
         raise ValueError("H03 changed while preparing the Virtual Flash fixture")
     service.verify_stock(rom, (service.LOCKOUT,))
-    if (placed_elf is None) != (storage_report is None):
+    if (placed_elf is None) != (storage_report is None) or (common_layout is not None and placed_elf is None):
         raise ValueError("Supply both placed ELF and its storage report")
     placement = None
     if placed_elf is not None:
-        ranges = service.policy_ranges(storage_blocks(storage_report.read_bytes(), identity))
-        candidate, placement = service.verify_and_overlay(rom, placed_elf, ranges)
+        blocks = storage_blocks(storage_report.read_bytes(), identity)
+        if common_layout is None:
+            candidate, placement = service.verify_and_overlay(rom, placed_elf, service.policy_ranges(blocks))
+        else:
+            report = json.loads(common_layout.read_text(encoding="utf-8"))
+            model = report.get("early_irq_model", {})
+            if report.get("base") != identity or not model.get("service_writers"):
+                raise ValueError("Common H03 layout has no linked resident service writers for this ROM")
+            candidate, policy = service.early_service_overlay(rom, placed_elf, model, blocks)
+            placement = {"elf_sha256": model["elf_sha256"], "policy_ranges": policy,
+                         "sites": model["service_writers"], "scope": "common_early_irq"}
 
     with TemporaryDirectory(prefix="rbm-h03-vflash-lockout-") as directory:
         work = Path(directory)
@@ -174,17 +183,19 @@ def main():
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--placed-elf", type=Path, help="verify the exact linked branches")
     parser.add_argument("--storage-report", type=Path, help="candidate RAM inventory for the placed ELF")
+    parser.add_argument("--common-layout", type=Path, help="layout.json for a common early IRQ ELF")
     args = parser.parse_args()
-    inputs = (p for p in (args.base, args.gcc, args.placed_elf, args.storage_report) if p is not None)
+    inputs = (p for p in (args.base, args.gcc, args.placed_elf, args.storage_report, args.common_layout) if p is not None)
     if args.out.suffix.lower() != ".json" or any(args.out.resolve() == p.resolve() for p in inputs):
         parser.error("--out must be a separate JSON report")
     try:
-        result = check(args.base, args.gcc.resolve(), args.placed_elf, args.storage_report)
+        result = check(args.base, args.gcc.resolve(), args.placed_elf, args.storage_report,
+                       common_layout=args.common_layout)
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     except subprocess.CalledProcessError as error:
         parser.exit(1, (error.stderr or str(error).encode()).decode(errors="replace") + "\n")
-    except (OSError, ValueError, subprocess.TimeoutExpired) as error:
+    except (KeyError, OSError, ValueError, subprocess.TimeoutExpired) as error:
         parser.exit(1, f"{error}\n")
 
 

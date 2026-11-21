@@ -1,6 +1,7 @@
 #include "lfj8_h03_ram_owner.h"
 #include "lfj8_h03_mmio.h"
 #include "lfj8_h03_storage.h"
+#include <stddef.h>
 
 #define H03_APPLICATION_START UINT32_C(0x008000)
 #define H03_FLASH_END UINT32_C(0x080000)
@@ -178,17 +179,34 @@ static int boot_routes_installed(const Lfj8H03RamOwner *owner,
 {
     const uint32_t early = owner->early_irq_hook;
     const uint32_t dma4 = owner->dma4_hook;
+#ifdef RBM_H03_BENCH_EARLY_LATCHES
+    _Static_assert(offsetof(Lfj8H03Application, running) == 4, "H03 early reset ASM ABI");
+    const uint32_t running = owner->control.first + offsetof(Lfj8H03ControlStorage, application) +
+                             offsetof(Lfj8H03Application, running);
+    const uint32_t clock = owner->control.first + offsetof(Lfj8H03ControlStorage, clock_qualified);
+    const uint32_t enable_ie = early + 0x1cu;
+#else
+    const uint32_t enable_ie = early + 0x10u;
+#endif
 
     /* The lower veneer must clear the linked IRQ pointer before setting IE. */
     if ((early & 3u) || early < H03_EARLY_IRQ_RESIDENT_START ||
-        early > H03_APPLICATION_START - 0x18u ||
+        early >= H03_APPLICATION_START ||
+        enable_ie > H03_APPLICATION_START - 8u ||
         !branch_matches(H03_EARLY_IRQ_SITE, early, LONG_BRA) ||
         read_word(early) != UINT32_C(0x217FF000) ||
         read_word(early + 0x04u) != (LD24_R0 | owner->dtc_irq_pointer.first) ||
         read_word(early + 0x08u) != UINT32_C(0x61002140) ||
+#ifdef RBM_H03_BENCH_EARLY_LATCHES
+        read_word(early + 0x0cu) != (LD24_R0 | running) ||
+        read_word(early + 0x10u) != UINT32_C(0x2100F000) ||
+        read_word(early + 0x14u) != (LD24_R0 | clock) ||
+        read_word(early + 0x18u) != UINT32_C(0x210021EF) ||
+#else
         read_word(early + 0x0cu) != UINT32_C(0x21EFF000) ||
-        read_word(early + 0x10u) != UINT32_C(0x604010A0) ||
-        !branch_matches(early + 0x14u, H03_EARLY_IRQ_SITE + 4u, LONG_BRA)) {
+#endif
+        read_word(enable_ie) != UINT32_C(0x604010A0) ||
+        !branch_matches(enable_ie + 4u, H03_EARLY_IRQ_SITE + 4u, LONG_BRA)) {
         return 0;
     }
 

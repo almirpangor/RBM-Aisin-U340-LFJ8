@@ -181,10 +181,7 @@ def check(base,compiler,storage_report,placed_elf=None, *, common_layout=None):
         if report.get("base") != identity or not model.get("service_writers"):
             raise ValueError("Common H03 layout has no linked resident service writers for this ROM")
         pointer = model["irq_pointer"]
-        policy = service.policy_ranges(blocks, ((pointer, pointer + 4),))
-        if model["policy_ranges"] != [list(span) for span in policy]:
-            raise ValueError("Common service policy differs from the supplied RAM inventory")
-        candidate = service.early_overlay(rom, placed_elf, model)
+        candidate, policy = service.early_service_overlay(rom, placed_elf, model, blocks)
         placement = {"elf_sha256": model["elf_sha256"], "guard_bytes": report["service_writer_resident_bytes"],
                      "policy_ranges": policy, "sites": model["service_writers"], "irq_pointer": pointer,
                      "scope": "common_early_irq"}
@@ -341,7 +338,7 @@ h03_copy_after_store = 0x002de4;
             symbols = read_elf(work/'fixture.elf',2)['symbols']
             # Measure writers with the session open. The separate close cases
             # exercise its cancellation of an otherwise unchanged pending copy.
-            stack_start, stack_end = service.CONDITIONAL_STACK_AND_PSW
+            stack_start, stack_end = placement["policy_ranges"][-1]
             placed_cases = [replace(case, close=False) for case in scenarios(scenario_blocks)]
             placed_cases.extend((
                 writes.Case('conditional_stack_edge_direct', writes.DIRECT, stack_start, 1, (0,)),

@@ -33,7 +33,9 @@ int lfj8_h03_ram_owned(void *context);
  * native interrupt exclusion with a null context, before project RAM may
  * safely be read or written. Return 1 only when the startup order, remaining
  * CPU/SBI writers and DMA reconfiguration paths are qualified for this image.
- * The release link has no fallback definition. */
+ * The bench implementation checks pinned reset/CPU-writer instructions.
+ * The final link must still prove that the remaining CPU paths and the
+ * complete linked stack fit the bench profile. */
 int rbm_h03_boot_writers_owned(void *context);
 
 #endif
