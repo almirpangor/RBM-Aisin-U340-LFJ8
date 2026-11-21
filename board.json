@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 862,
+  "sequence": 863,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -282,12 +282,12 @@
         "targets/lfj8/test_lfj8_h03_input_binding.c",
         "verification/project-audit/mode02-profiled-selector-startup.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "d92614932c0a42a8a26f18f92c6b6d6b",
       "claimed_at": "2026-11-21T07:55:14+00:00",
-      "updated_at": "2026-11-21T08:05:42+00:00",
-      "note": "Явная таблица AN2 проверена на ПК и M32R, нативный startup/foreground с профилем по адресам общего плана прошёл. 0 новой RAM, модель +358 байт Flash. Повторяю проверку свежих объектов и резерва VSS-02.",
-      "result": null,
+      "updated_at": "2026-11-21T08:06:33+00:00",
+      "note": "Нативный AN2/P1DATA поддерживает явные окна и политику, startup сбрасывает владельцев до CAN. Хост, M32R startup/foreground, 22 native, 6 размещённых групп и 57 тестов PASS. Профильная модель +358 Flash и 0 новой RAM; полная верхняя часть превышает ёмкость на 430 байт. Нужны физические окна/карта/тайминги и квалифицированные Toyota inputs.",
+      "result": "44f118638a6ef4c728f9b729c328ea5359c96dee",
       "based_on_reviews": []
     },
     "TOY-05": {
@@ -13521,9 +13521,43 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "4035eb1d104b400eb316adc9408bffe5",
+      "task": "MODE-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "d92614932c0a42a8a26f18f92c6b6d6b",
+      "at": "2026-11-21T08:06:33+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex MODE-02 — профиль AN2 и подготовка входа",
+        "branch": "codex/h03-03-native-inputs-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "controller/include/rbm_u340e.h",
+          "controller/src/rbm_u340e.c",
+          "targets/lfj8/check_h03_target_platform.py",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/lfj8_h03_input_binding.h",
+          "targets/lfj8/lfj8_h03_target_platform.c",
+          "targets/lfj8/lfj8_h03_target_platform.h",
+          "targets/lfj8/lfj8_h03_toyota_input_profile.h",
+          "targets/lfj8/lfj8_range_control.c",
+          "targets/lfj8/lfj8_range_control.h",
+          "targets/lfj8/test_lfj8_h03_input_binding.c",
+          "verification/project-audit/mode02-profiled-selector-startup.md"
+        ],
+        "stage": "review",
+        "claim_id": "d92614932c0a42a8a26f18f92c6b6d6b",
+        "claimed_at": "2026-11-21T07:55:14+00:00",
+        "updated_at": "2026-11-21T08:06:33+00:00",
+        "note": "Нативный AN2/P1DATA поддерживает явные окна и политику, startup сбрасывает владельцев до CAN. Хост, M32R startup/foreground, 22 native, 6 размещённых групп и 57 тестов PASS. Профильная модель +358 Flash и 0 новой RAM; полная верхняя часть превышает ёмкость на 430 байт. Нужны физические окна/карта/тайминги и квалифицированные Toyota inputs.",
+        "result": "44f118638a6ef4c728f9b729c328ea5359c96dee",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:05:42+00:00",
+  "updated_at": "2026-11-21T08:06:33+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -16056,6 +16090,34 @@
       "based_on_reviews": [],
       "task": "H03-04",
       "submitted_at": "2026-11-21T08:03:37+00:00"
+    },
+    "d92614932c0a42a8a26f18f92c6b6d6b": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex MODE-02 — профиль AN2 и подготовка входа",
+      "branch": "codex/h03-03-native-inputs-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "controller/include/rbm_u340e.h",
+        "controller/src/rbm_u340e.c",
+        "targets/lfj8/check_h03_target_platform.py",
+        "targets/lfj8/lfj8_h03_input_binding.c",
+        "targets/lfj8/lfj8_h03_input_binding.h",
+        "targets/lfj8/lfj8_h03_target_platform.c",
+        "targets/lfj8/lfj8_h03_target_platform.h",
+        "targets/lfj8/lfj8_h03_toyota_input_profile.h",
+        "targets/lfj8/lfj8_range_control.c",
+        "targets/lfj8/lfj8_range_control.h",
+        "targets/lfj8/test_lfj8_h03_input_binding.c",
+        "verification/project-audit/mode02-profiled-selector-startup.md"
+      ],
+      "stage": "review",
+      "claim_id": "d92614932c0a42a8a26f18f92c6b6d6b",
+      "claimed_at": "2026-11-21T07:55:14+00:00",
+      "updated_at": "2026-11-21T08:06:33+00:00",
+      "note": "Нативный AN2/P1DATA поддерживает явные окна и политику, startup сбрасывает владельцев до CAN. Хост, M32R startup/foreground, 22 native, 6 размещённых групп и 57 тестов PASS. Профильная модель +358 Flash и 0 новой RAM; полная верхняя часть превышает ёмкость на 430 байт. Нужны физические окна/карта/тайминги и квалифицированные Toyota inputs.",
+      "result": "44f118638a6ef4c728f9b729c328ea5359c96dee",
+      "based_on_reviews": [],
+      "task": "MODE-02",
+      "submitted_at": "2026-11-21T08:06:33+00:00"
     }
   }
 }
