@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 864,
+  "sequence": 865,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -134,22 +134,23 @@
     },
     "H03-04": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
-      "label": "Codex H03-04 — сервисные переходы в общей компоновке",
-      "branch": "codex/h03-04-common-service-resident-7bd19ea4",
+      "label": "Codex H03-04 — подтверждённые RAM/SPI/PSW алиасы",
+      "branch": "codex/h03-04-verified-ram-aliases-7bd19ea4",
       "files": [
-        "targets/lfj8/check_h03_service_guard.py",
-        "targets/lfj8/lfj8_h03_service_placement.py",
-        "tests/test_h03_service_placement.py",
+        "targets/lfj8/lfj8_h03_ram_placement.py",
+        "tests/test_h03_ram_placement.py",
         "tools/check_h03_image_layout.py",
-        "verification/project-audit/h03-04-common-service-writers.md"
+        "verification/project-audit/h03-04-common-ram-aliases.md"
       ],
-      "stage": "review",
-      "claim_id": "fe45b2270ed1477d94fcc54c637fa138",
-      "claimed_at": "2026-11-21T07:52:59+00:00",
-      "updated_at": "2026-11-21T08:03:37+00:00",
-      "note": "Пять сервисных переходов связаны в общем H03 с единой защитой RAM/DMA4. Ранний ELF: 29 сценариев записи, 28 закрытий, ранний IRQ и DMA4; 22 проверки размещения. Известная верхняя часть 102224/102356, 28 ссылок ещё открыты. Без выпуска BIN.",
-      "result": "1cf7aa5eb5c8ead6866eb1be12a7a3fad8f6fbbe",
-      "based_on_reviews": []
+      "stage": "in_progress",
+      "claim_id": "a20975afc98c4d39aaad95e3eb018a5c",
+      "claimed_at": "2026-11-21T08:07:13+00:00",
+      "updated_at": "2026-11-21T08:07:13+00:00",
+      "note": "Подключаю типизированные диапазоны RAM и исходные вершины SPI/PSW к общему линку. Неподтверждённые нижние пределы, запасы и boot_writers_owned оставляю открытыми.",
+      "result": null,
+      "based_on_reviews": [
+        "fe45b2270ed1477d94fcc54c637fa138"
+      ]
     },
     "DTC-04": {
       "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
@@ -13588,9 +13589,37 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "7b206fa96f6b4626b318940a091c45fe",
+      "task": "H03-04",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "a20975afc98c4d39aaad95e3eb018a5c",
+      "at": "2026-11-21T08:07:13+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex H03-04 — подтверждённые RAM/SPI/PSW алиасы",
+        "branch": "codex/h03-04-verified-ram-aliases-7bd19ea4",
+        "files": [
+          "targets/lfj8/lfj8_h03_ram_placement.py",
+          "tests/test_h03_ram_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-04-common-ram-aliases.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "a20975afc98c4d39aaad95e3eb018a5c",
+        "claimed_at": "2026-11-21T08:07:13+00:00",
+        "updated_at": "2026-11-21T08:07:13+00:00",
+        "note": "Подключаю типизированные диапазоны RAM и исходные вершины SPI/PSW к общему линку. Неподтверждённые нижние пределы, запасы и boot_writers_owned оставляю открытыми.",
+        "result": null,
+        "based_on_reviews": [
+          "fe45b2270ed1477d94fcc54c637fa138"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:06:48+00:00",
+  "updated_at": "2026-11-21T08:07:13+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
