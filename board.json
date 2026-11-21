@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 818,
+  "sequence": 819,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12157,9 +12157,40 @@
         "task": "DTC-02",
         "submitted_at": "2026-11-20T22:45:52+00:00"
       }
+    },
+    {
+      "operation_id": "ff412403b50948c6937af13b7255211a",
+      "task": "H03-04",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "b2ca152193a145f6a7e8665645cfcb0b",
+      "at": "2026-11-21T07:44:49+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex H03-04 — ранние IRQ, SBI и перенастройка DMA",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_boot_writers.py",
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "verification/project-audit/h03-04-boot-writers.md"
+        ],
+        "stage": "done",
+        "claim_id": "b2ca152193a145f6a7e8665645cfcb0b",
+        "claimed_at": "2026-11-20T22:40:04+00:00",
+        "updated_at": "2026-11-21T07:44:49+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "1a0902a61a7b5c02ff75a579361fb1833f4ce2b0",
+        "based_on_reviews": [
+          "e2040f38c0804ea1ba66dc3a744de6a4"
+        ],
+        "task": "H03-04",
+        "submitted_at": "2026-11-20T22:47:20+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:44:39+00:00",
+  "updated_at": "2026-11-21T07:44:49+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -13989,11 +14020,11 @@
         "targets/lfj8/test_lfj8_h03_ram_owner.c",
         "verification/project-audit/h03-04-boot-writers.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "b2ca152193a145f6a7e8665645cfcb0b",
       "claimed_at": "2026-11-20T22:40:04+00:00",
-      "updated_at": "2026-11-20T22:47:20+00:00",
-      "note": "Нативный допуск RAM проверяет шесть слов SBI. M32R подтвердил ранний IE на обоих reset-векторах, фиксированные DMA0/1/3 и DMA4 без ограничения адреса в setter. VSS-02 включён; пробная общая компоновка 104316/104348 байт, FAIL_BINDINGS. rbm_h03_boot_writers_owned ждёт раннего IRQ-ограждения, всех вызывающих DMA4 и финального стека. Рабочие BIN не выпускались.",
+      "updated_at": "2026-11-21T07:44:49+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "1a0902a61a7b5c02ff75a579361fb1833f4ce2b0",
       "based_on_reviews": [
         "e2040f38c0804ea1ba66dc3a744de6a4"
