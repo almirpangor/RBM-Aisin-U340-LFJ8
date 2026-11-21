@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 820,
+  "sequence": 821,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12218,9 +12218,41 @@
         "task": "H03-03",
         "submitted_at": "2026-11-20T22:48:16+00:00"
       }
+    },
+    {
+      "operation_id": "dc8b46de524e46199a4b13362f7ef4a7",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "complete",
+      "claim_id": "0e34802387f0414bb09f64f92e3dbdae",
+      "at": "2026-11-21T07:45:10+00:00",
+      "record": {
+        "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "label": "Codex H03-05 native phase 2 commit",
+        "branch": "codex/h03-05-native-commit-01a1f9a2",
+        "files": [
+          "targets/lfj8/check_h03_target_outputs.py",
+          "targets/lfj8/h03_target_outputs_fixture.c",
+          "targets/lfj8/lfj8_h03_takeover.c",
+          "targets/lfj8/lfj8_h03_takeover.h",
+          "targets/lfj8/lfj8_h03_target_commit.c",
+          "verification/project-audit/h03-05-native-commit.md"
+        ],
+        "stage": "done",
+        "claim_id": "0e34802387f0414bb09f64f92e3dbdae",
+        "claimed_at": "2026-11-20T22:39:42+00:00",
+        "updated_at": "2026-11-21T07:45:10+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "b1c62d839207137ab26532900c00497f659457aa",
+        "based_on_reviews": [
+          "77033e38e60445f2addf6c2c8e536996"
+        ],
+        "task": "H03-05",
+        "submitted_at": "2026-11-20T22:50:38+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:45:00+00:00",
+  "updated_at": "2026-11-21T07:45:10+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -14096,11 +14128,11 @@
         "targets/lfj8/lfj8_h03_target_commit.c",
         "verification/project-audit/h03-05-native-commit.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "0e34802387f0414bb09f64f92e3dbdae",
       "claimed_at": "2026-11-20T22:39:42+00:00",
-      "updated_at": "2026-11-20T22:50:38+00:00",
-      "note": "Нативная фаза 2 применяет подготовленное поколение только на следующем принятом выпуске TOP10. Штатный 07C10C проверен в 16 сценариях small и medium. Пройдены 22 native, 8 components, 6 размещённых и 41 этап ПК. Takeover вырос на 4 байта RAM. Для общего включения нужны фаза 3, реальный FAST/SLT, оба редиректа и стендовый допуск.",
+      "updated_at": "2026-11-21T07:45:10+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "b1c62d839207137ab26532900c00497f659457aa",
       "based_on_reviews": [
         "77033e38e60445f2addf6c2c8e536996"
