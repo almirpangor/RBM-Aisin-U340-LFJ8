@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 879,
+  "sequence": 880,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -125,12 +125,12 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/h03-03-common-application-entries.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "6078f52e802d408c95fb67f636dd6008",
       "claimed_at": "2026-11-21T08:15:52+00:00",
-      "updated_at": "2026-11-21T08:17:50+00:00",
-      "note": "Четыре перехода связаны по фактическим адресам общей пробы с RAM owner, DMA4, RX и TX13. Проверяю M32R и совместимость. Полный набор поставщиков превышает верхние окна на 356 байт.",
-      "result": null,
+      "updated_at": "2026-11-21T08:22:11+00:00",
+      "note": "Четыре OEM-перехода startup/foreground включены в общий компоновщик по явному профилю. ПК 41/210, M32R 68, проверки 49, сервис 29/28 и reset/DMA4 PASS. +432 Flash и 16 замен, RAM +0. Полный состав FAIL_BINDINGS, 14 ссылок, дефицит 356 байт верхней Flash. Отчёт h03-03-common-application-entries.md.",
+      "result": "9874e2757151d2ea258c2c0a3e74e9a7da0c4ed0",
       "based_on_reviews": [
         "a20975afc98c4d39aaad95e3eb018a5c",
         "ad014517bfa54394bf4b7185d135b504",
@@ -14048,9 +14048,38 @@
           "fe45b2270ed1477d94fcc54c637fa138"
         ]
       }
+    },
+    {
+      "operation_id": "ff76e61d28b14af1a4b8255f27930261",
+      "task": "H03-03",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "6078f52e802d408c95fb67f636dd6008",
+      "at": "2026-11-21T08:22:11+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex H03-03 — переходы приложения в общей компоновке",
+        "branch": "codex/h03-03-common-app-entries-7bd19ea4",
+        "files": [
+          "tests/test_h03_application_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-03-common-application-entries.md"
+        ],
+        "stage": "review",
+        "claim_id": "6078f52e802d408c95fb67f636dd6008",
+        "claimed_at": "2026-11-21T08:15:52+00:00",
+        "updated_at": "2026-11-21T08:22:11+00:00",
+        "note": "Четыре OEM-перехода startup/foreground включены в общий компоновщик по явному профилю. ПК 41/210, M32R 68, проверки 49, сервис 29/28 и reset/DMA4 PASS. +432 Flash и 16 замен, RAM +0. Полный состав FAIL_BINDINGS, 14 ссылок, дефицит 356 байт верхней Flash. Отчёт h03-03-common-application-entries.md.",
+        "result": "9874e2757151d2ea258c2c0a3e74e9a7da0c4ed0",
+        "based_on_reviews": [
+          "a20975afc98c4d39aaad95e3eb018a5c",
+          "ad014517bfa54394bf4b7185d135b504",
+          "fe45b2270ed1477d94fcc54c637fa138"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:17:50+00:00",
+  "updated_at": "2026-11-21T08:22:11+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -16777,6 +16806,29 @@
       ],
       "task": "CAN-03",
       "submitted_at": "2026-11-21T08:16:06+00:00"
+    },
+    "6078f52e802d408c95fb67f636dd6008": {
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex H03-03 — переходы приложения в общей компоновке",
+      "branch": "codex/h03-03-common-app-entries-7bd19ea4",
+      "files": [
+        "tests/test_h03_application_placement.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/h03-03-common-application-entries.md"
+      ],
+      "stage": "review",
+      "claim_id": "6078f52e802d408c95fb67f636dd6008",
+      "claimed_at": "2026-11-21T08:15:52+00:00",
+      "updated_at": "2026-11-21T08:22:11+00:00",
+      "note": "Четыре OEM-перехода startup/foreground включены в общий компоновщик по явному профилю. ПК 41/210, M32R 68, проверки 49, сервис 29/28 и reset/DMA4 PASS. +432 Flash и 16 замен, RAM +0. Полный состав FAIL_BINDINGS, 14 ссылок, дефицит 356 байт верхней Flash. Отчёт h03-03-common-application-entries.md.",
+      "result": "9874e2757151d2ea258c2c0a3e74e9a7da0c4ed0",
+      "based_on_reviews": [
+        "a20975afc98c4d39aaad95e3eb018a5c",
+        "ad014517bfa54394bf4b7185d135b504",
+        "fe45b2270ed1477d94fcc54c637fa138"
+      ],
+      "task": "H03-03",
+      "submitted_at": "2026-11-21T08:22:11+00:00"
     }
   }
 }
