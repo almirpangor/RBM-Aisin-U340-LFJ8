@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 823,
+  "sequence": 824,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12308,9 +12308,39 @@
         "task": "H03-02",
         "submitted_at": "2026-11-20T22:51:15+00:00"
       }
+    },
+    {
+      "operation_id": "cf9d9fd77cd44190a3468fb45999f6b5",
+      "task": "MODE-02",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "4a65fba7869f4e4b9d9ae39ae27d33a4",
+      "at": "2026-11-21T07:45:41+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex MODE-02 — конфликт Tiptronic между событиями Toyota",
+        "branch": "codex/mode02-chord-1121-c7e4",
+        "files": [
+          "targets/lfj8/lfj8_range_control.c",
+          "targets/lfj8/test_lfj8_h03_input_binding.c",
+          "targets/lfj8/test_lfj8_h03_toyota_source.c",
+          "verification/project-audit/mode02-h03-conflict-recovery.md"
+        ],
+        "stage": "done",
+        "claim_id": "4a65fba7869f4e4b9d9ae39ae27d33a4",
+        "claimed_at": "2026-11-20T22:42:45+00:00",
+        "updated_at": "2026-11-21T07:45:41+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "3823b6baa0f3a6aa165584e1d4b1df5fb71a4312",
+        "based_on_reviews": [
+          "cda1c6bb3edf45bd993ee765cf29e055"
+        ],
+        "task": "MODE-02",
+        "submitted_at": "2026-11-20T22:51:25+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:45:31+00:00",
+  "updated_at": "2026-11-21T07:45:41+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -14250,11 +14280,11 @@
         "targets/lfj8/test_lfj8_h03_toyota_source.c",
         "verification/project-audit/mode02-h03-conflict-recovery.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "4a65fba7869f4e4b9d9ae39ae27d33a4",
       "claimed_at": "2026-11-20T22:42:45+00:00",
-      "updated_at": "2026-11-20T22:51:25+00:00",
-      "note": "После конфликта плюс/минус AN2/P1DATA удерживает запрет до квалифицированного отпускания обеих кнопок. Штатный источник Toyota M32R подтвердил отзыв и один новый запрос после отпускания. ПК 41 шаг, 179 Python с отдельным повтором S03, M32R 8 компонентных, 6 размещённых, 11+18 с локально добавленным cold S01. +56 байт кода, 0 новых RAM. Полная привязка H03 и измерения MODE-02 открыты. Отчёт mode02-h03-conflict-recovery.md.",
+      "updated_at": "2026-11-21T07:45:41+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "3823b6baa0f3a6aa165584e1d4b1df5fb71a4312",
       "based_on_reviews": [
         "cda1c6bb3edf45bd993ee765cf29e055"
