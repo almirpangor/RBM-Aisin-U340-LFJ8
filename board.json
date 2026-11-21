@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 838,
+  "sequence": 839,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -158,11 +158,11 @@
         "targets/lfj8/test_lfj8_h03_ram_owner.c",
         "verification/project-audit/h03-04-ram-owner-writer-hooks.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "79e878898f8d4435a7240ad9a30071db",
       "claimed_at": "2026-11-21T07:03:17+00:00",
-      "updated_at": "2026-11-21T07:07:27+00:00",
-      "note": "Допуск RAM проверяет связанные ранний BasicCAN и DMA4, общее слово указателя и единую политику. M32R: отказы при подменах, cold/warm, BasicCAN и DMA4 подтверждены, 31 тест размещения/RAM. Общая модель 106796 байт; верх 103240/102356, FAIL_BINDINGS. Открыты rbm_h03_boot_writers_owned, полный SPI/PSW и итоговая компоновка. BIN не выпускались.",
+      "updated_at": "2026-11-21T07:48:17+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "be1ec128d7ea1bd6ec8db9542da7ecf6a321c5d6",
       "based_on_reviews": [
         "51ce545a28f949a48fa5a995230c2ba7",
@@ -12818,9 +12818,44 @@
         "task": "H03-04",
         "submitted_at": "2026-11-21T06:50:39+00:00"
       }
+    },
+    {
+      "operation_id": "bac858d13e184757bcb4403c84462d2e",
+      "task": "H03-04",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "79e878898f8d4435a7240ad9a30071db",
+      "at": "2026-11-21T07:48:17+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex H03-04 — допуск по установленным переходам DMA4 и раннего IRQ",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_owner.h",
+          "targets/lfj8/lfj8_h03_target_memory.c",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "verification/project-audit/h03-04-ram-owner-writer-hooks.md"
+        ],
+        "stage": "done",
+        "claim_id": "79e878898f8d4435a7240ad9a30071db",
+        "claimed_at": "2026-11-21T07:03:17+00:00",
+        "updated_at": "2026-11-21T07:48:17+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "be1ec128d7ea1bd6ec8db9542da7ecf6a321c5d6",
+        "based_on_reviews": [
+          "51ce545a28f949a48fa5a995230c2ba7",
+          "b2ca152193a145f6a7e8665645cfcb0b",
+          "e2040f38c0804ea1ba66dc3a744de6a4",
+          "fb2fa92cc4ca453a89297de917515b5c"
+        ],
+        "task": "H03-04",
+        "submitted_at": "2026-11-21T07:07:27+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:48:07+00:00",
+  "updated_at": "2026-11-21T07:48:17+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -15152,11 +15187,11 @@
         "targets/lfj8/test_lfj8_h03_ram_owner.c",
         "verification/project-audit/h03-04-ram-owner-writer-hooks.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "79e878898f8d4435a7240ad9a30071db",
       "claimed_at": "2026-11-21T07:03:17+00:00",
-      "updated_at": "2026-11-21T07:07:27+00:00",
-      "note": "Допуск RAM проверяет связанные ранний BasicCAN и DMA4, общее слово указателя и единую политику. M32R: отказы при подменах, cold/warm, BasicCAN и DMA4 подтверждены, 31 тест размещения/RAM. Общая модель 106796 байт; верх 103240/102356, FAIL_BINDINGS. Открыты rbm_h03_boot_writers_owned, полный SPI/PSW и итоговая компоновка. BIN не выпускались.",
+      "updated_at": "2026-11-21T07:48:17+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "be1ec128d7ea1bd6ec8db9542da7ecf6a321c5d6",
       "based_on_reviews": [
         "51ce545a28f949a48fa5a995230c2ba7",
