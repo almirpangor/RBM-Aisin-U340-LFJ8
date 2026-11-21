@@ -12,6 +12,7 @@ from tempfile import TemporaryDirectory
 from check_h03_link import TARGET, identify_h03
 from check_h03_sensor_native import SITES as SENSOR_SITES
 from check_h03_phase_wait import IRQ_START, IRQ_END, PSW_HELPERS_START, PSW_HELPERS_END
+import lfj8_h03_application_placement as application_placement
 from lfj8_h03_layout import PROFILES, read_elf
 
 
@@ -99,19 +100,15 @@ reset_dispatch:
 
     .section .handoff,"ax"
     .incbin "handoff.dat"
-    .section .cold_entry,"ax"
 #if BOOT_CASE == 0
+    .section .h03_app_redirect_008100,"ax"
     .incbin "cold_entry.dat"
-#else
-    bra.l rbm_h03_application_cold_hook
 #endif
     .section .startup,"ax"
     .incbin "startup.dat"
-    .section .startup_call,"ax"
 #if BOOT_CASE == 0
+    .section .h03_app_redirect_00814c,"ax"
     .incbin "startup_call.dat"
-#else
-    bl.l rbm_h03_phase_startup_hook
 #endif
     .section .first_wait,"ax"
 wait_site:
@@ -124,13 +121,11 @@ wait_site:
     .section .after_wait,"ax"
     bra.l fixture_after_wait
 
-    .section .input_call,"ax"
-input_site:
 #if BOOT_CASE == 0
+    .section .h03_app_redirect_00816c,"ax"
     .incbin "input_call.dat"
-#else
-    bl.l rbm_h03_application_foreground_hook
 #endif
+    .section .input_return,"ax"
     jmp r9 || nop
 
     .section .stock_inputs,"ax"
@@ -176,9 +171,7 @@ h03_sensor_after_\channel:
     .incbin "release_helper.dat"
     .section .stock_release,"ax"
     .incbin "stock_release.dat"
-    .section .release_site,"ax"
-release_site:
-    bl.l rbm_h03_phase_release_hook
+    .section .release_return,"ax"
     jmp r9 || nop
 
 
@@ -373,38 +366,33 @@ SECTIONS = (
     ("recovery_stop", 0x47D8),
     ("header_marker", 0x8000),
     ("handoff", 0x8084),
-    ("cold_entry", 0x8100),
     ("startup", 0x8104),
-    ("startup_call", 0x814C),
     ("first_wait", 0x8150),
     ("after_wait", 0x8160),
-    ("input_call", 0x816C),
+    ("input_return", 0x8170),
     ("mock_adc", 0x9FF4),
     ("stock_inputs", 0x40324),
     ("stock_timer", 0xA82C),
     ("s51_irq", 0xA9EC),
     ("s83_irq", 0xAA50),
     ("release_helper", 0xA06C),
-    ("release_site", 0x40424),
+    ("release_return", 0x40428),
     ("stock_release", 0x40468),
     ("mock_can_start", 0xB75C),
     ("trailer_marker", 0x7FFFE),
 )
 
 
-def verify_application_branches(elf):
+def verify_application_branches(rom, elf):
     sections = {section["name"]: section for section in elf["sections"]}
     symbols = elf["symbols"]
     sites = (
-        (".cold_entry", 0x8100, 0xFF, "rbm_h03_application_cold_hook"),
-        (".startup_call", 0x814C, 0xFE, "rbm_h03_phase_startup_hook"),
         (".first_wait", 0x8150, 0xFF, "rbm_h03_phase_wait_hook"),
-        (".input_call", 0x816C, 0xFE, "rbm_h03_application_foreground_hook"),
-        (".release_site", 0x40424, 0xFE, "rbm_h03_phase_release_hook"),
         (".s51_irq", 0xAA0C, 0xFF, "rbm_h03_s51_capture_hook"),
         (".s83_irq", 0xAA70, 0xFF, "rbm_h03_s83_capture_hook"),
     )
-    placed = {}
+    installed = application_placement.verify_linked(rom, elf, (BOOT_WINDOW,))
+    placed = {f"{patch['address']:#08x}": f"{patch['target']:#08x}" for patch in installed}
     for section_name, site, opcode, hook in sites:
         section = sections[section_name]
         offset = site - section["address"]
@@ -427,14 +415,7 @@ def check(base, compiler, controller=None):
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
         raise ValueError("H03 changed while preparing the startup fixture")
-    if rom[0x814C:0x8150] != bytes.fromhex("FE0009BB"):
-        raise ValueError("The final H03 startup call is not the expected stock A838 call")
-    if rom[0x8100:0x8104] != bytes.fromhex("2E7F4FFC"):
-        raise ValueError("The H03 application prologue differs from stock")
-    if rom[0x816C:0x8170] != bytes.fromhex("FE00E06E"):
-        raise ValueError("The H03 foreground input call differs from stock")
-    if rom[0x40424:0x40428] != bytes.fromhex("7E11F000"):
-        raise ValueError("The H03 phase publication call differs from stock")
+    redirects = application_placement.assembly(rom)
     for address, name, stock in SENSOR_SITES:
         if rom[address:address + 4].hex() != stock:
             raise ValueError(f"Unexpected {name} capture store at {address:#x}")
@@ -464,8 +445,16 @@ def check(base, compiler, controller=None):
             f'\n    .section .mock_{address:x},"ax"\n    jmp lr || nop\n' for address in STUBS
         )
         (work / "boot.S").write_text(assembly, encoding="ascii")
+        (work / "application-redirects.S").write_text(redirects, encoding="ascii")
+        # The stock control still uses the fixture's separate phase-release driver.
+        (work / "release-redirect.S").write_text(
+            application_placement.assembly(rom, application_placement.REDIRECTS[-1:]),
+            encoding="ascii")
         placement = [
             (name, address, f"KEEP(*(.{name}))") for name, address in SECTIONS
+        ] + [
+            (window.name[1:], window.start, f"KEEP(*({window.name}))")
+            for window in application_placement.REDIRECT_WINDOWS
         ] + [
             (f"mock_{address:x}", address, f"KEEP(*(.mock_{address:x}))") for address in STUBS
         ] + [
@@ -476,17 +465,22 @@ def check(base, compiler, controller=None):
             f"  .{name} {address:#x} : {{ {inputs} }}"
             for name, address, inputs in sorted(placement, key=lambda part: part[1])
         )
+        native_symbols = "".join(f"  {name} = {address:#x};\n"
+                                 for name, address in application_placement.STOCK_SYMBOLS.items())
+        fixed_layout = "".join(
+            f'  ASSERT(SIZEOF({window.name}) == 4, "H03 redirect must occupy one word")\n'
+            for window in application_placement.REDIRECT_WINDOWS)
         (work / "boot.ld").write_text(
             f"ENTRY(_start)\nSECTIONS {{\n{layout}\n"
-            "  .bss : { *(.bss .bss.*) }\n  h03_stock_startup_record = 0xa838;\n"
-            "  h03_stock_phase_release = 0x40468;\n"
-            "  h03_stock_application_after_entry = 0x8104;\n"
-            "  h03_stock_foreground_inputs = 0x40324;\n"
+            "  .bss : { *(.bss .bss.*) }\n"
+            f"{native_symbols}{fixed_layout}"
+            "  input_site = 0x816c;\n"
+            "  release_site = 0x40424;\n"
             "  h03_stock_phase_clear = 0x815c;\n"
             "  h03_phase_wait_ticks = 0x8003e0;\n"
             "  h03_phase_wait_interval_ticks = 2;\n"
             f'  ASSERT(ADDR(.text) + SIZEOF(.text) <= {CANDIDATE_END:#x}, "Candidate code exceeds H03 window")\n'
-            '  ASSERT(SIZEOF(.startup_call) == 4, "Startup hook must fit one word")\n}\n',
+            "}\n",
             encoding="ascii",
         )
         context = ", ".join(f"boot_context[{i}]" for i in range(19))
@@ -524,9 +518,10 @@ def check(base, compiler, controller=None):
         for initial_max in (2, 11):
             stock = None
             for number, name in enumerate(CASES):
+                redirect_source = "release-redirect.S" if name == "stock" else "application-redirects.S"
                 run(compiler, *flags, "-nostdlib",
                     "-Wl,--gc-sections,-T,boot.ld,--wrap=rbm_h03_phase_startup_callback",
-                    f"-DBOOT_CASE={number}", f"-DINITIAL_MAX={initial_max}", "boot.S", *inputs,
+                    f"-DBOOT_CASE={number}", f"-DINITIAL_MAX={initial_max}", "boot.S", redirect_source, *inputs,
                     controller, "-lc", "-lgcc", "-o", "boot.elf", timeout=60)
                 output = run(debugger, "--batch", "-nx", "-x", "boot.gdb", "boot.elf",
                              timeout=30).replace(b"\r", b"")
@@ -554,7 +549,7 @@ def check(base, compiler, controller=None):
                     raise ValueError(f"The startup hook changed the OEM context ({name})")
                 running, cold, init, inhibit, phases, main = map(int, owner[1].split())
                 branches = (None if name == "stock" else
-                            verify_application_branches(read_elf(work / "boot.elf", 2)))
+                            verify_application_branches(rom, read_elf(work / "boot.elf", 2)))
                 cases.append({"path": name, "initial_oem_max": initial_max,
                               "startup_call": result[1].decode(), "oem_elapsed_ticks": 7,
                               "oem_max_after": max(initial_max, 7), "stock_flag_cleared": True,
