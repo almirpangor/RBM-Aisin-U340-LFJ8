@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 796,
+  "sequence": 797,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -387,20 +387,27 @@
       "result": "c7b0568cde39ddc27e71432e5028db9c9a351e16"
     },
     "CAN-02": {
-      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Codex CAN-02 — проверка слота перед отменой TX13",
-      "branch": "codex/can02-slot-identity-1121-c7e4",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex CAN-02 — деградация скорости в телеметрии H03",
+      "branch": "codex/can02-telemetry-availability-fea1b366",
       "files": [
-        "targets/lfj8/lfj8_donor_io.c",
+        "targets/lfj8/lfj8_h03_can13.c",
+        "targets/lfj8/lfj8_h03_can13.h",
+        "targets/lfj8/lfj8_h03_target_service.c",
+        "targets/lfj8/lfj8_h03_target_service.h",
         "targets/lfj8/test_lfj8_h03_can13.c",
-        "verification/project-audit/can02-slot13-identity.md"
+        "verification/project-audit/can02-h03-telemetry-availability.md"
       ],
-      "stage": "done",
-      "claim_id": "7180472509b343958005e9c8aeaadc9c",
-      "claimed_at": "2026-11-20T19:51:10+00:00",
-      "updated_at": "2026-11-20T21:14:43+00:00",
-      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
-      "result": "b6dccd657c7208aef79ac9008a1091677fccff16"
+      "stage": "in_progress",
+      "claim_id": "42353b1fabea40b8834911219b160e52",
+      "claimed_at": "2026-11-21T07:10:56+00:00",
+      "updated_at": "2026-11-21T07:10:56+00:00",
+      "note": "Общий компоновщик занят H03-03. Отдельная порция: сохраняю 0x300 и явное FFFF в 0x1AE при отсутствии калибровки S51, проверяю приоритет DTC/TX13 и отзыв допуска.",
+      "result": null,
+      "based_on_reviews": [
+        "1b7a53b2c91c49d481c892507323d9d9",
+        "4781e27fe7274496be65a8d2faf92977"
+      ]
     },
     "TOY-06": {
       "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
@@ -11436,9 +11443,40 @@
           "96f93fae25924717a50bf354ff863f44"
         ]
       }
+    },
+    {
+      "operation_id": "fc5809a4f6224dcc8a61f6295bb3f28b",
+      "task": "CAN-02",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "claim",
+      "claim_id": "42353b1fabea40b8834911219b160e52",
+      "at": "2026-11-21T07:10:56+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-02 — деградация скорости в телеметрии H03",
+        "branch": "codex/can02-telemetry-availability-fea1b366",
+        "files": [
+          "targets/lfj8/lfj8_h03_can13.c",
+          "targets/lfj8/lfj8_h03_can13.h",
+          "targets/lfj8/lfj8_h03_target_service.c",
+          "targets/lfj8/lfj8_h03_target_service.h",
+          "targets/lfj8/test_lfj8_h03_can13.c",
+          "verification/project-audit/can02-h03-telemetry-availability.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "42353b1fabea40b8834911219b160e52",
+        "claimed_at": "2026-11-21T07:10:56+00:00",
+        "updated_at": "2026-11-21T07:10:56+00:00",
+        "note": "Общий компоновщик занят H03-03. Отдельная порция: сохраняю 0x300 и явное FFFF в 0x1AE при отсутствии калибровки S51, проверяю приоритет DTC/TX13 и отзыв допуска.",
+        "result": null,
+        "based_on_reviews": [
+          "1b7a53b2c91c49d481c892507323d9d9",
+          "4781e27fe7274496be65a8d2faf92977"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:09:41+00:00",
+  "updated_at": "2026-11-21T07:10:56+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
