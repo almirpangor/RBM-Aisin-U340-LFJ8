@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 903,
+  "sequence": 904,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -155,24 +155,23 @@
     },
     "DTC-04": {
       "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
-      "label": "Codex DTC-04 — проверка физического чтения журнала",
+      "label": "Чат 9 — стендовый NVM H03",
       "branch": "codex/dtc04-native-restore-bank-gate-922b7b11",
       "files": [
-        "targets/lfj8/h03_nvm_native_fixture.c",
+        "targets/lfj8/bench_nvm_profile.h",
+        "targets/lfj8/check_h03_nvm.py",
+        "targets/lfj8/h03_bench_nvm_fixture.c",
         "targets/lfj8/lfj8_h03_nvm_native.c",
         "targets/lfj8/lfj8_h03_nvm_native.h",
-        "verification/project-audit/dtc04-native-restore-bank-gate.md"
+        "verification/bench-wave/chat-9/handoff.json"
       ],
-      "stage": "done",
-      "claim_id": "324aa1b41a8843369de598a9518ffb4f",
-      "claimed_at": "2026-11-20T23:10:30+00:00",
-      "updated_at": "2026-11-21T07:46:29+00:00",
-      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
-      "result": "456abca6b0dda9bf8f542f1fbe90653246959443",
-      "based_on_reviews": [
-        "e72d13fcb2254ca89fd0736136b11462",
-        "eb973761003948398f33f495758fde06"
-      ]
+      "stage": "in_progress",
+      "claim_id": "fdfd811485f4417a8f450b2e455bc6e3",
+      "claimed_at": "2026-11-21T08:51:28+00:00",
+      "updated_at": "2026-11-21T08:51:28+00:00",
+      "note": "Стендовая волна: сверю физические erase-блоки и штатное обновление. При отсутствии выделенного носителя подключу профиль холодного старта без UFL1, явный статус unavailable и ограниченное read-only чтение геометрии/состояния Flash. Перепроверю журнал, штатный запуск и неуспешный clear. Общий транспорт и компоновку не меняю.",
+      "result": null,
+      "based_on_reviews": []
     },
     "H03-02": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -14807,9 +14806,37 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "84dff37141b34255982ee4e7062d790a",
+      "task": "DTC-04",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "claim",
+      "claim_id": "fdfd811485f4417a8f450b2e455bc6e3",
+      "at": "2026-11-21T08:51:28+00:00",
+      "record": {
+        "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "label": "Чат 9 — стендовый NVM H03",
+        "branch": "codex/dtc04-native-restore-bank-gate-922b7b11",
+        "files": [
+          "targets/lfj8/bench_nvm_profile.h",
+          "targets/lfj8/check_h03_nvm.py",
+          "targets/lfj8/h03_bench_nvm_fixture.c",
+          "targets/lfj8/lfj8_h03_nvm_native.c",
+          "targets/lfj8/lfj8_h03_nvm_native.h",
+          "verification/bench-wave/chat-9/handoff.json"
+        ],
+        "stage": "in_progress",
+        "claim_id": "fdfd811485f4417a8f450b2e455bc6e3",
+        "claimed_at": "2026-11-21T08:51:28+00:00",
+        "updated_at": "2026-11-21T08:51:28+00:00",
+        "note": "Стендовая волна: сверю физические erase-блоки и штатное обновление. При отсутствии выделенного носителя подключу профиль холодного старта без UFL1, явный статус unavailable и ограниченное read-only чтение геометрии/состояния Flash. Перепроверю журнал, штатный запуск и неуспешный clear. Общий транспорт и компоновку не меняю.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:51:09+00:00",
+  "updated_at": "2026-11-21T08:51:28+00:00",
   "main_commit": "10f7c1513b910f42473690255641140989cc10d0",
   "catalog": [
     {
