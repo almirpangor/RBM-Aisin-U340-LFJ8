@@ -31,6 +31,9 @@ typedef struct {
     uint32_t max_sample_gap_us;
 } Lfj8H03DtcT6Config;
 
+/* Validate timing bounds without starting or sampling TML0. */
+bool lfj8_h03_dtc_t6_config_valid(const Lfj8H03DtcT6Config *config);
+
 typedef struct {
     Lfj8H03DtcT6Config config;
     uint32_t sampled_us;
