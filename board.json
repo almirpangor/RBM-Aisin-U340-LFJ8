@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 910,
+  "sequence": 911,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -514,13 +514,14 @@
         "targets/bosch/tx.py",
         "targets/bosch/verify_bench_profile.py",
         "targets/bosch/verify_ordinary_model_field.py",
+        "targets/bosch/verify_tx.py",
         "verification/bench-wave/chat-8/handoff.json"
       ],
       "stage": "in_progress",
       "claim_id": "bb95576349fc4befa4af7a3779ddb4ae",
       "claimed_at": "2026-11-21T08:52:14+00:00",
-      "updated_at": "2026-11-21T08:52:14+00:00",
-      "note": "Сверяю ordinary и включаю квалификацию штатных источников в путь RB, CAN и программные ограничения образа.",
+      "updated_at": "2026-11-21T08:52:45+00:00",
+      "note": "S04, исходный ordinary и точки RB сверены. Подключаю квалификацию оборотов в RB и к проверке exact-image.",
       "result": null,
       "based_on_reviews": []
     },
@@ -15041,9 +15042,39 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "71d0075f949c41c0ac4a183593cc2d56",
+      "task": "ECU-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "bb95576349fc4befa4af7a3779ddb4ae",
+      "at": "2026-11-21T08:52:45+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex чат 8 — Bosch ST10 для стендовой пары",
+        "branch": "codex/c7e4-next-1121",
+        "files": [
+          "targets/bosch/README.md",
+          "targets/bosch/build.py",
+          "targets/bosch/rb_native_permit.py",
+          "targets/bosch/tx.py",
+          "targets/bosch/verify_bench_profile.py",
+          "targets/bosch/verify_ordinary_model_field.py",
+          "targets/bosch/verify_tx.py",
+          "verification/bench-wave/chat-8/handoff.json"
+        ],
+        "stage": "in_progress",
+        "claim_id": "bb95576349fc4befa4af7a3779ddb4ae",
+        "claimed_at": "2026-11-21T08:52:14+00:00",
+        "updated_at": "2026-11-21T08:52:45+00:00",
+        "note": "S04, исходный ordinary и точки RB сверены. Подключаю квалификацию оборотов в RB и к проверке exact-image.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:52:41+00:00",
+  "updated_at": "2026-11-21T08:52:45+00:00",
   "main_commit": "10f7c1513b910f42473690255641140989cc10d0",
   "catalog": [
     {
