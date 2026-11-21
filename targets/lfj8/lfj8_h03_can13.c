@@ -112,9 +112,8 @@ Lfj8H03Can13Result lfj8_h03_can13_poll(Lfj8H03Can13 *broker, const Lfj8RegisterI
     const bool status_window = !request->pending && request->progress_at != previous_progress &&
         lfj8_h03_torque_applied(request, now + broker->torque.max_poll_gap_us);
     const bool use_diagnostic = have_diagnostic && !torque_priority;
-    const bool use_status = broker->status.pending && input->vehicle && input->status &&
-        (input->status->s51_capture || input->vss) &&
-        (!torque_priority || status_window);
+    const bool use_status = broker->status.pending && input->status &&
+                            (!torque_priority || status_window);
     if (!use_diagnostic && !use_status) {
         return result;
     }

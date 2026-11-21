@@ -9,7 +9,7 @@ typedef struct {
     Lfj8H03DtcT6Config t6;
     uint32_t initial_t6_tick;
     uint16_t max_clock_span_us;
-    const Lfj8VehicleCalibration *vehicle;
+    const Lfj8VehicleCalibration *vehicle; /* Optional; absent means unavailable S51 speed. */
     const Lfj8TorqueCalibration *torque_calibration;
     const Lfj8H03DtcAtfConfig *atf_diagnostic;
     /* Optional bounded, read-only projections under native IRQ exclusion.
