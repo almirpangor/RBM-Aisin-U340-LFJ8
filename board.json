@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 902,
+  "sequence": 903,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -231,21 +231,24 @@
     },
     "TOY-02": {
       "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
-      "label": "Codex TOY-02 — допуск нагрузки в H03",
+      "label": "Чат 4 — нативные входы Toyota и сырой Bosch CAN",
       "branch": "codex/toy02-load-evidence-01a1f9c7",
       "files": [
-        "targets/lfj8/lfj8_h03_cycle.c",
-        "targets/lfj8/lfj8_h03_cycle.h",
-        "targets/lfj8/test_lfj8_h03_cycle.c",
-        "targets/lfj8/test_lfj8_h03_cycle_load.c",
-        "verification/project-audit/toy02-h03-load-evidence.md"
+        "targets/lfj8/lfj8_h03_bench_input.c",
+        "targets/lfj8/lfj8_h03_bench_input.h",
+        "targets/lfj8/lfj8_h03_bench_input_profile.h",
+        "targets/lfj8/lfj8_h03_load_raw.c",
+        "targets/lfj8/lfj8_h03_load_raw.h",
+        "targets/lfj8/test_lfj8_h03_bench_input.c",
+        "verification/bench-wave/chat-4/handoff.json",
+        "verification/bench-wave/chat-4/raw-source-contract.md"
       ],
-      "stage": "done",
-      "claim_id": "4f0440768829471386bb278580bee3f8",
-      "claimed_at": "2026-11-20T21:51:53+00:00",
-      "updated_at": "2026-11-21T07:43:21+00:00",
-      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
-      "result": "f1f622d93c3e0ae143cb41ba83813160d7b3063a",
+      "stage": "in_progress",
+      "claim_id": "5d84c76a488c45b6bf0b82f1f835af45",
+      "claimed_at": "2026-11-21T08:51:09+00:00",
+      "updated_at": "2026-11-21T08:51:09+00:00",
+      "note": "Один неделимый raw-source кадр Bosch, приём поверх стабильной копии BasicCAN, квалификация времени/эпохи и нативный input capture. Контракт для ECU и диагностического RX; вымышленные GP не подставляю.",
+      "result": null,
       "based_on_reviews": []
     },
     "CAN-01": {
@@ -14774,9 +14777,39 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "94f6a4070bfb4896830056aaf02044c5",
+      "task": "TOY-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "claim",
+      "claim_id": "5d84c76a488c45b6bf0b82f1f835af45",
+      "at": "2026-11-21T08:51:09+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Чат 4 — нативные входы Toyota и сырой Bosch CAN",
+        "branch": "codex/toy02-load-evidence-01a1f9c7",
+        "files": [
+          "targets/lfj8/lfj8_h03_bench_input.c",
+          "targets/lfj8/lfj8_h03_bench_input.h",
+          "targets/lfj8/lfj8_h03_bench_input_profile.h",
+          "targets/lfj8/lfj8_h03_load_raw.c",
+          "targets/lfj8/lfj8_h03_load_raw.h",
+          "targets/lfj8/test_lfj8_h03_bench_input.c",
+          "verification/bench-wave/chat-4/handoff.json",
+          "verification/bench-wave/chat-4/raw-source-contract.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "5d84c76a488c45b6bf0b82f1f835af45",
+        "claimed_at": "2026-11-21T08:51:09+00:00",
+        "updated_at": "2026-11-21T08:51:09+00:00",
+        "note": "Один неделимый raw-source кадр Bosch, приём поверх стабильной копии BasicCAN, квалификация времени/эпохи и нативный input capture. Контракт для ECU и диагностического RX; вымышленные GP не подставляю.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:51:01+00:00",
+  "updated_at": "2026-11-21T08:51:09+00:00",
   "main_commit": "10f7c1513b910f42473690255641140989cc10d0",
   "catalog": [
     {
