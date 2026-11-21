@@ -18,14 +18,19 @@
     "deferred": "Отложено владельцем"
   },
   "next": [
-    "TOY-02",
-    "H03-04",
-    "VSS-02",
-    "H03-05",
+    "H03-03",
     "CAN-01",
+    "CAN-03",
+    "TOY-02",
+    "VSS-02",
+    "H03-04",
+    "H03-05",
+    "ECU-01",
     "DTC-04",
+    "DTC-02",
+    "MODE-02",
     "TOY-05",
-    "CAN-03"
+    "REL-01"
   ],
   "sections": [
     {
@@ -458,14 +463,17 @@
       "docs": [
         "docs/toyota-integration.md",
         "docs/integration-next-tasks.md",
-        "verification/project-audit/toy01-gp-descriptor-size.md"
+        "verification/project-audit/toy01-gp-descriptor-size.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 25,
-        "action": "Проверить переносимое ядро в окончательном полном цикле; оптимизировать только при сохранении всех корней и данных.",
-        "deliverable": "Повторяемая компоновка общего GP и сравнение полного цикла с закреплённым донором.",
-        "inputs": "H03-03/04 и TOY-04; vendor Toyota не менять."
+        "order": 2,
+        "chat_id": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+        "chat_label": "Чат 12",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Перепроверь утверждение про 685 байт вне cold-проекции: действительно ли это неизвестные калибровки, или штатные BSS/reset/data/нечитаемые до записи поля? Используй S01/R3 и граф read-before-write, не требуй аппаратный снимок если значения следуют из программы. Доведи rbm_h03_target_startup_gp/gear и реальный initialize_inputs (без захвата транспортных модулей других чатов), init/restore/default paths и явные неподтверждённые поля. Не обнулять неизвестное без доказательства.",
+        "deliverable": "Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений."
       }
     },
     {
@@ -511,14 +519,17 @@
         "docs/integration-next-tasks.md",
         "verification/project-audit/toy02-bosch-load-producers.md",
         "verification/project-audit/toy02-load-traces.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 1,
-        "action": "Определить реальные производители GP 9046/8288/8330 и 5299.1 с масштабами/свежестью. Текущие разностные CAN-коды не восстанавливают их однозначно; квалификатор не заменяет источник.",
-        "deliverable": "Поставщик нагрузки для take_toyota: происхождение каждого GP, единицы, диапазон, период и тест потери данных.",
-        "inputs": "S01 и S04/R4; текущий CAN неоднозначен для GP−9046/−8288/−8330. Не восстанавливать абсолютную нагрузку из разностей."
+        "order": 3,
+        "chat_id": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "chat_label": "Чат 4",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Перепроверь все операнды full Toyota cycle: реальный источник Bosch, шкала, знаковость, возраст, startup и отказ. Если имеющийся CAN несёт только разности и обратное восстановление неоднозначно, не делать ещё один qualifier вокруг той же неопределённости. Подготовь минимальный дополнительный явный raw-source контракт Bosch→TCM с происхождением каждого поля и приёмник; штатный Chery сохранить. Документируй предложения/неизвестные поля, не выдумывать физический load. Самостоятельно подключи доступные producer→capture части и избавь native путь от test_input_capture.",
+        "deliverable": "Таблица всех необходимых операндов и реализованный capture/input backend; контракт для чата 8, реальные source offsets и отрицательные тесты неполного/устаревшего снимка."
       }
     },
     {
@@ -549,14 +560,17 @@
         "docs/lfj8-h03-input-paths.md",
         "docs/toyota-integration.md",
         "docs/integration-next-tasks.md",
-        "verification/project-audit/toy03-h03-pnp-source.md"
+        "verification/project-audit/toy03-h03-pnp-source.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 10,
-        "action": "Установить независимый физический источник разрешений P/N/пуска и передать квалифицированные биты общему снимку.",
-        "deliverable": "Поставщики GP−5722 и GP−5250.2 с происхождением, временем и отказом.",
-        "inputs": "Источник должен быть независим от того же декодирования селектора; интерфейсы MODE-02 и take_toyota."
+        "order": 4,
+        "chat_id": "01a1f9b1-c11a-7b23-abcf-3214ce643805",
+        "chat_label": "Чат 2",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Реализуй native context_for_task2 вместо fixture_engine_context, независимые разрешающие сигналы и их происхождение. Параметры age/poll/bit time вывести из кода/регистров/периодики там, где это возможно. Для неподтверждённой временной величины нужен явный инженерный диапазон и контроль в runtime, а не требование получить журнал до BIN. Не восстанавливать неоднозначную абсолютную нагрузку из разностей CAN. Общие CAN owner/RX/DTC уже есть.",
+        "deliverable": "Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка."
       }
     },
     {
@@ -591,7 +605,8 @@
         "docs/lfj8-h03-control-cycle.md",
         "verification/project-audit/toy04-upper-gears.md",
         "docs/integration-next-tasks.md",
-        "verification/project-audit/toy04-output-flash-size.md"
+        "verification/project-audit/toy04-output-flash-size.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [
         "TOY-02",
@@ -600,10 +615,12 @@
         "MODE-02"
       ],
       "continuation": {
-        "order": 15,
-        "action": "После подключения источников пройти R, 2→3, 3→4, понижения и ручные запросы полным общим циклом, завершить отсутствующие стадии.",
-        "deliverable": "Последовательные трассы GP/гидравлики/команд на целевом цикле и совпадение с донором, включая отказ в середине переключения.",
-        "inputs": "Цельный startup/цикл H03-03 и квалифицированные входы; отдельного теста запроса передачи недостаточно."
+        "order": 5,
+        "chat_id": "01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "chat_label": "Чат 7",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи реальные native output ops, mapping D/E/F/Pressure A и весь путь command→arbitrate→apply→inhibit. Перепроверь соответствие SLT/SLU и отказов. Нельзя утверждать электрическую изоляцию TIO9 маской без основания. Если конкретное включение требует неизвестного электрического параметра, реализуй диагностическое/комиссионное измерение и явную блокировку именно этого включения; не останавливать запуск/CAN всей системы. Донорские значения с доказуемой применимостью могут быть начальной инженерной настройкой с явно указанными ограничениями, не выдуманной калибровкой давления. Все аппаратные измерения оформить после BIN.",
+        "deliverable": "Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки."
       }
     },
     {
@@ -660,17 +677,20 @@
         "docs/integration-next-tasks.md",
         "verification/project-audit/toy05-s01-baseline.md",
         "verification/project-audit/toy05-s01-cold-state.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [
         "TOY-04",
         "H03-04"
       ],
       "continuation": {
-        "order": 7,
-        "action": "Выбрать два доказанно свободных блока, реализовать запись и подключить полный startup GP/gear. Только read-only адаптация не завершает постоянное хранение.",
-        "deliverable": "rbm_h03_target_startup_gear/gp с происхождением полей; порядок init → prepare_s01_cold → restore_adaptation до допуска выходов.",
-        "inputs": "Новая cold-проекция готова только для 143 из 828 байт; 685 сохраняются. Нужны их исходные владельцы и NVM DTC-04; не обнулять весь GP."
+        "order": 6,
+        "chat_id": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+        "chat_label": "Чат 12",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Перепроверь утверждение про 685 байт вне cold-проекции: действительно ли это неизвестные калибровки, или штатные BSS/reset/data/нечитаемые до записи поля? Используй S01/R3 и граф read-before-write, не требуй аппаратный снимок если значения следуют из программы. Доведи rbm_h03_target_startup_gp/gear и реальный initialize_inputs (без захвата транспортных модулей других чатов), init/restore/default paths и явные неподтверждённые поля. Не обнулять неизвестное без доказательства.",
+        "deliverable": "Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений."
       }
     },
     {
@@ -707,17 +727,20 @@
         "verification/project-audit/toy06-slu-command.md",
         "docs/integration-next-tasks.md",
         "docs/lfj8-h03-memory-layout.md",
-        "verification/project-audit/toy06-slu-stage-boundaries.md"
+        "verification/project-audit/toy06-slu-stage-boundaries.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [
         "TOY-02",
         "H03-05"
       ],
       "continuation": {
-        "order": 11,
-        "action": "Провести полный снимок SLU через SECONDARY/FAST до согласованного силового канала и снятия блокировки.",
-        "deliverable": "Цельный путь SLU от входов до выходного интерфейса H03-05, включая скольжение и отказ.",
-        "inputs": "Нагрузка TOY-02, силовой канал/масштабы H03-05, существующие baseline/secondary модули."
+        "order": 7,
+        "chat_id": "01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "chat_label": "Чат 7",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи реальные native output ops, mapping D/E/F/Pressure A и весь путь command→arbitrate→apply→inhibit. Перепроверь соответствие SLT/SLU и отказов. Нельзя утверждать электрическую изоляцию TIO9 маской без основания. Если конкретное включение требует неизвестного электрического параметра, реализуй диагностическое/комиссионное измерение и явную блокировку именно этого включения; не останавливать запуск/CAN всей системы. Донорские значения с доказуемой применимостью могут быть начальной инженерной настройкой с явно указанными ограничениями, не выдуманной калибровкой давления. Все аппаратные измерения оформить после BIN.",
+        "deliverable": "Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки."
       }
     },
     {
@@ -764,14 +787,17 @@
         "verification/project-audit/can01-rx-epoch.md",
         "docs/integration-next-tasks.md",
         "verification/project-audit/can01-engine-rx-generation.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 5,
-        "action": "Задать подтверждённые границы времени и реальный Task 2 context с retained_fd10/fallback_fa7b/retained_e026/e02b и старейшей меткой. В общей пробе внешний fixture_engine_context остаётся неопределённым.",
-        "deliverable": "rbm_h03_target_engine, реальные пределы возраста/опроса, испытания потери и восстановления данных через общий startup/foreground.",
-        "inputs": "Путь startup/foreground уже объединён. Контекст retained_fd10/fallback_fa7b/retained_e026, поколения CAN и общие часы ещё надо привязать."
+        "order": 8,
+        "chat_id": "01a1f9b1-c11a-7b23-abcf-3214ce643805",
+        "chat_label": "Чат 2",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Реализуй native context_for_task2 вместо fixture_engine_context, независимые разрешающие сигналы и их происхождение. Параметры age/poll/bit time вывести из кода/регистров/периодики там, где это возможно. Для неподтверждённой временной величины нужен явный инженерный диапазон и контроль в runtime, а не требование получить журнал до BIN. Не восстанавливать неоднозначную абсолютную нагрузку из разностей CAN. Общие CAN owner/RX/DTC уже есть.",
+        "deliverable": "Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка."
       }
     },
     {
@@ -810,14 +836,17 @@
         "docs/integration-next-tasks.md",
         "docs/lfj8-h03-memory-layout.md",
         "verification/project-audit/can02-torque-submit.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 23,
-        "action": "Подключить окончательный vehicle/torque/status профиль и проверить полноценный обмен совместно с CAN-03/CAN-04/CAN-05.",
-        "deliverable": "Нативная общая передача без потери владения и повторного использования старых кадров.",
-        "inputs": "service_phase CAN-03 и очередь DTC-02, полный профиль времени."
+        "order": 9,
+        "chat_id": "01a1f9b5-5d41-79e0-8cd2-3dadc922f1ce",
+        "chat_label": "Чат 3",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи реальный Lfj8H03TargetServiceConfig, источник времени, сбор T6/status и отправку момента/диагностики через единственный TX13. START/REFRESH/ACK/CANCEL, шедулинг, bus-off, monitor, reset и смена поколения должны иметь реальные входы/выходы. Убери зависимость от test_can_service_config. Полнота CAN включает обратную связь и завершение запросов, а не только RPM/ОЖ.",
+        "deliverable": "Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM."
       }
     },
     {
@@ -887,16 +916,19 @@
         "docs/integration-next-tasks.md",
         "docs/lfj8-h03-memory-layout.md",
         "verification/project-audit/can03-h03-monitor-startup.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [
         "H03-04"
       ],
       "continuation": {
-        "order": 8,
-        "action": "Подключить действительный service config, status/torque источники и квалифицированные временные пределы; закончить monitor-переходы.",
-        "deliverable": "rbm_h03_target_service_phase и связанная CAN-композиция без дублирования owner/состояния.",
-        "inputs": "Общие RAM/часы, интерфейс engine CAN-01, диагностический target DTC-02 и результаты общего цикла."
+        "order": 10,
+        "chat_id": "01a1f9b5-5d41-79e0-8cd2-3dadc922f1ce",
+        "chat_label": "Чат 3",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи реальный Lfj8H03TargetServiceConfig, источник времени, сбор T6/status и отправку момента/диагностики через единственный TX13. START/REFRESH/ACK/CANCEL, шедулинг, bus-off, monitor, reset и смена поколения должны иметь реальные входы/выходы. Убери зависимость от test_can_service_config. Полнота CAN включает обратную связь и завершение запросов, а не только RPM/ОЖ.",
+        "deliverable": "Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM."
       }
     },
     {
@@ -931,14 +963,17 @@
         "docs/lfj8-h03-torque.md",
         "verification/project-audit/can04-torque-revocation.md",
         "docs/integration-next-tasks.md",
-        "verification/project-audit/can04-progress-deadline.md"
+        "verification/project-audit/can04-progress-deadline.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 22,
-        "action": "Подключить реальные метки и профиль момента к запросу RB, связать отзыв с поколением и конечным потребителем Bosch.",
-        "deliverable": "Сквозная передача/отмена запроса момента M32R↔ST10 с контролем давности.",
-        "inputs": "CAN-03/05 и ECU-02; тестовые калибровки не являются профилем автомобиля."
+        "order": 11,
+        "chat_id": "01a1f9b5-5d41-79e0-8cd2-3dadc922f1ce",
+        "chat_label": "Чат 3",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи реальный Lfj8H03TargetServiceConfig, источник времени, сбор T6/status и отправку момента/диагностики через единственный TX13. START/REFRESH/ACK/CANCEL, шедулинг, bus-off, monitor, reset и смена поколения должны иметь реальные входы/выходы. Убери зависимость от test_can_service_config. Полнота CAN включает обратную связь и завершение запросов, а не только RPM/ОЖ.",
+        "deliverable": "Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM."
       }
     },
     {
@@ -977,16 +1012,19 @@
         "verification/project-audit/can05-1ae-roundtrip.md",
         "docs/integration-next-tasks.md",
         "docs/lfj8-h03-memory-layout.md",
-        "verification/project-audit/can05-st10-rx-clock.md"
+        "verification/project-audit/can05-st10-rx-clock.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [
         "TOY-02"
       ],
       "continuation": {
-        "order": 16,
-        "action": "Собрать конечный Bosch-профиль с фактической RAM, поколением, T4/IF1, lease и потребителем арбитража; обеспечить весь требуемый обмен.",
-        "deliverable": "Целевой профиль Bosch и отчёт по каждому обязательному сигналу/кадру, источнику, сроку и реакции на потерю.",
-        "inputs": "Шкалы TOY-02 и интерфейс арбитража ECU-02; два текущих timestamp-профиля уже проверены отдельно."
+        "order": 12,
+        "chat_id": "01a1f9ab-19c7-72c0-ac90-6aa98e4aa488",
+        "chat_label": "Чат 8",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Назначен владельцем целевого Bosch BIN. Полностью перепроверь ordinary/no-cruise OFFLINE_ONLY, причины ограничения, hooks, checksum и сохранение старта/впрыска/зажигания. Доделай реальные штатные Chery кадры и RB torque request/reply/cancel плюс требуемые Toyota operands. Чат 4 готовит таблицу исходных операндов и приёмник: совместимость через проверяемый контракт, не подстановку физических значений. Раздели реальные препятствия к первому стендовому образу от моторной калибровки после прошивки. Нельзя просто переименовать bd0afefa… в READY.",
+        "deliverable": "Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false."
       }
     },
     {
@@ -1016,14 +1054,17 @@
       "docs": [
         "docs/bosch-integration.md",
         "docs/integration-next-tasks.md",
-        "verification/project-audit/ecu01-bosch-section-layout.md"
+        "verification/project-audit/ecu01-bosch-section-layout.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 26,
-        "action": "После CAN-05/ECU-02 собрать воспроизводимый Bosch BIN из зарегистрированного исходника и проверить отличия/целостность.",
-        "deliverable": "Один целевой Bosch BIN, manifest/SHA и полный перечень установленных правок.",
-        "inputs": "Завершённые CAN-05/ECU-02 и проверенное происхождение S04; OFFLINE_ONLY не переименовывать в выпуск."
+        "order": 13,
+        "chat_id": "01a1f9ab-19c7-72c0-ac90-6aa98e4aa488",
+        "chat_label": "Чат 8",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Назначен владельцем целевого Bosch BIN. Полностью перепроверь ordinary/no-cruise OFFLINE_ONLY, причины ограничения, hooks, checksum и сохранение старта/впрыска/зажигания. Доделай реальные штатные Chery кадры и RB torque request/reply/cancel плюс требуемые Toyota operands. Чат 4 готовит таблицу исходных операндов и приёмник: совместимость через проверяемый контракт, не подстановку физических значений. Раздели реальные препятствия к первому стендовому образу от моторной калибровки после прошивки. Нельзя просто переименовать bd0afefa… в READY.",
+        "deliverable": "Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false."
       }
     },
     {
@@ -1033,7 +1074,7 @@
         10
       ],
       "title": "Калибровка момента и работа двигателя",
-      "status": "measure",
+      "status": "open",
       "current": "Объединённый результат 21.11.2026: Приёмник C отклоняет 0x1AE с меткой на границе снятия допуска и раньше. Подтверждено для прямого/отложенного RX, очереди и переполнения T4. ПК 41/120, 65536 пар, старый Bosch ST10 с 51 записью, три диалога H03 и 26 архивных запросов. Машинная привязка CAN-05 и стенд открыты. Отчёт ecu02-torque-permit-boundary.md.",
       "remaining": "Завершить машинный арбитраж с квалифицированными входами и подтвердить действие/снятие момента на новой паре блоков.",
       "acceptance": "Протокол с идентифицированными BIN и измеренным результатом. Исторический стенд STM32 не переносит автоматически приёмку на LFJ8.",
@@ -1054,16 +1095,19 @@
         "docs/e4m3-audit.md",
         "docs/lfj8-9e1c-minimum-bench.md",
         "docs/integration-next-tasks.md",
-        "verification/project-audit/ecu02-rb-lease-timeout.md"
+        "verification/project-audit/ecu02-rb-lease-timeout.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [
         "CAN-05"
       ],
       "continuation": {
-        "order": 17,
-        "action": "Завершить машинный арбитраж снижения момента с квалифицированными входами и отзывом по тайм-ауту; отделить старый стенд от новой пары.",
-        "deliverable": "Подключённый потребитель запроса момента ST10 и критерии действия/снятия на целевой паре.",
-        "inputs": "CAN-05, исходные измерения и E4M3-калибровка; старый E4M2-протокол не подтверждает новый блок."
+        "order": 14,
+        "chat_id": "01a1f9ab-19c7-72c0-ac90-6aa98e4aa488",
+        "chat_label": "Чат 8",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Назначен владельцем целевого Bosch BIN. Полностью перепроверь ordinary/no-cruise OFFLINE_ONLY, причины ограничения, hooks, checksum и сохранение старта/впрыска/зажигания. Доделай реальные штатные Chery кадры и RB torque request/reply/cancel плюс требуемые Toyota operands. Чат 4 готовит таблицу исходных операндов и приёмник: совместимость через проверяемый контракт, не подстановку физических значений. Раздели реальные препятствия к первому стендовому образу от моторной калибровки после прошивки. Нельзя просто переименовать bd0afefa… в READY.",
+        "deliverable": "Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false."
       }
     },
     {
@@ -1138,14 +1182,17 @@
         "docs/integration-next-tasks.md",
         "docs/lfj8-h03-memory-layout.md",
         "verification/project-audit/h03-02-shared-clock.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 20,
-        "action": "Подключить реальные sensor_config, частоту, периоды и допуски из VSS-02; выполнить квалификацию S51/S83/ATF в общем цикле.",
-        "deliverable": "Установленные native hooks и целевой снимок датчиков со старейшей меткой.",
-        "inputs": "VSS-02 и H03-04; новые схемы захвата вместо существующих не создавать без выявленного дефекта."
+        "order": 16,
+        "chat_id": "01a1f9a8-7b61-7763-adaa-0e3e11d1dbf4",
+        "chat_label": "Чат 5",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи rbm_h03_sensor_config и rbm_h03_target_clock_ready для H03, единый TML0 и статус непрерывности. Найди частоты/делители/коэффициенты в исходнике/схеме/регистрах. Раздели вычислимые параметры и будущую измерительную коррекцию; не требовать реальную частоту до выпуска образа. Неподтверждённая оценка должна иметь явный статус и проверку, не называться измеренной. 100/22 сохранять точно, не угадывать окружность колеса. Реализовать выдачу raw speed/capture для будущей калибровки.",
+        "deliverable": "Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки."
       }
     },
     {
@@ -1203,16 +1250,19 @@
         "docs/integration-next-tasks.md",
         "docs/lfj8-h03-memory-layout.md",
         "verification/project-audit/h03-03-sensor-foreground.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [
         "H03-04"
       ],
       "continuation": {
-        "order": 14,
-        "action": "Подключить выпускной профиль запуска, полноценные GP/gear и input capture; закончить strategy/apply/monitor переходы и полный линк без испытательных деклараций.",
-        "deliverable": "rbm_h03_target_initialize/take_toyota и итоговая application binding без fixture; старт, foreground, события и отказ проходят через реальные модули.",
-        "inputs": "Готовые контракты TOY-02/03/05, CAN-01/03, VSS-02, MODE-02/03, H03-04/05 и DTC-04. Не писать их повторно внутри одного файла."
+        "order": 17,
+        "chat_id": "01a1f9ae-4a7e-7e31-951a-f6383e1831ee",
+        "chat_label": "Чат 1",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Проверь все пути вызова нового цикла от reset до переключения, включая штатные писатели, повторный запуск и monitor. Доделай недостающие OEM redirects на основе точных байтов H03 и предоставь relocatable объекты/план патчей для общего ELF. Четыре существующих entry veneers не доказывают, что все входящие штатные ветки подключены. Проверить конечный граф путей и устранить обходы.",
+        "deliverable": "Полный набор hooks/placement с проверкой original bytes, ссылками на native callbacks, проверкой CPU штатного/отказного/повторного пути; никаких fixture callbacks."
       }
     },
     {
@@ -1276,14 +1326,17 @@
         "docs/lfj8-h03-memory-layout.md",
         "verification/project-audit/h03-04-service-guard.md",
         "verification/project-audit/h03-04-service-cancel.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 2,
-        "action": "Завершить пять обязательных определений: boot_writers_owned, нижние границы и резервы SPI/PSW с вложенными IRQ/SBI. После остальных поставщиков повторить полное размещение; текущие 156 байт верхнего запаса не являются окончательным резервом.",
-        "deliverable": "rbm_h03_target_ram_owned, карта размещения/стека и проверка DMA/SBI/сервиса на едином составе.",
-        "inputs": "Текущий состав 101460 байт и RAM 2728+4; итоговые контексты всех поставщиков ещё добавятся. FF не доказывает владение."
+        "order": 18,
+        "chat_id": "01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "chat_label": "Чат 6",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Закрой rbm_h03_boot_writers_owned и четыре диапазона SPI/PSW: first/reserve. Аудит reset/IRQ/DMA/service и стеков по штатному BIN, статический граф и симулятор. Нужно реальное владение RAM и отказ при потере, а не функция всегда true. Предоставь итоговые числовые диапазоны со статическим обоснованием и зарезервированными зонами; аппаратный high-water после BIN не должен мешать доказуемой программной части.",
+        "deliverable": "Пять реальных определений/профиль, полный список писателей, linker constraints и доказательства покрытия; стоимость RAM/стеков и сценарии отказа."
       }
     },
     {
@@ -1293,7 +1346,7 @@
         5
       ],
       "title": "SLT, силовые выходы и реакция на отказ",
-      "status": "measure",
+      "status": "open",
       "current": "Нативный takeover сокращён на 94 байта medium/86 small без роста RAM. Порядок публикации и 13 флагов проверены, штатные выходные сценарии прошли.",
       "remaining": "Подключить квалифицированный output profile/takeover ops и подтвердить SLT/SLU, изоляцию и физическую реакцию выходов.",
       "acceptance": "Измеренные таблицы в допустимой области питания/ATF, реакция каждого выхода и гидравлики на отказ, отсутствие старой команды после восстановления.",
@@ -1330,14 +1383,17 @@
         "docs/integration-next-tasks.md",
         "docs/lfj8-h03-memory-layout.md",
         "verification/project-audit/h03-05-can-revoke-bindings.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 4,
-        "action": "Подключить квалифицированный output profile/takeover ops и подтвердить SLT/SLU, изоляцию и физическую реакцию выходов.",
-        "deliverable": "rbm_h03_target_takeover_ops с трассой до регистров и явными условиями допуска SLT/SLU.",
-        "inputs": "Штатный inhibit не снимает TIO9/P97. Нужны подтверждённый путь SLU и связь команды SLT с током/давлением; тестовые маски изоляции запрещены."
+        "order": 19,
+        "chat_id": "01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "chat_label": "Чат 7",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи реальные native output ops, mapping D/E/F/Pressure A и весь путь command→arbitrate→apply→inhibit. Перепроверь соответствие SLT/SLU и отказов. Нельзя утверждать электрическую изоляцию TIO9 маской без основания. Если конкретное включение требует неизвестного электрического параметра, реализуй диагностическое/комиссионное измерение и явную блокировку именно этого включения; не останавливать запуск/CAN всей системы. Донорские значения с доказуемой применимостью могут быть начальной инженерной настройкой с явно указанными ограничениями, не выдуманной калибровкой давления. Все аппаратные измерения оформить после BIN.",
+        "deliverable": "Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки."
       }
     },
     {
@@ -1395,14 +1451,17 @@
       "docs": [
         "targets/lfj8/README.md",
         "docs/integration-next-tasks.md",
-        "verification/project-audit/vss01-standstill-guard.md"
+        "verification/project-audit/vss01-standstill-guard.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 19,
-        "action": "Подключить параметры машины и независимое подтверждение остановки к единственному снимку и публикации скорости.",
-        "deliverable": "Скорость по CAN до Bosch, сохранение 100/22 и отказ при потере импульсов вместо ложного нуля.",
-        "inputs": "Профиль VSS-02, часы и CAN-03; профиль 37/8 и 3,53 м пока только арифметически проверен."
+        "order": 21,
+        "chat_id": "01a1f9a8-7b61-7763-adaa-0e3e11d1dbf4",
+        "chat_label": "Чат 5",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи rbm_h03_sensor_config и rbm_h03_target_clock_ready для H03, единый TML0 и статус непрерывности. Найди частоты/делители/коэффициенты в исходнике/схеме/регистрах. Раздели вычислимые параметры и будущую измерительную коррекцию; не требовать реальную частоту до выпуска образа. Неподтверждённая оценка должна иметь явный статус и проверку, не называться измеренной. 100/22 сохранять точно, не угадывать окружность колеса. Реализовать выдачу raw speed/capture для будущей калибровки.",
+        "deliverable": "Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки."
       }
     },
     {
@@ -1411,7 +1470,7 @@
         7
       ],
       "title": "Кинематика и параметры реальной скорости",
-      "status": "measure",
+      "status": "open",
       "current": "Foreground сравнивает относительный ход TML0/TML1; разрыв отзывает эпоху и очищает S51/S83/ATF. Исправлен воспроизведённый дефект 06ab447; добавлено 12 байт типизированного состояния.",
       "remaining": "Сохранить контроль непрерывности и дать квалифицированную абсолютную частоту/профиль датчиков. Относительное совпадение двух счётчиков не доказывает их масштаб.",
       "acceptance": "Скорость совпадает с эталоном в согласованном диапазоне, потеря импульсов отличается от остановки.",
@@ -1446,14 +1505,17 @@
         "docs/integration-next-tasks.md",
         "docs/lfj8-h03-memory-layout.md",
         "verification/project-audit/vss02-h03-sensor-config.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 3,
-        "action": "Сохранить контроль непрерывности и дать квалифицированную абсолютную частоту/профиль датчиков. Относительное совпадение двух счётчиков не доказывает их масштаб.",
-        "deliverable": "rbm_h03_sensor_config и rbm_h03_target_clock_ready; проверка несовпадения/сброса часов, тайм-аутов и недостоверной остановки.",
-        "inputs": "Доказанная частота TML0/TML1, фронты/оборот, рабочий диапазон и возраст ATF. При отсутствии физических данных оставить конкретные параметры незаполненными."
+        "order": 22,
+        "chat_id": "01a1f9a8-7b61-7763-adaa-0e3e11d1dbf4",
+        "chat_label": "Чат 5",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи rbm_h03_sensor_config и rbm_h03_target_clock_ready для H03, единый TML0 и статус непрерывности. Найди частоты/делители/коэффициенты в исходнике/схеме/регистрах. Раздели вычислимые параметры и будущую измерительную коррекцию; не требовать реальную частоту до выпуска образа. Неподтверждённая оценка должна иметь явный статус и проверку, не называться измеренной. 100/22 сохранять точно, не угадывать окружность колеса. Реализовать выдачу raw speed/capture для будущей калибровки.",
+        "deliverable": "Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки."
       }
     },
     {
@@ -1511,14 +1573,17 @@
         "docs/lfj8-selector.md",
         "verification/project-audit/mode01-shift-conflict.md",
         "docs/integration-next-tasks.md",
-        "verification/project-audit/mode01-button-source-loss.md"
+        "verification/project-audit/mode01-button-source-loss.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 21,
-        "action": "Проверить логику шести положений и кнопок уже на реальных поставщиках MODE-02 и полном цикле.",
-        "deliverable": "Ручная заявка проходит до гидравлики; дребезг, удержание и восстановление не создают лишнее переключение.",
-        "inputs": "MODE-02/03 и H03-03/TOY-04."
+        "order": 24,
+        "chat_id": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+        "chat_label": "Чат 11",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи реальные P/R/N/D/2/L, Tiptronic +/−/toggle и OD до Toyota cycle с блокировкой опасных/противоречивых входов. Профиль из схемы, кода и расчёта ADC/резисторов, не test constants. Пересчитай сопротивления 2/L с номиналами/допусками/исходной схемой: если аппаратный делитель известен из исходников, рассчитать до замера; если нет — указать конкретно неизвестный элемент, не выдумывать ом. Режим после reset и допустимость команды фиксировать явно, с происхождением/решением.",
+        "deliverable": "Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests."
       }
     },
     {
@@ -1574,16 +1639,19 @@
         "docs/integration-next-tasks.md",
         "docs/lfj8-h03-memory-layout.md",
         "verification/project-audit/mode02-h03-button-capture.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [
         "H03-03"
       ],
       "continuation": {
-        "order": 9,
-        "action": "Задать обоснованные окна ADC, карту входов и тайминги; подключить квалифицированные Toyota inputs в окончательном профиле.",
-        "deliverable": "Реальный захват селектора/кнопок до входа take_toyota, шесть положений и отказы проводов.",
-        "inputs": "Подтверждённые провода и ADC-окна; расчётные 200/91 Ом не являются измеренными окнами. Общий application редактирует H03-03."
+        "order": 25,
+        "chat_id": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+        "chat_label": "Чат 11",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи реальные P/R/N/D/2/L, Tiptronic +/−/toggle и OD до Toyota cycle с блокировкой опасных/противоречивых входов. Профиль из схемы, кода и расчёта ADC/резисторов, не test constants. Пересчитай сопротивления 2/L с номиналами/допусками/исходной схемой: если аппаратный делитель известен из исходников, рассчитать до замера; если нет — указать конкретно неизвестный элемент, не выдумывать ом. Режим после reset и допустимость команды фиксировать явно, с происхождением/решением.",
+        "deliverable": "Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests."
       }
     },
     {
@@ -1614,14 +1682,17 @@
         "docs/decisions.md",
         "docs/lfj8-selector.md",
         "docs/integration-next-tasks.md",
-        "verification/project-audit/mode03-conflict-policy.md"
+        "verification/project-audit/mode03-conflict-policy.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 12,
-        "action": "Зафиксировать окончательный профиль Auto/Tiptronic/OD и ручных диапазонов; связать с достоверными физическими входами.",
-        "deliverable": "Целевой профиль режимов с обоснованными ограничениями и проверкой повторного включения.",
-        "inputs": "ТЗ и решения владельца; MODE-02. Параметры fixture не переносить автоматически."
+        "order": 26,
+        "chat_id": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+        "chat_label": "Чат 11",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи реальные P/R/N/D/2/L, Tiptronic +/−/toggle и OD до Toyota cycle с блокировкой опасных/противоречивых входов. Профиль из схемы, кода и расчёта ADC/резисторов, не test constants. Пересчитай сопротивления 2/L с номиналами/допусками/исходной схемой: если аппаратный делитель известен из исходников, рассчитать до замера; если нет — указать конкретно неизвестный элемент, не выдумывать ом. Режим после reset и допустимость команды фиксировать явно, с происхождением/решением.",
+        "deliverable": "Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests."
       }
     },
     {
@@ -1721,14 +1792,17 @@
         "verification/project-audit/dtc01-session-lease.md",
         "docs/integration-next-tasks.md",
         "verification/project-audit/dtc01-c0-session-timer.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 24,
-        "action": "Включить транспорт с реальными таймингами и native CAN в итоговый образ; проверить прикладной сеанс на общей целевой конфигурации.",
-        "deliverable": "Сеанс и очистка DTC без ложного ACK при отказе носителя; отзыв при reset и потере времени.",
-        "inputs": "CAN-03, DTC-02/04, T6 и общие часы."
+        "order": 29,
+        "chat_id": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "chat_label": "Чат 10",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи штатный запрос→RX→сеанс→TX13 ответ и события всех подсистем, статусы/очистку. Перепроверь таблицу Toyota/Chery и не придумывай code correspondence. Первичный стенд должен позволять получить реальные сырые S51/S83/ATF, clock, voltage/current если доступны АЦП, output command/qualifier, torque handshake и причины inhibit. Добавь компактный реальный измерительный путь/документированные запросы, если имеющихся недостаточно. Никаких sample values; измерительный протокол должен работать в собираемой паре.",
+        "deliverable": "Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout."
       }
     },
     {
@@ -1776,14 +1850,17 @@
         "docs/integration-next-tasks.md",
         "docs/lfj8-h03-memory-layout.md",
         "verification/project-audit/dtc02-resident-target-rx.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [],
       "continuation": {
-        "order": 13,
-        "action": "Установить полный набор RX/service/monitor переходов в итоговый образ и подтвердить банк Flash и время IRQ в совместной конфигурации.",
-        "deliverable": "Native RX → очередь → диспетчер → ответ; проверка reset, перезаписи и Virtual Flash в общей композиции.",
-        "inputs": "RAM H03-04, часы VSS-02, service_phase CAN-03; область ниже 0x008000 учитывать отдельно."
+        "order": 30,
+        "chat_id": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "chat_label": "Чат 10",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи штатный запрос→RX→сеанс→TX13 ответ и события всех подсистем, статусы/очистку. Перепроверь таблицу Toyota/Chery и не придумывай code correspondence. Первичный стенд должен позволять получить реальные сырые S51/S83/ATF, clock, voltage/current если доступны АЦП, output command/qualifier, torque handshake и причины inhibit. Добавь компактный реальный измерительный путь/документированные запросы, если имеющихся недостаточно. Никаких sample values; измерительный протокол должен работать в собираемой паре.",
+        "deliverable": "Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout."
       }
     },
     {
@@ -1825,17 +1902,20 @@
         "verification/project-audit/dtc03-table.md",
         "docs/integration-next-tasks.md",
         "verification/project-audit/dtc03-ta2005-p0710.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [
         "H03-05",
         "TOY-06"
       ],
       "continuation": {
-        "order": 18,
-        "action": "Подключить реальную характеристику ATF, диагностические пороги и временные пределы; проверить их с датчиком.",
-        "deliverable": "Таблица событий Toyota↔Chery с вызывающими native-путями и сквозной проверкой статусов.",
-        "inputs": "Физические диапазоны/периоды датчиков, H03-05/TOY-06 и единый DTC-02."
+        "order": 31,
+        "chat_id": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "chat_label": "Чат 10",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи штатный запрос→RX→сеанс→TX13 ответ и события всех подсистем, статусы/очистку. Перепроверь таблицу Toyota/Chery и не придумывай code correspondence. Первичный стенд должен позволять получить реальные сырые S51/S83/ATF, clock, voltage/current если доступны АЦП, output command/qualifier, torque handshake и причины inhibit. Добавь компактный реальный измерительный путь/документированные запросы, если имеющихся недостаточно. Никаких sample values; измерительный протокол должен работать в собираемой паре.",
+        "deliverable": "Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout."
       }
     },
     {
@@ -1885,16 +1965,19 @@
         "docs/integration-next-tasks.md",
         "docs/lfj8-h03-memory-layout.md",
         "verification/project-audit/dtc04-retired-history.md",
-        "verification/project-audit/integration-39-20261121/report.md"
+        "verification/project-audit/integration-39-20261121/report.md",
+        "docs/bench-first-wave.md"
       ],
       "depends": [
         "H03-04"
       ],
       "continuation": {
-        "order": 6,
-        "action": "Реализовать и привязать постоянный NVM backend с доказанными двумя стираемыми блоками, владением записью и отказами питания; read-only array path не является записью.",
-        "deliverable": "Физический NVM backend, адреса, busy/ошибки, восстановление после прерывания и очистка без ложного подтверждения.",
-        "inputs": "Сервисные и Flash-режимы H03, независимые стираемые области, разрешение записи и владение из H03-04; RAM-буферы носителем не являются."
+        "order": 32,
+        "chat_id": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "chat_label": "Чат 9",
+        "inputs": "main abd3cba и позднее; docs/bench-first-wave.md; data/bench-first-wave.json; имеющиеся источники/проверки карточки.",
+        "action": "Доведи реальный read/write/erase backend с геометрией и исключением стёртых программных областей, two-slot commit и поведение при прерывании питания. Не назначать два пустых блока по догадке. Если безопасная запись объективно не выводится из имеющихся данных, доведи bootable non-destructive inspection/readout и явный статус unavailable persistence для первичного стенда, сохрани финальное требование открытым. Такую деградацию нельзя выдавать за полное выполнение ТЗ. Подготовь независимый backend без fixture qualified_adaptation_blocks.",
+        "deliverable": "Рабочий backend или конкретная доказанная граница его доступности, профиль носителя/проверка восстановления, подлинные Flash-адреса; телеметрия для получения недостающего после BIN."
       }
     },
     {
@@ -1908,8 +1991,8 @@
       "title": "Два целевых BIN и воспроизводимый комплект",
       "status": "open",
       "current": "Все 11 новых результатов объединены. 41 этап ПК, 210 Python до новой упаковки, 55 целевых проверок упаковки, 22 native, 8 компонентов и 6 групп ядра прошли. Известный состав помещается после переноса двух таблиц, но 15 ссылок остаются открытыми. TCM BIN отсутствует; Bosch OFFLINE_ONLY.",
-      "remaining": "Закрыть 15 определений текущей композиции (профили, Task 2, startup GP/gear, NVM blocks, SPI/PSW/boot writers), закончить все переходы и целостность двух целевых образов. Не выдавать адресную модель за TCM BIN.",
-      "acceptance": "Оба образа соответствуют выбранным основам и закрытому объёму первого файла, связаны с исходниками и фактическими результатами проверки.",
+      "remaining": "Закончить реальные профили/поставщики, полный native link и все redirects, сериализацию TCM BIN, целевую Bosch пару, целостность, сквозные проверки и манифест. Измерения новой пары следуют после выдачи файлов.",
+      "acceptance": "Два целевых реализованных BIN, source/final SHA и карта правок, воспроизводимая сборка, подтвержденные software checks, явные ограничения первого стенда. Аппаратная приемка учитывается отдельно в REL-02.",
       "code": [
         "controller/build_target.py",
         "targets/lfj8/check_h03_link.py",
@@ -1958,7 +2041,7 @@
       ],
       "continuation": {
         "order": 27,
-        "action": "Закрыть 15 определений текущей композиции (профили, Task 2, startup GP/gear, NVM blocks, SPI/PSW/boot writers), закончить все переходы и целостность двух целевых образов. Не выдавать адресную модель за TCM BIN.",
+        "action": "Интегрировать 12 направлений из bench-first-wave; свести профили и доказать конечный запуск/размещение/целостность; выдать два BIN для первого стенда только после программной готовности.",
         "deliverable": "TCM BIN + Bosch BIN + SHA/manifest, карты правок, применимость и фактические результаты приёмки.",
         "inputs": "Все обязательные задачи первого этапа; два реле и панель отложены. Десять unresolved — не весь остаток проекта."
       }
@@ -1977,7 +2060,7 @@
       "title": "Приёмка новой связки на оборудовании",
       "status": "measure",
       "current": "Объединённый результат 21.11.2026: Нативная проверка десяти DMA-каналов в холодном допуске RAM H03. M32R: 97142 байта, 5214 номинальный остаток. Адресный ELF H03-04: 27 писателей, 28 закрытий сеанса и 512 Virtual Flash. Остаются привязка приложения и датчиков, доказательство последующего владения DMA/SBI/IRQ, запись нижней Flash через PCM Flash; это порция REL-02.",
-      "remaining": "После соответствующего образа проверить входы, CAN, момент, переключения, SLT/SLU, отказы, пуск и штатный сканер по минимальному протоколу.",
+      "remaining": "Аппаратная приемка начинается после получения двух BIN и прошивки владельцем. До этого — подготовить исполнимый минимальный протокол и встроенные средства чтения реальных величин.",
       "acceptance": "Журналы содержат версии BIN, условия, измерения, допуски и результат. Программные тесты учитываются отдельно.",
       "code": [
         "docs/lfj8-9e1c-minimum-bench.md",
@@ -2007,5 +2090,12 @@
         "inputs": "Доступ к оборудованию отсутствует; результат невозможно заменить симуляцией. Не отмечать выполненным без измерений."
       }
     }
-  ]
+  ],
+  "bench_release": {
+    "ready": false,
+    "hardware_verified": false,
+    "plan": "docs/bench-first-wave.md",
+    "assignments": "data/bench-first-wave.json",
+    "ordering": "implemented bench pair first; physical measurements after owner flashes"
+  }
 }
