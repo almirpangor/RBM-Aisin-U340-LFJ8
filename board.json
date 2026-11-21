@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 805,
+  "sequence": 806,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -11770,9 +11770,39 @@
         "task": "DTC-02",
         "submitted_at": "2026-11-20T22:00:11+00:00"
       }
+    },
+    {
+      "operation_id": "360133580022423387a971c6e5a6dfb7",
+      "task": "H03-04",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "e2040f38c0804ea1ba66dc3a744de6a4",
+      "at": "2026-11-21T07:42:32+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex H03-04 — целевой владелец RAM",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_link.py",
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/lfj8_h03_ram_owner.h",
+          "targets/lfj8/lfj8_h03_target_memory.c",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "verification/project-audit/h03-04-target-memory-provider.md"
+        ],
+        "stage": "done",
+        "claim_id": "e2040f38c0804ea1ba66dc3a744de6a4",
+        "claimed_at": "2026-11-20T21:53:17+00:00",
+        "updated_at": "2026-11-21T07:42:32+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "bec09c304b92c50becf8c39b91097288ed9af442",
+        "based_on_reviews": [],
+        "task": "H03-04",
+        "submitted_at": "2026-11-20T22:00:51+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:42:23+00:00",
+  "updated_at": "2026-11-21T07:42:32+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -13320,11 +13350,11 @@
         "targets/lfj8/test_lfj8_h03_ram_owner.c",
         "verification/project-audit/h03-04-target-memory-provider.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "e2040f38c0804ea1ba66dc3a744de6a4",
       "claimed_at": "2026-11-20T21:53:17+00:00",
-      "updated_at": "2026-11-20T22:00:51+00:00",
-      "note": "Реальная привязка rbm_h03_target_ram_owned к холодному входу и текущему допуску. M32R: 104 байта Flash, 0 статической RAM, 4 байта кадра поставщика. Пройдены DMA/SBI, 27 писателей, 28 закрытий, 512 Virtual Flash и 24 теста размещения. Требуются финальные linker-границы, rbm_h03_boot_writers_owned, замеры стека/IRQ и установка в общую сборку с VSS-02. Порция H03-04, без выпуска BIN.",
+      "updated_at": "2026-11-21T07:42:32+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "bec09c304b92c50becf8c39b91097288ed9af442",
       "based_on_reviews": [],
       "task": "H03-04",
