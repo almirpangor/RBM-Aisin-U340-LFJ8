@@ -10,13 +10,16 @@ Lfj8H03Can13Result lfj8_h03_dtc_foreground_poll(
         return (Lfj8H03Can13Result){0};
     }
     const bool owns_slot = input->owns_slot13 == 1u;
-    const bool session_ended = owns_slot && lfj8_h03_dtc_can_service_session(
-        &broker->diagnostic, input->generation, input->diagnostic_tick);
-    if (session_ended) {
+    Lfj8H03DtcCan *const diagnostic = &broker->diagnostic;
+    const bool drop_pending = owns_slot &&
+        (lfj8_h03_dtc_can_service_session(diagnostic, input->generation, input->diagnostic_tick) ||
+         (diagnostic->generation == input->generation &&
+          chery_dtc_link_timeout_due(&diagnostic->link, input->diagnostic_tick)));
+    if (drop_pending) {
         lfj8_h03_dtc_rx_queue_end_session(queue, io, input->now_us, can_now);
     }
     Lfj8H03DtcRxDelivery delivery;
-    const bool have_delivery = owns_slot && !session_ended && can_now && lfj8_h03_dtc_rx_queue_peek(
+    const bool have_delivery = owns_slot && !drop_pending && can_now && lfj8_h03_dtc_rx_queue_peek(
         queue, io, input->generation, input->now_us, *can_now, &delivery);
     const Lfj8H03DtcReceive *saved = input->received;
     input->received = have_delivery ? &delivery.received : NULL;

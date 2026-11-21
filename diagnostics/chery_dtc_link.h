@@ -61,6 +61,8 @@ static inline bool chery_dtc_link_session_step(CheryDtcLink *link)
     return true;
 }
 
+/* Check the current TX or Flow Control deadline without consuming it. */
+bool chery_dtc_link_timeout_due(const CheryDtcLink *link, uint32_t tick);
 bool chery_dtc_link_expire(CheryDtcLink *link, uint32_t tick);
 CheryDtcLinkResult chery_dtc_link_receive(
     CheryDtcLink *link,
