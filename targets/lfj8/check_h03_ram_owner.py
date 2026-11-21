@@ -15,6 +15,7 @@ from check_h03_can_monitor_revoke import aggregate_placement, aliases_for
 from check_h03_link import HERE, ROOT, TARGET, identify_h03
 from check_h03_toyota_source import RELEASE_ROOTS, simulate as simulate_toyota
 from lfj8_h03_layout import alloc_sections, read_elf
+import lfj8_h03_ram_placement as ram_placement
 
 
 SITES = {"DIRECT": 0x002924, "SPAN": 0x00294C, "COPY": 0x002D1C,
@@ -116,7 +117,7 @@ stock_{name}:
     }
 
 
-def simulate(base, compiler, blocks):
+def simulate(base, compiler, blocks, *, resident_writers=False):
     rom = base.read_bytes()
 
     def run(*args):
@@ -129,28 +130,32 @@ def simulate(base, compiler, blocks):
     sources = ("test_lfj8_h03_ram_owner.c", "lfj8_h03_ram_owner.c", "lfj8_h03_target_memory.c",
                "lfj8_h03_application.c", "h03_application_hooks.S", "lfj8_h03_mmio.c",
                "lfj8_h03_service_guard.c", "h03_service_guard_hooks.S", "h03_dma4_guard.S")
-    # Derive the state ranges from the checked M32R inventory. Stack bounds,
-    # remaining reserves and the IRQ pointer here are only fixture geometry.
-    ranges = {name: (block["address"], block["end_exclusive"])
-              for name, block in blocks.items()}
-    ranges.update(spi=(0x809700, 0x809efc), psw=(0x809f00, 0x809fa0))
-    symbols = dict(CONTINUATIONS, rbm_h03_ram_spi_reserve=0x100,
-                   rbm_h03_ram_psw_reserve=8, h03_dtc_irq_pointer=ranges["workspace"][1])
-    for name, (first, end) in ranges.items():
-        symbols[f"rbm_h03_ram_{name}_first"] = first
-        symbols[f"rbm_h03_ram_{name}_end"] = end
+    # Stack lower bounds, remaining reserves and the IRQ pointer below are
+    # fixture geometry. The state ranges and stack tops use the same linker inputs.
+    confirmed = ram_placement.confirmed_ranges(rom, blocks)
+    policy_address = 0x7000 if resident_writers else CONTINUATIONS["rbm_h03_service_policy"]
+    symbols = dict(CONTINUATIONS, **confirmed, rbm_h03_service_policy=policy_address,
+                   rbm_h03_ram_spi_first=0x809700, rbm_h03_ram_psw_first=0x809f00,
+                   rbm_h03_ram_spi_reserve=0x100, rbm_h03_ram_psw_reserve=8,
+                   h03_dtc_irq_pointer=blocks["workspace"]["end_exclusive"])
     with TemporaryDirectory(prefix="rbm-h03-ram-owner-") as directory:
         folder = Path(directory)
         shim = folder / "crt.c"
         shim.write_text("void __init(void) {}\nvoid __fini(void) {}\n", encoding="ascii")
         resident = folder / "resident.ld"
+        resident_sections = [".text.rbm_h03_early_irq_gate"]
+        if resident_writers:
+            resident_sections.extend((".text.rbm_h03_service_hooks",
+                                      ".text.lfj8_h03_service_span_allowed",
+                                      ".text.lfj8_h03_service_copy_allowed"))
+        inputs = " ".join(f"*({name})" for name in resident_sections)
         resident.write_text(
-            "SECTIONS { .h03_early 0x6000 : { *(.text.rbm_h03_early_irq_gate) } } "
+            f"SECTIONS {{ .h03_early 0x6000 : {{ {inputs} }} }} "
             "INSERT BEFORE .text;\n", encoding="ascii")
         elf = folder / "ram-owner.elf"
         run(compiler, *TARGET, "-Os", "-std=c11", "-Wall", "-Wextra", "-Werror",
             "-ffunction-sections", "-fdata-sections",
-            "-DRBM_H03_COMMON_DMA4_GUARD=1",
+            "-DRBM_H03_COMMON_DMA4_GUARD=1", f"-DPOLICY_ADDRESS={policy_address:#x}u",
             *(option for path in includes for option in ("-I", path)),
             *(f"-DROM_{name}=0x{rom[address:address + 4].hex()}u"
               for name, address in (SITES | SBI_SITES).items()),
@@ -166,7 +171,7 @@ def simulate(base, compiler, blocks):
         return result
 
 
-def probe_application_link(compiler):
+def probe_application_link(compiler, aliases):
     """Resolve the native consumer and provider without a target qualification."""
     with TemporaryDirectory(prefix="rbm-h03-memory-link-") as directory:
         stage = Path(directory)
@@ -185,19 +190,24 @@ def probe_application_link(compiler):
         run(*flags, "-c", HERE / "lfj8_h03_target_memory.c", "-o", "provider.o")
         run(*flags, "-I", stage, '-DRBM_H03_APPLICATION_PROFILE="fixture_profile.h"',
             "-c", HERE / "lfj8_h03_application_binding.c", "-o", "binding.o")
-        run(compiler, *TARGET, "-r", "-nostdlib", "binding.o", "provider.o", "-o", "bound.o")
+        run(compiler, *TARGET, "-r", "-nostdlib", "binding.o", "provider.o",
+            *(f"-Wl,--defsym={name}={address:#x}" for name, address in aliases.items()),
+            "-o", "bound.o")
         provider = read_elf(stage / "provider.o", 1)
         unbound = read_elf(stage / "binding.o", 1)["symbols"]
         bound = read_elf(stage / "bound.o", 1)["symbols"]
         name = "rbm_h03_target_ram_owned"
         if (unbound[name]["section"] != 0 or bound[name]["section"] == 0 or
-                bound["rbm_h03_boot_writers_owned"]["section"] != 0):
-            raise ValueError("Native RAM provider or mandatory boot qualification was not linked as expected")
+                any(bound[symbol]["section"] != 0 for symbol in ram_placement.REQUIRED_QUALIFICATION)):
+            raise ValueError("Native RAM provider or mandatory qualification was not linked as expected")
+        ram_placement.verify_linked(bound, aliases)
         sections = alloc_sections(provider)
         if any(section["flags"] & 1 for section in sections):
             raise ValueError("Native RAM provider must have no writable static storage")
         return {"provider_resolved_in_native_binding": True,
                 "boot_writers_qualification_remains_undefined": True,
+                "verified_absolute_aliases": aliases,
+                "unresolved_qualification": list(ram_placement.REQUIRED_QUALIFICATION),
                 "readonly_payload_bytes": sum(section["size"] for section in sections),
                 "writable_static_bytes": 0}
 
@@ -211,7 +221,10 @@ def check(args):
     _, aliases = aliases_for(args.base, compiler, args.storage_report)
     storage = json.loads(args.storage_report.read_text(encoding="utf-8"))
     result = simulate(args.base, compiler, storage["blocks"])
-    application_link = probe_application_link(compiler)
+    resident = simulate(args.base, compiler, storage["blocks"], resident_writers=True)
+    confirmed = ram_placement.confirmed_ranges(args.base.read_bytes(), storage["blocks"])
+    confirmed.update(ram_placement.application_addresses(storage))
+    application_link = probe_application_link(compiler, confirmed)
     sbi = probe_sbi(args.base, compiler)
     boot_writers = replay_boot_writers(args.base, compiler)
     toyota = simulate_toyota(compiler, args.bridge.resolve(), args.controller.resolve())
@@ -227,6 +240,7 @@ def check(args):
     return {
         "base": identity,
         "m32r": result,
+        "m32r_resident_writers": resident,
         "stock_sbi": sbi,
         "native_boot_writers_replay": boot_writers,
         "native_application_link": application_link,

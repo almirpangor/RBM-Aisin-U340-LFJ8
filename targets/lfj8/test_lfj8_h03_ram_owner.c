@@ -11,7 +11,9 @@
 #define HALF(address) (*(volatile uint16_t *)(uintptr_t)(address))
 #define WORD(address) (*(volatile uint32_t *)(uintptr_t)(address))
 #define OWNER_ADDRESS 0x31000u
+#ifndef POLICY_ADDRESS
 #define POLICY_ADDRESS 0x30000u
+#endif
 #define CONTROL_ADDRESS 0x806b40u
 #define COMM_ADDRESS 0x808e40u
 #define IRQ_ADDRESS ((uint32_t)(uintptr_t)h03_dtc_irq_pointer)
@@ -280,6 +282,16 @@ int main(void)
         require_cold_gate(0);
         WORD(sites[i]) = patched[i];
     }
+    /* Even a matching ROM branch cannot mix upper and resident hooks. */
+    const uint32_t saved_direct = OWNER.direct_hook;
+    OWNER.direct_hook = saved_direct < 0x8000u ? 0x8000u : 0x6000u;
+    WORD(sites[0]) = branch(sites[0], OWNER.direct_hook, UINT32_C(0xff000000));
+    use_target_owner = 0;
+    require_cold_gate(0);
+    use_target_owner = 1;
+    OWNER.direct_hook = saved_direct;
+    WORD(sites[0]) = patched[0];
+    require_cold_gate(1);
     const uint32_t copy_load = OWNER.copy_hook + 0x18u;
     const uint32_t original_load = WORD(copy_load);
     WORD(copy_load) = original_load + 4u;

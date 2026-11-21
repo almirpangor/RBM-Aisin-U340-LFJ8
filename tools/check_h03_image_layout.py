@@ -19,6 +19,7 @@ from lfj8_h03_layout import (PROFILES,Window,PlacementError,read_elf,alloc_secti
 import lfj8_h03_sensor_hooks as sensor_hooks
 import lfj8_h03_dtc_rx_placement as dtc_rx
 import lfj8_h03_service_placement as service
+import lfj8_h03_ram_placement as ram_owner
 import lfj8_h03_can_service_placement as can_service
 import lfj8_h03_tx13_placement as tx13
 
@@ -291,6 +292,9 @@ def build(args):
         if not with_dma4:
             raise ValueError("The resident service writers require --with-dma4-guard and its RAM policy")
         service.verify_stock(rom)
+    with_ram_owner = getattr(args, "with_ram_owner", False)
+    if with_ram_owner and not with_service_guard:
+        raise ValueError("The RAM owner requires --with-service-guard")
     if with_can_service:
         if not (with_dtc_rx and args.with_bindings and args.storage_report):
             raise ValueError("CAN service requires --with-bindings, --with-dtc-rx and --storage-report")
@@ -300,6 +304,10 @@ def build(args):
         if not (with_dtc_rx and args.with_bindings and args.storage_report):
             raise ValueError("DMA4 and early IRQ protection require --with-bindings, --with-dtc-rx and --storage-report")
         storage = read_storage_report(args.storage_report)
+        if with_ram_owner:
+            confirmed_ram = ram_owner.confirmed_ranges(rom, storage["blocks"])
+            if application_profile is not None:
+                confirmed_ram.update(ram_owner.application_addresses(storage))
         available = storage_space(args.storage_report)
         pointer_layout = pack(({"name": ".bss.irq_target", "type": 8, "flags": 3,
                                 "size": 4, "alignment": 4},), available)[0]
@@ -365,6 +373,8 @@ def build(args):
         bindings.append(LFJ8 / "h03_dma4_guard.S")
     if with_service_guard:
         bindings.append(LFJ8 / "h03_service_guard_hooks.S")
+    if with_ram_owner:
+        bindings.extend(LFJ8 / name for name in ram_owner.MODULES if LFJ8 / name not in bindings)
     if with_can_service:
         bindings.extend(LFJ8 / name for name in (*can_service.SERVICE_MODULES, *tx13.MODULES))
     modules=list(dict.fromkeys([*modules,*bindings]))
@@ -406,6 +416,9 @@ def build(args):
         for provider in (can_service, tx13):
             path = Path(provider.__file__).resolve()
             report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
+    if with_ram_owner:
+        path = Path(ram_owner.__file__).resolve()
+        report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
     with TemporaryDirectory(prefix="rbm-h03-placement-") as folder:
         stage=Path(folder)
         if sensor_source is not None:
@@ -495,6 +508,18 @@ def build(args):
             native_bindings.update(aliases, **{tx13.RESUME: tx13.SITE + 4})
             report["can_service"] = {"typed_aliases": {name: can_ram[name] for name in aliases},
                                      "allocates_new_alias_storage": False}
+        if with_ram_owner:
+            ram_aliases = ram_owner.bind(retained["symbols"], confirmed_ram, native_bindings)
+            native_bindings.update(ram_aliases)
+            report["ram_owner"] = {
+                "absolute_aliases": ram_aliases,
+                "storage_report_sha256": digest(args.storage_report),
+                "stock_stack_initialization_sites": list(ram_owner.STACK_STARTUP),
+                "unresolved_qualification": [
+                    name for name in ram_owner.REQUIRED_QUALIFICATION
+                    if retained["symbols"][name]["section"] == 0 and name not in native_bindings
+                ],
+            }
         unresolved=[name for name,symbol in retained["symbols"].items()
                     if symbol["section"]==0 and name not in native_bindings]
         sections=alloc_sections(retained)
@@ -600,6 +625,8 @@ def build(args):
                 raise ValueError("Linked Toyota release RAM differs from the typed storage plan")
             report["target_platform"]["flash_placements"] = [
                 item for item in placement if item["section"] in platform_flash]
+        if with_ram_owner:
+            ram_owner.verify_linked(linked["symbols"], ram_aliases)
         if stock_symbols:
             report["sensor_redirects"] = sensor_placement(rom, linked)
         if with_dtc_rx:
@@ -670,6 +697,8 @@ def main():
                         help="Include the DMA4 guard and clear the BasicCAN pointer before the first IRQ")
     parser.add_argument("--with-service-guard", action="store_true",
                         help="Link the resident service write guards and Virtual Flash lockout; requires DMA4")
+    parser.add_argument("--with-ram-owner", action="store_true",
+                        help="Link the native RAM owner and verified absolute bounds; requires service guards")
     parser.add_argument("--with-can-service", action="store_true",
                         help="Include native CAN service, typed application RAM and the OEM TX13 redirect")
     parser.add_argument("--cpu-test",action="store_true")
