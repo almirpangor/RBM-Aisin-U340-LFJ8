@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 795,
+  "sequence": 796,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -119,12 +119,12 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/h03-03-common-application-ram.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "0f2e91c7274b44688d2514bece8ba6e8",
       "claimed_at": "2026-11-21T07:03:59+00:00",
-      "updated_at": "2026-11-21T07:04:31+00:00",
-      "note": "Перевожу штатную проверку CAN с временных правок компоновщика на новый публичный режим. Общий ранний IRQ/DMA4 из 1ca2f19 остаётся в том же составе.",
-      "result": null,
+      "updated_at": "2026-11-21T07:09:41+00:00",
+      "note": "Общий линк использует RAM приложения, сервис CAN и TX13. Из прежних семи ссылок остались application_binding и sensor_config. Профиль закрепил 13 алиасов; связанное слово TX13 проверено по общему плану. Прошли ранние IRQ/DMA4, 18 TX13, 53 H03, 22 native, 8 components, 6 размещённых групп и 41 этап ПК. Итоговая сборка ждёт профиля и поставщиков.",
+      "result": "a8821975addf933eee8e370085ad645f032442f2",
       "based_on_reviews": [
         "0ecd2acccbb947a886b1dceb6d968fb9",
         "1291ee065c0840b5a6cb8ef51a1a6c5c",
@@ -11398,9 +11398,47 @@
           "0c1450c04da64b0da07d705e9b9d38bb"
         ]
       }
+    },
+    {
+      "operation_id": "a231bdeeacfc4e40b485dda1215fb146",
+      "task": "H03-03",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "review",
+      "claim_id": "0f2e91c7274b44688d2514bece8ba6e8",
+      "at": "2026-11-21T07:09:41+00:00",
+      "record": {
+        "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "label": "Codex H03-03 common application RAM and CAN service",
+        "branch": "codex/h03-03-common-application-ram-01a1f9a2",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_can_service_placement.py",
+          "tests/test_h03_can_service_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-03-common-application-ram.md"
+        ],
+        "stage": "review",
+        "claim_id": "0f2e91c7274b44688d2514bece8ba6e8",
+        "claimed_at": "2026-11-21T07:03:59+00:00",
+        "updated_at": "2026-11-21T07:09:41+00:00",
+        "note": "Общий линк использует RAM приложения, сервис CAN и TX13. Из прежних семи ссылок остались application_binding и sensor_config. Профиль закрепил 13 алиасов; связанное слово TX13 проверено по общему плану. Прошли ранние IRQ/DMA4, 18 TX13, 53 H03, 22 native, 8 components, 6 размещённых групп и 41 этап ПК. Итоговая сборка ждёт профиля и поставщиков.",
+        "result": "a8821975addf933eee8e370085ad645f032442f2",
+        "based_on_reviews": [
+          "0ecd2acccbb947a886b1dceb6d968fb9",
+          "1291ee065c0840b5a6cb8ef51a1a6c5c",
+          "1b7a53b2c91c49d481c892507323d9d9",
+          "2101184d356545bfa9a1e0bd6716a9ee",
+          "43d58327bd434219b328d74d652d3be9",
+          "4781e27fe7274496be65a8d2faf92977",
+          "51ce545a28f949a48fa5a995230c2ba7",
+          "7d595279d73d44b882c2a6d929c481bb",
+          "8b0ce759514b4c68b04d002b192f50ff",
+          "96f93fae25924717a50bf354ff863f44"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:08:26+00:00",
+  "updated_at": "2026-11-21T07:09:41+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -13770,6 +13808,38 @@
       ],
       "task": "DTC-01",
       "submitted_at": "2026-11-21T07:08:26+00:00"
+    },
+    "0f2e91c7274b44688d2514bece8ba6e8": {
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "label": "Codex H03-03 common application RAM and CAN service",
+      "branch": "codex/h03-03-common-application-ram-01a1f9a2",
+      "files": [
+        "targets/lfj8/check_h03_can_monitor_revoke.py",
+        "targets/lfj8/lfj8_h03_can_service_placement.py",
+        "tests/test_h03_can_service_placement.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/h03-03-common-application-ram.md"
+      ],
+      "stage": "review",
+      "claim_id": "0f2e91c7274b44688d2514bece8ba6e8",
+      "claimed_at": "2026-11-21T07:03:59+00:00",
+      "updated_at": "2026-11-21T07:09:41+00:00",
+      "note": "Общий линк использует RAM приложения, сервис CAN и TX13. Из прежних семи ссылок остались application_binding и sensor_config. Профиль закрепил 13 алиасов; связанное слово TX13 проверено по общему плану. Прошли ранние IRQ/DMA4, 18 TX13, 53 H03, 22 native, 8 components, 6 размещённых групп и 41 этап ПК. Итоговая сборка ждёт профиля и поставщиков.",
+      "result": "a8821975addf933eee8e370085ad645f032442f2",
+      "based_on_reviews": [
+        "0ecd2acccbb947a886b1dceb6d968fb9",
+        "1291ee065c0840b5a6cb8ef51a1a6c5c",
+        "1b7a53b2c91c49d481c892507323d9d9",
+        "2101184d356545bfa9a1e0bd6716a9ee",
+        "43d58327bd434219b328d74d652d3be9",
+        "4781e27fe7274496be65a8d2faf92977",
+        "51ce545a28f949a48fa5a995230c2ba7",
+        "7d595279d73d44b882c2a6d929c481bb",
+        "8b0ce759514b4c68b04d002b192f50ff",
+        "96f93fae25924717a50bf354ff863f44"
+      ],
+      "task": "H03-03",
+      "submitted_at": "2026-11-21T07:09:41+00:00"
     }
   }
 }
