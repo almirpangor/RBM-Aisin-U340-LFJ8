@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 804,
+  "sequence": 805,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -11743,9 +11743,36 @@
           "e2040f38c0804ea1ba66dc3a744de6a4"
         ]
       }
+    },
+    {
+      "operation_id": "74c86d29b2374e209ab5421517a721a1",
+      "task": "DTC-02",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "complete",
+      "claim_id": "5bb09a6c858e41d7a7b760ee40373d75",
+      "at": "2026-11-21T07:42:23+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex DTC-02 — нижний BasicCAN в сервисном режиме",
+        "branch": "codex/can01-h03-engine-owner-b0157640",
+        "files": [
+          "targets/lfj8/check_h03_dtc_service_gate.py",
+          "targets/lfj8/h03_dtc_rx_hook.S",
+          "verification/project-audit/dtc02-lower-service-gate.md"
+        ],
+        "stage": "done",
+        "claim_id": "5bb09a6c858e41d7a7b760ee40373d75",
+        "claimed_at": "2026-11-20T21:56:37+00:00",
+        "updated_at": "2026-11-21T07:42:23+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "3ef0e6e5cdf3e932aab4eec617dc070ac8c24688",
+        "based_on_reviews": [],
+        "task": "DTC-02",
+        "submitted_at": "2026-11-20T22:00:11+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:42:09+00:00",
+  "updated_at": "2026-11-21T07:42:23+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -13271,11 +13298,11 @@
         "targets/lfj8/h03_dtc_rx_hook.S",
         "verification/project-audit/dtc02-lower-service-gate.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "5bb09a6c858e41d7a7b760ee40373d75",
       "claimed_at": "2026-11-20T21:56:37+00:00",
-      "updated_at": "2026-11-20T22:00:11+00:00",
-      "note": "Обе нижние обёртки DTC обходят проектный RX при сервисном режиме 0x804887=4; OEM BasicCAN и повторы сохранены. 4 целевых, 18 родных сравнений, 3 прежних обхода и 4 теста размещения прошли; запрос 0x732 дошёл до 0x722. +24 байта, RAM без новых объектов. Остаются установка в итоговый образ и аппаратная приёмка. Отчёт dtc02-lower-service-gate.md.",
+      "updated_at": "2026-11-21T07:42:23+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "3ef0e6e5cdf3e932aab4eec617dc070ac8c24688",
       "based_on_reviews": [],
       "task": "DTC-02",
