@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 874,
+  "sequence": 875,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -68,13 +68,14 @@
         "targets/lfj8/lfj8_h03_dtc_target.c",
         "targets/lfj8/lfj8_h03_dtc_target.h",
         "targets/lfj8/lfj8_h03_target_service.c",
+        "targets/lfj8/test_lfj8_h03_can13.c",
         "verification/project-audit/can03-h03-service-startup-admission.md"
       ],
       "stage": "in_progress",
       "claim_id": "229997a636ba4ae5a74668a70fe58cae",
       "claimed_at": "2026-11-21T08:09:32+00:00",
-      "updated_at": "2026-11-21T08:09:32+00:00",
-      "note": "Продолжаю e207a57 с общим T6 и 94f93c6. Переношу проверки T6, диагностического окна и конфигурации ATF в подготовку CAN на штатном старте, повторно использую действующие условия первого цикла. Прогоню отказ и перезапуск с тем же владельцем CAN.",
+      "updated_at": "2026-11-21T08:12:32+00:00",
+      "note": "Все пять неверных профилей теперь отклонены в M32R. Закрепляю тест CAN13: после e207a57 его позиционный инициализатор не учитывает status_due и останавливает общий ПК. Переведу на именованные поля и повторю проверки.",
       "result": null,
       "based_on_reviews": [
         "4bba8d216cdb44aaa3b5b2922f11a8ea",
@@ -13889,9 +13890,42 @@
           "fe45b2270ed1477d94fcc54c637fa138"
         ]
       }
+    },
+    {
+      "operation_id": "5b62a04ce2af4772a5cbbee1fd64ecc8",
+      "task": "CAN-03",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "229997a636ba4ae5a74668a70fe58cae",
+      "at": "2026-11-21T08:12:32+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex CAN-03 — проверка профиля сервиса до допуска фаз",
+        "branch": "codex/c7e4-next-1121",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_dtc_native.c",
+          "targets/lfj8/lfj8_h03_dtc_native.h",
+          "targets/lfj8/lfj8_h03_dtc_target.c",
+          "targets/lfj8/lfj8_h03_dtc_target.h",
+          "targets/lfj8/lfj8_h03_target_service.c",
+          "targets/lfj8/test_lfj8_h03_can13.c",
+          "verification/project-audit/can03-h03-service-startup-admission.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "229997a636ba4ae5a74668a70fe58cae",
+        "claimed_at": "2026-11-21T08:09:32+00:00",
+        "updated_at": "2026-11-21T08:12:32+00:00",
+        "note": "Все пять неверных профилей теперь отклонены в M32R. Закрепляю тест CAN13: после e207a57 его позиционный инициализатор не учитывает status_due и останавливает общий ПК. Переведу на именованные поля и повторю проверки.",
+        "result": null,
+        "based_on_reviews": [
+          "4bba8d216cdb44aaa3b5b2922f11a8ea",
+          "77b7b955d10d45b89daaaa5912bd3a82"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:11:41+00:00",
+  "updated_at": "2026-11-21T08:12:32+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
