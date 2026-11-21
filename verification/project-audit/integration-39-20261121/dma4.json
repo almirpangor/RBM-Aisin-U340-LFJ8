@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "redirect": "0x00cf0c",
+  "scenarios": [
+    "known receive buffer through direct entry",
+    "known receive buffer through the stock indirect table",
+    "zero low byte means 256 transfers",
+    "truncated count and destination reach the same effective registers",
+    "span ending at protected range start",
+    "span beginning at protected range end",
+    "partial overlap from below through the stock table",
+    "destination inside the primary protected range",
+    "low-half alias of the second protected range",
+    "overlap via the effective 256-byte count",
+    "destination counter crosses the effective bank end",
+    "one byte reaches the effective bank end without wrapping"
+  ],
+  "guard_code_bytes": {
+    "medium": 128,
+    "small": 128
+  },
+  "verified_placement": null,
+  "invalid_policy_rejected": true,
+  "hardware_tested": false,
+  "flashable_image": null
+}

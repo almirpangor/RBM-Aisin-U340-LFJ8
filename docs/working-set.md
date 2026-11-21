@@ -176,3 +176,8 @@ python -B targets/lfj8/check_h03_phase_hook.py --base $h03 --gcc $m32rGcc --out 
 python -B targets/bosch/audit_bosch_signal_transport.py --engine $r4Engine --s04 $s04 --model $c167Model
 python -B targets/lfj8/check_toyota_slu.py --cc $zig --r1 $r1Checkout --r3 $r2Checkout
 ```
+
+
+## Общая проверка 39 новых порций, 21.11.2026
+
+Все 39 review SHA из 36 веток объединены поверх f64eff7. Свежие результаты, исправленная несовместимость API RAM-теста и точные границы: [отчёт](../verification/project-audit/integration-39-20261121/report.md). 194 Python-теста, 41 этап ПК, 22 native-группы, 8 компонентов, 6 групп размещённого ядра, 258 сравнений cold-проекции и Bosch ↔ TCM в модели прошли. Полная композиция FAIL_BINDINGS: 106016 байт известного состава, верхние 102428/102356; старый компоновщик двух окон также отказал. TCM BIN отсутствует, Bosch остаётся OFFLINE_ONLY. Этот результат заменяет старый список десяти unresolved и прежнее замечание о неотзываемом TIO9; физическая квалификация не выполнена.

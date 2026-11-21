@@ -77,21 +77,21 @@
 
 **Требуется разработка** · ТЗ §2, §3, §4
 
-**Сделано.** Объединённый результат 21.11.2026: Прослежены штатный счётчик 9224 и обновление A88B.0 до ветвей F8D6. Совпали 10 окон S04/REV8, прошли 64 комбинации и две последовательности на исходных инструкциях. Повторены проверки CAN и отсутствие парных GP-снимков. Условия и ограничения описаны в verification/project-audit/toy02-bosch-load-mode-source.md.
+**Сделано.** Три группы нагрузки требуют квалификации перед GP и планированием; смена epoch отзывает старые данные. Ручной профиль и основной цикл прошли.
 
-**Осталось.** Определить источник и шкалы GP−9046/−8288/−8330 и флаги режимов, включая переходные режимы; подключить квалификацию и отказы.
+**Осталось.** Определить реальные производители GP 9046/8288/8330 и 5299.1 с масштабами/свежестью. Текущие разностные CAN-коды не восстанавливают их однозначно; квалификатор не заменяет источник.
 
 **Критерий результата.** Трасса происхождения каждого операнда, сравнение с S01 и отдельные переходные режимы. Одного TPS и кадров RPM/ОЖ недостаточно.
 
-**Код.** [controller/src/rbm_u340e_runtime.c](../controller/src/rbm_u340e_runtime.c) · [targets/bosch/tx.py](../targets/bosch/tx.py) · [targets/bosch/audit_bosch_signal_transport.py](../targets/bosch/audit_bosch_signal_transport.py) · [targets/bosch/audit_toyota_load_inputs.py](../targets/bosch/audit_toyota_load_inputs.py) · [controller/include/rbm_u340e_runtime.h](../controller/include/rbm_u340e_runtime.h) · [controller/tests/test_runtime.c](../controller/tests/test_runtime.c) · [targets/bosch/audit_toyota_load_producers.py](../targets/bosch/audit_toyota_load_producers.py) · [targets/bosch/audit_toyota_load_traces.py](../targets/bosch/audit_toyota_load_traces.py)
+**Код.** [controller/src/rbm_u340e_runtime.c](../controller/src/rbm_u340e_runtime.c) · [targets/bosch/tx.py](../targets/bosch/tx.py) · [targets/bosch/audit_bosch_signal_transport.py](../targets/bosch/audit_bosch_signal_transport.py) · [targets/bosch/audit_toyota_load_inputs.py](../targets/bosch/audit_toyota_load_inputs.py) · [controller/include/rbm_u340e_runtime.h](../controller/include/rbm_u340e_runtime.h) · [controller/tests/test_runtime.c](../controller/tests/test_runtime.c) · [targets/bosch/audit_toyota_load_producers.py](../targets/bosch/audit_toyota_load_producers.py) · [targets/bosch/audit_toyota_load_traces.py](../targets/bosch/audit_toyota_load_traces.py) · [targets/lfj8/lfj8_h03_cycle.c](../targets/lfj8/lfj8_h03_cycle.c) · [targets/lfj8/lfj8_h03_cycle.h](../targets/lfj8/lfj8_h03_cycle.h) · [targets/lfj8/test_lfj8_h03_cycle.c](../targets/lfj8/test_lfj8_h03_cycle.c) · [targets/lfj8/test_lfj8_h03_cycle_load.c](../targets/lfj8/test_lfj8_h03_cycle_load.c)
 
 **Что настраивать.** GP−8270/−8272/−8306/−8298/−8302/−8310, −9044/−9030, −5299.1 и −5250.2. Тестовые слова не являются настройкой выпуска.
 
-**Проверки.** [SIGNALS](#check-signals) · [M32R](#check-m32r) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [SIGNALS](#check-signals) · [M32R](#check-m32r) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [toyota-integration.md](../docs/toyota-integration.md) · [bosch-integration.md](../docs/bosch-integration.md) · [toy02-load-feed.md](../verification/project-audit/toy02-load-feed.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [toy02-bosch-load-producers.md](../verification/project-audit/toy02-bosch-load-producers.md) · [toy02-load-traces.md](../verification/project-audit/toy02-load-traces.md)
+**Разбор и основания.** [toyota-integration.md](../docs/toyota-integration.md) · [bosch-integration.md](../docs/bosch-integration.md) · [toy02-load-feed.md](../verification/project-audit/toy02-load-feed.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [toy02-bosch-load-producers.md](../verification/project-audit/toy02-bosch-load-producers.md) · [toy02-load-traces.md](../verification/project-audit/toy02-load-traces.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
-**Следующий шаг для продолжения.** Проследить недостающие операнды и режимы Bosch до шкал Toyota; подготовить квалифицированный снимок нагрузки с возрастом и отказами.
+**Следующий шаг для продолжения.** Определить реальные производители GP 9046/8288/8330 и 5299.1 с масштабами/свежестью. Текущие разностные CAN-коды не восстанавливают их однозначно; квалификатор не заменяет источник.
 
 **Приоритет продолжения.** 1
 
@@ -106,21 +106,21 @@
 
 **Требуется разработка** · ТЗ §5
 
-**Сделано.** После холодной проекции S01: ядро 84904 байта, padding-модель заново прошла 6 групп; известная native-композиция 101460 байт с явно тестовым профилем. Увеличение 434 байта, RAM прежняя 2728+4. Все 10 платформенных определений остаются. Сервисные 27+28+512 проверки — прежний срез.
+**Сделано.** Добавлены target_ram_owned, раннее обнуление BasicCAN и защита DMA4; связанный RAM owner прошёл повтор после исправления API теста Toyota.
 
-**Осталось.** Установить окончательные переходы, данные и все недостающие поставщики; включить остальные ASM и сервисную политику в один состав. Подтвердить владение Flash/RAM, полный стек и поведение DMA/SBI/IRQ во всём времени работы. FF и частичное размещение не разрешают выпуск.
+**Осталось.** Завершить rbm_h03_boot_writers_owned, полное SPI/PSW и вложенные IRQ, linker ranges/резервы и все сервисные переходы. Общая композиция известных C-модулей требует 102428 байт верхних окон при 102356 доступных, без недостающих частей.
 
 **Критерий результата.** Карта сборки и анализ всех владельцев, подтверждённый запас стека и измерения. Свободное окно в ELF само по себе не разрешает запись.
 
-**Код.** [targets/lfj8/check_h03_link.py](../targets/lfj8/check_h03_link.py) · [targets/lfj8/check_h03_ram_candidate.py](../targets/lfj8/check_h03_ram_candidate.py) · [targets/lfj8/check_h03_flash_residency.py](../targets/lfj8/check_h03_flash_residency.py) · [targets/lfj8/check_h03_service_isolation.py](../targets/lfj8/check_h03_service_isolation.py) · [targets/lfj8/audit_h03_irq_stack.py](../targets/lfj8/audit_h03_irq_stack.py) · [targets/lfj8/lfj8_h03_storage.h](../targets/lfj8/lfj8_h03_storage.h) · [targets/lfj8/check_h03_storage.py](../targets/lfj8/check_h03_storage.py) · [tools/check_h03_image_layout.py](../tools/check_h03_image_layout.py) · [targets/lfj8/lfj8_h03_layout.py](../targets/lfj8/lfj8_h03_layout.py) · [tests/test_h03_layout.py](../tests/test_h03_layout.py) · [targets/lfj8/check_h03_service_writes.py](../targets/lfj8/check_h03_service_writes.py) · [targets/lfj8/lfj8_h03_service_guard.c](../targets/lfj8/lfj8_h03_service_guard.c) · [targets/lfj8/lfj8_h03_service_guard.h](../targets/lfj8/lfj8_h03_service_guard.h) · [targets/lfj8/h03_service_guard_hooks.S](../targets/lfj8/h03_service_guard_hooks.S) · [targets/lfj8/check_h03_service_guard.py](../targets/lfj8/check_h03_service_guard.py)
+**Код.** [targets/lfj8/check_h03_link.py](../targets/lfj8/check_h03_link.py) · [targets/lfj8/check_h03_ram_candidate.py](../targets/lfj8/check_h03_ram_candidate.py) · [targets/lfj8/check_h03_flash_residency.py](../targets/lfj8/check_h03_flash_residency.py) · [targets/lfj8/check_h03_service_isolation.py](../targets/lfj8/check_h03_service_isolation.py) · [targets/lfj8/audit_h03_irq_stack.py](../targets/lfj8/audit_h03_irq_stack.py) · [targets/lfj8/lfj8_h03_storage.h](../targets/lfj8/lfj8_h03_storage.h) · [targets/lfj8/check_h03_storage.py](../targets/lfj8/check_h03_storage.py) · [tools/check_h03_image_layout.py](../tools/check_h03_image_layout.py) · [targets/lfj8/lfj8_h03_layout.py](../targets/lfj8/lfj8_h03_layout.py) · [tests/test_h03_layout.py](../tests/test_h03_layout.py) · [targets/lfj8/check_h03_service_writes.py](../targets/lfj8/check_h03_service_writes.py) · [targets/lfj8/lfj8_h03_service_guard.c](../targets/lfj8/lfj8_h03_service_guard.c) · [targets/lfj8/lfj8_h03_service_guard.h](../targets/lfj8/lfj8_h03_service_guard.h) · [targets/lfj8/h03_service_guard_hooks.S](../targets/lfj8/h03_service_guard_hooks.S) · [targets/lfj8/check_h03_service_guard.py](../targets/lfj8/check_h03_service_guard.py) · [targets/lfj8/check_h03_ram_owner.py](../targets/lfj8/check_h03_ram_owner.py) · [targets/lfj8/lfj8_h03_ram_owner.h](../targets/lfj8/lfj8_h03_ram_owner.h) · [targets/lfj8/lfj8_h03_target_memory.c](../targets/lfj8/lfj8_h03_target_memory.c) · [targets/lfj8/test_lfj8_h03_ram_owner.c](../targets/lfj8/test_lfj8_h03_ram_owner.c) · [targets/lfj8/check_h03_boot_writers.py](../targets/lfj8/check_h03_boot_writers.py) · [targets/lfj8/lfj8_h03_ram_owner.c](../targets/lfj8/lfj8_h03_ram_owner.c) · [targets/lfj8/check_h03_dma4_guard.py](../targets/lfj8/check_h03_dma4_guard.py) · [targets/lfj8/h03_dma4_guard.S](../targets/lfj8/h03_dma4_guard.S) · [targets/lfj8/lfj8_h03_service_placement.py](../targets/lfj8/lfj8_h03_service_placement.py)
 
 **Что настраивать.** RAM 2692 + 4 Б: [0x806B40,0x806F8C), [0x808E40,0x80905C), [0x80905C,0x809478). Известный расширенный Flash-состав 94770 Б, номинальный остаток 7586 до окончательной обвязки; владение не подтверждено.
 
-**Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native) · [STORAGE](#check-storage) · [INTEGRATION](#check-integration) · [INTEGRATION2](#check-integration2) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [SERVICE_GUARD](#check-service_guard) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [S01_COLD](#check-s01_cold)
+**Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native) · [STORAGE](#check-storage) · [INTEGRATION](#check-integration) · [INTEGRATION2](#check-integration2) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [SERVICE_GUARD](#check-service_guard) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [S01_COLD](#check-s01_cold) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [lfj8-h03-ram-audit.md](../docs/lfj8-h03-ram-audit.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [lfj8-h03-service-isolation.md](../docs/lfj8-h03-service-isolation.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [h03-04-service-guard.md](../verification/project-audit/h03-04-service-guard.md) · [h03-04-service-cancel.md](../verification/project-audit/h03-04-service-cancel.md)
+**Разбор и основания.** [lfj8-h03-ram-audit.md](../docs/lfj8-h03-ram-audit.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [lfj8-h03-service-isolation.md](../docs/lfj8-h03-service-isolation.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [h03-04-service-guard.md](../verification/project-audit/h03-04-service-guard.md) · [h03-04-service-cancel.md](../verification/project-audit/h03-04-service-cancel.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
-**Следующий шаг для продолжения.** Реализовать target_ram_owned по окончательным диапазонам, стеку и охвату писателей; собрать все требуемые ASM в одной модели.
+**Следующий шаг для продолжения.** Завершить rbm_h03_boot_writers_owned, полное SPI/PSW и вложенные IRQ, linker ranges/резервы и все сервисные переходы. Общая композиция известных C-модулей требует 102428 байт верхних окон при 102356 доступных, без недостающих частей.
 
 **Приоритет продолжения.** 2
 
@@ -135,21 +135,21 @@
 
 **Требуются физические данные** · ТЗ §7
 
-**Сделано.** Объединённый результат 21.11.2026: Генератор rbm_h03_sensor_config проверяет пределы, наблюдения и оба таймера; 16 тестов ПК, нативный S51/S83/ATF и ABI M32R прошли. Расширенная компоновка с синтетикой оставляет только application_binding. Реальные замеры открыты. Отчёт vss02-h03-sensor-config-source.md.
+**Сделано.** Генератор sensor_config/target_clock_ready связывает парную проверку TML0 с профилем датчиков. Добавлен контроль runtime counter; синтетические профили прошли.
 
-**Осталось.** Определить rbm_h03_sensor_config по частотам, числу фронтов, рабочему диапазону, возрасту ATF и окну чтения; подтвердить механические параметры скорости.
+**Осталось.** Получить обоснованную частоту/пределы и квалифицированный профиль S51/S83/ATF; зарегистрировать эти входы и сгенерировать выпускную конфигурацию. Значения fixture не применять.
 
 **Критерий результата.** Скорость совпадает с эталоном в согласованном диапазоне, потеря импульсов отличается от остановки.
 
-**Код.** [targets/lfj8/lfj8_bridge.h](../targets/lfj8/lfj8_bridge.h) · [targets/lfj8/lfj8_donor_io.h](../targets/lfj8/lfj8_donor_io.h) · [targets/lfj8/lfj8_gear_observer.h](../targets/lfj8/lfj8_gear_observer.h) · [targets/lfj8/lfj8_h03_sensor_feed.c](../targets/lfj8/lfj8_h03_sensor_feed.c) · [targets/lfj8/check_h03_sensor_config.py](../targets/lfj8/check_h03_sensor_config.py)
+**Код.** [targets/lfj8/lfj8_bridge.h](../targets/lfj8/lfj8_bridge.h) · [targets/lfj8/lfj8_donor_io.h](../targets/lfj8/lfj8_donor_io.h) · [targets/lfj8/lfj8_gear_observer.h](../targets/lfj8/lfj8_gear_observer.h) · [targets/lfj8/lfj8_h03_sensor_feed.c](../targets/lfj8/lfj8_h03_sensor_feed.c) · [targets/lfj8/check_h03_sensor_config.py](../targets/lfj8/check_h03_sensor_config.py) · [targets/lfj8/check_h03_application_binding.py](../targets/lfj8/check_h03_application_binding.py) · [targets/lfj8/h03_application_binding_fixture.c](../targets/lfj8/h03_application_binding_fixture.c)
 
 **Что настраивать.** wheel_um, wheel_num/wheel_den, частота счётчика, тайм-ауты; 100/22 уже задано.
 
-**Проверки.** [M32R](#check-m32r) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [M32R](#check-m32r) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [lfj8-9e1c-minimum-bench.md](../docs/lfj8-9e1c-minimum-bench.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [vss02-h03-sensor-config.md](../verification/project-audit/vss02-h03-sensor-config.md)
+**Разбор и основания.** [lfj8-9e1c-minimum-bench.md](../docs/lfj8-9e1c-minimum-bench.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [vss02-h03-sensor-config.md](../verification/project-audit/vss02-h03-sensor-config.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
-**Следующий шаг для продолжения.** Подготовить согласованный профиль времени, датчиков и скорости; реализовать target_clock_ready и генерацию sensor_config с происхождением параметров.
+**Следующий шаг для продолжения.** Получить обоснованную частоту/пределы и квалифицированный профиль S51/S83/ATF; зарегистрировать эти входы и сгенерировать выпускную конфигурацию. Значения fixture не применять.
 
 **Приоритет продолжения.** 3
 
@@ -164,21 +164,21 @@
 
 **Требуются физические данные** · ТЗ §2, §5
 
-**Сделано.** Объединённый результат 21.11.2026: Отдельный бит физической изоляции TIO9/P97 обязателен до допуска H03. Старая маска и каждый отсутствующий бит отклоняются, полный допуск проходит. На ПК 41 этап/134 теста, на M32R 22 штатные+8 дополнительных+6 размещённых групп, отдельная проверка допуска и 18 E/TIO9 + 59 мониторов. Модуль 1764 байта до и после. Предыдущие review сохранены, физическая изоляция и окончательный binding открыты. Отчёт h03-05-tio9-isolation.md.
+**Сделано.** Связаны нативные выходные операции и commit на соседней фазе; revoke теперь останавливает TIO9/P97. M32R проверил штатные ROM-пути, пропуск/повтор фазы, потерю clock/RAM и остановку.
 
-**Осталось.** Подтвердить силовую карту U340E, полярности, ток–давление SLT, физический канал SLU и реакцию выходов на отказ.
+**Осталось.** Подтвердить карту выходов и электрическую изоляцию, SLT/SLU и профиль давления/тока; подключить квалифицированные takeover ops к общей сборке. Физическая реакция выходов пока не измерена.
 
 **Критерий результата.** Измеренные таблицы в допустимой области питания/ATF, реакция каждого выхода и гидравлики на отказ, отсутствие старой команды после восстановления.
 
-**Код.** [targets/lfj8/lfj8_h03_outputs.c](../targets/lfj8/lfj8_h03_outputs.c) · [targets/lfj8/lfj8_h03_takeover.c](../targets/lfj8/lfj8_h03_takeover.c) · [targets/lfj8/check_h03_slt_fault.py](../targets/lfj8/check_h03_slt_fault.py) · [targets/lfj8/lfj8_h03_output_inhibit.c](../targets/lfj8/lfj8_h03_output_inhibit.c) · [targets/lfj8/check_h03_can_monitor_revoke.py](../targets/lfj8/check_h03_can_monitor_revoke.py) · [targets/lfj8/lfj8_h03_can_monitor_revoke.c](../targets/lfj8/lfj8_h03_can_monitor_revoke.c)
+**Код.** [targets/lfj8/lfj8_h03_outputs.c](../targets/lfj8/lfj8_h03_outputs.c) · [targets/lfj8/lfj8_h03_takeover.c](../targets/lfj8/lfj8_h03_takeover.c) · [targets/lfj8/check_h03_slt_fault.py](../targets/lfj8/check_h03_slt_fault.py) · [targets/lfj8/lfj8_h03_output_inhibit.c](../targets/lfj8/lfj8_h03_output_inhibit.c) · [targets/lfj8/check_h03_can_monitor_revoke.py](../targets/lfj8/check_h03_can_monitor_revoke.py) · [targets/lfj8/lfj8_h03_can_monitor_revoke.c](../targets/lfj8/lfj8_h03_can_monitor_revoke.c) · [targets/lfj8/check_h03_target_outputs.py](../targets/lfj8/check_h03_target_outputs.py) · [targets/lfj8/h03_target_outputs_fixture.c](../targets/lfj8/h03_target_outputs_fixture.c) · [targets/lfj8/lfj8_h03_application_binding.c](../targets/lfj8/lfj8_h03_application_binding.c) · [targets/lfj8/lfj8_h03_takeover.h](../targets/lfj8/lfj8_h03_takeover.h) · [targets/lfj8/lfj8_h03_target_commit.c](../targets/lfj8/lfj8_h03_target_commit.c) · [targets/lfj8/lfj8_h03_output_inhibit.h](../targets/lfj8/lfj8_h03_output_inhibit.h)
 
 **Что настраивать.** Lfj8H03OutputBinding, Lfj8H03SltCalibration, рабочая область ATF/питания и Lfj8H03TakeoverOps.inhibit. Тестовые 500 мА не являются калибровкой.
 
-**Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [lfj8-slt-calibration.md](../docs/lfj8-slt-calibration.md) · [lfj8-h03-output-adapter.md](../docs/lfj8-h03-output-adapter.md) · [lfj8-9e1c-minimum-bench.md](../docs/lfj8-9e1c-minimum-bench.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [h03-05-can-revoke-bindings.md](../verification/project-audit/h03-05-can-revoke-bindings.md)
+**Разбор и основания.** [lfj8-slt-calibration.md](../docs/lfj8-slt-calibration.md) · [lfj8-h03-output-adapter.md](../docs/lfj8-h03-output-adapter.md) · [lfj8-9e1c-minimum-bench.md](../docs/lfj8-9e1c-minimum-bench.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [h03-05-can-revoke-bindings.md](../verification/project-audit/h03-05-can-revoke-bindings.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
-**Следующий шаг для продолжения.** Связать реальный арбитраж, выдачу и снятие каналов U340E в target_takeover_ops; проверить все пути отказа.
+**Следующий шаг для продолжения.** Подтвердить карту выходов и электрическую изоляцию, SLT/SLU и профиль давления/тока; подключить квалифицированные takeover ops к общей сборке. Физическая реакция выходов пока не измерена.
 
 **Приоритет продолжения.** 4
 
@@ -193,21 +193,21 @@
 
 **Проверено программно** · ТЗ §3
 
-**Сделано.** Объединены d273379 и локальный 84b4433: приём двигателя включён в startup/foreground и Task 2. Исправлена native binding: теперь явно требуется rbm_h03_target_engine. Штатная проверка запуска — 62 сценария и 80 IRQ-контекстов.
+**Сделано.** Возраст принятых RPM/ECT и удержанных оборотов доведён до команды Task2; общий M32R и обмен с собранным Bosch прошли.
 
-**Осталось.** Определить target_engine на единственных CAN owner/RX/DTC; реализовать контекст Task 2 и старейшую метку, включая удержанные и резервные значения. rbm_h03_target_engine, реальные пределы возраста/опроса, испытания потери и восстановления данных через общий startup/foreground.
+**Осталось.** Определить rbm_h03_target_engine с единым состоянием, временной шкалой и квалифицированными границами; проверить доступность всех требуемых операндов Toyota.
 
 **Критерий результата.** Результат ограничен перечисленными полями и сценариями приёма.
 
-**Код.** [targets/lfj8/ta2005_chery_inputs.c](../targets/lfj8/ta2005_chery_inputs.c) · [targets/lfj8/ta2005_engine_qualifier.c](../targets/lfj8/ta2005_engine_qualifier.c) · [targets/lfj8/lfj8_h03_engine_feed.c](../targets/lfj8/lfj8_h03_engine_feed.c) · [targets/lfj8/lfj8_chery_tx.c](../targets/lfj8/lfj8_chery_tx.c) · [targets/lfj8/lfj8_h03_engine_feed.h](../targets/lfj8/lfj8_h03_engine_feed.h) · [targets/lfj8/lfj8_h03_engine_rx.c](../targets/lfj8/lfj8_h03_engine_rx.c) · [targets/lfj8/lfj8_h03_engine_rx.h](../targets/lfj8/lfj8_h03_engine_rx.h) · [targets/lfj8/test_lfj8_h03_engine_feed.c](../targets/lfj8/test_lfj8_h03_engine_feed.c)
+**Код.** [targets/lfj8/ta2005_chery_inputs.c](../targets/lfj8/ta2005_chery_inputs.c) · [targets/lfj8/ta2005_engine_qualifier.c](../targets/lfj8/ta2005_engine_qualifier.c) · [targets/lfj8/lfj8_h03_engine_feed.c](../targets/lfj8/lfj8_h03_engine_feed.c) · [targets/lfj8/lfj8_chery_tx.c](../targets/lfj8/lfj8_chery_tx.c) · [targets/lfj8/lfj8_h03_engine_feed.h](../targets/lfj8/lfj8_h03_engine_feed.h) · [targets/lfj8/lfj8_h03_engine_rx.c](../targets/lfj8/lfj8_h03_engine_rx.c) · [targets/lfj8/lfj8_h03_engine_rx.h](../targets/lfj8/lfj8_h03_engine_rx.h) · [targets/lfj8/test_lfj8_h03_engine_feed.c](../targets/lfj8/test_lfj8_h03_engine_feed.c) · [targets/lfj8/h03_phase_boot_fixture.c](../targets/lfj8/h03_phase_boot_fixture.c) · [targets/lfj8/lfj8_h03_application.c](../targets/lfj8/lfj8_h03_application.c) · [targets/lfj8/lfj8_h03_application.h](../targets/lfj8/lfj8_h03_application.h)
 
 **Что настраивать.** Возраст кадра, поколение CAN, период task2 и разрешение записи истории.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [BOSCH](#check-bosch) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [BOSCH](#check-bosch) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [chery-can-dtc.md](../docs/chery-can-dtc.md) · [toyota-integration.md](../docs/toyota-integration.md) · [can01-rx-epoch.md](../verification/project-audit/can01-rx-epoch.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [can01-engine-rx-generation.md](../verification/project-audit/can01-engine-rx-generation.md)
+**Разбор и основания.** [chery-can-dtc.md](../docs/chery-can-dtc.md) · [toyota-integration.md](../docs/toyota-integration.md) · [can01-rx-epoch.md](../verification/project-audit/can01-rx-epoch.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [can01-engine-rx-generation.md](../verification/project-audit/can01-engine-rx-generation.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
-**Следующий шаг для продолжения.** Определить target_engine на единственных CAN owner/RX/DTC; реализовать контекст Task 2 и старейшую метку, включая удержанные и резервные значения.
+**Следующий шаг для продолжения.** Определить rbm_h03_target_engine с единым состоянием, временной шкалой и квалифицированными границами; проверить доступность всех требуемых операндов Toyota.
 
 **Приоритет продолжения.** 5
 
@@ -222,23 +222,23 @@
 
 **Требуется разработка** · ТЗ §5, §11
 
-**Сделано.** Объединённый результат 21.11.2026: Исправлен возврат старой истории при утрате пустой записи и первом прерванном стирании: старый слот исключён до новой публикации, поколение проверяется CRC. ПК/M32R 8 сочетаний, 16 срывов стирания, 3 отказа без записи; ПК 41/120; адресная модель 94958 Б. Драйвер/выделение блоков/стенд открыты. Отчёт dtc04-retired-slot-retry.md.
+**Сделано.** Без постоянного носителя нет ложного успешного clear; штатный запрос 14FF00 потребляется, P0710 сохраняется. Restore блокируется при неподходящем банке Flash.
 
-**Осталось.** Выделить независимые стираемые блоки, реализовать физический драйвер и политику износа, подключить восстановление/очистку к штатному запуску.
+**Осталось.** Реализовать и привязать постоянный NVM backend с доказанными двумя стираемыми блоками, владением записью и отказами питания; read-only array path не является записью.
 
 **Критерий результата.** Перезапуск и прерванная запись не восстанавливают очищенную или повреждённую историю.
 
-**Код.** [diagnostics/chery_dtc.h](../diagnostics/chery_dtc.h) · [diagnostics/chery_dtc.c](../diagnostics/chery_dtc.c) · [diagnostics/chery_dtc_journal.c](../diagnostics/chery_dtc_journal.c) · [diagnostics/chery_dtc_journal.h](../diagnostics/chery_dtc_journal.h) · [diagnostics/test_chery_dtc_journal.c](../diagnostics/test_chery_dtc_journal.c) · [targets/lfj8/lfj8_h03_nvm.c](../targets/lfj8/lfj8_h03_nvm.c) · [targets/lfj8/check_h03_nvm.py](../targets/lfj8/check_h03_nvm.py) · [targets/lfj8/lfj8_h03_nvm.h](../targets/lfj8/lfj8_h03_nvm.h) · [targets/lfj8/test_lfj8_h03_nvm.c](../targets/lfj8/test_lfj8_h03_nvm.c)
+**Код.** [diagnostics/chery_dtc.h](../diagnostics/chery_dtc.h) · [diagnostics/chery_dtc.c](../diagnostics/chery_dtc.c) · [diagnostics/chery_dtc_journal.c](../diagnostics/chery_dtc_journal.c) · [diagnostics/chery_dtc_journal.h](../diagnostics/chery_dtc_journal.h) · [diagnostics/test_chery_dtc_journal.c](../diagnostics/test_chery_dtc_journal.c) · [targets/lfj8/lfj8_h03_nvm.c](../targets/lfj8/lfj8_h03_nvm.c) · [targets/lfj8/check_h03_nvm.py](../targets/lfj8/check_h03_nvm.py) · [targets/lfj8/lfj8_h03_nvm.h](../targets/lfj8/lfj8_h03_nvm.h) · [targets/lfj8/test_lfj8_h03_nvm.c](../targets/lfj8/test_lfj8_h03_nvm.c) · [targets/lfj8/check_h03_dtc_basiccan.py](../targets/lfj8/check_h03_dtc_basiccan.py) · [targets/lfj8/lfj8_h03_dtc_can.c](../targets/lfj8/lfj8_h03_dtc_can.c) · [targets/lfj8/lfj8_h03_dtc_can.h](../targets/lfj8/lfj8_h03_dtc_can.h) · [targets/lfj8/lfj8_h03_dtc_native.c](../targets/lfj8/lfj8_h03_dtc_native.c) · [targets/lfj8/lfj8_h03_dtc_native.h](../targets/lfj8/lfj8_h03_dtc_native.h) · [targets/lfj8/h03_nvm_native_fixture.c](../targets/lfj8/h03_nvm_native_fixture.c) · [targets/lfj8/lfj8_h03_nvm_native.c](../targets/lfj8/lfj8_h03_nvm_native.c) · [targets/lfj8/lfj8_h03_nvm_native.h](../targets/lfj8/lfj8_h03_nvm_native.h)
 
 **Что настраивать.** Целевая область NVM и политика износа ещё не назначены.
 
-**Проверки.** [PC](#check-pc) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [PC](#check-pc) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [diagnostics-integration.md](../docs/diagnostics-integration.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [dtc04-journal.md](../verification/project-audit/dtc04-journal.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [dtc04-retired-history.md](../verification/project-audit/dtc04-retired-history.md)
+**Разбор и основания.** [diagnostics-integration.md](../docs/diagnostics-integration.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [dtc04-journal.md](../verification/project-audit/dtc04-journal.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [dtc04-retired-history.md](../verification/project-audit/dtc04-retired-history.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
 **Зависит от.** [H03-04](#h03-04)
 
-**Следующий шаг для продолжения.** Назначить реальный носитель и геометрию NVM по H03; реализовать драйвер чтения/стирания/записи и передать интерфейс TOY-05/DTC-01.
+**Следующий шаг для продолжения.** Реализовать и привязать постоянный NVM backend с доказанными двумя стираемыми блоками, владением записью и отказами питания; read-only array path не является записью.
 
 **Приоритет продолжения.** 6
 
@@ -253,23 +253,23 @@
 
 **Требуется разработка** · ТЗ §2, §5
 
-**Сделано.** Объединённый результат 21.11.2026: Восстановление S01/UFL1 подключено к штатному старту H03 до допуска фаз. ПК 41/120, S01/R3 288, M32R 56 запусков (18 новых), 22 native, 18+8 компонентных, 6 размещённых. Отчёт toy05-h03-boot-restore.md. Физический NVM, штатный binding, запись и долговечный сброс ещё открыты. Добавлена холодная проекция S01 в общий runtime: 258 сравнений 828 байт с R3, ПК/M32R и размещённый runtime прошли. Она изменяет 143 байта, сохраняет 685 и не заменяет полный начальный снимок.
+**Сделано.** Включены холодная проекция S01, startup seed перед NVM и отказ неоднозначных поколений адаптаций; повторены 258 сравнений R3, host/M32R startup и rollback.
 
-**Осталось.** Восстановить оставшиеся исходные GP и условия cold/warm; реализовать startup_gear/gp и подключение адаптаций через NVM-интерфейс. rbm_h03_target_startup_gear/gp с происхождением полей; порядок init → prepare_s01_cold → restore_adaptation до допуска выходов.
+**Осталось.** Задать полный квалифицированный startup GP/gear и initialize_inputs; 143 байта cold-проекции не задают оставшиеся 685 байт. Подключить реальный NVM-профиль адаптаций.
 
 **Критерий результата.** Проверены пределы коррекции, повторный пуск, повреждённая запись и сброс адаптаций.
 
-**Код.** [controller/vendor/toyota/src/factory_learning.c](../controller/vendor/toyota/src/factory_learning.c) · [controller/vendor/toyota/src/factory_adaptation_store.c](../controller/vendor/toyota/src/factory_adaptation_store.c) · [controller/tests/test_controller.c](../controller/tests/test_controller.c) · [controller/include/rbm_u340e_runtime.h](../controller/include/rbm_u340e_runtime.h) · [controller/src/rbm_u340e_runtime.c](../controller/src/rbm_u340e_runtime.c) · [targets/lfj8/check_toyota_adaptation_baseline.py](../targets/lfj8/check_toyota_adaptation_baseline.py) · [targets/lfj8/check_toyota_cold_init.py](../targets/lfj8/check_toyota_cold_init.py)
+**Код.** [controller/vendor/toyota/src/factory_learning.c](../controller/vendor/toyota/src/factory_learning.c) · [controller/vendor/toyota/src/factory_adaptation_store.c](../controller/vendor/toyota/src/factory_adaptation_store.c) · [controller/tests/test_controller.c](../controller/tests/test_controller.c) · [controller/include/rbm_u340e_runtime.h](../controller/include/rbm_u340e_runtime.h) · [controller/src/rbm_u340e_runtime.c](../controller/src/rbm_u340e_runtime.c) · [targets/lfj8/check_toyota_adaptation_baseline.py](../targets/lfj8/check_toyota_adaptation_baseline.py) · [targets/lfj8/check_toyota_cold_init.py](../targets/lfj8/check_toyota_cold_init.py) · [controller/tests/test_runtime.c](../controller/tests/test_runtime.c) · [targets/lfj8/check_h03_phase_boot.py](../targets/lfj8/check_h03_phase_boot.py) · [targets/lfj8/h03_phase_boot_fixture.c](../targets/lfj8/h03_phase_boot_fixture.c) · [targets/lfj8/lfj8_h03_application.c](../targets/lfj8/lfj8_h03_application.c) · [targets/lfj8/lfj8_h03_application.h](../targets/lfj8/lfj8_h03_application.h) · [targets/lfj8/lfj8_h03_application_binding.c](../targets/lfj8/lfj8_h03_application_binding.c) · [targets/lfj8/lfj8_h03_target_platform.c](../targets/lfj8/lfj8_h03_target_platform.c) · [targets/lfj8/lfj8_h03_target_platform.h](../targets/lfj8/lfj8_h03_target_platform.h) · [targets/lfj8/test_lfj8_h03_target_platform.c](../targets/lfj8/test_lfj8_h03_target_platform.c)
 
 **Что настраивать.** Контракты factory_learning.h и factory_adaptation_store.h. Область NVM ещё не назначена.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION2](#check-integration2) · [INTEGRATION3](#check-integration3) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [S01_COLD](#check-s01_cold)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION2](#check-integration2) · [INTEGRATION3](#check-integration3) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [S01_COLD](#check-s01_cold) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [toyota-integration.md](../docs/toyota-integration.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [toy05-adaptation-store.md](../verification/project-audit/toy05-adaptation-store.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [toy05-s01-baseline.md](../verification/project-audit/toy05-s01-baseline.md) · [toy05-s01-cold-state.md](../verification/project-audit/toy05-s01-cold-state.md)
+**Разбор и основания.** [toyota-integration.md](../docs/toyota-integration.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [toy05-adaptation-store.md](../verification/project-audit/toy05-adaptation-store.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [toy05-s01-baseline.md](../verification/project-audit/toy05-s01-baseline.md) · [toy05-s01-cold-state.md](../verification/project-audit/toy05-s01-cold-state.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
 **Зависит от.** [TOY-04](#toy-04), [H03-04](#h03-04)
 
-**Следующий шаг для продолжения.** Восстановить оставшиеся исходные GP и условия cold/warm; реализовать startup_gear/gp и подключение адаптаций через NVM-интерфейс.
+**Следующий шаг для продолжения.** Задать полный квалифицированный startup GP/gear и initialize_inputs; 143 байта cold-проекции не задают оставшиеся 685 байт. Подключить реальный NVM-профиль адаптаций.
 
 **Приоритет продолжения.** 7
 
@@ -284,23 +284,23 @@
 
 **Требуется разработка** · ТЗ §3, §5
 
-**Сделано.** Объединённый результат 21.11.2026: Холодный путь снимает старый IRQ target, нативный foreground использует тот же h03_can_owner, IRQ-очередь и TML0. 0x732→0x722, потеря квалификации, 18 сравнений BasicCAN, ПК 41/129 и все 22 native PASS. Нужны конечная привязка H03-03, T6 DTC-01 и размещение DTC-02. Отчёт verification/project-audit/can03-dtc-shared-owner.md.
+**Сделано.** Реализованы target_service_phase, подготовка/остановка сервиса, отзыв TX13 и единый CAN owner; связанная модель BasicCAN/DMA4/TX13 прошла.
 
-**Осталось.** Определить target_service_phase: единый владелец CAN, TX13, телеметрия, диагностика и отзыв поколений через реальные часы. rbm_h03_target_service_phase и связанная CAN-композиция без дублирования owner/состояния.
+**Осталось.** Дать реальный CAN service config, status/torque callbacks, тайминги и окончательно установить monitor/startup переходы в общий образ.
 
 **Критерий результата.** Штатная ветвь не перезаписывает CAN13, старые кадры не принимаются после сброса, сохранена диагностика и отмена.
 
-**Код.** [targets/lfj8/check_h03_can_lifecycle.py](../targets/lfj8/check_h03_can_lifecycle.py) · [targets/lfj8/check_h03_torque_tx_gate.py](../targets/lfj8/check_h03_torque_tx_gate.py) · [targets/lfj8/lfj8_h03_can13.c](../targets/lfj8/lfj8_h03_can13.c) · [targets/lfj8/lfj8_donor_io.c](../targets/lfj8/lfj8_donor_io.c) · [targets/lfj8/lfj8_h03_can_owner.c](../targets/lfj8/lfj8_h03_can_owner.c) · [targets/lfj8/lfj8_h03_can_owner.h](../targets/lfj8/lfj8_h03_can_owner.h) · [targets/lfj8/check_h03_can_monitor_startup.py](../targets/lfj8/check_h03_can_monitor_startup.py) · [targets/lfj8/h03_can_monitor_startup_hooks.S](../targets/lfj8/h03_can_monitor_startup_hooks.S) · [targets/lfj8/lfj8_h03_can_monitor_startup.c](../targets/lfj8/lfj8_h03_can_monitor_startup.c) · [targets/lfj8/lfj8_h03_can_monitor_startup.h](../targets/lfj8/lfj8_h03_can_monitor_startup.h)
+**Код.** [targets/lfj8/check_h03_can_lifecycle.py](../targets/lfj8/check_h03_can_lifecycle.py) · [targets/lfj8/check_h03_torque_tx_gate.py](../targets/lfj8/check_h03_torque_tx_gate.py) · [targets/lfj8/lfj8_h03_can13.c](../targets/lfj8/lfj8_h03_can13.c) · [targets/lfj8/lfj8_donor_io.c](../targets/lfj8/lfj8_donor_io.c) · [targets/lfj8/lfj8_h03_can_owner.c](../targets/lfj8/lfj8_h03_can_owner.c) · [targets/lfj8/lfj8_h03_can_owner.h](../targets/lfj8/lfj8_h03_can_owner.h) · [targets/lfj8/check_h03_can_monitor_startup.py](../targets/lfj8/check_h03_can_monitor_startup.py) · [targets/lfj8/h03_can_monitor_startup_hooks.S](../targets/lfj8/h03_can_monitor_startup_hooks.S) · [targets/lfj8/lfj8_h03_can_monitor_startup.c](../targets/lfj8/lfj8_h03_can_monitor_startup.c) · [targets/lfj8/lfj8_h03_can_monitor_startup.h](../targets/lfj8/lfj8_h03_can_monitor_startup.h) · [targets/lfj8/check_h03_can_monitor_revoke.py](../targets/lfj8/check_h03_can_monitor_revoke.py) · [targets/lfj8/lfj8_h03_storage.h](../targets/lfj8/lfj8_h03_storage.h) · [targets/lfj8/lfj8_h03_target_service.c](../targets/lfj8/lfj8_h03_target_service.c) · [targets/lfj8/lfj8_h03_target_service.h](../targets/lfj8/lfj8_h03_target_service.h) · [targets/lfj8/check_h03_target_platform.py](../targets/lfj8/check_h03_target_platform.py) · [targets/lfj8/h03_application_binding_fixture.c](../targets/lfj8/h03_application_binding_fixture.c) · [targets/lfj8/lfj8_h03_application.c](../targets/lfj8/lfj8_h03_application.c) · [targets/lfj8/lfj8_h03_application.h](../targets/lfj8/lfj8_h03_application.h) · [targets/lfj8/lfj8_h03_application_binding.c](../targets/lfj8/lfj8_h03_application_binding.c) · [targets/lfj8/lfj8_h03_target_platform.c](../targets/lfj8/lfj8_h03_target_platform.c) · [targets/lfj8/lfj8_h03_target_platform.h](../targets/lfj8/lfj8_h03_target_platform.h) · [targets/lfj8/test_lfj8_h03_target_platform.c](../targets/lfj8/test_lfj8_h03_target_platform.c) · [targets/lfj8/h03_can13_tx_gate.S](../targets/lfj8/h03_can13_tx_gate.S) · [targets/lfj8/h03_torque_tx_gate_fixture.S](../targets/lfj8/h03_torque_tx_gate_fixture.S) · [targets/lfj8/lfj8_donor_io.h](../targets/lfj8/lfj8_donor_io.h) · [targets/lfj8/lfj8_h03_can_monitor_revoke.c](../targets/lfj8/lfj8_h03_can_monitor_revoke.c) · [targets/lfj8/test_lfj8_h03_can_owner.c](../targets/lfj8/test_lfj8_h03_can_owner.c) · [targets/lfj8/h03_can13_tx_redirect.S](../targets/lfj8/h03_can13_tx_redirect.S) · [targets/lfj8/lfj8_h03_tx13_placement.py](../targets/lfj8/lfj8_h03_tx13_placement.py)
 
 **Что настраивать.** CAN0SLIMK/SLIST, флаг владельца, поколение, RX11/12 и TX/RX13.
 
-**Проверки.** [M32R](#check-m32r) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [M32R](#check-m32r) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [lfj8-9e1c-base.md](../docs/lfj8-9e1c-base.md) · [lfj8-h03-torque.md](../docs/lfj8-h03-torque.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [can03-h03-monitor-startup.md](../verification/project-audit/can03-h03-monitor-startup.md)
+**Разбор и основания.** [lfj8-9e1c-base.md](../docs/lfj8-9e1c-base.md) · [lfj8-h03-torque.md](../docs/lfj8-h03-torque.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [can03-h03-monitor-startup.md](../verification/project-audit/can03-h03-monitor-startup.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
 **Зависит от.** [H03-04](#h03-04)
 
-**Следующий шаг для продолжения.** Определить target_service_phase: единый владелец CAN, TX13, телеметрия, диагностика и отзыв поколений через реальные часы.
+**Следующий шаг для продолжения.** Дать реальный CAN service config, status/torque callbacks, тайминги и окончательно установить monitor/startup переходы в общий образ.
 
 **Приоритет продолжения.** 8
 
@@ -315,23 +315,23 @@
 
 **Требуется разработка** · ТЗ §5, §8
 
-**Сделано.** Объединённый результат 21.11.2026: Native AN2/P1DATA уважает допуск RAM. Приём на фазе H03 отделён от заявки Toyota, прежний вызов сохранён. Прошли 41 этап ПК/129 тестов, 8 сравнений AN2, 8 компонентных групп, остальные нативные с повтором phase-boot и 6 размещённых. Foreground занят CAN-01; открыты его привязка, карта/OD и ручная цель. Отчёт mode02-h03-sample-lifecycle.md.
+**Сделано.** Ручная цель идёт от native AN2/foreground через take_toyota к S01 MAIN; проверены UP/DOWN, отпускание, конфликт, смена и удержание передачи.
 
-**Осталось.** Подтвердить физическую карту/OD, вызвать захват из H03-03 и проверить селектор и кнопки до фактической выдачи команды.
+**Осталось.** Подключить выпускной профиль селектора/кнопок и его интервалы к реальным датчикам; включить этот профиль в окончательный startup/capture.
 
 **Критерий результата.** Реальные нажатия проходят до исполнения запроса в полном цикле, дребезг/обрыв не создают повторных команд.
 
-**Код.** [targets/lfj8/lfj8_selector_adc.c](../targets/lfj8/lfj8_selector_adc.c) · [targets/lfj8/lfj8_range_control.c](../targets/lfj8/lfj8_range_control.c) · [controller/src/rbm_u340e.c](../controller/src/rbm_u340e.c) · [targets/lfj8/lfj8_h03_cycle.c](../targets/lfj8/lfj8_h03_cycle.c) · [targets/lfj8/lfj8_h03_input_binding.c](../targets/lfj8/lfj8_h03_input_binding.c) · [targets/lfj8/lfj8_h03_input_target.c](../targets/lfj8/lfj8_h03_input_target.c) · [targets/lfj8/check_h03_button_capture.py](../targets/lfj8/check_h03_button_capture.py) · [targets/lfj8/lfj8_h03_button_capture.c](../targets/lfj8/lfj8_h03_button_capture.c) · [targets/lfj8/lfj8_h03_button_capture.h](../targets/lfj8/lfj8_h03_button_capture.h) · [targets/lfj8/test_lfj8_h03_button_capture.c](../targets/lfj8/test_lfj8_h03_button_capture.c)
+**Код.** [targets/lfj8/lfj8_selector_adc.c](../targets/lfj8/lfj8_selector_adc.c) · [targets/lfj8/lfj8_range_control.c](../targets/lfj8/lfj8_range_control.c) · [controller/src/rbm_u340e.c](../controller/src/rbm_u340e.c) · [targets/lfj8/lfj8_h03_cycle.c](../targets/lfj8/lfj8_h03_cycle.c) · [targets/lfj8/lfj8_h03_input_binding.c](../targets/lfj8/lfj8_h03_input_binding.c) · [targets/lfj8/lfj8_h03_input_target.c](../targets/lfj8/lfj8_h03_input_target.c) · [targets/lfj8/check_h03_button_capture.py](../targets/lfj8/check_h03_button_capture.py) · [targets/lfj8/lfj8_h03_button_capture.c](../targets/lfj8/lfj8_h03_button_capture.c) · [targets/lfj8/lfj8_h03_button_capture.h](../targets/lfj8/lfj8_h03_button_capture.h) · [targets/lfj8/test_lfj8_h03_button_capture.c](../targets/lfj8/test_lfj8_h03_button_capture.c) · [targets/lfj8/check_h03_toyota_source.py](../targets/lfj8/check_h03_toyota_source.py) · [targets/lfj8/lfj8_h03_input_binding.h](../targets/lfj8/lfj8_h03_input_binding.h) · [targets/lfj8/lfj8_range_control.h](../targets/lfj8/lfj8_range_control.h) · [targets/lfj8/test_lfj8_h03_input_binding.c](../targets/lfj8/test_lfj8_h03_input_binding.c) · [targets/lfj8/test_lfj8_h03_toyota_source.c](../targets/lfj8/test_lfj8_h03_toyota_source.c) · [targets/lfj8/check_h03_target_platform.py](../targets/lfj8/check_h03_target_platform.py) · [targets/lfj8/lfj8_h03_target_platform.c](../targets/lfj8/lfj8_h03_target_platform.c) · [targets/lfj8/lfj8_h03_target_platform.h](../targets/lfj8/lfj8_h03_target_platform.h) · [targets/lfj8/lfj8_h03_toyota_input_profile.h](../targets/lfj8/lfj8_h03_toyota_input_profile.h) · [targets/lfj8/test_lfj8_h03_target_platform.c](../targets/lfj8/test_lfj8_h03_target_platform.c)
 
 **Что настраивать.** AD0DT2, событие 0x804BC6, P1DATA и вход Overdrive. max_age_us задаётся по фактическому ритму ADC.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [lfj8-selector.md](../docs/lfj8-selector.md) · [lfj8-h03-input-paths.md](../docs/lfj8-h03-input-paths.md) · [mode02-button-input.md](../verification/project-audit/mode02-button-input.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [mode02-h03-button-capture.md](../verification/project-audit/mode02-h03-button-capture.md)
+**Разбор и основания.** [lfj8-selector.md](../docs/lfj8-selector.md) · [lfj8-h03-input-paths.md](../docs/lfj8-h03-input-paths.md) · [mode02-button-input.md](../verification/project-audit/mode02-button-input.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [mode02-h03-button-capture.md](../verification/project-audit/mode02-h03-button-capture.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
 **Зависит от.** [H03-03](#h03-03)
 
-**Следующий шаг для продолжения.** Связать AN2, Tiptronic и OD с единственным input owner; оформить физическую карту, квалификацию и передачу заявки в цикл.
+**Следующий шаг для продолжения.** Подключить выпускной профиль селектора/кнопок и его интервалы к реальным датчикам; включить этот профиль в окончательный startup/capture.
 
 **Приоритет продолжения.** 9
 
@@ -435,21 +435,21 @@
 
 **Требуется разработка** · ТЗ §5, §11
 
-**Сделано.** Объединённый результат 21.11.2026: Нижний BasicCAN включён в общий расчёт размещения: 3224 байта, обе ветви и проверенная RAM-привязка владельца. 18 сравнений IRQ, 11+18 проверок M32R и 6 по адресам прошли. Расширенная сборка с RAM-алиасами оставляет FAIL_BINDINGS по application_binding и sensor_config. T6/native_ready и стенд открыты.
+**Сделано.** Закрыт обход service mode/Flash bank, RX15 повторно проверяется после RX14; нижние переходы и общая CAN-компоновка прошли отдельные адресные проверки.
 
-**Осталось.** Установить нижние переходы и единственный DTC target/IRQ binding, связать время и foreground; завершить RAM/Virtual Flash и итоговый диапазон записи.
+**Осталось.** Установить полный набор RX/service/monitor переходов в итоговый образ и подтвердить банк Flash и время IRQ в совместной конфигурации.
 
 **Критерий результата.** Прогон оригинального пути RX с потерей/перезаписью и ложными кадрами. Учтена граница приложения 0x008000.
 
-**Код.** [targets/lfj8/lfj8_h03_dtc_can.c](../targets/lfj8/lfj8_h03_dtc_can.c) · [targets/lfj8/lfj8_h03_can13.c](../targets/lfj8/lfj8_h03_can13.c) · [targets/lfj8/test_lfj8_h03_dtc_can.c](../targets/lfj8/test_lfj8_h03_dtc_can.c) · [targets/lfj8/lfj8_h03_dtc_rx_queue.c](../targets/lfj8/lfj8_h03_dtc_rx_queue.c) · [targets/lfj8/lfj8_h03_dtc_rx_queue.h](../targets/lfj8/lfj8_h03_dtc_rx_queue.h) · [targets/lfj8/test_lfj8_h03_dtc_rx_queue.c](../targets/lfj8/test_lfj8_h03_dtc_rx_queue.c) · [targets/lfj8/check_h03_dtc_basiccan.py](../targets/lfj8/check_h03_dtc_basiccan.py) · [targets/lfj8/lfj8_h03_dtc_target.c](../targets/lfj8/lfj8_h03_dtc_target.c) · [targets/lfj8/lfj8_h03_dtc_target.h](../targets/lfj8/lfj8_h03_dtc_target.h) · [targets/lfj8/h03_dtc_rx_resident.ld](../targets/lfj8/h03_dtc_rx_resident.ld)
+**Код.** [targets/lfj8/lfj8_h03_dtc_can.c](../targets/lfj8/lfj8_h03_dtc_can.c) · [targets/lfj8/lfj8_h03_can13.c](../targets/lfj8/lfj8_h03_can13.c) · [targets/lfj8/test_lfj8_h03_dtc_can.c](../targets/lfj8/test_lfj8_h03_dtc_can.c) · [targets/lfj8/lfj8_h03_dtc_rx_queue.c](../targets/lfj8/lfj8_h03_dtc_rx_queue.c) · [targets/lfj8/lfj8_h03_dtc_rx_queue.h](../targets/lfj8/lfj8_h03_dtc_rx_queue.h) · [targets/lfj8/test_lfj8_h03_dtc_rx_queue.c](../targets/lfj8/test_lfj8_h03_dtc_rx_queue.c) · [targets/lfj8/check_h03_dtc_basiccan.py](../targets/lfj8/check_h03_dtc_basiccan.py) · [targets/lfj8/lfj8_h03_dtc_target.c](../targets/lfj8/lfj8_h03_dtc_target.c) · [targets/lfj8/lfj8_h03_dtc_target.h](../targets/lfj8/lfj8_h03_dtc_target.h) · [targets/lfj8/h03_dtc_rx_resident.ld](../targets/lfj8/h03_dtc_rx_resident.ld) · [targets/lfj8/check_h03_dtc_service_gate.py](../targets/lfj8/check_h03_dtc_service_gate.py) · [targets/lfj8/h03_dtc_rx_hook.S](../targets/lfj8/h03_dtc_rx_hook.S) · [targets/lfj8/h03_dtc_rx_redirects.S](../targets/lfj8/h03_dtc_rx_redirects.S) · [targets/lfj8/lfj8_h03_dtc_rx_placement.py](../targets/lfj8/lfj8_h03_dtc_rx_placement.py)
 
 **Что настраивать.** RX14/15 0x001500–0x0016F4, копия 0x808526, разбор около 0x001578. Прямой перехват затрагивает область ниже приложения. Очередь: max_age_bits < 32768 и не больше бюджета CAN13, bit_time_us из настройки шины; непрерывное время микросекунд. Конкретное размещение RAM открыто.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [diagnostics-integration.md](../docs/diagnostics-integration.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [dtc02-basiccan.md](../verification/project-audit/dtc02-basiccan.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [dtc02-resident-target-rx.md](../verification/project-audit/dtc02-resident-target-rx.md)
+**Разбор и основания.** [diagnostics-integration.md](../docs/diagnostics-integration.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [dtc02-basiccan.md](../verification/project-audit/dtc02-basiccan.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [dtc02-resident-target-rx.md](../verification/project-audit/dtc02-resident-target-rx.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
-**Следующий шаг для продолжения.** Подключить единственный native DTC target, IRQ binding и T6 к сервису CAN-03; установить нижние RX-переходы.
+**Следующий шаг для продолжения.** Установить полный набор RX/service/monitor переходов в итоговый образ и подтвердить банк Flash и время IRQ в совместной конфигурации.
 
 **Приоритет продолжения.** 13
 
@@ -464,23 +464,23 @@
 
 **Требуется разработка** · ТЗ §2, §5
 
-**Сделано.** Объединённый результат 21.11.2026: Определён rbm_h03_application_binding, 7 ссылок RAM разрешены в M32R, профиль обязателен. Отдельный ELF прошёл холодный/тёплый старт и foreground; штатная регрессия 56 сценариев/80 IRQ. Восемь поставщиков платформы и измеренные параметры открыты. Отчёт h03-03-native-binding.md. Подготовлена проверенная холодная проекция Toyota; она пока не задаёт все startup GP и не включена автоматически.
+**Сделано.** Связаны target_initialize/take_toyota, Toyota release, ручной профиль, штатный CAN service/TX13 и 13 типизированных алиасов RAM. Целевой и ручной профили прошли M32R.
 
-**Осталось.** Реализовать target_initialize и target_take_toyota, подключить поставщиков остальных задач и согласованный профиль; собрать весь жизненный цикл. rbm_h03_target_initialize/take_toyota и итоговая application binding без fixture; старт, foreground, события и отказ проходят через реальные модули.
+**Осталось.** Подключить реальные initialize_inputs/input_capture/CAN service config, engine/startup/sensor/outputs и остальные алиасы; окончательно установить все startup/foreground/strategy/apply/monitor переходы. Модель с тестовым профилем не является итоговым приложением.
 
 **Критерий результата.** Полный цикл вызывается автономно, пропуск обнаруживается и без фазы выдачи, тестовые callbacks заменены подтверждёнными целевыми.
 
-**Код.** [targets/lfj8/lfj8_h03_cycle.c](../targets/lfj8/lfj8_h03_cycle.c) · [targets/lfj8/lfj8_h03_phase_clock.c](../targets/lfj8/lfj8_h03_phase_clock.c) · [targets/lfj8/lfj8_h03_takeover.c](../targets/lfj8/lfj8_h03_takeover.c) · [targets/lfj8/h03_phase_release_hook.S](../targets/lfj8/h03_phase_release_hook.S) · [targets/lfj8/h03_native_hooks.S](../targets/lfj8/h03_native_hooks.S) · [targets/lfj8/check_h03_phase_wait.py](../targets/lfj8/check_h03_phase_wait.py) · [targets/lfj8/h03_phase_wait_hook.S](../targets/lfj8/h03_phase_wait_hook.S) · [targets/lfj8/lfj8_h03_application.c](../targets/lfj8/lfj8_h03_application.c) · [targets/lfj8/lfj8_h03_application.h](../targets/lfj8/lfj8_h03_application.h) · [targets/lfj8/h03_application_hooks.S](../targets/lfj8/h03_application_hooks.S) · [targets/lfj8/check_h03_phase_boot.py](../targets/lfj8/check_h03_phase_boot.py) · [targets/lfj8/h03_phase_boot_fixture.c](../targets/lfj8/h03_phase_boot_fixture.c) · [targets/lfj8/lfj8_h03_application_binding.c](../targets/lfj8/lfj8_h03_application_binding.c) · [targets/lfj8/lfj8_h03_application_binding.h](../targets/lfj8/lfj8_h03_application_binding.h) · [targets/lfj8/check_h03_application_binding.py](../targets/lfj8/check_h03_application_binding.py)
+**Код.** [targets/lfj8/lfj8_h03_cycle.c](../targets/lfj8/lfj8_h03_cycle.c) · [targets/lfj8/lfj8_h03_phase_clock.c](../targets/lfj8/lfj8_h03_phase_clock.c) · [targets/lfj8/lfj8_h03_takeover.c](../targets/lfj8/lfj8_h03_takeover.c) · [targets/lfj8/h03_phase_release_hook.S](../targets/lfj8/h03_phase_release_hook.S) · [targets/lfj8/h03_native_hooks.S](../targets/lfj8/h03_native_hooks.S) · [targets/lfj8/check_h03_phase_wait.py](../targets/lfj8/check_h03_phase_wait.py) · [targets/lfj8/h03_phase_wait_hook.S](../targets/lfj8/h03_phase_wait_hook.S) · [targets/lfj8/lfj8_h03_application.c](../targets/lfj8/lfj8_h03_application.c) · [targets/lfj8/lfj8_h03_application.h](../targets/lfj8/lfj8_h03_application.h) · [targets/lfj8/h03_application_hooks.S](../targets/lfj8/h03_application_hooks.S) · [targets/lfj8/check_h03_phase_boot.py](../targets/lfj8/check_h03_phase_boot.py) · [targets/lfj8/h03_phase_boot_fixture.c](../targets/lfj8/h03_phase_boot_fixture.c) · [targets/lfj8/lfj8_h03_application_binding.c](../targets/lfj8/lfj8_h03_application_binding.c) · [targets/lfj8/lfj8_h03_application_binding.h](../targets/lfj8/lfj8_h03_application_binding.h) · [targets/lfj8/check_h03_application_binding.py](../targets/lfj8/check_h03_application_binding.py) · [targets/lfj8/check_h03_target_platform.py](../targets/lfj8/check_h03_target_platform.py) · [targets/lfj8/lfj8_h03_target_platform.c](../targets/lfj8/lfj8_h03_target_platform.c) · [targets/lfj8/lfj8_h03_target_platform.h](../targets/lfj8/lfj8_h03_target_platform.h) · [targets/lfj8/test_lfj8_h03_target_platform.c](../targets/lfj8/test_lfj8_h03_target_platform.c) · [targets/lfj8/check_h03_can_monitor_revoke.py](../targets/lfj8/check_h03_can_monitor_revoke.py) · [targets/lfj8/lfj8_h03_can_service_placement.py](../targets/lfj8/lfj8_h03_can_service_placement.py)
 
 **Что настраивать.** min_period/max_period/max_age, Lfj8H03TakeoverOps.phase_clock и callbacks. Частоту Toyota нельзя принять равной фазе H03.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [PHASE](#check-phase) · [NATIVE](#check-native) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [S01_COLD](#check-s01_cold)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [PHASE](#check-phase) · [NATIVE](#check-native) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [S01_COLD](#check-s01_cold) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [lfj8-h03-control-cycle.md](../docs/lfj8-h03-control-cycle.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [h03-03-sensor-foreground.md](../verification/project-audit/h03-03-sensor-foreground.md)
+**Разбор и основания.** [lfj8-h03-control-cycle.md](../docs/lfj8-h03-control-cycle.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [h03-03-sensor-foreground.md](../verification/project-audit/h03-03-sensor-foreground.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
 **Зависит от.** [H03-04](#h03-04)
 
-**Следующий шаг для продолжения.** Реализовать target_initialize и target_take_toyota, подключить поставщиков остальных задач и согласованный профиль; собрать весь жизненный цикл.
+**Следующий шаг для продолжения.** Подключить реальные initialize_inputs/input_capture/CAN service config, engine/startup/sensor/outputs и остальные алиасы; окончательно установить все startup/foreground/strategy/apply/monitor переходы. Модель с тестовым профилем не является итоговым приложением.
 
 **Приоритет продолжения.** 14
 
@@ -588,23 +588,23 @@
 
 **Требуется разработка** · ТЗ §11
 
-**Сделано.** Объединённый результат 21.11.2026: Порция P0710: OEM AN1 через DTC target и Chery CAN. Прошли 20+14 сценариев M32R, сравнение регистров, 6920 проверок S03, DTC foreground ПК/M32R, повтор CAN Bosch и проверка RAM. Нужны финальное размещение, конфигурация срока и истории, полный запуск и сканер. Остальные DTC и оба выпуска остаются открыты.
+**Сделано.** ATF fault допускается только с квалифицированным источником времени; native сценарии и отказ часов прошли.
 
-**Осталось.** Подтвердить диапазоны датчика/опоры и период вызова, включить монитор и остальные отказы в H03, проверить статусы сканером.
+**Осталось.** Подключить реальную характеристику ATF, диагностические пороги и временные пределы; проверить их с датчиком.
 
 **Критерий результата.** Код соответствует фактическому отказу и узлу, статусы подтверждены. Отсутствующий прямой аналог явно обозначен.
 
-**Код.** [diagnostics/chery_dtc.c](../diagnostics/chery_dtc.c) · [targets/lfj8/lfj8_h03_engine_feed.c](../targets/lfj8/lfj8_h03_engine_feed.c) · [docs/ta2005-diagnostic-code-table.csv](../docs/ta2005-diagnostic-code-table.csv) · [tests/test_chery_dtc_table.py](../tests/test_chery_dtc_table.py) · [diagnostics/chery_atf_circuit.c](../diagnostics/chery_atf_circuit.c) · [diagnostics/chery_atf_circuit.h](../diagnostics/chery_atf_circuit.h) · [diagnostics/test_chery_atf_circuit.c](../diagnostics/test_chery_atf_circuit.c) · [diagnostics/verify_atf_circuit.py](../diagnostics/verify_atf_circuit.py)
+**Код.** [diagnostics/chery_dtc.c](../diagnostics/chery_dtc.c) · [targets/lfj8/lfj8_h03_engine_feed.c](../targets/lfj8/lfj8_h03_engine_feed.c) · [docs/ta2005-diagnostic-code-table.csv](../docs/ta2005-diagnostic-code-table.csv) · [tests/test_chery_dtc_table.py](../tests/test_chery_dtc_table.py) · [diagnostics/chery_atf_circuit.c](../diagnostics/chery_atf_circuit.c) · [diagnostics/chery_atf_circuit.h](../diagnostics/chery_atf_circuit.h) · [diagnostics/test_chery_atf_circuit.c](../diagnostics/test_chery_atf_circuit.c) · [diagnostics/verify_atf_circuit.py](../diagnostics/verify_atf_circuit.py) · [targets/lfj8/check_h03_atf_fault.py](../targets/lfj8/check_h03_atf_fault.py) · [targets/lfj8/h03_atf_fault_hook_fixture.c](../targets/lfj8/h03_atf_fault_hook_fixture.c) · [targets/lfj8/lfj8_h03_dtc_target.c](../targets/lfj8/lfj8_h03_dtc_target.c) · [targets/lfj8/lfj8_h03_dtc_target.h](../targets/lfj8/lfj8_h03_dtc_target.h)
 
 **Что настраивать.** Индекс DTC, маски current/history, разрешение записи и пороги монитора.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [diagnostics-integration.md](../docs/diagnostics-integration.md) · [dtc03-table.md](../verification/project-audit/dtc03-table.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [dtc03-ta2005-p0710.md](../verification/project-audit/dtc03-ta2005-p0710.md)
+**Разбор и основания.** [diagnostics-integration.md](../docs/diagnostics-integration.md) · [dtc03-table.md](../verification/project-audit/dtc03-table.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [dtc03-ta2005-p0710.md](../verification/project-audit/dtc03-ta2005-p0710.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
 **Зависит от.** [H03-05](#h03-05), [TOY-06](#toy-06)
 
-**Следующий шаг для продолжения.** Подключить все оставшиеся диагностические события к реальным мониторам, включая ATF/опору и силовые отказы.
+**Следующий шаг для продолжения.** Подключить реальную характеристику ATF, диагностические пороги и временные пределы; проверить их с датчиком.
 
 **Приоритет продолжения.** 18
 
@@ -648,21 +648,21 @@
 
 **Проверено программно** · ТЗ §5, §7
 
-**Сделано.** Объединённый результат 21.11.2026: 9 нативных S51/S83/ATF врезок в общей компоновке, 7 OEM-продолжений подтверждены ELF. 41 этап ПК, 21 native + phase-boot отдельно (38/80), 6 размещённых сценариев. 95402 байта с CAN и RAM-псевдонимами; FAIL_BINDINGS: application_binding и sensor_config. Отчёт h03-02-sensor-placement.md.
+**Сделано.** Захват датчиков использует время конца чтения; проверены перенос счётчика, задержка и допуск ATF по квалифицированным часам.
 
-**Осталось.** Задать подтверждённую частоту обоих таймеров, пороги свежести и масштабы U340E; установить захват в окончательном образе.
+**Осталось.** Подключить реальные sensor_config, частоту, периоды и допуски из VSS-02; выполнить квалификацию S51/S83/ATF в общем цикле.
 
 **Критерий результата.** Компоненты не подменяют окончательную установку обработчиков в BIN.
 
-**Код.** [targets/lfj8/lfj8_donor_io.c](../targets/lfj8/lfj8_donor_io.c) · [targets/lfj8/lfj8_gear_observer.c](../targets/lfj8/lfj8_gear_observer.c) · [targets/lfj8/lfj8_h03_atf.c](../targets/lfj8/lfj8_h03_atf.c) · [targets/lfj8/lfj8_h03_atf_target.c](../targets/lfj8/lfj8_h03_atf_target.c) · [targets/lfj8/lfj8_h03_atf_target.h](../targets/lfj8/lfj8_h03_atf_target.h) · [targets/lfj8/h03_atf_hooks.S](../targets/lfj8/h03_atf_hooks.S) · [targets/lfj8/check_h03_atf_native.py](../targets/lfj8/check_h03_atf_native.py) · [targets/lfj8/lfj8_h03_sensor_target.c](../targets/lfj8/lfj8_h03_sensor_target.c) · [targets/lfj8/h03_sensor_hooks.S](../targets/lfj8/h03_sensor_hooks.S) · [targets/lfj8/check_h03_sensor_native.py](../targets/lfj8/check_h03_sensor_native.py) · [targets/lfj8/h03_atf_hook_fixture.c](../targets/lfj8/h03_atf_hook_fixture.c) · [targets/lfj8/h03_sensor_hook_fixture.c](../targets/lfj8/h03_sensor_hook_fixture.c) · [targets/lfj8/lfj8_h03_atf_tml0.c](../targets/lfj8/lfj8_h03_atf_tml0.c)
+**Код.** [targets/lfj8/lfj8_donor_io.c](../targets/lfj8/lfj8_donor_io.c) · [targets/lfj8/lfj8_gear_observer.c](../targets/lfj8/lfj8_gear_observer.c) · [targets/lfj8/lfj8_h03_atf.c](../targets/lfj8/lfj8_h03_atf.c) · [targets/lfj8/lfj8_h03_atf_target.c](../targets/lfj8/lfj8_h03_atf_target.c) · [targets/lfj8/lfj8_h03_atf_target.h](../targets/lfj8/lfj8_h03_atf_target.h) · [targets/lfj8/h03_atf_hooks.S](../targets/lfj8/h03_atf_hooks.S) · [targets/lfj8/check_h03_atf_native.py](../targets/lfj8/check_h03_atf_native.py) · [targets/lfj8/lfj8_h03_sensor_target.c](../targets/lfj8/lfj8_h03_sensor_target.c) · [targets/lfj8/h03_sensor_hooks.S](../targets/lfj8/h03_sensor_hooks.S) · [targets/lfj8/check_h03_sensor_native.py](../targets/lfj8/check_h03_sensor_native.py) · [targets/lfj8/h03_atf_hook_fixture.c](../targets/lfj8/h03_atf_hook_fixture.c) · [targets/lfj8/h03_sensor_hook_fixture.c](../targets/lfj8/h03_sensor_hook_fixture.c) · [targets/lfj8/lfj8_h03_atf_tml0.c](../targets/lfj8/lfj8_h03_atf_tml0.c) · [targets/lfj8/host_check.c](../targets/lfj8/host_check.c) · [targets/lfj8/lfj8_donor_io.h](../targets/lfj8/lfj8_donor_io.h) · [targets/lfj8/test_lfj8_h03_sensor_feed.c](../targets/lfj8/test_lfj8_h03_sensor_feed.c)
 
 **Что настраивать.** Lfj8GearCalibration, частоты таймеров, число фронтов S83, max_age_us/max_skew_us, тарировка ATF.
 
-**Проверки.** [M32R](#check-m32r) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [M32R](#check-m32r) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [lfj8-h03-input-paths.md](../docs/lfj8-h03-input-paths.md) · [lfj8-h03-atf-native.md](../docs/lfj8-h03-atf-native.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [h03-02-shared-clock.md](../verification/project-audit/h03-02-shared-clock.md)
+**Разбор и основания.** [lfj8-h03-input-paths.md](../docs/lfj8-h03-input-paths.md) · [lfj8-h03-atf-native.md](../docs/lfj8-h03-atf-native.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [h03-02-shared-clock.md](../verification/project-audit/h03-02-shared-clock.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
-**Следующий шаг для продолжения.** Установить существующие захваты S51/S83/ATF в итоговый образ и проверить совместно с clock/sensor_config.
+**Следующий шаг для продолжения.** Подключить реальные sensor_config, частоту, периоды и допуски из VSS-02; выполнить квалификацию S51/S83/ATF в общем цикле.
 
 **Приоритет продолжения.** 20
 
@@ -735,21 +735,21 @@
 
 **Проверено программно** · ТЗ §3
 
-**Сделано.** Объединённый результат 21.11.2026: Подтверждены 41 шаг ПК и 120 тестов, 11 интеграционных и 18 компонентных M32R, 18 сравнений BasicCAN на main и с DTC-02 ed5fd71. Проверен запрет отмены чужого ожидающего TX13 и чужого RX. Измерение физических окон открыто.
+**Сделано.** При отсутствии калибровки S51 передаётся недоступная скорость 0xFFFF в 0x1AE, а ATF 0x300 сохраняется; общая модель обмена прошла.
 
-**Осталось.** Установить обёртки владения и измерить окна TX/RX в окончательной программе.
+**Осталось.** Подключить окончательный vehicle/torque/status профиль и проверить полноценный обмен совместно с CAN-03/CAN-04/CAN-05.
 
 **Критерий результата.** Программные тесты не заменяют измерение окон приёма 0x5E9.
 
-**Код.** [targets/lfj8/lfj8_h03_can13.c](../targets/lfj8/lfj8_h03_can13.c) · [targets/lfj8/lfj8_h03_torque_can.c](../targets/lfj8/lfj8_h03_torque_can.c) · [targets/lfj8/lfj8_h03_dtc_can.c](../targets/lfj8/lfj8_h03_dtc_can.c) · [targets/lfj8/test_lfj8_h03_can13.c](../targets/lfj8/test_lfj8_h03_can13.c)
+**Код.** [targets/lfj8/lfj8_h03_can13.c](../targets/lfj8/lfj8_h03_can13.c) · [targets/lfj8/lfj8_h03_torque_can.c](../targets/lfj8/lfj8_h03_torque_can.c) · [targets/lfj8/lfj8_h03_dtc_can.c](../targets/lfj8/lfj8_h03_dtc_can.c) · [targets/lfj8/test_lfj8_h03_can13.c](../targets/lfj8/test_lfj8_h03_can13.c) · [targets/lfj8/lfj8_h03_can13.h](../targets/lfj8/lfj8_h03_can13.h) · [targets/lfj8/lfj8_h03_target_service.c](../targets/lfj8/lfj8_h03_target_service.c) · [targets/lfj8/lfj8_h03_target_service.h](../targets/lfj8/lfj8_h03_target_service.h)
 
 **Что настраивать.** Lfj8H03Can13, предел опроса, лимиты возраста и повторная инициализация.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION2](#check-integration2) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION2](#check-integration2) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [lfj8-h03-torque.md](../docs/lfj8-h03-torque.md) · [can02-loan-timeout.md](../verification/project-audit/can02-loan-timeout.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [can02-torque-submit.md](../verification/project-audit/can02-torque-submit.md)
+**Разбор и основания.** [lfj8-h03-torque.md](../docs/lfj8-h03-torque.md) · [can02-loan-timeout.md](../verification/project-audit/can02-loan-timeout.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [can02-torque-submit.md](../verification/project-audit/can02-torque-submit.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
-**Следующий шаг для продолжения.** Проверить диспетчер TX13 в окончательном сервисном пути, включая конкуренцию момента, диагностики и телеметрии.
+**Следующий шаг для продолжения.** Подключить окончательный vehicle/torque/status профиль и проверить полноценный обмен совместно с CAN-03/CAN-04/CAN-05.
 
 **Приоритет продолжения.** 23
 
@@ -764,21 +764,21 @@
 
 **Проверено программно** · ТЗ §11
 
-**Сделано.** Объединённый результат 21.11.2026: Включены сданные DTC-01 и DTC-02. Квалифицированный TML0 даёт дробные тики T6 в нативном CAN foreground. 9 фаз C0, два переполнения, 6 отказов настройки, потеря/явный старт, 18 BasicCAN и 3 обхода M32R; ПК 41/129. Период, фазовая база, RAM и подключение в application_binding открыты. Отчёт dtc01-h03-t6-clock-source.md.
+**Сделано.** Старый сеанс RX очищается до проверки TX/FC timeout; при потере foreground clock допуск отзывается. Host/M32R регрессии прошли.
 
-**Осталось.** Привязать событие H03 и очистку ожидающего RX, проверить весь сеанс и очистку штатным сканером.
+**Осталось.** Включить транспорт с реальными таймингами и native CAN в итоговый образ; проверить прикладной сеанс на общей целевой конфигурации.
 
 **Критерий результата.** Поддержан конкретный профиль CAN C0. Остальные FC/сервисы и K-Line не объявлены реализованными.
 
-**Код.** [diagnostics/chery_dtc.c](../diagnostics/chery_dtc.c) · [diagnostics/chery_dtc_can.c](../diagnostics/chery_dtc_can.c) · [diagnostics/chery_dtc_link.c](../diagnostics/chery_dtc_link.c) · [diagnostics/chery_model_monitor.c](../diagnostics/chery_model_monitor.c) · [targets/lfj8/lfj8_h03_engine_feed.c](../targets/lfj8/lfj8_h03_engine_feed.c) · [diagnostics/chery_dtc_link.h](../diagnostics/chery_dtc_link.h) · [diagnostics/test_chery_dtc_link.c](../diagnostics/test_chery_dtc_link.c) · [diagnostics/verify_c0_session_timer.py](../diagnostics/verify_c0_session_timer.py) · [targets/lfj8/lfj8_h03_dtc_can.c](../targets/lfj8/lfj8_h03_dtc_can.c) · [targets/lfj8/lfj8_h03_dtc_can.h](../targets/lfj8/lfj8_h03_dtc_can.h) · [targets/lfj8/test_lfj8_h03_dtc_can.c](../targets/lfj8/test_lfj8_h03_dtc_can.c)
+**Код.** [diagnostics/chery_dtc.c](../diagnostics/chery_dtc.c) · [diagnostics/chery_dtc_can.c](../diagnostics/chery_dtc_can.c) · [diagnostics/chery_dtc_link.c](../diagnostics/chery_dtc_link.c) · [diagnostics/chery_model_monitor.c](../diagnostics/chery_model_monitor.c) · [targets/lfj8/lfj8_h03_engine_feed.c](../targets/lfj8/lfj8_h03_engine_feed.c) · [diagnostics/chery_dtc_link.h](../diagnostics/chery_dtc_link.h) · [diagnostics/test_chery_dtc_link.c](../diagnostics/test_chery_dtc_link.c) · [diagnostics/verify_c0_session_timer.py](../diagnostics/verify_c0_session_timer.py) · [targets/lfj8/lfj8_h03_dtc_can.c](../targets/lfj8/lfj8_h03_dtc_can.c) · [targets/lfj8/lfj8_h03_dtc_can.h](../targets/lfj8/lfj8_h03_dtc_can.h) · [targets/lfj8/test_lfj8_h03_dtc_can.c](../targets/lfj8/test_lfj8_h03_dtc_can.c) · [targets/lfj8/lfj8_h03_dtc_foreground.c](../targets/lfj8/lfj8_h03_dtc_foreground.c) · [targets/lfj8/lfj8_h03_dtc_foreground.h](../targets/lfj8/lfj8_h03_dtc_foreground.h) · [targets/lfj8/test_lfj8_h03_dtc_foreground.c](../targets/lfj8/test_lfj8_h03_dtc_foreground.c)
 
 **Что настраивать.** Пять исторических слотов, таблица 96 индексов S03, возраст FC и таймеры сеанса.
 
-**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION2](#check-integration2) · [INTEGRATION3](#check-integration3) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [PC](#check-pc) · [M32R](#check-m32r) · [INTEGRATION2](#check-integration2) · [INTEGRATION3](#check-integration3) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
-**Разбор и основания.** [diagnostics-integration.md](../docs/diagnostics-integration.md) · [dtc01-session-lease.md](../verification/project-audit/dtc01-session-lease.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [dtc01-c0-session-timer.md](../verification/project-audit/dtc01-c0-session-timer.md)
+**Разбор и основания.** [diagnostics-integration.md](../docs/diagnostics-integration.md) · [dtc01-session-lease.md](../verification/project-audit/dtc01-session-lease.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [dtc01-c0-session-timer.md](../verification/project-audit/dtc01-c0-session-timer.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md)
 
-**Следующий шаг для продолжения.** Провести прикладной сеанс и очистку через реальный RX/TX/NVM с привязанными часами H03.
+**Следующий шаг для продолжения.** Включить транспорт с реальными таймингами и native CAN в итоговый образ; проверить прикладной сеанс на общей целевой конфигурации.
 
 **Приоритет продолжения.** 24
 
@@ -822,7 +822,7 @@
 
 **Проверено программно** · ТЗ §4
 
-**Сделано.** Объединённый результат 21.11.2026: Компоновщик сохраняет внешний JMPA и соседнюю секцию, локальные цели проверяются. ПК 41/126, 12 путей ST10, 4 компактных профиля побайтно, CAN-05 f3bb500 профиль побайтно и verify_rx_timestamp PASS. Архив 3256 CRC и 26 команд. Отчёт verification/project-audit/ecu01-st10-external-branch.md.
+**Сделано.** Повторно собран Bosch ordinary/no-cruise/no-override OFFLINE_ONLY; проверены целостность, 65536 native encoder cases и обмен с текущим TCM-кодом. SHA и результаты в INTEGRATION39.
 
 **Осталось.** Завершить CAN-05/ECU-02, собрать согласованный целевой профиль и проверить происхождение обоих итоговых образов.
 
@@ -832,7 +832,7 @@
 
 **Что настраивать.** Опции with-model-fields, with-ordinary-model-field и compact. Профиль cruise=false/override=false явно ограничен.
 
-**Проверки.** [BOSCH](#check-bosch) · [INTEGRATION3](#check-integration3) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [BOSCH](#check-bosch) · [INTEGRATION3](#check-integration3) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
 **Разбор и основания.** [bosch-integration.md](../docs/bosch-integration.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [ecu01-bosch-section-layout.md](../verification/project-audit/ecu01-bosch-section-layout.md)
 
@@ -851,9 +851,9 @@
 
 **Требуется разработка** · ТЗ §1, §4, §5, §9
 
-**Сделано.** Все 42 опубликованные порции и локальный CAN-01 объединены. 41 этап ПК, 172 теста, 22 native, 18+8 компонентных M32R и 6 размещённых групп прошли. Итоговый исполняемый TCM BIN не создан: FAIL_BINDINGS; Bosch остаётся OFFLINE_ONLY.
+**Сделано.** Общая проверка 39 новых порций: 41 этап ПК, 194 Python-теста, 22 native-группы, 8 компонентов и 6 групп размещённого ядра прошли. Bosch пересобран и прошёл обмен в модели. Полная TCM-композиция FAIL_BINDINGS и не помещается в верхние окна; рабочего комплекта нет.
 
-**Осталось.** Общий целевой линк останавливается на 10 неопределённых поставщиках: 9 rbm_h03_target_* и rbm_h03_sensor_config. Требуются реальные входы/выходы, профиль, NVM и итоговая установка всех переходов. После этого собрать и проверить TCM BIN; не переименовывать модель или исходный H03.
+**Осталось.** Закрыть реальные профили/поставщиков, полное размещение/переходы и целостность TCM; завершить квалификацию Bosch CAN-05/ECU-02. Не выдавать subset ELF или OFFLINE_ONLY как два рабочих BIN.
 
 **Критерий результата.** Оба образа соответствуют выбранным основам и закрытому объёму первого файла, связаны с исходниками и фактическими результатами проверки.
 
@@ -861,13 +861,13 @@
 
 **Что настраивать.** Отдельные поля build_verified, model_verified и hardware_verified. Не переименовывать ELF/тестовый BIN в рабочую прошивку.
 
-**Проверки.** [SOURCES](#check-sources) · [PC](#check-pc) · [M32R](#check-m32r) · [NATIVE](#check-native) · [BOSCH](#check-bosch) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [SERVICE_GUARD](#check-service_guard) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration)
+**Проверки.** [SOURCES](#check-sources) · [PC](#check-pc) · [M32R](#check-m32r) · [NATIVE](#check-native) · [BOSCH](#check-bosch) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [SERVICE_GUARD](#check-service_guard) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39)
 
 **Разбор и основания.** [verification.md](../docs/verification.md) · [working-set.md](../docs/working-set.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [rel01-offline-report-guard.md](../verification/project-audit/rel01-offline-report-guard.md)
 
 **Зависит от.** [TOY-04](#toy-04), [TOY-05](#toy-05), [TOY-06](#toy-06), [CAN-03](#can-03), [CAN-05](#can-05), [ECU-02](#ecu-02), [H03-04](#h03-04), [H03-05](#h03-05), [VSS-02](#vss-02), [MODE-02](#mode-02), [MODE-03](#mode-03), [DTC-02](#dtc-02), [DTC-03](#dtc-03), [DTC-04](#dtc-04)
 
-**Следующий шаг для продолжения.** Объединить принятые результаты, выполнить полный линк/установку переходов и проверки обеих прошивок, собрать единый комплект.
+**Следующий шаг для продолжения.** Закрыть реальные профили/поставщиков, полное размещение/переходы и целостность TCM; завершить квалификацию Bosch CAN-05/ECU-02. Не выдавать subset ELF или OFFLINE_ONLY как два рабочих BIN.
 
 **Приоритет продолжения.** 27
 
@@ -951,7 +951,7 @@
 
 **Завершено в указанном объёме** · ТЗ §1
 
-**Сделано.** Общая координация: отдельные активные/ожидающие резервы, review без удержания, история отдельно. Все 28 продолжений имеют приоритет, входы и результат; инструкция едина для Codex/Claude. Проверены 33 сценария координации и 9 проверок реестра. Старый CAN-01 передан после проверки сохранности кода.
+**Сделано.** Объединены все 39 сданных результатов из 36 веток поверх f64eff7. Исправлена несовместимость API проверки RAM; обновлены реестр, общий аудит и точные остатки.
 
 **Осталось.** Окончательные BIN и оставшиеся привязки ведутся в REL-01/H03-03/H03-04.
 
@@ -961,7 +961,7 @@
 
 **Что настраивать.** Публикация в GitHub возобновлена по указанию владельца 20.11.2026. Учёт чатов отделён от готовности прошивки.
 
-**Проверки.** [SOURCES](#check-sources) · [COORD](#check-coord) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [COORD_REVIEW](#check-coord_review) · [FINAL_INTEGRATION](#check-final_integration) · [COORD_HANDOFF](#check-coord_handoff)
+**Проверки.** [SOURCES](#check-sources) · [COORD](#check-coord) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [COORD_REVIEW](#check-coord_review) · [FINAL_INTEGRATION](#check-final_integration) · [COORD_HANDOFF](#check-coord_handoff) · [INTEGRATION39](#check-integration39)
 
 **Разбор и основания.** [decisions.md](../docs/decisions.md) · [multi-chat.md](../docs/multi-chat.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md)
 
@@ -1237,3 +1237,12 @@ python -B tools/project_status.py --check
 ```
 
 **Последний сохранённый результат.** [task_coordination.log](../verification/project-audit/coordination-handoff-20261121/task_coordination.log) · [project_status.log](../verification/project-audit/coordination-handoff-20261121/project_status.log) · [registry-check.json](../verification/project-audit/coordination-handoff-20261121/registry-check.json) · [integration-next-tasks.md](../docs/integration-next-tasks.md)
+
+<a id="check-integration39"></a>
+### INTEGRATION39 — Общая сборка 39 новых результатов, 21.11.2026
+
+```powershell
+Команды каждого фактического запуска сохранены в build-summary.json, target-summary.json, corrected-summary.json и final-summary.json рядом с отчётом. check-composition.py сохраняет честный FAIL_BINDINGS и не выпускает BIN.
+```
+
+**Последний сохранённый результат.** [report.md](../verification/project-audit/integration-39-20261121/report.md) · [summary.json](../verification/project-audit/integration-39-20261121/summary.json) · [composition.json](../verification/project-audit/integration-39-20261121/composition.json) · [roundtrip.json](../verification/project-audit/integration-39-20261121/roundtrip.json)

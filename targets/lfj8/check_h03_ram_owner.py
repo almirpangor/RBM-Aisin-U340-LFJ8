@@ -214,7 +214,7 @@ def check(args):
     application_link = probe_application_link(compiler)
     sbi = probe_sbi(args.base, compiler)
     boot_writers = replay_boot_writers(args.base, compiler)
-    toyota = simulate_toyota(compiler, args.bridge.resolve())
+    toyota = simulate_toyota(compiler, args.bridge.resolve(), args.controller.resolve())
     old_modules = layout.BINDING_MODULES
     old_roots = layout.EXTRA_ROOTS
     layout.BINDING_MODULES += ("lfj8_h03_ram_owner.c", "lfj8_h03_target_memory.c")
