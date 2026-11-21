@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 828,
+  "sequence": 829,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -181,11 +181,11 @@
         "targets/lfj8/lfj8_h03_nvm_native.h",
         "verification/project-audit/dtc04-native-restore-bank-gate.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "324aa1b41a8843369de598a9518ffb4f",
       "claimed_at": "2026-11-20T23:10:30+00:00",
-      "updated_at": "2026-11-20T23:14:40+00:00",
-      "note": "Читатель холодного журнала отклоняет каждый из четырёх сигналов разрешения FELBANK/FESBANK до и после чтения слота даже при FCNT1=0. ПК/M32R, GDB с включением FESBANK1 после чтения, 22 native и BasicCAN 18+18 прошли. Объект 444 байта, без статической RAM. Остаются назначенные блоки с владением, подключение на холодном старте, физический драйвер записи, износ и проверка на блоке. Отчёт verification/project-audit/dtc04-native-restore-bank-gate.md.",
+      "updated_at": "2026-11-21T07:46:29+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "456abca6b0dda9bf8f542f1fbe90653246959443",
       "based_on_reviews": [
         "e72d13fcb2254ca89fd0736136b11462",
@@ -12473,9 +12473,40 @@
         "task": "H03-03",
         "submitted_at": "2026-11-20T23:14:14+00:00"
       }
+    },
+    {
+      "operation_id": "4b2b12ebe2c043ec8fda410968c79239",
+      "task": "DTC-04",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "complete",
+      "claim_id": "324aa1b41a8843369de598a9518ffb4f",
+      "at": "2026-11-21T07:46:29+00:00",
+      "record": {
+        "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "label": "Codex DTC-04 — проверка физического чтения журнала",
+        "branch": "codex/dtc04-native-restore-bank-gate-922b7b11",
+        "files": [
+          "targets/lfj8/h03_nvm_native_fixture.c",
+          "targets/lfj8/lfj8_h03_nvm_native.c",
+          "targets/lfj8/lfj8_h03_nvm_native.h",
+          "verification/project-audit/dtc04-native-restore-bank-gate.md"
+        ],
+        "stage": "done",
+        "claim_id": "324aa1b41a8843369de598a9518ffb4f",
+        "claimed_at": "2026-11-20T23:10:30+00:00",
+        "updated_at": "2026-11-21T07:46:29+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "456abca6b0dda9bf8f542f1fbe90653246959443",
+        "based_on_reviews": [
+          "e72d13fcb2254ca89fd0736136b11462",
+          "eb973761003948398f33f495758fde06"
+        ],
+        "task": "DTC-04",
+        "submitted_at": "2026-11-20T23:14:40+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:46:20+00:00",
+  "updated_at": "2026-11-21T07:46:29+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -14540,11 +14571,11 @@
         "targets/lfj8/lfj8_h03_nvm_native.h",
         "verification/project-audit/dtc04-native-restore-bank-gate.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "324aa1b41a8843369de598a9518ffb4f",
       "claimed_at": "2026-11-20T23:10:30+00:00",
-      "updated_at": "2026-11-20T23:14:40+00:00",
-      "note": "Читатель холодного журнала отклоняет каждый из четырёх сигналов разрешения FELBANK/FESBANK до и после чтения слота даже при FCNT1=0. ПК/M32R, GDB с включением FESBANK1 после чтения, 22 native и BasicCAN 18+18 прошли. Объект 444 байта, без статической RAM. Остаются назначенные блоки с владением, подключение на холодном старте, физический драйвер записи, износ и проверка на блоке. Отчёт verification/project-audit/dtc04-native-restore-bank-gate.md.",
+      "updated_at": "2026-11-21T07:46:29+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "456abca6b0dda9bf8f542f1fbe90653246959443",
       "based_on_reviews": [
         "e72d13fcb2254ca89fd0736136b11462",
