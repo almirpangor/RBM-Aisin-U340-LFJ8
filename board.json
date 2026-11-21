@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 831,
+  "sequence": 832,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12572,9 +12572,41 @@
         "task": "TOY-05",
         "submitted_at": "2026-11-20T23:15:24+00:00"
       }
+    },
+    {
+      "operation_id": "d558c5e219bb4dd4a4367c2c08c50929",
+      "task": "H03-04",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "complete",
+      "claim_id": "fb2fa92cc4ca453a89297de917515b5c",
+      "at": "2026-11-21T07:46:59+00:00",
+      "record": {
+        "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "label": "Codex H03-04 DMA4 guard",
+        "branch": "codex/h03-04-dma4-guard-01a1f9a2",
+        "files": [
+          "targets/lfj8/check_h03_dma4_guard.py",
+          "targets/lfj8/check_h03_link.py",
+          "targets/lfj8/h03_dma4_guard.S",
+          "targets/lfj8/lfj8_h03_service_placement.py",
+          "verification/project-audit/h03-04-dma4-guard.md"
+        ],
+        "stage": "done",
+        "claim_id": "fb2fa92cc4ca453a89297de917515b5c",
+        "claimed_at": "2026-11-20T23:08:35+00:00",
+        "updated_at": "2026-11-21T07:46:59+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "4e954c1ef3f96555ed9796601783eafa8b5a5402",
+        "based_on_reviews": [
+          "b2ca152193a145f6a7e8665645cfcb0b",
+          "e2040f38c0804ea1ba66dc3a744de6a4"
+        ],
+        "task": "H03-04",
+        "submitted_at": "2026-11-20T23:18:13+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:46:49+00:00",
+  "updated_at": "2026-11-21T07:46:59+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -14715,11 +14747,11 @@
         "targets/lfj8/lfj8_h03_service_placement.py",
         "verification/project-audit/h03-04-dma4-guard.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "fb2fa92cc4ca453a89297de917515b5c",
       "claimed_at": "2026-11-20T23:08:35+00:00",
-      "updated_at": "2026-11-20T23:18:13+00:00",
-      "note": "DMA4 по 00CF0C подключён к сервисному адресному ELF с общей политикой RAM. Пройдены 12 сценариев на точном H03 и в размещённом ELF, 27 писателей, 28 закрытий, 512 Virtual Flash, 18 M32R компонентов и 41 этап ПК. Обёртка 128 байт Flash, 40 байт собственного SPI, постоянная RAM не добавлена. Остались общий компоновщик, ранние IRQ, полный стек и стенд.",
+      "updated_at": "2026-11-21T07:46:59+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "4e954c1ef3f96555ed9796601783eafa8b5a5402",
       "based_on_reviews": [
         "b2ca152193a145f6a7e8665645cfcb0b",
