@@ -11,6 +11,8 @@
  * diagnostic_tick is continuous T6 with the low bits in donor phase
  * numbering. The session clock runs before queue delivery; expiry discards
  * pending RX and allows the broker to drain any outstanding DTC TX.
+ * A turn without TX13 ownership does not advance the session clock.
+ * Broker unavailability discards the full RX backlog.
  *
  * Serialize this call with CAN lease changes and queue reset. The CAN
  * owner changes generation and resets the queue after hardware reset or

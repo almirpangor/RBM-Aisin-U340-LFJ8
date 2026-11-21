@@ -197,7 +197,7 @@ static Lfj8H03Can13Result poll(Fixture *f, uint32_t now_us, bool clock_valid)
     };
     const Lfj8H03Can13Result result = lfj8_h03_dtc_foreground_poll(
         &f->broker, &f->queue, &f->io, &input, clock_valid ? &now_bits : NULL);
-    assert(!f->locked && input.received == &caller_frame);
+    assert(!f->locked && input.received == &caller_frame && input.owns_slot13 == f->grant);
     return result;
 }
 
@@ -251,18 +251,17 @@ static void test_generation_reset(void)
     assert(poll(&f, 0, true).available);
     assert(capture(&f, 15, UINT32_MAX, 10, session, sizeof(session)) == LFJ8_H03_DTC_RX_QUEUED);
     assert(capture(&f, 14, UINT32_MAX, 12, read_dtc, sizeof(read_dtc)) == LFJ8_H03_DTC_RX_QUEUED);
+    /* The sample and grant were valid before CAN went bus-off. */
     f.status |= BUS_OFF;
-    f.grant = false;
-    assert(!poll(&f, 20, false).available && f.queue.count == 2 && f.sent == 0);
+    assert(!poll(&f, 20, true).available && f.queue.count == 0 && f.sent == 0);
 
     f.status = BASIC_RUNNING;
-    f.grant = true;
     const Lfj8H03Can13Result old_lease = poll(&f, 24, true);
-    assert(!old_lease.available && old_lease.diagnostic_consumed && f.queue.count == 1 && f.sent == 0);
+    assert(!old_lease.available && !old_lease.diagnostic_consumed && f.queue.count == 0 && f.sent == 0);
 
     f.generation = 0;
     f.tx_control = 0; /* Hardware drain before releasing the new generation. */
-    assert(!poll(&f, 30, true).diagnostic_consumed && f.queue.count == 1 && f.sent == 0);
+    assert(!poll(&f, 30, true).diagnostic_consumed && f.queue.count == 0 && f.sent == 0);
     assert(lfj8_h03_dtc_rx_queue_reset(&f.queue, &f.io, f.generation) && f.queue.count == 0);
     assert(capture(&f, 14, UINT32_MAX, 34, session, sizeof(session)) == LFJ8_H03_DTC_RX_REJECTED);
     assert(capture(&f, 15, 0, 36, session, sizeof(session)) == LFJ8_H03_DTC_RX_QUEUED);
@@ -549,9 +548,14 @@ static void test_target_clock_pair_and_unbind(void)
     rbm_h03_dtc_rx_observe(14);
     assert(target.queue.count == 1);
     f.clock_span_us = 5;
-    assert(!poll_target(&f, &target, UINT32_MAX).diagnostic_consumed && f.sent == 0);
+    assert(!poll_target(&f, &target, UINT32_MAX).available && target.queue.count == 0 && f.sent == 0);
     f.clock_span_us = 0;
-    assert(poll_target_at(&f, &target, 0, UINT32_MAX / 100u).diagnostic_consumed);
+    const Lfj8H03Can13Result recovered = poll_target_at(&f, &target, 0, UINT32_MAX / 100u);
+    assert(recovered.available && !recovered.diagnostic_consumed && f.sent == 0);
+    prepare_rx(&f, 15, 2, session, sizeof(session));
+    f.now_us = 4;
+    rbm_h03_dtc_rx_observe(15);
+    assert(poll_target_at(&f, &target, 6, UINT32_MAX / 100u).diagnostic_consumed);
     assert_reply(&f, 1, 2);
     lfj8_h03_dtc_target_unbind();
     Lfj8H03Can13Input input = {.dtc = &f.dtc, .owns_slot13 = 1};
@@ -652,6 +656,41 @@ static void test_target_session_clock_loss(void)
     lfj8_h03_dtc_target_unbind();
 }
 
+static void test_target_loses_clock_pair_with_tx_in_flight(void)
+{
+    Fixture f;
+    Lfj8H03DtcTarget target;
+    init(&f, 7);
+    const Lfj8H03DtcCanOwnerOps owner = {target_test_epoch, target_test_poll, &f};
+    assert(lfj8_h03_dtc_target_init(&target, &f.broker, &f.io, &owner, target_clock, 4));
+    assert(chery_dtc_raise_c0(&f.dtc, 0x10, false));
+    const CheryDtcState before = f.dtc;
+    open_target_session(&f, &target, 63);
+    observe_target(&f, 14, 26, 28, clear_dtc, sizeof(clear_dtc));
+    observe_target(&f, 15, 30, 32, session, sizeof(session));
+    assert(target.queue.count == 2u);
+
+    f.clock_span_us = 5;
+    const Lfj8H03Can13Result lost = poll_target_at(&f, &target, 34, 0);
+    assert(!lost.available && !lost.diagnostic_consumed && target.queue.count == 0);
+    assert(f.broker.diagnostic.link.session.mode_bits == 0x9fu &&
+           f.broker.diagnostic.link.session.permission_bits == 0x11u &&
+           f.broker.diagnostic.session_clock_tick == 63);
+    assert(f.sent == 1u && f.tx_control == 0x80u);
+    assert(memcmp(&f.dtc, &before, sizeof(before)) == 0);
+
+    f.clock_span_us = 0;
+    assert(!poll_target_at(&f, &target, 36, 64).available && f.sent == 1u);
+    f.tx_control = 0; /* Native setup drains TX before publishing the new epoch. */
+    ++f.generation;
+    assert(poll_target_at(&f, &target, 38, 64).available && f.sent == 1u);
+    observe_target(&f, 14, 40, 42, session, sizeof(session));
+    assert(poll_target_at(&f, &target, 44, 64).diagnostic_consumed);
+    assert_reply(&f, 2u, 2u);
+    assert(memcmp(&f.dtc, &before, sizeof(before)) == 0);
+    lfj8_h03_dtc_target_unbind();
+}
+
 static void test_target_session_expiry_drains_tx(void)
 {
     Fixture f;
@@ -685,11 +724,12 @@ int main(void)
     test_target_clock_pair_and_unbind();
     test_target_session_expiry_and_rx_boundary();
     test_target_session_clock_loss();
+    test_target_loses_clock_pair_with_tx_in_flight();
     test_target_session_expiry_drains_tx();
     puts("PASS H03 DTC foreground: FIFO/FC, CAN generation, busy wrap, IRQ between peek and consume");
     puts("PASS BasicCAN pair: timestamp order, rollover, tie, loss, FIFO capacity, bus-off");
     puts("PASS BasicCAN dispatch markers: one attempt, generation, next dispatch");
     puts("PASS H03 DTC target: bound IRQ, FC, reset, bounded clocks and unbind");
-    puts("PASS H03 C0 session: nine releases, coalescing, T6/CAN wrap, RX boundary and TX drain");
+    puts("PASS H03 C0 session: nine releases, coalescing, T6/CAN wrap, RX boundary, clock loss and TX drain");
     return 0;
 }
