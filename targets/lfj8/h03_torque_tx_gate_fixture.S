@@ -1,4 +1,4 @@
-/* Run only with the simulator linker layout. MMIO and the lease are RAM shadows. */
+/* Run only with the simulator linker layout. MMIO and CAN ownership are RAM shadows. */
 #include "lfj8_h03_can_owner.h"
 
     .macro set_byte addr,val
@@ -41,7 +41,8 @@ _start:
     set_byte 0x80801c,0
     set_half 0x801010,0x8003
     set_half 0x80100c,4
-    set_byte lease_flag,LEASE_VALUE
+    set_byte h03_can_owner+LFJ8_CAN_OWNER_GRANT_OFFSET,LEASE_VALUE
+    set_byte h03_can_owner+LFJ8_CAN_OWNER_TX13_FENCE_OFFSET,FENCE_VALUE
 
     /* First matching OEM descriptor under mask 20 is 0x218.
      * The payload record is 14 bytes past the table's first record. */
@@ -74,7 +75,7 @@ resume_foreground:
 #endif
     ld24 r1,#0x9ffffc
     bne sp,r1,test_failed
-#if HOOKED && LEASE_VALUE == 1
+#if HOOKED && (LEASE_VALUE == 1 || FENCE_VALUE == 1)
     check_byte 0x80105d,INITIAL_CONTROL
     check_byte 0x8011d0,0x17
     check_byte 0x8011d1,0x28
@@ -95,16 +96,8 @@ test_exit:
     ldi r0,#1
     trap #0
 
+#if !HOOKED
     .section .tx_entry,"ax",@progbits
-#if HOOKED
-    bra h03_can13_tx_gate
-#else
+    .balign 4
     .incbin "tx-entry.bin"
 #endif
-
-    .section .fixture_state,"aw",@progbits
-    .global h03_can_owner
-h03_can_owner:
-    .space LFJ8_CAN_OWNER_GRANT_OFFSET
-lease_flag:
-    .byte 0

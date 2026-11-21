@@ -67,6 +67,12 @@ FOREGROUND_SCENARIOS = (
     "unknown_oem_status_supersedes_unconsumed_recovery",
     "clock_rearm_requires_fresh_enable",
     "clock_rearm_discards_unconsumed_recovery",
+    "cannot_enable_with_unqualified_clock",
+    "clock_loss_before_foreground_discards_pending_recovery",
+    "qualification_alone_cannot_rearm_existing_binding",
+    "rebind_accepts_only_new_recovery",
+    "clock_loss_during_oem_capture_drops_active_fault",
+    "fresh_fault_after_rebind_produces_0x74_on_can",
 )
 
 
@@ -326,7 +332,7 @@ def check_foreground(run, work, gcc, rom):
         "lfj8_h03_dtc_target.c", "lfj8_h03_dtc_foreground.c", "lfj8_h03_dtc_rx_queue.c",
         "lfj8_h03_dtc_can.c", "lfj8_h03_can_owner.c", "lfj8_h03_can13.c", "lfj8_h03_mmio.c",
         "lfj8_h03_torque.c", "lfj8_h03_torque_can.c", "lfj8_chery_tx.c", "lfj8_donor_io.c",
-        "lfj8_bridge.c",
+        "lfj8_bridge.c", "lfj8_h03_atf_tml0.c",
     )
     diagnostics = ("chery_dtc.c", "chery_dtc_link.c", "chery_dtc_can.c")
     for directory, names in ((HERE, sources), (ROOT / "diagnostics", diagnostics),

@@ -55,6 +55,9 @@ bool lfj8_h03_dtc_native_bind(Lfj8H03DtcTarget *target, Lfj8H03Can13 *broker,
     const bool bound = h03_can_owner.initialized && lfj8_h03_sensor_clock_ready_locked() &&
         lfj8_h03_dtc_target_init(target, broker, io, &native_owner_ops,
                                 lfj8_h03_tml0ct_m32r, max_clock_span_us);
+    if (bound) {
+        broker->diagnostic.require_durable_clear = true;
+    }
     io->leave(io->context, saved);
     return bound;
 }

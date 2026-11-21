@@ -16,8 +16,14 @@ extern Lfj8H03ToyotaRelease rbm_h03_toyota_release_state;
  *
  * RBM_H03_PROFILE_INITIALIZE_INPUTS: int (void *context).
  * Reset the single owners of the board input producers for cold/warm startup
- * with the app gate closed and outputs inhibited. Called in serialized
- * foreground outside the IRQ lock. Return 1 only on successful preparation.
+ * with the app gate closed and outputs inhibited. Also initialize or restore
+ * the one shared DTC state. Called in serialized foreground outside the IRQ
+ * lock. Return 1 only on successful preparation.
+ *
+ * RBM_H03_PROFILE_CAN_SERVICE_CONFIG names an immutable qualified
+ * Lfj8H03TargetServiceConfig. After inputs are prepared and RAM and clock
+ * are rechecked under the lock, the platform prepares CAN before returning
+ * success. Live IRQ/TX admission follows on the first qualified phase.
  *
  * RBM_H03_PROFILE_CAPTURE_TOYOTA names a function:
  * int (void *context, const Lfj8H03SensorSnapshot *sensors, uint32_t due_at,

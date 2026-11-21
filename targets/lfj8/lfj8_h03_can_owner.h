@@ -3,15 +3,17 @@
 
 #define LFJ8_CAN_OWNER_SETUP_GENERATION_OFFSET 0
 #define LFJ8_CAN_OWNER_GRANT_OFFSET 4
+#define LFJ8_CAN_OWNER_TX13_FENCE_OFFSET 7
 
 #ifndef __ASSEMBLER__
 #include "lfj8_h03_dtc_foreground.h"
 
 typedef struct {
     volatile uint32_t setup_generation; /* Incremented by native setup. */
-    volatile uint8_t grant;              /* Read by OEM TX gate and CAN0 IRQ. */
+    volatile uint8_t grant;              /* Live foreground and CAN0 IRQ lease. */
     bool initialized;
     bool setup_permitted;               /* Guarded monitor permit, under the native IRQ lock. */
+    volatile uint8_t tx13_fenced;        /* Retained through an unconfirmed TX13 drain. */
     uint32_t admitted_generation;       /* Last generation granted to the broker. */
 } Lfj8H03CanOwner;
 

@@ -51,7 +51,8 @@ static int engine_context(void *context, const Lfj8H03SensorSnapshot *sensors,
 
 const Lfj8H03ApplicationEngine rbm_h03_target_engine = {
     .target = {.rx = &engine_rx, .qualifier = &engine_qualifier, .dtc = &engine_dtc,
-               .can_owner = &engine_owner, .io = &lfj8_h03_mmio, .now_us = rbm_h03_atf_now_us},
+               .can_owner = &engine_owner, .io = &lfj8_h03_mmio, .now_us = rbm_h03_atf_now_us,
+               .bit_time_us = 2u},
     .max_age_ticks = 20u, .max_poll_gap_us = 32u, .context_for_task2 = engine_context,
 };
 

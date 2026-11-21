@@ -13,38 +13,41 @@ import check_h03_can_monitor_startup as startup
 from check_h03_link import HERE, ROOT, TARGET, identify_h03
 from check_h03_dtc_foreground import DIAGNOSTIC_SOURCES, LFJ8_SOURCES
 from check_h03_storage import check as check_storage
+from lfj8_h03_can_service_placement import SERVICE_MODULES, SERVICE_RAM_FIELDS, typed_alias_ranges
 sys.path.insert(0, str(ROOT / "controller"))
 from hydraulic_port import write_port
 
 
 ALIASES = {
-    "rbm_h03_application": "control/application",
+    **SERVICE_RAM_FIELDS,
     "rbm_h03_atf_state": "control/atf",
     "rbm_h03_selector_adc_state": "control/selector_adc",
-    "rbm_h03_sensor_state": "control/sensors",
-    "rbm_h03_tml0_1mhz_qualified": "control/clock_qualified",
     "rbm_h03_takeover_state": "control/takeover",
     "rbm_h03_runtime_state": "control/runtime",
     "rbm_h03_cycle_state": "control/cycle",
-    "h03_can_owner": "communication/can_owner",
+    "rbm_h03_toyota_release_state": "control/toyota_release",
     "rbm_h03_main_result": "communication/main_result",
-    "rbm_h03_fast_output": "communication/fast_output",
-    "rbm_h03_dtc_target": "communication/dtc_target",
-    "rbm_h03_can13": "communication/can13",
     "fixture_shared_dtc": "communication/dtc",
-    "rbm_h03_can_service": "communication/can_service",
-    "rbm_h03_can13_input": "workspace/can13_input",
-    "rbm_h03_tx_input": "workspace/tx_input",
-    "rbm_h03_torque_input": "workspace/torque_input",
     "rbm_h03_cycle_workspace": "workspace/toyota",
     "rbm_h03_cycle_input": "workspace/cycle_input",
 }
 FIXTURE_PROFILE = """\
+#include "lfj8_h03_target_platform.h"
+#include "lfj8_h03_target_service.h"
+int fixture_initialize_inputs(void *);
+int fixture_capture_toyota(void *, const Lfj8H03SensorSnapshot *, uint32_t,
+                           Lfj8H03CycleInput *, Lfj8H03CycleLoad *);
+extern const Lfj8H03TargetServiceConfig service_profile;
 #define RBM_H03_PROFILE_PHASE_CONFIG {8u, 12u, 2u, 24u}
 #define RBM_H03_PROFILE_STARTUP_RANGE {0}
 #define RBM_H03_PROFILE_TOYOTA_MAX_PERIOD_TICKS 23u
 #define RBM_H03_PROFILE_STARTUP_REQUEST_1120 0u
 #define RBM_H03_PROFILE_READ_ADAPTATION NULL
+#define RBM_H03_PROFILE_CAN_SERVICE_CONFIG service_profile
+#define RBM_H03_PROFILE_TOYOTA_PERIOD_TICKS 16u
+#define RBM_H03_PROFILE_TOYOTA_MAX_LATENESS_TICKS 2u
+#define RBM_H03_PROFILE_INITIALIZE_INPUTS fixture_initialize_inputs
+#define RBM_H03_PROFILE_CAPTURE_TOYOTA fixture_capture_toyota
 """
 BINDINGS = r"""
 #include "lfj8_h03_application.h"
@@ -56,6 +59,7 @@ BINDINGS = r"""
 #include "lfj8_h03_atf_target.h"
 #include "lfj8_h03_mmio.h"
 #include "lfj8_h03_sensor_target.h"
+#include "lfj8_h03_target_platform.h"
 #include "lfj8_h03_target_service.h"
 
 extern Lfj8H03Takeover rbm_h03_takeover_state;
@@ -92,8 +96,8 @@ static void fixture_apply(void *context)
 }
 
 const Lfj8H03TakeoverOps rbm_h03_target_takeover_ops = {
-    .io = &simulated_io, .inhibit = lfj8_h03_output_inhibit_locked, .apply = fixture_apply,
-    .phase_clock = &fixture_phase_clock,
+    .io = &lfj8_h03_mmio, .inhibit = lfj8_h03_output_inhibit_locked, .apply = fixture_apply,
+    .clock_ticks = lfj8_h03_tml0ct_m32r, .phase_clock = &fixture_phase_clock,
 };
 static const Lfj8H03TakeoverOps stale = {
     .io = &simulated_io, .inhibit = fixture_apply, .apply = fixture_apply,
@@ -105,23 +109,18 @@ FactoryHydraulics rbm_h03_target_startup_gp;
 int rbm_h03_target_clock_ready(void *context)
 {
     (void)context;
-    return lfj8_h03_sensor_clock_ready_locked();
+    return lfj8_h03_sensor_clock_registers_match();
 }
 
-Lfj8H03ToyotaEvent rbm_h03_target_take_toyota(void *context, const Lfj8H03SensorSnapshot *sensors,
-    Lfj8H03CycleInput *input, Lfj8H03CycleLoad *load, uint32_t *released_at)
+int fixture_capture_toyota(void *context, const Lfj8H03SensorSnapshot *sensors, uint32_t due_at,
+                           Lfj8H03CycleInput *input, Lfj8H03CycleLoad *load)
 {
     (void)context;
     (void)sensors;
+    (void)due_at;
     (void)input;
     (void)load;
-    (void)released_at;
-    return LFJ8_H03_TOYOTA_WAIT;
-}
-
-int lfj8_h03_application_running_locked(void)
-{
-    return rbm_h03_target_ram_owned(NULL) && rbm_h03_application.running == 1u;
+    return 0;
 }
 
 static const uint32_t command_bytes[] = {0x8063d5, 0x8063d7, 0x8063d8, 0x8063da, 0x8063db, 0x8063dd};
@@ -131,7 +130,8 @@ void fixture_initialize_outputs(void)
 {
     rbm_h03_application.running = 1u;
     h03_can_owner = (Lfj8H03CanOwner){.setup_generation = 42u, .admitted_generation = 42u,
-                                     .grant = 1u, .initialized = true, .setup_permitted = true};
+                                     .grant = 1u, .initialized = true, .setup_permitted = true,
+                                     .tx13_fenced = 1u};
     rbm_h03_main_result.valid = 1u;
     rbm_h03_fast_output.valid = 1u;
     rbm_h03_takeover_state = (Lfj8H03Takeover){.ops = &rbm_h03_target_takeover_ops, .generation = 7u,
@@ -183,12 +183,14 @@ int __wrap_rbm_h03_can_monitor_cold_owner_init_locked(void)
     const Lfj8H03CanOwner retained = h03_can_owner;
     const int ready = __real_rbm_h03_can_monitor_cold_owner_init_locked();
     if (ready && (!h03_can_owner.initialized || h03_can_owner.grant || h03_can_owner.setup_permitted ||
-                  h03_can_owner.setup_generation || h03_can_owner.admitted_generation)) {
+                  h03_can_owner.tx13_fenced || h03_can_owner.setup_generation ||
+                  h03_can_owner.admitted_generation)) {
         ++unsafe_writes;
     }
     if (!ready && (h03_can_owner.initialized != retained.initialized ||
                    h03_can_owner.setup_permitted != retained.setup_permitted ||
                    h03_can_owner.grant != retained.grant ||
+                   h03_can_owner.tx13_fenced != retained.tx13_fenced ||
                    h03_can_owner.setup_generation != retained.setup_generation ||
                    h03_can_owner.admitted_generation != retained.admitted_generation)) {
         ++unsafe_writes;
@@ -377,7 +379,7 @@ static const Lfj8VehicleCalibration fixture_vehicle = {
     .wheel_num = 1u, .wheel_den = 1u,
 };
 static const Lfj8TorqueCalibration fixture_torque_cal = {.up = {[1] = {0x20u, 32u, 20u}}};
-static const Lfj8H03TargetServiceConfig service_profile = {
+const Lfj8H03TargetServiceConfig service_profile = {
     .can13 = {.period_1ae_us = 100u, .period_300_us = 160u, .torque_receive_age_bits = 4000u,
               .diagnostic_receive_age_bits = 1024u, .max_poll_gap_us = 5000u, .bit_time_us = 2u},
     .t6 = {.period_us_numerator = 10u, .period_us_denominator = 1u, .max_sample_gap_us = 250u},
@@ -386,13 +388,11 @@ static const Lfj8H03TargetServiceConfig service_profile = {
     .torque_calibration = &fixture_torque_cal, .torque = fixture_torque,
 };
 
-int rbm_h03_target_initialize(void *context)
+int fixture_initialize_inputs(void *context)
 {
     (void)context;
-    const uint32_t saved = lfj8_h03_mmio.enter(NULL);
-    const bool prepared = lfj8_h03_target_service_prepare_locked(&service_profile);
-    lfj8_h03_mmio.leave(NULL, saved);
-    return prepared;
+    chery_dtc_init(&fixture_shared_dtc);
+    return 1;
 }
 
 static void service_turn(uint32_t now)
@@ -425,15 +425,17 @@ void fixture_target_service_path(void)
     rbm_h03_tml0_1mhz_qualified = 0u;
     rbm_h03_sensor_state.feed.epoch = 8u;
     lfj8_h03_dtc_native_cold_init();
-    chery_dtc_init(&fixture_shared_dtc);
+    rbm_h03_toyota_release_state.status = UINT8_MAX;
     lfj8_h03_mmio.leave(NULL, saved);
     const bool prepared = rbm_h03_application_binding.initialize(NULL) == 1;
     if (!fixture_redirects_expected) {
-        fixture_service_steps = !prepared && !h03_can_owner.grant &&
+        fixture_service_steps = !prepared && rbm_h03_toyota_release_state.status == UINT8_MAX &&
+                                !h03_can_owner.grant &&
                                 !rbm_h03_can_service.config;
         return;
     }
-    if (!prepared || !rbm_h03_can_service.start_pending || h03_can_owner.grant) {
+    if (!prepared || rbm_h03_toyota_release_state.status != 0u ||
+        !rbm_h03_can_service.start_pending || h03_can_owner.grant) {
         return;
     }
     ++fixture_service_steps;
@@ -553,13 +555,77 @@ void fixture_target_service_path(void)
 
     service_turn(1511u);
     if (h03_can_owner.grant || rbm_h03_can_service.t6.active ||
-        !rbm_h03_can13.lease_lost) {
+        !rbm_h03_can13.lease_lost || !h03_can_owner.tx13_fenced || BYTE(CAN0 + 0x5du) != 0x0fu) {
         return;
     }
     ++fixture_service_steps;
     ++rbm_h03_sensor_state.feed.epoch;
     service_turn(1520u);
-    if (!h03_can_owner.grant && !rbm_h03_can_service.config) {
+    if (h03_can_owner.grant || rbm_h03_can_service.config) {
+        return;
+    }
+    ++fixture_service_steps;
+
+    /* An application restart may prepare CAN, but cannot re-admit the
+     * generation whose lease was withdrawn. The guarded permit does that. */
+    rbm_h03_application.running = 0u;
+    BYTE(CAN0 + 0x5du) = 0u;
+    if (rbm_h03_application_binding.initialize(NULL) != 1) {
+        return;
+    }
+    rbm_h03_application.running = 1u;
+    service_turn(1530u);
+    if (h03_can_owner.grant) {
+        return;
+    }
+    rbm_h03_can_monitor_publish_setup_locked();
+    service_turn(1540u);
+    if (!h03_can_owner.grant || rbm_h03_dtc_target.queue.generation != 3u) {
+        return;
+    }
+    ++fixture_service_steps;
+
+    /* Emulate an active TR just before the real application closes. The
+     * memory-backed controller retains the abort command until readback
+     * is driven below. The OEM writer must remain excluded in between. */
+    BYTE(CAN0 + 0x5du) = 0x82u;
+    WORD(CAN0 + 0x1d0u) = 0x171e0000u;
+    WORD(CAN0 + 0x1d8u) = 0x12345678u;
+    rbm_h03_application_cold_gate();
+    stock_tx_writer();
+    stage_dtc_request();
+    rbm_h03_dtc_rx_observe(14u);
+    if (h03_can_owner.grant || rbm_h03_can_service.config || rbm_h03_dtc_target.queue.count ||
+        rbm_h03_tml0_1mhz_qualified || rbm_h03_application.running || !h03_can_owner.tx13_fenced ||
+        BYTE(CAN0 + 0x5du) != 0x0fu || WORD(CAN0 + 0x1d0u) != 0x171e0000u ||
+        WORD(CAN0 + 0x1d8u) != 0x12345678u) {
+        return;
+    }
+    ++fixture_service_steps;
+
+    const uint32_t restore_saved = lfj8_h03_mmio.enter(NULL);
+    BYTE(CAN0 + 0x5du) = 0x80u;
+    HALF(0x8007f2u) = 0x8000u;
+    rbm_h03_can_monitor_retire_tx13_locked();
+    const bool bank_blocked = h03_can_owner.tx13_fenced && BYTE(CAN0 + 0x5du) == 0x80u;
+    HALF(0x8007f2u) = 0u;
+    lfj8_h03_mmio.leave(NULL, restore_saved);
+    if (!bank_blocked) {
+        return;
+    }
+    ++fixture_service_steps;
+
+    const uint32_t permit_saved = lfj8_h03_mmio.enter(NULL);
+    BYTE(CAN0 + 0x5eu) = 0x40u;
+    HALF(CAN0 + 0x0cu) = 0u;
+    BYTE(CAN0 + 0x5du) = 0x02u;
+    rbm_h03_can_monitor_publish_setup_locked();
+    const bool pending_kept = h03_can_owner.tx13_fenced && !h03_can_owner.grant;
+    BYTE(CAN0 + 0x5du) = 0x81u;
+    rbm_h03_can_monitor_publish_setup_locked();
+    const bool complete_released = !h03_can_owner.tx13_fenced && !h03_can_owner.grant;
+    lfj8_h03_mmio.leave(NULL, permit_saved);
+    if (pending_kept && complete_released) {
         ++fixture_service_steps;
     }
 }
@@ -572,17 +638,7 @@ def aliases_for(base, compiler, storage_report):
     for field in ("base", "artifact_kind", "blocks", "fields", "input_sha256"):
         if expected[field] != actual[field]:
             raise ValueError(f"The H03 RAM report differs from a fresh M32R inventory: {field}")
-    addresses = {}
-    for symbol, qualified in ALIASES.items():
-        group = qualified.split("/", 1)[0]
-        field = actual["fields"][qualified]
-        block = actual["blocks"][group]
-        address = block["address"] + field["offset"]
-        if address % field["alignment"] or not block["address"] <= address < address + field["bytes"] <= block["end_exclusive"]:
-            raise ValueError(f"The RAM address of {symbol} violates its typed block")
-        if any(start < address + field["bytes"] and address < end for start, end in addresses.values()):
-            raise ValueError(f"Overlapping native symbol {symbol}")
-        addresses[symbol] = (address, address + field["bytes"])
+    addresses = typed_alias_ranges(actual, ALIASES)
     text = "\n".join(f".global {symbol}\n.set {symbol}, {start:#x}"
                      for symbol, (start, _) in addresses.items()) + "\n"
     return addresses, text
@@ -628,6 +684,8 @@ def probe_binding(base, compiler, aliases, addresses):
             "lfj8_h03_atf_tml0.c", "lfj8_h03_dtc_native.c", "lfj8_h03_can_target.c",
             "lfj8_h03_target_service.c", "h03_can13_tx_gate.S",
             "h03_dtc_rx_hook.S", "lfj8_h03_application_binding.c",
+            "lfj8_h03_target_platform.c", "lfj8_h03_toyota_source.c",
+            "lfj8_h03_application.c", "lfj8_h03_sensor_target.c",
         )
         flags = (
             *TARGET, "-Os", "-g", "-std=c11", "-ffreestanding", "-fno-builtin",
@@ -637,6 +695,7 @@ def probe_binding(base, compiler, aliases, addresses):
         dtc_sources = (
             *(HERE / name for name in LFJ8_SOURCES if not name.startswith("test_")),
             HERE / "lfj8_h03_atf_feed.c",
+            HERE / "lfj8_h03_atf.c",
             HERE / "lfj8_selector_adc.c",
             write_port(ROOT / "controller/vendor/toyota/src", work),
             *(ROOT / "diagnostics" / name for name in DIAGNOSTIC_SOURCES),
@@ -722,7 +781,7 @@ def probe_binding(base, compiler, aliases, addresses):
         for name, patch_set, expected in (
             ("stock_writers", (), 1),
             ("missing_dtc_dispatch", service_patches[:-1], 1),
-            ("native_service", (*service_patches, fixture_flag), 12),
+            ("native_service", (*service_patches, fixture_flag), 16),
         ):
             observed, = startup.read_probe(run, work, debugger, "&fixture_target_service_path",
                                            patch_set, ((symbols["fixture_done"][0],),), 0,
@@ -760,9 +819,7 @@ def aggregate_placement(args, aliases):
         alias_path = Path(directory) / "h03-typed-aliases.S"
         alias_path.write_text(aliases + "\n.global h03_tx_writer_resume\n.set h03_tx_writer_resume, 0xC350\n",
                               encoding="ascii")
-        layout.BINDING_MODULES += ("lfj8_h03_can_monitor_revoke.c", "lfj8_h03_can_target.c",
-                                   "lfj8_h03_target_service.c", "lfj8_h03_atf_feed.c",
-                                   "h03_can13_tx_gate.S",
+        layout.BINDING_MODULES += (*SERVICE_MODULES, "h03_can13_tx_gate.S",
                                    Path(os.path.relpath(alias_path, HERE)).as_posix())
         layout.build = include_resident_rx
         try:
@@ -778,6 +835,62 @@ def aggregate_placement(args, aliases):
         row["nominal_flash_margin_before_alignment_and_missing_material"] += room
     result["service_and_resident_rx_without_monitor_veneers"] = result.pop("main_baseline")
     return result
+
+
+def profiled_service_placement(args, addresses):
+    """Measure the real CAN service with the profiled application and resident RX."""
+    sys.path.insert(0, str(ROOT))
+    from tools import check_h03_image_layout as layout
+
+    bindings = {name: addresses[name][0] for name in SERVICE_RAM_FIELDS}
+    bindings["h03_tx_writer_resume"] = 0xC350
+    local = ROOT / "local"
+    local.mkdir(exist_ok=True)
+    before = layout.BINDING_MODULES
+    with TemporaryDirectory(prefix="rbm-profiled-can-", dir=local) as directory:
+        work = Path(directory)
+        alias_path = work / "can-service-anchors.S"
+        alias_path.write_text("".join(f".global {name}\n.set {name}, {address:#x}\n"
+                                      for name, address in bindings.items()), encoding="ascii")
+        profile = work / "service-profile.h"
+        profile.write_text(FIXTURE_PROFILE, encoding="ascii")
+        out = work / "placement"
+        out.mkdir()
+        options = argparse.Namespace(
+            base=args.base.resolve(), gcc=args.gcc.resolve(), controller=args.controller.resolve(),
+            bridge=args.bridge.resolve(), storage_report=args.storage_report.resolve(), out=out,
+            profile="padding-candidate", memory_model="medium", with_bindings=True,
+            with_dtc_rx=True, application_profile=profile, cpu_test=False,
+        )
+        alias_source = Path(os.path.relpath(alias_path, HERE)).as_posix()
+        try:
+            layout.BINDING_MODULES = (*before, *SERVICE_MODULES, "h03_can13_tx_gate.S", alias_source)
+            report = layout.build(options)
+        except ValueError:
+            report_path = out / "layout.json"
+            if not report_path.is_file():
+                raise
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            if report["status"] != "FAIL_BINDINGS":
+                raise
+        finally:
+            layout.BINDING_MODULES = before
+
+    entries = {
+        "lfj8_h03_target_service_prepare_locked", "rbm_h03_target_service_phase",
+        "lfj8_h03_target_service_stop_locked", "rbm_h03_can_monitor_retire_tx13_locked", "h03_can13_tx_gate",
+    }
+    missing = set(report.get("unresolved_symbols", ()))
+    if not entries.issubset(report["required_roots"]) or missing & (entries | bindings.keys()):
+        raise ValueError("The profiled address model is missing a CAN service entry or RAM alias")
+    candidate = report.get("known_sections_candidate_plan", {})
+    if not report["accepted_layout"] and "sections" not in candidate:
+        raise ValueError("The retained CAN service composition did not fit the H03 address model")
+    return {"status": report["status"], "known_flash_bytes": report["flash_payload_bytes"],
+            "known_static_ram_bytes": report["new_static_ram_bytes"], "service_entries": sorted(entries),
+            "typed_addresses": {name: [f"0x{start:06X}", f"0x{end:06X}"]
+                                for name, (start, end) in addresses.items() if name in SERVICE_RAM_FIELDS},
+            "missing_symbols": sorted(missing), "hardware_verified": False, "flashable_image": None}
 
 
 def main():
@@ -801,6 +914,7 @@ def main():
                   "fixture": probe_binding(args.base, compiler, assembly, addresses), "flashable_image": None}
         if args.controller:
             report["aggregate_placement"] = aggregate_placement(args, assembly)
+            report["profiled_service_placement"] = profiled_service_placement(args, addresses)
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     except subprocess.CalledProcessError as error:

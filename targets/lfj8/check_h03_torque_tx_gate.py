@@ -9,7 +9,12 @@ import subprocess
 from tempfile import TemporaryDirectory
 
 from check_h03_link import identify_h03
+from check_h03_storage import check as check_storage
 from check_h03_torque_can_native import check as audit_native_can
+from lfj8_h03_dtc_rx_placement import owner_address
+from lfj8_h03_layout import (PROFILES, Window, alloc_sections, linker_script, pack,
+                            read_elf, validate_windows, verify_linked)
+import lfj8_h03_tx13_placement as tx13
 
 
 HERE = Path(__file__).resolve().parent
@@ -31,12 +36,18 @@ def check(base, compiler):
     if sha256(rom).hexdigest() != identity["sha256"]:
         raise ValueError("H03 changed while the fixture was being prepared")
 
+    tx13.validate_stock(rom)
+    windows = PROFILES["padding-candidate"]
+    validate_windows(windows, rom)
+    validate_windows((*windows, tx13.REDIRECT_WINDOW))
+    owner = owner_address(check_storage(base, compiler))
     simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")
     cases = []
+    linked_tx13 = None
     with TemporaryDirectory(prefix="rbm-h03-torque-tx-gate-") as temp:
         work = Path(temp)
         fixture = (HERE / "h03_torque_tx_gate_fixture.S").read_text(encoding="utf-8")
-        placements = []
+        stock = {}
         source = [fixture]
         digests = {}
         for name, start, end in FRAGMENTS:
@@ -46,23 +57,12 @@ def check(base, compiler):
             digests[name] = sha256(fragment).hexdigest()
             section = ".stock_" + name.replace("-", "_")
             source.extend((f'    .section {section},"ax",@progbits', f'    .incbin "{file}"'))
-            placements.append((section, start))
+            stock[section] = Window(section[1:], start, end)
         (work / "fixture.S").write_text("\n".join(source) + "\n", encoding="ascii")
-        entry = rom[0xC34C:0xC350]
-        if entry != bytes.fromhex("2E7F2A7F"):
-            raise ValueError("The native TX gate must replay the original entry word")
-        (work / "tx-entry.bin").write_bytes(entry)
-        placements.extend(((".tx_entry", 0xC34C), (".fixture", 0x060000),
-                           (".text.h03_can13_tx_gate", 0x060800), (".fixture_state", 0x100000)))
-        sections = "\n".join(f"  {section} {address:#x} : {{ *({section}) }}"
-                             for section, address in sorted(placements, key=lambda item: item[1]))
-        (work / "fixture.ld").write_text(
-            f"ENTRY(_start)\nSECTIONS {{\n{sections}\n"
-            "  /DISCARD/ : { *(.note*) *(.comment) }\n}\n"
-            "h03_irq = 0x004724; h03_foreground_call = 0x00C338; h03_tx_writer_resume = 0x00C350;\n"
-            "ASSERT(SIZEOF(.tx_entry) == 4, \"TX entry replacement must be one word\")\n",
-            encoding="ascii",
-        )
+        (work / "tx-entry.bin").write_bytes(rom[tx13.SITE:tx13.SITE + 4])
+        stock[".tx_entry"] = tx13.REDIRECT_WINDOW
+        stock[".fixture"] = Window("fixture", 0x060000, 0x060800)
+        validate_windows((*stock.values(), *windows))
 
         def run(*args):
             return subprocess.run([str(arg) for arg in args], cwd=work, check=True,
@@ -70,22 +70,49 @@ def check(base, compiler):
 
         if run(compiler, "-dumpmachine").stdout.strip() != b"m32r-elf":
             raise ValueError("A bare-metal M32R compiler is required")
+        flags = (compiler, "-m32r", "-Wa,-EB", f"-I{HERE}", "-nostdlib")
+        run(*flags, "-r", *(HERE / name for name in tx13.MODULES), "-o", "tx13.o")
+        retained = read_elf(work / "tx13.o", 1)
+        fixed, movable = tx13.fixed_redirect(alloc_sections(retained))
+        tx_placements = fixed + pack(movable, windows)
+        proposed = tx13.describe(rom, retained, tx_placements, owner, linked=False)
+        bindings = (f"h03_irq = 0x004724; h03_foreground_call = 0x00C338;\n"
+                    f"{tx13.RESUME} = {tx13.SITE + 4:#x}; {tx13.OWNER} = {owner:#x};\n")
         for path, irq in (("foreground", 0), ("CAN0_irq", 1)):
-            for hooked, lease, control in ((0, 0, 0x00), (0, 0, 0x81), (1, 0, 0x00),
-                                           (1, 1, 0x00), (1, 1, 0x81), (1, 1, 0x41)):
-                parameters = {"IRQ_PATH": irq, "HOOKED": hooked, "LEASE_VALUE": lease,
+            for hooked, lease, fence, control in (
+                (0, 0, 0, 0x00), (0, 0, 0, 0x81), (1, 0, 0, 0x00),
+                (1, 1, 0, 0x00), (1, 1, 0, 0x81), (1, 1, 0, 0x41),
+                (1, 0, 1, 0x82), (1, 0, 1, 0x02), (1, 0, 1, 0x81),
+            ):
+                parameters = {"IRQ_PATH": irq, "HOOKED": hooked, "LEASE_VALUE": lease, "FENCE_VALUE": fence,
                               "INITIAL_CONTROL": control}
-                run(compiler, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,fixture.ld",
-                    *(f"-D{k}={v}" for k, v in parameters.items()),
-                    f"-I{HERE}", "fixture.S", HERE / "h03_can13_tx_gate.S", "-o", "fixture.elf")
+                run(*flags, "-c", *(f"-D{k}={v}" for k, v in parameters.items()),
+                    "fixture.S", "-o", "fixture.o")
+                sections = alloc_sections(read_elf(work / "fixture.o", 1))
+                placements = [item for s in sections for item in pack((s,), (stock[s["name"]],))]
+                if hooked:
+                    placements += tx_placements
+                placements.sort(key=lambda item: item["address"])
+                run(*flags, "-r", "fixture.o", *(("tx13.o",) if hooked else ()), "-o", "retained.o")
+                (work / "fixture.ld").write_text(bindings + linker_script(placements), encoding="ascii")
+                run(*flags, "-Wl,-T,fixture.ld,-e,_start", "retained.o", "-o", "fixture.elf")
+                linked = read_elf(work / "fixture.elf", 2)
+                verify_linked(linked, placements, ("_start", *tx13.ROOTS) if hooked else ("_start",))
+                if hooked:
+                    verified = tx13.describe(rom, linked, placements, owner, linked=True)
+                    if verified["patch"] != proposed["patch"] or linked_tx13 not in (None, verified):
+                        raise ValueError("The linked TX13 region drifted between the OEM call paths")
+                    linked_tx13 = verified
                 run(simulator, "--memory-size", "16M", "fixture.elf")
+                blocked = bool(hooked and (lease or fence))
                 cases.append({
                     "caller": path,
                     "hooked": bool(hooked),
                     "lease": bool(lease),
+                    "fence": bool(fence),
                     "initial_slot_control": f"0x{control:02X}",
-                    "final_slot_control": f"0x{control if lease else 0x80:02X}",
-                    "slot_data_preserved": bool(lease),
+                    "final_slot_control": f"0x{control if blocked else 0x80:02X}",
+                    "slot_data_preserved": blocked,
                 })
     return {
         "base": identity,
@@ -95,6 +122,7 @@ def check(base, compiler):
         "native_irq_entry": "invoked directly with SLIST bit 2 set",
         "can_hardware_irq_modelled": False,
         "traces": cases,
+        "linked_tx13": linked_tx13,
         "scope": "Original H03 call sites and production TX gate with simulated MMIO and owner placement.",
         "hardware_executed": False,
         "flashable_image": None,
