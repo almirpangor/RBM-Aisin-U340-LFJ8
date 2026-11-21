@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T07:46:59+00:00**. Изменение № **832**.
+Обновлено UTC: **2026-11-21T07:47:09+00:00**. Изменение № **833**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 06ab447e19de0fa7d864e2ae674dff4a29678b10.
 
-**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 12.**
+**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 11.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -41,7 +41,6 @@
 | H03-03 | Codex H03-03 common application RAM and CAN service | [a8821975addf](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/a8821975addf933eee8e370085ad645f032442f2) | 0f2e91c7274b44688d2514bece8ba6e8 | Общий линк использует RAM приложения, сервис CAN и TX13. Из прежних семи ссылок остались application_binding и sensor_config. Профиль закрепил 13 алиасов; связанное слово TX13 проверено по общему плану. Прошли ранние IRQ/DMA4, 18 TX13, 53 H03, 22 native, 8 components, 6 размещённых групп и 41 этап ПК. Итоговая сборка ждёт профиля и поставщиков. |
 | H03-04 | Codex H03-04 DMA4 in common H03 layout | [1ca2f19ae859](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/1ca2f19ae8590baf6586d812216d55665aebd570) | 51ce545a28f949a48fa5a995230c2ba7 | DMA4 и раннее обнуление существующего указателя BasicCAN включены в общий адресный расчёт. На одном связанном ELF прошли оба reset, два CAN0 перехода, отказ DMA4 на указателе и допуск SIO0. 25 проверок размещения, 6 размещённых групп, 12 DMA4, 9 сервисных BasicCAN и 41 этап ПК. Общий линк ещё FAIL_BINDINGS, аппаратные IRQ и полный стек открыты. |
 | H03-04 | Codex H03-04 — допуск по установленным переходам DMA4 и раннего IRQ | [be1ec128d7ea](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/be1ec128d7ea1bd6ec8db9542da7ecf6a321c5d6) | 79e878898f8d4435a7240ad9a30071db | Допуск RAM проверяет связанные ранний BasicCAN и DMA4, общее слово указателя и единую политику. M32R: отказы при подменах, cold/warm, BasicCAN и DMA4 подтверждены, 31 тест размещения/RAM. Общая модель 106796 байт; верх 103240/102356, FAIL_BINDINGS. Открыты rbm_h03_boot_writers_owned, полный SPI/PSW и итоговая компоновка. BIN не выпускались. |
-| H03-05 | Codex H03-05 — снятие TIO9 в нативном отзыве | [07da572f8971](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/07da572f89718e96da71d34f2cb0e8fa36f28156) | fae2c834e65a428fb92e2fd73fc941d8 | Нативный callback отзыва снимает TIO9/P97 и сохранённую команду. Повторный OEM apply без новой команды удерживает P97 в GPIO low, свежая выдача фазы 2 сохранена. Пройдены 16 сценариев в каждой модели, 59 SLT, 18 OEM, 20 CAN, 22 native и 8 components. Отдельный адресный прогон с H03-04 bec09c3 прошёл. Физическая изоляция, калибровка, фаза 3 и стенд открыты. Отчёт verification/project-audit/h03-05-tio9-inhibit.md. |
 | MODE-02 | Codex MODE-02 — ручная цель в полном профиле H03 | [9908d956f18c](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9908d956f18cba01fe0ef9c9089dbd81d317fb75) | ec35ff2a13a14818a96ced1510f85588 | Подключена ручная цель через профиль H03 и take_toyota до S01 MAIN. M32R подтвердил удержание, отзыв, S1/S2 и обрыв между релизами в обычной и размещённой моделях. ПК 41 этап и 181 тест, native 22, components 8, размещённое ядро 6. Выпускной профиль, карта P1DATA/OD, поставщик входов и аппаратные измерения ещё нужны. Отчёт verification/project-audit/mode02-native-profile-capture.md. |
 | ORG-01 | Общая сборка 39 результатов | [06ab447e19de](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/06ab447e19de0fa7d864e2ae674dff4a29678b10) | 9a8eca1841da444399a297ba0f3124f0 | 39 порций объединены и проверены; исправлен API RAM-теста. Полная композиция FAIL_BINDINGS/Flash overflow; 2 рабочих BIN не выпущены. Отчёт integration-39-20261121. |
 
@@ -61,7 +60,7 @@
 | 1 | [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#toy-02) | Свободна для продолжения | Поставщик нагрузки для take_toyota: происхождение каждого GP, единицы, диапазон, период и тест потери данных. | См. входные условия карточки |
 | 2 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#h03-04) | Свободна для продолжения; порция на проверке | rbm_h03_target_ram_owned, карта размещения/стека и проверка DMA/SBI/сервиса на едином составе. | См. входные условия карточки |
 | 3 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#vss-02) | Свободна для продолжения | rbm_h03_sensor_config и rbm_h03_target_clock_ready; проверка несовпадения/сброса часов, тайм-аутов и недостоверной остановки. | См. входные условия карточки |
-| 4 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#h03-05) | Свободна для продолжения; порция на проверке | rbm_h03_target_takeover_ops с трассой до регистров и явными условиями допуска SLT/SLU. | См. входные условия карточки |
+| 4 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#h03-05) | Свободна для продолжения | rbm_h03_target_takeover_ops с трассой до регистров и явными условиями допуска SLT/SLU. | См. входные условия карточки |
 | 5 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#can-01) | Свободна для продолжения | rbm_h03_target_engine, реальные пределы возраста/опроса, испытания потери и восстановления данных через общий startup/foreground. | См. входные условия карточки |
 | 6 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#dtc-04) | Свободна для продолжения | Физический NVM backend, адреса, busy/ошибки, восстановление после прерывания и очистка без ложного подтверждения. | H03-04 |
 | 7 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#toy-05) | Свободна для продолжения | rbm_h03_target_startup_gear/gp с происхождением полей; порядок init → prepare_s01_cold → restore_adaptation до допуска выходов. | TOY-04, H03-04 |
@@ -153,7 +152,7 @@
 </details>
 
 <details>
-<summary>H03-05 — SLT, силовые выходы и реакция на отказ: Свободна для продолжения; порция на проверке</summary>
+<summary>H03-05 — SLT, силовые выходы и реакция на отказ: Свободна для продолжения</summary>
 
 **Сделано.** Связаны нативные выходные операции и commit на соседней фазе; revoke теперь останавливает TIO9/P97. M32R проверил штатные ROM-пути, пропуск/повтор фазы, потерю clock/RAM и остановку.
 
@@ -687,7 +686,7 @@
 | TOY-02 | Порция принята | Codex TOY-02 — допуск нагрузки в H03 | codex/toy02-load-evidence-01a1f9c7 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit f1f622d93c3e0ae143cb41ba83813160d7b3063a |
 | H03-04 | На проверке | Codex H03-04 — допуск по установленным переходам DMA4 и раннего IRQ | codex/rel02-h03-ram-owner-01a1f99f | Допуск RAM проверяет связанные ранний BasicCAN и DMA4, общее слово указателя и единую политику. M32R: отказы при подменах, cold/warm, BasicCAN и DMA4 подтверждены, 31 тест размещения/RAM. Общая модель 106796 байт; верх 103240/102356, FAIL_BINDINGS. Открыты rbm_h03_boot_writers_owned, полный SPI/PSW и итоговая компоновка. BIN не выпускались. / commit be1ec128d7ea1bd6ec8db9542da7ecf6a321c5d6 |
 | VSS-02 | Порция принята | Codex VSS-02 — парный профиль TML0/TML1 | codex/vss02-runtime-counter-01a1f9c7 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit b703627c2b40b90867d0989a5dd3bfc58a62eeea |
-| H03-05 | На проверке | Codex H03-05 — снятие TIO9 в нативном отзыве | codex/h03-05-tio9-revoke-01a1fa79 | Нативный callback отзыва снимает TIO9/P97 и сохранённую команду. Повторный OEM apply без новой команды удерживает P97 в GPIO low, свежая выдача фазы 2 сохранена. Пройдены 16 сценариев в каждой модели, 59 SLT, 18 OEM, 20 CAN, 22 native и 8 components. Отдельный адресный прогон с H03-04 bec09c3 прошёл. Физическая изоляция, калибровка, фаза 3 и стенд открыты. Отчёт verification/project-audit/h03-05-tio9-inhibit.md. / commit 07da572f89718e96da71d34f2cb0e8fa36f28156 |
+| H03-05 | Порция принята | Codex H03-05 — снятие TIO9 в нативном отзыве | codex/h03-05-tio9-revoke-01a1fa79 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 07da572f89718e96da71d34f2cb0e8fa36f28156 |
 | CAN-01 | Порция принята | Codex CAN-01 — возраст операндов двигателя на Task 2 | codex/can01-target-engine-1121-c7e4 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 368ecd723336eaa20d508e0d0025172ed78cd127 |
 | DTC-04 | Порция принята | Codex DTC-04 — проверка физического чтения журнала | codex/dtc04-native-restore-bank-gate-922b7b11 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 456abca6b0dda9bf8f542f1fbe90653246959443 |
 | TOY-05 | Порция принята | Codex TOY-05 — квалифицированный холодный старт в H03 | codex/toy05-seed-native-1121-c7e4 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 2ae850bef8c0f064aaf1cc0e3541eb143ef32f97 |
@@ -726,6 +725,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T07:47:09+00:00 | H03-05 | complete | 01a1fa79-a9fd-70c0-80a3-f59592edaf79 |
 | 2026-11-21T07:46:59+00:00 | H03-04 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T07:46:49+00:00 | TOY-05 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-21T07:46:39+00:00 | DTC-01 | complete | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
@@ -755,4 +755,3 @@
 | 2026-11-21T07:42:32+00:00 | H03-04 | complete | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-21T07:42:23+00:00 | DTC-02 | complete | 01a1fa76-b015-7640-a0ba-433b36dcf55f |
 | 2026-11-21T07:42:09+00:00 | ORG-01 | review | codex-integration-01a1f76d-20261120 |
-| 2026-11-21T07:35:24+00:00 | ORG-01 | heartbeat | codex-integration-01a1f76d-20261120 |
