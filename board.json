@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 861,
+  "sequence": 862,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -285,8 +285,8 @@
       "stage": "in_progress",
       "claim_id": "d92614932c0a42a8a26f18f92c6b6d6b",
       "claimed_at": "2026-11-21T07:55:14+00:00",
-      "updated_at": "2026-11-21T07:55:14+00:00",
-      "note": "Включаю явные окна AN2 и измеряемые интервалы в общий адаптер входов; подготовка нативного профиля до допуска CAN. Стенд VSS-02 не редактирую без снятия резерва.",
+      "updated_at": "2026-11-21T08:05:42+00:00",
+      "note": "Явная таблица AN2 проверена на ПК и M32R, нативный startup/foreground с профилем по адресам общего плана прошёл. 0 новой RAM, модель +358 байт Flash. Повторяю проверку свежих объектов и резерва VSS-02.",
       "result": null,
       "based_on_reviews": []
     },
@@ -13487,9 +13487,43 @@
         "result": "1cf7aa5eb5c8ead6866eb1be12a7a3fad8f6fbbe",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "53706fee651045c9b87ed9053beba9da",
+      "task": "MODE-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "d92614932c0a42a8a26f18f92c6b6d6b",
+      "at": "2026-11-21T08:05:42+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex MODE-02 — профиль AN2 и подготовка входа",
+        "branch": "codex/h03-03-native-inputs-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "controller/include/rbm_u340e.h",
+          "controller/src/rbm_u340e.c",
+          "targets/lfj8/check_h03_target_platform.py",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/lfj8_h03_input_binding.h",
+          "targets/lfj8/lfj8_h03_target_platform.c",
+          "targets/lfj8/lfj8_h03_target_platform.h",
+          "targets/lfj8/lfj8_h03_toyota_input_profile.h",
+          "targets/lfj8/lfj8_range_control.c",
+          "targets/lfj8/lfj8_range_control.h",
+          "targets/lfj8/test_lfj8_h03_input_binding.c",
+          "verification/project-audit/mode02-profiled-selector-startup.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "d92614932c0a42a8a26f18f92c6b6d6b",
+        "claimed_at": "2026-11-21T07:55:14+00:00",
+        "updated_at": "2026-11-21T08:05:42+00:00",
+        "note": "Явная таблица AN2 проверена на ПК и M32R, нативный startup/foreground с профилем по адресам общего плана прошёл. 0 новой RAM, модель +358 байт Flash. Повторяю проверку свежих объектов и резерва VSS-02.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:03:37+00:00",
+  "updated_at": "2026-11-21T08:05:42+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
