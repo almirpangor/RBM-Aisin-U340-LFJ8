@@ -68,7 +68,7 @@ def validate_windows(windows, rom=None):
         previous = window.end
 
 
-def read_elf(path, kind):
+def read_elf(path, kind, *, local_symbols=()):
     data = Path(path).read_bytes()
     if len(data) < 52 or data[:7] != b"\x7fELF\x01\x02\x01":
         raise ValueError("Expected ELF32 big-endian")
@@ -112,8 +112,10 @@ def read_elf(path, kind):
             name,value,size,info,other,index=struct.unpack_from(">IIIBBH",section["data"],offset)
             if index >= len(sections) and index < 0xFF00:
                 raise ValueError("ELF symbol has an invalid section index")
-            if name and info >> 4 in (1,2):
+            if name and (info >> 4 in (1,2) or local_symbols):
                 name=string(strings,name)
+                if info >> 4 not in (1,2) and (info >> 4 != 0 or name not in local_symbols):
+                    continue
                 record={"address":value,"size":size,"section":index,"type":info&15}
                 if name in symbols and symbols[name] != record:
                     raise ValueError("Conflicting ELF global symbol: "+name)
@@ -166,11 +168,11 @@ def pack(sections, windows):
     return sorted(placements,key=lambda item:item["address"])
 
 
-def linker_script(placements):
-    lines=["ENTRY(rbm_u340e_step)","SECTIONS {"]
+def linker_script(placements, *, object_name="retained.o", entry="rbm_u340e_step"):
+    lines=[f"ENTRY({entry})","SECTIONS {"]
     for index,p in enumerate(placements):
         noload=" (NOLOAD)" if p["noload"] else ""
-        lines.append(f' .p{index:04d} {p["address"]:#x}{noload} : {{ retained.o("{p["section"]}") }}')
+        lines.append(f' .p{index:04d} {p["address"]:#x}{noload} : {{ {object_name}("{p["section"]}") }}')
     lines.extend([" /DISCARD/ : { *(.note*) *(.comment) }","}"])
     for index,p in enumerate(placements):
         lines.append(f'ASSERT(SIZEOF(.p{index:04d}) == {p["bytes"]}, "Placed section size changed")')

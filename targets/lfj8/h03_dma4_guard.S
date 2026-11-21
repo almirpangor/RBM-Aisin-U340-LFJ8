@@ -48,3 +48,37 @@ rbm_h03_dma4_guard:
     restore_dma4_context
     jmp lr
     .size rbm_h03_dma4_guard,.-rbm_h03_dma4_guard
+
+#ifdef RBM_H03_COMMON_DMA4_GUARD
+    .section .text.rbm_h03_dma4_redirect,"ax",@progbits
+    .p2align 2
+    .global rbm_h03_dma4_redirect
+    .type rbm_h03_dma4_redirect,@function
+rbm_h03_dma4_redirect:
+    bra.l rbm_h03_dma4_guard
+    .size rbm_h03_dma4_redirect,.-rbm_h03_dma4_redirect
+
+    .section .text.rbm_h03_early_irq_redirect,"ax",@progbits
+    .p2align 2
+    .global rbm_h03_early_irq_redirect
+    .type rbm_h03_early_irq_redirect,@function
+rbm_h03_early_irq_redirect:
+    bra.l rbm_h03_early_irq_gate
+    .size rbm_h03_early_irq_redirect,.-rbm_h03_early_irq_redirect
+
+    /* Both reset vectors have established SPI here. Clear the actual
+     * placed BasicCAN pointer before replaying the OEM PSW write. */
+    .section .text.rbm_h03_early_irq_gate,"ax",@progbits
+    .p2align 2
+    .global rbm_h03_early_irq_gate
+    .type rbm_h03_early_irq_gate,@function
+rbm_h03_early_irq_gate:
+    push r1
+    ld24 r0,#h03_dtc_irq_pointer
+    ldi r1,#0
+    st r1,@r0
+    pop r1
+    ldi r0,#0x40 -> mvtc r0,psw
+    bra.l h03_early_irq_after_entry
+    .size rbm_h03_early_irq_gate,.-rbm_h03_early_irq_gate
+#endif

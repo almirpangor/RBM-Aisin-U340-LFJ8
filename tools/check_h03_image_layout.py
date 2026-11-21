@@ -18,6 +18,7 @@ from lfj8_h03_layout import (PROFILES,Window,PlacementError,read_elf,alloc_secti
                             symbol_bytes,raw_reference_patterns)
 import lfj8_h03_sensor_hooks as sensor_hooks
 import lfj8_h03_dtc_rx_placement as dtc_rx
+import lfj8_h03_service_placement as service
 
 EXTRA_ROOTS=(
     "rbm_u340e_step",
@@ -56,7 +57,7 @@ def digest(path):
 
 
 def invalidate_outputs(output,inputs):
-    artifacts=[output/name for name in ("layout.elf","placement.ld","layout.json","summary.json")]
+    artifacts=[output/name for name in ("layout.elf","early-irq.elf","placement.ld","layout.json","summary.json")]
     if any(p.resolve()==source.resolve() or (p.exists() and source.exists() and p.samefile(source))
            for p in artifacts for source in inputs):
         raise ValueError("Output artifacts must not overwrite inputs")
@@ -213,6 +214,34 @@ def sensor_placement(rom, elf, provisional=None):
             "patches": sensor_hooks.patch_plan(rom, addresses)}
 
 
+def early_irq_model(args, stage, run, flags, rom, placement, bindings, ranges, pointer):
+    """Link the independent boot, DMA4 and BasicCAN graph at the common addresses."""
+    roots = (*service.COMMON_ROOTS, *dtc_rx.REDIRECT_ROOTS)
+    run(args.gcc, *flags, "-r", "-nostdlib", "-Wl,--gc-sections",
+        *(f"-Wl,--undefined={name}" for name in roots), "retained.o", "-o", "early.o")
+    retained = read_elf(stage / "early.o", 1)
+    required = {name for name, symbol in retained["symbols"].items() if symbol["section"] == 0}
+    if required - bindings.keys():
+        raise ValueError(f"Early IRQ/DMA4 graph requires other providers: {sorted(required - bindings.keys())}")
+    names = {section["name"] for section in alloc_sections(retained)}
+    selected = [item for item in placement if item["section"] in names]
+    if names != {item["section"] for item in selected}:
+        raise ValueError("An early IRQ/DMA4 section is missing from the common layout")
+    pinned = "".join(f"{name} = {bindings[name]:#x};\n" for name in sorted(required))
+    script = pinned + linker_script(selected, object_name="early.o", entry=roots[0])
+    (stage / "early.ld").write_text(script, encoding="ascii")
+    run(args.gcc, *flags, "-nostdlib", "-Wl,-T,early.ld", "early.o", "-o", "early-irq.elf")
+    path = stage / "early-irq.elf"
+    linked = read_elf(path, 2)
+    # Verify the independent graph against the same fixed sites and policy.
+    model = {"elf_sha256": linked["sha256"], "placements": selected, "roots": list(roots),
+             "irq_pointer": pointer, "policy_ranges": ranges,
+             "artifact_kind": "EARLY_IRQ_DMA4_SIMULATOR_ONLY"}
+    service.early_overlay(rom, path, model)
+    shutil.copyfile(path, args.out / "early-irq.elf")
+    return model
+
+
 def build(args):
     application_profile = getattr(args, "application_profile", None)
     release_ram = None
@@ -241,6 +270,24 @@ def build(args):
         sensor_hooks.validate_stock(rom)
     windows=PROFILES[args.profile]
     with_dtc_rx = getattr(args, "with_dtc_rx", False)
+    with_dma4 = getattr(args, "with_dma4_guard", False)
+    if with_dma4:
+        if not (with_dtc_rx and args.with_bindings and args.storage_report):
+            raise ValueError("DMA4 and early IRQ protection require --with-bindings, --with-dtc-rx and --storage-report")
+        storage = read_storage_report(args.storage_report)
+        available = storage_space(args.storage_report)
+        pointer_layout = pack(({"name": ".bss.irq_target", "type": 8, "flags": 3,
+                                "size": 4, "alignment": 4},), available)[0]
+        pointer = pointer_layout["address"]
+        blocks = {name: (block["address"], block["end_exclusive"])
+                  for name, block in storage["blocks"].items()}
+        policy = service.policy_ranges(blocks, ((pointer, pointer + 4),))
+        ram_windows = tuple(
+            Window(w.name, pointer + 4, w.end) if w.name == pointer_layout["window"] else w
+            for w in available if w.name != pointer_layout["window"] or pointer + 4 < w.end
+        )
+        pointer_layout["window"] = "early_irq_pointer"
+        service.verify_stock(rom, (site for site, _ in service.COMMON_REDIRECTS))
     flash_windows = (*windows, dtc_rx.RX_WINDOW) if with_dtc_rx else windows
     owner_address = None
     if with_dtc_rx:
@@ -248,7 +295,8 @@ def build(args):
             raise ValueError("Resident RX needs --with-bindings and a typed --storage-report")
         dtc_rx.validate_stock(rom)
         # The two pinned OEM words are occupied, unlike the packing windows.
-        validate_windows((*flash_windows, *dtc_rx.REDIRECT_WINDOWS))
+        fixed_windows = (*dtc_rx.REDIRECT_WINDOWS, *(service.COMMON_WINDOWS if with_dma4 else ()))
+        validate_windows((*flash_windows, *fixed_windows))
         storage_space(args.storage_report)
         owner_address = dtc_rx.owner_address(json.loads(args.storage_report.read_text(encoding="utf-8")))
     validate_windows(flash_windows,rom)
@@ -286,6 +334,8 @@ def build(args):
         bindings.extend(LFJ8/name for name in SENSOR_ASSEMBLY)
     if with_dtc_rx:
         bindings.extend(LFJ8/name for name in dtc_rx.MODULES)
+    if with_dma4:
+        bindings.append(LFJ8 / "h03_dma4_guard.S")
     modules=list(dict.fromkeys([*modules,*bindings]))
     roots=set((*legacy.H03_ROOTS,*legacy.DTC_ROOTS,*legacy.CAN_EXTENSION_ROOTS,*EXTRA_ROOTS))
     if with_dtc_rx:
@@ -316,6 +366,9 @@ def build(args):
     if with_dtc_rx:
         path = Path(dtc_rx.__file__).resolve()
         report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
+    if with_dma4:
+        path = Path(service.__file__).resolve()
+        report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
     with TemporaryDirectory(prefix="rbm-h03-placement-") as folder:
         stage=Path(folder)
         if sensor_source is not None:
@@ -323,6 +376,11 @@ def build(args):
             generated.write_bytes(sensor_source)
             modules.append(generated)
             bindings.append(generated)
+        if with_dma4:
+            generated = stage / "h03_service_policy.c"
+            generated.write_text(service.policy_source(policy), encoding="ascii")
+            modules.append(generated)
+            report["input_sources"]["generated/h03_service_policy.c"] = digest(generated)
 
         def run(*items):
             return subprocess.run([str(i) for i in items],cwd=stage,check=True,capture_output=True,
@@ -344,6 +402,8 @@ def build(args):
             profile_flags = (["-I", application_profile.parent,
                 '-DRBM_H03_APPLICATION_PROFILE="' + application_profile.name + '"']
                 if source.name in PROFILED_BINDINGS else [])
+            if source.name == "h03_dma4_guard.S":
+                profile_flags.append("-DRBM_H03_COMMON_DMA4_GUARD=1")
             run(args.gcc,*flags,*module_flags,*profile_flags,*(x for p in includes for x in ("-I",p)),
                 "-c",source,"-o",name)
             objects.append(name)
@@ -379,6 +439,8 @@ def build(args):
                     (owner_symbol.get("section"), owner_symbol.get("address")) != (0xFFF1, owner_address)):
                 raise ValueError("The DTC RX binding must use the existing typed CAN owner")
             native_bindings.update(dtc_rx.STOCK_SYMBOLS, h03_can_owner=owner_address)
+        if with_dma4:
+            native_bindings.update(service.COMMON_STOCK_TARGETS, h03_dtc_irq_pointer=pointer)
         unresolved=[name for name,symbol in retained["symbols"].items()
                     if symbol["section"]==0 and name not in native_bindings]
         sections=alloc_sections(retained)
@@ -392,8 +454,21 @@ def build(args):
                 return pack(flash,windows)
             names = dtc_rx.closure_sections(run, args.gcc, flags, stage)
             fixed, remaining = dtc_rx.fixed_redirects(flash)
+            if with_dma4:
+                service_fixed, remaining = service.fixed_common_redirects(remaining)
+                fixed.extend(service_fixed)
+                names.add(".text.rbm_h03_early_irq_gate")
             resident, upper = dtc_rx.split_flash(remaining, names)
             return fixed + pack(resident, (dtc_rx.RX_WINDOW,)) + pack(upper, windows)
+
+        def place_ram():
+            if with_dma4:
+                irqs = [s for s in ram if s["name"] == ".bss.irq_target"]
+                if (len(irqs) != 1 or
+                        (irqs[0]["size"], irqs[0]["type"], irqs[0]["flags"], irqs[0]["alignment"]) != (4, 8, 3, 4)):
+                    raise ValueError("Expected the one four-byte native BasicCAN pointer")
+                return [pointer_layout, *pack([s for s in ram if s not in irqs], ram_windows)]
+            return pack(ram, storage_space(args.storage_report))
 
         if unresolved:
             try:
@@ -412,6 +487,16 @@ def build(args):
                 if with_dtc_rx:
                     report["dtc_rx_redirects"] = dtc_rx.describe(
                         rom, retained, provisional, owner_address, linked=False)
+                if with_dma4:
+                    clock = storage["fields"]["control/clock_qualified"]
+                    control = storage["blocks"]["control"]
+                    if (clock["bytes"] != 1 or not 0 <= clock["offset"] < control["bytes"]):
+                        raise ValueError("Invalid typed H03 clock qualification flag")
+                    early_bindings = dict(native_bindings, rbm_h03_tml0_1mhz_qualified=
+                                          control["address"] + clock["offset"])
+                    report["early_irq_model"] = early_irq_model(
+                        args, stage, run, flags, rom, sorted(provisional + place_ram(),
+                        key=lambda p: p["address"]), early_bindings, policy, pointer)
             except PlacementError as error:
                 report["known_sections_candidate_plan"]=error.report
             report.update(status="FAIL_BINDINGS",accepted_layout=False,
@@ -425,7 +510,7 @@ def build(args):
                 if args.storage_report is None:
                     raise PlacementError("Native writable state needs a prior RAM inventory",
                                          {"accepted_layout":False,"new_static_ram_bytes":sum(s["size"] for s in ram)})
-                placement += pack(ram,storage_space(args.storage_report))
+                placement += place_ram()
             placement.sort(key=lambda p:p["address"])
         except PlacementError as error:
             report.update(status="FAIL_PLACEMENT",failure=error.report,accepted_layout=False)
@@ -435,7 +520,7 @@ def build(args):
         (stage/"placement.ld").write_text(pinned+linker_script(placement),encoding="ascii")
         run(args.gcc,*flags,"-fno-use-linker-plugin","-nostdlib","-Wl,-T,placement.ld",
             "retained.o","-o","layout.elf")
-        linked=read_elf(stage/"layout.elf",2)
+        linked=read_elf(stage/"layout.elf",2,local_symbols=("irq_target",) if with_dma4 else ())
         verify_linked(linked,placement,roots)
         if release_ram is not None:
             release = linked["symbols"].get(TOYOTA_RELEASE_SYMBOL, {})
@@ -447,13 +532,22 @@ def build(args):
             report["sensor_redirects"] = sensor_placement(rom, linked)
         if with_dtc_rx:
             report["dtc_rx_redirects"] = dtc_rx.describe(rom, linked, placement, owner_address, linked=True)
+        if with_dma4:
+            report["common_service"] = {"patches": service.verify_common(rom, linked, policy, pointer),
+                                        "policy_ranges": policy, "irq_pointer": pointer}
+            report["early_irq_model"] = early_irq_model(
+                args, stage, run, flags, rom, placement, native_bindings, policy, pointer)
         tables={}
         for name,size,expected in legacy.S01_LINK_TABLES:
             content=symbol_bytes(linked,name)
             if len(content)!=size or sha256(content).hexdigest()!=expected:
                 raise ValueError("Linked donor calibration changed: "+name)
             tables[name]={"address":linked["symbols"][name]["address"],"bytes":size,"sha256":expected}
-        selected_windows=(*flash_windows,*storage_space(args.storage_report)) if ram else flash_windows
+        selected_windows = flash_windows
+        if ram:
+            placed_ram_windows = (*ram_windows, Window("early_irq_pointer", pointer, pointer + 4)) \
+                if with_dma4 else storage_space(args.storage_report)
+            selected_windows = (*flash_windows, *placed_ram_windows)
         window_results={}
         for w in selected_windows:
             placed=[p for p in placement if p["window"]==w.name]
@@ -492,6 +586,8 @@ def main():
                         help="H03 sensor limits and observed maxima for the paired clock reference")
     parser.add_argument("--with-dtc-rx", action="store_true",
                         help="Link the two OEM-site BasicCAN redirects and place the resident RX graph")
+    parser.add_argument("--with-dma4-guard", action="store_true",
+                        help="Include the DMA4 guard and clear the BasicCAN pointer before the first IRQ")
     parser.add_argument("--cpu-test",action="store_true")
     parser.add_argument("--storage-report",type=Path)
     args=parser.parse_args()
