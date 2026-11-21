@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 889,
+  "sequence": 890,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -305,11 +305,11 @@
         "targets/lfj8/lfj8_h03_toyota_nvm_profile.h",
         "verification/project-audit/toy05-native-adaptation-reader.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "403b34a2893d4d969a7b8eb7964150c2",
       "claimed_at": "2026-11-21T07:58:13+00:00",
-      "updated_at": "2026-11-21T08:07:57+00:00",
-      "note": "Профиль штатного startup читает пару UFL1 из защищённого массива M32176 в существующее workspace до допуска фаз. M32R подтвердил rollover, Virtual Flash, повторный старт и фактическое восстановление; 22 native, 8 components, 6 placed, ПК 41/194. +316 байт Flash, 0 новых RAM, общий верхний дефицит 388 байт. Нужны два доказанно свободных блока, запись, полный startup GP/gear и стенд. Отчёт toy05-native-adaptation-reader.md.",
+      "updated_at": "2026-11-21T08:37:05+00:00",
+      "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
       "result": "9cec04d64dfe83df578de05919ace1d6c7f840aa",
       "based_on_reviews": []
     },
@@ -14362,9 +14362,40 @@
         "task": "H03-05",
         "submitted_at": "2026-11-21T08:07:43+00:00"
       }
+    },
+    {
+      "operation_id": "c3ad2974837a43b8a3a20853259916db",
+      "task": "TOY-05",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "403b34a2893d4d969a7b8eb7964150c2",
+      "at": "2026-11-21T08:37:05+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex TOY-05 — чтение адаптаций из нативного массива при старте",
+        "branch": "codex/integration39-c7e4",
+        "files": [
+          "targets/lfj8/check_h03_nvm.py",
+          "targets/lfj8/h03_nvm_native_fixture.c",
+          "targets/lfj8/lfj8_h03_cycle.h",
+          "targets/lfj8/lfj8_h03_nvm_native.c",
+          "targets/lfj8/lfj8_h03_nvm_native.h",
+          "targets/lfj8/lfj8_h03_toyota_nvm_profile.h",
+          "verification/project-audit/toy05-native-adaptation-reader.md"
+        ],
+        "stage": "done",
+        "claim_id": "403b34a2893d4d969a7b8eb7964150c2",
+        "claimed_at": "2026-11-21T07:58:13+00:00",
+        "updated_at": "2026-11-21T08:37:05+00:00",
+        "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
+        "result": "9cec04d64dfe83df578de05919ace1d6c7f840aa",
+        "based_on_reviews": [],
+        "task": "TOY-05",
+        "submitted_at": "2026-11-21T08:07:57+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:36:54+00:00",
+  "updated_at": "2026-11-21T08:37:05+00:00",
   "main_commit": "abd3cba0093cf834950d7883fcc6cbacec4420d3",
   "catalog": [
     {
@@ -17010,11 +17041,11 @@
         "targets/lfj8/lfj8_h03_toyota_nvm_profile.h",
         "verification/project-audit/toy05-native-adaptation-reader.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "403b34a2893d4d969a7b8eb7964150c2",
       "claimed_at": "2026-11-21T07:58:13+00:00",
-      "updated_at": "2026-11-21T08:07:57+00:00",
-      "note": "Профиль штатного startup читает пару UFL1 из защищённого массива M32176 в существующее workspace до допуска фаз. M32R подтвердил rollover, Virtual Flash, повторный старт и фактическое восстановление; 22 native, 8 components, 6 placed, ПК 41/194. +316 байт Flash, 0 новых RAM, общий верхний дефицит 388 байт. Нужны два доказанно свободных блока, запись, полный startup GP/gear и стенд. Отчёт toy05-native-adaptation-reader.md.",
+      "updated_at": "2026-11-21T08:37:05+00:00",
+      "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
       "result": "9cec04d64dfe83df578de05919ace1d6c7f840aa",
       "based_on_reviews": [],
       "task": "TOY-05",
