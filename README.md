@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T09:11:30+00:00**. Изменение № **929**.
+Обновлено UTC: **2026-11-21T09:12:07+00:00**. Изменение № **930**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 10 · Ожидают с резервом: 0 · Порций на проверке: 4.**
+**В работе: 9 · Ожидают с резервом: 0 · Порций на проверке: 5.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -20,7 +20,6 @@
 
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
-| 3 | TOY-02 — Подтверждённая нагрузка двигателя для Toyota | Чат 4 — нативные входы Toyota и сырой Bosch CAN \[01a1f9c7-675a-78c3-be98-5bd65e44995c\] | 2026-11-21T09:01:15+00:00 | Зафиксировал контракт 0x6B2 и нативный backend. Сверяю каждый writer S01 по ROM и запускаю donor/C167 и M32R; добавляю два воспроизводимых проверочных скрипта. |
 | 6 | TOY-05 — Обучение и сохранение адаптаций | Codex 12 — TOY-05, стартовое состояние первой стендовой пары \[01a1fa79-a9fd-70c0-80a3-f59592edaf79\] | 2026-11-21T09:04:29+00:00 | Проверен штатный V850 reset и INIT донора. Реальный профиль использует две существующие типизированные области; M32R проверяет startup с пустым и валидным NVM и отказами. |
 | 8 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Codex чат 2 — Task 2 и профиль двигателя для первой стендовой пары \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | 2026-11-21T09:10:53+00:00 | Native composition removes fixture_engine_context, uses 636 more Flash bytes and adds no static RAM. Phase boot passed 68 cases; preparing review. |
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
@@ -46,6 +45,7 @@
 | DTC-02 | Codex чат 10 — диагностика H03 для стенда | [a1e173336874](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/a1e173336874cb52dae2bb75f4cf4287df105dff) | 8d2e9979b8b94adab47c6ca68b65d7f6 | Чат 10. Нативный стендовый readout 13 страниц через BasicCAN/C0/TX13, включая полный 3-кадровый ответ TML0/TML1 с Flow Control. 41 этап ПК, S03 96, 18 сравнений IRQ, 9 сервисных и 40 ATF проверок. История сохраняется и ACK не выдаётся без DTC-04 backend. Интеграция --binding-source, +1064 байта Flash к той же модели, RAM без прироста, FAIL_BINDINGS. Контракт verification/bench-wave/chat-10/handoff.json. Без прошивки. |
 | DTC-04 | Чат 9 — стендовый NVM H03 | [4842a325a0fa](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/4842a325a0fa14c14c1fd5ccb48f9afc2c0bdc29) | fdfd811485f4417a8f450b2e455bc6e3 | Чат 9. Профиль NVM без носителя для первого стенда: штатная база S01, холодный DTC, явный NO_ASSIGNED_MEDIA и native read-only статус SFR/32-байтовый счётчик. Единственные пустые сектора 4/7 заняты резидентом и приложением. NVM ПК/M32R, BasicCAN 18+18, 22 native с двумя повторными проверками и 91 тест компоновки прошли. В модели с реальным bench профилем qualified_adaptation_blocks исключён, 14 внешних символов остаются. Контракт, карта, память и результаты: verification/bench-wave/chat-9/handoff.json. Запись и аппаратная приёмка открыты. |
 | ECU-01 | Codex чат 8 — Bosch ST10 для стендовой пары | [9312c056ee46](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9312c056ee46e8f0495a64840bb82b722c1ee9ca) | bb95576349fc4befa4af7a3779ddb4ae | Нативный RPM-допуск RB подключён к START/REFRESH и трём ветвям ST10; CANCEL сохранён. 51 запись целостности, проверены ordinary, T4, парные сценарии. OFFLINE_ONLY; Toyota raw-контракт и остаток в verification/bench-wave/chat-8/handoff.json. |
+| TOY-02 | Чат 4 — нативные входы Toyota и сырой Bosch CAN | [7a7ac7f97d32](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/7a7ac7f97d328cd6f5de88f02c043b1f8b21efac) | 5d84c76a488c45b6bf0b82f1f835af45 | Сырой контракт Bosch 0x6B2, приём стабильной BasicCAN копии и штатный H03 capture вместо test_input_capture собраны. ПК/M32R RX→GP прошли; найдены все 8 writer S01 и бит режима, сверены 198 инструкций, повторены C167 и аудит CAN. Остались издатель, dispatch, порядок первого release и обоснованные project_load/read_local. Handoff verification/bench-wave/chat-4/handoff.json. |
 | VSS-02 | Codex 5 — нативный стендовый профиль TML0/S51/S83/ATF | [18dcf51f3a76](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/18dcf51f3a765f2d660e142003999cbf627782f4) | cee15d1377aa4207a89e2eb78dd96995 | Нативный OEM_NOMINAL профиль TML0/TML1, S51/S83/ATF и raw capture опубликован. M32R PASS. Интегратору подобрать размещение и подключить согласованный транспорт raw capture. Стендовых замеров и BIN в этой порции нет. |
 
 ## Что осталось доделать
@@ -62,7 +62,7 @@
 | Приоритет | Задача | Занятость | Что сдать | Зависимости приёмки |
 | --- | --- | --- | --- | --- |
 | 2 | [TOY-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-01) | Свободна для продолжения | Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений. | См. входные условия карточки |
-| 3 | [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-02) | Выполняется | Таблица всех необходимых операндов и реализованный capture/input backend; контракт для чата 8, реальные source offsets и отрицательные тесты неполного/устаревшего снимка. | См. входные условия карточки |
+| 3 | [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-02) | Свободна для продолжения; порция на проверке | Таблица всех необходимых операндов и реализованный capture/input backend; контракт для чата 8, реальные source offsets и отрицательные тесты неполного/устаревшего снимка. | См. входные условия карточки |
 | 4 | [TOY-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-03) | Свободна для продолжения | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
 | 5 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-04) | Свободна для продолжения | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, TOY-03, H03-03, MODE-02 |
 | 6 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-05) | Выполняется | Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений. | TOY-04, H03-04 |
@@ -116,7 +116,7 @@
 </details>
 
 <details>
-<summary>TOY-02 — Подтверждённая нагрузка двигателя для Toyota: Выполняется</summary>
+<summary>TOY-02 — Подтверждённая нагрузка двигателя для Toyota: Свободна для продолжения; порция на проверке</summary>
 
 **Сделано.** Три группы нагрузки требуют квалификации перед GP и планированием; смена epoch отзывает старые данные. Ручной профиль и основной цикл прошли.
 
@@ -130,7 +130,7 @@
 
 **Рекомендуемый чат.** Чат 4 — 01a1f9c7-675a-78c3-be98-5bd65e44995c.
 
-**Сейчас выполняет.** Чат 4 — нативные входы Toyota и сырой Bosch CAN — 01a1f9c7-675a-78c3-be98-5bd65e44995c.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Трасса происхождения каждого операнда, сравнение с S01 и отдельные переходные режимы. Одного TPS и кадров RPM/ОЖ недостаточно.
 
@@ -740,6 +740,7 @@
 | Задача | Состояние порции | Предыдущий исполнитель | Ветка | Результат |
 | --- | --- | --- | --- | --- |
 | TOY-01 | Порция принята | Codex TOY-01 H03 independent release clock | codex/toy01-h03-release-clock-01a1f99f | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit c53aaf01d85f38f3fded16ae2c75ef52009f5bd9 |
+| TOY-02 | На проверке | Чат 4 — нативные входы Toyota и сырой Bosch CAN | codex/toy02-load-evidence-01a1f9c7 | Сырой контракт Bosch 0x6B2, приём стабильной BasicCAN копии и штатный H03 capture вместо test_input_capture собраны. ПК/M32R RX→GP прошли; найдены все 8 writer S01 и бит режима, сверены 198 инструкций, повторены C167 и аудит CAN. Остались издатель, dispatch, порядок первого release и обоснованные project_load/read_local. Handoff verification/bench-wave/chat-4/handoff.json. / commit 7a7ac7f97d328cd6f5de88f02c043b1f8b21efac |
 | TOY-03 | Порция принята | Codex TOY-03 — допуск независимого P/N | codex/toy03-independent-pn-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 3f2596f31930203fe9cd7918e9b62f81ea82699c |
 | TOY-04 | Порция принята | Codex TOY-04 — ручная заявка в цикле | codex/toy04-manual-cycle-892d | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit c7b0568cde39ddc27e71432e5028db9c9a351e16 |
 | TOY-06 | Порция принята | Codex TOY-06 — штатные выходы H03 | codex/toy06-native-lockup-output-01a1f9a2 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 4baf99ccd587811223aa05bc44460053dbade903 |
@@ -889,21 +890,6 @@
 - tools/h03_image.py
 - verification/project-audit/bench-first-20261121/
 
-### TOY-02
-
-Чат: Чат 4 — нативные входы Toyota и сырой Bosch CAN. Claim ID: 5d84c76a488c45b6bf0b82f1f835af45.
-
-- targets/lfj8/lfj8_h03_bench_input.c
-- targets/lfj8/lfj8_h03_bench_input.h
-- targets/lfj8/lfj8_h03_bench_input_profile.h
-- targets/lfj8/lfj8_h03_load_raw.c
-- targets/lfj8/lfj8_h03_load_raw.h
-- targets/lfj8/test_lfj8_h03_bench_input.c
-- verification/bench-wave/chat-4/check_load_boundary.py
-- verification/bench-wave/chat-4/check_native_capture.py
-- verification/bench-wave/chat-4/handoff.json
-- verification/bench-wave/chat-4/raw-source-contract.md
-
 ### TOY-05
 
 Чат: Codex 12 — TOY-05, стартовое состояние первой стендовой пары. Claim ID: 5ec8d9943cbd4616ab0bbf37dcec141b.
@@ -921,6 +907,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T09:12:07+00:00 | TOY-02 | review | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-21T09:11:30+00:00 | DTC-04 | claim | 01a1fa76-922b-7b11-a2f2-346a15d1dc95 |
 | 2026-11-21T09:10:53+00:00 | CAN-01 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-21T09:10:43+00:00 | DTC-02 | review | 01a1fa76-b015-7640-a0ba-433b36dcf55f |
@@ -950,4 +937,3 @@
 | 2026-11-21T08:51:09+00:00 | TOY-02 | claim | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-21T08:51:01+00:00 | DTC-02 | claim | 01a1fa76-b015-7640-a0ba-433b36dcf55f |
 | 2026-11-21T08:50:55+00:00 | CAN-01 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
-| 2026-11-21T08:50:46+00:00 | MODE-02 | claim | 01a1fa79-892d-7ca3-bb8a-44698892c53e |
