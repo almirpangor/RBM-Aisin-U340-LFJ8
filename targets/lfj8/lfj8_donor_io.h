@@ -34,6 +34,8 @@ typedef struct {
     uint32_t vss_at_tml0;
     uint32_t nt_at_tml0;
     uint32_t nt_edge_tml1;
+    uint32_t tml1_offset_min; /* TML1 minus the final TML0 read, modulo 2^32. */
+    uint16_t tml_read_span_ticks; /* Width of the possible TML1 offset interval. */
     uint16_t nt_alignment_error_ticks;
 } Lfj8CapturePair;
 
@@ -110,8 +112,9 @@ Lfj8CaptureSnapshot lfj8_9e1c_raw_nt_snapshot(volatile Lfj8RawCapture *nt,
 /* Use on H03 where TML0 and TML1 run from the same clock bus. now_tml0
  * marks the end of the read bracket. S51 and S83 must be fresh at that
  * point even at the oldest possible time of the TML1 read. The S83 edge
- * timestamp uses the bracket midpoint with its alignment error. Reject an
- * excessively wide bracket without consuming either capture. */
+ * timestamp uses the bracket midpoint with its alignment error. A coherent
+ * bracket publishes the possible TML1 offset even without a capture edge.
+ * Reject an excessively wide bracket without consuming either capture. */
 int lfj8_h03_capture_pair(volatile Lfj8RawVss *vss, volatile Lfj8RawCapture *nt,
                           const Lfj8RegisterIo *io, uint32_t vss_timeout_ticks,
                           uint32_t nt_timeout_ticks, uint16_t max_read_span_ticks,

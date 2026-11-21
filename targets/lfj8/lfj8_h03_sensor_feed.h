@@ -5,7 +5,10 @@
 
 typedef struct {
     uint32_t epoch;
+    uint32_t tml1_offset_min;
+    uint16_t tml1_offset_span;
     uint8_t epoch_seen;
+    uint8_t tml1_offset_seen;
 } Lfj8H03SensorFeed;
 
 typedef struct {
@@ -45,6 +48,8 @@ typedef enum {
 /* Zero-initialize feed. All objects are disjoint. The clock owner must
  * verify continuous TML0/TML1 rates of 1 MHz, keep the supplied observation
  * stable during the call and revoke or advance the epoch on discontinuity.
+ * Coherent capture brackets must share a TML1-to-TML0 offset throughout
+ * an epoch. Loss of that overlap also invalidates producer history.
  * Standstill confirmation is independent of S51 pulse absence and belongs
  * to the supplied epoch. A fresh first S51 edge precludes STOPPED.
  * Poll often enough for modulo ages to stay valid.

@@ -172,12 +172,43 @@ int main(void)
     assert(!s51.primed && !s83.primed && !atf.valid && !atf.adc_seen);
     assert(snapshot.capture.vss.state == LFJ8_VSS_UNAVAILABLE);
 
+    /* A wrapped offset interval narrows, then a frozen TML1 is rejected
+     * even when every individual TML0 step fits inside the read span. */
+    registers.tml1 = registers.tml0 + 2u;
+    assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
+           == LFJ8_H03_SENSOR_SNAPSHOT);
+    registers.tml0 += 4u;
+    registers.tml1 += 6u;
+    assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
+           == LFJ8_H03_SENSOR_SNAPSHOT);
+    for (unsigned i = 0; i < 4u; ++i) {
+        ++registers.tml0;
+        assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
+               == LFJ8_H03_SENSOR_SNAPSHOT);
+    }
+    s51 = (Lfj8RawVss){.last_edge = registers.tml0, .interval_ticks = 100u, .primed = 1u};
+    s83 = (Lfj8RawCapture){.last_edge = registers.tml1, .interval_ticks = 100u, .primed = 1u};
+    seed_atf(&io, &atf, registers.tml0 - 10u, registers.tml0);
+    ++registers.tml0;
+    assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
+           == LFJ8_H03_SENSOR_CLOCK_UNAVAILABLE);
+    assert(!registers.lock_depth && !snapshot.epoch && !snapshot.atf_valid);
+    assert(!s51.primed && !s83.primed && !atf.valid && !feed.tml1_offset_seen);
+    assert(snapshot.capture.vss.state == LFJ8_VSS_UNAVAILABLE);
+
+    ++clock.epoch;
     clock.qualified_1mhz = 0u;
     assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
            == LFJ8_H03_SENSOR_CLOCK_UNAVAILABLE);
     clock.qualified_1mhz = 1u;
     assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
            == LFJ8_H03_SENSOR_NEW_EPOCH);
+    assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
+           == LFJ8_H03_SENSOR_SNAPSHOT);
+    registers.tml0 += 8u;
+    registers.tml1 += 16u;
+    assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
+           == LFJ8_H03_SENSOR_CLOCK_UNAVAILABLE);
     config.s51_timeout_ticks = UINT32_C(0x80000000);
     assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
            == LFJ8_H03_SENSOR_INVALID);

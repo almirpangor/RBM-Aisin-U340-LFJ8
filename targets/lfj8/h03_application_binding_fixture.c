@@ -180,6 +180,7 @@ int main(void)
 
     for (unsigned attempt = 0; attempt < 2; ++attempt) {
         MMIO32(0x8003e0) += 8u;
+        MMIO32(0x800fe0) += 8u;
         rbm_h03_phase_release_callback(MMIO32(0x8003e0));
         rbm_h03_application_foreground_hook();
         assert(service_calls == attempt + 1u);
@@ -216,6 +217,24 @@ int main(void)
     rbm_h03_phase_wait_callback();
     assert(!rbm_h03_application.running && !rbm_h03_runtime_state.initialized && !rbm_h03_tml0_1mhz_qualified);
     assert(!rbm_h03_takeover_state.pending && service_calls == 2u);
+    rbm_h03_phase_startup_callback();
+    assert(rbm_h03_application.running && initialize_calls == 5u);
+    MMIO32(0x8003e0) += 8u;
+    MMIO32(0x800fe0) += 8u;
+    rbm_h03_phase_release_callback(MMIO32(0x8003e0));
+    rbm_h03_application_foreground_hook();
+    assert(service_calls == 3u && rbm_h03_application.running);
+
+    rbm_h03_sensor_state.s51.primed = 1u;
+    rbm_h03_atf_state.valid = 1u;
+    MMIO32(0x8003e0) += 8u; /* Freeze TML1 while all control registers match. */
+    rbm_h03_phase_release_callback(MMIO32(0x8003e0));
+    rbm_h03_application_foreground_hook();
+    assert(stock_updates == 4u && service_calls == 3u && take_calls == 3u);
+    assert(!rbm_h03_application.running && !rbm_h03_runtime_state.initialized);
+    assert(!rbm_h03_tml0_1mhz_qualified && !rbm_h03_takeover_state.pending);
+    assert(!rbm_h03_atf_state.valid && !rbm_h03_sensor_state.s51.primed);
+
     puts("H03 native binding: RAM and timer refusal, epoch revocation, wrap, restart, foreground and expiry PASS");
     return 0;
 }
