@@ -566,7 +566,7 @@
 
 **Что настраивать.** RAM 2692 + 4 Б: [0x806B40,0x806F8C), [0x808E40,0x80905C), [0x80905C,0x809478). Известный расширенный Flash-состав 94770 Б, номинальный остаток 7586 до окончательной обвязки; владение не подтверждено.
 
-**Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native) · [STORAGE](#check-storage) · [INTEGRATION](#check-integration) · [INTEGRATION2](#check-integration2) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [SERVICE_GUARD](#check-service_guard) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [S01_COLD](#check-s01_cold) · [INTEGRATION39](#check-integration39) · [INTEGRATION11](#check-integration11)
+**Проверки.** [M32R](#check-m32r) · [NATIVE](#check-native) · [STORAGE](#check-storage) · [INTEGRATION](#check-integration) · [INTEGRATION2](#check-integration2) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [SERVICE_GUARD](#check-service_guard) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [S01_COLD](#check-s01_cold) · [INTEGRATION39](#check-integration39) · [INTEGRATION11](#check-integration11) · [BENCH_PREP](#check-bench_prep)
 
 **Разбор и основания.** [lfj8-h03-ram-audit.md](../docs/lfj8-h03-ram-audit.md) · [lfj8-h03-flash.md](../docs/lfj8-h03-flash.md) · [lfj8-h03-service-isolation.md](../docs/lfj8-h03-service-isolation.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [h03-04-service-guard.md](../verification/project-audit/h03-04-service-guard.md) · [h03-04-service-cancel.md](../verification/project-audit/h03-04-service-cancel.md) · [report.md](../verification/project-audit/integration-39-20261121/report.md) · [bench-first-wave.md](../docs/bench-first-wave.md)
 
@@ -775,17 +775,17 @@
 
 **Требуется разработка** · ТЗ §1, §4, §5, §9
 
-**Сделано.** Все 11 новых результатов объединены. 41 этап ПК, 210 Python до новой упаковки, 55 целевых проверок упаковки, 22 native, 8 компонентов и 6 групп ядра прошли. Известный состав помещается после переноса двух таблиц, но 15 ссылок остаются открытыми. TCM BIN отсутствует; Bosch OFFLINE_ONLY.
+**Сделано.** Добавлена детерминированная сборка байтов полного H03 ELF с проверкой исходных участков и всех секций. Проверены 12 новых сценариев. Полного native ELF и TCM BIN ещё нет; работают 12 чатов первой стендовой волны.
 
 **Осталось.** Закончить реальные профили/поставщики, полный native link и все redirects, сериализацию TCM BIN, целевую Bosch пару, целостность, сквозные проверки и манифест. Измерения новой пары следуют после выдачи файлов.
 
 **Критерий результата.** Два целевых реализованных BIN, source/final SHA и карта правок, воспроизводимая сборка, подтвержденные software checks, явные ограничения первого стенда. Аппаратная приемка учитывается отдельно в REL-02.
 
-**Код.** [controller/build_target.py](../controller/build_target.py) · [targets/lfj8/check_h03_link.py](../targets/lfj8/check_h03_link.py) · [targets/bosch/build.py](../targets/bosch/build.py) · [tools/package_workset.py](../tools/package_workset.py) · [tests/test_package_workset.py](../tests/test_package_workset.py)
+**Код.** [controller/build_target.py](../controller/build_target.py) · [targets/lfj8/check_h03_link.py](../targets/lfj8/check_h03_link.py) · [targets/bosch/build.py](../targets/bosch/build.py) · [tools/package_workset.py](../tools/package_workset.py) · [tests/test_package_workset.py](../tests/test_package_workset.py) · [tools/h03_image.py](../tools/h03_image.py)
 
 **Что настраивать.** Отдельные поля build_verified, model_verified и hardware_verified. Не переименовывать ELF/тестовый BIN в рабочую прошивку.
 
-**Проверки.** [SOURCES](#check-sources) · [PC](#check-pc) · [M32R](#check-m32r) · [NATIVE](#check-native) · [BOSCH](#check-bosch) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [SERVICE_GUARD](#check-service_guard) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39) · [INTEGRATION11](#check-integration11)
+**Проверки.** [SOURCES](#check-sources) · [PC](#check-pc) · [M32R](#check-m32r) · [NATIVE](#check-native) · [BOSCH](#check-bosch) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [SERVICE_GUARD](#check-service_guard) · [INTEGRATION21](#check-integration21) · [FINAL_INTEGRATION](#check-final_integration) · [INTEGRATION39](#check-integration39) · [INTEGRATION11](#check-integration11) · [BENCH_PREP](#check-bench_prep)
 
 **Разбор и основания.** [verification.md](../docs/verification.md) · [working-set.md](../docs/working-set.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md) · [rel01-offline-report-guard.md](../verification/project-audit/rel01-offline-report-guard.md)
 
@@ -1013,7 +1013,7 @@
 
 **Что настраивать.** Публикация в GitHub возобновлена по указанию владельца 20.11.2026. Учёт чатов отделён от готовности прошивки.
 
-**Проверки.** [SOURCES](#check-sources) · [COORD](#check-coord) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [COORD_REVIEW](#check-coord_review) · [FINAL_INTEGRATION](#check-final_integration) · [COORD_HANDOFF](#check-coord_handoff) · [INTEGRATION39](#check-integration39) · [INTEGRATION11](#check-integration11)
+**Проверки.** [SOURCES](#check-sources) · [COORD](#check-coord) · [INTEGRATION](#check-integration) · [INTEGRATION3](#check-integration3) · [MEMORY4](#check-memory4) · [COORD_REVIEW](#check-coord_review) · [FINAL_INTEGRATION](#check-final_integration) · [COORD_HANDOFF](#check-coord_handoff) · [INTEGRATION39](#check-integration39) · [INTEGRATION11](#check-integration11) · [BENCH_PREP](#check-bench_prep)
 
 **Разбор и основания.** [decisions.md](../docs/decisions.md) · [multi-chat.md](../docs/multi-chat.md) · [integration-next-tasks.md](../docs/integration-next-tasks.md) · [lfj8-h03-memory-layout.md](../docs/lfj8-h03-memory-layout.md)
 
@@ -1307,3 +1307,12 @@ python -B tools/project_status.py --check
 ```
 
 **Последний сохранённый результат.** [report.md](../verification/project-audit/integration-11-20261121/report.md) · [summary.json](../verification/project-audit/integration-11-20261121/summary.json) · [composition.json](../verification/project-audit/integration-11-20261121/composition.json) · [roundtrip.json](../verification/project-audit/integration-11-20261121/roundtrip.json)
+
+<a id="check-bench_prep"></a>
+### BENCH_PREP — Пересверка и сборка байтов H03
+
+```powershell
+build-summary.json; python -B -m unittest tests.test_h03_image и тесты размещения; repeat-composition.py сохраняет FAIL_BINDINGS.
+```
+
+**Последний сохранённый результат.** [report.md](../verification/project-audit/bench-first-20261121/report.md) · [summary.json](../verification/project-audit/bench-first-20261121/summary.json) · [composition.json](../verification/project-audit/bench-first-20261121/composition.json)
