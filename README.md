@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T08:07:43+00:00**. Изменение № **868**.
+Обновлено UTC: **2026-11-21T08:07:57+00:00**. Изменение № **869**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 06ab447e19de0fa7d864e2ae674dff4a29678b10.
 
-**В работе: 3 · Ожидают с резервом: 0 · Порций на проверке: 6.**
+**В работе: 2 · Ожидают с резервом: 0 · Порций на проверке: 7.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -22,7 +22,6 @@
 | --- | --- | --- | --- | --- |
 | 2 | H03-04 — Память, стек и сервисные пути | Codex H03-04 — подтверждённые RAM/SPI/PSW алиасы \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T08:07:13+00:00 | Подключаю типизированные диапазоны RAM и исходные вершины SPI/PSW к общему линку. Неподтверждённые нижние пределы, запасы и boot_writers_owned оставляю открытыми. |
 | 5 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Codex CAN-01 — реальная привязка единственного состояния двигателя \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | 2026-11-21T07:59:14+00:00 | Общий адресный состав использует реальные типизированные поля и разрешает target_engine. Flash +36, RAM без прироста. Контекст Task 2 всё ещё обязательный внешний вход. Идут связанные модели CAN и startup. |
-| 7 | TOY-05 — Обучение и сохранение адаптаций | Codex TOY-05 — чтение адаптаций из нативного массива при старте \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | 2026-11-21T08:02:40+00:00 | Реальный FactoryAdaptRead и защищённый массив прошли в M32R, включая rollover и отказ Virtual Flash. Инвентарь RAM не вырос. Проверяю профиль в общей композиции и повторяю регрессии. |
 
 ## Ожидают — резерв сохранён
 
@@ -41,6 +40,7 @@
 | H03-04 | Codex H03-04 — сервисные переходы в общей компоновке | [1cf7aa5eb5c8](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/1cf7aa5eb5c8ead6866eb1be12a7a3fad8f6fbbe) | fe45b2270ed1477d94fcc54c637fa138 | Пять сервисных переходов связаны в общем H03 с единой защитой RAM/DMA4. Ранний ELF: 29 сценариев записи, 28 закрытий, ранний IRQ и DMA4; 22 проверки размещения. Известная верхняя часть 102224/102356, 28 ссылок ещё открыты. Без выпуска BIN. |
 | H03-05 | Codex H03-05 reduce native output flash | [0d3b2d09b5db](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/0d3b2d09b5db03c24bdacb123372e385ba14edb3) | cfeb6b2c68764c1486a4151c11fa115d | Сократил штатный takeover на 94 байта M32R medium и 86 small без роста RAM. Известные верхние секции теперь размещаются 102334/102356. Проверены точные порядки публикации, 13 флагов, нативные выходы в двух моделях, 22 native, 8 components, 6 размещённых и 41 этап ПК. Полный линк сохраняет 32 ссылки и ждёт реальных профилей и поставщиков. |
 | MODE-02 | Codex MODE-02 — профиль AN2 и подготовка входа | [44f118638a6e](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/44f118638a6ef4c728f9b729c328ea5359c96dee) | d92614932c0a42a8a26f18f92c6b6d6b | Нативный AN2/P1DATA поддерживает явные окна и политику, startup сбрасывает владельцев до CAN. Хост, M32R startup/foreground, 22 native, 6 размещённых групп и 57 тестов PASS. Профильная модель +358 Flash и 0 новой RAM; полная верхняя часть превышает ёмкость на 430 байт. Нужны физические окна/карта/тайминги и квалифицированные Toyota inputs. |
+| TOY-05 | Codex TOY-05 — чтение адаптаций из нативного массива при старте | [9cec04d64dfe](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9cec04d64dfe83df578de05919ace1d6c7f840aa) | 403b34a2893d4d969a7b8eb7964150c2 | Профиль штатного startup читает пару UFL1 из защищённого массива M32176 в существующее workspace до допуска фаз. M32R подтвердил rollover, Virtual Flash, повторный старт и фактическое восстановление; 22 native, 8 components, 6 placed, ПК 41/194. +316 байт Flash, 0 новых RAM, общий верхний дефицит 388 байт. Нужны два доказанно свободных блока, запись, полный startup GP/gear и стенд. Отчёт toy05-native-adaptation-reader.md. |
 | VSS-02 | Codex VSS-02 — согласованность таймеров в foreground | [9235b22a1f5a](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9235b22a1f5a1c455cb33a45d21b58c13d17bd52) | 1d81829ef6454d6589be1c0367f123d1 | Штатный foreground отзывает эпоху и очищает S51/S83/ATF при разрыве относительного хода TML0/TML1. Воспроизведён дефект 06ab447. Прошли ПК 41/194, M32R 22+8, 68 startup и 6 групп размещённого ядра. +168 байт Flash, +12 типизированной RAM и +8 в кадрах foreground. Общий FAIL_BINDINGS, 32 ссылки и дефицит верхней Flash 240 байт. Нужны реальные замеры и выпускной профиль. Отчёт verification/project-audit/vss02-h03-live-clock-continuity.md. |
 
 ## Что осталось доделать
@@ -62,7 +62,7 @@
 | 4 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#h03-05) | Свободна для продолжения; порция на проверке | rbm_h03_target_takeover_ops с трассой до регистров и явными условиями допуска SLT/SLU. | См. входные условия карточки |
 | 5 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#can-01) | Выполняется | rbm_h03_target_engine, реальные пределы возраста/опроса, испытания потери и восстановления данных через общий startup/foreground. | См. входные условия карточки |
 | 6 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#dtc-04) | Свободна для продолжения | Физический NVM backend, адреса, busy/ошибки, восстановление после прерывания и очистка без ложного подтверждения. | H03-04 |
-| 7 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#toy-05) | Выполняется | rbm_h03_target_startup_gear/gp с происхождением полей; порядок init → prepare_s01_cold → restore_adaptation до допуска выходов. | TOY-04, H03-04 |
+| 7 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#toy-05) | Свободна для продолжения; порция на проверке | rbm_h03_target_startup_gear/gp с происхождением полей; порядок init → prepare_s01_cold → restore_adaptation до допуска выходов. | TOY-04, H03-04 |
 | 8 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#can-03) | Свободна для продолжения; порция на проверке | rbm_h03_target_service_phase и связанная CAN-композиция без дублирования owner/состояния. | H03-04 |
 | 9 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#mode-02) | Свободна для продолжения; порция на проверке | Реальный захват селектора/кнопок до входа take_toyota, шесть положений и отказы проводов. | H03-03 |
 | 10 | [TOY-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#toy-03) | Свободна для продолжения | Поставщики GP−5722 и GP−5250.2 с происхождением, временем и отказом. | См. входные условия карточки |
@@ -214,7 +214,7 @@
 </details>
 
 <details>
-<summary>TOY-05 — Обучение и сохранение адаптаций: Выполняется</summary>
+<summary>TOY-05 — Обучение и сохранение адаптаций: Свободна для продолжения; порция на проверке</summary>
 
 **Сделано.** Включены холодная проекция S01, startup seed перед NVM и отказ неоднозначных поколений адаптаций; повторены 258 сравнений R3, host/M32R startup и rollback.
 
@@ -226,7 +226,7 @@
 
 **Что сдать.** rbm_h03_target_startup_gear/gp с происхождением полей; порядок init → prepare_s01_cold → restore_adaptation до допуска выходов.
 
-**Сейчас выполняет.** Codex TOY-05 — чтение адаптаций из нативного массива при старте — codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Проверены пределы коррекции, повторный пуск, повреждённая запись и сброс адаптаций.
 
@@ -686,6 +686,7 @@
 | VSS-02 | На проверке | Codex VSS-02 — согласованность таймеров в foreground | codex/vss02-h03-live-clock-continuity-01a1f9c7 | Штатный foreground отзывает эпоху и очищает S51/S83/ATF при разрыве относительного хода TML0/TML1. Воспроизведён дефект 06ab447. Прошли ПК 41/194, M32R 22+8, 68 startup и 6 групп размещённого ядра. +168 байт Flash, +12 типизированной RAM и +8 в кадрах foreground. Общий FAIL_BINDINGS, 32 ссылки и дефицит верхней Flash 240 байт. Нужны реальные замеры и выпускной профиль. Отчёт verification/project-audit/vss02-h03-live-clock-continuity.md. / commit 9235b22a1f5a1c455cb33a45d21b58c13d17bd52 |
 | H03-05 | На проверке | Codex H03-05 reduce native output flash | codex/h03-05-output-flash-01a1f9a2 | Сократил штатный takeover на 94 байта M32R medium и 86 small без роста RAM. Известные верхние секции теперь размещаются 102334/102356. Проверены точные порядки публикации, 13 флагов, нативные выходы в двух моделях, 22 native, 8 components, 6 размещённых и 41 этап ПК. Полный линк сохраняет 32 ссылки и ждёт реальных профилей и поставщиков. / commit 0d3b2d09b5db03c24bdacb123372e385ba14edb3 |
 | DTC-04 | Порция принята | Codex DTC-04 — проверка физического чтения журнала | codex/dtc04-native-restore-bank-gate-922b7b11 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 456abca6b0dda9bf8f542f1fbe90653246959443 |
+| TOY-05 | На проверке | Codex TOY-05 — чтение адаптаций из нативного массива при старте | codex/integration39-c7e4 | Профиль штатного startup читает пару UFL1 из защищённого массива M32176 в существующее workspace до допуска фаз. M32R подтвердил rollover, Virtual Flash, повторный старт и фактическое восстановление; 22 native, 8 components, 6 placed, ПК 41/194. +316 байт Flash, 0 новых RAM, общий верхний дефицит 388 байт. Нужны два доказанно свободных блока, запись, полный startup GP/gear и стенд. Отчёт toy05-native-adaptation-reader.md. / commit 9cec04d64dfe83df578de05919ace1d6c7f840aa |
 | CAN-03 | На проверке | Codex CAN-03 — расписание статуса от общих T6 | codex/can03-t6-status-fea1b366 | Подключено расписание S03 4/12 тиков от общего T6 к штатному сервису и TX13. Связанный M32R и 22 группы native PASS. +192 байта Flash, RAM без роста, известному составу не хватает 264 байт верхней Flash. Измеренный профиль и поля статуса/момента остаются открыты. Доказательства в can03-h03-t6-status.md. / commit e207a57f970e99f015115d89bcd3e320e6d0fb81 |
 | MODE-02 | На проверке | Codex MODE-02 — профиль AN2 и подготовка входа | codex/h03-03-native-inputs-mwp5rm2ofhaxjfi9dss | Нативный AN2/P1DATA поддерживает явные окна и политику, startup сбрасывает владельцев до CAN. Хост, M32R startup/foreground, 22 native, 6 размещённых групп и 57 тестов PASS. Профильная модель +358 Flash и 0 новой RAM; полная верхняя часть превышает ёмкость на 430 байт. Нужны физические окна/карта/тайминги и квалифицированные Toyota inputs. / commit 44f118638a6ef4c728f9b729c328ea5359c96dee |
 | TOY-03 | Порция принята | Codex TOY-03 — допуск независимого P/N | codex/toy03-independent-pn-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 3f2596f31930203fe9cd7918e9b62f81ea82699c |
@@ -735,22 +736,11 @@
 - tools/check_h03_image_layout.py
 - verification/project-audit/h03-04-common-ram-aliases.md
 
-### TOY-05
-
-Чат: Codex TOY-05 — чтение адаптаций из нативного массива при старте. Claim ID: 403b34a2893d4d969a7b8eb7964150c2.
-
-- targets/lfj8/check_h03_nvm.py
-- targets/lfj8/h03_nvm_native_fixture.c
-- targets/lfj8/lfj8_h03_cycle.h
-- targets/lfj8/lfj8_h03_nvm_native.c
-- targets/lfj8/lfj8_h03_nvm_native.h
-- targets/lfj8/lfj8_h03_toyota_nvm_profile.h
-- verification/project-audit/toy05-native-adaptation-reader.md
-
 ## Последние события
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T08:07:57+00:00 | TOY-05 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-21T08:07:43+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T08:07:28+00:00 | VSS-02 | review | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-21T08:07:17+00:00 | CAN-03 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -780,4 +770,3 @@
 | 2026-11-21T07:48:46+00:00 | CAN-02 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-21T07:48:36+00:00 | H03-03 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T07:48:26+00:00 | DTC-01 | complete | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
-| 2026-11-21T07:48:17+00:00 | H03-04 | complete | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |

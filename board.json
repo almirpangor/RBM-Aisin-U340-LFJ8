@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 868,
+  "sequence": 869,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -304,12 +304,12 @@
         "targets/lfj8/lfj8_h03_toyota_nvm_profile.h",
         "verification/project-audit/toy05-native-adaptation-reader.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "403b34a2893d4d969a7b8eb7964150c2",
       "claimed_at": "2026-11-21T07:58:13+00:00",
-      "updated_at": "2026-11-21T08:02:40+00:00",
-      "note": "Реальный FactoryAdaptRead и защищённый массив прошли в M32R, включая rollover и отказ Virtual Flash. Инвентарь RAM не вырос. Проверяю профиль в общей композиции и повторяю регрессии.",
-      "result": null,
+      "updated_at": "2026-11-21T08:07:57+00:00",
+      "note": "Профиль штатного startup читает пару UFL1 из защищённого массива M32176 в существующее workspace до допуска фаз. M32R подтвердил rollover, Virtual Flash, повторный старт и фактическое восстановление; 22 native, 8 components, 6 placed, ПК 41/194. +316 байт Flash, 0 новых RAM, общий верхний дефицит 388 байт. Нужны два доказанно свободных блока, запись, полный startup GP/gear и стенд. Отчёт toy05-native-adaptation-reader.md.",
+      "result": "9cec04d64dfe83df578de05919ace1d6c7f840aa",
       "based_on_reviews": []
     },
     "CAN-04": {
@@ -13706,9 +13706,38 @@
         "result": "0d3b2d09b5db03c24bdacb123372e385ba14edb3",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "0118673ed88a42b1b77fbdd00845d2ea",
+      "task": "TOY-05",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "403b34a2893d4d969a7b8eb7964150c2",
+      "at": "2026-11-21T08:07:57+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex TOY-05 — чтение адаптаций из нативного массива при старте",
+        "branch": "codex/integration39-c7e4",
+        "files": [
+          "targets/lfj8/check_h03_nvm.py",
+          "targets/lfj8/h03_nvm_native_fixture.c",
+          "targets/lfj8/lfj8_h03_cycle.h",
+          "targets/lfj8/lfj8_h03_nvm_native.c",
+          "targets/lfj8/lfj8_h03_nvm_native.h",
+          "targets/lfj8/lfj8_h03_toyota_nvm_profile.h",
+          "verification/project-audit/toy05-native-adaptation-reader.md"
+        ],
+        "stage": "review",
+        "claim_id": "403b34a2893d4d969a7b8eb7964150c2",
+        "claimed_at": "2026-11-21T07:58:13+00:00",
+        "updated_at": "2026-11-21T08:07:57+00:00",
+        "note": "Профиль штатного startup читает пару UFL1 из защищённого массива M32176 в существующее workspace до допуска фаз. M32R подтвердил rollover, Virtual Flash, повторный старт и фактическое восстановление; 22 native, 8 components, 6 placed, ПК 41/194. +316 байт Flash, 0 новых RAM, общий верхний дефицит 388 байт. Нужны два доказанно свободных блока, запись, полный startup GP/gear и стенд. Отчёт toy05-native-adaptation-reader.md.",
+        "result": "9cec04d64dfe83df578de05919ace1d6c7f840aa",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:07:43+00:00",
+  "updated_at": "2026-11-21T08:07:57+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -16340,6 +16369,29 @@
       "based_on_reviews": [],
       "task": "H03-05",
       "submitted_at": "2026-11-21T08:07:43+00:00"
+    },
+    "403b34a2893d4d969a7b8eb7964150c2": {
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "label": "Codex TOY-05 — чтение адаптаций из нативного массива при старте",
+      "branch": "codex/integration39-c7e4",
+      "files": [
+        "targets/lfj8/check_h03_nvm.py",
+        "targets/lfj8/h03_nvm_native_fixture.c",
+        "targets/lfj8/lfj8_h03_cycle.h",
+        "targets/lfj8/lfj8_h03_nvm_native.c",
+        "targets/lfj8/lfj8_h03_nvm_native.h",
+        "targets/lfj8/lfj8_h03_toyota_nvm_profile.h",
+        "verification/project-audit/toy05-native-adaptation-reader.md"
+      ],
+      "stage": "review",
+      "claim_id": "403b34a2893d4d969a7b8eb7964150c2",
+      "claimed_at": "2026-11-21T07:58:13+00:00",
+      "updated_at": "2026-11-21T08:07:57+00:00",
+      "note": "Профиль штатного startup читает пару UFL1 из защищённого массива M32176 в существующее workspace до допуска фаз. M32R подтвердил rollover, Virtual Flash, повторный старт и фактическое восстановление; 22 native, 8 components, 6 placed, ПК 41/194. +316 байт Flash, 0 новых RAM, общий верхний дефицит 388 байт. Нужны два доказанно свободных блока, запись, полный startup GP/gear и стенд. Отчёт toy05-native-adaptation-reader.md.",
+      "result": "9cec04d64dfe83df578de05919ace1d6c7f840aa",
+      "based_on_reviews": [],
+      "task": "TOY-05",
+      "submitted_at": "2026-11-21T08:07:57+00:00"
     }
   }
 }
