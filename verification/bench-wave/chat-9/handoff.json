@@ -1,0 +1,323 @@
+{
+  "chat": "9",
+  "task": "DTC-04",
+  "related": [
+    "TOY-05"
+  ],
+  "commit": "77977f30c6f052991243c0dc0e80e4a545343376",
+  "commit_scope": "Код порции. SHA review включает этот handoff.",
+  "base_main": "3fe28938163e1dddc98a37733c229390ab7f0fff",
+  "plan": "10f7c1513b910f42473690255641140989cc10d0",
+  "branch": "codex/dtc04-native-restore-bank-gate-922b7b11",
+  "status": "BENCH_NO_ASSIGNED_MEDIA",
+  "hardware_verified": false,
+  "flash_operations_executed": false,
+  "bench_pair_emitted": false,
+  "profile": {
+    "header": "targets/lfj8/bench_nvm_profile.h",
+    "include_at": "Агрегат RBM_H03_APPLICATION_PROFILE. Включить этот заголовок вместо профиля lfj8_h03_toyota_nvm_profile.h и убрать декларацию qualified_adaptation_blocks.",
+    "adaptation": "RBM_H03_PROFILE_READ_ADAPTATION = NULL. Штатный rbm_h03_phase_startup_callback передаёт его в rbm_u340e_runtime_start_from_seed. Отсутствие двух UFL1 вызывает загрузку базы S01 и статус RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED. Это решение профиля о недоступности носителя.",
+    "cold_dtc": "RBM_H03_BENCH_NVM_DTC_COLD_INIT(&rbm_h03_dtc_state) вызывает chery_dtc_init. Владелец холодного старта вызывает макрос один раз после подтверждённого владения типизированной RAM и до диагностических производителей/CAN. Перепривязка CAN/TML0 использует прежнюю RAM без повторной холодной инициализации.",
+    "clear": "Сохранить lfj8_h03_dtc_native_bind и require_durable_clear. Без постоянного носителя запрос 14 FF 00 не очищает RAM и не отправляет 54 FF 00.",
+    "assigned_dtc_blocks": [],
+    "assigned_adaptation_blocks": []
+  },
+  "entry_points": [
+    {
+      "symbol": "lfj8_h03_nvm_native_bench_status",
+      "args": "Lfj8H03NvmBenchStatus *out, типизированный буфер владельца",
+      "result": "true для записанного снимка. persistence_status = LFJ8_H03_NVM_BENCH_NO_ASSIGNED_MEDIA (1, код состояния ПО). Нулевой указатель возвращает false.",
+      "units": "FMOD/FSTAT/FCNT1 — по 8 бит, FELBANK0/1 и FESBANK0/1 — по 16 бит. Структуру C сериализовать по полям после выбора транспорта.",
+      "calling_context": "Обычный видимый executable Flash, владение RAM. Штатная блокировка IRQ сохраняется и возвращается."
+    },
+    {
+      "symbol": "lfj8_h03_nvm_native_bench_inspect",
+      "args": "unsigned block, uint16_t chunk_index, uint8_t *non_erased_halfwords",
+      "result": "LFJ8_H03_NVM_INSPECT_OK = 0, INVALID = 1, UNAVAILABLE = 2. На OK выдаёт число полуслов ≠ 0xFFFF. На ошибке значение выходного буфера сохраняется.",
+      "units": "block — номер физического блока 0–12. chunk_index — индекс от начала блока, шаг 32 байта. Начало чтения block.first + chunk_index × 32, конец не включён. На вызов 16 полуслов. Размер выдачи — проектный бюджет выборки, уже существующий путь DTC читает 17 полуслов на слот. Физическое время не измерено.",
+      "calling_context": "Парковая фаза, executable Flash видима, владение RAM и отсутствие сервисного писателя. Вызов читает один фрагмент. Планировщик разносит выборки по обращениям. Проверка FCNT1, FAENS, FBUSY, ошибок и банков до и после чтения. Выборка пустого участка не подтверждает владение сектором."
+    },
+    {
+      "symbol": "lfj8_h03_nvm_block",
+      "args": "unsigned number, Lfj8H03NvmBlock *block",
+      "result": "true и точные first/end при допустимом номере",
+      "units": "Байтовые адреса физического массива. Конец не включён. Последний чётный адрес таблицы OEM равен end − 2."
+    },
+    {
+      "symbol": "lfj8_h03_nvm_native_restore_dtc / lfj8_h03_nvm_native_read_adaptation",
+      "result": "Нативное восстановление остаётся доступным для профиля с квалифицированными двумя эксклюзивными блоками. Этот профиль блоков не выделяет.",
+      "units": "Слот журнала DTC 34 байта, запись UFL1 96 байт. Форматы взяты из lfj8_h03_nvm.c и factory_adaptation_store.h."
+    }
+  ],
+  "dependencies": {
+    "REL-01/интегратор": "Включить bench_nvm_profile.h в общий профиль и добавить --binding-source targets/lfj8/lfj8_h03_nvm_native.c при подключении чтения. lfj8_h03_nvm.c с геометрией уже часть BINDING_MODULES. Окончательный link удержит точки через выбранный потребитель и привязку холодного запуска.",
+    "TOY-05/чат 12": "Холодный владелец вызывает RBM_H03_BENCH_NVM_DTC_COLD_INIT для RBM DTC RAM. Оставить подготовку startup GP/gear и исход S01 существующему startup.",
+    "DTC-02/чат 10": "Выбрать согласованный канал измерений для статуса и выборки. Собирать поля по контракту C, передавать результат допуска и счётчик только при OK. Основной сканерский сеанс и физическое подтверждение очистки сохраняют нынешний контракт.",
+    "H03-04": "Подтвердить исключительную собственность носителя и его сохранение при штатном обновлении. Размер Flash и пустые байты не заменяют владельца."
+  },
+  "sources": [
+    {
+      "artifact": "Исходный LFJ8-T-D.bin, H03/9E1C",
+      "evidence": "13 пар start/last-even по адресу 0x000920, побайтовая проверка фактического образа.",
+      "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+    },
+    {
+      "artifact": "Renesas 32176 Group Hardware Manual REJ09B0067-0110 rev.1.10 §§ 6.4–6.6",
+      "url": "https://www.renesas.com/en/document/mah/32176-group-hardware-manual",
+      "evidence": "Таблица 6.5.3 M32176F4, размер единицы записи 2 байта, Flash SFR, режим E/W с FP и наложение Virtual Flash."
+    },
+    {
+      "artifact": "docs/lfj8-h03-flash.md и verification/project-audit/dtc04-h03-nvm.md",
+      "evidence": "Штатная граница приложения 0x008000, таблица штатных диапазонов, RAM-драйверы 0x805000 и 0x8051E8 и требования для E/W."
+    },
+    {
+      "artifact": "verification/project-audit/integration-11-20261121/report.md и targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+      "evidence": "Нижнее окно 0x006000–0x008000 содержит резидентный граф, верхнее окно приложения использует блок 7. Блок 12 содержит 0x07FFFE, последний чётный адрес маркера."
+    },
+    {
+      "artifact": "targets/lfj8/lfj8_h03_nvm_native.c и lfj8_h03_ram_owner.c",
+      "evidence": "Переиспользуемый аппаратный допуск массива. FMOD 0x8007E0 — FAENS 0x10 и сырое FP 0x01. FSTAT 0x8007E1 — ready 0x80, ошибка erase 0x20, ошибка program 0x10. FCNT1 0x8007E2 — ожидается 0. FELBANK0/1 0x8007E8/0x8007EA и FESBANK0/1 0x8007F0/0x8007F2 — enable 0x8000. Маски приведены в числовом представлении кода."
+    }
+  ],
+  "flash_ownership": {
+    "addresses": "байтовые, конец исключён",
+    "erased_in_pinned_H03": [
+      4,
+      7
+    ],
+    "fully_erased_outside_known_reservations": [],
+    "conclusion": "Блок 4 [0x006000, 0x008000) используется нижней резидентной частью. Блок 7 [0x020000, 0x030000) используется окном компоновки и штатный парсер допускает его стирание. Остальные блоки содержат байты ≠ FF в исходнике. Ни один блок не выделен NVM. Отдельный физический EEPROM для H03 не подтверждён.",
+    "oem_block_geometry": [
+      {
+        "block": 0,
+        "first": "0x000000",
+        "end_exclusive": "0x002000",
+        "erase_bytes": 8192,
+        "non_ff_bytes": 7503,
+        "overlaps": [
+          "stock service area"
+        ]
+      },
+      {
+        "block": 1,
+        "first": "0x002000",
+        "end_exclusive": "0x003000",
+        "erase_bytes": 4096,
+        "non_ff_bytes": 3971,
+        "overlaps": [
+          "stock service area"
+        ]
+      },
+      {
+        "block": 2,
+        "first": "0x003000",
+        "end_exclusive": "0x004000",
+        "erase_bytes": 4096,
+        "non_ff_bytes": 4000,
+        "overlaps": [
+          "stock service area"
+        ]
+      },
+      {
+        "block": 3,
+        "first": "0x004000",
+        "end_exclusive": "0x006000",
+        "erase_bytes": 8192,
+        "non_ff_bytes": 4849,
+        "overlaps": [
+          "stock service area"
+        ]
+      },
+      {
+        "block": 4,
+        "first": "0x006000",
+        "end_exclusive": "0x008000",
+        "erase_bytes": 8192,
+        "non_ff_bytes": 0,
+        "overlaps": [
+          "stock service area"
+        ]
+      },
+      {
+        "block": 5,
+        "first": "0x008000",
+        "end_exclusive": "0x010000",
+        "erase_bytes": 32768,
+        "non_ff_bytes": 29454,
+        "overlaps": []
+      },
+      {
+        "block": 6,
+        "first": "0x010000",
+        "end_exclusive": "0x020000",
+        "erase_bytes": 65536,
+        "non_ff_bytes": 53281,
+        "overlaps": []
+      },
+      {
+        "block": 7,
+        "first": "0x020000",
+        "end_exclusive": "0x030000",
+        "erase_bytes": 65536,
+        "non_ff_bytes": 0,
+        "overlaps": [
+          "application layout primary"
+        ]
+      },
+      {
+        "block": 8,
+        "first": "0x030000",
+        "end_exclusive": "0x040000",
+        "erase_bytes": 65536,
+        "non_ff_bytes": 57832,
+        "overlaps": []
+      },
+      {
+        "block": 9,
+        "first": "0x040000",
+        "end_exclusive": "0x050000",
+        "erase_bytes": 65536,
+        "non_ff_bytes": 64004,
+        "overlaps": []
+      },
+      {
+        "block": 10,
+        "first": "0x050000",
+        "end_exclusive": "0x060000",
+        "erase_bytes": 65536,
+        "non_ff_bytes": 65288,
+        "overlaps": []
+      },
+      {
+        "block": 11,
+        "first": "0x060000",
+        "end_exclusive": "0x070000",
+        "erase_bytes": 65536,
+        "non_ff_bytes": 65019,
+        "overlaps": []
+      },
+      {
+        "block": 12,
+        "first": "0x070000",
+        "end_exclusive": "0x080000",
+        "erase_bytes": 65536,
+        "non_ff_bytes": 49377,
+        "overlaps": [
+          "application layout tail",
+          "stock application end marker"
+        ]
+      }
+    ]
+  },
+  "memory": {
+    "compiler": "GCC 4.8.0 -m32r -mmodel=medium -msdata=none -Os -ffunction-sections -fdata-sections",
+    "own_code_bytes": {
+      "lfj8_h03_nvm_native_bench_status": 176,
+      "lfj8_h03_nvm_native_bench_inspect": 228,
+      "total_new": 404,
+      "shared_array_ready": 168,
+      "whole_object": 1068
+    },
+    "own_added_static_ram_bytes": 0,
+    "status_c_record_bytes": 12,
+    "own_stack_frame_bytes": {
+      "lfj8_h03_nvm_native_bench_status": 24,
+      "lfj8_h03_nvm_native_bench_inspect": 40,
+      "array_ready": 20
+    },
+    "stack_measurement_scope": "Размер собственных кадров по push и изменению SP в objdump M32R. Верхняя граница целого стека, вклад caller/IRQ и время удержания маски требуют измерения.",
+    "whole_image": "Адресная модель удерживает точки для оценки. Переиспользует симуляторный профиль смежных направлений. Ёмкость и счётчики linker ниже, аппаратная карта не квалифицирована.",
+    "composition_probe": {
+      "status": "FAIL_BINDINGS",
+      "known_flash_bytes_including_fixed_patches": 108196,
+      "known_payload_bytes_excluding_fixed_patches": 108140,
+      "candidate_capacity_bytes": 110548,
+      "existing_unaliased_static_ram_bytes": 4,
+      "constants_verified_by_candidate_link": true,
+      "resident_constant_sections": {
+        ".rodata.gear_001108": 732,
+        ".rodata.learning_001C3C": 800,
+        ".rodata.torque_00148C": 484
+      },
+      "unresolved_symbols": [
+        "fixture_engine_context",
+        "rbm_h03_boot_writers_owned",
+        "rbm_h03_ram_psw_first",
+        "rbm_h03_ram_psw_reserve",
+        "rbm_h03_ram_spi_first",
+        "rbm_h03_ram_spi_reserve",
+        "rbm_h03_sensor_config",
+        "rbm_h03_target_clock_ready",
+        "rbm_h03_target_startup_gear",
+        "rbm_h03_target_startup_gp",
+        "rbm_h03_target_takeover_ops",
+        "test_can_service_config",
+        "test_initialize_inputs",
+        "test_input_capture"
+      ]
+    }
+  },
+  "commands": [
+    {
+      "command": "python -B targets/lfj8/check_h03_nvm.py --base $h03 --gcc $m32rGcc --cc $zig --out $out/nvm.json",
+      "result": "PASS_OFFLINE_ONLY. Новый no-media startup, SFR, все 13 границ, охрана массива и IRQ. Унаследованный физический читатель в симуляторе и UFL1 также исполнены и журнальные отказы ПК/M32R совпали."
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_dtc_basiccan.py --base $h03 --gcc $m32rGcc --with-resident-target-rx --can-owner-dir targets/lfj8 --out $out/dtc-basiccan.json",
+      "result": "18 оригинальных сценариев, 18 сравнений и три обхода. Запрос очистки без носителя без TX13, следующее чтение возвращает P0710."
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_flash_policy.py --base $h03 --gcc $m32rGcc --out $out/flash-policy.json",
+      "result": "PASS. Политика OEM, допуск диапазонов и Virtual Flash. Физические операции Flash не исполнялись."
+    },
+    {
+      "command": "python -B tools/check_integrated_h03.py --suite native --base $h03 --gcc $m32rGcc --controller $controller --out $out/native --jobs 4",
+      "result": "20 из 22 в одном прогоне. atf-fault и phase-wait достигли тайм-аутов 30 и 15 секунд."
+    },
+    {
+      "command": "python -B $out/rerun-with-extended-timeout.py targets/lfj8/check_h03_atf_fault.py --base $h03 --gcc $m32rGcc --out $out/atf-fault-rerun.json",
+      "result": "Обе проверки прошли отдельно при минимальном тайм-ауте subprocess 180 секунд. Проверяемые значения не менялись."
+    },
+    {
+      "command": "python -B $out/rerun-with-extended-timeout.py targets/lfj8/check_h03_phase_wait.py --base $h03 --gcc $m32rGcc --out $out/phase-wait-rerun.json",
+      "result": "PASS при минимальном тайм-ауте subprocess 180 секунд."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests -p test_h03_*.py",
+      "result": "91 проверка размещения и образа на базе 3fe2893."
+    },
+    {
+      "command": "python -B $out/probe-bench-composition.py $h03 $m32rGcc $controller $bridge $out/native/storage.json $out",
+      "result": "Штатный check_h03_image_layout.build с явными production binding_source. Ровно та же предыдущая симуляторная конфигурация смежных направлений с заменой блока UFL1 на bench_nvm_profile.h и удержанием двух bench функций и chery_dtc_init. Известные секции размещены, итог FAIL_BINDINGS. qualified_adaptation_blocks исключён."
+    },
+    {
+      "command": "python -B tools/build_pc_checks.py --cc $zig --out $out/pc",
+      "result": "41 этап. Python unittest выполнил 216 тестов, 215 пройдено и один пропущен без RBM_S03. Сквозная проверка PASS_OFFLINE_ONLY.",
+      "reported_steps": 41
+    }
+  ],
+  "software_blockers": [
+    "Для стендовой пары общая привязка холодной инициализации DTC и транспорт измерений остаются у владельцев TOY-05/DTC-02 и интегратора. Профиль и native API уже готовы к использованию.",
+    "Для постоянного хранения нужны два физически отдельных блока с исключительным владением, включая правила обновителя, либо подтверждённый внешний носитель. Упорядоченный журнал с проверяемой публикацией и снятием слота есть и write/erase backend физического носителя ещё открыт.",
+    "Для внутренней Flash требуются подтверждённое управление FP/режимом E/W, RAM-resident драйвер с исключёнными конкурентными писателями и ограниченными/измеряемыми ожиданиями, безопасный момент операции и политика износа.",
+    "Полный link и рабочий комплект требуют смежных providers. Сборка этой порции не меняет их статус."
+  ],
+  "post_flash_measurements": [
+    "Зафиксировать после старта сырой FMOD (в том числе FP), FSTAT, FCNT1 и FELBANK/FESBANK. Штатное ожидание профиля — NO_ASSIGNED_MEDIA и S01 baseline без UFL1.",
+    "Через согласованный транспорт собрать счётчики 32-байтовых фрагментов и сравнить с известной картой H03 и окончательным BIN. Записать длительность одного вызова и отсутствие пропущенных дедлайнов.",
+    "Проверить cold DTC и сохранение RAM при перепривязке CAN, отсутствие положительного ACK при очистке без носителя.",
+    "Когда выделен носитель и подключена запись, измерить FP, busy, ошибки, задержку program/erase и повторить проверку обрывов питания, включающую потерю записи очистки и отсутствие возврата снятой истории."
+  ],
+  "artifact_root": "D:/RBM-Bench-Wave/chat-9",
+  "artifact_sha256": {
+    "nvm.json": "95ac946c6078d9313e7353d4bbced2f52c637bf3206fffae6243ae8a838a8efe",
+    "dtc-basiccan.json": "166c7fc8858ab88812a109baaba33bb4c43736512710cec978c1a0b44b10fb35",
+    "flash-policy.json": "fe9fae277b567b8d2e3c26c172af0ee65932135b81e93a71866f36cee7ac348f",
+    "native/summary.json": "0135260cab7bcd96e6e7f82d73543800ae5d00e6c44f73b57f2ee021aa9fef73",
+    "atf-fault-rerun.json": "d38b78be74aca6ea0db25f59ffef7d0302fcea06c8984f58f1557939bc5e6d8d",
+    "phase-wait-rerun.json": "10d259a2674294dc8195b67333f9b77d1a184fc016add1b2d9e6a24be0a1fec0",
+    "bench-composition-current/layout.json": "1699d683b97e0bdbde02456b935cb4d233f58a1814357a48aae3682553d6e84a",
+    "pc/PC-CHECKS.json": "73d8ba7f71d9cfc607aaac8d0259397504c569fe57e474bd54e0068f8953aa6f",
+    "h03-layout-tests.log": "6308bb74fa8d4f5c48c1a3237972fef122ed1d1d04864346b1e21caa466e163b"
+  }
+}
