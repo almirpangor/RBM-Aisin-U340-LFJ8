@@ -3,6 +3,13 @@
 #define HALF_CLOCK UINT32_C(0x80000000)
 #define SHIFT_BUTTONS (RBM_U340E_BUTTON_UP | RBM_U340E_BUTTON_DOWN)
 
+int lfj8_h03_input_startup(const Lfj8H03InputBinding *binding, const Lfj8H03InputStartup *startup)
+{
+    return binding && startup && rbm_u340e_selector_profile_valid(binding->selector_profile) &&
+        lfj8_range_control_init(binding->control, &startup->policy, startup->selector_max_age_us) &&
+        lfj8_button_filter_init(binding->button_filter, startup->button_debounce_us, startup->button_max_age_us);
+}
+
 static int valid_binding(const Lfj8H03InputBinding *binding)
 {
     return binding && binding->adc && binding->control && binding->button_filter &&
@@ -29,7 +36,7 @@ int lfj8_h03_input_capture(const Lfj8H03InputBinding *binding, const Lfj8ButtonR
     Lfj8RangeControl *control = binding->control;
     Lfj8ButtonFilter *filter = binding->button_filter;
     const Lfj8SelectorAdcReading reading = lfj8_selector_adc_take(binding->adc, binding->io);
-    lfj8_range_control_sample_selector(control, reading, now_us);
+    lfj8_range_control_sample_selector_profile(control, reading, now_us, binding->selector_profile);
     if (control->selector == RBM_U340E_SELECTOR_UNKNOWN) {
         lfj8_range_control_disarm_buttons(control, filter);
         return 0;

@@ -11,6 +11,23 @@
 #error "Name the qualified Lfj8H03ToyotaInputCapture in RBM_H03_PROFILE_TOYOTA_INPUT_CAPTURE"
 #endif
 
+#ifdef RBM_H03_PROFILE_TOYOTA_INPUT_STARTUP
+/* The qualified profile supplies both this immutable timing/policy object and
+ * the capture binding's immutable selector windows. The application binding
+ * resets the native ADC mailbox before entering the target startup. */
+static inline int lfj8_h03_profile_reset_toyota_inputs(void)
+{
+    const Lfj8H03ToyotaInputCapture *const capture = &RBM_H03_PROFILE_TOYOTA_INPUT_CAPTURE;
+    const Lfj8H03InputBinding *const binding = capture->binding;
+    return binding && binding->io == &lfj8_h03_mmio && binding->p1_button_map &&
+        binding->adc == &rbm_h03_selector_adc_state &&
+        capture->ram_owned && capture->ram_owned(capture->platform) == 1 &&
+        lfj8_h03_input_startup(binding, &RBM_H03_PROFILE_TOYOTA_INPUT_STARTUP);
+}
+
+#define RBM_H03_PROFILE_RESET_TOYOTA_INPUTS lfj8_h03_profile_reset_toyota_inputs
+#endif
+
 static inline int lfj8_h03_profile_sample_toyota_inputs(uint32_t now, uint8_t requested_gear)
 {
     const Lfj8H03ToyotaInputCapture *const capture = &RBM_H03_PROFILE_TOYOTA_INPUT_CAPTURE;

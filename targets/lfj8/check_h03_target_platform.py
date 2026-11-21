@@ -145,6 +145,11 @@ def check(compiler, controller, bridge, *, base=None):
         refused = run(*compile_platform, profile_flag, checked=False)
         if refused.returncode == 0 or "lateness must fit the application watchdog" not in refused.stderr:
             raise ValueError("Platform accepted timing outside the application watchdog")
+        profile.write_text(PROFILE + "#define RBM_H03_PROFILE_TOYOTA_INPUT_STARTUP test_input_startup\n",
+                           encoding="ascii")
+        refused = run(*compile_platform, profile_flag, checked=False)
+        if refused.returncode == 0 or "Include lfj8_h03_toyota_input_profile.h" not in refused.stderr:
+            raise ValueError("Platform accepted native input startup without its adapter")
         profile.write_text(PROFILE, encoding="ascii")
         run(*compile_platform, profile_flag)
 

@@ -297,6 +297,74 @@ static int step_p1(Fixture *f, uint8_t port)
     return propose(f);
 }
 
+static int step_profiled_p1(Fixture *f, uint16_t raw, uint8_t port)
+{
+    prepare_sources(f, 0);
+    f->sources.buttons = NULL;
+    f->p1data = port;
+    lfj8_selector_adc_publish_h03(&f->adc, &f->io, raw, f->sources.now_us);
+    return propose(f);
+}
+
+static void test_profiled_selector_startup(void)
+{
+    /* Deliberately different simulator windows and qualification count. */
+    static const RbmU340eSelectorProfile selector = {
+        .windows = {{980, 990}, {860, 870}, {610, 620}, {550, 570}, {390, 400}, {230, 240}},
+        .stable_samples = 2,
+    };
+    static const Lfj8H03InputStartup startup = {
+        .policy = {.manual_selectors = 1u << RBM_U340E_SELECTOR_D,
+                   .initial_mode = RBM_U340E_TIPTRONIC, .initial_overdrive_enabled = 1},
+        .selector_max_age_us = 16, .button_debounce_us = 5, .button_max_age_us = 16,
+    };
+    static const Lfj8H03ButtonMap map = {{
+        {LFJ8_H03_BUTTON_P1, 8, 1}, {LFJ8_H03_BUTTON_P1, 64, 0},
+        {LFJ8_H03_BUTTON_P1, 32, 0}, {0},
+    }};
+    Fixture f;
+    init(&f);
+    f.binding.p1_button_map = &map;
+    f.binding.manual_max_age_us = 16u;
+    assert(!lfj8_h03_input_startup(&f.binding, &startup));
+    RbmU340eSelectorProfile invalid = selector;
+    f.binding.selector_profile = &invalid;
+    invalid.windows[1][1] = 981u;
+    assert(!lfj8_h03_input_startup(&f.binding, &startup));
+    invalid = selector;
+    invalid.windows[0][1] = 1025u;
+    assert(!lfj8_h03_input_startup(&f.binding, &startup));
+    invalid = selector;
+    invalid.stable_samples = 0;
+    assert(!lfj8_h03_input_startup(&f.binding, &startup));
+    f.binding.selector_profile = &selector;
+    assert(lfj8_h03_input_startup(&f.binding, &startup));
+
+    for (unsigned i = 0; i < 6u; ++i) {
+        const uint16_t low = selector.windows[i][0];
+        assert(!step_profiled_p1(&f, low, 8u) && f.control.filter.samples == 1u);
+        assert(!step_profiled_p1(&f, low, 8u) && !f.buttons.armed);
+        assert(step_profiled_p1(&f, low, 8u));
+        assert(f.proposal.cycle.selector == RBM_U340E_SELECTOR_P + i);
+        assert(!step_profiled_p1(&f, selector.windows[i][1], 8u));
+        assert(f.control.selector == RBM_U340E_SELECTOR_UNKNOWN && !f.buttons.armed);
+    }
+
+    const uint16_t drive = selector.windows[RBM_U340E_SELECTOR_D - 1][0];
+    assert(!step_profiled_p1(&f, drive, 8u));
+    assert(!step_profiled_p1(&f, drive, 8u));
+    assert(step_profiled_p1(&f, drive, 8u));
+    assert(step_profiled_p1(&f, drive, 72u));
+    assert(step_profiled_p1(&f, drive, 72u) && f.proposal.cycle.requested_gear == 3u);
+    assert(lfj8_h03_input_startup(&f.binding, &startup));
+    assert(!f.control.manual_gear && !f.buttons.armed && !f.control.sampled);
+    assert(!step_profiled_p1(&f, drive, 72u));
+    assert(!step_profiled_p1(&f, drive, 72u));
+    assert(!step_profiled_p1(&f, drive, 72u));
+    assert(!step_profiled_p1(&f, drive, 8u));
+    assert(step_profiled_p1(&f, drive, 8u) && !f.proposal.cycle.requested_gear);
+}
+
 static void test_p1_route(void)
 {
     /* Synthetic pin layout including an active-low mode button. */
@@ -506,6 +574,7 @@ int main(void)
     test_invalid_snapshots();
     test_adc_loss_and_recovery();
     test_p1_route();
+    test_profiled_selector_startup();
     test_phase_capture();
     test_manual_target();
     puts("H03 input proposal: six ranges, mode/OD, split phase capture, freshness, manual hold and revocation PASS");

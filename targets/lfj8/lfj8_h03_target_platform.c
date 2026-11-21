@@ -11,6 +11,9 @@
 #ifndef RBM_H03_PROFILE_CAN_SERVICE_CONFIG
 #error "Define RBM_H03_PROFILE_CAN_SERVICE_CONFIG as an explicit, qualified CAN service object"
 #endif
+#if defined(RBM_H03_PROFILE_TOYOTA_INPUT_STARTUP) && !defined(RBM_H03_PROFILE_RESET_TOYOTA_INPUTS)
+#error "Include lfj8_h03_toyota_input_profile.h after defining the native input startup profile"
+#endif
 
 #define SERIAL_HALF_RANGE UINT32_C(0x80000000)
 #define TOYOTA_PERIOD ((uint64_t)(RBM_H03_PROFILE_TOYOTA_PERIOD_TICKS))
@@ -65,6 +68,11 @@ int rbm_h03_target_initialize(void *context)
 
     saved = io->enter(context);
     allowed = startup_allowed_locked(context);
+#ifdef RBM_H03_PROFILE_RESET_TOYOTA_INPUTS
+    if (allowed) {
+        allowed = RBM_H03_PROFILE_RESET_TOYOTA_INPUTS();
+    }
+#endif
     if (allowed &&
         lfj8_h03_target_service_prepare_locked(&RBM_H03_PROFILE_CAN_SERVICE_CONFIG)) {
         lfj8_h03_toyota_source_reset(toyota_source.release);

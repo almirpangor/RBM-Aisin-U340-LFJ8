@@ -40,7 +40,13 @@ extern Lfj8H03ToyotaRelease rbm_h03_toyota_release_state;
  * It updates qualification with IRQs masked on each admitted H03 foreground
  * phase and returns 1 while the inputs still support the previous command.
  * The platform withdraws a stale command immediately. The release callback
- * remains responsible for admitting freshly qualified operands. The profile
- * initializer resets the input owners before opening the application gate. */
+ * remains responsible for admitting freshly qualified operands.
+ *
+ * RBM_H03_PROFILE_TOYOTA_INPUT_STARTUP names the immutable mode policy and
+ * measured intervals. The native adapter then resets the selector and button
+ * owners under the application lock after the final RAM/clock check and
+ * before CAN preparation. The capture binding supplies its measured ADC
+ * windows. Existing bindings may initialize their input owners in the
+ * RBM_H03_PROFILE_INITIALIZE_INPUTS callback. */
 
 #endif

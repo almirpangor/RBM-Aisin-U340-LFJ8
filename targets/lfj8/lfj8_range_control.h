@@ -78,6 +78,9 @@ int lfj8_range_control_init(Lfj8RangeControl *control, const RbmU340ePolicy *pol
  * its timestamp. Only fresh, ordered events advance the capture watermark. */
 void lfj8_range_control_sample_selector(Lfj8RangeControl *control, Lfj8SelectorAdcReading reading,
                                         uint32_t now_us);
+/* As above, with a validated selector profile. NULL selects the legacy decoder. */
+void lfj8_range_control_sample_selector_profile(Lfj8RangeControl *control,
+    Lfj8SelectorAdcReading reading, uint32_t now_us, const RbmU340eSelectorProfile *profile);
 
 /* Poll after taking the mailbox event, using the same wrapping counter as
  * the ADC producer. Reinitialize on a counter reset.
