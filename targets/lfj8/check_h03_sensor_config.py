@@ -10,7 +10,7 @@ import sys
 from check_h03_link import ROOT, identify_h03
 
 sys.path.insert(0, str(ROOT))
-from tools.check_vss_measurements import UINT16_MAX, evaluate_clock, integer
+from tools.check_vss_measurements import UINT16_MAX, UINT32_MAX, evaluate_clock, integer
 
 
 # Instruction bundles, excluding the constants they load. A literal's role
@@ -84,9 +84,36 @@ def paired_clock_evidence(record):
     return {"passed": all(clock["passed"] for clock in clocks.values()), **clocks}
 
 
-def calibration_evidence(profile, base_sha256):
+def check_paired_alignment(intervals, clocks, max_span):
+    rows = []
+    for index, interval in enumerate(intervals):
+        after = interval.get("tml0_after")
+        if not isinstance(after, list) or len(after) != 2:
+            raise ValueError(f"Interval {index + 1} must include tml0_after as [start_ticks, end_ticks]")
+        spans = [
+            (integer({"tml0_after": value}, "tml0_after", 0, UINT32_MAX) - before) & UINT32_MAX
+            for before, value in zip(interval["tml0"], after)
+        ]
+        start_span, end_span = spans
+        difference = (clocks["tml1"]["intervals"][index]["elapsed_ticks"] -
+                      clocks["tml0"]["intervals"][index]["elapsed_ticks"])
+        # TML1 is read inside each TML0 bracket. The start offset is
+        # subtracted from the elapsed count and the end offset is added.
+        # Both counters use Clock Bus 1.
+        rows.append({
+            "start_span_ticks": start_span,
+            "end_span_ticks": end_span,
+            "elapsed_difference_ticks": difference,
+            "passed": max(spans) <= max_span and -start_span <= difference <= end_span,
+        })
+    return {"passed": all(row["passed"] for row in rows), "intervals": rows}
+
+
+def calibration_evidence(profile, base_sha256, clock_reference_sha256):
     if not isinstance(profile, dict) or profile.get("base_sha256") != base_sha256:
         raise ValueError("Calibration profile must identify the exact H03 base by SHA-256")
+    if profile.get("clock_reference_sha256") != clock_reference_sha256:
+        raise ValueError("Calibration profile must identify the supplied clock reference by SHA-256")
     evidence_id = profile.get("evidence_id")
     if not isinstance(evidence_id, str) or not evidence_id.strip():
         raise ValueError("Calibration profile requires a bench record identifier (evidence_id)")
@@ -115,7 +142,8 @@ def check_inputs(base, clock_reference=None, calibration_profile=None):
     reference = None
     if clock_reference is not None:
         clock_data = clock_reference.read_bytes()
-        reference = paired_clock_evidence(json.loads(clock_data.decode("utf-8-sig")))
+        clock_record = json.loads(clock_data.decode("utf-8-sig"))
+        reference = paired_clock_evidence(clock_record)
         if calibration_profile is not None:
             report["clock_reference_sha256"] = sha256(clock_data).hexdigest()
     report["clock_reference"] = reference
@@ -123,12 +151,18 @@ def check_inputs(base, clock_reference=None, calibration_profile=None):
                         "PASS_RECORDED_CLOCKS" if reference["passed"] else "FAIL_RECORDED_CLOCKS")
     if calibration_profile is not None:
         profile_data = calibration_profile.read_bytes()
-        profile = calibration_evidence(json.loads(profile_data.decode("utf-8-sig")), report["base"]["sha256"])
+        profile = calibration_evidence(json.loads(profile_data.decode("utf-8-sig")),
+                                       report["base"]["sha256"], report["clock_reference_sha256"])
+        alignment = check_paired_alignment(clock_record["intervals"], reference,
+                                           profile["observed_maxima"]["read_span_ticks"])
         report["calibration_profile"] = {**profile, "sha256": sha256(profile_data).hexdigest()}
+        report["paired_alignment"] = alignment
         report["hardware_verified"] = False
-        if reference["passed"]:
+        if reference["passed"] and alignment["passed"]:
             report["production_sensor_config"] = profile["limits"]
             report["status"] = "PASS_CONFIG_INPUTS"
+        else:
+            report["status"] = "FAIL_RECORDED_CLOCKS"
     return report
 
 
@@ -173,7 +207,8 @@ def config_source(report):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base", type=Path, required=True)
-    parser.add_argument("--clock-reference", type=Path)
+    parser.add_argument("--clock-reference", type=Path,
+                        help="paired TML0/TML1 observations with TML0 brackets for config generation")
     parser.add_argument("--calibration-profile", type=Path,
                         help="explicit H03 limits and bench observation maxima")
     parser.add_argument("--emit-config", action="store_true",
