@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 869,
+  "sequence": 870,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -257,12 +257,12 @@
         "targets/lfj8/lfj8_h03_can_service_placement.py",
         "verification/project-audit/can01-h03-shared-engine-binding.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "77b7b955d10d45b89daaaa5912bd3a82",
       "claimed_at": "2026-11-21T07:55:08+00:00",
-      "updated_at": "2026-11-21T07:59:14+00:00",
-      "note": "Общий адресный состав использует реальные типизированные поля и разрешает target_engine. Flash +36, RAM без прироста. Контекст Task 2 всё ещё обязательный внешний вход. Идут связанные модели CAN и startup.",
-      "result": null,
+      "updated_at": "2026-11-21T08:08:12+00:00",
+      "note": "Целевой rbm_h03_target_engine подключён к штатному запуску и foreground, единым CAN owner/DTC и TML0 через типизированные алиасы. ПК 41/194, 68 запусков, 16 шагов CAN и четыре отклонённых профиля. +36 байт Flash, RAM без прироста. Нужны реальные параметры и контекст Task 2; полный состав FAIL_BINDINGS.",
+      "result": "94f93c6067d338290333a1fa45f39787476a2d62",
       "based_on_reviews": []
     },
     "MODE-02": {
@@ -13735,9 +13735,35 @@
         "result": "9cec04d64dfe83df578de05919ace1d6c7f840aa",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "49eff6c305894447abf090f2ba0ae884",
+      "task": "CAN-01",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "77b7b955d10d45b89daaaa5912bd3a82",
+      "at": "2026-11-21T08:08:12+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex CAN-01 — реальная привязка единственного состояния двигателя",
+        "branch": "codex/can-01-shared-engine-binding-32e6ac79",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_can_service_placement.py",
+          "verification/project-audit/can01-h03-shared-engine-binding.md"
+        ],
+        "stage": "review",
+        "claim_id": "77b7b955d10d45b89daaaa5912bd3a82",
+        "claimed_at": "2026-11-21T07:55:08+00:00",
+        "updated_at": "2026-11-21T08:08:12+00:00",
+        "note": "Целевой rbm_h03_target_engine подключён к штатному запуску и foreground, единым CAN owner/DTC и TML0 через типизированные алиасы. ПК 41/194, 68 запусков, 16 шагов CAN и четыре отклонённых профиля. +36 байт Flash, RAM без прироста. Нужны реальные параметры и контекст Task 2; полный состав FAIL_BINDINGS.",
+        "result": "94f93c6067d338290333a1fa45f39787476a2d62",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:07:57+00:00",
+  "updated_at": "2026-11-21T08:08:12+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -16392,6 +16418,26 @@
       "based_on_reviews": [],
       "task": "TOY-05",
       "submitted_at": "2026-11-21T08:07:57+00:00"
+    },
+    "77b7b955d10d45b89daaaa5912bd3a82": {
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex CAN-01 — реальная привязка единственного состояния двигателя",
+      "branch": "codex/can-01-shared-engine-binding-32e6ac79",
+      "files": [
+        "targets/lfj8/check_h03_can_monitor_revoke.py",
+        "targets/lfj8/lfj8_h03_application_binding.c",
+        "targets/lfj8/lfj8_h03_can_service_placement.py",
+        "verification/project-audit/can01-h03-shared-engine-binding.md"
+      ],
+      "stage": "review",
+      "claim_id": "77b7b955d10d45b89daaaa5912bd3a82",
+      "claimed_at": "2026-11-21T07:55:08+00:00",
+      "updated_at": "2026-11-21T08:08:12+00:00",
+      "note": "Целевой rbm_h03_target_engine подключён к штатному запуску и foreground, единым CAN owner/DTC и TML0 через типизированные алиасы. ПК 41/194, 68 запусков, 16 шагов CAN и четыре отклонённых профиля. +36 байт Flash, RAM без прироста. Нужны реальные параметры и контекст Task 2; полный состав FAIL_BINDINGS.",
+      "result": "94f93c6067d338290333a1fa45f39787476a2d62",
+      "based_on_reviews": [],
+      "task": "CAN-01",
+      "submitted_at": "2026-11-21T08:08:12+00:00"
     }
   }
 }
