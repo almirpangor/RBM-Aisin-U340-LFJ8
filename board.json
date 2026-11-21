@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 885,
+  "sequence": 886,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -284,11 +284,11 @@
         "targets/lfj8/test_lfj8_h03_input_binding.c",
         "verification/project-audit/mode02-profiled-selector-startup.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "d92614932c0a42a8a26f18f92c6b6d6b",
       "claimed_at": "2026-11-21T07:55:14+00:00",
-      "updated_at": "2026-11-21T08:06:33+00:00",
-      "note": "Нативный AN2/P1DATA поддерживает явные окна и политику, startup сбрасывает владельцев до CAN. Хост, M32R startup/foreground, 22 native, 6 размещённых групп и 57 тестов PASS. Профильная модель +358 Flash и 0 новой RAM; полная верхняя часть превышает ёмкость на 430 байт. Нужны физические окна/карта/тайминги и квалифицированные Toyota inputs.",
+      "updated_at": "2026-11-21T08:36:24+00:00",
+      "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
       "result": "44f118638a6ef4c728f9b729c328ea5359c96dee",
       "based_on_reviews": []
     },
@@ -14231,9 +14231,45 @@
         "task": "H03-04",
         "submitted_at": "2026-11-21T08:03:37+00:00"
       }
+    },
+    {
+      "operation_id": "48fb61e1c94648adb1012a9bc51f74fe",
+      "task": "MODE-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "d92614932c0a42a8a26f18f92c6b6d6b",
+      "at": "2026-11-21T08:36:24+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex MODE-02 — профиль AN2 и подготовка входа",
+        "branch": "codex/h03-03-native-inputs-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "controller/include/rbm_u340e.h",
+          "controller/src/rbm_u340e.c",
+          "targets/lfj8/check_h03_target_platform.py",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/lfj8_h03_input_binding.h",
+          "targets/lfj8/lfj8_h03_target_platform.c",
+          "targets/lfj8/lfj8_h03_target_platform.h",
+          "targets/lfj8/lfj8_h03_toyota_input_profile.h",
+          "targets/lfj8/lfj8_range_control.c",
+          "targets/lfj8/lfj8_range_control.h",
+          "targets/lfj8/test_lfj8_h03_input_binding.c",
+          "verification/project-audit/mode02-profiled-selector-startup.md"
+        ],
+        "stage": "done",
+        "claim_id": "d92614932c0a42a8a26f18f92c6b6d6b",
+        "claimed_at": "2026-11-21T07:55:14+00:00",
+        "updated_at": "2026-11-21T08:36:24+00:00",
+        "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
+        "result": "44f118638a6ef4c728f9b729c328ea5359c96dee",
+        "based_on_reviews": [],
+        "task": "MODE-02",
+        "submitted_at": "2026-11-21T08:06:33+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:36:13+00:00",
+  "updated_at": "2026-11-21T08:36:24+00:00",
   "main_commit": "abd3cba0093cf834950d7883fcc6cbacec4420d3",
   "catalog": [
     {
@@ -16785,11 +16821,11 @@
         "targets/lfj8/test_lfj8_h03_input_binding.c",
         "verification/project-audit/mode02-profiled-selector-startup.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "d92614932c0a42a8a26f18f92c6b6d6b",
       "claimed_at": "2026-11-21T07:55:14+00:00",
-      "updated_at": "2026-11-21T08:06:33+00:00",
-      "note": "Нативный AN2/P1DATA поддерживает явные окна и политику, startup сбрасывает владельцев до CAN. Хост, M32R startup/foreground, 22 native, 6 размещённых групп и 57 тестов PASS. Профильная модель +358 Flash и 0 новой RAM; полная верхняя часть превышает ёмкость на 430 байт. Нужны физические окна/карта/тайминги и квалифицированные Toyota inputs.",
+      "updated_at": "2026-11-21T08:36:24+00:00",
+      "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
       "result": "44f118638a6ef4c728f9b729c328ea5359c96dee",
       "based_on_reviews": [],
       "task": "MODE-02",
