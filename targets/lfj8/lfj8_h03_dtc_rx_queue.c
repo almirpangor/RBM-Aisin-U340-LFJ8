@@ -245,6 +245,12 @@ uint16_t lfj8_h03_dtc_rx_queue_capture_pending(
                 captured |= bit;
             }
         }
+        /* RX15 is copied first. Its TRFIN remains set, so a frame lost
+         * while the CPU copies RX14 can invalidate the earlier snapshot. */
+        if ((captured & LFJ8_H03_DTC_RX15_PENDING) && (pending & LFJ8_H03_DTC_RX14_PENDING) &&
+            io->read8(io->context, CAN0_SLOT_CONTROL + 15u) != CAN0_RX_COMPLETE) {
+            captured &= (uint16_t)~LFJ8_H03_DTC_RX15_PENDING;
+        }
         if (captured && !basiccan_active(io)) {
             captured = 0;
         }

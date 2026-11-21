@@ -386,6 +386,71 @@ static void test_basic_capture_drops_changes_during_copy(void)
     assert(queue.rejected == 19);
 }
 
+typedef struct {
+    Critical critical;
+    uint8_t raw[2][16];
+    uint8_t control[2];
+    unsigned overwrite_on_byte;
+} BasicCanPair;
+
+static uint8_t pair_read8(void *context, uint32_t address)
+{
+    BasicCanPair *pair = context;
+    assert(pair->critical.inside);
+    if (address == BASIC_MSC + 14u || address == BASIC_MSC + 15u) {
+        return pair->control[address - (BASIC_MSC + 14u)];
+    }
+    const uint32_t base = BASIC_DATA + 14u * 16u;
+    assert(address >= base && address < base + sizeof pair->raw);
+    const unsigned offset = address - base;
+    if (offset == pair->overwrite_on_byte) {
+        slot_at(pair->raw[1], 503u, 0x87u);
+        pair->control[1] = 0x45u; /* RX15 overwrite while the CPU reads RX14. */
+    }
+    return pair->raw[offset / 16u][offset % 16u];
+}
+
+static uint16_t pair_read16(void *context, uint32_t address)
+{
+    const BasicCanPair *pair = context;
+    assert(pair->critical.inside && (address == BASIC_STAT || address == BASIC_EXTID));
+    return address == BASIC_STAT ? BASIC_RUNNING : 0u;
+}
+
+static void test_pair_rejects_first_slot_overwritten_during_second_copy(void)
+{
+    const uint16_t both = LFJ8_H03_DTC_RX14_PENDING | LFJ8_H03_DTC_RX15_PENDING;
+    for (unsigned byte = 0; byte < 16u; ++byte) {
+        BasicCanPair pair = {.control = {0x41u, 0x41u}, .overwrite_on_byte = byte};
+        const Lfj8RegisterIo io = {.context = &pair, .enter = enter, .leave = leave,
+                                   .read8 = pair_read8, .read16 = pair_read16};
+        slot_at(pair.raw[0], 502u, 0x99u);
+        slot_at(pair.raw[1], 500u, 0x86u);
+        Lfj8H03DtcRxQueue queue;
+        Lfj8H03DtcRxDispatch dispatch;
+        assert(lfj8_h03_dtc_rx_queue_init(&queue, 9, 100, 2));
+        assert(lfj8_h03_dtc_rx_dispatch_begin(&dispatch, &queue, &io, both, 9, 1008, 504) ==
+               LFJ8_H03_DTC_RX14_PENDING);
+        assert(queue.count == 1 && queue.rejected == 1 && queue.next_ticket == 1);
+        assert(pair.control[0] == 0x41u && pair.control[1] == 0x45u);
+        assert(lfj8_h03_dtc_rx_dispatch_skip_paired(&dispatch, 14u, 9));
+        assert(!lfj8_h03_dtc_rx_dispatch_skip_paired(&dispatch, 15u, 9));
+
+        /* The stock handler owns acknowledgement and the later retry. */
+        pair.control[1] = 0x41u;
+        assert(lfj8_h03_dtc_rx_queue_capture_basic(&queue, &io, 15u, 9, 1010, 505) ==
+               LFJ8_H03_DTC_RX_QUEUED);
+        Lfj8H03DtcRxDelivery delivery;
+        assert(lfj8_h03_dtc_rx_queue_peek(&queue, &io, 9, 1012, 506, &delivery));
+        assert(delivery.received.frame.data[2] == 0x99u && delivery.received.can_timestamp == 502u);
+        assert(lfj8_h03_dtc_rx_queue_consume(&queue, &io, &delivery));
+        assert(lfj8_h03_dtc_rx_queue_peek(&queue, &io, 9, 1012, 506, &delivery));
+        assert(delivery.received.frame.data[2] == 0x87u && delivery.received.can_timestamp == 503u);
+        assert(lfj8_h03_dtc_rx_queue_consume(&queue, &io, &delivery));
+        assert(queue.count == 0 && !pair.critical.inside);
+    }
+}
+
 int main(void)
 {
     test_fifo_full_and_interrupted_consumer();
@@ -396,8 +461,10 @@ int main(void)
     test_basic_capture_keeps_oem_ack();
     test_basic_capture_drops_unqualified_slots();
     test_basic_capture_drops_changes_during_copy();
+    test_pair_rejects_first_slot_overwritten_during_second_copy();
     puts("H03 DTC RX queue: FIFO, overflow, stale delivery, time wrap and CAN reset PASS");
     puts("H03 DTC BasicCAN capture: both slots, unchanged MSC, overwritten copy and bus-off PASS");
+    puts("H03 DTC BasicCAN pair: late RX15 overwrite and OEM retry PASS");
     printf("queue_bytes=%u delivery_bytes=%u capacity=%u\n",
            (unsigned)sizeof(Lfj8H03DtcRxQueue), (unsigned)sizeof(Lfj8H03DtcRxDelivery),
            LFJ8_H03_DTC_RX_CAPACITY);
