@@ -59,6 +59,45 @@ const Lfj8H03TakeoverOps rbm_h03_target_takeover_ops = {
 #endif
 #endif
 
+/* The native profile provides the measured limits and Task 2 context.
+ * The address model binds these three names inside communication storage. */
+#if defined(RBM_H03_PROFILE_ENGINE_MAX_AGE_TICKS) || defined(RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US) || \
+    defined(RBM_H03_PROFILE_ENGINE_BIT_TIME_US) || defined(RBM_H03_PROFILE_ENGINE_CONTEXT)
+#if !defined(RBM_H03_PROFILE_ENGINE_MAX_AGE_TICKS) || !defined(RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US) || \
+    !defined(RBM_H03_PROFILE_ENGINE_BIT_TIME_US) || !defined(RBM_H03_PROFILE_ENGINE_CONTEXT)
+#error "Native H03 engine requires age, polling, bit time and Task 2 context"
+#else
+_Static_assert(RBM_H03_PROFILE_ENGINE_MAX_AGE_TICKS > 0 &&
+               RBM_H03_PROFILE_ENGINE_MAX_AGE_TICKS < UINT16_C(0x8000),
+               "Native H03 engine age must fit the CAN timestamp half range");
+_Static_assert(RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US > 0 &&
+               RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US <= UINT16_MAX,
+               "Native H03 engine polling gap must fit uint16_t");
+_Static_assert(RBM_H03_PROFILE_ENGINE_BIT_TIME_US > 0 &&
+               RBM_H03_PROFILE_ENGINE_BIT_TIME_US <= UINT8_MAX,
+               "Native H03 engine bit time must fit uint8_t");
+
+extern Lfj8H03EngineRx rbm_h03_engine_rx;
+extern Ta2005EngineQualifier rbm_h03_engine_qualifier;
+extern CheryDtcState rbm_h03_dtc_state;
+
+const Lfj8H03ApplicationEngine rbm_h03_target_engine = {
+    .target = {
+        .rx = &rbm_h03_engine_rx,
+        .qualifier = &rbm_h03_engine_qualifier,
+        .dtc = &rbm_h03_dtc_state,
+        .can_owner = &h03_can_owner,
+        .io = &lfj8_h03_mmio,
+        .now_us = rbm_h03_atf_now_us,
+        .bit_time_us = RBM_H03_PROFILE_ENGINE_BIT_TIME_US,
+    },
+    .max_age_ticks = RBM_H03_PROFILE_ENGINE_MAX_AGE_TICKS,
+    .max_poll_gap_us = RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US,
+    .context_for_task2 = RBM_H03_PROFILE_ENGINE_CONTEXT,
+};
+#endif
+#endif
+
 static int initialize_target(void *context)
 {
     const Lfj8RegisterIo *const io = rbm_h03_target_takeover_ops.io;

@@ -25,7 +25,6 @@ ALIASES = {
     "rbm_h03_cycle_state": "control/cycle",
     "rbm_h03_toyota_release_state": "control/toyota_release",
     "rbm_h03_main_result": "communication/main_result",
-    "fixture_shared_dtc": "communication/dtc",
     "rbm_h03_cycle_workspace": "workspace/toyota",
     "rbm_h03_cycle_input": "workspace/cycle_input",
 }
@@ -36,6 +35,12 @@ int fixture_initialize_inputs(void *);
 int fixture_capture_toyota(void *, const Lfj8H03SensorSnapshot *, uint32_t,
                            Lfj8H03CycleInput *, Lfj8H03CycleLoad *);
 extern const Lfj8H03TargetServiceConfig service_profile;
+int fixture_engine_context(void *, const Lfj8H03SensorSnapshot *,
+    Ta2005EngineQualificationContext *, bool *, uint32_t *);
+#define RBM_H03_PROFILE_ENGINE_MAX_AGE_TICKS 1200u
+#define RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US 5000u
+#define RBM_H03_PROFILE_ENGINE_BIT_TIME_US 2u
+#define RBM_H03_PROFILE_ENGINE_CONTEXT fixture_engine_context
 #define RBM_H03_PROFILE_PHASE_CONFIG {8u, 12u, 2u, 24u}
 #define RBM_H03_PROFILE_STARTUP_RANGE {0}
 #define RBM_H03_PROFILE_TOYOTA_MAX_PERIOD_TICKS 23u
@@ -66,16 +71,36 @@ extern Lfj8H03FastOutput rbm_h03_fast_output;
 extern volatile uint8_t rbm_h03_tml0_1mhz_qualified;
 extern Lfj8H03DtcTarget rbm_h03_dtc_target;
 extern Lfj8H03Can13 rbm_h03_can13;
-extern CheryDtcState fixture_shared_dtc;
+extern CheryDtcState rbm_h03_dtc_state;
+extern Lfj8H03EngineRx rbm_h03_engine_rx;
+extern Ta2005EngineQualifier rbm_h03_engine_qualifier;
 extern Lfj8H03TargetService rbm_h03_can_service;
 extern const Lfj8H03Can13Input rbm_h03_can13_input;
 
 const Lfj8H03SensorFeedConfig rbm_h03_sensor_config = {.atf_max_age_us = 90u};
 static volatile Lfj8H03PhaseClock fixture_phase_clock;
-const Lfj8H03ApplicationEngine rbm_h03_target_engine = {
-    .target = {.dtc = &fixture_shared_dtc, .can_owner = &h03_can_owner,
-               .io = &lfj8_h03_mmio, .now_us = rbm_h03_atf_now_us},
-};
+int fixture_engine_context(void *context, const Lfj8H03SensorSnapshot *sensors,
+    Ta2005EngineQualificationContext *engine, bool *inhibit_history, uint32_t *oldest_us)
+{
+    (void)context; (void)sensors; (void)engine; (void)inhibit_history; (void)oldest_us;
+    /* This fixture exercises service and the engine binding without Task 2 operands. */
+    return 0;
+}
+
+static bool engine_binding_ready(void)
+{
+    const Lfj8H03ApplicationEngine *const engine = rbm_h03_application_binding.engine;
+    const Lfj8H03EngineFeedTarget *const target = &engine->target;
+    uint32_t now_us;
+    return engine == &rbm_h03_target_engine && target->rx == &rbm_h03_engine_rx &&
+        target->qualifier == &rbm_h03_engine_qualifier && target->dtc == &rbm_h03_dtc_state &&
+        target->can_owner == &h03_can_owner && target->io == &lfj8_h03_mmio &&
+        target->now_us == rbm_h03_atf_now_us && target->bit_time_us == 2u &&
+        engine->max_age_ticks == 1200u && engine->max_poll_gap_us == 5000u &&
+        engine->context_for_task2 == fixture_engine_context && !target->now_us(&now_us) &&
+        lfj8_h03_engine_feed_target_init(target, engine->max_age_ticks, engine->max_poll_gap_us) &&
+        target->rx->generation_source == &h03_can_owner.setup_generation;
+}
 
 enum { ACTIVE, NO_RAM, COLD, STALE_OPS, SERVICE, PROGRAMMING, FLASH_MODE, REPEATED };
 uint32_t fixture_behavior;
@@ -278,7 +303,7 @@ void fixture_shared_can_path(void)
     BYTE(0x800febu) = 0x31u;
     WORD(0x8003e0u) = 1000u;
     rbm_h03_tml0_1mhz_qualified = 1u;
-    chery_dtc_init(&fixture_shared_dtc);
+    chery_dtc_init(&rbm_h03_dtc_state);
     if (!lfj8_h03_can13_init(broker, &config, 1000u) ||
         !lfj8_h03_dtc_native_bind(target, broker, 4u)) {
         goto finish;
@@ -299,7 +324,7 @@ void fixture_shared_can_path(void)
     BYTE(CAN0 + 0x29u) = 0x3fu;
     BYTE(CAN0 + 0x5eu) = BYTE(CAN0 + 0x5fu) = 0x40u;
     BYTE(0x806ae6u) = 6u;
-    Lfj8H03Can13Input input = {.dtc = &fixture_shared_dtc, .diagnostic_tick = 10u};
+    Lfj8H03Can13Input input = {.dtc = &rbm_h03_dtc_state, .diagnostic_tick = 10u};
     h03_can_owner.setup_generation = 1u; /* Stale, never admitted into foreground. */
     if (lfj8_h03_can_target_poll(target, &input, true).available || h03_can_owner.grant) {
         goto finish;
@@ -389,7 +414,7 @@ const Lfj8H03TargetServiceConfig service_profile = {
 int fixture_initialize_inputs(void *context)
 {
     (void)context;
-    chery_dtc_init(&fixture_shared_dtc);
+    chery_dtc_init(&rbm_h03_dtc_state);
     return 1;
 }
 
@@ -433,7 +458,7 @@ void fixture_target_service_path(void)
         return;
     }
     if (!prepared || rbm_h03_toyota_release_state.status != 0u ||
-        !rbm_h03_can_service.start_pending || h03_can_owner.grant) {
+        !rbm_h03_can_service.start_pending || h03_can_owner.grant || !engine_binding_ready()) {
         return;
     }
     ++fixture_service_steps;
@@ -461,8 +486,10 @@ void fixture_target_service_path(void)
 
     rbm_h03_can_monitor_publish_setup_locked();
     service_turn(1000u);
+    uint32_t engine_now;
     if (!h03_can_owner.grant || rbm_h03_dtc_target.queue.generation != 1u ||
-        rbm_h03_can13_input.now_us != 1000u) {
+        rbm_h03_can13_input.now_us != 1000u ||
+        !rbm_h03_target_engine.target.now_us(&engine_now) || engine_now != rbm_h03_can13_input.now_us) {
         return;
     }
     ++fixture_service_steps;
@@ -684,12 +711,35 @@ def probe_binding(base, compiler, aliases, addresses):
             "h03_dtc_rx_hook.S", "lfj8_h03_application_binding.c",
             "lfj8_h03_target_platform.c", "lfj8_h03_toyota_source.c",
             "lfj8_h03_application.c", "lfj8_h03_sensor_target.c",
+            "lfj8_h03_engine_feed.c", "lfj8_h03_engine_rx.c", "ta2005_chery_inputs.c",
+            "ta2005_engine_qualifier.c",
         )
         flags = (
             *TARGET, "-Os", "-g", "-std=c11", "-ffreestanding", "-fno-builtin",
             "-Wall", "-Wextra", "-Werror", "-ffunction-sections", "-fdata-sections",
             *(option for folder in includes for option in ("-I", folder)),
         )
+        rejected_engine_profiles = (
+            ("#define RBM_H03_PROFILE_ENGINE_CONTEXT fixture_engine_context", "",
+             "requires age, polling, bit time and Task 2 context"),
+            ("RBM_H03_PROFILE_ENGINE_MAX_AGE_TICKS 1200u", "RBM_H03_PROFILE_ENGINE_MAX_AGE_TICKS 32768u",
+             "age must fit the CAN timestamp half range"),
+            ("RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US 5000u", "RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US 65536u",
+             "polling gap must fit uint16_t"),
+            ("RBM_H03_PROFILE_ENGINE_BIT_TIME_US 2u", "RBM_H03_PROFILE_ENGINE_BIT_TIME_US 0u",
+             "bit time must fit uint8_t"),
+        )
+        for field, replacement, message in rejected_engine_profiles:
+            (work / "bad-engine-profile.h").write_text(
+                FIXTURE_PROFILE.replace(field, replacement), encoding="ascii")
+            try:
+                run(compiler, *flags, "-I", work, '-DRBM_H03_APPLICATION_PROFILE="bad-engine-profile.h"',
+                    "-c", HERE / "lfj8_h03_application_binding.c", "-o", "bad-binding.o")
+            except subprocess.CalledProcessError as error:
+                if message.encode("ascii") not in error.stderr:
+                    raise
+            else:
+                raise ValueError("Invalid H03 engine profile was accepted: " + field)
         dtc_sources = (
             *(HERE / name for name in LFJ8_SOURCES if not name.startswith("test_")),
             HERE / "lfj8_h03_atf_feed.c",
@@ -794,6 +844,8 @@ def probe_binding(base, compiler, aliases, addresses):
             "native_permit_preserves_unowned_generation": True,
             "shared_irq_and_foreground_checks": shared[-1],
             "target_service": service_cases,
+            "native_engine_profile_shared_ram_and_clock": True,
+            "rejected_engine_profiles": len(rejected_engine_profiles),
             "used_actual_inhibit_implementation": True, "physical_output_verified": False}
 
 
@@ -872,7 +924,8 @@ def profiled_service_placement(args, addresses):
     missing = set(report.get("unresolved_symbols", ()))
     aliases = report["can_service"]["typed_aliases"]
     expected = {name: addresses[name] for name in SERVICE_RAM_FIELDS}
-    if (not entries.issubset(report["required_roots"]) or missing & (entries | expected.keys()) or
+    if (not entries.issubset(report["required_roots"]) or
+            missing & (entries | expected.keys() | {"rbm_h03_target_engine"}) or
             {name: tuple(span) for name, span in aliases.items()} != expected):
         raise ValueError("The profiled address model is missing a CAN service entry or RAM alias")
     if not report["can_service"]["tx13"]["elf_words_verified"] or not report["early_irq_model"]:
