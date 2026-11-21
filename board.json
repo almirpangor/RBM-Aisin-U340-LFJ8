@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 934,
+  "sequence": 935,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -302,12 +302,12 @@
         "targets/lfj8/test_lfj8_h03_target_platform.c",
         "verification/bench-wave/chat-11/handoff.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "027a36c5f3ef44518bf3ba1bbaf2f464",
       "claimed_at": "2026-11-21T08:50:46+00:00",
-      "updated_at": "2026-11-21T08:50:46+00:00",
-      "note": "Привязка обоснованных номиналов и трактов H03 к существующим владельцам AN2, кнопок и ручной цели, проверки полного цикла, явные границы OD и данных Toyota.",
-      "result": null,
+      "updated_at": "2026-11-21T09:13:36+00:00",
+      "note": "Чат 11. Стендовые профили AN2 и ручных режимов подключены штатными точками; проверены 6 положений, независимый P/N, ручной цикл S1/S2, дребезг, удержание/отзыв и логика OD. 41 этап ПК, 216 тестов, native 22, components 8. Физическая карта, поставщики Toyota и порядок допуска релизов остаются явными зависимостями. verification/bench-wave/chat-11/handoff.json.",
+      "result": "2d3569d4f7c9b4cf23fdbf1d262b7c5136e9d667",
       "based_on_reviews": []
     },
     "TOY-05": {
@@ -15802,9 +15802,40 @@
         "result": "0a9523b203a2cae2b21a81da4c14ce910b570ed3",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "106d80ef411c475b8247bcd3f012139c",
+      "task": "MODE-02",
+      "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+      "action": "review",
+      "claim_id": "027a36c5f3ef44518bf3ba1bbaf2f464",
+      "at": "2026-11-21T09:13:36+00:00",
+      "record": {
+        "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+        "label": "Чат 11 · MODE-02, стендовый профиль селектора и ручных режимов",
+        "branch": "codex/mode02-profile-foreground-892d",
+        "files": [
+          "targets/lfj8/bench_mode_profile.c",
+          "targets/lfj8/bench_mode_profile.h",
+          "targets/lfj8/check_h03_bench_mode.py",
+          "targets/lfj8/check_h03_target_platform.py",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/lfj8_h03_input_binding.h",
+          "targets/lfj8/lfj8_h03_toyota_input_profile.h",
+          "targets/lfj8/test_lfj8_h03_target_platform.c",
+          "verification/bench-wave/chat-11/handoff.json"
+        ],
+        "stage": "review",
+        "claim_id": "027a36c5f3ef44518bf3ba1bbaf2f464",
+        "claimed_at": "2026-11-21T08:50:46+00:00",
+        "updated_at": "2026-11-21T09:13:36+00:00",
+        "note": "Чат 11. Стендовые профили AN2 и ручных режимов подключены штатными точками; проверены 6 положений, независимый P/N, ручной цикл S1/S2, дребезг, удержание/отзыв и логика OD. 41 этап ПК, 216 тестов, native 22, components 8. Физическая карта, поставщики Toyota и порядок допуска релизов остаются явными зависимостями. verification/bench-wave/chat-11/handoff.json.",
+        "result": "2d3569d4f7c9b4cf23fdbf1d262b7c5136e9d667",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T09:13:19+00:00",
+  "updated_at": "2026-11-21T09:13:36+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -18780,6 +18811,31 @@
       "based_on_reviews": [],
       "task": "H03-05",
       "submitted_at": "2026-11-21T09:13:19+00:00"
+    },
+    "027a36c5f3ef44518bf3ba1bbaf2f464": {
+      "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+      "label": "Чат 11 · MODE-02, стендовый профиль селектора и ручных режимов",
+      "branch": "codex/mode02-profile-foreground-892d",
+      "files": [
+        "targets/lfj8/bench_mode_profile.c",
+        "targets/lfj8/bench_mode_profile.h",
+        "targets/lfj8/check_h03_bench_mode.py",
+        "targets/lfj8/check_h03_target_platform.py",
+        "targets/lfj8/lfj8_h03_input_binding.c",
+        "targets/lfj8/lfj8_h03_input_binding.h",
+        "targets/lfj8/lfj8_h03_toyota_input_profile.h",
+        "targets/lfj8/test_lfj8_h03_target_platform.c",
+        "verification/bench-wave/chat-11/handoff.json"
+      ],
+      "stage": "review",
+      "claim_id": "027a36c5f3ef44518bf3ba1bbaf2f464",
+      "claimed_at": "2026-11-21T08:50:46+00:00",
+      "updated_at": "2026-11-21T09:13:36+00:00",
+      "note": "Чат 11. Стендовые профили AN2 и ручных режимов подключены штатными точками; проверены 6 положений, независимый P/N, ручной цикл S1/S2, дребезг, удержание/отзыв и логика OD. 41 этап ПК, 216 тестов, native 22, components 8. Физическая карта, поставщики Toyota и порядок допуска релизов остаются явными зависимостями. verification/bench-wave/chat-11/handoff.json.",
+      "result": "2d3569d4f7c9b4cf23fdbf1d262b7c5136e9d667",
+      "based_on_reviews": [],
+      "task": "MODE-02",
+      "submitted_at": "2026-11-21T09:13:36+00:00"
     }
   }
 }
