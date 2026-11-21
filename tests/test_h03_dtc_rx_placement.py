@@ -10,7 +10,7 @@ def pinned_low_rom():
     rom = bytearray(b"\xff" * 0x8000)
     rom[0x0009D8:0x0009DC] = bytes.fromhex("00004724")
     rom[0x000940:0x00094C] = bytes.fromhex("0000600000007ffe00008000")
-    for site, _, stock, _ in placement.REDIRECTS:
+    for site, _, stock, _, _ in placement.REDIRECTS:
         rom[site:site + 4] = bytes.fromhex(stock)
     return rom
 
@@ -28,7 +28,7 @@ class DtcResidentPlacementTests(unittest.TestCase):
 
     def test_both_redirect_opcodes_and_application_boundary(self):
         rom = pinned_low_rom()
-        hooks = [hook for _, hook, _, _ in placement.REDIRECTS]
+        hooks = [hook for _, hook, _, _, _ in placement.REDIRECTS]
         addresses = dict(zip(hooks, (0x6034, 0x609C)))
         patches = placement.patch_plan(rom, addresses)
         self.assertEqual([p["branch_word"] for p in patches], ["ff0012c0", "fe000659"])
@@ -45,6 +45,18 @@ class DtcResidentPlacementTests(unittest.TestCase):
         self.assertEqual([s["name"] for s in upper], [placement.POLL_ADAPTER])
         with self.assertRaisesRegex(ValueError, "missing from combined link"):
             placement.split_flash(sections[:1], resident)
+
+    def test_fixed_redirects_are_two_words_outside_the_packing_windows(self):
+        redirects = [{"name": f".text.{name}", "size": 4, "alignment": 4, "type": 1, "flags": 6}
+                     for name in placement.REDIRECT_ROOTS]
+        other = {"name": placement.POLL_ADAPTER}
+        fixed, remaining = placement.fixed_redirects([other, *reversed(redirects)])
+        self.assertEqual([(p["address"], p["bytes"]) for p in fixed], [(0x1534, 4), (0x4738, 4)])
+        self.assertEqual(remaining, [other])
+        with self.assertRaisesRegex(ValueError, "one aligned executable"):
+            placement.fixed_redirects(redirects[:1])
+        with self.assertRaisesRegex(ValueError, "one aligned executable"):
+            placement.fixed_redirects([redirects[0], {**redirects[1], "size": 8}])
 
     def test_linked_indirect_addresses_must_match_their_bindings(self):
         rom = pinned_low_rom()
@@ -64,8 +76,17 @@ class DtcResidentPlacementTests(unittest.TestCase):
         def words(*values):
             return b"".join(value.to_bytes(4, "big") for value in values)
 
-        for i, (_, hook, _, _) in enumerate(placement.REDIRECTS):
+        for i, (_, hook, _, _, _) in enumerate(placement.REDIRECTS):
             symbols[hook] = add(f".text.{hook}", 0x6000 + i * 4, 4, bytes(4))
+        patches = placement.patch_plan(rom, {hook: symbols[hook]["address"]
+                                             for _, hook, _, _, _ in placement.REDIRECTS})
+        redirects = []
+        for patch in patches:
+            name = patch["redirect_symbol"]
+            redirect = add(f".text.{name}", patch["site"], 6, bytes.fromhex(patch["branch_word"]))
+            entries[-1]["window"] = name.removeprefix("rbm_h03_")
+            symbols[name] = redirect
+            redirects.append(sections[redirect["section"]])
         add(placement.IRQ_ADAPTER, irq, 4, bytes(4))
         add(placement.POLL_ADAPTER, poll, 4, bytes(4))
         ops = add(placement.OWNER_OPS, 0x6200, 0, words(irq, poll, owner))
@@ -75,6 +96,18 @@ class DtcResidentPlacementTests(unittest.TestCase):
 
         result = placement.describe(rom, elf, entries, owner, linked=True)
         self.assertTrue(result["indirect_targets_verified"])
+        self.assertTrue(result["elf_words_verified"])
+        self.assertEqual(result["oem_overlay_bytes"], 8)
+        original = redirects[1]["data"]
+        redirects[1]["data"] = bytes([original[0] ^ 1]) + original[1:]
+        with self.assertRaisesRegex(ValueError, "differs from the OEM-site plan"):
+            placement.describe(rom, elf, entries, owner, linked=True)
+        redirects[1]["data"] = original
+        first_redirect = symbols[placement.REDIRECT_ROOTS[0]]
+        first_redirect["address"] += 4
+        with self.assertRaisesRegex(ValueError, "differs from the OEM-site plan"):
+            placement.describe(rom, elf, entries, owner, linked=True)
+        first_redirect["address"] -= 4
         sections[ops["section"]]["data"] = words(irq, poll, owner + 4)
         with self.assertRaisesRegex(ValueError, "native CAN owner operations"):
             placement.describe(rom, elf, entries, owner, linked=True)
