@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T07:44:00+00:00**. Изменение № **815**.
+Обновлено UTC: **2026-11-21T07:44:10+00:00**. Изменение № **816**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 06ab447e19de0fa7d864e2ae674dff4a29678b10.
 
-**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 29.**
+**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 28.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -33,7 +33,6 @@
 | Задача | Автор | Коммит | Claim ID для приёмки | Результат |
 | --- | --- | --- | --- | --- |
 | CAN-02 | Codex CAN-02 — деградация скорости в телеметрии H03 | [d87bf6438a30](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/d87bf6438a30efd448feb8cac1d732f7d677a20c) | 42353b1fabea40b8834911219b160e52 | При недоступной калибровке S51 нативный H03 отдаёт 0x1AE с FFFF и сохраняет 0x300. Проверены DTC, старое поколение, два профиля M32R, 22 native, 8 components и 41 шаг ПК. Компоновщик занят H03-03. Отчёт can02-h03-telemetry-availability.md. |
-| CAN-03 | Codex CAN-03 target service | [cf5f2879f589](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/cf5f2879f589a0fbf823b3948bdeb47f43fb5053) | 1b7a53b2c91c49d481c892507323d9d9 | Сервис H03 связан с application_binding, единым брокером, DTC IRQ и TML0/T6. M32R 22/22, ПК 41 шаг, Python 178 PASS + 1 skip, Bosch PASS_OFFLINE_ONLY. Открыты профиль/initialize/stop H03-03, общая компоновка и испытания на блоке. Отчёт verification/project-audit/can03-target-service-phase.md. |
 | CAN-03 | Codex CAN-03 — запуск и остановка сервиса | [b0c2eda62974](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/b0c2eda629743ede633049fbc60256734b8575b7) | 2101184d356545bfa9a1e0bd6716a9ee | Связан штатный target_initialize, сервис CAN и остановка перед сбросом TML0. M32R 22/22, связанный сценарий 14+2, 62 boot, ПК 41/179, Bosch PASS_OFFLINE_ONLY. Открыты рабочий профиль, финальный линк и физическая отмена уже выставленного TX13 при закрытии. Отчёт can03-target-platform-lifecycle.md. |
 | CAN-03 | Codex CAN-03 — остановка TX13 | [40d644fdc0de](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/40d644fdc0de059069d937be70d23aef80c5592f) | 4781e27fe7274496be65a8d2faf92977 | Закрытие H03 и потеря допуска запрашивают отмену TX13; OEM писатель блокируется до проверки освобождения. M32R 22/22, 18 путей gate, 16+2 связанных сценария, ПК 41 шаг, Bosch PASS_OFFLINE_ONLY. +476 Flash, RAM без роста. Остаются стенд и итоговая компоновка. Отчёт can03-tx13-shutdown.md. |
 | CAN-03 | Codex CAN-03 — отдельное размещение TX13 | [1eefa2abd890](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/1eefa2abd890b71c4334408555285750fa6911a0) | 62a5dbfef8914f5fb88386697f6070a8 | OEM-слово TX13 0x00C34C и возврат 0x00C350 проверены в отдельном M32R ELF с typed CAN owner. 18 OEM-сценариев, 22 native, 48 H03 Python. Общий компоновщик зарезервирован H03-04; подключение описано в can03-linked-tx13.md. Без выпуска BIN. |
@@ -743,6 +742,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T07:44:10+00:00 | CAN-03 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-21T07:44:00+00:00 | DTC-03 | complete | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-21T07:43:50+00:00 | H03-05 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T07:43:40+00:00 | TOY-05 | complete | 01a1fa79-a9fd-70c0-80a3-f59592edaf79 |
@@ -772,4 +772,3 @@
 | 2026-11-21T07:03:17+00:00 | H03-04 | claim | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-21T06:50:39+00:00 | H03-04 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T06:49:47+00:00 | H03-03 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-21T06:47:59+00:00 | DTC-02 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
