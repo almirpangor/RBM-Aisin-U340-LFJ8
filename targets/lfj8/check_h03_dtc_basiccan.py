@@ -129,6 +129,16 @@ fixture_done:
     bl fixture_rx_foreground
     .global fixture_target_done
 fixture_target_done:
+#ifdef RBM_DTC_RX_BENCH_FIXTURE
+    ld24 r0,#fixture_bench_repeat_rx
+    ld r1,@r0
+    beqz r1,.Lbench_regular_poll
+    ldi r1,#0
+    st r1,@r0
+    bra .Lrx_fixture_entry
+    .p2align 2
+.Lbench_regular_poll:
+#endif
     bl fixture_rx_foreground
     bra fixture_target_done
 #else
@@ -585,7 +595,7 @@ def verify_linked_rx_words(work, rom, patches):
 
 
 def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False, target=False,
-                       can_owner_dir=None):
+                       can_owner_dir=None, bench_diag=False):
     sites = [(HOOK_SITE, HOOK_STOCK, "rbm_h03_dtc_rx_hook", 0xFF000000)]
     if with_dispatch:
         sites.append((DISPATCH_SITE, DISPATCH_STOCK, "rbm_h03_dtc_rx_dispatch_hook", 0xFE000000))
@@ -596,6 +606,9 @@ def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False,
                "lfj8_h03_dtc_rx_queue.c", "lfj8_h03_dtc_can.c")
     diagnostics = ROOT / "diagnostics"
     header_dirs = [HERE, diagnostics]
+    if bench_diag:
+        sources += ("lfj8_h03_bench_diag.c", "test_lfj8_h03_bench_diag.c")
+        header_dirs.append(ROOT / "controller/include")
     if target:
         sources += ("lfj8_h03_dtc_target.c", "lfj8_h03_dtc_foreground.c", "lfj8_h03_mmio.c",
                     "lfj8_donor_io.c", "lfj8_h03_can13.c", "lfj8_h03_torque_can.c",
@@ -613,6 +626,8 @@ def build_hook_fixture(run, work, gcc, rom, with_dispatch=False, resident=False,
             shutil.copyfile(path, work / path.name)
     (work / "fixture.ld").write_text(RESIDENT_LAYOUT if resident else HOOK_LAYOUT, encoding="ascii")
     defines = ["-DRBM_DTC_RX_HOOK_FIXTURE"]
+    if bench_diag:
+        defines.append("-DRBM_DTC_RX_BENCH_FIXTURE")
     roots = []
     if with_dispatch:
         defines.append("-DRBM_DTC_RX_DISPATCH_FIXTURE")
@@ -1071,8 +1086,73 @@ def check_target_foreground(run, work, debugger, patches, with_can_owner=False):
     return result
 
 
+def check_bench_readout(run, work, debugger, patches, enabled):
+    def observe(page, authorized, steps=()):
+        raw = raw_slot(0x732, 7, f"06a552424d01{page:02x}", 0x13ff)
+        case = Case("bench_readout", {14: (raw, 0x41)}, [])
+        setup = ["set {unsigned char}0x800203 = 9"]
+        if authorized:
+            setup += ["set broker.diagnostic.link.session.mode_bits = 0x90",
+                      "set broker.diagnostic.link.session.permission_bits = 8"]
+        if enabled:
+            setup += ["set rbm_h03_sensor_state.feed.epoch = 0x11223344",
+                      "set {unsigned int}0x800fe0 = 0x55667788"]
+        events = simulate(run, work, debugger, case, compare_hook=True, patches=patches,
+                          compare_dispatch=True, target=True, foreground=True, setup=setup,
+                          target_steps=steps)
+        if any(row[0] in ("oem_diagnostic", "oem_monitor") for row in events):
+            raise ValueError(f"The project readout reached an OEM diagnostic handler: {events}")
+        return [row[1:] for row in events if row[0] in ("foreground", "readout_cf")]
+
+    for page, authorized in ((9, False), (0xff, True), (2, True)):
+        denied, = observe(page, authorized)
+        if denied[:4] != (1, 1, 0, 0):
+            raise ValueError(f"Unexpected refused readout {page:#x}/{authorized}: {denied}")
+    reply, = observe(9, True)
+    if not enabled:
+        if reply[:4] != (1, 1, 0, 0):
+            raise ValueError(f"The default target exposed the bench readout: {reply}")
+        return {"enabled": False, "authorized_request_without_provider_is_silent": True}
+
+    def expect(row, data, *, consumed=1):
+        slot = row[4:]
+        can_id = ((slot[0] & 0x1f) << 6) | (slot[1] & 0x3f)
+        if row[:4] != (1, consumed, 0, 0x80) or (can_id, slot[5], bytes(slot[6:14])) != (0x722, 8, data):
+            raise ValueError(f"Incorrect readout in TX13: {row}")
+
+    registers = bytes.fromhex("07e5010909013101")
+    expect(reply, registers)
+    slot13 = SLOT_DATA + 13 * 16
+    observe_cf = trace("readout_cf", "fixture_foreground_result.available",
+                       "fixture_foreground_result.diagnostic_consumed", "fixture_target.queue.count",
+                       f"*(unsigned char*){MSC + 13:#x}", *bytes_at(slot13, 14))
+    flow = raw_slot(0x732, 3, "300000", 0x1401)
+    steps = (
+        f"set {{unsigned char}}{MSC + 13:#x} = 0x81",
+        f"set {{unsigned short}}{slot13 + 14:#x} = 0x1400",
+        "set {unsigned short}0x801008 = 0x1402",
+        "set {unsigned int}0x8003e0 = 5001",
+        *write_slot(14, flow, 0x41),
+        f"set {{unsigned short}}{SLIST:#x} = {slot_mask(14):#x}",
+        "set fixture_bench_repeat_rx = 1",
+        "tbreak *fixture_target_done", "continue", observe_cf,
+        f"set {{unsigned char}}{MSC + 13:#x} = 0x81",
+        f"set {{unsigned short}}{slot13 + 14:#x} = 0x1403",
+        "set {unsigned short}0x801008 = 0x1404",
+        "set {unsigned int}0x8003e0 = 5002",
+        "tbreak *fixture_target_done", "continue", observe_cf,
+    )
+    clock_frames = ("1013e50101112233", "2144000013885566", "2277880000138800")
+    actual = observe(1, True, steps)
+    for index, (row, expected) in enumerate(zip(actual, clock_frames, strict=True)):
+        # The third TX follows confirmation of the second without another RX.
+        expect(row, bytes.fromhex(expected), consumed=int(index < 2))
+    return {"enabled": True, "closed_unknown_unprimed_silent": True,
+            "registers_tx13": registers.hex(), "clock_frames_tx13": list(clock_frames)}
+
+
 def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=False, target=False,
-          can_owner_dir=None):
+          can_owner_dir=None, bench_diag=False):
     with_rx_dispatch = with_rx_dispatch or resident or target
     with_rx_hook = with_rx_hook or with_rx_dispatch
     if resident and target and can_owner_dir is None:
@@ -1097,7 +1177,7 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=Fal
         patches = {}
         if with_rx_hook:
             patches, code_end, binding = build_hook_fixture(run, work, gcc, rom, with_rx_dispatch,
-                                                           resident, target, can_owner_dir)
+                                                           resident, target, can_owner_dir, bench_diag)
         else:
             (work / "fixture.ld").write_text(LAYOUT, encoding="ascii")
             run(gcc, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,fixture.ld", "fixture.S", "-o", "fixture.elf")
@@ -1142,6 +1222,8 @@ def check(base, gcc, with_rx_hook=False, *, with_rx_dispatch=False, resident=Fal
                 }
         if target:
             dialogue = check_target_foreground(run, work, debugger, patches, can_owner_dir is not None)
+            if resident:
+                dialogue["project_readout"] = check_bench_readout(run, work, debugger, patches, bench_diag)
         elif with_rx_hook:
             single_rx = next(case for case in cases() if case.name == "rx14_session")
             high_word = compare_high_word(run, work, debugger, single_rx, patches, with_rx_dispatch)
@@ -1224,17 +1306,21 @@ def main():
                        help="Link the target RX IRQ below application Flash and run CAN-03 foreground")
     parser.add_argument("--can-owner-dir", type=Path,
                         help="Use CAN-03 owner and donor I/O sources from this targets/lfj8 directory")
+    parser.add_argument("--with-bench-diag", action="store_true",
+                        help="Exercise the optional bench readout with --with-resident-target-rx")
     args = parser.parse_args()
     resident = args.with_resident_rx or args.with_resident_target_rx
     target = args.with_target_rx or args.with_resident_target_rx
     if args.can_owner_dir and not target:
         parser.error("--can-owner-dir requires a target RX mode")
+    if args.with_bench_diag and not args.with_resident_target_rx:
+        parser.error("--with-bench-diag requires --with-resident-target-rx")
     if args.out and (args.out.suffix.lower() != ".json" or args.out.resolve() == args.base.resolve()):
         parser.error("--out must be a separate JSON report")
     try:
         result = check(args.base, args.gcc.resolve(), args.with_rx_hook,
                        with_rx_dispatch=args.with_rx_dispatch, resident=resident,
-                       target=target, can_owner_dir=args.can_owner_dir)
+                       target=target, can_owner_dir=args.can_owner_dir, bench_diag=args.with_bench_diag)
         if args.out:
             args.out.parent.mkdir(parents=True, exist_ok=True)
             args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")

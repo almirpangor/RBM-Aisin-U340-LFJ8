@@ -1,6 +1,19 @@
 #include "lfj8_h03_dtc_can.h"
+#include "lfj8_h03_bench_diag.h"
 
 enum { EMPTY, QUEUED, SUBMITTED, DRAINING, LEASE_LOST };
+
+/* Link the strong implementation from lfj8_h03_bench_diag.c only for the
+ * bench image. Existing layouts keep a fail-closed readout provider. */
+__attribute__((weak))
+size_t lfj8_h03_bench_diag_read(const CheryDtcState *state, uint8_t page,
+                              uint32_t words[CHERY_DTC_READOUT_MAX_WORDS])
+{
+    (void)state;
+    (void)page;
+    (void)words;
+    return 0;
+}
 
 bool lfj8_h03_dtc_can_decode_basic(Lfj8H03DtcReceive *received, const uint8_t slot[16],
                                   uint8_t control, bool extended, uint32_t generation)
@@ -171,8 +184,8 @@ Lfj8H03DtcSlotUse lfj8_h03_dtc_can_poll(Lfj8H03DtcCan *state, CheryDtcState *dtc
         static const CheryDtcClearStore unavailable_store = {0};
         const CheryDtcClearStore *const store =
             state->require_durable_clear ? &unavailable_store : NULL;
-        queue_next(state, chery_dtc_link_receive_with_store(
-            &state->link, dtc, &received->frame, tick, &outgoing, store));
+        queue_next(state, chery_dtc_link_receive_with_readout(
+            &state->link, dtc, &received->frame, tick, &outgoing, store, lfj8_h03_bench_diag_read));
     }
     if (state->submission != QUEUED) {
         return LFJ8_H03_DTC_SLOT_FREE;

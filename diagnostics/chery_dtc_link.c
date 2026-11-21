@@ -1,5 +1,10 @@
 #include "chery_dtc_link.h"
 
+#include <string.h>
+
+_Static_assert(3 + 4 * CHERY_DTC_READOUT_MAX_WORDS <=
+               6 + 7 * (CHERY_DTC_CAN_MAX_REPLY_FRAMES - 1), "Readout must fit the existing reply queue");
+
 static void discard_reply(CheryDtcLink *link)
 {
     link->phase = CHERY_DTC_LINK_IDLE;
@@ -85,13 +90,52 @@ static CheryDtcLinkResult receive_flow_control(
     return take_next_frame(link, tick, outgoing);
 }
 
-CheryDtcLinkResult chery_dtc_link_receive_with_store(
+static bool readout_reply(CheryDtcCanReply *reply, CheryDtcReadout readout,
+                          const CheryDtcState *state, uint8_t page)
+{
+    uint32_t words[CHERY_DTC_READOUT_MAX_WORDS];
+    const size_t count = readout(state, page, words);
+    if (!count || count > CHERY_DTC_READOUT_MAX_WORDS) {
+        return false;
+    }
+
+    uint8_t payload[3 + 4 * CHERY_DTC_READOUT_MAX_WORDS] = {0xe5u, 1u, page};
+    const size_t length = 3u + 4u * count;
+    for (size_t i = 0; i < count; ++i) {
+        for (size_t byte = 0; byte < 4u; ++byte) {
+            payload[3u + 4u * i + byte] = (uint8_t)(words[i] >> (24u - 8u * byte));
+        }
+    }
+
+    size_t offset = 0;
+    do {
+        const size_t index = reply->count++;
+        CheryDtcCanFrame *const frame = &reply->frames[index];
+        *frame = (CheryDtcCanFrame){.id = CHERY_DTC_CAN_REPLY_ID, .length = CHERY_DTC_CAN_FRAME_BYTES};
+        const bool first = index == 0 && length > 7u;
+        if (first) {
+            frame->data[0] = 0x10u;
+            frame->data[1] = (uint8_t)length;
+        } else {
+            frame->data[0] = index ? (uint8_t)(0x20u | index) : (uint8_t)length;
+        }
+        const size_t header = first ? 2u : 1u;
+        const size_t room = CHERY_DTC_CAN_FRAME_BYTES - header;
+        const size_t bytes = length - offset < room ? length - offset : room;
+        memcpy(&frame->data[header], &payload[offset], bytes);
+        offset += bytes;
+    } while (offset < length);
+    return true;
+}
+
+CheryDtcLinkResult chery_dtc_link_receive_with_readout(
     CheryDtcLink *link,
     CheryDtcState *dtc,
     const CheryDtcCanFrame *received,
     uint32_t tick,
     CheryDtcLinkTx *outgoing,
-    const CheryDtcClearStore *store
+    const CheryDtcClearStore *store,
+    CheryDtcReadout readout
 )
 {
     if (link == NULL || dtc == NULL || received == NULL || outgoing == NULL) {
@@ -113,6 +157,19 @@ CheryDtcLinkResult chery_dtc_link_receive_with_store(
     uint8_t length = received->data[0];
     if (length == 0u || length > 7u || length >= received->length) {
         return CHERY_DTC_LINK_IGNORED;
+    }
+
+    /* Project namespace: A5 "RBM" 01 page. Only an open C0 session may
+     * request a page. A refusal does not extend the session. */
+    static const uint8_t prefix[] = {0xa5u, 'R', 'B', 'M', 1u};
+    if (readout && length == sizeof(prefix) + 1u &&
+        memcmp(&received->data[1], prefix, sizeof(prefix)) == 0) {
+        if (link->session.mode_bits != 0x90u || link->session.permission_bits != 0x08u ||
+            !readout_reply(&link->reply, readout, dtc, received->data[1u + sizeof(prefix)])) {
+            return CHERY_DTC_LINK_IGNORED;
+        }
+        link->session_steps_left = CHERY_DTC_LINK_SESSION_STEPS;
+        return take_next_frame(link, tick, outgoing);
     }
 
     if (link->session.mode_bits == 0x9Fu) {
@@ -142,6 +199,14 @@ CheryDtcLinkResult chery_dtc_link_receive_with_store(
     }
 
     return take_next_frame(link, tick, outgoing);
+}
+
+CheryDtcLinkResult chery_dtc_link_receive_with_store(
+    CheryDtcLink *link, CheryDtcState *dtc, const CheryDtcCanFrame *received,
+    uint32_t tick, CheryDtcLinkTx *outgoing, const CheryDtcClearStore *store
+)
+{
+    return chery_dtc_link_receive_with_readout(link, dtc, received, tick, outgoing, store, NULL);
 }
 
 CheryDtcLinkResult chery_dtc_link_receive(

@@ -6,7 +6,8 @@
 enum {
     CHERY_DTC_LINK_TX_CONFIRM_TICKS = 180,
     CHERY_DTC_LINK_FLOW_CONTROL_TICKS = 200,
-    CHERY_DTC_LINK_SESSION_STEPS = 9
+    CHERY_DTC_LINK_SESSION_STEPS = 9,
+    CHERY_DTC_READOUT_MAX_WORDS = 4
 };
 
 typedef enum {
@@ -39,6 +40,11 @@ typedef struct {
     uint32_t phase_tick;
     uint32_t tx_token;
 } CheryDtcLink;
+
+/* Optional project readout provider. Return zero for an unavailable page.
+ * Words are serialized most significant byte first. No bus or DTC writes. */
+typedef size_t (*CheryDtcReadout)(const CheryDtcState *state, uint8_t page,
+                                uint32_t words[CHERY_DTC_READOUT_MAX_WORDS]);
 
 /* All timestamps are monotonically advancing T6 ticks modulo 2^32.
  * FRAME_READY yields one frame and its unique confirmation token. */
@@ -80,6 +86,11 @@ CheryDtcLinkResult chery_dtc_link_receive_with_store(
     uint32_t tick,
     CheryDtcLinkTx *outgoing,
     const CheryDtcClearStore *store
+);
+CheryDtcLinkResult chery_dtc_link_receive_with_readout(
+    CheryDtcLink *link, CheryDtcState *dtc, const CheryDtcCanFrame *received,
+    uint32_t tick, CheryDtcLinkTx *outgoing, const CheryDtcClearStore *store,
+    CheryDtcReadout readout
 );
 CheryDtcLinkResult chery_dtc_link_confirm_tx(
     CheryDtcLink *link,
