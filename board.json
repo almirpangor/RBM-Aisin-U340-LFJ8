@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 783,
+  "sequence": 784,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -121,8 +121,8 @@
       "stage": "in_progress",
       "claim_id": "1291ee065c0840b5a6cb8ef51a1a6c5c",
       "claimed_at": "2026-11-21T06:44:00+00:00",
-      "updated_at": "2026-11-21T06:44:00+00:00",
-      "note": "H03-04 держит компоновщик, CAN-03 взял переход TX13. Выношу существующий состав сервиса и проверенные typed RAM-привязки в общий интерфейс компоновки с использованием в M32R CAN probe. Перепроверю резерв общего инструмента.",
+      "updated_at": "2026-11-21T06:46:45+00:00",
+      "note": "Общий список модулей сервиса и 11 typed RAM-алиасов проверены в автономной профильной композиции M32R. Повторяю CAN CPU и штатный набор; основной файл ещё закреплён за H03-04.",
       "result": null,
       "based_on_reviews": [
         "0ecd2acccbb947a886b1dceb6d968fb9",
@@ -11000,9 +11000,42 @@
           "4781e27fe7274496be65a8d2faf92977"
         ]
       }
+    },
+    {
+      "operation_id": "fe0bdd7a84aa45019155aec29a438f4e",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "1291ee065c0840b5a6cb8ef51a1a6c5c",
+      "at": "2026-11-21T06:46:45+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex H03-03 — общие привязки сервиса CAN",
+        "branch": "codex/h03-03-common-can-service-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_can_service_placement.py",
+          "tests/test_h03_can_service_placement.py",
+          "verification/project-audit/h03-03-common-can-service.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "1291ee065c0840b5a6cb8ef51a1a6c5c",
+        "claimed_at": "2026-11-21T06:44:00+00:00",
+        "updated_at": "2026-11-21T06:46:45+00:00",
+        "note": "Общий список модулей сервиса и 11 typed RAM-алиасов проверены в автономной профильной композиции M32R. Повторяю CAN CPU и штатный набор; основной файл ещё закреплён за H03-04.",
+        "result": null,
+        "based_on_reviews": [
+          "0ecd2acccbb947a886b1dceb6d968fb9",
+          "1b7a53b2c91c49d481c892507323d9d9",
+          "2101184d356545bfa9a1e0bd6716a9ee",
+          "43d58327bd434219b328d74d652d3be9",
+          "4781e27fe7274496be65a8d2faf92977",
+          "96f93fae25924717a50bf354ff863f44"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T06:45:52+00:00",
+  "updated_at": "2026-11-21T06:46:45+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
