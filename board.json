@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 834,
+  "sequence": 835,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -70,11 +70,11 @@
         "tests/test_h03_tx13_placement.py",
         "verification/project-audit/can03-linked-tx13.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "62a5dbfef8914f5fb88386697f6070a8",
       "claimed_at": "2026-11-21T06:43:03+00:00",
-      "updated_at": "2026-11-21T06:47:47+00:00",
-      "note": "OEM-слово TX13 0x00C34C и возврат 0x00C350 проверены в отдельном M32R ELF с typed CAN owner. 18 OEM-сценариев, 22 native, 48 H03 Python. Общий компоновщик зарезервирован H03-04; подключение описано в can03-linked-tx13.md. Без выпуска BIN.",
+      "updated_at": "2026-11-21T07:47:37+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "1eefa2abd890b71c4334408555285750fa6911a0",
       "based_on_reviews": [
         "1b7a53b2c91c49d481c892507323d9d9",
@@ -12679,9 +12679,44 @@
         "task": "CAN-03",
         "submitted_at": "2026-11-20T23:18:55+00:00"
       }
+    },
+    {
+      "operation_id": "783e65328fae4836886445eab01bc17b",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "62a5dbfef8914f5fb88386697f6070a8",
+      "at": "2026-11-21T07:47:37+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — отдельное размещение TX13",
+        "branch": "codex/can03-linked-tx13-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_torque_tx_gate.py",
+          "targets/lfj8/h03_can13_tx_gate.S",
+          "targets/lfj8/h03_can13_tx_redirect.S",
+          "targets/lfj8/h03_torque_tx_gate_fixture.S",
+          "targets/lfj8/lfj8_h03_tx13_placement.py",
+          "tests/test_h03_tx13_placement.py",
+          "verification/project-audit/can03-linked-tx13.md"
+        ],
+        "stage": "done",
+        "claim_id": "62a5dbfef8914f5fb88386697f6070a8",
+        "claimed_at": "2026-11-21T06:43:03+00:00",
+        "updated_at": "2026-11-21T07:47:37+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "1eefa2abd890b71c4334408555285750fa6911a0",
+        "based_on_reviews": [
+          "1b7a53b2c91c49d481c892507323d9d9",
+          "2101184d356545bfa9a1e0bd6716a9ee",
+          "4781e27fe7274496be65a8d2faf92977"
+        ],
+        "task": "CAN-03",
+        "submitted_at": "2026-11-21T06:47:47+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:47:18+00:00",
+  "updated_at": "2026-11-21T07:47:37+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -14907,11 +14942,11 @@
         "tests/test_h03_tx13_placement.py",
         "verification/project-audit/can03-linked-tx13.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "62a5dbfef8914f5fb88386697f6070a8",
       "claimed_at": "2026-11-21T06:43:03+00:00",
-      "updated_at": "2026-11-21T06:47:47+00:00",
-      "note": "OEM-слово TX13 0x00C34C и возврат 0x00C350 проверены в отдельном M32R ELF с typed CAN owner. 18 OEM-сценариев, 22 native, 48 H03 Python. Общий компоновщик зарезервирован H03-04; подключение описано в can03-linked-tx13.md. Без выпуска BIN.",
+      "updated_at": "2026-11-21T07:47:37+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "1eefa2abd890b71c4334408555285750fa6911a0",
       "based_on_reviews": [
         "1b7a53b2c91c49d481c892507323d9d9",
