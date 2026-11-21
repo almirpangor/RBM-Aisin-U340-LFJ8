@@ -1,0 +1,129 @@
+{
+  "chat": "10",
+  "task": "DTC-02",
+  "related": [
+    "DTC-01",
+    "DTC-03",
+    "DTC-04",
+    "REL-02"
+  ],
+  "commit": "af4be34f5511c1507342613b1b641156408a7385",
+  "base_main": "3fe28938163e1dddc98a37733c229390ab7f0fff",
+  "status": "SOFTWARE_COMPONENT_REVIEW",
+  "target": "TCM LFJ8-18-9E1C, H03 LFJ8-T-D, Aisin U340E; pair with Bosch ME7.9.71 E4M3",
+  "bench_diag_profile": {
+    "enabled_by": "--with-bindings --with-dtc-rx --with-can-service --application-profile <explicit H03 header> --binding-source targets/lfj8/lfj8_h03_bench_diag.c",
+    "expected_symbol": "strong lfj8_h03_bench_diag_read from lfj8_h03_bench_diag.c",
+    "runtime_entry_points": [
+      "rbm_h03_dtc_rx_begin",
+      "rbm_h03_dtc_rx_observe",
+      "lfj8_h03_dtc_foreground_poll",
+      "lfj8_h03_dtc_can_poll",
+      "chery_dtc_link_receive_with_readout",
+      "lfj8_h03_bench_diag_read"
+    ],
+    "units_and_commands": "diagnostic-readout.md",
+    "request_id": "0x732",
+    "response_id": "0x722",
+    "readout_request": "06 A5 52 42 4D 01 PP",
+    "c0_open_request": "02 10 86",
+    "capabilities": "Read-only fixed pages 01–0D, no arbitrary address, no actuator or NVM commands",
+    "available_without_can_admission": false,
+    "added_calibrations": [],
+    "reserved_wire_values_origin": "Project v1, separate from S03 command correspondence"
+  },
+  "provenance": {
+    "h03_sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544",
+    "s03_sha256": "6f0433dc44871ed00e73f2766b0b37dce39b19c600f2b8248fb626554b0cfa79",
+    "s03_code_and_status_offsets": [
+      "0xEBE2",
+      "0xECA2"
+    ],
+    "sources": [
+      "targets/lfj8/lfj8_donor_io.c: approved H03 TML0/TML1 and S51/S83 capture",
+      "targets/lfj8/lfj8_h03_atf.c and lfj8_h03_atf_fault.c: AN1, timing, ATF voltage/qualification",
+      "targets/lfj8/lfj8_h03_storage.h: single typed sensor, ATF, application, take-over, cycle and CAN13 objects",
+      "docs/lfj8-h03-output-paths.md: D/E/F command and digital feedback masks, stock faults",
+      "targets/lfj8/lfj8_h03_outputs.h and lfj8_h03_takeover.c: qualifier bytes and pressure command",
+      "targets/lfj8/lfj8_h03_torque.h and lfj8_h03_torque_can.c: existing E4M3 handshake",
+      "docs/diagnostics-integration.md: S03 command/status semantics and unresolved Toyota/Chery correspondences"
+    ],
+    "added_dtc_mappings": []
+  },
+  "checks": [
+    {
+      "command": "python -B tools/build_pc_checks.py --cc <zig> --out <pc_dir>",
+      "result": "41 steps PASS; 216 Python tests, 1 optional S03 test skipped in this run and repeated below",
+      "report_sha256": "42991d64801775ccbae272f75e6afa1c0bab870d5bc9fb2ccfd9c384d2602a39"
+    },
+    {
+      "command": "RBM_S03=<pinned donor>; python -B -m unittest discover -s tests -p test_chery_dtc_table.py -v",
+      "result": "2 PASS; all 96 code/status entries match pinned donor and implementation"
+    },
+    {
+      "command": "zig cc -std=c11 -Wall -Wextra -Werror -pedantic -O2 -I targets/lfj8 -I diagnostics -I controller/include -I controller/vendor/toyota/include diagnostics/chery_dtc.c diagnostics/chery_dtc_can.c diagnostics/chery_dtc_link.c targets/lfj8/lfj8_h03_bench_diag.c targets/lfj8/test_lfj8_h03_bench_diag.c -o <host_test>; run <host_test>",
+      "result": "PASS all 13 fixed pages, unprimed data, unknown page, closed C0, truncation, single frame and three-frame transfer"
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_dtc_basiccan.py --base <H03> --gcc <M32R> --with-resident-target-rx [--with-bench-diag] --out <report>",
+      "result": "PASS default refusal, bench single and three-frame readouts with actual BasicCAN Flow Control, 18 stock/hook comparisons, 3 Virtual Flash model bypasses and 0x732→0x722; denied durable clear preserves P0710 and emits no acknowledgement",
+      "report_sha256": "833956cf84a1336a69bc4f1b085725656afbf67c56cd683c07435c593ca74f4b"
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_dtc_service_gate.py --base <H03> --gcc <M32R>",
+      "result": "9 PASS"
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_dtc_foreground.py --cc <M32R> --controller <controller.o>",
+      "result": "6 PASS groups including transport expiry, T6/C0 and generation reset"
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_atf_fault.py --base <H03> --gcc <M32R> --out <report>",
+      "result": "20 OEM monitor and 20 ATF-DTC foreground scenarios PASS; RAM-only clear in isolated fixture and no durable acknowledgement in the native CAN test are distinct modes",
+      "report_sha256": "d38b78be74aca6ea0db25f59ffef7d0302fcea06c8984f58f1557939bc5e6d8d"
+    }
+  ],
+  "memory": {
+    "address_model_options": "padding-candidate, medium, with_bindings, with_dtc_rx, with_dma4_guard, with_can_service; local diagnostic comparison adds production source through BINDING_MODULES with no application header, fixture or calibration",
+    "default_known_flash_bytes": 102772,
+    "bench_known_flash_bytes": 103836,
+    "bench_delta_vs_same_tree_without_provider_bytes": 1064,
+    "resident_rx_bytes_both_modes": 3540,
+    "static_ram_delta_bytes": 0,
+    "existing_static_irq_pointer_bytes": 4,
+    "typed_storage_bytes": 2816,
+    "direct_m32r_frames_bytes": {
+      "chery_dtc_link_receive_with_readout": 88,
+      "lfj8_h03_bench_diag_read": 36
+    },
+    "stack_measurement_scope": "GCC 4.8.0 M32R prologues at -Os, medium; two direct frames only. No bound for complete foreground, library/MMIO callees or nested IRQs.",
+    "link_status": "FAIL_BINDINGS",
+    "layout_report_sha256": "9a1aa400ae3899c4ceb8d2b24084e81e58bf33a87be667fb09b37f4cf877ca1c",
+    "unresolved_in_default_address_model": [
+      "rbm_h03_application_binding",
+      "rbm_h03_sensor_config"
+    ],
+    "extra_aliases_needed_in_bench_address_model": {
+      "rbm_h03_cycle_state": "control/cycle",
+      "rbm_h03_takeover_state": "control/takeover"
+    },
+    "complete_link_or_hardware_placement_verified": false
+  },
+  "software_blockers": [
+    "Select the real readout source via --binding-source in the aggregate bench profile, bind the existing cycle and take-over aliases and use the full RAM/CAN/T6/application prerequisites. A disabled native CAN service cannot report its own loss through this transport.",
+    "The first complete H03 link still needs the explicit application profile, sensor configuration, remaining platform providers, OEM startup composition and cumulative Flash/SPI/IRQ verification. Measure the final link after integration; the address model does not include all required providers.",
+    "A qualified DTC-04 physical backend and clear callback are required for durable 14 FF 00 success, with no RAM/history change or ACK on failure.",
+    "Toyota solenoid/pressure/lock-up monitors lack verified class/channel/threshold/recovery correspondence to Chery codes. Their raw qualification and feedback can be inspected without assigning a new code.",
+    "No verified H03 continuous ADC source for supply voltage or coil current was found. The provider returns raw AN1, commands, digital feedback and fault qualifiers; power/current are external measurements."
+  ],
+  "post_flash_measurements": [
+    "Owner's Chery scanner: session/read/status, controlled AN1 open/short and recovery, durable clear and power cycle only after a qualified NVM backend.",
+    "Page 01 plus independent synchronized time at the timer reads: absolute TML0/TML1 rate, both read-window widths, wrap and no unexplained increment delta; do not use CAN round-trip as independent elapsed_us.",
+    "Pages 02–05: raw S51/S83 against an impulse generator and AN1/ATF against known resistance and measured voltage.",
+    "Pages 06/07/0D: command and feedback against scoped outputs, actual voltage/current, inhibit and safe removal with bench loads.",
+    "Page 08 and passive 0x5E8/0x5E9: command, acknowledgement, progression and withdrawal under permitted isolated conditions."
+  ],
+  "hardware_tested": false,
+  "flash_performed": false,
+  "final_bin_emitted": false
+}
