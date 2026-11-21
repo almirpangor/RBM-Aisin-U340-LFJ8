@@ -78,6 +78,42 @@ static void check_s01_cold_prepare(void)
     }
 }
 
+static void check_adaptation_generation(void)
+{
+    const FactoryAdaptation *const baseline = rbm_u340e_s01_adaptation_baseline();
+    const FactoryAdaptation learned = {.down = {-40, 40}, .down_seen = 1u};
+    static const struct {
+        uint32_t learned_generation, peer_generation;
+        int same_payload;
+        RbmU340eAdaptationResult result;
+    } cases[] = {
+        {19u, 19u, 0, RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED},
+        {19u, 19u, 1, RBM_U340E_ADAPTATION_LOADED},
+        {0u, UINT32_C(0x80000000), 0, RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED},
+        {UINT32_MAX, 0u, 0, RBM_U340E_ADAPTATION_LOADED},
+    };
+    RbmU340eRuntime runtime = {0};
+    const FactoryGearState gear = {0};
+    assert(rbm_u340e_runtime_init(&runtime, &gear, &runtime.gp));
+    assert(factory_hydraulics_set(&runtime.gp, -7184, 2u, 0x1357u));
+
+    uint8_t records[2][FACTORY_ADAPT_RECORD_BYTES];
+    for (unsigned i = 0; i < sizeof cases / sizeof cases[0]; ++i) {
+        const FactoryAdaptation *const peer = cases[i].same_payload ? &learned : baseline;
+        assert(factory_adaptation_encode(records[0], &learned, cases[i].learned_generation));
+        assert(factory_adaptation_encode(records[1], peer, cases[i].peer_generation));
+        for (unsigned first = 0; first < 2u; ++first) {
+            FactoryAdaptation restored;
+            assert(factory_hydraulics_restore(&runtime.gp, &learned));
+            assert(rbm_u340e_runtime_restore_adaptation(&runtime, baseline, records[first],
+                records[1u - first]) == cases[i].result);
+            factory_hydraulics_capture(&runtime.gp, &restored);
+            assert(memcmp(&restored, peer, sizeof restored) == 0);
+            assert(gp_value(&runtime.gp, -7184, 2u) == 0x1357u);
+        }
+    }
+}
+
 static void check_compact_storage(void)
 {
     struct UnalignedState {
@@ -619,6 +655,7 @@ void rbm_test_runtime(void)
 {
     check_initialization();
     check_s01_cold_prepare();
+    check_adaptation_generation();
     check_compact_storage();
     check_workspace_overlap();
     check_live_stages();
@@ -633,6 +670,7 @@ void rbm_test_runtime(void)
 #ifndef RBM_TEST_QUIET
     puts("Toyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.");
     puts("Toyota S01 cold projection: flags, unavailable periods, preservation and rejection passed.");
+    puts("Toyota startup adaptations: conflicting and identical generations, half-range and rollover passed.");
     puts("Toyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.");
     puts("Toyota 05518C: SECONDARY load qualifiers, hysteresis, clamp, fallback and MAIN handoff passed.");
     puts("Toyota S01 range: P/N to warm low-load D, standstill fill, S1/S2 and first upshift passed.");

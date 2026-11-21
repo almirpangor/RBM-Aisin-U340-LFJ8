@@ -47,6 +47,8 @@ const FactoryAdaptation *rbm_u340e_s01_adaptation_baseline(void);
 /* Restore at startup before scheduling learning or outputs. The serialized
  * owner supplies a qualified baseline and independent, stable slot snapshots
  * from a last-marker-write store. A NULL slot represents a failed read.
+ * Valid records at the same generation require identical adaptation payloads.
+ * A conflict or ambiguous half-range ordering yields BASELINE_UNTRUSTED.
  * Keep the inputs disjoint from the runtime. An invalid call leaves GP intact.
  * Neither baseline outcome writes storage or qualifies actuation. The owner
  * must handle an untrusted store before allowing further saves. */

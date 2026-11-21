@@ -323,11 +323,13 @@ RbmU340eAdaptationResult rbm_u340e_runtime_restore_adaptation(
         if (slot >= 0) {
             const uint8_t *other = slot == 0 ? slot1 : slot0;
             FactoryAdaptation checked;
+            uint32_t other_generation;
             /* A damaged or partially written marker can conceal a newer
-             * reset. Use the older slot only when the peer is unpublished
-             * or the donor decoder can validate both generations. */
+             * reset. A valid peer with the same generation must carry the
+             * same payload: slot order cannot decide between learn and reset. */
             if (adaptation_marker_erased(other) ||
-                factory_adaptation_decode(other, &checked, &generation)) {
+                (factory_adaptation_decode(other, &checked, &other_generation) &&
+                 (other_generation != generation || memcmp(&selected, &checked, sizeof selected) == 0))) {
                 restore = &selected;
                 result = RBM_U340E_ADAPTATION_LOADED;
             }
