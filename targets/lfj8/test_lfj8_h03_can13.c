@@ -161,10 +161,17 @@ static Lfj8H03Can13Result poll(Fixture *f, uint32_t time_us)
         .captured_at_us = now, .engine_rpm = 2000, .observed_gear = 2, .permitted = true,
     };
     const Lfj8H03Can13Input input = {
-        f->generation, now, UINT32_MAX - 5u + time_us / 100u, f->grant, &torque,
-        &torque_cal, &f->dtc, f->queued ? &f->head : NULL,
-        f->omit_vss ? NULL : &f->vss, f->omit_vehicle ? NULL : &vehicle,
-        f->omit_status ? NULL : &status,
+        .generation = f->generation,
+        .now_us = now,
+        .diagnostic_tick = UINT32_MAX - 5u + time_us / 100u,
+        .owns_slot13 = f->grant,
+        .torque = &torque,
+        .torque_calibration = &torque_cal,
+        .dtc = &f->dtc,
+        .received = f->queued ? &f->head : NULL,
+        .vss = f->omit_vss ? NULL : &f->vss,
+        .vehicle = f->omit_vehicle ? NULL : &vehicle,
+        .status = f->omit_status ? NULL : &status,
     };
     const Lfj8H03Can13Result result = lfj8_h03_can13_poll(&f->broker, &f->io, &input);
     assert(!f->lock);

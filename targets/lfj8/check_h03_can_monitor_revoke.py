@@ -436,6 +436,47 @@ static void service_turn(uint32_t now)
 
 unsigned fixture_service_steps;
 unsigned fixture_redirects_expected;
+unsigned fixture_rejected_profiles;
+
+static bool rejects_service_profile(const Lfj8H03TargetServiceConfig *config)
+{
+    return !lfj8_h03_target_service_prepare_locked(config) &&
+        !rbm_h03_can_service.config && !rbm_h03_can_service.start_pending &&
+        !rbm_h03_can_service.t6.active && !h03_can_owner.grant &&
+        !h03_can_owner.setup_generation;
+}
+
+static void check_service_profiles_locked(void)
+{
+    /* An invalid profile must discard the previously prepared service, even
+     * while the clock and IRQ binding are still closed. */
+    if (!lfj8_h03_target_service_prepare_locked(&service_profile)) {
+        return;
+    }
+
+    Lfj8H03TargetServiceConfig config = service_profile;
+    config.t6.period_us_denominator = 0u;
+    fixture_rejected_profiles += rejects_service_profile(&config);
+
+    config = service_profile;
+    config.t6.period_us_denominator = 4u;
+    config.t6.max_sample_gap_us = UINT32_C(0x7fffffff);
+    fixture_rejected_profiles += rejects_service_profile(&config);
+
+    config = service_profile;
+    config.max_clock_span_us = 0u;
+    fixture_rejected_profiles += rejects_service_profile(&config);
+
+    config = service_profile;
+    config.max_clock_span_us = (uint16_t)(config.can13.diagnostic_receive_age_bits *
+                                         config.can13.bit_time_us);
+    fixture_rejected_profiles += rejects_service_profile(&config);
+
+    const Lfj8H03DtcAtfConfig bad_atf = {.max_age_us = 90u, .now_us_locked = rbm_h03_atf_now_us};
+    config = service_profile;
+    config.atf_diagnostic = &bad_atf;
+    fixture_rejected_profiles += rejects_service_profile(&config);
+}
 extern void stock_tx_writer(void);
 
 void fixture_target_service_path(void)
@@ -449,6 +490,9 @@ void fixture_target_service_path(void)
     rbm_h03_sensor_state.feed.epoch = 8u;
     lfj8_h03_dtc_native_cold_init();
     rbm_h03_toyota_release_state.status = UINT8_MAX;
+    if (fixture_redirects_expected) {
+        check_service_profiles_locked();
+    }
     lfj8_h03_mmio.leave(NULL, saved);
     const bool prepared = rbm_h03_application_binding.initialize(NULL) == 1;
     if (!fixture_redirects_expected) {
@@ -826,17 +870,17 @@ def probe_binding(base, compiler, aliases, addresses):
             service_patches.append(("unsigned int", site, opcode | (((target - site) // 4) & 0xFFFFFF)))
         service_cases = []
         fixture_flag = ("unsigned int", symbols["fixture_redirects_expected"][0], 1)
-        for name, patch_set, expected in (
-            ("stock_writers", (), 1),
-            ("missing_dtc_dispatch", service_patches[:-1], 1),
-            ("native_service", (*service_patches, fixture_flag), 16),
+        for name, patch_set, steps, rejections in (
+            ("stock_writers", (), 1, 0),
+            ("missing_dtc_dispatch", service_patches[:-1], 1, 0),
+            ("native_service", (*service_patches, fixture_flag), 16, 5),
         ):
             observed, = startup.read_probe(run, work, debugger, "&fixture_target_service_path",
                                            patch_set, ((symbols["fixture_done"][0],),), 0,
-                                           ("fixture_service_steps",))
-            if observed[2] or observed[-1] != expected:
+                                           ("fixture_service_steps", "fixture_rejected_profiles"))
+            if observed[2] or observed[-2:] != (steps, rejections):
                 raise ValueError(f"Target service {name} failed: {observed}")
-            service_cases.append({"case": name, "steps": observed[-1]})
+            service_cases.append({"case": name, "steps": steps, "invalid_profiles_refused": rejections})
     return {"direct_cases": results, "native_entry_cases": native,
             "cold_owner_initialized_while_both_can_parked": True,
             "first_native_setup_generation": 1,

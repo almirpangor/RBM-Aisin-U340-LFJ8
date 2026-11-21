@@ -89,7 +89,7 @@ Lfj8H03Can13Result lfj8_h03_dtc_native_poll(Lfj8H03DtcTarget *target,
     return result;
 }
 
-static bool valid_t6_config(const Lfj8H03DtcT6Config *config)
+bool lfj8_h03_dtc_t6_config_valid(const Lfj8H03DtcT6Config *config)
 {
     /* Bound the scaled gap plus a full fractional remainder to 32 bits. */
     return config && config->period_us_denominator != 0u &&
@@ -107,7 +107,7 @@ bool lfj8_h03_dtc_native_start_t6(Lfj8H03DtcT6Clock *clock,
     bool started = false;
     if (clock && h03_can_owner.grant == 0u) {
         clock->active = false;
-        if (h03_can_owner.initialized && valid_t6_config(config) &&
+        if (h03_can_owner.initialized && lfj8_h03_dtc_t6_config_valid(config) &&
             lfj8_h03_sensor_clock_ready_locked() == 1) {
             *clock = (Lfj8H03DtcT6Clock){
                 .config = *config,

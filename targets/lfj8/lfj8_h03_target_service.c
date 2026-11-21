@@ -49,8 +49,13 @@ bool lfj8_h03_target_service_prepare_locked(const Lfj8H03TargetServiceConfig *co
     }
     lfj8_h03_target_service_stop_locked();
     const Lfj8H03ApplicationEngine *const engine = rbm_h03_application_binding.engine;
-    if (!config || (config->status_from_t6 &&
-                    (config->can13.period_1ae_us || config->can13.period_300_us)) ||
+    /* Reject an unusable profile before the platform opens the phase gate.
+     * Dynamic clock qualification and IRQ binding still run in start_locked. */
+    if (!config || !lfj8_h03_dtc_t6_config_valid(&config->t6) ||
+        !lfj8_h03_dtc_rx_clock_span_valid(config->max_clock_span_us,
+            config->can13.diagnostic_receive_age_bits, config->can13.bit_time_us) ||
+        (config->atf_diagnostic && !lfj8_h03_dtc_atf_config_valid(config->atf_diagnostic)) ||
+        (config->status_from_t6 && (config->can13.period_1ae_us || config->can13.period_300_us)) ||
         !can_redirects_installed() || !h03_can_owner.initialized ||
         !engine || !engine->target.dtc || engine->target.io != io ||
         engine->target.can_owner != &h03_can_owner ||

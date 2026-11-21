@@ -24,6 +24,10 @@ typedef struct {
     bool (*inhibit_history)(void *context);
 } Lfj8H03DtcAtfConfig;
 
+/* Static checks shared by startup admission and native binding. No I/O. */
+bool lfj8_h03_dtc_rx_clock_span_valid(uint16_t span_us, uint16_t age_bits, uint16_t bit_time_us);
+bool lfj8_h03_dtc_atf_config_valid(const Lfj8H03DtcAtfConfig *config);
+
 typedef struct {
     Lfj8H03DtcRxQueue queue;
     Lfj8H03DtcRxDispatch dispatch;

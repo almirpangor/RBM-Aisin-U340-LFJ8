@@ -10,6 +10,17 @@ enum {
 
 static Lfj8H03DtcTarget *volatile irq_target;
 
+bool lfj8_h03_dtc_rx_clock_span_valid(uint16_t span_us, uint16_t age_bits, uint16_t bit_time_us)
+{
+    return span_us && span_us < (uint32_t)age_bits * bit_time_us;
+}
+
+bool lfj8_h03_dtc_atf_config_valid(const Lfj8H03DtcAtfConfig *config)
+{
+    return config && config->now_us_locked && config->inhibit_history &&
+        config->max_age_us && config->max_age_us < UINT32_C(0x80000000);
+}
+
 void lfj8_h03_dtc_target_unbind(void)
 {
     irq_target = NULL;
@@ -21,12 +32,12 @@ bool lfj8_h03_dtc_target_init(Lfj8H03DtcTarget *target, Lfj8H03Can13 *broker,
 {
     if (!target || !broker || !broker->initialized || !io || !io->read8 ||
         !io->read16 || !io->write8 || !io->enter || !io->leave || !clock_us ||
-        !can_owner || !can_owner->rx_epoch || !can_owner->poll || !max_clock_span_us || irq_target) {
+        !can_owner || !can_owner->rx_epoch || !can_owner->poll || irq_target) {
         return false;
     }
     const uint16_t age_bits = broker->diagnostic.max_receive_age_bits;
     const uint16_t bit_time_us = broker->torque.bit_time_us;
-    if (max_clock_span_us >= (uint32_t)age_bits * bit_time_us ||
+    if (!lfj8_h03_dtc_rx_clock_span_valid(max_clock_span_us, age_bits, bit_time_us) ||
         !lfj8_h03_dtc_rx_queue_init(&target->queue, 0, age_bits, bit_time_us)) {
         return false;
     }
@@ -47,8 +58,7 @@ bool lfj8_h03_dtc_target_init(Lfj8H03DtcTarget *target, Lfj8H03Can13 *broker,
 bool lfj8_h03_dtc_target_enable_atf(Lfj8H03DtcTarget *target,
                                   const Lfj8H03DtcAtfConfig *config)
 {
-    if (!target || irq_target != target || !config || !config->now_us_locked || !config->inhibit_history ||
-        !config->max_age_us || config->max_age_us >= UINT32_C(0x80000000)) {
+    if (!target || irq_target != target || !lfj8_h03_dtc_atf_config_valid(config)) {
         return false;
     }
     const Lfj8RegisterIo *io = target->io;
