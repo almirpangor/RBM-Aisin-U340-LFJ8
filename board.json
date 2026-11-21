@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 793,
+  "sequence": 794,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -150,12 +150,12 @@
         "targets/lfj8/test_lfj8_h03_ram_owner.c",
         "verification/project-audit/h03-04-ram-owner-writer-hooks.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "79e878898f8d4435a7240ad9a30071db",
       "claimed_at": "2026-11-21T07:03:17+00:00",
-      "updated_at": "2026-11-21T07:03:17+00:00",
-      "note": "Включены сданные DMA4 и ранняя защита. Связываю проверки установленных переходов, политики DMA4 и точного слова указателя BasicCAN с владельцем RAM; сохраняю обязательность остальных доказательств.",
-      "result": null,
+      "updated_at": "2026-11-21T07:07:27+00:00",
+      "note": "Допуск RAM проверяет связанные ранний BasicCAN и DMA4, общее слово указателя и единую политику. M32R: отказы при подменах, cold/warm, BasicCAN и DMA4 подтверждены, 31 тест размещения/RAM. Общая модель 106796 байт; верх 103240/102356, FAIL_BINDINGS. Открыты rbm_h03_boot_writers_owned, полный SPI/PSW и итоговая компоновка. BIN не выпускались.",
+      "result": "be1ec128d7ea1bd6ec8db9542da7ecf6a321c5d6",
       "based_on_reviews": [
         "51ce545a28f949a48fa5a995230c2ba7",
         "b2ca152193a145f6a7e8665645cfcb0b",
@@ -11335,9 +11335,42 @@
           "0c1450c04da64b0da07d705e9b9d38bb"
         ]
       }
+    },
+    {
+      "operation_id": "46efb0a71b4646adbe21d155dbb6a016",
+      "task": "H03-04",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "79e878898f8d4435a7240ad9a30071db",
+      "at": "2026-11-21T07:07:27+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex H03-04 — допуск по установленным переходам DMA4 и раннего IRQ",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_owner.h",
+          "targets/lfj8/lfj8_h03_target_memory.c",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "verification/project-audit/h03-04-ram-owner-writer-hooks.md"
+        ],
+        "stage": "review",
+        "claim_id": "79e878898f8d4435a7240ad9a30071db",
+        "claimed_at": "2026-11-21T07:03:17+00:00",
+        "updated_at": "2026-11-21T07:07:27+00:00",
+        "note": "Допуск RAM проверяет связанные ранний BasicCAN и DMA4, общее слово указателя и единую политику. M32R: отказы при подменах, cold/warm, BasicCAN и DMA4 подтверждены, 31 тест размещения/RAM. Общая модель 106796 байт; верх 103240/102356, FAIL_BINDINGS. Открыты rbm_h03_boot_writers_owned, полный SPI/PSW и итоговая компоновка. BIN не выпускались.",
+        "result": "be1ec128d7ea1bd6ec8db9542da7ecf6a321c5d6",
+        "based_on_reviews": [
+          "51ce545a28f949a48fa5a995230c2ba7",
+          "b2ca152193a145f6a7e8665645cfcb0b",
+          "e2040f38c0804ea1ba66dc3a744de6a4",
+          "fb2fa92cc4ca453a89297de917515b5c"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:06:27+00:00",
+  "updated_at": "2026-11-21T07:07:27+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -13656,6 +13689,33 @@
       ],
       "task": "H03-04",
       "submitted_at": "2026-11-21T06:50:39+00:00"
+    },
+    "79e878898f8d4435a7240ad9a30071db": {
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex H03-04 — допуск по установленным переходам DMA4 и раннего IRQ",
+      "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+      "files": [
+        "targets/lfj8/check_h03_ram_owner.py",
+        "targets/lfj8/lfj8_h03_ram_owner.c",
+        "targets/lfj8/lfj8_h03_ram_owner.h",
+        "targets/lfj8/lfj8_h03_target_memory.c",
+        "targets/lfj8/test_lfj8_h03_ram_owner.c",
+        "verification/project-audit/h03-04-ram-owner-writer-hooks.md"
+      ],
+      "stage": "review",
+      "claim_id": "79e878898f8d4435a7240ad9a30071db",
+      "claimed_at": "2026-11-21T07:03:17+00:00",
+      "updated_at": "2026-11-21T07:07:27+00:00",
+      "note": "Допуск RAM проверяет связанные ранний BasicCAN и DMA4, общее слово указателя и единую политику. M32R: отказы при подменах, cold/warm, BasicCAN и DMA4 подтверждены, 31 тест размещения/RAM. Общая модель 106796 байт; верх 103240/102356, FAIL_BINDINGS. Открыты rbm_h03_boot_writers_owned, полный SPI/PSW и итоговая компоновка. BIN не выпускались.",
+      "result": "be1ec128d7ea1bd6ec8db9542da7ecf6a321c5d6",
+      "based_on_reviews": [
+        "51ce545a28f949a48fa5a995230c2ba7",
+        "b2ca152193a145f6a7e8665645cfcb0b",
+        "e2040f38c0804ea1ba66dc3a744de6a4",
+        "fb2fa92cc4ca453a89297de917515b5c"
+      ],
+      "task": "H03-04",
+      "submitted_at": "2026-11-21T07:07:27+00:00"
     }
   }
 }
