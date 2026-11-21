@@ -22,9 +22,11 @@ typedef struct {
     uint8_t clock_running;
     /* Sticky until the feed owner invalidates any retained engine values. */
     uint8_t discontinuity;
+    uint8_t rpm_stamp_valid;
     Lfj8H03EngineRxPhase phase;
     const volatile uint32_t *generation_source;
     uint32_t last_generation;
+    uint32_t rpm_stamp_us; /* TML0 lower bound for the RPM retained by the qualifier. */
 } Lfj8H03EngineRx;
 
 /* The scheduler uses an independent monotonic microsecond clock. The CAN

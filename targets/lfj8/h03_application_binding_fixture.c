@@ -1,5 +1,6 @@
 /* Supplies platform objects only for the binding test in the M32R simulator. */
 #include "lfj8_h03_application_binding.h"
+#include "lfj8_bridge.h"
 #include "lfj8_h03_atf_target.h"
 #include "lfj8_h03_mmio.h"
 #include "lfj8_h03_sensor_target.h"
@@ -29,10 +30,9 @@ volatile Lfj8SelectorAdc rbm_h03_selector_adc_state = {
 Lfj8H03SensorTarget rbm_h03_sensor_state;
 volatile Lfj8H03Atf rbm_h03_atf_state;
 volatile uint8_t rbm_h03_tml0_1mhz_qualified;
-const Lfj8H03SensorFeedConfig rbm_h03_sensor_config = {200u, 200u, 200u, 0u};
 
 static volatile Lfj8H03PhaseClock phase_clock;
-static int owned, clock_ready;
+static int owned;
 static unsigned initialize_calls, inhibit_calls, stock_updates, take_calls, service_calls;
 static const Lfj8H03SensorSnapshot *phase_sensors;
 static Lfj8H03EngineRx engine_rx;
@@ -51,7 +51,8 @@ static int engine_context(void *context, const Lfj8H03SensorSnapshot *sensors,
 
 const Lfj8H03ApplicationEngine rbm_h03_target_engine = {
     .target = {.rx = &engine_rx, .qualifier = &engine_qualifier, .dtc = &engine_dtc,
-               .can_owner = &engine_owner, .io = &lfj8_h03_mmio, .now_us = rbm_h03_atf_now_us},
+               .can_owner = &engine_owner, .io = &lfj8_h03_mmio, .now_us = rbm_h03_atf_now_us,
+               .bit_time_us = 2u},
     .max_age_ticks = 20u, .max_poll_gap_us = 32u, .context_for_task2 = engine_context,
 };
 
@@ -61,12 +62,6 @@ int rbm_h03_target_ram_owned(void *context)
 {
     (void)context;
     return owned;
-}
-
-int rbm_h03_target_clock_ready(void *context)
-{
-    (void)context;
-    return clock_ready;
 }
 
 int rbm_h03_target_initialize(void *context)
@@ -97,6 +92,7 @@ Lfj8H03ToyotaEvent rbm_h03_target_take_toyota(void *context, const Lfj8H03Sensor
     assert(stock_updates == take_calls);
     assert(input == &rbm_h03_cycle_input);
     assert(sensors->capture.now_tml0 == MMIO32(0x8003e0));
+    assert(sensors->capture.vss.state == LFJ8_VSS_UNAVAILABLE);
     phase_sensors = sensors;
     return LFJ8_H03_TOYOTA_WAIT;
 }
@@ -163,10 +159,19 @@ int main(void)
     assert(!rbm_h03_application.running && !rbm_h03_takeover_state.pending && !rbm_h03_main_result.valid);
     assert(!initialize_calls && inhibit_calls == 2u && rbm_h03_selector_adc_state.pending_us == 42u);
 
-    clock_ready = 1;
-    MMIO8(0x800203) = 9u;
-    MMIO8(0x8003eb) = 0x01u;
-    MMIO8(0x800feb) = 0x31u;
+    const struct {
+        uint32_t address;
+        uint8_t expected;
+    } clocks[] = {{0x800203, 9u}, {0x8003eb, 0x01u}, {0x800feb, 0x31u}};
+    for (unsigned i = 0; i < sizeof clocks / sizeof clocks[0]; ++i) {
+        MMIO8(clocks[i].address) = clocks[i].expected;
+    }
+    for (unsigned i = 0; i < sizeof clocks / sizeof clocks[0]; ++i) {
+        MMIO8(clocks[i].address) = 0u;
+        rbm_h03_phase_startup_callback();
+        assert(!initialize_calls && !rbm_h03_application.running && !rbm_h03_tml0_1mhz_qualified);
+        MMIO8(clocks[i].address) = clocks[i].expected;
+    }
     MMIO32(0x8003e0) = UINT32_MAX - 3u;
     rbm_h03_phase_startup_callback();
     assert(rbm_h03_application.running && rbm_h03_runtime_state.initialized && initialize_calls == 1u);
@@ -188,10 +193,29 @@ int main(void)
         }
     }
 
+    const uint32_t old_epoch = rbm_h03_sensor_state.feed.epoch;
+    rbm_h03_sensor_state.s51.primed = 1u;
+    MMIO8(0x800feb) = 0u;
+    rbm_h03_phase_wait_callback();
+    assert(!rbm_h03_application.running && !rbm_h03_runtime_state.initialized && !rbm_h03_tml0_1mhz_qualified);
+    assert(!rbm_h03_sensor_state.s51.primed && rbm_h03_sensor_state.feed.epoch != old_epoch);
+    MMIO8(0x800feb) = 0x31u;
+    rbm_h03_phase_wait_callback();
+    assert(!rbm_h03_application.running);
+
+    MMIO32(0x8003e0) = 104u;
+    rbm_h03_phase_startup_callback();
+    assert(rbm_h03_application.running && initialize_calls == 3u);
+    MMIO32(0x8003e0) = 0u;
+    rbm_h03_phase_wait_callback();
+    assert(!rbm_h03_application.running && !rbm_h03_tml0_1mhz_qualified);
+
+    rbm_h03_phase_startup_callback();
+    assert(rbm_h03_application.running && initialize_calls == 4u);
     MMIO32(0x8003e0) += 13u;
     rbm_h03_phase_wait_callback();
     assert(!rbm_h03_application.running && !rbm_h03_runtime_state.initialized && !rbm_h03_tml0_1mhz_qualified);
     assert(!rbm_h03_takeover_state.pending && service_calls == 2u);
-    puts("H03 native binding: RAM/clock refusal, cold and warm AN2 reset, foreground and expiry PASS");
+    puts("H03 native binding: RAM and timer refusal, epoch revocation, wrap, restart, foreground and expiry PASS");
     return 0;
 }
