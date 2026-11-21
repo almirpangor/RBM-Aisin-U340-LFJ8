@@ -62,7 +62,8 @@ Lfj8H03Can13Result lfj8_h03_can13_poll(Lfj8H03Can13 *broker, const Lfj8RegisterI
         .available = true,
         .diagnostic_consumed = input->received && !have_diagnostic,
     };
-    broker->status.pending |= lfj8_schedule_poll(&broker->status.schedule, now);
+    broker->status.pending |= lfj8_schedule_poll(&broker->status.schedule, now) |
+        (input->status_due & (LFJ8_DUE_1AE | LFJ8_DUE_300));
 
     /* Without an RX input this only ages DTC state and finishes its own TX.
      * A reply awaiting Flow Control has no claim on the hardware slot. */

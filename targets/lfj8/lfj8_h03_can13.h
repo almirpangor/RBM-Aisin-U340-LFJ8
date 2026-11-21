@@ -33,6 +33,7 @@ typedef struct {
     uint32_t now_us;
     uint32_t diagnostic_tick;
     uint8_t owns_slot13;
+    uint8_t status_due; /* LFJ8_DUE_* releases from a qualified external schedule. */
     const Lfj8TorqueInput *torque;
     const Lfj8TorqueCalibration *torque_calibration;
     CheryDtcState *dtc;

@@ -909,6 +909,62 @@ def check_native_t6(run, work, debugger, patches, case):
             "startup_refusals": list(refused)}
 
 
+def check_native_t6_status(run, work, debugger, patches):
+    start_us = 0xFFFFFFFE
+    start = (
+        "set fixture_t6_action = 1", "set fixture_t6_initial = 0xffffffff",
+        "set fixture_t6_status = 1", "set fixture_have_status = 1",
+        f"set {{unsigned int}}0x8003e0 = {start_us:#x}",
+    )
+    observation = trace(
+        "t6_status", "fixture_t6_clock.tick", "fixture_t6_clock.status_phase",
+        "fixture_t6_due", "broker.status.pending", "fixture_foreground_result.status_submitted",
+        "h03_can_owner.grant",
+        "(*(unsigned char*)0x8011d0 << 6) | *(unsigned char*)0x8011d1",
+    )
+
+    def turn(elapsed, *before):
+        return (
+            f"set {{unsigned int}}0x8003e0 = {(start_us + elapsed) & 0xffffffff:#x}",
+            f"set {{unsigned short}}0x801008 = {0x1400 + elapsed // 2:#x}",
+            *before, "tbreak *fixture_target_done", "continue", observation,
+        )
+
+    completed = "set {unsigned char}0x80105d = 0x81"
+    steps = (
+        observation, *turn(2), *turn(3),
+        *turn(13, completed, "set fixture_have_status = 0"),
+        *turn(23, "set fixture_have_status = 1"),
+        *turn(24, completed),
+        *turn(33, completed, "set fixture_have_status = 0"),
+        *turn(34, "set h03_can_owner.grant = 0", "set h03_can_owner.setup_generation = 8",
+              "set {unsigned char}0x80105d = 0", "set fixture_have_status = 1"),
+        *turn(1035),
+    )
+    actual = [
+        row for row in simulate(
+            run, work, debugger, Case("t6_status", {}, []), compare_hook=True, patches=patches,
+            compare_dispatch=True, target=True, foreground=True, target_start=start, target_steps=steps,
+        ) if row[0] == "t6_status"
+    ]
+    expected = [
+        ("t6_status", 0xFFFFFFFF, 3, 0, 0, 0, 1, 0x5E9),
+        ("t6_status", 0xFFFFFFFF, 3, 0, 0, 0, 1, 0x5E9),
+        ("t6_status", 0, 4, 1, 0, 1, 1, 0x1AE),
+        ("t6_status", 4, 8, 1, 1, 0, 1, 0x5E9),
+        ("t6_status", 8, 0, 3, 1, 2, 1, 0x300),
+        ("t6_status", 8, 0, 0, 0, 1, 1, 0x1AE),
+        ("t6_status", 12, 4, 1, 1, 0, 1, 0x5E9),
+        ("t6_status", 12, 4, 0, 0, 0, 1, 0x5E9),
+        ("t6_status", 12, 4, 0, 0, 0, 0, 0x5E9),
+    ]
+    if actual != expected:
+        raise ValueError(f"Incorrect T6 status requests or TX13 arbitration: {actual}")
+    return {"tml0_and_t6_wrap": True, "fractional_period": True,
+            "pending_coalesced_without_operands": True, "new_generation_clears_pending": True,
+            "clock_gap_withdraws_tx": True, "submitted": ["0x1AE", "0x300", "0x1AE"]}
+
+
 def check_native_durable_clear(run, work, debugger, patches):
     clear = raw_slot(0x732, 4, "0314ff00", 0x13FE)
     read = raw_slot(0x732, 4, "0317ff00", 0x13FF)
@@ -1010,6 +1066,7 @@ def check_target_foreground(run, work, debugger, patches, with_can_owner=False):
             "post_reset_tx13_submission": False,
         }
         result["native_t6_clock"] = check_native_t6(run, work, debugger, patches, case)
+        result["native_t6_status"] = check_native_t6_status(run, work, debugger, patches)
         result["native_durable_clear"] = check_native_durable_clear(run, work, debugger, patches)
     return result
 

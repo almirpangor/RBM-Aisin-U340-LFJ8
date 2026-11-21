@@ -3,6 +3,13 @@
 #include "lfj8_h03_can_owner.h"
 #include "lfj8_h03_mmio.h"
 
+/* S03 C0 posts status every four and twelve T6 ticks. */
+enum {
+    STATUS_1AE_TICKS = 4u,
+    STATUS_300_TICKS = 12u,
+    STATUS_T6_DISABLED = UINT8_MAX,
+};
+
 static bool native_rx_epoch(void *context, uint32_t *generation)
 {
     Lfj8H03CanOwner *const owner = context;
@@ -93,7 +100,8 @@ static bool valid_t6_config(const Lfj8H03DtcT6Config *config)
 }
 
 bool lfj8_h03_dtc_native_start_t6(Lfj8H03DtcT6Clock *clock,
-                                  const Lfj8H03DtcT6Config *config, uint32_t initial_tick)
+                                  const Lfj8H03DtcT6Config *config, uint32_t initial_tick,
+                                  bool status_from_t6)
 {
     const uint32_t saved = io->enter(io->context);
     bool started = false;
@@ -106,12 +114,27 @@ bool lfj8_h03_dtc_native_start_t6(Lfj8H03DtcT6Clock *clock,
                 .sampled_us = lfj8_h03_tml0ct_m32r(io->context),
                 .tick = initial_tick,
                 .active = true,
+                .status_phase = (uint8_t)(status_from_t6 ?
+                    initial_tick % STATUS_300_TICKS : STATUS_T6_DISABLED),
             };
             started = true;
         }
     }
     io->leave(io->context, saved);
     return started;
+}
+
+static uint8_t sample_status(Lfj8H03DtcT6Clock *clock, uint32_t ticks)
+{
+    const uint32_t phase = clock->status_phase;
+    if (phase == STATUS_T6_DISABLED || ticks == 0u) {
+        return 0u;
+    }
+    /* Keep modulo-12 phase independent of the wrapping diagnostic tick. */
+    const uint32_t advanced = phase + ticks % STATUS_300_TICKS;
+    clock->status_phase = (uint8_t)(advanced < STATUS_300_TICKS ? advanced : advanced - STATUS_300_TICKS);
+    return (uint8_t)((ticks >= STATUS_1AE_TICKS - phase % STATUS_1AE_TICKS ? LFJ8_DUE_1AE : 0u) |
+                     (ticks >= STATUS_300_TICKS - phase ? LFJ8_DUE_300 : 0u));
 }
 
 static bool sample_t6(Lfj8H03DtcT6Clock *clock, Lfj8H03Can13Input *input, bool clock_ready)
@@ -136,6 +159,7 @@ static bool sample_t6(Lfj8H03DtcT6Clock *clock, Lfj8H03Can13Input *input, bool c
     clock->sampled_us = now;
     clock->tick += ticks;
     input->diagnostic_tick = clock->tick;
+    input->status_due = sample_status(clock, ticks);
     return true;
 }
 
@@ -145,6 +169,9 @@ Lfj8H03Can13Result lfj8_h03_dtc_native_poll_t6(Lfj8H03DtcTarget *target,
 {
     const uint32_t saved = io->enter(io->context);
     const bool clock_ready = lfj8_h03_sensor_clock_ready_locked() == 1;
+    if (input) {
+        input->status_due = 0u;
+    }
     const bool tick_ready = sample_t6(clock, input, clock_ready);
     const Lfj8H03Can13Result result = poll_locked(target, input, native_ready && tick_ready);
     io->leave(io->context, saved);

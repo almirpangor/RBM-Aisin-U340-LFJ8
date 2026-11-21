@@ -9,6 +9,7 @@ typedef struct {
     Lfj8H03DtcT6Config t6;
     uint32_t initial_t6_tick;
     uint16_t max_clock_span_us;
+    bool status_from_t6; /* S03 4/12-tick cadence; requires both CAN13 status periods to be zero. */
     const Lfj8VehicleCalibration *vehicle; /* Optional; absent means unavailable S51 speed. */
     const Lfj8TorqueCalibration *torque_calibration;
     const Lfj8H03DtcAtfConfig *atf_diagnostic;
