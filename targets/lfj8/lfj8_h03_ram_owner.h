@@ -27,4 +27,11 @@ typedef struct {
  * or a different memory map. CAN may be parked while this probe runs. */
 int lfj8_h03_ram_owned(void *context);
 
+/* Required platform witness for rbm_h03_target_ram_owned. It is called under
+ * native interrupt exclusion with a null context, before project RAM may
+ * safely be read or written. Return 1 only when the startup order, remaining
+ * CPU/SBI writers and DMA reconfiguration paths are qualified for this image.
+ * The release link has no fallback definition. */
+int rbm_h03_boot_writers_owned(void *context);
+
 #endif
