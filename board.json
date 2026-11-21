@@ -1,33 +1,33 @@
 {
   "schema_version": 2,
-  "sequence": 895,
+  "sequence": 896,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
-      "label": "Общая сборка 11 новых результатов",
+      "label": "Ведущй — общая сборка и задания для стендовой пары",
       "branch": "codex/integration-01a1f76d-20261120",
       "files": [
+        "AGENTS.md",
         "README.md",
+        "data/bench-first-wave.json",
         "data/project-tasks.json",
+        "docs/bench-first-wave.md",
+        "docs/decisions.md",
         "docs/integration-next-tasks.md",
         "docs/project-map.md",
         "docs/working-set.md",
-        "tests/test_h03_resident_constants.py",
+        "tests/test_bench_pair_gate.py",
+        "tools/build_bench_pair.py",
         "tools/check_h03_image_layout.py",
-        "tools/check_integrated_h03.py",
-        "verification/project-audit/integration-11-20261121/"
+        "verification/project-audit/bench-first-20261121/"
       ],
-      "stage": "done",
-      "claim_id": "53eb08d472e4456e91a1545391804ea6",
-      "claimed_at": "2026-11-21T08:23:43+00:00",
-      "updated_at": "2026-11-21T08:37:56+00:00",
-      "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
-      "result": "abd3cba0093cf834950d7883fcc6cbacec4420d3",
-      "based_on_reviews": [
-        "6078f52e802d408c95fb67f636dd6008",
-        "a20975afc98c4d39aaad95e3eb018a5c",
-        "fe45b2270ed1477d94fcc54c637fa138"
-      ]
+      "stage": "in_progress",
+      "claim_id": "ae03538ba15145cc876e680b118fd0ae",
+      "claimed_at": "2026-11-21T08:46:38+00:00",
+      "updated_at": "2026-11-21T08:46:38+00:00",
+      "note": "Пересверка ТЗ: сначала два реализованных образа для стенда, затем физическая приемка. Единая волна для 12 существующих чатов; общий линкер, манифест и сборка у интегратора.",
+      "result": null,
+      "based_on_reviews": []
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -14557,9 +14557,44 @@
         "task": "ORG-01",
         "submitted_at": "2026-11-21T08:34:42+00:00"
       }
+    },
+    {
+      "operation_id": "285e1fe1e4804f53ae9a740f4f1954d7",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "ae03538ba15145cc876e680b118fd0ae",
+      "at": "2026-11-21T08:46:38+00:00",
+      "record": {
+        "owner": "codex-integration-01a1f76d-20261120",
+        "label": "Ведущй — общая сборка и задания для стендовой пары",
+        "branch": "codex/integration-01a1f76d-20261120",
+        "files": [
+          "AGENTS.md",
+          "README.md",
+          "data/bench-first-wave.json",
+          "data/project-tasks.json",
+          "docs/bench-first-wave.md",
+          "docs/decisions.md",
+          "docs/integration-next-tasks.md",
+          "docs/project-map.md",
+          "docs/working-set.md",
+          "tests/test_bench_pair_gate.py",
+          "tools/build_bench_pair.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/bench-first-20261121/"
+        ],
+        "stage": "in_progress",
+        "claim_id": "ae03538ba15145cc876e680b118fd0ae",
+        "claimed_at": "2026-11-21T08:46:38+00:00",
+        "updated_at": "2026-11-21T08:46:38+00:00",
+        "note": "Пересверка ТЗ: сначала два реализованных образа для стенда, затем физическая приемка. Единая волна для 12 существующих чатов; общий линкер, манифест и сборка у интегратора.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:37:56+00:00",
+  "updated_at": "2026-11-21T08:46:38+00:00",
   "main_commit": "abd3cba0093cf834950d7883fcc6cbacec4420d3",
   "catalog": [
     {
