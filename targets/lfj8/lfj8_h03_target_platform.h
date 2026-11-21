@@ -18,7 +18,9 @@ extern Lfj8H03ToyotaRelease rbm_h03_toyota_release_state;
  * Reset the single owners of the board input producers for cold/warm startup
  * with the app gate closed and outputs inhibited. Also initialize or restore
  * the one shared DTC state. Called in serialized foreground outside the IRQ
- * lock. Return 1 only on successful preparation.
+ * lock. On success return RBM_U340E_STARTUP_PREPARED or
+ * RBM_U340E_STARTUP_S01_COLD as documented by Lfj8H03ApplicationBinding.
+ * Return RBM_U340E_STARTUP_UNQUALIFIED if the input preparation fails.
  *
  * RBM_H03_PROFILE_CAN_SERVICE_CONFIG names an immutable qualified
  * Lfj8H03TargetServiceConfig. After inputs are prepared and RAM and clock

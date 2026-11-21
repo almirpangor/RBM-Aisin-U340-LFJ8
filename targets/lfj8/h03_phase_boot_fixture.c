@@ -12,7 +12,7 @@ enum {
     STOPPED_H03, DUPLICATE, TOYOTA_GAP, RESTART, STOPPED_TOYOTA, BAD_CLOCK,
     NO_PROVIDER, COALESCED, OVERTAKEN, SENSOR_CLOCK_CHANGED, SENSOR_BAD_CONFIG, SENSOR_BAD_STARTUP,
     ADAPT_NO_STORE, ADAPT_ERASED, ADAPT_SAVED, ADAPT_CORRUPT, ADAPT_TORN, ADAPT_UNREADABLE,
-    ADAPT_RESET, ADAPT_RESTART, ADAPT_ALIAS,
+    ADAPT_RESET, ADAPT_RESTART, ADAPT_ALIAS, ADAPT_S01_COLD, ADAPT_BAD_KIND, ADAPT_COLD_NO_WORK,
     ENGINE, ENGINE_BAD_TIME, ENGINE_BAD_CONFIG,
 };
 
@@ -178,7 +178,10 @@ static void inhibit(void *context)
 
 static int prepare_adaptation(void)
 {
-    if (!factory_hydraulics_restore(&startup_gp, &saved_adaptation)) {
+    const FactoryAdaptation *baseline = rbm_u340e_s01_adaptation_baseline();
+    const FactoryAdaptation *initial = BOOT_CASE == ADAPT_S01_COLD ? baseline : &saved_adaptation;
+    if (!factory_hydraulics_restore(&startup_gp, initial) ||
+        !factory_hydraulics_set(&startup_gp, 1492, 2u, 0x5a5au)) {
         return 0;
     }
     if (initialize_calls != 1u || BOOT_CASE == ADAPT_NO_STORE) {
@@ -188,7 +191,6 @@ static int prepare_adaptation(void)
     if (BOOT_CASE == ADAPT_ERASED) {
         return 1;
     }
-    const FactoryAdaptation *baseline = rbm_u340e_s01_adaptation_baseline();
     const FactoryAdaptation *first = BOOT_CASE == ADAPT_RESET ? &saved_adaptation : baseline;
     const FactoryAdaptation *second = BOOT_CASE == ADAPT_RESET ? baseline : &saved_adaptation;
     if (!factory_adaptation_encode(adaptation_slots[0], first, UINT32_MAX) ||
@@ -208,9 +210,12 @@ static int prepare_adaptation(void)
 static const uint8_t *read_adaptation(void *context, unsigned slot)
 {
     (void)context;
+    uint32_t fast_filter;
     if (slot != (adaptation_reads & 1u) || !runtime.initialized || takeover.ops ||
         rbm_h03_application.running || rbm_h03_tml0_1mhz_qualified ||
-        rbm_h03_application.adaptation_status != RBM_U340E_ADAPTATION_INVALID) {
+        rbm_h03_application.adaptation_status != RBM_U340E_ADAPTATION_INVALID ||
+        !factory_hydraulics_get(&runtime.gp, 1492, 2u, &fast_filter) ||
+        fast_filter != (BOOT_CASE == ADAPT_S01_COLD ? 0u : 0x5a5au)) {
         unexpected = 1;
         return NULL;
     }
@@ -245,11 +250,18 @@ static int initialize(void *context)
         MMIO8(0x801028) = 0x1fu;
         MMIO8(0x801029) = 0x3fu;
     }
-    return BOOT_CASE != PARTIAL &&
-        (BOOT_CASE < ADAPT_NO_STORE || BOOT_CASE > ADAPT_ALIAS || prepare_adaptation()) &&
-        factory_hydraulics_set(&startup_gp, -7184, 2u, gear.u7184) &&
-        factory_hydraulics_set(&startup_gp, -7164, 2u, gear.u7164) &&
-        factory_hydraulics_set(&startup_gp, -7186, 2u, gear.u7186);
+    if (BOOT_CASE == PARTIAL ||
+        (BOOT_CASE >= ADAPT_NO_STORE && BOOT_CASE <= ADAPT_COLD_NO_WORK && !prepare_adaptation()) ||
+        !factory_hydraulics_set(&startup_gp, -7184, 2u, gear.u7184) ||
+        !factory_hydraulics_set(&startup_gp, -7164, 2u, gear.u7164) ||
+        !factory_hydraulics_set(&startup_gp, -7186, 2u, gear.u7186)) {
+        return RBM_U340E_STARTUP_UNQUALIFIED;
+    }
+    if (BOOT_CASE == ADAPT_BAD_KIND) {
+        return 3;
+    }
+    return BOOT_CASE == ADAPT_S01_COLD || BOOT_CASE == ADAPT_COLD_NO_WORK
+        ? RBM_U340E_STARTUP_S01_COLD : RBM_U340E_STARTUP_PREPARED;
 }
 
 static Lfj8H03ToyotaEvent take_toyota(void *context, const Lfj8H03SensorSnapshot *sensors,
@@ -369,12 +381,14 @@ static const Lfj8H03ApplicationEngine engine = {
 const Lfj8H03ApplicationBinding rbm_h03_application_binding = {
     .takeover_ops = &ops,
     .phase_config = {8u, BOOT_CASE == INVALID_PERIOD ? 16u : 12u, 2u, 24u},
-    .takeover = &takeover, .cycle = &cycle, .runtime = &runtime, .workspace = &workspace,
+    .takeover = &takeover, .cycle = &cycle, .runtime = &runtime,
+    .workspace = BOOT_CASE == ADAPT_COLD_NO_WORK ? NULL : &workspace,
     .main = &main_result, .input = &input, .startup_gear = &gear, .startup_gp = &startup_gp,
     .toyota_max_period_ticks = BOOT_CASE == ENGINE ? 36u : 23u,
     .ram_owned = ram_owned, .clock_ready = clock_ready, .initialize = initialize,
     .engine = BOOT_CASE >= ENGINE ? &engine : NULL,
-    .read_adaptation = BOOT_CASE > ADAPT_NO_STORE && BOOT_CASE <= ADAPT_ALIAS ? read_adaptation : NULL,
+    .read_adaptation = BOOT_CASE > ADAPT_NO_STORE && BOOT_CASE <= ADAPT_COLD_NO_WORK
+        ? read_adaptation : NULL,
     .take_toyota = BOOT_CASE == NO_PROVIDER ? NULL : take_toyota,
     .service_phase = service_phase,
 };
@@ -422,7 +436,8 @@ static int check_adaptation_boot(void)
     const FactoryAdaptation *expected = baseline;
     if (BOOT_CASE == ADAPT_ERASED) {
         result = RBM_U340E_ADAPTATION_BASELINE_UNPUBLISHED;
-    } else if (BOOT_CASE == ADAPT_SAVED || BOOT_CASE == ADAPT_RESET || BOOT_CASE == ADAPT_RESTART) {
+    } else if (BOOT_CASE == ADAPT_SAVED || BOOT_CASE == ADAPT_RESET ||
+               BOOT_CASE == ADAPT_RESTART || BOOT_CASE == ADAPT_S01_COLD) {
         result = RBM_U340E_ADAPTATION_LOADED;
         if (BOOT_CASE != ADAPT_RESET) {
             expected = &saved_adaptation;
@@ -467,8 +482,9 @@ int fixture_complete(void)
             engine_context_calls || (BOOT_CASE == ENGINE_BAD_CONFIG && engine_rx.generation_source) ||
             (BOOT_CASE == INVALID_PERIOD && !phase.faulted);
     }
-    if (BOOT_CASE == ADAPT_ALIAS) {
-        return adaptation_reads != 2u || initialize_calls != 1u || rbm_h03_application.running ||
+    if (BOOT_CASE == ADAPT_ALIAS || BOOT_CASE == ADAPT_BAD_KIND || BOOT_CASE == ADAPT_COLD_NO_WORK) {
+        const unsigned expected_reads = BOOT_CASE == ADAPT_ALIAS ? 2u : 0u;
+        return adaptation_reads != expected_reads || initialize_calls != 1u || rbm_h03_application.running ||
             rbm_h03_application.adaptation_status != RBM_U340E_ADAPTATION_INVALID ||
             runtime.initialized || takeover.ops || takeover.pending || rbm_h03_tml0_1mhz_qualified;
     }
@@ -477,7 +493,7 @@ int fixture_complete(void)
         LFJ8_H03_PHASE_WAIT) {
         return 3;
     }
-    if (BOOT_CASE >= ADAPT_NO_STORE && BOOT_CASE <= ADAPT_ALIAS) {
+    if (BOOT_CASE >= ADAPT_NO_STORE && BOOT_CASE <= ADAPT_S01_COLD) {
         return check_adaptation_boot();
     }
     fixture_run_foreground(); /* OEM startup bit has no project event. */

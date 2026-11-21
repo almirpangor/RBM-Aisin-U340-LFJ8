@@ -68,7 +68,7 @@ static int initialize_target(void *context)
         lfj8_selector_adc_init(&rbm_h03_selector_adc_state);
     }
     io->leave(context, saved);
-    return owned && rbm_h03_target_initialize(context) == 1;
+    return owned ? rbm_h03_target_initialize(context) : RBM_U340E_STARTUP_UNQUALIFIED;
 }
 
 const Lfj8H03ApplicationBinding rbm_h03_application_binding = {
