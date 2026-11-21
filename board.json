@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 837,
+  "sequence": 838,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12780,9 +12780,47 @@
         "task": "H03-03",
         "submitted_at": "2026-11-21T06:49:47+00:00"
       }
+    },
+    {
+      "operation_id": "fbf7abb994664ec49edceff4f661af95",
+      "task": "H03-04",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "complete",
+      "claim_id": "51ce545a28f949a48fa5a995230c2ba7",
+      "at": "2026-11-21T07:48:07+00:00",
+      "record": {
+        "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "label": "Codex H03-04 DMA4 in common H03 layout",
+        "branch": "codex/h03-04-dma4-common-irq-01a1f9a2",
+        "files": [
+          "targets/lfj8/check_h03_boot_writers.py",
+          "targets/lfj8/check_h03_dma4_guard.py",
+          "targets/lfj8/h03_dma4_guard.S",
+          "targets/lfj8/lfj8_h03_layout.py",
+          "targets/lfj8/lfj8_h03_service_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-04-dma4-common-irq.md"
+        ],
+        "stage": "done",
+        "claim_id": "51ce545a28f949a48fa5a995230c2ba7",
+        "claimed_at": "2026-11-21T06:41:53+00:00",
+        "updated_at": "2026-11-21T07:48:07+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "1ca2f19ae8590baf6586d812216d55665aebd570",
+        "based_on_reviews": [
+          "7d595279d73d44b882c2a6d929c481bb",
+          "8b0ce759514b4c68b04d002b192f50ff",
+          "96f93fae25924717a50bf354ff863f44",
+          "b2ca152193a145f6a7e8665645cfcb0b",
+          "e2040f38c0804ea1ba66dc3a744de6a4",
+          "fb2fa92cc4ca453a89297de917515b5c"
+        ],
+        "task": "H03-04",
+        "submitted_at": "2026-11-21T06:50:39+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:47:57+00:00",
+  "updated_at": "2026-11-21T07:48:07+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -15085,11 +15123,11 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/h03-04-dma4-common-irq.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "51ce545a28f949a48fa5a995230c2ba7",
       "claimed_at": "2026-11-21T06:41:53+00:00",
-      "updated_at": "2026-11-21T06:50:39+00:00",
-      "note": "DMA4 и раннее обнуление существующего указателя BasicCAN включены в общий адресный расчёт. На одном связанном ELF прошли оба reset, два CAN0 перехода, отказ DMA4 на указателе и допуск SIO0. 25 проверок размещения, 6 размещённых групп, 12 DMA4, 9 сервисных BasicCAN и 41 этап ПК. Общий линк ещё FAIL_BINDINGS, аппаратные IRQ и полный стек открыты.",
+      "updated_at": "2026-11-21T07:48:07+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "1ca2f19ae8590baf6586d812216d55665aebd570",
       "based_on_reviews": [
         "7d595279d73d44b882c2a6d929c481bb",

@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T07:47:57+00:00**. Изменение № **837**.
+Обновлено UTC: **2026-11-21T07:48:07+00:00**. Изменение № **838**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 06ab447e19de0fa7d864e2ae674dff4a29678b10.
 
-**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 7.**
+**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 6.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -35,7 +35,6 @@
 | CAN-02 | Codex CAN-02 — деградация скорости в телеметрии H03 | [d87bf6438a30](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/d87bf6438a30efd448feb8cac1d732f7d677a20c) | 42353b1fabea40b8834911219b160e52 | При недоступной калибровке S51 нативный H03 отдаёт 0x1AE с FFFF и сохраняет 0x300. Проверены DTC, старое поколение, два профиля M32R, 22 native, 8 components и 41 шаг ПК. Компоновщик занят H03-03. Отчёт can02-h03-telemetry-availability.md. |
 | DTC-01 | Codex DTC-01 — граница RX при тайм-ауте протокола | [0941e55fb9be](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/0941e55fb9be406f3f8d5b3cb7d378aa18205349) | 8c0be7af01f44597abf221073ba948bb | RX прежнего сеанса сбрасывается до обработки тайм-аута TX/FC в CAN13. ПК/M32R, смена поколения, 18 BasicCAN, 22 native и 41 шаг ПК (179 тестов) прошли. DTC-04 совместим; секторы не выделены. |
 | H03-03 | Codex H03-03 common application RAM and CAN service | [a8821975addf](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/a8821975addf933eee8e370085ad645f032442f2) | 0f2e91c7274b44688d2514bece8ba6e8 | Общий линк использует RAM приложения, сервис CAN и TX13. Из прежних семи ссылок остались application_binding и sensor_config. Профиль закрепил 13 алиасов; связанное слово TX13 проверено по общему плану. Прошли ранние IRQ/DMA4, 18 TX13, 53 H03, 22 native, 8 components, 6 размещённых групп и 41 этап ПК. Итоговая сборка ждёт профиля и поставщиков. |
-| H03-04 | Codex H03-04 DMA4 in common H03 layout | [1ca2f19ae859](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/1ca2f19ae8590baf6586d812216d55665aebd570) | 51ce545a28f949a48fa5a995230c2ba7 | DMA4 и раннее обнуление существующего указателя BasicCAN включены в общий адресный расчёт. На одном связанном ELF прошли оба reset, два CAN0 перехода, отказ DMA4 на указателе и допуск SIO0. 25 проверок размещения, 6 размещённых групп, 12 DMA4, 9 сервисных BasicCAN и 41 этап ПК. Общий линк ещё FAIL_BINDINGS, аппаратные IRQ и полный стек открыты. |
 | H03-04 | Codex H03-04 — допуск по установленным переходам DMA4 и раннего IRQ | [be1ec128d7ea](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/be1ec128d7ea1bd6ec8db9542da7ecf6a321c5d6) | 79e878898f8d4435a7240ad9a30071db | Допуск RAM проверяет связанные ранний BasicCAN и DMA4, общее слово указателя и единую политику. M32R: отказы при подменах, cold/warm, BasicCAN и DMA4 подтверждены, 31 тест размещения/RAM. Общая модель 106796 байт; верх 103240/102356, FAIL_BINDINGS. Открыты rbm_h03_boot_writers_owned, полный SPI/PSW и итоговая компоновка. BIN не выпускались. |
 | MODE-02 | Codex MODE-02 — ручная цель в полном профиле H03 | [9908d956f18c](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9908d956f18cba01fe0ef9c9089dbd81d317fb75) | ec35ff2a13a14818a96ced1510f85588 | Подключена ручная цель через профиль H03 и take_toyota до S01 MAIN. M32R подтвердил удержание, отзыв, S1/S2 и обрыв между релизами в обычной и размещённой моделях. ПК 41 этап и 181 тест, native 22, components 8, размещённое ядро 6. Выпускной профиль, карта P1DATA/OD, поставщик входов и аппаратные измерения ещё нужны. Отчёт verification/project-audit/mode02-native-profile-capture.md. |
 | ORG-01 | Общая сборка 39 результатов | [06ab447e19de](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/06ab447e19de0fa7d864e2ae674dff4a29678b10) | 9a8eca1841da444399a297ba0f3124f0 | 39 порций объединены и проверены; исправлен API RAM-теста. Полная композиция FAIL_BINDINGS/Flash overflow; 2 рабочих BIN не выпущены. Отчёт integration-39-20261121. |
@@ -721,6 +720,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T07:48:07+00:00 | H03-04 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T07:47:57+00:00 | H03-03 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-21T07:47:47+00:00 | DTC-02 | complete | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-21T07:47:37+00:00 | CAN-03 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -750,4 +750,3 @@
 | 2026-11-21T07:43:21+00:00 | TOY-02 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-21T07:43:11+00:00 | H03-03 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-21T07:43:01+00:00 | CAN-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
-| 2026-11-21T07:42:52+00:00 | DTC-04 | complete | 01a1fa76-922b-7b11-a2f2-346a15d1dc95 |
