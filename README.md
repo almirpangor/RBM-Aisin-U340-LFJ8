@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T08:50:41+00:00**. Изменение № **899**.
+Обновлено UTC: **2026-11-21T08:50:46+00:00**. Изменение № **900**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 10f7c1513b910f42473690255641140989cc10d0.
 
-**В работе: 4 · Ожидают с резервом: 0 · Порций на проверке: 0.**
+**В работе: 5 · Ожидают с резервом: 0 · Порций на проверке: 0.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -23,6 +23,7 @@
 | 6 | TOY-05 — Обучение и сохранение адаптаций | Codex 12 — TOY-05, стартовое состояние первой стендовой пары \[01a1fa79-a9fd-70c0-80a3-f59592edaf79\] | 2026-11-21T08:50:37+00:00 | Проверяю S01/R3 и read-before-write; реализую H03 startup GP/gear и адаптер штатного initialize_inputs. Native NVM и application_binding вне резерва. |
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T08:50:41+00:00 | Подключаю native bench CAN profile, реальные источники статуса, удержание и отзыв запроса момента через штатный TX13; Проверяю точные параметры и интеграцию |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T08:50:32+00:00 | Связываю оставшиеся ожидание, strategy и apply с нативными callback и проверяю обходы в штатном графе, включая монитор и reset. Общий линкер и привязка приложения у интегратора. |
+| 25 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | Чат 11 · MODE-02, стендовый профиль селектора и ручных режимов \[01a1fa79-892d-7ca3-bb8a-44698892c53e\] | 2026-11-21T08:50:46+00:00 | Привязка обоснованных номиналов и трактов H03 к существующим владельцам AN2, кнопок и ручной цели, проверки полного цикла, явные границы OD и данных Toyota. |
 | — | ORG-01 — Основа проекта и локальная работа | Ведущй — общая сборка и задания для стендовой пары \[codex-integration-01a1f76d-20261120\] | 2026-11-21T08:46:38+00:00 | Пересверка ТЗ: сначала два реализованных образа для стенда, затем физическая приемка. Единая волна для 12 существующих чатов; общий линкер, манифест и сборка у интегратора. |
 
 ## Ожидают — резерв сохранён
@@ -73,7 +74,7 @@
 | 21 | [VSS-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#vss-01) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
 | 22 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#vss-02) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
 | 24 | [MODE-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#mode-01) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
-| 25 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#mode-02) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | H03-03 |
+| 25 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#mode-02) | Выполняется | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | H03-03 |
 | 26 | [MODE-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#mode-03) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
 | 27 | [REL-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#rel-01) | Свободна для продолжения | TCM BIN + Bosch BIN + SHA/manifest, карты правок, применимость и фактические результаты приёмки. | TOY-04, TOY-05, TOY-06, CAN-03, CAN-05, ECU-02, H03-04, H03-05, VSS-02, MODE-02, MODE-03, DTC-02, DTC-03, DTC-04 |
 | 28 | [REL-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#rel-02) | Свободна для продолжения | Фактические записи входов/CAN/момента/SLT/SLU и отказов с критериями приёмки. | REL-01 |
@@ -545,7 +546,7 @@
 </details>
 
 <details>
-<summary>MODE-02 — Подключение селектора, Tiptronic и Overdrive: Свободна для продолжения</summary>
+<summary>MODE-02 — Подключение селектора, Tiptronic и Overdrive: Выполняется</summary>
 
 **Сделано.** Нативный AN2/P1DATA поддерживает явные окна и политику; startup сбрасывает владельцев до CAN. Общие host/M32R проверки прошли.
 
@@ -559,7 +560,7 @@
 
 **Рекомендуемый чат.** Чат 11 — 01a1fa79-892d-7ca3-bb8a-44698892c53e.
 
-**Исполнитель сейчас.** Задача не занята.
+**Сейчас выполняет.** Чат 11 · MODE-02, стендовый профиль селектора и ручных режимов — 01a1fa79-892d-7ca3-bb8a-44698892c53e.
 
 **Критерий приёмки.** Реальные нажатия проходят до исполнения запроса в полном цикле, дребезг/обрыв не создают повторных команд.
 
@@ -748,7 +749,6 @@
 | VSS-01 | Порция принята | Codex VSS-01 — допуск времени и окна S51 для 0x1AE | codex/vss01-tml0-timing-admission-32e6ac79 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 1bcfe06eb116940db1921a70130629bacb17da3a |
 | VSS-02 | Порция принята | Codex VSS-02 — согласованность таймеров в foreground | codex/vss02-h03-live-clock-continuity-01a1f9c7 | Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN. / commit 9235b22a1f5a1c455cb33a45d21b58c13d17bd52 |
 | MODE-01 | Порция принята | Codex MODE-01 — отзыв диапазона при отказе ADC | codex/mode01-selector-fault-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 8974a4a5002fd1786eb02ad8d7c19a829c47ad6f |
-| MODE-02 | Порция принята | Codex MODE-02 — профиль AN2 и подготовка входа | codex/h03-03-native-inputs-mwp5rm2ofhaxjfi9dss | Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN. / commit 44f118638a6ef4c728f9b729c328ea5359c96dee |
 | MODE-03 | Порция принята | Codex MODE-03 — допуск только после инициализации политики | codex/mode03-policy-init-admission-32e6ac79 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit d77a559150a3c586ca50caa4aa64488b4f02ce22 |
 | REL-01 | Порция принята | Codex REL-01 — идентификация BIN | codex/rel01-donor-firmware-guard-01a1f9c7 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit de7df4ab3da2c30240e0a8d3635f206787236d94 |
 | REL-02 | Порция принята | Codex REL-02 H03 DMA admission | codex/rel02-h03-ram-owner-01a1f99f | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 8ce841939a365433161c7e1fe5c51f9c0ca3a27b |
@@ -791,6 +791,20 @@
 - tests/test_h03_application_placement.py
 - verification/bench-wave/chat-1/handoff.json
 
+### MODE-02
+
+Чат: Чат 11 · MODE-02, стендовый профиль селектора и ручных режимов. Claim ID: 027a36c5f3ef44518bf3ba1bbaf2f464.
+
+- targets/lfj8/bench_mode_profile.c
+- targets/lfj8/bench_mode_profile.h
+- targets/lfj8/check_h03_bench_mode.py
+- targets/lfj8/check_h03_target_platform.py
+- targets/lfj8/lfj8_h03_input_binding.c
+- targets/lfj8/lfj8_h03_input_binding.h
+- targets/lfj8/lfj8_h03_toyota_input_profile.h
+- targets/lfj8/test_lfj8_h03_target_platform.c
+- verification/bench-wave/chat-11/handoff.json
+
 ### ORG-01
 
 Чат: Ведущй — общая сборка и задания для стендовой пары. Claim ID: ae03538ba15145cc876e680b118fd0ae.
@@ -825,6 +839,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T08:50:46+00:00 | MODE-02 | claim | 01a1fa79-892d-7ca3-bb8a-44698892c53e |
 | 2026-11-21T08:50:41+00:00 | CAN-03 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-21T08:50:37+00:00 | TOY-05 | claim | 01a1fa79-a9fd-70c0-80a3-f59592edaf79 |
 | 2026-11-21T08:50:32+00:00 | H03-03 | claim | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
@@ -854,4 +869,3 @@
 | 2026-11-21T08:09:32+00:00 | CAN-03 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-21T08:09:08+00:00 | H03-04 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-21T08:08:26+00:00 | H03-04 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
-| 2026-11-21T08:08:12+00:00 | CAN-01 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
