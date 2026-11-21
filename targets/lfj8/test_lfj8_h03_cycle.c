@@ -334,7 +334,7 @@ static Lfj8H03CycleResult tick_slu(SluFixture *fixture, const Lfj8H03SluSnapshot
 {
     return lfj8_h03_cycle_tick_with_slu(&fixture->cycle, &fixture->runtime,
         &fixture->input, &fixture->work, &fixture->result,
-        (Lfj8H03CycleLoad){&fixture->load, fixture->now, 40u},
+        (Lfj8H03CycleLoad){.sample = &fixture->load, .now_us = fixture->now, .max_age_us = 40u},
         (Lfj8H03CycleSlu){sample, &fixture->slu, &fixture->output});
 }
 

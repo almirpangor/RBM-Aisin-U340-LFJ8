@@ -14,6 +14,7 @@ typedef struct {
     uint8_t request_1120;
     uint8_t have_event;
     uint8_t faulted;
+    uint8_t require_load_evidence; /* Latched after the first accepted group snapshot. */
 } Lfj8H03Cycle;
 
 /* MAIN finishes using the typed gear view before hydraulic processing.
@@ -38,10 +39,40 @@ typedef struct {
     uint8_t requested_gear;
 } Lfj8H03CycleInput;
 
+typedef enum {
+    LFJ8_H03_LOAD_SECONDARY, /* GP-8270/8272/8306/8298/8302/8310. */
+    LFJ8_H03_LOAD_MAIN,      /* GP-9044/9030. */
+    LFJ8_H03_LOAD_MODE,      /* GP-5299.1. */
+    LFJ8_H03_LOAD_GROUPS,
+    LFJ8_H03_LOAD_ALL_GROUPS = (1u << LFJ8_H03_LOAD_GROUPS) - 1u,
+} Lfj8H03LoadGroup;
+
+typedef struct {
+    uint32_t captured_at; /* Oldest operand within this group. */
+    uint32_t generation;
+} Lfj8H03LoadStamp;
+
+typedef struct {
+    Lfj8H03LoadStamp group[LFJ8_H03_LOAD_GROUPS];
+    uint8_t qualified_groups; /* Bit n authorizes group n in the attached sample. */
+} Lfj8H03LoadEvidence;
+
+/* Calculate sample->sampled_at from the three groups. The foreground producer
+ * owns the coherent copies of the GP-domain operands and their evidence.
+ * expected_generation comes from the current acquisition epoch independently
+ * of those copies. Times share the qualified wrapping clock. On incomplete,
+ * stale, future or cross-epoch evidence returns 0 and preserves oldest_us. */
+int lfj8_h03_load_oldest_us(const Lfj8H03LoadEvidence *evidence, uint32_t expected_generation,
+                            uint32_t now_us, uint32_t max_age_us, uint32_t *oldest_us);
+
 typedef struct {
     const RbmU340eQualifiedLoadFeed *sample;
     uint32_t now_us;
     uint32_t max_age_us;
+    /* Supply group evidence for separately acquired operands. A caller with
+     * a source-qualified coherent sample from one acquisition may omit it. */
+    const Lfj8H03LoadEvidence *evidence;
+    uint32_t generation; /* Current acquisition epoch, not derived from evidence. */
 } Lfj8H03CycleLoad;
 
 typedef struct {
@@ -97,7 +128,9 @@ Lfj8H03CycleResult lfj8_h03_cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *run
  * must be in the past half-wrap, including now. A refused load latches
  * a cycle fault without writing GP or advancing the scheduler. MAIN's
  * command timestamp includes the oldest load operand. Otherwise the
- * same serialization and recovery rules as cycle_tick apply. */
+ * same serialization and recovery rules as cycle_tick apply. When group
+ * evidence is supplied, sampled_at must match its oldest capture exactly.
+ * Subsequent events require group evidence until cycle reinitialization. */
 Lfj8H03CycleResult lfj8_h03_cycle_tick_with_load(Lfj8H03Cycle *cycle, RbmU340eRuntime *runtime,
     const Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work, Lfj8H03MainResult *result,
     Lfj8H03CycleLoad load);
