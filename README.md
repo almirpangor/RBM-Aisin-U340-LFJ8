@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T08:37:05+00:00**. Изменение № **890**.
+Обновлено UTC: **2026-11-21T08:37:15+00:00**. Изменение № **891**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main abd3cba0093cf834950d7883fcc6cbacec4420d3.
 
-**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 5.**
+**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 4.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -32,7 +32,6 @@
 
 | Задача | Автор | Коммит | Claim ID для приёмки | Результат |
 | --- | --- | --- | --- | --- |
-| CAN-01 | Codex CAN-01 — реальная привязка единственного состояния двигателя | [94f93c6067d3](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/94f93c6067d338290333a1fa45f39787476a2d62) | 77b7b955d10d45b89daaaa5912bd3a82 | Целевой rbm_h03_target_engine подключён к штатному запуску и foreground, единым CAN owner/DTC и TML0 через типизированные алиасы. ПК 41/194, 68 запусков, 16 шагов CAN и четыре отклонённых профиля. +36 байт Flash, RAM без прироста. Нужны реальные параметры и контекст Task 2; полный состав FAIL_BINDINGS. |
 | CAN-03 | Codex CAN-03 — проверка профиля сервиса до допуска фаз | [813f9513ff06](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/813f9513ff06ced54bcf2d92b0f254bebec47ca7) | 229997a636ba4ae5a74668a70fe58cae | Пять неверных профилей T6/окна DTC/ATF теперь отключаются до допуска фаз. Повторное использование общих проверок и 16 шагов штатного CAN прошли. Исправлена несовместимость теста CAN13 со status_due в e207a57. ПК 41/194, M32R 22 native + 8 components + 6 placed и BasicCAN 18+18+3. +140 байт Flash, 0 новой RAM, полный FAIL_BINDINGS и дефицит верхней Flash 624 байта. Открыты выпускные параметры и поля, мониторные переходы и стенд. Отчёт can03-h03-service-startup-admission.md. |
 | H03-03 | Codex H03-03 — переходы приложения в общей компоновке | [9874e2757151](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9874e2757151d2ea258c2c0a3e74e9a7da0c4ed0) | 6078f52e802d408c95fb67f636dd6008 | Четыре OEM-перехода startup/foreground включены в общий компоновщик по явному профилю. ПК 41/210, M32R 68, проверки 49, сервис 29/28 и reset/DMA4 PASS. +432 Flash и 16 замен, RAM +0. Полный состав FAIL_BINDINGS, 14 ссылок, дефицит 356 байт верхней Flash. Отчёт h03-03-common-application-entries.md. |
 | H03-04 | Codex H03-04 — подтверждённые RAM/SPI/PSW алиасы | [396a1729a419](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/396a1729a4194ea3939551d9193a591ac79356ff) | a20975afc98c4d39aaad95e3eb018a5c | 14 абсолютных алиасов RAM/SPI/PSW, поддержка резидентной политики. 27 тестов, частичный линк и оба варианта M32R, ранний reset/DMA4 и сервис 29/28 PASS. Общая модель 106416 Flash, 4 RAM, 14 unresolved. Остались нижние пределы и резервы SPI/PSW, rbm_h03_boot_writers_owned и целевой профиль. Отчёт h03-04-common-ram-aliases.md. |
@@ -55,7 +54,7 @@
 | 2 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#h03-04) | Свободна для продолжения; порция на проверке | rbm_h03_target_ram_owned, карта размещения/стека и проверка DMA/SBI/сервиса на едином составе. | См. входные условия карточки |
 | 3 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#vss-02) | Свободна для продолжения | rbm_h03_sensor_config и rbm_h03_target_clock_ready; проверка несовпадения/сброса часов, тайм-аутов и недостоверной остановки. | См. входные условия карточки |
 | 4 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#h03-05) | Свободна для продолжения | rbm_h03_target_takeover_ops с трассой до регистров и явными условиями допуска SLT/SLU. | См. входные условия карточки |
-| 5 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#can-01) | Свободна для продолжения; порция на проверке | rbm_h03_target_engine, реальные пределы возраста/опроса, испытания потери и восстановления данных через общий startup/foreground. | См. входные условия карточки |
+| 5 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#can-01) | Свободна для продолжения | rbm_h03_target_engine, реальные пределы возраста/опроса, испытания потери и восстановления данных через общий startup/foreground. | См. входные условия карточки |
 | 6 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#dtc-04) | Свободна для продолжения | Физический NVM backend, адреса, busy/ошибки, восстановление после прерывания и очистка без ложного подтверждения. | H03-04 |
 | 7 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#toy-05) | Свободна для продолжения | rbm_h03_target_startup_gear/gp с происхождением полей; порядок init → prepare_s01_cold → restore_adaptation до допуска выходов. | TOY-04, H03-04 |
 | 8 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#can-03) | Свободна для продолжения; порция на проверке | rbm_h03_target_service_phase и связанная CAN-композиция без дублирования owner/состояния. | H03-04 |
@@ -167,7 +166,7 @@
 </details>
 
 <details>
-<summary>CAN-01 — Форматы CAN и квалификация RPM/ОЖ: Свободна для продолжения; порция на проверке</summary>
+<summary>CAN-01 — Форматы CAN и квалификация RPM/ОЖ: Свободна для продолжения</summary>
 
 **Сделано.** Реальный дескриптор target_engine включается явным профилем и использует единые engine_rx/qualifier/DTC/CAN owner/TML0. Нативные тесты и свежий обмен с Bosch прошли.
 
@@ -681,7 +680,7 @@
 | H03-04 | На проверке | Codex H03-04 — подтверждённые RAM/SPI/PSW алиасы | codex/h03-04-verified-ram-aliases-7bd19ea4 | 14 абсолютных алиасов RAM/SPI/PSW, поддержка резидентной политики. 27 тестов, частичный линк и оба варианта M32R, ранний reset/DMA4 и сервис 29/28 PASS. Общая модель 106416 Flash, 4 RAM, 14 unresolved. Остались нижние пределы и резервы SPI/PSW, rbm_h03_boot_writers_owned и целевой профиль. Отчёт h03-04-common-ram-aliases.md. / commit 396a1729a4194ea3939551d9193a591ac79356ff |
 | VSS-02 | Порция принята | Codex VSS-02 — согласованность таймеров в foreground | codex/vss02-h03-live-clock-continuity-01a1f9c7 | Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN. / commit 9235b22a1f5a1c455cb33a45d21b58c13d17bd52 |
 | H03-05 | Порция принята | Codex H03-05 reduce native output flash | codex/h03-05-output-flash-01a1f9a2 | Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN. / commit 0d3b2d09b5db03c24bdacb123372e385ba14edb3 |
-| CAN-01 | На проверке | Codex CAN-01 — реальная привязка единственного состояния двигателя | codex/can-01-shared-engine-binding-32e6ac79 | Целевой rbm_h03_target_engine подключён к штатному запуску и foreground, единым CAN owner/DTC и TML0 через типизированные алиасы. ПК 41/194, 68 запусков, 16 шагов CAN и четыре отклонённых профиля. +36 байт Flash, RAM без прироста. Нужны реальные параметры и контекст Task 2; полный состав FAIL_BINDINGS. / commit 94f93c6067d338290333a1fa45f39787476a2d62 |
+| CAN-01 | Порция принята | Codex CAN-01 — реальная привязка единственного состояния двигателя | codex/can-01-shared-engine-binding-32e6ac79 | Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN. / commit 94f93c6067d338290333a1fa45f39787476a2d62 |
 | DTC-04 | Порция принята | Codex DTC-04 — проверка физического чтения журнала | codex/dtc04-native-restore-bank-gate-922b7b11 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 456abca6b0dda9bf8f542f1fbe90653246959443 |
 | TOY-05 | Порция принята | Codex TOY-05 — чтение адаптаций из нативного массива при старте | codex/integration39-c7e4 | Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN. / commit 9cec04d64dfe83df578de05919ace1d6c7f840aa |
 | CAN-03 | На проверке | Codex CAN-03 — проверка профиля сервиса до допуска фаз | codex/c7e4-next-1121 | Пять неверных профилей T6/окна DTC/ATF теперь отключаются до допуска фаз. Повторное использование общих проверок и 16 шагов штатного CAN прошли. Исправлена несовместимость теста CAN13 со status_due в e207a57. ПК 41/194, M32R 22 native + 8 components + 6 placed и BasicCAN 18+18+3. +140 байт Flash, 0 новой RAM, полный FAIL_BINDINGS и дефицит верхней Flash 624 байта. Открыты выпускные параметры и поля, мониторные переходы и стенд. Отчёт can03-h03-service-startup-admission.md. / commit 813f9513ff06ced54bcf2d92b0f254bebec47ca7 |
@@ -719,6 +718,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T08:37:15+00:00 | CAN-01 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-21T08:37:05+00:00 | TOY-05 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-21T08:36:54+00:00 | H03-05 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T08:36:44+00:00 | VSS-02 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
@@ -748,4 +748,3 @@
 | 2026-11-21T08:06:48+00:00 | VSS-02 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-21T08:06:33+00:00 | MODE-02 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-21T08:05:42+00:00 | MODE-02 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-21T08:03:37+00:00 | H03-04 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 890,
+  "sequence": 891,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -258,11 +258,11 @@
         "targets/lfj8/lfj8_h03_can_service_placement.py",
         "verification/project-audit/can01-h03-shared-engine-binding.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "77b7b955d10d45b89daaaa5912bd3a82",
       "claimed_at": "2026-11-21T07:55:08+00:00",
-      "updated_at": "2026-11-21T08:08:12+00:00",
-      "note": "Целевой rbm_h03_target_engine подключён к штатному запуску и foreground, единым CAN owner/DTC и TML0 через типизированные алиасы. ПК 41/194, 68 запусков, 16 шагов CAN и четыре отклонённых профиля. +36 байт Flash, RAM без прироста. Нужны реальные параметры и контекст Task 2; полный состав FAIL_BINDINGS.",
+      "updated_at": "2026-11-21T08:37:15+00:00",
+      "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
       "result": "94f93c6067d338290333a1fa45f39787476a2d62",
       "based_on_reviews": []
     },
@@ -14393,9 +14393,37 @@
         "task": "TOY-05",
         "submitted_at": "2026-11-21T08:07:57+00:00"
       }
+    },
+    {
+      "operation_id": "0b75cd0e4a1542d985385cb090bf19c4",
+      "task": "CAN-01",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "77b7b955d10d45b89daaaa5912bd3a82",
+      "at": "2026-11-21T08:37:15+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex CAN-01 — реальная привязка единственного состояния двигателя",
+        "branch": "codex/can-01-shared-engine-binding-32e6ac79",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_can_service_placement.py",
+          "verification/project-audit/can01-h03-shared-engine-binding.md"
+        ],
+        "stage": "done",
+        "claim_id": "77b7b955d10d45b89daaaa5912bd3a82",
+        "claimed_at": "2026-11-21T07:55:08+00:00",
+        "updated_at": "2026-11-21T08:37:15+00:00",
+        "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
+        "result": "94f93c6067d338290333a1fa45f39787476a2d62",
+        "based_on_reviews": [],
+        "task": "CAN-01",
+        "submitted_at": "2026-11-21T08:08:12+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:37:05+00:00",
+  "updated_at": "2026-11-21T08:37:15+00:00",
   "main_commit": "abd3cba0093cf834950d7883fcc6cbacec4420d3",
   "catalog": [
     {
@@ -17061,11 +17089,11 @@
         "targets/lfj8/lfj8_h03_can_service_placement.py",
         "verification/project-audit/can01-h03-shared-engine-binding.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "77b7b955d10d45b89daaaa5912bd3a82",
       "claimed_at": "2026-11-21T07:55:08+00:00",
-      "updated_at": "2026-11-21T08:08:12+00:00",
-      "note": "Целевой rbm_h03_target_engine подключён к штатному запуску и foreground, единым CAN owner/DTC и TML0 через типизированные алиасы. ПК 41/194, 68 запусков, 16 шагов CAN и четыре отклонённых профиля. +36 байт Flash, RAM без прироста. Нужны реальные параметры и контекст Task 2; полный состав FAIL_BINDINGS.",
+      "updated_at": "2026-11-21T08:37:15+00:00",
+      "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
       "result": "94f93c6067d338290333a1fa45f39787476a2d62",
       "based_on_reviews": [],
       "task": "CAN-01",
