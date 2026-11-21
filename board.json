@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 792,
+  "sequence": 793,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -432,8 +432,8 @@
       "stage": "in_progress",
       "claim_id": "8c0be7af01f44597abf221073ba948bb",
       "claimed_at": "2026-11-21T07:03:52+00:00",
-      "updated_at": "2026-11-21T07:03:52+00:00",
-      "note": "При тайм-ауте TX/FC отбрасываю RX прежнего сеанса до передачи в CAN13. Проверю точную границу, штатный сброс TX и новый запрос после неё.",
+      "updated_at": "2026-11-21T07:06:27+00:00",
+      "note": "Регрессия подтверждена. Контроль очереди теперь учитывает транспортные дедлайны: TX, FC, переполнение и новое поколение прошли на M32R. Проверяю совместную композицию.",
       "result": null,
       "based_on_reviews": [
         "0c1450c04da64b0da07d705e9b9d38bb"
@@ -11305,9 +11305,39 @@
           "96f93fae25924717a50bf354ff863f44"
         ]
       }
+    },
+    {
+      "operation_id": "e96f9fa1342b4e83a0d55557d096ddc3",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "8c0be7af01f44597abf221073ba948bb",
+      "at": "2026-11-21T07:06:27+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-01 — граница RX при тайм-ауте протокола",
+        "branch": "codex/dtc01-transport-expiry-rx-7bd19ea4",
+        "files": [
+          "diagnostics/chery_dtc_link.c",
+          "diagnostics/chery_dtc_link.h",
+          "targets/lfj8/lfj8_h03_dtc_foreground.c",
+          "targets/lfj8/lfj8_h03_dtc_foreground.h",
+          "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
+          "verification/project-audit/dtc01-transport-expiry-rx.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "8c0be7af01f44597abf221073ba948bb",
+        "claimed_at": "2026-11-21T07:03:52+00:00",
+        "updated_at": "2026-11-21T07:06:27+00:00",
+        "note": "Регрессия подтверждена. Контроль очереди теперь учитывает транспортные дедлайны: TX, FC, переполнение и новое поколение прошли на M32R. Проверяю совместную композицию.",
+        "result": null,
+        "based_on_reviews": [
+          "0c1450c04da64b0da07d705e9b9d38bb"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:04:31+00:00",
+  "updated_at": "2026-11-21T07:06:27+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
