@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 821,
+  "sequence": 822,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -549,11 +549,11 @@
         "tests/test_h03_sensor_config.py",
         "verification/project-audit/vss02-paired-calibration.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "f5473c81a3ba401488716ecc40b63255",
       "claimed_at": "2026-11-20T22:43:52+00:00",
-      "updated_at": "2026-11-20T22:51:06+00:00",
-      "note": "Профиль датчиков связан с SHA парных замеров. Проверены два фактических окна TML0, разность приростов TML1/TML0 и отказ компоновщика до ELF. ПК 41 этап и 183 теста, M32R 22 native и 8 компонентов, нативные датчики и binding прошли. Согласованный синтетический профиль разрешил два определения; общая модель FAIL_BINDINGS, аппаратных данных нет. Отчёт verification/project-audit/vss02-paired-calibration.md.",
+      "updated_at": "2026-11-21T07:45:21+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "b703627c2b40b90867d0989a5dd3bfc58a62eeea",
       "based_on_reviews": [
         "8b0ce759514b4c68b04d002b192f50ff"
@@ -12250,9 +12250,38 @@
         "task": "H03-05",
         "submitted_at": "2026-11-20T22:50:38+00:00"
       }
+    },
+    {
+      "operation_id": "4526ee0377f941919f69d1941db449bd",
+      "task": "VSS-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "complete",
+      "claim_id": "f5473c81a3ba401488716ecc40b63255",
+      "at": "2026-11-21T07:45:21+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex VSS-02 — парный профиль TML0/TML1",
+        "branch": "codex/vss02-runtime-counter-01a1f9c7",
+        "files": [
+          "targets/lfj8/check_h03_sensor_config.py",
+          "tests/test_h03_sensor_config.py",
+          "verification/project-audit/vss02-paired-calibration.md"
+        ],
+        "stage": "done",
+        "claim_id": "f5473c81a3ba401488716ecc40b63255",
+        "claimed_at": "2026-11-20T22:43:52+00:00",
+        "updated_at": "2026-11-21T07:45:21+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "b703627c2b40b90867d0989a5dd3bfc58a62eeea",
+        "based_on_reviews": [
+          "8b0ce759514b4c68b04d002b192f50ff"
+        ],
+        "task": "VSS-02",
+        "submitted_at": "2026-11-20T22:51:06+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:45:10+00:00",
+  "updated_at": "2026-11-21T07:45:21+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -14149,11 +14178,11 @@
         "tests/test_h03_sensor_config.py",
         "verification/project-audit/vss02-paired-calibration.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "f5473c81a3ba401488716ecc40b63255",
       "claimed_at": "2026-11-20T22:43:52+00:00",
-      "updated_at": "2026-11-20T22:51:06+00:00",
-      "note": "Профиль датчиков связан с SHA парных замеров. Проверены два фактических окна TML0, разность приростов TML1/TML0 и отказ компоновщика до ELF. ПК 41 этап и 183 теста, M32R 22 native и 8 компонентов, нативные датчики и binding прошли. Согласованный синтетический профиль разрешил два определения; общая модель FAIL_BINDINGS, аппаратных данных нет. Отчёт verification/project-audit/vss02-paired-calibration.md.",
+      "updated_at": "2026-11-21T07:45:21+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "b703627c2b40b90867d0989a5dd3bfc58a62eeea",
       "based_on_reviews": [
         "8b0ce759514b4c68b04d002b192f50ff"
