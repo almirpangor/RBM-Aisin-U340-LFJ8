@@ -9,8 +9,9 @@
  * no valid pair. The input must be exclusive to foreground. The adapter
  * borrows its received field for the broker call and restores it on return.
  * diagnostic_tick is continuous T6 with the low bits in donor phase
- * numbering. The session clock runs before queue delivery; expiry discards
- * pending RX and allows the broker to drain any outstanding DTC TX.
+ * numbering. The session clock and transport deadline are checked before
+ * queue delivery. Either expiry discards pending RX; the broker still
+ * owns closing the expired transport and draining outstanding DTC TX.
  * A turn without TX13 ownership does not advance the session clock.
  * Broker unavailability discards the full RX backlog.
  *
