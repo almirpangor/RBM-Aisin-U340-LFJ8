@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 788,
+  "sequence": 789,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -134,28 +134,25 @@
       ]
     },
     "H03-04": {
-      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
-      "label": "Codex H03-04 DMA4 in common H03 layout",
-      "branch": "codex/h03-04-dma4-common-irq-01a1f9a2",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex H03-04 — допуск по установленным переходам DMA4 и раннего IRQ",
+      "branch": "codex/rel02-h03-ram-owner-01a1f99f",
       "files": [
-        "targets/lfj8/check_h03_boot_writers.py",
-        "targets/lfj8/check_h03_dma4_guard.py",
-        "targets/lfj8/h03_dma4_guard.S",
-        "targets/lfj8/lfj8_h03_layout.py",
-        "targets/lfj8/lfj8_h03_service_placement.py",
-        "tools/check_h03_image_layout.py",
-        "verification/project-audit/h03-04-dma4-common-irq.md"
+        "targets/lfj8/check_h03_ram_owner.py",
+        "targets/lfj8/lfj8_h03_ram_owner.c",
+        "targets/lfj8/lfj8_h03_ram_owner.h",
+        "targets/lfj8/lfj8_h03_target_memory.c",
+        "targets/lfj8/test_lfj8_h03_ram_owner.c",
+        "verification/project-audit/h03-04-ram-owner-writer-hooks.md"
       ],
-      "stage": "review",
-      "claim_id": "51ce545a28f949a48fa5a995230c2ba7",
-      "claimed_at": "2026-11-21T06:41:53+00:00",
-      "updated_at": "2026-11-21T06:50:39+00:00",
-      "note": "DMA4 и раннее обнуление существующего указателя BasicCAN включены в общий адресный расчёт. На одном связанном ELF прошли оба reset, два CAN0 перехода, отказ DMA4 на указателе и допуск SIO0. 25 проверок размещения, 6 размещённых групп, 12 DMA4, 9 сервисных BasicCAN и 41 этап ПК. Общий линк ещё FAIL_BINDINGS, аппаратные IRQ и полный стек открыты.",
-      "result": "1ca2f19ae8590baf6586d812216d55665aebd570",
+      "stage": "in_progress",
+      "claim_id": "79e878898f8d4435a7240ad9a30071db",
+      "claimed_at": "2026-11-21T07:03:17+00:00",
+      "updated_at": "2026-11-21T07:03:17+00:00",
+      "note": "Включены сданные DMA4 и ранняя защита. Связываю проверки установленных переходов, политики DMA4 и точного слова указателя BasicCAN с владельцем RAM; сохраняю обязательность остальных доказательств.",
+      "result": null,
       "based_on_reviews": [
-        "7d595279d73d44b882c2a6d929c481bb",
-        "8b0ce759514b4c68b04d002b192f50ff",
-        "96f93fae25924717a50bf354ff863f44",
+        "51ce545a28f949a48fa5a995230c2ba7",
         "b2ca152193a145f6a7e8665645cfcb0b",
         "e2040f38c0804ea1ba66dc3a744de6a4",
         "fb2fa92cc4ca453a89297de917515b5c"
@@ -11164,9 +11161,42 @@
           "fb2fa92cc4ca453a89297de917515b5c"
         ]
       }
+    },
+    {
+      "operation_id": "d7bb5642d8894180a8d5873f900fbe7f",
+      "task": "H03-04",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "79e878898f8d4435a7240ad9a30071db",
+      "at": "2026-11-21T07:03:17+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex H03-04 — допуск по установленным переходам DMA4 и раннего IRQ",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_owner.h",
+          "targets/lfj8/lfj8_h03_target_memory.c",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "verification/project-audit/h03-04-ram-owner-writer-hooks.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "79e878898f8d4435a7240ad9a30071db",
+        "claimed_at": "2026-11-21T07:03:17+00:00",
+        "updated_at": "2026-11-21T07:03:17+00:00",
+        "note": "Включены сданные DMA4 и ранняя защита. Связываю проверки установленных переходов, политики DMA4 и точного слова указателя BasicCAN с владельцем RAM; сохраняю обязательность остальных доказательств.",
+        "result": null,
+        "based_on_reviews": [
+          "51ce545a28f949a48fa5a995230c2ba7",
+          "b2ca152193a145f6a7e8665645cfcb0b",
+          "e2040f38c0804ea1ba66dc3a744de6a4",
+          "fb2fa92cc4ca453a89297de917515b5c"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T06:50:39+00:00",
+  "updated_at": "2026-11-21T07:03:17+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
