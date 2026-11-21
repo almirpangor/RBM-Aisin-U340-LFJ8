@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 808,
+  "sequence": 809,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -281,11 +281,11 @@
         "targets/lfj8/test_lfj8_h03_engine_feed.c",
         "verification/project-audit/can01-h03-operand-age.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
       "claimed_at": "2026-11-20T21:52:45+00:00",
-      "updated_at": "2026-11-20T22:01:43+00:00",
-      "note": "Метка фактических RPM/ECT и удержанных оборотов подключена к command_at в штатном Task 2. 62 запуска M32R, 41 шаг ПК/179 Python, 11+18 проверок с локально возвращённым cold-start корнем и 6 размещённых. rbm_h03_target_engine ожидает источники контекста и подтверждённые пределы.",
+      "updated_at": "2026-11-21T07:43:01+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "368ecd723336eaa20d508e0d0025172ed78cd127",
       "based_on_reviews": []
     },
@@ -11860,9 +11860,42 @@
         "task": "DTC-04",
         "submitted_at": "2026-11-20T22:01:30+00:00"
       }
+    },
+    {
+      "operation_id": "4823b231adfe4b0d93b86bafe6de628b",
+      "task": "CAN-01",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "complete",
+      "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
+      "at": "2026-11-21T07:43:01+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex CAN-01 — возраст операндов двигателя на Task 2",
+        "branch": "codex/can01-target-engine-1121-c7e4",
+        "files": [
+          "targets/lfj8/h03_phase_boot_fixture.c",
+          "targets/lfj8/lfj8_h03_application.c",
+          "targets/lfj8/lfj8_h03_application.h",
+          "targets/lfj8/lfj8_h03_engine_feed.c",
+          "targets/lfj8/lfj8_h03_engine_feed.h",
+          "targets/lfj8/lfj8_h03_engine_rx.c",
+          "targets/lfj8/lfj8_h03_engine_rx.h",
+          "targets/lfj8/test_lfj8_h03_engine_feed.c",
+          "verification/project-audit/can01-h03-operand-age.md"
+        ],
+        "stage": "done",
+        "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
+        "claimed_at": "2026-11-20T21:52:45+00:00",
+        "updated_at": "2026-11-21T07:43:01+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "368ecd723336eaa20d508e0d0025172ed78cd127",
+        "based_on_reviews": [],
+        "task": "CAN-01",
+        "submitted_at": "2026-11-20T22:01:43+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:42:52+00:00",
+  "updated_at": "2026-11-21T07:43:01+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -13479,11 +13512,11 @@
         "targets/lfj8/test_lfj8_h03_engine_feed.c",
         "verification/project-audit/can01-h03-operand-age.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
       "claimed_at": "2026-11-20T21:52:45+00:00",
-      "updated_at": "2026-11-20T22:01:43+00:00",
-      "note": "Метка фактических RPM/ECT и удержанных оборотов подключена к command_at в штатном Task 2. 62 запуска M32R, 41 шаг ПК/179 Python, 11+18 проверок с локально возвращённым cold-start корнем и 6 размещённых. rbm_h03_target_engine ожидает источники контекста и подтверждённые пределы.",
+      "updated_at": "2026-11-21T07:43:01+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "368ecd723336eaa20d508e0d0025172ed78cd127",
       "based_on_reviews": [],
       "task": "CAN-01",

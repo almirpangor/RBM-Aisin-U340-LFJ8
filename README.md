@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T07:42:52+00:00**. Изменение № **808**.
+Обновлено UTC: **2026-11-21T07:43:01+00:00**. Изменение № **809**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 06ab447e19de0fa7d864e2ae674dff4a29678b10.
 
-**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 36.**
+**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 35.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -32,7 +32,6 @@
 
 | Задача | Автор | Коммит | Claim ID для приёмки | Результат |
 | --- | --- | --- | --- | --- |
-| CAN-01 | Codex CAN-01 — возраст операндов двигателя на Task 2 | [368ecd723336](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/368ecd723336eaa20d508e0d0025172ed78cd127) | 9436326dc3784bbe994f50e6dce8e9c0 | Метка фактических RPM/ECT и удержанных оборотов подключена к command_at в штатном Task 2. 62 запуска M32R, 41 шаг ПК/179 Python, 11+18 проверок с локально возвращённым cold-start корнем и 6 размещённых. rbm_h03_target_engine ожидает источники контекста и подтверждённые пределы. |
 | CAN-02 | Codex CAN-02 — деградация скорости в телеметрии H03 | [d87bf6438a30](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/d87bf6438a30efd448feb8cac1d732f7d677a20c) | 42353b1fabea40b8834911219b160e52 | При недоступной калибровке S51 нативный H03 отдаёт 0x1AE с FFFF и сохраняет 0x300. Проверены DTC, старое поколение, два профиля M32R, 22 native, 8 components и 41 шаг ПК. Компоновщик занят H03-03. Отчёт can02-h03-telemetry-availability.md. |
 | CAN-03 | Codex CAN-03 target service | [cf5f2879f589](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/cf5f2879f589a0fbf823b3948bdeb47f43fb5053) | 1b7a53b2c91c49d481c892507323d9d9 | Сервис H03 связан с application_binding, единым брокером, DTC IRQ и TML0/T6. M32R 22/22, ПК 41 шаг, Python 178 PASS + 1 skip, Bosch PASS_OFFLINE_ONLY. Открыты профиль/initialize/stop H03-03, общая компоновка и испытания на блоке. Отчёт verification/project-audit/can03-target-service-phase.md. |
 | CAN-03 | Codex CAN-03 — запуск и остановка сервиса | [b0c2eda62974](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/b0c2eda629743ede633049fbc60256734b8575b7) | 2101184d356545bfa9a1e0bd6716a9ee | Связан штатный target_initialize, сервис CAN и остановка перед сбросом TML0. M32R 22/22, связанный сценарий 14+2, 62 boot, ПК 41/179, Bosch PASS_OFFLINE_ONLY. Открыты рабочий профиль, финальный линк и физическая отмена уже выставленного TX13 при закрытии. Отчёт can03-target-platform-lifecycle.md. |
@@ -86,7 +85,7 @@
 | 2 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#h03-04) | Свободна для продолжения; порция на проверке | rbm_h03_target_ram_owned, карта размещения/стека и проверка DMA/SBI/сервиса на едином составе. | См. входные условия карточки |
 | 3 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#vss-02) | Свободна для продолжения; порция на проверке | rbm_h03_sensor_config и rbm_h03_target_clock_ready; проверка несовпадения/сброса часов, тайм-аутов и недостоверной остановки. | См. входные условия карточки |
 | 4 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#h03-05) | Свободна для продолжения; порция на проверке | rbm_h03_target_takeover_ops с трассой до регистров и явными условиями допуска SLT/SLU. | См. входные условия карточки |
-| 5 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#can-01) | Свободна для продолжения; порция на проверке | rbm_h03_target_engine, реальные пределы возраста/опроса, испытания потери и восстановления данных через общий startup/foreground. | См. входные условия карточки |
+| 5 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#can-01) | Свободна для продолжения | rbm_h03_target_engine, реальные пределы возраста/опроса, испытания потери и восстановления данных через общий startup/foreground. | См. входные условия карточки |
 | 6 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#dtc-04) | Свободна для продолжения; порция на проверке | Физический NVM backend, адреса, busy/ошибки, восстановление после прерывания и очистка без ложного подтверждения. | H03-04 |
 | 7 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#toy-05) | Свободна для продолжения; порция на проверке | rbm_h03_target_startup_gear/gp с происхождением полей; порядок init → prepare_s01_cold → restore_adaptation до допуска выходов. | TOY-04, H03-04 |
 | 8 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#can-03) | Свободна для продолжения; порция на проверке | rbm_h03_target_service_phase и связанная CAN-композиция без дублирования owner/состояния. | H03-04 |
@@ -198,7 +197,7 @@
 </details>
 
 <details>
-<summary>CAN-01 — Форматы CAN и квалификация RPM/ОЖ: Свободна для продолжения; порция на проверке</summary>
+<summary>CAN-01 — Форматы CAN и квалификация RPM/ОЖ: Свободна для продолжения</summary>
 
 **Сделано.** Возраст принятых RPM/ECT и удержанных оборотов доведён до команды Task2; общий M32R и обмен с собранным Bosch прошли.
 
@@ -712,7 +711,7 @@
 | H03-04 | На проверке | Codex H03-04 — допуск по установленным переходам DMA4 и раннего IRQ | codex/rel02-h03-ram-owner-01a1f99f | Допуск RAM проверяет связанные ранний BasicCAN и DMA4, общее слово указателя и единую политику. M32R: отказы при подменах, cold/warm, BasicCAN и DMA4 подтверждены, 31 тест размещения/RAM. Общая модель 106796 байт; верх 103240/102356, FAIL_BINDINGS. Открыты rbm_h03_boot_writers_owned, полный SPI/PSW и итоговая компоновка. BIN не выпускались. / commit be1ec128d7ea1bd6ec8db9542da7ecf6a321c5d6 |
 | VSS-02 | На проверке | Codex VSS-02 — парный профиль TML0/TML1 | codex/vss02-runtime-counter-01a1f9c7 | Профиль датчиков связан с SHA парных замеров. Проверены два фактических окна TML0, разность приростов TML1/TML0 и отказ компоновщика до ELF. ПК 41 этап и 183 теста, M32R 22 native и 8 компонентов, нативные датчики и binding прошли. Согласованный синтетический профиль разрешил два определения; общая модель FAIL_BINDINGS, аппаратных данных нет. Отчёт verification/project-audit/vss02-paired-calibration.md. / commit b703627c2b40b90867d0989a5dd3bfc58a62eeea |
 | H03-05 | На проверке | Codex H03-05 — снятие TIO9 в нативном отзыве | codex/h03-05-tio9-revoke-01a1fa79 | Нативный callback отзыва снимает TIO9/P97 и сохранённую команду. Повторный OEM apply без новой команды удерживает P97 в GPIO low, свежая выдача фазы 2 сохранена. Пройдены 16 сценариев в каждой модели, 59 SLT, 18 OEM, 20 CAN, 22 native и 8 components. Отдельный адресный прогон с H03-04 bec09c3 прошёл. Физическая изоляция, калибровка, фаза 3 и стенд открыты. Отчёт verification/project-audit/h03-05-tio9-inhibit.md. / commit 07da572f89718e96da71d34f2cb0e8fa36f28156 |
-| CAN-01 | На проверке | Codex CAN-01 — возраст операндов двигателя на Task 2 | codex/can01-target-engine-1121-c7e4 | Метка фактических RPM/ECT и удержанных оборотов подключена к command_at в штатном Task 2. 62 запуска M32R, 41 шаг ПК/179 Python, 11+18 проверок с локально возвращённым cold-start корнем и 6 размещённых. rbm_h03_target_engine ожидает источники контекста и подтверждённые пределы. / commit 368ecd723336eaa20d508e0d0025172ed78cd127 |
+| CAN-01 | Порция принята | Codex CAN-01 — возраст операндов двигателя на Task 2 | codex/can01-target-engine-1121-c7e4 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 368ecd723336eaa20d508e0d0025172ed78cd127 |
 | DTC-04 | На проверке | Codex DTC-04 — проверка физического чтения журнала | codex/dtc04-native-restore-bank-gate-922b7b11 | Читатель холодного журнала отклоняет каждый из четырёх сигналов разрешения FELBANK/FESBANK до и после чтения слота даже при FCNT1=0. ПК/M32R, GDB с включением FESBANK1 после чтения, 22 native и BasicCAN 18+18 прошли. Объект 444 байта, без статической RAM. Остаются назначенные блоки с владением, подключение на холодном старте, физический драйвер записи, износ и проверка на блоке. Отчёт verification/project-audit/dtc04-native-restore-bank-gate.md. / commit 456abca6b0dda9bf8f542f1fbe90653246959443 |
 | TOY-05 | На проверке | Codex TOY-05 — квалифицированный холодный старт в H03 | codex/toy05-seed-native-1121-c7e4 | В штатном startup H03 после подготовки CAN и до допуска фаз вызывается start_from_seed; холодная проекция проверена до чтения NVM, отказ вида и буфера закрывает выходы. 68 нативных стартов, 96 IRQ, 22 native, 8 components, 6 размещённых, ПК 41/179; 11+18 с локальными корнями. Стек callback +24 байта, новых RAM-объектов нет. Профиль, полные снимки, физический NVM и стенд открыты. Отчёт toy05-h03-native-startup-seed.md. / commit 2ae850bef8c0f064aaf1cc0e3541eb143ef32f97 |
 | CAN-03 | На проверке | Codex CAN-03 — отдельное размещение TX13 | codex/can03-linked-tx13-fea1b366 | OEM-слово TX13 0x00C34C и возврат 0x00C350 проверены в отдельном M32R ELF с typed CAN owner. 18 OEM-сценариев, 22 native, 48 H03 Python. Общий компоновщик зарезервирован H03-04; подключение описано в can03-linked-tx13.md. Без выпуска BIN. / commit 1eefa2abd890b71c4334408555285750fa6911a0 |
@@ -750,6 +749,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T07:43:01+00:00 | CAN-01 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-21T07:42:52+00:00 | DTC-04 | complete | 01a1fa76-922b-7b11-a2f2-346a15d1dc95 |
 | 2026-11-21T07:42:42+00:00 | VSS-02 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-21T07:42:32+00:00 | H03-04 | complete | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
@@ -779,4 +779,3 @@
 | 2026-11-21T06:44:00+00:00 | H03-03 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-21T06:43:50+00:00 | DTC-02 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-21T06:43:03+00:00 | CAN-03 | claim | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-21T06:42:50+00:00 | H03-04 | heartbeat | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
