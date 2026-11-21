@@ -1,32 +1,36 @@
 {
   "schema_version": 2,
-  "sequence": 801,
+  "sequence": 802,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
-      "label": "Основной чат — очередь работ и передача Codex/Claude",
+      "label": "Общая сборка 39 результатов",
       "branch": "codex/integration-01a1f76d-20261120",
       "files": [
-        "AGENTS.md",
         "README.md",
         "data/project-tasks.json",
         "docs/integration-next-tasks.md",
-        "docs/multi-chat.md",
         "docs/project-map.md",
         "docs/working-set.md",
-        "tests/test_project_status.py",
-        "tests/test_task_coordination.py",
-        "tools/project_status.py",
-        "tools/task_coordination.py",
-        "verification/project-audit/coordination-handoff-20261121/"
+        "tools/build_pc_checks.py",
+        "tools/check_h03_image_layout.py",
+        "tools/check_integrated_h03.py",
+        "verification/project-audit/2026-11-20.json",
+        "verification/project-audit/integration-39-20261121/"
       ],
-      "stage": "done",
-      "claim_id": "f510dbb870b943e3bb8c5a9a5de1f914",
-      "claimed_at": "2026-11-20T21:37:42+00:00",
-      "updated_at": "2026-11-20T21:47:04+00:00",
-      "note": "Принято в main. Очередь и передача обновлены; 42 целевые проверки пройдены. Организационная порция завершена, готовность двух BIN не объявлена; продолжения свободны для новых резервов.",
-      "result": "f64eff7c24744cef0fe608415039c6d10c677ff1",
-      "based_on_reviews": []
+      "stage": "in_progress",
+      "claim_id": "9a8eca1841da444399a297ba0f3124f0",
+      "claimed_at": "2026-11-21T07:32:05+00:00",
+      "updated_at": "2026-11-21T07:32:05+00:00",
+      "note": "Все 39 review SHA включены в ветку. Проверка общей сборки, памяти и двух кандидатов; точечные исправления интеграции, без прошивки.",
+      "result": null,
+      "based_on_reviews": [
+        "0f2e91c7274b44688d2514bece8ba6e8",
+        "51ce545a28f949a48fa5a995230c2ba7",
+        "7d595279d73d44b882c2a6d929c481bb",
+        "8b0ce759514b4c68b04d002b192f50ff",
+        "96f93fae25924717a50bf354ff863f44"
+      ]
     },
     "DTC-02": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -11613,9 +11617,47 @@
           "d86e0ce440d6458dbdcec18da3c3671b"
         ]
       }
+    },
+    {
+      "operation_id": "7a07e3c7cd984666ade83f6df095c1b2",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "claim",
+      "claim_id": "9a8eca1841da444399a297ba0f3124f0",
+      "at": "2026-11-21T07:32:05+00:00",
+      "record": {
+        "owner": "codex-integration-01a1f76d-20261120",
+        "label": "Общая сборка 39 результатов",
+        "branch": "codex/integration-01a1f76d-20261120",
+        "files": [
+          "README.md",
+          "data/project-tasks.json",
+          "docs/integration-next-tasks.md",
+          "docs/project-map.md",
+          "docs/working-set.md",
+          "tools/build_pc_checks.py",
+          "tools/check_h03_image_layout.py",
+          "tools/check_integrated_h03.py",
+          "verification/project-audit/2026-11-20.json",
+          "verification/project-audit/integration-39-20261121/"
+        ],
+        "stage": "in_progress",
+        "claim_id": "9a8eca1841da444399a297ba0f3124f0",
+        "claimed_at": "2026-11-21T07:32:05+00:00",
+        "updated_at": "2026-11-21T07:32:05+00:00",
+        "note": "Все 39 review SHA включены в ветку. Проверка общей сборки, памяти и двух кандидатов; точечные исправления интеграции, без прошивки.",
+        "result": null,
+        "based_on_reviews": [
+          "0f2e91c7274b44688d2514bece8ba6e8",
+          "51ce545a28f949a48fa5a995230c2ba7",
+          "7d595279d73d44b882c2a6d929c481bb",
+          "8b0ce759514b4c68b04d002b192f50ff",
+          "96f93fae25924717a50bf354ff863f44"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:28:18+00:00",
+  "updated_at": "2026-11-21T07:32:05+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
