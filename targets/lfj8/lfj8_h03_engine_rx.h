@@ -58,4 +58,18 @@ unsigned lfj8_h03_engine_rx_poll(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
                                 uint32_t now_us, uint8_t slots_owned,
                                 Ta2005CherySnapshot *snapshot);
 
+typedef struct {
+    int (*now_us)(uint32_t *now_us);
+    uint8_t max_span_us;
+    uint8_t max_bit_time_us;
+} Lfj8H03EngineRxClock;
+
+/* Bench route: now_us was read before CAN0TSTMP. Recheck TML0 after the
+ * final counter read under the same lock, and allow one tick of CAN
+ * quantization plus the qualified sampling bracket between anchors. */
+unsigned lfj8_h03_engine_rx_poll_bounded(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
+    uint32_t now_us, uint8_t slots_owned, Ta2005CherySnapshot *snapshot,
+    const Lfj8H03EngineRxClock *clock);
+
+
 #endif

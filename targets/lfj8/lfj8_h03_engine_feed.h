@@ -60,6 +60,7 @@ typedef struct {
     const Lfj8RegisterIo *io;
     int (*now_us)(uint32_t *now_us);
     uint8_t bit_time_us; /* Qualified upper bound on one CAN0 timestamp tick. */
+    uint8_t max_can_sample_span_us; /* Nonzero enables the live TML0/CAN0 bracket. */
 } Lfj8H03EngineFeedTarget;
 
 /* Startup binds the existing storage to h03_can_owner, lfj8_h03_mmio and

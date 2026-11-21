@@ -93,8 +93,15 @@ static void start_drain(Lfj8H03EngineRx *rx, uint16_t tick)
     rx->last_can_tick = tick;
 }
 
-static unsigned poll_rx(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
-                        uint32_t now_us, uint8_t slots_owned, Ta2005CherySnapshot *snapshot)
+static int bounded_sample(const Lfj8H03EngineRxClock *clock, uint32_t before)
+{
+    uint32_t after;
+    return !clock || (clock->now_us(&after) == 1 && after - before <= clock->max_span_us);
+}
+
+static unsigned poll_rx(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io, uint32_t now_us,
+                        uint8_t slots_owned, Ta2005CherySnapshot *snapshot,
+                        const Lfj8H03EngineRxClock *clock)
 {
     ta2005_chery_snapshot_clear(snapshot);
     if (slots_owned != 1u || rx->max_age_ticks == 0u) {
@@ -108,7 +115,11 @@ static unsigned poll_rx(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
     }
     if (rx->phase == LFJ8_H03_RX_WAIT_FOR_OEM) {
         if (lfj8_h03_can0_arm_engine_rx(io, slots_owned)) {
-            start_clock(rx, now_us, tick);
+            if (bounded_sample(clock, now_us)) {
+                start_clock(rx, now_us, tick);
+            } else {
+                start_drain(rx, tick);
+            }
         }
         return 0u;
     }
@@ -127,6 +138,10 @@ static unsigned poll_rx(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
         reset_rx(rx);
         return 0u;
     }
+    if (!bounded_sample(clock, now_us)) {
+        start_drain(rx, tick);
+        return 0u;
+    }
     if (rx->phase == LFJ8_H03_RX_DRAIN_PENDING) {
         if (tick != rx->last_can_tick && rpm_result != LFJ8_CAN_RX_RETRY &&
             coolant_result != LFJ8_CAN_RX_RETRY) {
@@ -139,6 +154,16 @@ static unsigned poll_rx(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
         (delta == 0u && now_us - rx->last_clock_advance_us >= rx->max_poll_gap_us)) {
         start_drain(rx, tick);
         return 0u;
+    }
+    if (clock) {
+        /* Bound one CAN bit below by one TML0 tick and above by the
+         * profiled value. A bracket may shift either sample by its span. */
+        const uint32_t elapsed = now_us - rx->last_clock_advance_us;
+        if (elapsed > clock->max_span_us + ((uint32_t)delta + 1u) * clock->max_bit_time_us ||
+            (uint32_t)delta > elapsed + clock->max_span_us + 1u) {
+            start_drain(rx, tick);
+            return 0u;
+        }
     }
     if (delta != 0u) {
         rx->last_clock_advance_us = now_us;
@@ -156,9 +181,9 @@ static unsigned poll_rx(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
     return ta2005_chery_inputs_snapshot(&rx->inputs, &rx->time_ticks, rx->max_age_ticks, snapshot);
 }
 
-unsigned lfj8_h03_engine_rx_poll(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
-                                uint32_t now_us, uint8_t slots_owned,
-                                Ta2005CherySnapshot *snapshot)
+unsigned lfj8_h03_engine_rx_poll_bounded(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
+    uint32_t now_us, uint8_t slots_owned, Ta2005CherySnapshot *snapshot,
+    const Lfj8H03EngineRxClock *clock)
 {
     const uint32_t saved = io->enter(io->context);
     if (rx->generation_source != NULL) {
@@ -168,7 +193,14 @@ unsigned lfj8_h03_engine_rx_poll(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
             rx->last_generation = generation;
         }
     }
-    const unsigned usable = poll_rx(rx, io, now_us, slots_owned, snapshot);
+    const unsigned usable = poll_rx(rx, io, now_us, slots_owned, snapshot, clock);
     io->leave(io->context, saved);
     return usable;
+}
+
+unsigned lfj8_h03_engine_rx_poll(Lfj8H03EngineRx *rx, const Lfj8RegisterIo *io,
+                                uint32_t now_us, uint8_t slots_owned,
+                                Ta2005CherySnapshot *snapshot)
+{
+    return lfj8_h03_engine_rx_poll_bounded(rx, io, now_us, slots_owned, snapshot, NULL);
 }
