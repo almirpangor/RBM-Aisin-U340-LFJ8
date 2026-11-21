@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 813,
+  "sequence": 814,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12011,9 +12011,37 @@
         "task": "TOY-05",
         "submitted_at": "2026-11-20T22:05:47+00:00"
       }
+    },
+    {
+      "operation_id": "7275e38907174e4696c64785f108d520",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "complete",
+      "claim_id": "77033e38e60445f2addf6c2c8e536996",
+      "at": "2026-11-21T07:43:50+00:00",
+      "record": {
+        "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "label": "Codex H03-05 native target output binding",
+        "branch": "codex/h03-05-native-target-ops-01a1f9a2",
+        "files": [
+          "targets/lfj8/check_h03_target_outputs.py",
+          "targets/lfj8/h03_target_outputs_fixture.c",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "verification/project-audit/h03-05-target-outputs.md"
+        ],
+        "stage": "done",
+        "claim_id": "77033e38e60445f2addf6c2c8e536996",
+        "claimed_at": "2026-11-20T21:56:12+00:00",
+        "updated_at": "2026-11-21T07:43:50+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "f32c6159ef0a28848bafdf5cb1bd64cfdf80a03e",
+        "based_on_reviews": [],
+        "task": "H03-05",
+        "submitted_at": "2026-11-20T22:06:17+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:43:40+00:00",
+  "updated_at": "2026-11-21T07:43:50+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -13736,11 +13764,11 @@
         "targets/lfj8/lfj8_h03_application_binding.c",
         "verification/project-audit/h03-05-target-outputs.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "77033e38e60445f2addf6c2c8e536996",
       "claimed_at": "2026-11-20T21:56:12+00:00",
-      "updated_at": "2026-11-20T22:06:17+00:00",
-      "note": "Нативный rbm_h03_target_takeover_ops подключён к явному профилю приложения H03. Маленькая и средняя M32R-модели на точном H03, 22 native/8 components/6 размещённых групп и 41 этап ПК прошли. В общей модели снята одна неопределённая ссылка, +116 байт Flash и 0 байт статической RAM. Остались рабочий профиль, владельцы/переходы и стендовая проверка D/E/F, SLT и SLU/TIO9. Старый check_h03_link падает и на f64eff7 из-за cold S01, размещённый runtime проходит.",
+      "updated_at": "2026-11-21T07:43:50+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "f32c6159ef0a28848bafdf5cb1bd64cfdf80a03e",
       "based_on_reviews": [],
       "task": "H03-05",
