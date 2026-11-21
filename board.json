@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 785,
+  "sequence": 786,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -37,12 +37,12 @@
         "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
         "verification/project-audit/dtc02-pair-overwrite.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "64f009ea37cb4be5904b007a47dfcea4",
       "claimed_at": "2026-11-21T06:41:39+00:00",
-      "updated_at": "2026-11-21T06:43:50+00:00",
-      "note": "Воспроизвёл ложную доставку на предыдущем коде. После повторного чтения RX15 прошли все 16 позиций перезаписи в M32R и штатный маршрут BasicCAN. Проверяю компоновку и ПК.",
-      "result": null,
+      "updated_at": "2026-11-21T06:47:59+00:00",
+      "note": "RX15 проверяется повторно после попытки читать RX14. Прошли 16 моментов перезаписи на ПК/M32R, 18 сравнений BasicCAN, девять сценариев допуска и 41 шаг ПК. Нижний граф 3516 байт, общий линк ждёт прежние семь привязок.",
+      "result": "bfcf6dd0f0f471b60978d43e48e239308e1f6d2f",
       "based_on_reviews": [
         "5bb09a6c858e41d7a7b760ee40373d75",
         "702717949ca545219ea4fbe0c6486d2c",
@@ -11066,9 +11066,38 @@
           "4781e27fe7274496be65a8d2faf92977"
         ]
       }
+    },
+    {
+      "operation_id": "fa866b387c784cbea46ad68af21db147",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "64f009ea37cb4be5904b007a47dfcea4",
+      "at": "2026-11-21T06:47:59+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-02 — перезапись пары RX14/15",
+        "branch": "codex/dtc02-rx-pair-overwrite-7bd19ea4",
+        "files": [
+          "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
+          "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
+          "verification/project-audit/dtc02-pair-overwrite.md"
+        ],
+        "stage": "review",
+        "claim_id": "64f009ea37cb4be5904b007a47dfcea4",
+        "claimed_at": "2026-11-21T06:41:39+00:00",
+        "updated_at": "2026-11-21T06:47:59+00:00",
+        "note": "RX15 проверяется повторно после попытки читать RX14. Прошли 16 моментов перезаписи на ПК/M32R, 18 сравнений BasicCAN, девять сценариев допуска и 41 шаг ПК. Нижний граф 3516 байт, общий линк ждёт прежние семь привязок.",
+        "result": "bfcf6dd0f0f471b60978d43e48e239308e1f6d2f",
+        "based_on_reviews": [
+          "5bb09a6c858e41d7a7b760ee40373d75",
+          "702717949ca545219ea4fbe0c6486d2c",
+          "7d595279d73d44b882c2a6d929c481bb"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T06:47:47+00:00",
+  "updated_at": "2026-11-21T06:47:59+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -13307,6 +13336,29 @@
       ],
       "task": "CAN-03",
       "submitted_at": "2026-11-21T06:47:47+00:00"
+    },
+    "64f009ea37cb4be5904b007a47dfcea4": {
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex DTC-02 — перезапись пары RX14/15",
+      "branch": "codex/dtc02-rx-pair-overwrite-7bd19ea4",
+      "files": [
+        "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
+        "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
+        "verification/project-audit/dtc02-pair-overwrite.md"
+      ],
+      "stage": "review",
+      "claim_id": "64f009ea37cb4be5904b007a47dfcea4",
+      "claimed_at": "2026-11-21T06:41:39+00:00",
+      "updated_at": "2026-11-21T06:47:59+00:00",
+      "note": "RX15 проверяется повторно после попытки читать RX14. Прошли 16 моментов перезаписи на ПК/M32R, 18 сравнений BasicCAN, девять сценариев допуска и 41 шаг ПК. Нижний граф 3516 байт, общий линк ждёт прежние семь привязок.",
+      "result": "bfcf6dd0f0f471b60978d43e48e239308e1f6d2f",
+      "based_on_reviews": [
+        "5bb09a6c858e41d7a7b760ee40373d75",
+        "702717949ca545219ea4fbe0c6486d2c",
+        "7d595279d73d44b882c2a6d929c481bb"
+      ],
+      "task": "DTC-02",
+      "submitted_at": "2026-11-21T06:47:59+00:00"
     }
   }
 }
