@@ -475,6 +475,14 @@ static void test_manual_target(void)
     assert(tick(&f, 500, both) && f.proposal.cycle.requested_gear == 3);
     assert(tick(&f, 500, both) && !f.proposal.cycle.requested_gear);
     assert(!f.control.manual_gear && f.proposal.driver.conflicting_buttons);
+    const uint8_t down = RBM_U340E_BUTTON_DOWN;
+    assert(tick(&f, 500, down));
+    assert(tick(&f, 500, down) && f.proposal.driver.conflicting_buttons);
+    assert(!f.proposal.cycle.requested_gear);
+    assert(tick(&f, 500, 0));
+    assert(tick(&f, 500, 0) && !f.proposal.driver.conflicting_buttons);
+    assert(tick(&f, 500, down));
+    assert(tick(&f, 500, down) && f.proposal.cycle.requested_gear == 1);
 
     manual_edge(&f, 2);
     ++f.sources.generation;

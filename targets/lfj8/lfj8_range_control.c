@@ -1,8 +1,8 @@
 #include "lfj8_range_control.h"
 
 #define HALF_CLOCK UINT32_C(0x80000000)
-#define BUTTON_MASK (RBM_U340E_BUTTON_MODE | RBM_U340E_BUTTON_UP | \
-                     RBM_U340E_BUTTON_DOWN | RBM_U340E_BUTTON_OVERDRIVE)
+#define SHIFT_BUTTONS (RBM_U340E_BUTTON_UP | RBM_U340E_BUTTON_DOWN)
+#define BUTTON_MASK (RBM_U340E_BUTTON_MODE | SHIFT_BUTTONS | RBM_U340E_BUTTON_OVERDRIVE)
 
 static int valid_range_bit(const Lfj8H03RangeBit *sample, uint32_t generation,
                            uint32_t age_us, uint32_t max_age_us)
@@ -188,10 +188,19 @@ static void update_buttons(Lfj8ButtonFilter *filter, const Lfj8ButtonReading *re
 void lfj8_range_control_sample_buttons(Lfj8RangeControl *control, Lfj8ButtonFilter *filter,
                                         const Lfj8ButtonReading *reading, uint32_t now_us)
 {
+    const int shift_conflict = (filter->stable & SHIFT_BUTTONS) == SHIFT_BUTTONS;
     update_buttons(filter, reading, now_us);
     if (!filter->armed) {
         control->controller.buttons_seen = 0;
         control->manual_gear = 0;
+    } else if (shift_conflict) {
+        if (filter->stable & SHIFT_BUTTONS) {
+            /* A partially released chord remains a conflict at the next Toyota event. */
+            filter->stable |= SHIFT_BUTTONS;
+        } else {
+            /* The qualified release may arrive between controller steps. */
+            control->controller.previous_buttons &= (uint8_t)~SHIFT_BUTTONS;
+        }
     }
 }
 
