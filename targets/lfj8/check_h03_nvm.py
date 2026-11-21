@@ -7,6 +7,7 @@ from pathlib import Path
 import shutil
 import struct
 import subprocess
+import sys
 from tempfile import TemporaryDirectory
 
 from check_h03_link import FLASH_END, FLASH_START, HERE, TARGET, TAIL_END, TAIL_START, elf_info, identify_h03
@@ -49,7 +50,7 @@ def check_geometry(base):
     }
 
 
-def run_backend_checks(cc, gcc):
+def run_backend_checks(cc, gcc, controller=None):
     flags = ("-std=c11", "-Os", "-Wall", "-Wextra", "-Werror")
     inputs = (
         HERE / "lfj8_h03_nvm.h", HERE / "lfj8_h03_nvm.c", HERE / "test_lfj8_h03_nvm.c",
@@ -80,17 +81,20 @@ def run_backend_checks(cc, gcc):
         elf, _ = elf_info(stage / "nvm.elf", 2)
         m32r = run(str(gcc.with_name("m32r-elf-run" + gcc.suffix)), "nvm.elf")
 
-        native_sources = ("lfj8_h03_nvm_native.c", "lfj8_h03_mmio.c", "h03_nvm_native_fixture.c")
-        native_headers = ("lfj8_h03_nvm_native.h", "lfj8_h03_mmio.h", "lfj8_h03_engine_rx.h",
-                          "lfj8_donor_io.h", "ta2005_chery_inputs.h")
-        for name in (*native_sources, *native_headers):
-            shutil.copyfile(HERE / name, stage / name)
-        native_flags = (*TARGET, *flags, "-ffunction-sections", "-fdata-sections")
-        run(str(gcc), *native_flags, "-c", "lfj8_h03_nvm_native.c")
+        controller_root = HERE.parents[1] / "controller"
+        if controller is None:
+            controller_out = stage / "controller"
+            run(sys.executable, "-B", controller_root / "build_target.py",
+                "m32r", "--cc", gcc, "--out", controller_out)
+            controller = controller_out / "rbm_u340e_m32r_be.o"
+        native_flags = (*TARGET, *flags, "-ffunction-sections", "-fdata-sections",
+                        "-I", HERE, "-I", DIAGNOSTICS, "-I", controller_root / "include",
+                        "-I", controller_root / "vendor/toyota/include")
+        run(str(gcc), *native_flags, "-c", HERE / "lfj8_h03_nvm_native.c")
         native_object, _ = elf_info(stage / "lfj8_h03_nvm_native.o", 1)
         run(str(gcc), *native_flags, "-nostartfiles", crt,
             "lfj8_h03_nvm.c", "chery_dtc.c", "chery_dtc_journal.c", "lfj8_h03_nvm_native.o",
-            *native_sources[1:], hooks.name,
+            HERE / "lfj8_h03_mmio.c", HERE / "h03_nvm_native_fixture.c", hooks.name, controller,
             "-Wl,-Ttext,0x100000,--gc-sections,-e,_start,--start-group", "-lc", "-lgloss", "-lgcc",
             "-Wl,--end-group", "-o", "nvm-native.elf")
         _, allocated = elf_info(stage / "nvm-native.elf", 2)
@@ -103,7 +107,7 @@ def run_backend_checks(cc, gcc):
     if pc != m32r or not pc.startswith(expected + "\n") or not pc.endswith("restart PASS"):
         raise ValueError("PC/M32R backend checks disagree or did not finish")
     native_lines = native.splitlines()
-    if len(native_lines) != 2 or not all(line.startswith("PASS native H03 array:") for line in native_lines):
+    if len(native_lines) != 3 or not all(line.startswith("PASS native H03 array:") for line in native_lines):
         raise ValueError("Native H03 array checks did not finish")
     return {"pc": pc.splitlines(), "m32r": m32r.splitlines(), "m32r_simulator_elf": elf,
             "m32r_native_read": native_lines, "m32r_native_reader_object": native_object}
@@ -114,15 +118,18 @@ def main():
     for name in ("base", "gcc", "out"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--cc", default="zig")
+    parser.add_argument("--controller", type=Path, help="Reuse a built big-endian M32R controller object")
     args = parser.parse_args()
     cc = shutil.which(args.cc)
     if not cc:
         parser.error(f"C compiler not found: {args.cc}")
-    if args.out.suffix.lower() != ".json" or args.out.resolve() == args.base.resolve():
+    inputs = (args.base, args.gcc, *(p for p in (args.controller,) if p is not None))
+    if args.out.suffix.lower() != ".json" or any(args.out.resolve() == p.resolve() for p in inputs):
         parser.error("--out must be a separate JSON report")
     try:
         report = check_geometry(args.base)
-        report["checks"] = run_backend_checks(Path(cc).resolve(), args.gcc.resolve())
+        controller = args.controller.resolve() if args.controller is not None else None
+        report["checks"] = run_backend_checks(Path(cc).resolve(), args.gcc.resolve(), controller)
     except (ValueError, OSError, subprocess.SubprocessError) as error:
         parser.exit(1, f"H03 NVM check failed: {error}\n")
     report.update(status="PASS_OFFLINE_ONLY", equipment_tested=False, flash_operations_executed=False)
