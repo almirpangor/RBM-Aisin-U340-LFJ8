@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 912,
+  "sequence": 913,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -541,8 +541,8 @@
       "stage": "in_progress",
       "claim_id": "cee15d1377aa4207a89e2eb78dd96995",
       "claimed_at": "2026-11-21T08:51:36+00:00",
-      "updated_at": "2026-11-21T08:51:36+00:00",
-      "note": "Волна 10f7c15: штатные таймеры и безопасный профиль входов, выдача raw capture, проверка M32R.",
+      "updated_at": "2026-11-21T08:57:21+00:00",
+      "note": "Профиль и выдача raw capture реализованы. Проверяю связь с H03 и M32R сценарии времени, датчиков и отзыва эпохи.",
       "result": null,
       "based_on_reviews": []
     },
@@ -15107,9 +15107,38 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "3391a1d31bd947498afe89366f819cd6",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "heartbeat",
+      "claim_id": "cee15d1377aa4207a89e2eb78dd96995",
+      "at": "2026-11-21T08:57:21+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex 5 — нативный стендовый профиль TML0/S51/S83/ATF",
+        "branch": "codex/vss-02-bench-clock-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/bench_sensor_profile.c",
+          "targets/lfj8/bench_sensor_profile.h",
+          "targets/lfj8/check_h03_bench_sensor_profile.py",
+          "targets/lfj8/lfj8_h03_sensor_feed.c",
+          "targets/lfj8/lfj8_h03_sensor_target.c",
+          "targets/lfj8/test_h03_bench_sensor_profile.c",
+          "verification/bench-wave/chat-5/handoff.json"
+        ],
+        "stage": "in_progress",
+        "claim_id": "cee15d1377aa4207a89e2eb78dd96995",
+        "claimed_at": "2026-11-21T08:51:36+00:00",
+        "updated_at": "2026-11-21T08:57:21+00:00",
+        "note": "Профиль и выдача raw capture реализованы. Проверяю связь с H03 и M32R сценарии времени, датчиков и отзыва эпохи.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:53:01+00:00",
+  "updated_at": "2026-11-21T08:57:21+00:00",
   "main_commit": "10f7c1513b910f42473690255641140989cc10d0",
   "catalog": [
     {
