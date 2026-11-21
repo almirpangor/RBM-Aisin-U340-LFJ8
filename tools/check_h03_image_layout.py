@@ -241,11 +241,16 @@ def link_placed_roots(args, stage, run, flags, placement, bindings, roots, name)
 
 def early_irq_model(args, stage, run, flags, rom, placement, bindings, ranges, pointer):
     roots = (*service.COMMON_ROOTS, *dtc_rx.REDIRECT_ROOTS)
+    with_writers = getattr(args, "with_service_guard", False)
+    if with_writers:
+        roots += service.WRITER_ROOTS
     path, linked, selected = link_placed_roots(args, stage, run, flags, placement, bindings, roots, "early-irq")
     # Verify the independent graph against the same fixed sites and policy.
     model = {"elf_sha256": linked["sha256"], "placements": selected, "roots": list(roots),
              "irq_pointer": pointer, "policy_ranges": ranges,
              "artifact_kind": "EARLY_IRQ_DMA4_SIMULATOR_ONLY"}
+    if with_writers:
+        model["service_writers"] = service.verify_writers(rom, linked, ranges, dtc_rx.RX_WINDOW)
     service.early_overlay(rom, path, model)
     shutil.copyfile(path, args.out / "early-irq.elf")
     return model
@@ -281,6 +286,11 @@ def build(args):
     with_dtc_rx = getattr(args, "with_dtc_rx", False)
     with_dma4 = getattr(args, "with_dma4_guard", False)
     with_can_service = getattr(args, "with_can_service", False)
+    with_service_guard = getattr(args, "with_service_guard", False)
+    if with_service_guard:
+        if not with_dma4:
+            raise ValueError("The resident service writers require --with-dma4-guard and its RAM policy")
+        service.verify_stock(rom)
     if with_can_service:
         if not (with_dtc_rx and args.with_bindings and args.storage_report):
             raise ValueError("CAN service requires --with-bindings, --with-dtc-rx and --storage-report")
@@ -311,6 +321,7 @@ def build(args):
         dtc_rx.validate_stock(rom)
         # The two pinned OEM words are occupied, unlike the packing windows.
         fixed_windows = (*dtc_rx.REDIRECT_WINDOWS, *(service.COMMON_WINDOWS if with_dma4 else ()),
+                         *(service.WRITER_WINDOWS if with_service_guard else ()),
                          *((tx13.REDIRECT_WINDOW,) if with_can_service else ()))
         validate_windows((*flash_windows, *fixed_windows))
         storage_space(args.storage_report)
@@ -352,6 +363,8 @@ def build(args):
         bindings.extend(LFJ8/name for name in dtc_rx.MODULES)
     if with_dma4:
         bindings.append(LFJ8 / "h03_dma4_guard.S")
+    if with_service_guard:
+        bindings.append(LFJ8 / "h03_service_guard_hooks.S")
     if with_can_service:
         bindings.extend(LFJ8 / name for name in (*can_service.SERVICE_MODULES, *tx13.MODULES))
     modules=list(dict.fromkeys([*modules,*bindings]))
@@ -359,6 +372,8 @@ def build(args):
     if with_dtc_rx:
         roots.update(dtc_rx.RX_ROOTS)
         roots.update(dtc_rx.REDIRECT_ROOTS)
+    if with_service_guard:
+        roots.update(service.WRITER_ROOTS)
     report={"base":identity,"profile":args.profile,"compiler_memory_model":args.memory_model,
             "input_objects":{p.name:digest(p) for p in (args.bridge,args.controller)},
             "input_sources":{p.relative_to(ROOT).as_posix():digest(p) for p in modules},
@@ -403,6 +418,11 @@ def build(args):
             generated.write_text(service.policy_source(policy), encoding="ascii")
             modules.append(generated)
             report["input_sources"]["generated/h03_service_policy.c"] = digest(generated)
+        if with_service_guard:
+            redirects = stage / "h03_service_writer_redirects.S"
+            service.write_redirects(redirects, service.SITES, service.WRITER_ROOTS)
+            modules.append(redirects)
+            report["input_sources"]["generated/h03_service_writer_redirects.S"] = digest(redirects)
 
         def run(*items):
             return subprocess.run([str(i) for i in items],cwd=stage,check=True,capture_output=True,
@@ -463,6 +483,11 @@ def build(args):
             native_bindings.update(dtc_rx.STOCK_SYMBOLS, h03_can_owner=owner_address)
         if with_dma4:
             native_bindings.update(service.COMMON_STOCK_TARGETS, h03_dtc_irq_pointer=pointer)
+        if with_service_guard:
+            for name in service.STOCK_TARGETS:
+                if retained["symbols"].get(name, {}).get("section") != 0:
+                    raise ValueError("Expected an undefined H03 service writer continuation: " + name)
+            native_bindings.update(service.STOCK_TARGETS)
         if with_can_service:
             if retained["symbols"].get(tx13.RESUME, {}).get("section") != 0:
                 raise ValueError("Expected the OEM H03 TX13 continuation reference")
@@ -490,6 +515,14 @@ def build(args):
                 service_fixed, remaining = service.fixed_common_redirects(remaining)
                 fixed.extend(service_fixed)
                 names.add(".text.rbm_h03_early_irq_gate")
+            if with_service_guard:
+                writer_fixed, remaining = service.fixed_writer_redirects(remaining)
+                fixed.extend(writer_fixed)
+                writer_names = service.writer_closure_sections(run, args.gcc, flags, stage)
+                report["service_writer_resident_bytes"] = sum(
+                    section["size"] for section in remaining if section["name"] in writer_names
+                )
+                names.update(writer_names)
             resident, upper = dtc_rx.split_flash(remaining, names)
             return fixed + pack(resident, (dtc_rx.RX_WINDOW,)) + pack(upper, windows)
 
@@ -582,6 +615,8 @@ def build(args):
                                         "policy_ranges": policy, "irq_pointer": pointer}
             report["early_irq_model"] = early_irq_model(
                 args, stage, run, flags, rom, placement, native_bindings, policy, pointer)
+        if with_service_guard:
+            report["service_writers"] = service.verify_writers(rom, linked, policy, dtc_rx.RX_WINDOW)
         tables={}
         for name,size,expected in legacy.S01_LINK_TABLES:
             content=symbol_bytes(linked,name)
@@ -633,6 +668,8 @@ def main():
                         help="Link the two OEM-site BasicCAN redirects and place the resident RX graph")
     parser.add_argument("--with-dma4-guard", action="store_true",
                         help="Include the DMA4 guard and clear the BasicCAN pointer before the first IRQ")
+    parser.add_argument("--with-service-guard", action="store_true",
+                        help="Link the resident service write guards and Virtual Flash lockout; requires DMA4")
     parser.add_argument("--with-can-service", action="store_true",
                         help="Include native CAN service, typed application RAM and the OEM TX13 redirect")
     parser.add_argument("--cpu-test",action="store_true")

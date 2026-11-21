@@ -33,6 +33,8 @@ WRITER_SITES = (
 LOCKOUT = Site(0x3568, 0xB810000B, "h03_service_disable_virtual_flash")
 DMA4_GUARD = Site(0xCF0C, 0x2E7F2A7F, "rbm_h03_dma4_guard")
 SITES = (*WRITER_SITES, LOCKOUT)
+WRITER_ROOTS = tuple(f"rbm_h03_service_redirect_{site.address:06x}" for site in SITES)
+WRITER_WINDOWS = tuple(Window(site.section[1:], site.address, site.address + 4) for site in SITES)
 STOCK_TARGETS = {
     "h03_service_direct_after_entry": 0x2928,
     "h03_service_stock_span_check": 0x3528,
@@ -96,16 +98,70 @@ def policy_bytes(ranges):
     return pack(">17I", *words, *([0] * (17 - len(words))))
 
 
-def fixed_common_redirects(flash):
+def fixed_redirects(flash, redirects):
     remaining = {section["name"]: section for section in flash}
     fixed = []
-    for name, window in zip(COMMON_ROOTS, COMMON_WINDOWS, strict=True):
-        section = remaining.pop(f".text.{name}", None)
+    for name, window in redirects:
+        section = remaining.pop(name, None)
         if section is None or (section["size"], section["type"], section["flags"],
                                section["alignment"]) != (4, 1, 6, 4):
             raise ValueError("Expected one aligned H03 service redirect word: " + name)
         fixed.extend(place((section,), (window,)))
     return fixed, list(remaining.values())
+
+
+def fixed_common_redirects(flash):
+    return fixed_redirects(flash, zip((f".text.{name}" for name in COMMON_ROOTS), COMMON_WINDOWS, strict=True))
+
+
+def fixed_writer_redirects(flash):
+    return fixed_redirects(flash, zip((site.section for site in SITES), WRITER_WINDOWS, strict=True))
+
+
+def writer_closure_sections(run, gcc, flags, stage):
+    root_flags = [f"-Wl,--undefined={name}" for name in WRITER_ROOTS]
+    run(gcc, *flags, "-r", "-nostdlib", "-Wl,--gc-sections", *root_flags,
+        "retained.o", "-o", "service-writers.o")
+    elf = read_elf(stage / "service-writers.o", 1)
+    unresolved = {name for name, entry in elf["symbols"].items() if entry["section"] == 0}
+    sections = alloc_sections(elf)
+    if unresolved != STOCK_TARGETS.keys() or any(section["flags"] & 1 for section in sections):
+        raise ValueError("H03 service writers must link to pinned ROM without writable storage")
+    sites = {site.section for site in SITES}
+    return {section["name"] for section in sections} - sites
+
+
+def verify_writers(rom, elf, ranges, resident):
+    verify_stock(rom)
+    symbols = elf["symbols"]
+    for name, address in STOCK_TARGETS.items():
+        entry = symbols.get(name, {})
+        if (entry.get("section"), entry.get("address")) != (0xFFF1, address):
+            raise ValueError("Incorrect H03 service writer continuation: " + name)
+    policy = symbols.get("rbm_h03_service_policy")
+    if (policy is None or
+            not resident.start <= policy["address"] < policy["address"] + policy["size"] <= resident.end or
+            symbol_bytes(elf, "rbm_h03_service_policy") != policy_bytes(ranges)):
+        raise ValueError("Incorrect resident H03 service policy")
+    patches = []
+    for site, name in zip(SITES, WRITER_ROOTS, strict=True):
+        target = symbols.get(site.target)
+        if target is None:
+            raise ValueError("Missing H03 service writer target: " + site.target)
+        address = target["address"]
+        if site != LOCKOUT:
+            index = target["section"]
+            if not 0 < index < len(elf["sections"]) or not resident.start <= address < resident.end:
+                raise ValueError("H03 service writer escaped resident Flash: " + site.target)
+            section = elf["sections"][index]
+            if not section["flags"] & 4 or not section["address"] <= address < section["address"] + section["size"]:
+                raise ValueError("H03 service writer target is outside executable storage: " + site.target)
+        branch = site.branch(address)
+        if symbols.get(name, {}).get("address") != site.address or symbol_bytes(elf, name) != branch:
+            raise ValueError("Incorrect H03 service writer redirect: " + name)
+        patches.append({"address": site.address, "stock": f"{site.stock:08x}",
+                        "branch": branch.hex(), "target": address})
+    return patches
 
 
 def verify_common(rom, elf, ranges, irq_pointer):
@@ -152,6 +208,11 @@ def early_overlay(rom, elf_path, model):
         raise ValueError("H03 early model ELF hash differs from its layout report")
     verify_linked(elf, model["placements"], model["roots"])
     patches = verify_common(rom, elf, model["policy_ranges"], model["irq_pointer"])
+    if "service_writers" in model:
+        writers = verify_writers(rom, elf, model["policy_ranges"], dtc_rx.RX_WINDOW)
+        if writers != model["service_writers"]:
+            raise ValueError("H03 service writer words differ from the common layout report")
+        patches += writers
     dtc_rx.validate_stock(rom)
     can = dtc_rx.patch_plan(rom, {root: elf["symbols"][root]["address"]
                                  for _, root, _, _, _ in dtc_rx.REDIRECTS})
@@ -171,13 +232,21 @@ def early_overlay(rom, elf_path, model):
     return bytes(result)
 
 
-def stage_sources(stage, ranges, dma4_guard=False):
+def write_redirects(path, sites, roots=()):
     assembly = []
-    for site in redirect_sites(dma4_guard):
+    for site, name in zip(sites, roots or (None,) * len(sites), strict=True):
         mnemonic = "bl.l" if site.opcode == 0xFE else "bra.l"
-        assembly.extend((f'.section {site.section},"ax",@progbits',
-                         f"    {mnemonic} {site.target}"))
-    (stage / "service-sites.S").write_text("\n".join(assembly) + "\n", encoding="ascii")
+        assembly.append(f'.section {site.section},"ax",@progbits')
+        if name is not None:
+            assembly.extend(("    .p2align 2", f"    .global {name}", f"    .type {name},@function", f"{name}:"))
+        assembly.append(f"    {mnemonic} {site.target}")
+        if name is not None:
+            assembly.append(f"    .size {name},.-{name}")
+    path.write_text("\n".join(assembly) + "\n", encoding="ascii")
+
+
+def stage_sources(stage, ranges, dma4_guard=False):
+    write_redirects(stage / "service-sites.S", redirect_sites(dma4_guard))
     (stage / "service-policy.c").write_text(policy_source(ranges), encoding="ascii")
 
 
