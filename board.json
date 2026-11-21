@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 877,
+  "sequence": 878,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -71,12 +71,12 @@
         "targets/lfj8/test_lfj8_h03_can13.c",
         "verification/project-audit/can03-h03-service-startup-admission.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "229997a636ba4ae5a74668a70fe58cae",
       "claimed_at": "2026-11-21T08:09:32+00:00",
-      "updated_at": "2026-11-21T08:12:32+00:00",
-      "note": "Все пять неверных профилей теперь отклонены в M32R. Закрепляю тест CAN13: после e207a57 его позиционный инициализатор не учитывает status_due и останавливает общий ПК. Переведу на именованные поля и повторю проверки.",
-      "result": null,
+      "updated_at": "2026-11-21T08:16:06+00:00",
+      "note": "Пять неверных профилей T6/окна DTC/ATF теперь отключаются до допуска фаз. Повторное использование общих проверок и 16 шагов штатного CAN прошли. Исправлена несовместимость теста CAN13 со status_due в e207a57. ПК 41/194, M32R 22 native + 8 components + 6 placed и BasicCAN 18+18+3. +140 байт Flash, 0 новой RAM, полный FAIL_BINDINGS и дефицит верхней Flash 624 байта. Открыты выпускные параметры и поля, мониторные переходы и стенд. Отчёт can03-h03-service-startup-admission.md.",
+      "result": "813f9513ff06ced54bcf2d92b0f254bebec47ca7",
       "based_on_reviews": [
         "4bba8d216cdb44aaa3b5b2922f11a8ea",
         "77b7b955d10d45b89daaaa5912bd3a82"
@@ -13986,9 +13986,42 @@
           "fe45b2270ed1477d94fcc54c637fa138"
         ]
       }
+    },
+    {
+      "operation_id": "0b8cb05914224b79ad724d29fa2ad716",
+      "task": "CAN-03",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "review",
+      "claim_id": "229997a636ba4ae5a74668a70fe58cae",
+      "at": "2026-11-21T08:16:06+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex CAN-03 — проверка профиля сервиса до допуска фаз",
+        "branch": "codex/c7e4-next-1121",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_dtc_native.c",
+          "targets/lfj8/lfj8_h03_dtc_native.h",
+          "targets/lfj8/lfj8_h03_dtc_target.c",
+          "targets/lfj8/lfj8_h03_dtc_target.h",
+          "targets/lfj8/lfj8_h03_target_service.c",
+          "targets/lfj8/test_lfj8_h03_can13.c",
+          "verification/project-audit/can03-h03-service-startup-admission.md"
+        ],
+        "stage": "review",
+        "claim_id": "229997a636ba4ae5a74668a70fe58cae",
+        "claimed_at": "2026-11-21T08:09:32+00:00",
+        "updated_at": "2026-11-21T08:16:06+00:00",
+        "note": "Пять неверных профилей T6/окна DTC/ATF теперь отключаются до допуска фаз. Повторное использование общих проверок и 16 шагов штатного CAN прошли. Исправлена несовместимость теста CAN13 со status_due в e207a57. ПК 41/194, M32R 22 native + 8 components + 6 placed и BasicCAN 18+18+3. +140 байт Flash, 0 новой RAM, полный FAIL_BINDINGS и дефицит верхней Flash 624 байта. Открыты выпускные параметры и поля, мониторные переходы и стенд. Отчёт can03-h03-service-startup-admission.md.",
+        "result": "813f9513ff06ced54bcf2d92b0f254bebec47ca7",
+        "based_on_reviews": [
+          "4bba8d216cdb44aaa3b5b2922f11a8ea",
+          "77b7b955d10d45b89daaaa5912bd3a82"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:15:52+00:00",
+  "updated_at": "2026-11-21T08:16:06+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -16688,6 +16721,33 @@
       ],
       "task": "H03-04",
       "submitted_at": "2026-11-21T08:13:43+00:00"
+    },
+    "229997a636ba4ae5a74668a70fe58cae": {
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "label": "Codex CAN-03 — проверка профиля сервиса до допуска фаз",
+      "branch": "codex/c7e4-next-1121",
+      "files": [
+        "targets/lfj8/check_h03_can_monitor_revoke.py",
+        "targets/lfj8/lfj8_h03_dtc_native.c",
+        "targets/lfj8/lfj8_h03_dtc_native.h",
+        "targets/lfj8/lfj8_h03_dtc_target.c",
+        "targets/lfj8/lfj8_h03_dtc_target.h",
+        "targets/lfj8/lfj8_h03_target_service.c",
+        "targets/lfj8/test_lfj8_h03_can13.c",
+        "verification/project-audit/can03-h03-service-startup-admission.md"
+      ],
+      "stage": "review",
+      "claim_id": "229997a636ba4ae5a74668a70fe58cae",
+      "claimed_at": "2026-11-21T08:09:32+00:00",
+      "updated_at": "2026-11-21T08:16:06+00:00",
+      "note": "Пять неверных профилей T6/окна DTC/ATF теперь отключаются до допуска фаз. Повторное использование общих проверок и 16 шагов штатного CAN прошли. Исправлена несовместимость теста CAN13 со status_due в e207a57. ПК 41/194, M32R 22 native + 8 components + 6 placed и BasicCAN 18+18+3. +140 байт Flash, 0 новой RAM, полный FAIL_BINDINGS и дефицит верхней Flash 624 байта. Открыты выпускные параметры и поля, мониторные переходы и стенд. Отчёт can03-h03-service-startup-admission.md.",
+      "result": "813f9513ff06ced54bcf2d92b0f254bebec47ca7",
+      "based_on_reviews": [
+        "4bba8d216cdb44aaa3b5b2922f11a8ea",
+        "77b7b955d10d45b89daaaa5912bd3a82"
+      ],
+      "task": "CAN-03",
+      "submitted_at": "2026-11-21T08:16:06+00:00"
     }
   }
 }
