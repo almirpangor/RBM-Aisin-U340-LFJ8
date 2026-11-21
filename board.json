@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 789,
+  "sequence": 790,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -414,21 +414,25 @@
     },
     "DTC-01": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
-      "label": "Codex DTC-01 — отзыв при потере времени",
-      "branch": "codex/dtc01-foreground-clock-loss-7bd19ea4",
+      "label": "Codex DTC-01 — граница RX при тайм-ауте протокола",
+      "branch": "codex/dtc01-transport-expiry-rx-7bd19ea4",
       "files": [
+        "diagnostics/chery_dtc_link.c",
+        "diagnostics/chery_dtc_link.h",
         "targets/lfj8/lfj8_h03_dtc_foreground.c",
         "targets/lfj8/lfj8_h03_dtc_foreground.h",
         "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
-        "verification/project-audit/dtc01-foreground-clock-loss.md"
+        "verification/project-audit/dtc01-transport-expiry-rx.md"
       ],
-      "stage": "review",
-      "claim_id": "0c1450c04da64b0da07d705e9b9d38bb",
-      "claimed_at": "2026-11-20T23:08:15+00:00",
-      "updated_at": "2026-11-20T23:14:53+00:00",
-      "note": "При отзыве доступа к CAN13 прекращён ход таймера T6 и сбрасывается вся очередь RX. M32R/PC, 22 native и 41 шаг ПК (179 тестов) прошли. Совместимость DTC-02/DTC-04 проверена, ложного подтверждения очистки нет.",
-      "result": "58da73ce98e0933795fb9095b70955ce0f77d839",
-      "based_on_reviews": []
+      "stage": "in_progress",
+      "claim_id": "8c0be7af01f44597abf221073ba948bb",
+      "claimed_at": "2026-11-21T07:03:52+00:00",
+      "updated_at": "2026-11-21T07:03:52+00:00",
+      "note": "При тайм-ауте TX/FC отбрасываю RX прежнего сеанса до передачи в CAN13. Проверю точную границу, штатный сброс TX и новый запрос после неё.",
+      "result": null,
+      "based_on_reviews": [
+        "0c1450c04da64b0da07d705e9b9d38bb"
+      ]
     },
     "VSS-01": {
       "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
@@ -11194,9 +11198,39 @@
           "fb2fa92cc4ca453a89297de917515b5c"
         ]
       }
+    },
+    {
+      "operation_id": "80f820f75f6e45f0b737fc05dfee6916",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "8c0be7af01f44597abf221073ba948bb",
+      "at": "2026-11-21T07:03:52+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-01 — граница RX при тайм-ауте протокола",
+        "branch": "codex/dtc01-transport-expiry-rx-7bd19ea4",
+        "files": [
+          "diagnostics/chery_dtc_link.c",
+          "diagnostics/chery_dtc_link.h",
+          "targets/lfj8/lfj8_h03_dtc_foreground.c",
+          "targets/lfj8/lfj8_h03_dtc_foreground.h",
+          "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
+          "verification/project-audit/dtc01-transport-expiry-rx.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "8c0be7af01f44597abf221073ba948bb",
+        "claimed_at": "2026-11-21T07:03:52+00:00",
+        "updated_at": "2026-11-21T07:03:52+00:00",
+        "note": "При тайм-ауте TX/FC отбрасываю RX прежнего сеанса до передачи в CAN13. Проверю точную границу, штатный сброс TX и новый запрос после неё.",
+        "result": null,
+        "based_on_reviews": [
+          "0c1450c04da64b0da07d705e9b9d38bb"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:03:17+00:00",
+  "updated_at": "2026-11-21T07:03:52+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
