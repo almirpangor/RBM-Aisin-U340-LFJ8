@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T07:55:14+00:00**. Изменение № **850**.
+Обновлено UTC: **2026-11-21T07:55:30+00:00**. Изменение № **851**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 06ab447e19de0fa7d864e2ae674dff4a29678b10.
 
-**В работе: 5 · Ожидают с резервом: 0 · Порций на проверке: 0.**
+**В работе: 6 · Ожидают с резервом: 0 · Порций на проверке: 0.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -25,6 +25,7 @@
 | 4 | H03-05 — SLT, силовые выходы и реакция на отказ | Codex H03-05 reduce native output flash \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | 2026-11-21T07:54:48+00:00 | Сокращаю верхнюю Flash на действующем пути силовых выходов без изменения регистровых транзакций, калибровок и профилей. Повторю общий расчёт известных поставщиков; файл компоновщика зарезервирован H03-04. |
 | 5 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Codex CAN-01 — реальная привязка единственного состояния двигателя \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | 2026-11-21T07:55:08+00:00 | Подключаю rbm_h03_target_engine в явном профиле к типизированным engine_rx, engine_qualifier, общим CAN/DTC и TML0. Пределы и поставщик Task 2 обязательны, без значений по умолчанию. |
 | 9 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | Codex MODE-02 — профиль AN2 и подготовка входа \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | 2026-11-21T07:55:14+00:00 | Включаю явные окна AN2 и измеряемые интервалы в общий адаптер входов; подготовка нативного профиля до допуска CAN. Стенд VSS-02 не редактирую без снятия резерва. |
+| 14 | H03-03 — Единое расписание и запуск приложения H03 | Codex H03-03 — штатные переходы запуска и foreground \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | 2026-11-21T07:55:30+00:00 | Вынесу подтверждённые переходы cold/startup/foreground/release в реальный вход адресной компоновки с привязкой к исходным словам и проверкой ELF. Общий компоновщик и fixture таймеров в чужом резерве не меняю. |
 
 ## Ожидают — резерв сохранён
 
@@ -67,7 +68,7 @@
 | 11 | [TOY-06](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#toy-06) | Свободна для продолжения | Цельный путь SLU от входов до выходного интерфейса H03-05, включая скольжение и отказ. | TOY-02, H03-05 |
 | 12 | [MODE-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#mode-03) | Свободна для продолжения | Целевой профиль режимов с обоснованными ограничениями и проверкой повторного включения. | См. входные условия карточки |
 | 13 | [DTC-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#dtc-02) | Свободна для продолжения | Native RX → очередь → диспетчер → ответ; проверка reset, перезаписи и Virtual Flash в общей композиции. | См. входные условия карточки |
-| 14 | [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#h03-03) | Свободна для продолжения | rbm_h03_target_initialize/take_toyota и итоговая application binding без fixture; старт, foreground, события и отказ проходят через реальные модули. | H03-04 |
+| 14 | [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#h03-03) | Выполняется | rbm_h03_target_initialize/take_toyota и итоговая application binding без fixture; старт, foreground, события и отказ проходят через реальные модули. | H03-04 |
 | 15 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#toy-04) | Свободна для продолжения | Последовательные трассы GP/гидравлики/команд на целевом цикле и совпадение с донором, включая отказ в середине переключения. | TOY-02, TOY-03, H03-03, MODE-02 |
 | 16 | [CAN-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#can-05) | Свободна для продолжения | Целевой профиль Bosch и отчёт по каждому обязательному сигналу/кадру, источнику, сроку и реакции на потерю. | TOY-02 |
 | 17 | [ECU-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#ecu-02) | Свободна для продолжения | Подключённый потребитель запроса момента ST10 и критерии действия/снятия на целевой паре. | CAN-05 |
@@ -359,7 +360,7 @@
 </details>
 
 <details>
-<summary>H03-03 — Единое расписание и запуск приложения H03: Свободна для продолжения</summary>
+<summary>H03-03 — Единое расписание и запуск приложения H03: Выполняется</summary>
 
 **Сделано.** Связаны target_initialize/take_toyota, Toyota release, ручной профиль, штатный CAN service/TX13 и 13 типизированных алиасов RAM. Целевой и ручной профили прошли M32R.
 
@@ -371,7 +372,7 @@
 
 **Что сдать.** rbm_h03_target_initialize/take_toyota и итоговая application binding без fixture; старт, foreground, события и отказ проходят через реальные модули.
 
-**Исполнитель сейчас.** Задача не занята.
+**Сейчас выполняет.** Codex H03-03 — штатные переходы запуска и foreground — codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51.
 
 **Критерий приёмки.** Полный цикл вызывается автономно, пропуск обнаруживается и без фазы выдачи, тестовые callbacks заменены подтверждёнными целевыми.
 
@@ -688,7 +689,6 @@
 | TOY-06 | Порция принята | Codex TOY-06 — штатные выходы H03 | codex/toy06-native-lockup-output-01a1f9a2 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 4baf99ccd587811223aa05bc44460053dbade903 |
 | MODE-03 | Порция принята | Codex MODE-03 — допуск только после инициализации политики | codex/mode03-policy-init-admission-32e6ac79 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit d77a559150a3c586ca50caa4aa64488b4f02ce22 |
 | DTC-02 | Порция принята | Codex DTC-02 — перезапись пары RX14/15 | codex/dtc02-rx-pair-overwrite-7bd19ea4 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit bfcf6dd0f0f471b60978d43e48e239308e1f6d2f |
-| H03-03 | Порция принята | Codex H03-03 common application RAM and CAN service | codex/h03-03-common-application-ram-01a1f9a2 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit a8821975addf933eee8e370085ad645f032442f2 |
 | TOY-04 | Порция принята | Codex TOY-04 — ручная заявка в цикле | codex/toy04-manual-cycle-892d | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit c7b0568cde39ddc27e71432e5028db9c9a351e16 |
 | CAN-05 | Порция принята | Codex CAN-05 — время приёма ST10 | codex/can05-st10-bound-t4-01a1f9a2 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit f3bb5000ebfdaaa30a33665bac1eab06ddb9165c |
 | ECU-02 | Порция принята | Codex ECU-02 — граница допуска момента Bosch | codex/ecu02-torque-permit-boundary-7bd19ea4 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 85b2e9320cf8f6e4a3729915ed3ebbd0fc00a732 |
@@ -721,6 +721,15 @@
 - targets/lfj8/lfj8_h03_application_binding.c
 - targets/lfj8/lfj8_h03_can_service_placement.py
 - verification/project-audit/can01-h03-shared-engine-binding.md
+
+### H03-03
+
+Чат: Codex H03-03 — штатные переходы запуска и foreground. Claim ID: ad014517bfa54394bf4b7185d135b504.
+
+- targets/lfj8/check_h03_phase_boot.py
+- targets/lfj8/lfj8_h03_application_placement.py
+- tests/test_h03_application_placement.py
+- verification/project-audit/h03-03-application-entry-placement.md
 
 ### H03-04
 
@@ -778,6 +787,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T07:55:30+00:00 | H03-03 | claim | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-21T07:55:14+00:00 | MODE-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-21T07:55:08+00:00 | CAN-01 | claim | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-21T07:54:48+00:00 | H03-05 | claim | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
@@ -807,4 +817,3 @@
 | 2026-11-21T07:45:41+00:00 | MODE-02 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-21T07:45:31+00:00 | H03-02 | complete | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-21T07:45:21+00:00 | VSS-02 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
-| 2026-11-21T07:45:10+00:00 | H03-05 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |

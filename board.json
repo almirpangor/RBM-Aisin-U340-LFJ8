@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 850,
+  "sequence": 851,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -117,34 +117,22 @@
       "result": "de7df4ab3da2c30240e0a8d3635f206787236d94"
     },
     "H03-03": {
-      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
-      "label": "Codex H03-03 common application RAM and CAN service",
-      "branch": "codex/h03-03-common-application-ram-01a1f9a2",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex H03-03 — штатные переходы запуска и foreground",
+      "branch": "codex/rel02-h03-ram-owner-01a1f99f",
       "files": [
-        "targets/lfj8/check_h03_can_monitor_revoke.py",
-        "targets/lfj8/lfj8_h03_can_service_placement.py",
-        "tests/test_h03_can_service_placement.py",
-        "tools/check_h03_image_layout.py",
-        "verification/project-audit/h03-03-common-application-ram.md"
+        "targets/lfj8/check_h03_phase_boot.py",
+        "targets/lfj8/lfj8_h03_application_placement.py",
+        "tests/test_h03_application_placement.py",
+        "verification/project-audit/h03-03-application-entry-placement.md"
       ],
-      "stage": "done",
-      "claim_id": "0f2e91c7274b44688d2514bece8ba6e8",
-      "claimed_at": "2026-11-21T07:03:59+00:00",
-      "updated_at": "2026-11-21T07:48:36+00:00",
-      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
-      "result": "a8821975addf933eee8e370085ad645f032442f2",
-      "based_on_reviews": [
-        "0ecd2acccbb947a886b1dceb6d968fb9",
-        "1291ee065c0840b5a6cb8ef51a1a6c5c",
-        "1b7a53b2c91c49d481c892507323d9d9",
-        "2101184d356545bfa9a1e0bd6716a9ee",
-        "43d58327bd434219b328d74d652d3be9",
-        "4781e27fe7274496be65a8d2faf92977",
-        "51ce545a28f949a48fa5a995230c2ba7",
-        "7d595279d73d44b882c2a6d929c481bb",
-        "8b0ce759514b4c68b04d002b192f50ff",
-        "96f93fae25924717a50bf354ff863f44"
-      ]
+      "stage": "in_progress",
+      "claim_id": "ad014517bfa54394bf4b7185d135b504",
+      "claimed_at": "2026-11-21T07:55:30+00:00",
+      "updated_at": "2026-11-21T07:55:30+00:00",
+      "note": "Вынесу подтверждённые переходы cold/startup/foreground/release в реальный вход адресной компоновки с привязкой к исходным словам и проверкой ELF. Общий компоновщик и fixture таймеров в чужом резерве не меняю.",
+      "result": null,
+      "based_on_reviews": []
     },
     "H03-04": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -13201,9 +13189,35 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "d2355a5582aa421f993ac4878065be22",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "claim",
+      "claim_id": "ad014517bfa54394bf4b7185d135b504",
+      "at": "2026-11-21T07:55:30+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex H03-03 — штатные переходы запуска и foreground",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_phase_boot.py",
+          "targets/lfj8/lfj8_h03_application_placement.py",
+          "tests/test_h03_application_placement.py",
+          "verification/project-audit/h03-03-application-entry-placement.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "ad014517bfa54394bf4b7185d135b504",
+        "claimed_at": "2026-11-21T07:55:30+00:00",
+        "updated_at": "2026-11-21T07:55:30+00:00",
+        "note": "Вынесу подтверждённые переходы cold/startup/foreground/release в реальный вход адресной компоновки с привязкой к исходным словам и проверкой ELF. Общий компоновщик и fixture таймеров в чужом резерве не меняю.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:55:14+00:00",
+  "updated_at": "2026-11-21T07:55:30+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
