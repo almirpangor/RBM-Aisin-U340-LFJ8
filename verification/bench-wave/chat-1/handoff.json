@@ -1,0 +1,735 @@
+{
+  "chat": "1",
+  "task": "H03-03",
+  "related": [
+    "TOY-04"
+  ],
+  "commit": "f4261763c9a6d3e6c577eecedc4a49c7b93563e3",
+  "base_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
+  "target": "LFJ8-18-9E1C, H03 LFJ8-T-D.bin, Aisin U340E",
+  "entry_profile": {
+    "source": "targets/lfj8/lfj8_h03_bench_entry_profile.py",
+    "export": "targets/lfj8/check_h03_bench_entries.py",
+    "native_strategy_source": "targets/lfj8/lfj8_h03_target_strategy.c",
+    "existing_apply_source": "targets/lfj8/lfj8_h03_target_commit.c",
+    "assembly_sources": [
+      "h03_application_hooks.S",
+      "h03_phase_startup_hook.S",
+      "h03_phase_release_hook.S",
+      "h03_phase_wait_hook.S",
+      "h03_native_hooks.S"
+    ],
+    "h03_native_hooks_flags": [
+      "-DRBM_H03_TARGET_ENTRY_ONLY=1"
+    ],
+    "strategy_flags": [
+      "-ffixed-r13"
+    ],
+    "required_callbacks": [
+      "rbm_h03_application_cold_gate",
+      "rbm_h03_phase_startup_callback",
+      "rbm_h03_phase_wait_callback",
+      "rbm_h03_application_foreground_callback",
+      "rbm_h03_phase_release_callback",
+      "rbm_h03_strategy_callback",
+      "rbm_h03_commit_callback"
+    ],
+    "stock_symbols": {
+      "h03_stock_application_after_entry": 33028,
+      "h03_stock_startup_record": 43064,
+      "h03_stock_foreground_inputs": 262948,
+      "h03_stock_phase_release": 263272,
+      "h03_stock_phase_clear": 33116,
+      "h03_phase_wait_ticks": 8389600
+    },
+    "configuration": {
+      "h03_phase_wait_interval_ticks": {
+        "value": null,
+        "units": "TML0CT ticks"
+      },
+      "h03_phase_wait_max_spins": {
+        "value": null,
+        "units": "foreground loop iterations per guard call"
+      }
+    },
+    "link_contract": [
+      "Использовать h03-bench-entries.o вместо прежнего набора из четырёх entry veneers. Все семь корней сохранить.",
+      "Добавить lfj8_h03_target_strategy.o рядом с lfj8_h03_target_commit.c. Передать действующий профиль выходов и абсолютные OEM continuation symbols.",
+      "При компиляции из исходников задать ASSEMBLY_FLAGS и NATIVE_STRATEGY_FLAGS из профиля. OEM reset загружает r13=0x808000. Прочие новые C-цепочки, вызывающие OEM или доступные с открытыми IRQ, также должны сохранить OEM ABI.",
+      "Отделить семь fixed_redirects до обычной упаковки и сверить verify_linked с REDIRECTS и явными stock_symbols. Общий tools/check_h03_image_layout.py ведёт интегратор."
+    ],
+    "units": {
+      "address": "байтовый адрес M32R",
+      "stock_word": "четыре байта H03 big-endian",
+      "phase_sequence": "номер принятой публикации H03 uint32 с циклическим переполнением",
+      "generation": "счётчик вызовов фазы strategy uint32",
+      "clock_and_poll_interval": "тики 32-битного TML0CT",
+      "wait_spin_limit": "число проходов цикла ожидания с неизменными TML0 и флагом до повторной проверки. Это программная граница, без замера времени.",
+      "atf": "десятые доли градуса Цельсия",
+      "supply": "милливольты",
+      "calibration_pressure_channel": "квалифицированная таблица compare Toyota → ток LFJ8 в мА"
+    }
+  },
+  "entry_points": [
+    {
+      "address": 33024,
+      "stock_word": "2e7f4ffc",
+      "hook": "rbm_h03_application_cold_hook",
+      "opcode": 255,
+      "root": "rbm_h03_application_redirect_008100",
+      "section": ".h03_app_redirect_008100"
+    },
+    {
+      "address": 33100,
+      "stock_word": "fe0009bb",
+      "hook": "rbm_h03_phase_startup_hook",
+      "opcode": 254,
+      "root": "rbm_h03_application_redirect_00814c",
+      "section": ".h03_app_redirect_00814c"
+    },
+    {
+      "address": 33104,
+      "stock_word": "e4804ade",
+      "hook": "rbm_h03_phase_wait_hook",
+      "opcode": 255,
+      "root": "rbm_h03_application_redirect_008150",
+      "section": ".h03_app_redirect_008150"
+    },
+    {
+      "address": 33132,
+      "stock_word": "fe00e06e",
+      "hook": "rbm_h03_application_foreground_hook",
+      "opcode": 254,
+      "root": "rbm_h03_application_redirect_00816c",
+      "section": ".h03_app_redirect_00816c"
+    },
+    {
+      "address": 225072,
+      "stock_word": "fe00e3e9",
+      "hook": "rbm_h03_strategy_hook",
+      "opcode": 254,
+      "root": "rbm_h03_application_redirect_036f30",
+      "section": ".h03_app_redirect_036f30"
+    },
+    {
+      "address": 263204,
+      "stock_word": "7e11f000",
+      "hook": "rbm_h03_phase_release_hook",
+      "opcode": 254,
+      "root": "rbm_h03_application_redirect_040424",
+      "section": ".h03_app_redirect_040424"
+    },
+    {
+      "address": 508172,
+      "stock_word": "feff29fd",
+      "hook": "rbm_h03_commit_hook",
+      "opcode": 254,
+      "root": "rbm_h03_application_redirect_07c10c",
+      "section": ".h03_app_redirect_07c10c"
+    }
+  ],
+  "roots": [
+    "rbm_h03_application_redirect_008100",
+    "rbm_h03_application_redirect_00814c",
+    "rbm_h03_application_redirect_008150",
+    "rbm_h03_application_redirect_00816c",
+    "rbm_h03_application_redirect_036f30",
+    "rbm_h03_application_redirect_040424",
+    "rbm_h03_application_redirect_07c10c"
+  ],
+  "external_oem_entries": [
+    {
+      "address": 5428,
+      "stock_word": "80c800ff",
+      "hook": "rbm_h03_dtc_rx_hook",
+      "root": "rbm_h03_dtc_rx_redirect",
+      "owner": "DTC-02 resident BasicCAN RX"
+    },
+    {
+      "address": 10532,
+      "stock_word": "2e7f4ff8",
+      "hook": "rbm_h03_service_direct_hook",
+      "root": "rbm_h03_service_redirect_002924",
+      "owner": "H03-04 reset, DMA4 and service writers"
+    },
+    {
+      "address": 10572,
+      "stock_word": "fe0002f7",
+      "hook": "rbm_h03_service_span_hook",
+      "root": "rbm_h03_service_redirect_00294c",
+      "owner": "H03-04 reset, DMA4 and service writers"
+    },
+    {
+      "address": 11548,
+      "stock_word": "2e7f297f",
+      "hook": "rbm_h03_service_copy_hook",
+      "root": "rbm_h03_service_redirect_002d1c",
+      "owner": "H03-04 reset, DMA4 and service writers"
+    },
+    {
+      "address": 11932,
+      "stock_word": "a00a0008",
+      "hook": "rbm_h03_service_close_hook",
+      "root": "rbm_h03_service_redirect_002e9c",
+      "owner": "H03-04 reset, DMA4 and service writers"
+    },
+    {
+      "address": 13672,
+      "stock_word": "b810000b",
+      "hook": "h03_service_disable_virtual_flash",
+      "root": "rbm_h03_service_redirect_003568",
+      "owner": "H03-04 reset, DMA4 and service writers"
+    },
+    {
+      "address": 15804,
+      "stock_word": "604010a0",
+      "hook": "rbm_h03_early_irq_gate",
+      "root": "rbm_h03_early_irq_redirect",
+      "owner": "H03-04 reset, DMA4 and service writers"
+    },
+    {
+      "address": 18232,
+      "stock_word": "fefff32e",
+      "hook": "rbm_h03_dtc_rx_dispatch_hook",
+      "root": "rbm_h03_dtc_rx_dispatch_redirect",
+      "owner": "DTC-02 resident BasicCAN RX"
+    },
+    {
+      "address": 32900,
+      "stock_word": "ff00001f",
+      "hook": "rbm_h03_can_monitor_cold_hook",
+      "root": "rbm_h03_can_monitor_cold_hook",
+      "owner": "CAN-03 monitor setup and recovery"
+    },
+    {
+      "address": 43532,
+      "stock_word": "2244f000",
+      "hook": "rbm_h03_s51_capture_hook",
+      "root": "rbm_h03_s51_capture_hook",
+      "owner": "VSS-02/H03-02 capture and ATF"
+    },
+    {
+      "address": 43632,
+      "stock_word": "2045f000",
+      "hook": "rbm_h03_s83_capture_hook",
+      "root": "rbm_h03_s83_capture_hook",
+      "owner": "VSS-02/H03-02 capture and ATF"
+    },
+    {
+      "address": 47096,
+      "stock_word": "61082125",
+      "hook": "rbm_h03_can_monitor_start_permit",
+      "root": "rbm_h03_can_monitor_start_permit",
+      "owner": "CAN-03 monitor setup and recovery"
+    },
+    {
+      "address": 47204,
+      "stock_word": "feffd69a",
+      "hook": "rbm_h03_can_monitor_prepare_hook",
+      "root": "rbm_h03_can_monitor_prepare_hook",
+      "owner": "CAN-03 monitor setup and recovery"
+    },
+    {
+      "address": 47232,
+      "stock_word": "60082024",
+      "hook": "rbm_h03_can_monitor_recovery_permit",
+      "root": "rbm_h03_can_monitor_recovery_permit",
+      "owner": "CAN-03 monitor setup and recovery"
+    },
+    {
+      "address": 49996,
+      "stock_word": "2e7f2a7f",
+      "hook": "h03_can13_tx_gate",
+      "root": "h03_can13_tx_redirect",
+      "owner": "CAN-03 TX13"
+    },
+    {
+      "address": 53004,
+      "stock_word": "2e7f2a7f",
+      "hook": "rbm_h03_dma4_guard",
+      "root": "rbm_h03_dma4_redirect",
+      "owner": "H03-04 reset, DMA4 and service writers"
+    },
+    {
+      "address": 213680,
+      "stock_word": "60012004",
+      "hook": "rbm_h03_shift_d_fault_hook",
+      "root": "rbm_h03_shift_d_fault_hook",
+      "owner": "H03-05 output fault latches"
+    },
+    {
+      "address": 213704,
+      "stock_word": "60012004",
+      "hook": "rbm_h03_shift_e_fault_hook",
+      "root": "rbm_h03_shift_e_fault_hook",
+      "owner": "H03-05 output fault latches"
+    },
+    {
+      "address": 213728,
+      "stock_word": "60012004",
+      "hook": "rbm_h03_shift_f_fault_hook",
+      "root": "rbm_h03_shift_f_fault_hook",
+      "owner": "H03-05 output fault latches"
+    },
+    {
+      "address": 215116,
+      "stock_word": "60012004",
+      "hook": "rbm_h03_slt_fault_hook",
+      "root": "rbm_h03_slt_fault_hook",
+      "owner": "H03-05 output fault latches"
+    },
+    {
+      "address": 241936,
+      "stock_word": "2e7f287f",
+      "hook": "rbm_h03_atf_begin",
+      "root": "rbm_h03_atf_begin",
+      "owner": "VSS-02/H03-02 capture and ATF"
+    },
+    {
+      "address": 241976,
+      "stock_word": "20b4f000",
+      "hook": "rbm_h03_atf_read",
+      "root": "rbm_h03_atf_read",
+      "owner": "VSS-02/H03-02 capture and ATF"
+    },
+    {
+      "address": 242040,
+      "stock_word": "20467f29",
+      "hook": "rbm_h03_atf_fault",
+      "root": "rbm_h03_atf_fault",
+      "owner": "VSS-02/H03-02 capture and ATF"
+    },
+    {
+      "address": 242084,
+      "stock_word": "20447f1e",
+      "hook": "rbm_h03_atf_direct",
+      "root": "rbm_h03_atf_direct",
+      "owner": "VSS-02/H03-02 capture and ATF"
+    },
+    {
+      "address": 242200,
+      "stock_word": "2044f000",
+      "hook": "rbm_h03_atf_filtered",
+      "root": "rbm_h03_atf_filtered",
+      "owner": "VSS-02/H03-02 capture and ATF"
+    },
+    {
+      "address": 242204,
+      "stock_word": "28ef2eef",
+      "hook": "rbm_h03_atf_end",
+      "root": "rbm_h03_atf_end",
+      "owner": "VSS-02/H03-02 capture and ATF"
+    },
+    {
+      "address": 262520,
+      "stock_word": "20252eef",
+      "hook": "rbm_h03_atf_adc",
+      "root": "rbm_h03_atf_adc",
+      "owner": "VSS-02/H03-02 capture and ATF"
+    },
+    {
+      "address": 263024,
+      "stock_word": "20246103",
+      "hook": "rbm_h03_selector_adc_hook",
+      "root": "rbm_h03_selector_adc_hook",
+      "owner": "MODE-02 AN2"
+    },
+    {
+      "address": 468400,
+      "stock_word": "fe000b7d",
+      "hook": "rbm_h03_atf_fault_hook",
+      "root": "rbm_h03_atf_fault_hook",
+      "owner": "DTC-03 ATF monitor"
+    }
+  ],
+  "linker_gc": {
+    "direct_candidates": [
+      "h03_can13_tx_redirect",
+      "rbm_h03_application_redirect_008100",
+      "rbm_h03_application_redirect_00814c",
+      "rbm_h03_application_redirect_008150",
+      "rbm_h03_application_redirect_00816c",
+      "rbm_h03_application_redirect_036f30",
+      "rbm_h03_application_redirect_040424",
+      "rbm_h03_application_redirect_07c10c",
+      "rbm_h03_atf_adc",
+      "rbm_h03_atf_begin",
+      "rbm_h03_atf_direct",
+      "rbm_h03_atf_end",
+      "rbm_h03_atf_fault",
+      "rbm_h03_atf_fault_hook",
+      "rbm_h03_atf_filtered",
+      "rbm_h03_atf_read",
+      "rbm_h03_can_monitor_cold_hook",
+      "rbm_h03_can_monitor_prepare_hook",
+      "rbm_h03_can_monitor_recovery_permit",
+      "rbm_h03_can_monitor_start_permit",
+      "rbm_h03_dma4_redirect",
+      "rbm_h03_dtc_rx_dispatch_redirect",
+      "rbm_h03_dtc_rx_redirect",
+      "rbm_h03_early_irq_redirect",
+      "rbm_h03_s51_capture_hook",
+      "rbm_h03_s83_capture_hook",
+      "rbm_h03_selector_adc_hook",
+      "rbm_h03_service_redirect_002924",
+      "rbm_h03_service_redirect_00294c",
+      "rbm_h03_service_redirect_002d1c",
+      "rbm_h03_service_redirect_002e9c",
+      "rbm_h03_service_redirect_003568",
+      "rbm_h03_shift_d_fault_hook",
+      "rbm_h03_shift_e_fault_hook",
+      "rbm_h03_shift_f_fault_hook",
+      "rbm_h03_slt_fault_hook"
+    ],
+    "fixed_patch_and_callable_roots": "Все app roots и установленные смежные точки должны оставаться при --gc-sections. Для патчей, создаваемых после линка, явно удерживать symbol цели из external_oem_entries.",
+    "same_rom_probe": {
+      "root_count": 23,
+      "all_accounted_for": true,
+      "report_sha256": "9bcb8d0a06c2b9d88979c0844ba1e98953c8162bcd265b70e7e8f4f4b3f5f7eb",
+      "baseline_flash_bytes": 107884,
+      "entry_graph_flash_bytes": 91166,
+      "preliminary_difference_bytes": 16718
+    },
+    "probe_scope": "Ранний результат потребления памяти получен на неполном составе. С добавлением strategy возвращается lfj8_h03_cycle_prepare_outputs и его транзитивные зависимости. Сохранять необходимые диагностические, SLU и NVM пути по выбранным целевым профилям.",
+    "after_link": "Сверить достижимость всех семейств схемы, таблицы косвенных ссылок и original bytes. Для укладки использовать фактические retained sections нового полного графа."
+  },
+  "indirect_entry_constraints": [
+    {
+      "entry": ".rodata.native_owner_ops",
+      "edges": [
+        ".text.native_rx_epoch",
+        ".text.native_poll_owner"
+      ],
+      "rule": "Use the DTC-02 IRQ closure keep rule for the indirect epoch adapter"
+    },
+    {
+      "entry": "lfj8_h03_mmio",
+      "edges": [
+        "read8",
+        "read16",
+        "read32",
+        "write8",
+        "enter",
+        "leave"
+      ],
+      "rule": "Keep actual relocated table targets in the resident IRQ closure"
+    },
+    {
+      "entry": "rbm_h03_application_binding",
+      "edges": [
+        "initialize",
+        "ram_owned",
+        "clock_ready",
+        "read_adaptation",
+        "stop_service_locked",
+        "take_toyota",
+        "service_phase",
+        "engine.context_for_task2",
+        "takeover_ops"
+      ],
+      "rule": "Follow relocations from the selected native profile and qualified tables"
+    },
+    {
+      "entry": "rbm_h03_target_takeover_ops",
+      "edges": [
+        "write32",
+        "clock_ticks",
+        "qualified",
+        "arbitrate",
+        "apply",
+        "inhibit",
+        "phase_clock"
+      ],
+      "rule": "Keep the selected output providers; OEM electrical routines stay in stock ROM"
+    },
+    {
+      "entry": [
+        "0x805000",
+        "0x8051E8",
+        "SBI and IRQ vector tables"
+      ],
+      "rule": "Resolve any target callbacks from runtime RAM and populated vectors before pruning"
+    }
+  ],
+  "retained_oem_packets": [
+    {
+      "address": 15800,
+      "word": "ed808000",
+      "purpose": "reset loads the OEM RAM base into r13"
+    },
+    {
+      "address": 15816,
+      "word": "fe000112",
+      "purpose": "reset dispatcher calls marker check"
+    },
+    {
+      "address": 32900,
+      "word": "ff00001f",
+      "purpose": "stock application dispatch; CAN monitor can interpose here"
+    },
+    {
+      "address": 33108,
+      "word": "2094f000",
+      "purpose": "displaced wait loads OEM flag"
+    },
+    {
+      "address": 33112,
+      "word": "b080fffe",
+      "purpose": "displaced back edge targets wait entry"
+    },
+    {
+      "address": 33116,
+      "word": "60002004",
+      "purpose": "clear OEM phase flag once"
+    },
+    {
+      "address": 33248,
+      "word": "fe00f989",
+      "purpose": "scheduler calls stock phase 3"
+    },
+    {
+      "address": 33268,
+      "word": "fe00f98e",
+      "purpose": "scheduler calls stock phase 2"
+    },
+    {
+      "address": 33560,
+      "word": "7f8e29ef",
+      "purpose": "scheduler loops to shared wait"
+    },
+    {
+      "address": 224948,
+      "word": "7e04f000",
+      "purpose": "combined entry calls stock preparation"
+    },
+    {
+      "address": 224952,
+      "word": "7e13f000",
+      "purpose": "combined entry calls shared strategy path"
+    },
+    {
+      "address": 224956,
+      "word": "7e20f000",
+      "purpose": "combined entry calls shared apply path"
+    },
+    {
+      "address": 225076,
+      "word": "fe00eb5c",
+      "purpose": "stock diagnostics after strategy"
+    },
+    {
+      "address": 225104,
+      "word": "fe01146c",
+      "purpose": "stock phase 2 calls apply wrapper"
+    },
+    {
+      "address": 288784,
+      "word": "feffc1bd",
+      "purpose": "stock phase 3 calls shared strategy path"
+    },
+    {
+      "address": 288824,
+      "word": "feffc1c1",
+      "purpose": "stock phase 2 calls shared apply path"
+    },
+    {
+      "address": 508160,
+      "word": "2e7f7e02",
+      "purpose": "stock phase 2 wrapper calls inner apply"
+    },
+    {
+      "address": 508168,
+      "word": "2e7ff000",
+      "purpose": "inner apply saves LR before the replaced call"
+    },
+    {
+      "address": 508176,
+      "word": "2eef1fce",
+      "purpose": "inner apply returns through original LR"
+    }
+  ],
+  "sources_provenance": {
+    "stock_h03": {
+      "id": "H03",
+      "bytes": 524288,
+      "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+    },
+    "controller_m32r_sha256": "13b42c89f3af237bbdc1307149918328561f0226f1443706d53160fc23c36ead",
+    "dependencies_for_graph": [
+      "docs/lfj8-h03-control-cycle.md",
+      "docs/lfj8-h03-output-adapter.md",
+      "targets/lfj8/check_h03_can_monitor_startup.py",
+      "targets/lfj8/lfj8_h03_service_placement.py",
+      "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+      "targets/lfj8/lfj8_h03_sensor_hooks.py",
+      "targets/lfj8/audit_h03_irq_stack.py"
+    ],
+    "edge_scope": "Список включает подтверждённые прямые входы данной и смежных частей. Вызовы через таблицы и RAM остаются отдельными корнями до доказательства их фактических целей.",
+    "runtime_inputs": "CPU-сценарии задают тестовые электрические данные. Экспортируемые объекты используют внешние целевые определения и не содержат испытательных поставщиков."
+  },
+  "artifacts": {
+    "medium": {
+      "sha256": {
+        "h03-bench-entries.o": "426a8a910dc135e82a7a045cd41eeea9c4ae5cd4dbfd8f4cc78b2cc215a3b0b7",
+        "lfj8_h03_target_strategy.o": "99b63fcb1c74405accf42f21dc4587bc9b06ac20e74e6db693872061d4d0a1dc",
+        "h03-bench-redirects.S": "5846bc25b21f0acc06ea05db0f45054ba062d47892b1cf628ed1dcf247c83589"
+      },
+      "local_directory": "D:\\RBM-H03Entry-7bd19ea4\\wave\\export-medium-watchdog"
+    },
+    "small": {
+      "sha256": {
+        "h03-bench-entries.o": "426a8a910dc135e82a7a045cd41eeea9c4ae5cd4dbfd8f4cc78b2cc215a3b0b7",
+        "lfj8_h03_target_strategy.o": "44f769e2ef234a5082d3f75e36371010db111e3862cd397b24159332e9373664",
+        "h03-bench-redirects.S": "5846bc25b21f0acc06ea05db0f45054ba062d47892b1cf628ed1dcf247c83589"
+      },
+      "local_directory": "D:\\RBM-H03Entry-7bd19ea4\\wave\\export-small-watchdog"
+    }
+  },
+  "memory": {
+    "fixed_branch_bytes": 28,
+    "additional_fixed_branch_bytes": 12,
+    "wrapper_flash_bytes": 788,
+    "wrapper_sections": {
+      ".text.rbm_h03_application_cold_hook": 108,
+      ".text.rbm_h03_application_foreground_hook": 104,
+      ".text.rbm_h03_phase_startup_hook": 104,
+      ".text.rbm_h03_phase_release_hook": 112,
+      ".text.rbm_h03_phase_wait_hook": 160,
+      ".text.rbm_h03_strategy_hook": 100,
+      ".text.rbm_h03_commit_hook": 100
+    },
+    "additional_wrapper_bytes_before_alignment": 360,
+    "strategy_flash_bytes": {
+      "medium": 300,
+      "small": 296
+    },
+    "new_static_ram_bytes": 0,
+    "stack_bytes": {
+      "asm_wait_idle": 12,
+      "asm_wait_before_c": 64,
+      "asm_strategy_or_apply_before_c": 72,
+      "strategy_c_frame_medium_from_objdump": 68,
+      "strategy_apply_cases_without_irq_max": 568,
+      "wait_callback_probe_without_irq": 152,
+      "wait_top8_probe": 184,
+      "wait_top8_psw_bytes": 4,
+      "full_application_with_nested_irq_sbi": null
+    },
+    "full_composition": "Требует нового измерения после объединения. Секции и внешние корни переданы отдельно для linker GC."
+  },
+  "checks": [
+    {
+      "command": "python -B -m unittest discover -s tests -p 'test_h03*.py'",
+      "result": "PASS",
+      "tests": 93,
+      "base": "3fe28938163e1dddc98a37733c229390ab7f0fff"
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_bench_entries.py --base $h03 --gcc $gcc --controller $controller --out $out/medium",
+      "result": "PASS",
+      "cases": [
+        "adjacent_release_wrap",
+        "combined_same_release",
+        "missing_snapshot",
+        "unowned_ram",
+        "phase_not_consumed",
+        "monitor_after_prepare",
+        "repeat_apply",
+        "stale_after_restart"
+      ],
+      "plan_sha256": "46865011b8153c6c0074530babb409c732fa6121941e04e00277c35d50c9bb0d"
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_bench_entries.py --base $h03 --gcc $gcc --memory-model small --out $out/small",
+      "result": "PASS",
+      "plan_sha256": "48f6675943a7d9ab9986778fa711f80712f5268f3a6955722d44f18a6cdd824d"
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_phase_boot.py --base $h03 --gcc $gcc --controller $controller --out $out/phase-boot.json",
+      "result": "PASS",
+      "cases": 68,
+      "placed_cases": 62,
+      "report_sha256": "67f436218c92ce9d87c9b11ca10b5999ba6e6df9ab44c0beb40b922fd9a29c41"
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_phase_wait.py --base $h03 --gcc $gcc --out $out/phase-wait.json",
+      "result": "PASS",
+      "cases": 24,
+      "stalled_clock_cases": [
+        {
+          "scenario": "frozen_tml0_software_poll",
+          "initial_carry": 0,
+          "callback_calls": 2,
+          "clock_samples_while_waiting": 12,
+          "callback_stack_written_bytes": [
+            152,
+            116
+          ],
+          "oem_irq_levels_injected": 0,
+          "oem_top8_status_before": null,
+          "native_release_callbacks": 0,
+          "stock_flag_cleared": true,
+          "phase_consumed": false,
+          "command_revoked": true
+        },
+        {
+          "scenario": "frozen_tml0_software_poll",
+          "initial_carry": 1,
+          "callback_calls": 2,
+          "clock_samples_while_waiting": 12,
+          "callback_stack_written_bytes": [
+            152,
+            116
+          ],
+          "oem_irq_levels_injected": 0,
+          "oem_top8_status_before": null,
+          "native_release_callbacks": 0,
+          "stock_flag_cleared": true,
+          "phase_consumed": false,
+          "command_revoked": true
+        }
+      ],
+      "report_sha256": "5650e2e27551a895d8e9769196dfa7b4fba7ecf2b0c622d05fa54679200c6133"
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_can_monitor_startup.py --base $h03 --gcc $gcc --out $out/monitor.json",
+      "result": "PASS",
+      "patched_sites": 4,
+      "report_sha256": "cc65640072b5d189052b4012d9e02400dd120cef8ee73a0263790e54f8754824"
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_native_hooks.py --base $h03 --gcc $gcc --controller $controller --out $out/native-hooks-baseline.json",
+      "result": "PASS",
+      "report_sha256": "dd22f4123cb9ab6c4ddd5d8a59da6868f14fc19806bd53aa94cfe7fbef51c521"
+    },
+    {
+      "command": "python -B tools/build_pc_checks.py --cc $zig --out $out/pc",
+      "result": "PASS",
+      "stages": 41,
+      "failed": [],
+      "python_tests": 218,
+      "report_sha256": "469ace3ab6b9d064cf5334c50ebf7511b8fa9659c12acec26ab5bf9fe81b8548",
+      "scope": "Прогон начат на 10f7c15 с семью переходами до изменения guard ожидания. После обновления до 3fe2893 и установки guard повторены 93 проверки H03 и затронутые нативные прогоны."
+    }
+  ],
+  "dependencies": {
+    "H03-05/TOY-04": "Определить rbm_h03_target_strategy_snapshot(context, phase_sequence, out) согласно lfj8_h03_target_strategy.h. Поставлять согласованные MAIN и FAST через действующие типизированные объекты и фактический допуск профиля.",
+    "H03-04": "Дать владельца RAM и окончательные диапазоны и резервы SPI/PSW. Сохранить ранний reset/IRQ guard, DMA4 и сервисные писатели.",
+    "VSS-02": "Профиль 18dcf51f3a765f2d660e142003999cbf627782f4 на review проверяет ход TML0/TML1 в rbm_h03_target_clock_ready. Интегратор задаёт явные poll interval, его верхнюю границу и max spins. Номинал TOP10 500 тиков от VSS-02 задаёт период штатного источника, а не измеренный бюджет ожидания.",
+    "CAN-03": "Подключить четыре штатных слова CAN monitor и сохранить ветки отказа и отзыва. Их адреса включены в карту GC.",
+    "ORG-01/REL-01": "Объединить семь entry roots, внешние точки и косвенные таблицы в целевом профиле и доказать итоговую карту исходных вызовов."
+  },
+  "software_blockers": [
+    "В этой порции внешний rbm_h03_target_strategy_snapshot остаётся неопределённым до профиля выходов. Недостающий снимок приводит к отзыву, фаза выдачи пропускает OEM apply.",
+    "h03_phase_wait_interval_ticks и h03_phase_wait_max_spins остаются параметрами итогового профиля. После достижения любого предела обёртка вызывает реальный фазовый guard. Значения fixture используются в симуляторе.",
+    "Полный ELF и пригодность всей карты для выпуска ещё требуют общей интеграции. Внешние косвенные ссылки из RAM и векторов нельзя исключать по одному grep."
+  ],
+  "post_flash_measurements": [
+    "Ход TML0 при остановке публикаций TOP10 и время до следующего guard при остановке обоих. Доказать максимальный интервал отзыва под реальными IRQ.",
+    "Глубина SPI и отдельного PSW при одновременных CAN/диагностике, DMA, TOP10 и вложенных IRQ/SBI.",
+    "Физический отказ и повторный запуск с проверкой D/E/F, Pressure A и изоляции TIO9/P97.",
+    "Трасса штатного monitor и повторного допуска с реальным состоянием CAN, GPIO и таймеров."
+  ],
+  "hardware_verified": false,
+  "flashable_image": null
+}
