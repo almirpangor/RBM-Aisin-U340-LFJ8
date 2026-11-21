@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 937,
+  "sequence": 938,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -24,8 +24,8 @@
       "stage": "in_progress",
       "claim_id": "ae03538ba15145cc876e680b118fd0ae",
       "claimed_at": "2026-11-21T08:46:38+00:00",
-      "updated_at": "2026-11-21T08:53:01+00:00",
-      "note": "План 10f7c15 опубликован, все 12 чатов запущены. Повторяются PC/M32R; добавляю явные native providers, происхождение includes и детерминированную сборку байтов полного H03 ELF.",
+      "updated_at": "2026-11-21T09:15:21+00:00",
+      "note": "Опубликованы план и общая инфраструктура 3fe2893. Ведётся приёмка 12 чатов; локально объединены 9/5/10, native NVM/sensor/BasicCAN readout повторно PASS. Выявлен и передан CAN-03 дефект отключения диагностики при недостоверных датчиках. Окончательный native ELF/BIN ещё не собран.",
       "result": null,
       "based_on_reviews": []
     },
@@ -15902,9 +15902,44 @@
         "result": "2718128ed693b9fa2f69da981a7e316e7b106fa1",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "193b5832a809466696f24f863eca5825",
+      "task": "ORG-01",
+      "owner": "codex-integration-01a1f76d-20261120",
+      "action": "heartbeat",
+      "claim_id": "ae03538ba15145cc876e680b118fd0ae",
+      "at": "2026-11-21T09:15:21+00:00",
+      "record": {
+        "owner": "codex-integration-01a1f76d-20261120",
+        "label": "Ведущй — общая сборка и задания для стендовой пары",
+        "branch": "codex/integration-01a1f76d-20261120",
+        "files": [
+          "AGENTS.md",
+          "README.md",
+          "data/bench-first-wave.json",
+          "data/project-tasks.json",
+          "docs/bench-first-wave.md",
+          "docs/decisions.md",
+          "docs/integration-next-tasks.md",
+          "docs/project-map.md",
+          "docs/working-set.md",
+          "tests/test_h03_image.py",
+          "tools/check_h03_image_layout.py",
+          "tools/h03_image.py",
+          "verification/project-audit/bench-first-20261121/"
+        ],
+        "stage": "in_progress",
+        "claim_id": "ae03538ba15145cc876e680b118fd0ae",
+        "claimed_at": "2026-11-21T08:46:38+00:00",
+        "updated_at": "2026-11-21T09:15:21+00:00",
+        "note": "Опубликованы план и общая инфраструктура 3fe2893. Ведётся приёмка 12 чатов; локально объединены 9/5/10, native NVM/sensor/BasicCAN readout повторно PASS. Выявлен и передан CAN-03 дефект отключения диагностики при недостоверных датчиках. Окончательный native ELF/BIN ещё не собран.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T09:14:22+00:00",
+  "updated_at": "2026-11-21T09:15:21+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
