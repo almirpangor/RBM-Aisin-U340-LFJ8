@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 926,
+  "sequence": 927,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -44,12 +44,12 @@
         "verification/bench-wave/chat-10/diagnostic-readout.md",
         "verification/bench-wave/chat-10/handoff.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "8d2e9979b8b94adab47c6ca68b65d7f6",
       "claimed_at": "2026-11-21T08:51:01+00:00",
-      "updated_at": "2026-11-21T08:51:01+00:00",
-      "note": "Волна 10f7c15. Реальный read-only путь наблюдений через C0 BasicCAN и единый TX13, набор измерений и проверка отказов; сверка DTC/очистки и передача контракта интегратору. Без прошивки.",
-      "result": null,
+      "updated_at": "2026-11-21T09:10:43+00:00",
+      "note": "Чат 10. Нативный стендовый readout 13 страниц через BasicCAN/C0/TX13, включая полный 3-кадровый ответ TML0/TML1 с Flow Control. 41 этап ПК, S03 96, 18 сравнений IRQ, 9 сервисных и 40 ATF проверок. История сохраняется и ACK не выдаётся без DTC-04 backend. Интеграция --binding-source, +1064 байта Flash к той же модели, RAM без прироста, FAIL_BINDINGS. Контракт verification/bench-wave/chat-10/handoff.json. Без прошивки.",
+      "result": "a1e173336874cb52dae2bb75f4cf4287df105dff",
       "based_on_reviews": []
     },
     "CAN-03": {
@@ -15555,9 +15555,40 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "a4a8d5b1813e42e09eab800b59b6f2b5",
+      "task": "DTC-02",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "review",
+      "claim_id": "8d2e9979b8b94adab47c6ca68b65d7f6",
+      "at": "2026-11-21T09:10:43+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex чат 10 — диагностика H03 для стенда",
+        "branch": "codex/can01-h03-engine-owner-b0157640",
+        "files": [
+          "diagnostics/chery_dtc_link.c",
+          "diagnostics/chery_dtc_link.h",
+          "targets/lfj8/check_h03_dtc_basiccan.py",
+          "targets/lfj8/lfj8_h03_bench_diag.c",
+          "targets/lfj8/lfj8_h03_bench_diag.h",
+          "targets/lfj8/lfj8_h03_dtc_can.c",
+          "targets/lfj8/test_lfj8_h03_bench_diag.c",
+          "verification/bench-wave/chat-10/diagnostic-readout.md",
+          "verification/bench-wave/chat-10/handoff.json"
+        ],
+        "stage": "review",
+        "claim_id": "8d2e9979b8b94adab47c6ca68b65d7f6",
+        "claimed_at": "2026-11-21T08:51:01+00:00",
+        "updated_at": "2026-11-21T09:10:43+00:00",
+        "note": "Чат 10. Нативный стендовый readout 13 страниц через BasicCAN/C0/TX13, включая полный 3-кадровый ответ TML0/TML1 с Flow Control. 41 этап ПК, S03 96, 18 сравнений IRQ, 9 сервисных и 40 ATF проверок. История сохраняется и ACK не выдаётся без DTC-04 backend. Интеграция --binding-source, +1064 байта Flash к той же модели, RAM без прироста, FAIL_BINDINGS. Контракт verification/bench-wave/chat-10/handoff.json. Без прошивки.",
+        "result": "a1e173336874cb52dae2bb75f4cf4287df105dff",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T09:10:36+00:00",
+  "updated_at": "2026-11-21T09:10:43+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -18457,6 +18488,31 @@
       "based_on_reviews": [],
       "task": "VSS-02",
       "submitted_at": "2026-11-21T09:09:06+00:00"
+    },
+    "8d2e9979b8b94adab47c6ca68b65d7f6": {
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "label": "Codex чат 10 — диагностика H03 для стенда",
+      "branch": "codex/can01-h03-engine-owner-b0157640",
+      "files": [
+        "diagnostics/chery_dtc_link.c",
+        "diagnostics/chery_dtc_link.h",
+        "targets/lfj8/check_h03_dtc_basiccan.py",
+        "targets/lfj8/lfj8_h03_bench_diag.c",
+        "targets/lfj8/lfj8_h03_bench_diag.h",
+        "targets/lfj8/lfj8_h03_dtc_can.c",
+        "targets/lfj8/test_lfj8_h03_bench_diag.c",
+        "verification/bench-wave/chat-10/diagnostic-readout.md",
+        "verification/bench-wave/chat-10/handoff.json"
+      ],
+      "stage": "review",
+      "claim_id": "8d2e9979b8b94adab47c6ca68b65d7f6",
+      "claimed_at": "2026-11-21T08:51:01+00:00",
+      "updated_at": "2026-11-21T09:10:43+00:00",
+      "note": "Чат 10. Нативный стендовый readout 13 страниц через BasicCAN/C0/TX13, включая полный 3-кадровый ответ TML0/TML1 с Flow Control. 41 этап ПК, S03 96, 18 сравнений IRQ, 9 сервисных и 40 ATF проверок. История сохраняется и ACK не выдаётся без DTC-04 backend. Интеграция --binding-source, +1064 байта Flash к той же модели, RAM без прироста, FAIL_BINDINGS. Контракт verification/bench-wave/chat-10/handoff.json. Без прошивки.",
+      "result": "a1e173336874cb52dae2bb75f4cf4287df105dff",
+      "based_on_reviews": [],
+      "task": "DTC-02",
+      "submitted_at": "2026-11-21T09:10:43+00:00"
     }
   }
 }
