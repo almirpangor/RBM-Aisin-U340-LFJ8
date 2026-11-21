@@ -15,6 +15,7 @@
 
 #define MMIO8(address) (*(volatile uint8_t *)(uintptr_t)(address))
 #define TML0CT (*(volatile uint32_t *)(uintptr_t)0x8003e0u)
+#define TML1CT (*(volatile uint32_t *)(uintptr_t)0x800fe0u)
 
 Lfj8H03Application rbm_h03_application;
 Lfj8H03ToyotaRelease rbm_h03_toyota_release_state;
@@ -280,6 +281,7 @@ static void startup(uint32_t at)
 static void foreground(uint32_t at)
 {
     TML0CT = at;
+    TML1CT = at;
     const uint32_t saved = lfj8_h03_mmio.enter(NULL);
     rbm_h03_phase_release_hook();
     assert(!irq_enabled());

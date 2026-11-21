@@ -200,6 +200,19 @@ int main(void)
     assert(rbm_h03_sensor_foreground(0, &snapshot) == LFJ8_H03_SENSOR_SNAPSHOT);
     assert(snapshot.epoch == 4u && snapshot.capture.vss.state == LFJ8_VSS_UNAVAILABLE && !snapshot.atf_valid);
 
+    /* Correct control registers alone must not hide a stalled TML1. */
+    assert(!fixture_s51(10u) && !fixture_s83(1002u));
+    rbm_h03_atf_state.valid = 1u;
+    MMIO32(0x8003E0) += 8u;
+    assert(rbm_h03_sensor_foreground(1, &snapshot) == LFJ8_H03_SENSOR_CLOCK_UNAVAILABLE);
+    assert(!rbm_h03_tml0_1mhz_qualified && !rbm_h03_atf_state.valid);
+    assert(!rbm_h03_sensor_state.s51.primed && !rbm_h03_sensor_state.s83.primed);
+    assert(!snapshot.epoch && !snapshot.atf_valid && snapshot.capture.vss.state == LFJ8_VSS_UNAVAILABLE);
+    MMIO32(0x800FE0) += 8u;
+    assert(rbm_h03_sensor_foreground(0, &snapshot) == LFJ8_H03_SENSOR_CLOCK_UNAVAILABLE);
+    assert(rbm_h03_sensor_clock_rebase(1));
+    assert(rbm_h03_sensor_foreground(0, &snapshot) == LFJ8_H03_SENSOR_SNAPSHOT);
+
     MMIO8(0x8003EB) = 0x11; /* Bit 0 still selects Clock Bus 1. */
     assert(!rbm_h03_atf_now_us(&now_us) && !rbm_h03_tml0_1mhz_qualified);
     MMIO8(0x8003EB) = 0x01;

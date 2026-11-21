@@ -222,6 +222,8 @@ int lfj8_h03_capture_pair(volatile Lfj8RawVss *vss, volatile Lfj8RawCapture *nt,
     pair->vss_at_tml0 = 0u;
     pair->nt_at_tml0 = 0u;
     pair->nt_edge_tml1 = 0u;
+    pair->tml1_offset_min = 0u;
+    pair->tml_read_span_ticks = 0u;
     pair->nt_alignment_error_ticks = 0u;
 
     const uint32_t saved = io->enter(io->context);
@@ -232,6 +234,8 @@ int lfj8_h03_capture_pair(volatile Lfj8RawVss *vss, volatile Lfj8RawCapture *nt,
     const int coherent = span <= max_read_span_ticks;
     pair->now_tml0 = after;
     if (coherent) {
+        pair->tml1_offset_min = nt_now - after;
+        pair->tml_read_span_ticks = (uint16_t)span;
         pair->vss = raw_capture_at(vss, after, vss_timeout_ticks);
         if (pair->vss.state == LFJ8_VSS_VALID) {
             pair->vss_at_tml0 = vss->last_edge;

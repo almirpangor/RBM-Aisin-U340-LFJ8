@@ -101,7 +101,7 @@ static void publish_captures(void)
     capture_irq(0xAA50, 500u);
     capture_irq(0xA9EC, *timer - 20u);
     capture_irq(0xAA50, 580u);
-    MMIO32(0x800FE0) = 600u;
+    MMIO32(0x800FE0) = 592u; /* The first release advances both counters to the sample. */
     if (!unexpected && BOOT_CASE != STOCK &&
         (!rbm_h03_sensor_state.s51.primed || !rbm_h03_sensor_state.s83.primed)) {
         unexpected = 1;
@@ -396,6 +396,7 @@ const Lfj8H03ApplicationBinding rbm_h03_application_binding = {
 static void next_phase(void)
 {
     *timer += 8u;
+    MMIO32(0x800FE0) += 8u;
     fixture_publish_first_phase();
     fixture_run_wait();
     fixture_run_foreground();

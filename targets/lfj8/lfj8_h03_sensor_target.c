@@ -3,11 +3,17 @@
 #include "lfj8_h03_input_lifecycle.h"
 #include "lfj8_h03_mmio.h"
 
-static void revoke_locked(void)
+static void clear_clock_epoch_locked(void)
 {
     rbm_h03_tml0_1mhz_qualified = 0u;
     ++rbm_h03_sensor_state.feed.epoch;
     rbm_h03_sensor_state.feed.epoch_seen = 0u;
+    rbm_h03_sensor_state.feed.tml1_offset_seen = 0u;
+}
+
+static void revoke_locked(void)
+{
+    clear_clock_epoch_locked();
     lfj8_9e1c_raw_vss_init(&rbm_h03_sensor_state.s51);
     lfj8_9e1c_raw_nt_init(&rbm_h03_sensor_state.s83);
     lfj8_h03_atf_init(&rbm_h03_atf_state);
@@ -71,6 +77,10 @@ Lfj8H03SensorResult rbm_h03_sensor_foreground(uint8_t standstill_confirmed,
     };
     const Lfj8H03SensorResult result = lfj8_h03_sensor_feed_snapshot(
         &rbm_h03_sensor_state.feed, &sources, io, &rbm_h03_sensor_config, clock, snapshot);
+    if (qualified && result == LFJ8_H03_SENSOR_CLOCK_UNAVAILABLE) {
+        /* Feed already cleared the raw producers under the same exclusion. */
+        clear_clock_epoch_locked();
+    }
     io->leave(io->context, saved);
     return result;
 }
