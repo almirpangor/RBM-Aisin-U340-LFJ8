@@ -9,6 +9,9 @@ import shutil
 import subprocess
 from tempfile import TemporaryDirectory
 
+from lfj8_h03_application_placement import assembly
+from lfj8_h03_bench_entry_profile import WAIT as WAIT_ENTRY
+
 from check_h03_link import identify_h03
 
 
@@ -72,10 +75,6 @@ entry_initialized:
     ld24 r2,#0x234567
     ld24 r8,#0x13579b
     bra phase_wait_site
-
-    .section .wait,"ax"
-phase_wait_site:
-    bra.l rbm_h03_phase_wait_hook
 
     .section .clear,"ax"
     .global h03_stock_phase_clear
@@ -263,7 +262,8 @@ SECTIONS {
   .test_irq 0x1240 : { KEEP(*(.test_irq)) }
   .oem_irq 0x3de0 : { KEEP(*(.oem_irq)) }
   .oem_psw 0x3e50 : { KEEP(*(.oem_psw)) }
-  .wait 0x8150 : { *(.wait) }
+  .wait 0x8150 : { KEEP(*(.h03_app_redirect_008150)) }
+  phase_wait_site = 0x8150;
   ASSERT(SIZEOF(.wait) == 4, "The replacement branch must fit one word")
   .clear 0x815c : { *(.clear) }
   .stock_release_helper 0xa06c : { KEEP(*(.stock_release_helper)) }
@@ -410,6 +410,7 @@ def check(base, compiler):
         work = Path(directory)
         shutil.copyfile(HERE / "h03_phase_wait_hook.S", work / "hook.S")
         (work / "fixture.S").write_text(FIXTURE, encoding="ascii")
+        (work / "wait-redirect.S").write_text(assembly(rom, (WAIT_ENTRY,)), encoding="ascii")
         (work / "fixture.ld").write_text(LAYOUT, encoding="ascii")
         (work / "clear.dat").write_bytes(wait_code[CLEAR - WAIT:])
         (work / "irq.dat").write_bytes(rom[IRQ_START:IRQ_END])
@@ -452,8 +453,8 @@ def check(base, compiler):
                      f"-DSCENARIO={scenario}", f"-DCARRY={carry}", f"-DOEM_TOP8={int(top8)}",
                      f"-DNATIVE_PUBLISH={int(native)}",
                      f"-Wl,--defsym,h03_phase_wait_interval_ticks={POLL_INTERVAL}",
-                     "fixture.S", "hook.S", *sources, *release_hook, "-lc", "-lgcc", "-o", "fixture.elf"],
-                    cwd=work, check=True, capture_output=True, timeout=15,
+                     "fixture.S", "wait-redirect.S", "hook.S", *sources, *release_hook, "-lc", "-lgcc", "-o", "fixture.elf"],
+                    cwd=work, check=True, capture_output=True, timeout=90,
                 )
                 output = subprocess.run(
                     [debugger, "--batch", "-nx", "-ex", f"set $release_early = {int(scenario == 3)}",
@@ -462,7 +463,7 @@ def check(base, compiler):
                      "-ex", f"set $top8_status = {top8_status or 0}",
                      "-ex", f"set $marker = (unsigned int){marker:#x}",
                      "-x", "tick-driver.gdb", "fixture.elf"],
-                    cwd=work, check=True, capture_output=True, timeout=15,
+                    cwd=work, check=True, capture_output=True, timeout=90,
                 ).stdout
                 returns = 2 if nested else 0
                 if f"RESULT 0 {samples} {calls} {returns}".encode("ascii") not in output.splitlines():

@@ -13,6 +13,7 @@ from check_h03_link import TARGET, identify_h03
 from check_h03_sensor_native import SITES as SENSOR_SITES
 from check_h03_phase_wait import IRQ_START, IRQ_END, PSW_HELPERS_START, PSW_HELPERS_END
 import lfj8_h03_application_placement as application_placement
+from lfj8_h03_bench_entry_profile import WAIT
 from lfj8_h03_layout import PROFILES, read_elf
 
 
@@ -110,14 +111,12 @@ reset_dispatch:
     .section .h03_app_redirect_00814c,"ax"
     .incbin "startup_call.dat"
 #endif
-    .section .first_wait,"ax"
-wait_site:
 #if BOOT_CASE == 0
-    .incbin "first_wait.dat"
-#else
-    bra.l rbm_h03_phase_wait_hook
-    .incbin "first_wait.dat",4,12
+    .section .h03_app_redirect_008150,"ax"
+    .incbin "first_wait.dat",0,4
 #endif
+    .section .first_wait,"ax"
+    .incbin "first_wait.dat",4,12
     .section .after_wait,"ax"
     bra.l fixture_after_wait
 
@@ -367,7 +366,7 @@ SECTIONS = (
     ("header_marker", 0x8000),
     ("handoff", 0x8084),
     ("startup", 0x8104),
-    ("first_wait", 0x8150),
+    ("first_wait", 0x8154),
     ("after_wait", 0x8160),
     ("input_return", 0x8170),
     ("mock_adc", 0x9FF4),
@@ -387,11 +386,12 @@ def verify_application_branches(rom, elf):
     sections = {section["name"]: section for section in elf["sections"]}
     symbols = elf["symbols"]
     sites = (
-        (".first_wait", 0x8150, 0xFF, "rbm_h03_phase_wait_hook"),
         (".s51_irq", 0xAA0C, 0xFF, "rbm_h03_s51_capture_hook"),
         (".s83_irq", 0xAA70, 0xFF, "rbm_h03_s83_capture_hook"),
     )
-    installed = application_placement.verify_linked(rom, elf, (BOOT_WINDOW,))
+    installed = application_placement.verify_linked(
+        rom, elf, (BOOT_WINDOW,), redirects=(*application_placement.REDIRECTS, WAIT),
+        stock_symbols={**application_placement.STOCK_SYMBOLS, "h03_stock_phase_clear": 0x815C})
     placed = {f"{patch['address']:#08x}": f"{patch['target']:#08x}" for patch in installed}
     for section_name, site, opcode, hook in sites:
         section = sections[section_name]
@@ -415,7 +415,9 @@ def check(base, compiler, controller=None):
     rom = base.read_bytes()
     if sha256(rom).hexdigest() != identity["sha256"]:
         raise ValueError("H03 changed while preparing the startup fixture")
-    redirects = application_placement.assembly(rom)
+    entry_sites = (*application_placement.REDIRECTS, WAIT)
+    entry_windows = application_placement.redirect_windows(entry_sites)
+    redirects = application_placement.assembly(rom, entry_sites)
     for address, name, stock in SENSOR_SITES:
         if rom[address:address + 4].hex() != stock:
             raise ValueError(f"Unexpected {name} capture store at {address:#x}")
@@ -454,7 +456,7 @@ def check(base, compiler, controller=None):
             (name, address, f"KEEP(*(.{name}))") for name, address in SECTIONS
         ] + [
             (window.name[1:], window.start, f"KEEP(*({window.name}))")
-            for window in application_placement.REDIRECT_WINDOWS
+            for window in entry_windows
         ] + [
             (f"mock_{address:x}", address, f"KEEP(*(.mock_{address:x}))") for address in STUBS
         ] + [
@@ -469,13 +471,14 @@ def check(base, compiler, controller=None):
                                  for name, address in application_placement.STOCK_SYMBOLS.items())
         fixed_layout = "".join(
             f'  ASSERT(SIZEOF({window.name}) == 4, "H03 redirect must occupy one word")\n'
-            for window in application_placement.REDIRECT_WINDOWS)
+            for window in entry_windows)
         (work / "boot.ld").write_text(
             f"ENTRY(_start)\nSECTIONS {{\n{layout}\n"
             "  .bss : { *(.bss .bss.*) }\n"
             f"{native_symbols}{fixed_layout}"
             "  input_site = 0x816c;\n"
             "  release_site = 0x40424;\n"
+            "  wait_site = 0x8150;\n"
             "  h03_stock_phase_clear = 0x815c;\n"
             "  h03_phase_wait_ticks = 0x8003e0;\n"
             "  h03_phase_wait_interval_ticks = 2;\n"

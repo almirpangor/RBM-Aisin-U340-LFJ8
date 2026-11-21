@@ -34,7 +34,11 @@ STOCK_SYMBOLS = {
     "h03_stock_foreground_inputs": 0x040324,
     "h03_stock_phase_release": 0x040468,
 }
-REDIRECT_WINDOWS = tuple(Window(site.section, site.address, site.address + 4) for site in REDIRECTS)
+def redirect_windows(redirects):
+    return tuple(Window(site.section, site.address, site.address + 4) for site in redirects)
+
+
+REDIRECT_WINDOWS = redirect_windows(REDIRECTS)
 
 
 def assembly(rom, redirects=REDIRECTS):
@@ -50,15 +54,15 @@ def assembly(rom, redirects=REDIRECTS):
     return "\n".join(parts) + "\n"
 
 
-def fixed_redirects(flash):
+def fixed_redirects(flash, *, redirects=REDIRECTS):
     """Place the four words at OEM addresses before packing regular Flash."""
-    windows = {window.name: window for window in REDIRECT_WINDOWS}
-    redirects = [section for section in flash if section["name"] in windows]
-    if {section["name"] for section in redirects} != windows.keys() or len(redirects) != len(windows):
+    windows = {window.name: window for window in redirect_windows(redirects)}
+    sections = [section for section in flash if section["name"] in windows]
+    if {section["name"] for section in sections} != windows.keys() or len(sections) != len(windows):
         raise ValueError("Expected exactly one section for each H03 application redirect")
 
     fixed = []
-    for section in redirects:
+    for section in sections:
         if (section["type"], section["size"], section["alignment"], section["flags"]) != (1, 4, 4, 6):
             raise ValueError(f"Invalid H03 application redirect section: {section['name']}")
         window = windows[section["name"]]
@@ -69,20 +73,20 @@ def fixed_redirects(flash):
         section for section in flash if section["name"] not in windows]
 
 
-def verify_linked(rom, elf, code_windows):
+def verify_linked(rom, elf, code_windows, *, redirects=REDIRECTS, stock_symbols=STOCK_SYMBOLS):
     """Validate the exact linked words and stock continuations before overlay."""
     sections = {}
     for section in elf["sections"]:
         if section.get("flags", 0) & 2:
             sections.setdefault(section["address"], []).append(section)
     symbols = elf["symbols"]
-    for name, address in STOCK_SYMBOLS.items():
+    for name, address in stock_symbols.items():
         symbol = symbols.get(name, {})
         if (symbol.get("section"), symbol.get("address")) != (0xFFF1, address):
             raise ValueError(f"Unexpected H03 application continuation: {name}")
 
     patches = []
-    for site in REDIRECTS:
+    for site in redirects:
         located = sections.get(site.address, [])
         section = located[0] if len(located) == 1 else {}
         symbol = symbols.get(site.hook, {})

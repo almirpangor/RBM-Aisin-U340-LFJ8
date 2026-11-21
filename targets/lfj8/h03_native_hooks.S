@@ -10,6 +10,10 @@
 
 #include "h03_native_hooks.h"
 
+#if defined(RBM_H03_TARGET_ENTRY_ONLY) && defined(RBM_H03_ALLOW_LEGACY_BENCH)
+#error "Converted target entry cannot also permit legacy Mazda dispatch"
+#endif
+
 #if defined(RBM_H03_ALLOW_LEGACY_BENCH) && RBM_H03_ALLOW_LEGACY_BENCH == 1
 #define H03_LEGACY_BENCH_ENABLED 1
 #endif
@@ -49,6 +53,10 @@
 rbm_h03_strategy_hook:
     save_context
     bl rbm_h03_strategy_callback
+#ifdef RBM_H03_TARGET_ENTRY_ONLY
+    restore_context
+    jmp lr
+#else
     ldi r1,#RBM_H03_HOOK_OEM
     beq r0,r1,.Lstrategy_arbiter
 #ifdef H03_LEGACY_BENCH_ENABLED
@@ -64,6 +72,7 @@ rbm_h03_strategy_hook:
     restore_context
     bra h03_stock_strategy
 #endif
+#endif
     .size rbm_h03_strategy_hook,.-rbm_h03_strategy_hook
 
     .section .text.rbm_h03_commit_hook,"ax",@progbits
@@ -73,6 +82,10 @@ rbm_h03_strategy_hook:
 rbm_h03_commit_hook:
     save_context
     bl rbm_h03_commit_callback
+#ifdef RBM_H03_TARGET_ENTRY_ONLY
+    restore_context
+    jmp lr
+#else
     ldi r1,#RBM_H03_HOOK_OEM
     beq r0,r1,.Lcommit
 #ifdef H03_LEGACY_BENCH_ENABLED
@@ -83,4 +96,5 @@ rbm_h03_commit_hook:
 .Lcommit:
     restore_context
     bra h03_stock_commit
+#endif
     .size rbm_h03_commit_hook,.-rbm_h03_commit_hook

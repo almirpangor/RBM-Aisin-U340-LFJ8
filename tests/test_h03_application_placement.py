@@ -6,6 +6,7 @@ from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "targets/lfj8"))
 import lfj8_h03_application_placement as placement
+import lfj8_h03_bench_entry_profile as bench
 from lfj8_h03_layout import Window
 from tools import check_h03_image_layout as common_layout
 
@@ -106,6 +107,34 @@ class ApplicationPlacementTest(unittest.TestCase):
     def test_common_link_requires_an_explicit_application_profile(self):
         with self.assertRaisesRegex(ValueError, "require --application-profile"):
             common_layout.build(SimpleNamespace(with_application_entries=True))
+
+    def test_bench_profile_holds_all_seven_sites_and_checks_the_oem_graph(self):
+        rom = bytearray(0x80000)
+        for address, (word, _) in bench.RETAINED_PACKETS.items():
+            rom[address:address + 4] = bytes.fromhex(word)
+        sections = []
+        for site in bench.REDIRECTS:
+            rom[site.address:site.address + 4] = bytes.fromhex(site.stock_word)
+            sections.append({"name": site.section, "type": 1, "flags": 6, "size": 4, "alignment": 4})
+        source = bench.redirect_source(rom)
+        self.assertEqual(len(bench.ROOTS), 7)
+        self.assertTrue(all(root in source for root in bench.ROOTS))
+        fixed, remaining = placement.fixed_redirects(sections, redirects=bench.REDIRECTS)
+        self.assertEqual([item["address"] for item in fixed], [site.address for site in bench.REDIRECTS])
+        self.assertFalse(remaining)
+        rom[0x036EBC] ^= 1
+        with self.assertRaisesRegex(ValueError, "control-path word at 0x036ebc"):
+            bench.redirect_source(rom)
+
+    def test_bench_wait_interval_is_explicit_and_fits_the_relocation(self):
+        self.assertNotIn(bench.INTERVAL_SYMBOL, bench.STOCK_SYMBOLS)
+        symbols = bench.qualified_stock_symbols(20, 30)
+        self.assertEqual(symbols[bench.INTERVAL_SYMBOL], 20)
+        self.assertEqual(symbols["h03_phase_wait_ticks"], 0x8003E0)
+        for interval, maximum in ((None, 30), (0, 30), (31, 30), (0x1000000, 0x1000000)):
+            with self.subTest(interval=interval, maximum=maximum):
+                with self.assertRaisesRegex(ValueError, "TML0CT tick count"):
+                    bench.qualified_stock_symbols(interval, maximum)
 
     def test_rejects_changed_continuation(self):
         self.elf["symbols"]["h03_stock_application_after_entry"]["address"] += 4

@@ -3,9 +3,10 @@
  * configuration and PSW control bits intact. The linker supplies an aligned
  * running 32-bit clock address and an interval in [1, 0xffffff] ticks.
  * The callback uses the M32R C ABI, including preservation of r8. */
-    .text
+    .section .text.rbm_h03_phase_wait_hook,"ax",@progbits
     .p2align 2
     .global rbm_h03_phase_wait_hook
+    .type rbm_h03_phase_wait_hook,@function
 rbm_h03_phase_wait_hook:
     /* The OEM clear overwrites r0 and leaves r4 holding the flag address. */
     push r8
@@ -57,3 +58,4 @@ rbm_h03_phase_wait_tick_sample:
 
     ld24 r4,#0x804ade
     bra h03_stock_phase_clear
+    .size rbm_h03_phase_wait_hook,.-rbm_h03_phase_wait_hook
