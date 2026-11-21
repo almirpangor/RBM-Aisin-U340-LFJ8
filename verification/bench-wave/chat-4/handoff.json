@@ -1,0 +1,174 @@
+{
+  "chat": "4",
+  "primary_task": "TOY-02",
+  "related_tasks": [
+    "TOY-03",
+    "CAN-05"
+  ],
+  "branch": "codex/toy02-load-evidence-01a1f9c7",
+  "base": "3fe28938163e1dddc98a37733c229390ab7f0fff",
+  "commit": "59e3ae345c7678f54d055848dc967b5314074520",
+  "commit_scope": "Исполняемая реализация и проверочные скрипты. Точный SHA сдачи, включая этот handoff, находится в записи review.",
+  "entry_points": [
+    {
+      "name": "lfj8_h03_bench_input_rx_locked",
+      "owner": "DTC-02 BasicCAN stable copy",
+      "status": "implemented; common dispatcher call still required"
+    },
+    {
+      "name": "lfj8_h03_bench_input_reset_locked",
+      "owner": "H03 target initialization",
+      "status": "implemented, included by profile fragment"
+    },
+    {
+      "name": "lfj8_h03_bench_input_take",
+      "owner": "rbm_h03_target_take_toyota capture",
+      "status": "real native target object compiles against this callback"
+    },
+    {
+      "name": "lfj8_h03_bench_input_load_ready_locked",
+      "owner": "H03-03 acquisition before first Toyota release",
+      "status": "implemented readiness query; schedule integration pending"
+    }
+  ],
+  "profile": {
+    "include": "targets/lfj8/lfj8_h03_bench_input_profile.h",
+    "binding_sources": [
+      "targets/lfj8/lfj8_h03_load_raw.c",
+      "targets/lfj8/lfj8_h03_bench_input.c"
+    ],
+    "wire": "0x6B2 standard 8-byte data frame; payload version 1, three u16 BE words and a rolling sequence",
+    "units": {
+      "bosch_raw": "native uint16 counts; unsigned transported as-is",
+      "gp_load": "signed16 donor S01 raw; normalized at consumer /11010 with range 0..25600",
+      "time": "wrapping qualified TML0 microseconds; CAN RX age in hardware bits times qualified bit_time_us",
+      "local_inputs": "GP-5722 low 4-bit mask and native GP-5250 bit2, qualified separately per source"
+    },
+    "configured_without_fixture": false,
+    "timing": "release profile must justify producer_bound_us, max_age_us, max_can_age_bits, bit_time_us and driver_max_age_us; test values remain in fixture"
+  },
+  "sources": {
+    "s01": {
+      "sha256": "a3cd723e7e21bf547ca4c17ec49a1e098d203773547dba4d7af21991a2cbead1",
+      "first_party_source": "pinned R1 ROM and R3 instruction groups",
+      "writer_table": "raw-source-contract.md"
+    },
+    "bosch": {
+      "s04_sha256": "e25a1c97492ae556b1a52043e6ae85b88d2da86c03a78ef01dc2151c8a0a4a2a",
+      "addresses": {
+        "9680": "059D6A–059DBE",
+        "F8D6": "04889E–04894E, 048928 saturated sum, alternate 0C1E80–0C1E98",
+        "F4686": "physical word read by existing diagnostic R4 consumer; update writer still open",
+        "mode": "A88B.0→PSW.6 at 048878–048886; T2.5 selects Bosch operand",
+        "relative_tps_candidate": "F85C, 041722/041816; cross-engine scale and state unknown"
+      }
+    }
+  },
+  "checks": [
+    {
+      "command": "python -B controller/build_target.py m32r --cc $gcc --out local/bench4/controller",
+      "result": "PASS M32R controller and existing numerical runtime"
+    },
+    {
+      "command": "python -B verification/bench-wave/chat-4/check_native_capture.py --gcc $gcc --controller $controller --out local/bench4/final",
+      "result": "PASS compile target_platform with native profile instead of test_input_capture; run stable RX→native capture→signed GP publisher with M32R MMIO model; reject short, duplicate, invalid flags, CAN age/future, old local data, refused conversion, bus-off and wrong generation/epoch",
+      "report_sha256": "765bd870b96762b5e5b0fd4669c9738555bbbe0fc3e46b7ac0fd663b39333f9a"
+    },
+    {
+      "command": "python -B controller/build.py --cc $zig --out local/bench4/host; compile test_lfj8_h03_bench_input.c and the listed capture/BasicCAN sources with Zig cc -std=c11 -Os and link rbm_u340e.dll, then run local/bench4/host/input-host.exe",
+      "sources": [
+        "test_lfj8_h03_bench_input",
+        "lfj8_h03_bench_input",
+        "lfj8_h03_load_raw",
+        "lfj8_h03_input_binding",
+        "lfj8_h03_can_owner",
+        "lfj8_h03_atf_tml0",
+        "lfj8_h03_button_capture",
+        "lfj8_donor_io",
+        "lfj8_selector_adc",
+        "lfj8_range_control",
+        "lfj8_h03_dtc_rx_queue",
+        "lfj8_h03_dtc_foreground",
+        "lfj8_h03_can13",
+        "lfj8_h03_dtc_can",
+        "lfj8_h03_torque_can",
+        "lfj8_h03_torque",
+        "lfj8_chery_tx",
+        "lfj8_bridge",
+        "diagnostics/chery_*.c"
+      ],
+      "result": "PASS Windows host DLL, GP capture replay including negative cases",
+      "log_sha256": "be098400e89496eff58ab86b36818f76258402f05626f4bd28ede74496b3deee"
+    },
+    {
+      "command": "python -B verification/bench-wave/chat-4/check_load_boundary.py --r1 $r1 --r3 $r3 --r4 $r4 --out local/bench4/s01-boundary.json",
+      "result": "PASS all 8 word writers and mode set1, 198 pinned S01 instructions and independent-variable witnesses; two pinned traces have no paired GP/native Bosch samples",
+      "report_sha256": "e27ff60e46979c30d674f4844f107f8fc9c26a6cf2bddbb6d0b03f132b151424"
+    },
+    {
+      "command": "python -B targets/bosch/audit_bosch_signal_transport.py --engine $r4Engine --s04 $s04 --model $c167Model",
+      "result": "SOURCE_AUDIT_OFFLINE_ONLY, existing Chery transport is many-to-one",
+      "report_sha256": "f5178d8d676dbe162b961f0d390751702d2ae122b00dc1cf0ef0f06980097a24"
+    },
+    {
+      "command": "python -B targets/bosch/audit_toyota_load_producers.py --rev8 $pinnedRev8 --s04 $s04 --model $c167Model",
+      "result": "SOURCE_AUDIT_OFFLINE_ONLY, 9 matching windows, variable load mode and correction reproduced",
+      "report_sha256": "97e7cb3f2b3dda9fe0618abf709adf9c93ad47a319c6ea6efdbeae11fdac2e9f"
+    },
+    {
+      "command": "python -B targets/lfj8/build.py --output local/bench4/bridge --m32r-cc $gcc --base-9e1c $h03; python -B targets/lfj8/check_h03_target_platform.py --base $h03 --gcc $gcc --controller $controller --bridge $bridge --out local/bench4/target-platform.json",
+      "result": "PASS existing normal and manual target platform, native startup, CAN service lifecycle, Toyota rollover/hold/S1/S2 and revoke",
+      "report_sha256": "be8ef0e9683abcfc0445cb093eb0ffeafa13704621ebc0bd4db4de48c21d7087"
+    },
+    {
+      "command": "python -B -m unittest discover -s tests -p test_h03_image.py",
+      "result": "12 PASS on 3fe2893"
+    }
+  ],
+  "memory": {
+    "unplaced_object_flash_bytes": {
+      "lfj8_h03_load_raw": 712,
+      "lfj8_h03_bench_input": 1284,
+      "profile_capture_descriptor": 20
+    },
+    "profile_ram_state_bytes": 144,
+    "raw_rx_state_within_profile_bytes": 32,
+    "stack_own_frames_bytes": {
+      "raw_decode": 36,
+      "native_rx_wrapper": 48,
+      "native_read": 68,
+      "native_take_wrapper": 40,
+      "live_epoch": 20
+    },
+    "scope": "Prologues and section sizes from M32R GCC 4.8.0 medium model; no final placement, unresolved provider frames, interrupt nesting and profile inlines excluded from total."
+  },
+  "dependencies": [
+    {
+      "owner": "ECU-01/CAN-05 (чат 8)",
+      "work": "Добавить timed coherent raw producer 0x6B2, проверить нативное обновление F4686/флаг готовности, подтвердить период и верхнюю задержку."
+    },
+    {
+      "owner": "DTC-02 (чат 10)",
+      "work": "Передавать стабильную упорядоченную копию выбранного 0x6B2 до OEM ACK с уже измеренной парой часов. Оставить 0x732 по DTC."
+    },
+    {
+      "owner": "TOY-03/CAN-01, MODE-02",
+      "work": "Независимые GP−5722/−5250.2, решённые driver/phase, окна AN2 и карта P1 для read_local."
+    },
+    {
+      "owner": "H03-03/интегратор",
+      "work": "Подключить fragment/owned RAM и подготовку CAN до первого Toyota release, сохранив watchdog и отсчёт после допуска."
+    }
+  ],
+  "software_blockers": [
+    "Нужен доказанный project_load: signed GP−9044 из двух ветвей, GP−9030 и нижние/верхние пределы, отдельный GP−5299.1. Сырые поля доступны, но ещё не определяют любое из этих независимых состояний.",
+    "Нативный dispatch/издатель, профиль времени и указанное упорядочивание запуска ещё не присутствуют в общем ELF.",
+    "Размеры объектов не подтверждают общий linker fit. Существующий пакет требует общей интеграции других owners; в этой ветке тестовые объекты не идут в профиль."
+  ],
+  "post_flash_measurements": [
+    "Синхронизированные отсчёты F8D6/F4686/9680, A88B/T2 и относительный F85C, известный TPS/RPM/ECT и соответствующие S01 GP на установившихся режимах, наборе, сбросе и перезапуске.",
+    "Проверка границ длительности и пропусков кадра, направления и независимых межблокировок H03. Подтвердить ID 0x6B2, периоды и задержки на живой шине."
+  ],
+  "hardware_tested": false,
+  "flashable_image": null
+}
