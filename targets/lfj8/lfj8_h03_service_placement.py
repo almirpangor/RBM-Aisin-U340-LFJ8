@@ -31,6 +31,7 @@ WRITER_SITES = (
     Site(0x2E9C, 0xA00A0008, "rbm_h03_service_close_hook"),
 )
 LOCKOUT = Site(0x3568, 0xB810000B, "h03_service_disable_virtual_flash")
+DMA4_GUARD = Site(0xCF0C, 0x2E7F2A7F, "rbm_h03_dma4_guard")
 SITES = (*WRITER_SITES, LOCKOUT)
 STOCK_TARGETS = {
     "h03_service_direct_after_entry": 0x2928,
@@ -43,6 +44,14 @@ GUARD_SECTION = ".service_guard"
 SPLIT_MODEL_WINDOWS = ((0x020000, 0x030000), (0x07C118, 0x07FFFC))
 MONITOR_STATE = (0x808578, 0x808DB4)
 CONDITIONAL_STACK_AND_PSW = (0x809700, 0x80A000)
+
+
+def redirect_sites(dma4_guard=False):
+    return (*SITES, DMA4_GUARD) if dma4_guard else SITES
+
+
+def stock_targets(dma4_guard=False):
+    return dict(STOCK_TARGETS, h03_dma4_after_entry=DMA4_GUARD.address + 4) if dma4_guard else STOCK_TARGETS
 
 
 def verify_stock(rom, sites=SITES):
@@ -70,9 +79,9 @@ def policy_source(ranges):
             f'    .count = {len(ranges)},\n    .ranges = {{\n{entries}\n    }}\n}};\n')
 
 
-def stage_sources(stage, ranges):
+def stage_sources(stage, ranges, dma4_guard=False):
     assembly = []
-    for site in SITES:
+    for site in redirect_sites(dma4_guard):
         mnemonic = "bl.l" if site.opcode == 0xFE else "bra.l"
         assembly.extend((f'.section {site.section},"ax",@progbits',
                          f"    {mnemonic} {site.target}"))
@@ -80,37 +89,42 @@ def stage_sources(stage, ranges):
     (stage / "service-policy.c").write_text(policy_source(ranges), encoding="ascii")
 
 
-def linker_sections():
+def linker_sections(dma4_guard=False):
     sites = "\n".join(f"  {site.section} {site.address:#x} : {{ KEEP(*({site.section})) }}"
-                      for site in SITES)
+                      for site in redirect_sites(dma4_guard))
+    dma4 = "    dma4-guard.o(.text .text.*)\n" if dma4_guard else ""
     guard = (f"  {GUARD_SECTION} : {{\n"
              "    service-hooks.o(.text .text.*)\n"
+             f"{dma4}"
              "    service-guard.o(.text .text.* .rodata .rodata.*)\n"
              "    service-policy.o(.rodata .rodata.*)\n  }")
     return sites, guard
 
 
-def linker_targets():
-    return "\n".join(f"{name} = {address:#x};" for name, address in STOCK_TARGETS.items())
+def linker_targets(dma4_guard=False):
+    return "\n".join(f"{name} = {address:#x};" for name, address in stock_targets(dma4_guard).items())
 
 
-def verify_and_overlay(rom, elf_path, ranges):
+def verify_and_overlay(rom, elf_path, ranges, dma4_guard=None):
     """Return simulator ROM bytes and verified placement metadata from the linked ELF."""
-    verify_stock(rom)
     elf = read_elf(elf_path, 2)
     if any(section["type"] in (4, 9) and section["size"] for section in elf["sections"]):
         raise ValueError("H03 service ELF contains unresolved relocations")
     sections = sorted(alloc_sections(elf), key=lambda entry: entry["address"])
     by_name = {section["name"]: section for section in sections}
     symbols = elf["symbols"]
+    if dma4_guard is None:
+        dma4_guard = DMA4_GUARD.section in by_name or DMA4_GUARD.target in symbols
+    redirects = redirect_sites(dma4_guard)
+    verify_stock(rom, redirects)
     if GUARD_SECTION not in by_name:
         raise ValueError("Linked H03 service guard is missing")
     guard = by_name[GUARD_SECTION]
     sites = {}
-    for name, address in STOCK_TARGETS.items():
+    for name, address in stock_targets(dma4_guard).items():
         if symbols.get(name, {}).get("address") != address:
             raise ValueError(f"Wrong H03 service continuation: {name}")
-    for site in SITES:
+    for site in redirects:
         target = symbols.get(site.target, {})
         destination = target.get("address", -1)
         if site != LOCKOUT and (target.get("section") != guard["index"] or
@@ -148,5 +162,6 @@ def verify_and_overlay(rom, elf_path, ranges):
     report = {"elf_sha256": elf["sha256"], "guard_address": hex(guard["address"]),
               "guard_bytes": guard["size"], "policy_ranges": [[hex(a), hex(b)] for a, b in ranges],
               "sites": list(sites.values()), "target_ownership_verified": False,
+              "dma4_guard_included": dma4_guard,
               "requires_lower_rom_installation": True}
     return bytes(overlay), report

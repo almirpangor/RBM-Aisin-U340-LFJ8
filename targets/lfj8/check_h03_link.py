@@ -156,7 +156,7 @@ def check_shared_tables(stage, compiler, run, elf):
 
 
 def check_split_layout(stage, compiler, run, base, primary_objects, extension_objects, extension_roots,
-                       service_ranges=None):
+                       service_ranges=None, dma4_guard=False):
     """Link independent CAN modules into a second read-only window for sizing."""
     rom = base.read_bytes()
     if rom[TAIL_START:TAIL_END] != b"\xff" * (TAIL_END - TAIL_START):
@@ -168,20 +168,24 @@ def check_split_layout(stage, compiler, run, base, primary_objects, extension_ob
     primary_text = hex(FLASH_START)
     service_objects = []
     if service_ranges is not None:
-        service.verify_stock(rom)
-        service.stage_sources(stage, service_ranges)
-        sites, guard = service.linker_sections()
+        service.verify_stock(rom, service.redirect_sites(dma4_guard))
+        service.stage_sources(stage, service_ranges, dma4_guard)
+        sites, guard = service.linker_sections(dma4_guard)
         guard = f"  . = {FLASH_START:#x};\n{guard}"
-        targets = service.linker_targets()
+        targets = service.linker_targets(dma4_guard)
         primary_text = "ADDR(.service_guard) + SIZEOF(.service_guard)"
         for source in ("h03_service_guard_hooks.S", "lfj8_h03_service_guard.c", "lfj8_h03_service_guard.h"):
             shutil.copyfile(HERE / source, stage / source)
-        for source, obj in (
+        objects = [
             ("service-sites.S", "service-sites.o"),
             ("h03_service_guard_hooks.S", "service-hooks.o"),
             ("lfj8_h03_service_guard.c", "service-guard.o"),
             ("service-policy.c", "service-policy.o"),
-        ):
+        ]
+        if dma4_guard:
+            shutil.copyfile(HERE / "h03_dma4_guard.S", stage / "h03_dma4_guard.S")
+            objects.append(("h03_dma4_guard.S", "dma4-guard.o"))
+        for source, obj in objects:
             run(compiler, *TARGET, "-Os", "-std=c11", "-ffreestanding", "-fno-builtin", "-fno-common",
                 "-ffunction-sections", "-fdata-sections", "-I.", "-c", source, "-o", obj)
             service_objects.append(obj)
@@ -217,8 +221,8 @@ ASSERT(SIZEOF(.data) == 0 && SIZEOF(.bss) == 0, "Unexpected writable static stat
     ranges = ((FLASH_START, FLASH_END), (TAIL_START, TAIL_END))
     placement = None
     if service_ranges is not None:
-        _, placement = service.verify_and_overlay(rom, stage / "split.elf", service_ranges)
-        ranges += tuple((site.address, site.address + 4) for site in service.SITES)
+        _, placement = service.verify_and_overlay(rom, stage / "split.elf", service_ranges, dma4_guard)
+        ranges += tuple((site.address, site.address + 4) for site in service.redirect_sites(dma4_guard))
     if linked["relocations"] or any(flags & 1 or not any(lo <= address and address + size <= hi
                                    for lo, hi in ranges) for address, size, flags in allocated):
         raise ValueError("Split layout has an unresolved relocation or unexpected allocation")
@@ -288,8 +292,10 @@ def stage_test(stage, engine_payloads):
 
 
 def check(base, bridge, controller, compiler, simulator_output, bosch_trace=None,
-          address_model_output=None, service_storage_report=None):
+          address_model_output=None, service_storage_report=None, dma4_guard=False):
     report = {"source": identify_h03(base), "artifact_kind": "address_model_and_cpu_test"}
+    if dma4_guard and service_storage_report is None:
+        raise ValueError("The DMA4 guard requires --service-storage-report")
     service_ranges = None
     if service_storage_report is not None:
         from check_h03_service_isolation import storage_blocks
@@ -435,6 +441,7 @@ ASSERT(SIZEOF(.bss) == 0, "Unexpected writable static state")
         report["split_address_model"] = check_split_layout(
             stage, compiler, run, base, ("combined.o", "takeover.o"),
             dtc_objects + can_extension_objects, DTC_ROOTS + CAN_EXTENSION_ROOTS, service_ranges,
+            dma4_guard,
         )
         if service_ranges is not None:
             report["split_address_model"]["service_protection"]["storage_report_sha256"] = sha256(raw).hexdigest()
@@ -522,6 +529,8 @@ def main():
     parser.add_argument("--bosch-trace", type=Path, help="optional round-trip JSON from model.run_integrated")
     parser.add_argument("--service-storage-report", type=Path,
                         help="include native service protection for this candidate RAM inventory")
+    parser.add_argument("--with-dma4-guard", action="store_true",
+                        help="also protect the DMA4 setter in the service address model")
     args = parser.parse_args()
     input_paths = {path.resolve() for path in (args.base, args.bridge, args.controller, args.gcc)}
     input_paths.update(path.resolve() for path in (args.bosch_trace, args.service_storage_report) if path is not None)
@@ -535,7 +544,8 @@ def main():
             paths_in_use.add(destination.resolve())
     try:
         report = check(args.base, args.bridge, args.controller, args.gcc.resolve(), args.sim_out,
-                       args.bosch_trace, args.address_model_out, args.service_storage_report)
+                       args.bosch_trace, args.address_model_out, args.service_storage_report,
+                       args.with_dma4_guard)
         report_text = json.dumps(report, indent=2) + "\n"
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(report_text, encoding="utf-8")
