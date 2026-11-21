@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 848,
+  "sequence": 849,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -261,26 +261,21 @@
       "based_on_reviews": []
     },
     "CAN-01": {
-      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Codex CAN-01 — возраст операндов двигателя на Task 2",
-      "branch": "codex/can01-target-engine-1121-c7e4",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex CAN-01 — реальная привязка единственного состояния двигателя",
+      "branch": "codex/can-01-shared-engine-binding-32e6ac79",
       "files": [
-        "targets/lfj8/h03_phase_boot_fixture.c",
-        "targets/lfj8/lfj8_h03_application.c",
-        "targets/lfj8/lfj8_h03_application.h",
-        "targets/lfj8/lfj8_h03_engine_feed.c",
-        "targets/lfj8/lfj8_h03_engine_feed.h",
-        "targets/lfj8/lfj8_h03_engine_rx.c",
-        "targets/lfj8/lfj8_h03_engine_rx.h",
-        "targets/lfj8/test_lfj8_h03_engine_feed.c",
-        "verification/project-audit/can01-h03-operand-age.md"
+        "targets/lfj8/check_h03_can_monitor_revoke.py",
+        "targets/lfj8/lfj8_h03_application_binding.c",
+        "targets/lfj8/lfj8_h03_can_service_placement.py",
+        "verification/project-audit/can01-h03-shared-engine-binding.md"
       ],
-      "stage": "done",
-      "claim_id": "9436326dc3784bbe994f50e6dce8e9c0",
-      "claimed_at": "2026-11-20T21:52:45+00:00",
-      "updated_at": "2026-11-21T07:43:01+00:00",
-      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
-      "result": "368ecd723336eaa20d508e0d0025172ed78cd127",
+      "stage": "in_progress",
+      "claim_id": "77b7b955d10d45b89daaaa5912bd3a82",
+      "claimed_at": "2026-11-21T07:55:08+00:00",
+      "updated_at": "2026-11-21T07:55:08+00:00",
+      "note": "Подключаю rbm_h03_target_engine в явном профиле к типизированным engine_rx, engine_qualifier, общим CAN/DTC и TML0. Пределы и поставщик Task 2 обязательны, без значений по умолчанию.",
+      "result": null,
       "based_on_reviews": []
     },
     "MODE-02": {
@@ -13147,9 +13142,35 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "8800413de6e346f99676e88aaf928c5a",
+      "task": "CAN-01",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "claim",
+      "claim_id": "77b7b955d10d45b89daaaa5912bd3a82",
+      "at": "2026-11-21T07:55:08+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex CAN-01 — реальная привязка единственного состояния двигателя",
+        "branch": "codex/can-01-shared-engine-binding-32e6ac79",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_application_binding.c",
+          "targets/lfj8/lfj8_h03_can_service_placement.py",
+          "verification/project-audit/can01-h03-shared-engine-binding.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "77b7b955d10d45b89daaaa5912bd3a82",
+        "claimed_at": "2026-11-21T07:55:08+00:00",
+        "updated_at": "2026-11-21T07:55:08+00:00",
+        "note": "Подключаю rbm_h03_target_engine в явном профиле к типизированным engine_rx, engine_qualifier, общим CAN/DTC и TML0. Пределы и поставщик Task 2 обязательны, без значений по умолчанию.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:54:48+00:00",
+  "updated_at": "2026-11-21T07:55:08+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
