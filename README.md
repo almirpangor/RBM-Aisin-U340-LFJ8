@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T07:48:17+00:00**. Изменение № **839**.
+Обновлено UTC: **2026-11-21T07:48:26+00:00**. Изменение № **840**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 06ab447e19de0fa7d864e2ae674dff4a29678b10.
 
-**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 5.**
+**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 4.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -33,7 +33,6 @@
 | Задача | Автор | Коммит | Claim ID для приёмки | Результат |
 | --- | --- | --- | --- | --- |
 | CAN-02 | Codex CAN-02 — деградация скорости в телеметрии H03 | [d87bf6438a30](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/d87bf6438a30efd448feb8cac1d732f7d677a20c) | 42353b1fabea40b8834911219b160e52 | При недоступной калибровке S51 нативный H03 отдаёт 0x1AE с FFFF и сохраняет 0x300. Проверены DTC, старое поколение, два профиля M32R, 22 native, 8 components и 41 шаг ПК. Компоновщик занят H03-03. Отчёт can02-h03-telemetry-availability.md. |
-| DTC-01 | Codex DTC-01 — граница RX при тайм-ауте протокола | [0941e55fb9be](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/0941e55fb9be406f3f8d5b3cb7d378aa18205349) | 8c0be7af01f44597abf221073ba948bb | RX прежнего сеанса сбрасывается до обработки тайм-аута TX/FC в CAN13. ПК/M32R, смена поколения, 18 BasicCAN, 22 native и 41 шаг ПК (179 тестов) прошли. DTC-04 совместим; секторы не выделены. |
 | H03-03 | Codex H03-03 common application RAM and CAN service | [a8821975addf](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/a8821975addf933eee8e370085ad645f032442f2) | 0f2e91c7274b44688d2514bece8ba6e8 | Общий линк использует RAM приложения, сервис CAN и TX13. Из прежних семи ссылок остались application_binding и sensor_config. Профиль закрепил 13 алиасов; связанное слово TX13 проверено по общему плану. Прошли ранние IRQ/DMA4, 18 TX13, 53 H03, 22 native, 8 components, 6 размещённых групп и 41 этап ПК. Итоговая сборка ждёт профиля и поставщиков. |
 | MODE-02 | Codex MODE-02 — ручная цель в полном профиле H03 | [9908d956f18c](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9908d956f18cba01fe0ef9c9089dbd81d317fb75) | ec35ff2a13a14818a96ced1510f85588 | Подключена ручная цель через профиль H03 и take_toyota до S01 MAIN. M32R подтвердил удержание, отзыв, S1/S2 и обрыв между релизами в обычной и размещённой моделях. ПК 41 этап и 181 тест, native 22, components 8, размещённое ядро 6. Выпускной профиль, карта P1DATA/OD, поставщик входов и аппаратные измерения ещё нужны. Отчёт verification/project-audit/mode02-native-profile-capture.md. |
 | ORG-01 | Общая сборка 39 результатов | [06ab447e19de](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/06ab447e19de0fa7d864e2ae674dff4a29678b10) | 9a8eca1841da444399a297ba0f3124f0 | 39 порций объединены и проверены; исправлен API RAM-теста. Полная композиция FAIL_BINDINGS/Flash overflow; 2 рабочих BIN не выпущены. Отчёт integration-39-20261121. |
@@ -74,7 +73,7 @@
 | 21 | [MODE-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#mode-01) | Свободна для продолжения | Ручная заявка проходит до гидравлики; дребезг, удержание и восстановление не создают лишнее переключение. | См. входные условия карточки |
 | 22 | [CAN-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#can-04) | Свободна для продолжения | Сквозная передача/отмена запроса момента M32R↔ST10 с контролем давности. | См. входные условия карточки |
 | 23 | [CAN-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#can-02) | Свободна для продолжения; порция на проверке | Нативная общая передача без потери владения и повторного использования старых кадров. | См. входные условия карточки |
-| 24 | [DTC-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#dtc-01) | Свободна для продолжения; порция на проверке | Сеанс и очистка DTC без ложного ACK при отказе носителя; отзыв при reset и потере времени. | См. входные условия карточки |
+| 24 | [DTC-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#dtc-01) | Свободна для продолжения | Сеанс и очистка DTC без ложного ACK при отказе носителя; отзыв при reset и потере времени. | См. входные условия карточки |
 | 25 | [TOY-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#toy-01) | Свободна для продолжения | Повторяемая компоновка общего GP и сравнение полного цикла с закреплённым донором. | См. входные условия карточки |
 | 26 | [ECU-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#ecu-01) | Свободна для продолжения | Один целевой Bosch BIN, manifest/SHA и полный перечень установленных правок. | См. входные условия карточки |
 | 27 | [REL-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/06ab447e19de0fa7d864e2ae674dff4a29678b10/docs/project-map.md#rel-01) | Свободна для продолжения | TCM BIN + Bosch BIN + SHA/manifest, карты правок, применимость и фактические результаты приёмки. | TOY-04, TOY-05, TOY-06, CAN-03, CAN-05, ECU-02, H03-04, H03-05, VSS-02, MODE-02, MODE-03, DTC-02, DTC-03, DTC-04 |
@@ -566,7 +565,7 @@
 </details>
 
 <details>
-<summary>DTC-01 — Прикладной сеанс и статусы Chery: Свободна для продолжения; порция на проверке</summary>
+<summary>DTC-01 — Прикладной сеанс и статусы Chery: Свободна для продолжения</summary>
 
 **Сделано.** Старый сеанс RX очищается до проверки TX/FC timeout; при потере foreground clock допуск отзывается. Host/M32R регрессии прошли.
 
@@ -700,7 +699,7 @@
 | MODE-01 | Порция принята | Codex MODE-01 — отзыв диапазона при отказе ADC | codex/mode01-selector-fault-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 8974a4a5002fd1786eb02ad8d7c19a829c47ad6f |
 | CAN-04 | Порция принята | Codex CAN-04 — отмена ожидающего START/REFRESH | codex/can04-pending-tx-revoke-b0157640 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 6ed9a9e2480dc356725b3f1d47f683bef6625171 |
 | CAN-02 | На проверке | Codex CAN-02 — деградация скорости в телеметрии H03 | codex/can02-telemetry-availability-fea1b366 | При недоступной калибровке S51 нативный H03 отдаёт 0x1AE с FFFF и сохраняет 0x300. Проверены DTC, старое поколение, два профиля M32R, 22 native, 8 components и 41 шаг ПК. Компоновщик занят H03-03. Отчёт can02-h03-telemetry-availability.md. / commit d87bf6438a30efd448feb8cac1d732f7d677a20c |
-| DTC-01 | На проверке | Codex DTC-01 — граница RX при тайм-ауте протокола | codex/dtc01-transport-expiry-rx-7bd19ea4 | RX прежнего сеанса сбрасывается до обработки тайм-аута TX/FC в CAN13. ПК/M32R, смена поколения, 18 BasicCAN, 22 native и 41 шаг ПК (179 тестов) прошли. DTC-04 совместим; секторы не выделены. / commit 0941e55fb9be406f3f8d5b3cb7d378aa18205349 |
+| DTC-01 | Порция принята | Codex DTC-01 — граница RX при тайм-ауте протокола | codex/dtc01-transport-expiry-rx-7bd19ea4 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 0941e55fb9be406f3f8d5b3cb7d378aa18205349 |
 | TOY-01 | Порция принята | Codex TOY-01 H03 independent release clock | codex/toy01-h03-release-clock-01a1f99f | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit c53aaf01d85f38f3fded16ae2c75ef52009f5bd9 |
 | ECU-01 | Порция принята | Codex ECU-01 — внешние переходы ST10 | codex/ecu01-st10-external-branch-fea1b366 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit d7c0edc021c5caf7f4c03723847a6dcdd6583a81 |
 | REL-01 | Порция принята | Codex REL-01 — идентификация BIN | codex/rel01-donor-firmware-guard-01a1f9c7 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit de7df4ab3da2c30240e0a8d3635f206787236d94 |
@@ -719,6 +718,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T07:48:26+00:00 | DTC-01 | complete | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-21T07:48:17+00:00 | H03-04 | complete | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-21T07:48:07+00:00 | H03-04 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T07:47:57+00:00 | H03-03 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -748,4 +748,3 @@
 | 2026-11-21T07:43:40+00:00 | TOY-05 | complete | 01a1fa79-a9fd-70c0-80a3-f59592edaf79 |
 | 2026-11-21T07:43:31+00:00 | MODE-02 | complete | 01a1fa79-892d-7ca3-bb8a-44698892c53e |
 | 2026-11-21T07:43:21+00:00 | TOY-02 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
-| 2026-11-21T07:43:11+00:00 | H03-03 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |

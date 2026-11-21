@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 839,
+  "sequence": 840,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -451,11 +451,11 @@
         "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
         "verification/project-audit/dtc01-transport-expiry-rx.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "8c0be7af01f44597abf221073ba948bb",
       "claimed_at": "2026-11-21T07:03:52+00:00",
-      "updated_at": "2026-11-21T07:08:26+00:00",
-      "note": "RX прежнего сеанса сбрасывается до обработки тайм-аута TX/FC в CAN13. ПК/M32R, смена поколения, 18 BasicCAN, 22 native и 41 шаг ПК (179 тестов) прошли. DTC-04 совместим; секторы не выделены.",
+      "updated_at": "2026-11-21T07:48:26+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "0941e55fb9be406f3f8d5b3cb7d378aa18205349",
       "based_on_reviews": [
         "0c1450c04da64b0da07d705e9b9d38bb"
@@ -12853,9 +12853,41 @@
         "task": "H03-04",
         "submitted_at": "2026-11-21T07:07:27+00:00"
       }
+    },
+    {
+      "operation_id": "f51f75fecfe64f6ab776e055cf983277",
+      "task": "DTC-01",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "complete",
+      "claim_id": "8c0be7af01f44597abf221073ba948bb",
+      "at": "2026-11-21T07:48:26+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-01 — граница RX при тайм-ауте протокола",
+        "branch": "codex/dtc01-transport-expiry-rx-7bd19ea4",
+        "files": [
+          "diagnostics/chery_dtc_link.c",
+          "diagnostics/chery_dtc_link.h",
+          "targets/lfj8/lfj8_h03_dtc_foreground.c",
+          "targets/lfj8/lfj8_h03_dtc_foreground.h",
+          "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
+          "verification/project-audit/dtc01-transport-expiry-rx.md"
+        ],
+        "stage": "done",
+        "claim_id": "8c0be7af01f44597abf221073ba948bb",
+        "claimed_at": "2026-11-21T07:03:52+00:00",
+        "updated_at": "2026-11-21T07:48:26+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "0941e55fb9be406f3f8d5b3cb7d378aa18205349",
+        "based_on_reviews": [
+          "0c1450c04da64b0da07d705e9b9d38bb"
+        ],
+        "task": "DTC-01",
+        "submitted_at": "2026-11-21T07:08:26+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:48:17+00:00",
+  "updated_at": "2026-11-21T07:48:26+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -15214,11 +15246,11 @@
         "targets/lfj8/test_lfj8_h03_dtc_foreground.c",
         "verification/project-audit/dtc01-transport-expiry-rx.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "8c0be7af01f44597abf221073ba948bb",
       "claimed_at": "2026-11-21T07:03:52+00:00",
-      "updated_at": "2026-11-21T07:08:26+00:00",
-      "note": "RX прежнего сеанса сбрасывается до обработки тайм-аута TX/FC в CAN13. ПК/M32R, смена поколения, 18 BasicCAN, 22 native и 41 шаг ПК (179 тестов) прошли. DTC-04 совместим; секторы не выделены.",
+      "updated_at": "2026-11-21T07:48:26+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "0941e55fb9be406f3f8d5b3cb7d378aa18205349",
       "based_on_reviews": [
         "0c1450c04da64b0da07d705e9b9d38bb"
