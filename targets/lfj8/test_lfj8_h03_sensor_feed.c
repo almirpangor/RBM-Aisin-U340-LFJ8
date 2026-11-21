@@ -109,7 +109,7 @@ int main(void)
     seed_atf(&io, &atf, UINT32_MAX - 30u, UINT32_MAX - 5u);
     assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
            == LFJ8_H03_SENSOR_SNAPSHOT);
-    assert(!registers.lock_depth && snapshot.epoch == 1u && snapshot.capture.now_tml0 == 0u);
+    assert(!registers.lock_depth && snapshot.epoch == 1u && snapshot.capture.now_tml0 == 2u);
     assert(snapshot.capture.vss.state == LFJ8_VSS_VALID && snapshot.capture.vss.interval_ticks == 100u);
     assert(snapshot.capture.vss_at_tml0 == UINT32_MAX - 50u);
     assert(snapshot.capture.nt.state == LFJ8_VSS_VALID && snapshot.capture.nt.interval_ticks == 100u);
@@ -122,6 +122,18 @@ int main(void)
     assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
            == LFJ8_H03_SENSOR_SNAPSHOT);
     assert(snapshot.capture.vss.state == LFJ8_VSS_VALID && !snapshot.atf_valid);
+
+    registers.atf_fault = 0u;
+    seed_atf(&io, &atf, UINT32_MAX - 25u, UINT32_MAX - 4u);
+    config.atf_max_age_us = 29u; /* Age 26 at midpoint, age 28 at end. */
+    assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
+           == LFJ8_H03_SENSOR_SNAPSHOT);
+    assert(snapshot.atf_valid && snapshot.atf.acquired_us == UINT32_MAX - 25u);
+    config.atf_max_age_us = 28u;
+    assert(lfj8_h03_sensor_feed_snapshot(&feed, &sources, &io, &config, clock, &snapshot)
+           == LFJ8_H03_SENSOR_SNAPSHOT);
+    assert(!snapshot.atf_valid && snapshot.capture.vss.state == LFJ8_VSS_VALID);
+    config.atf_max_age_us = 1000u;
 
     registers.tml0 = 2000u;
     registers.tml1 = 3000u;

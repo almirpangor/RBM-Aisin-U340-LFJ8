@@ -232,15 +232,19 @@ int lfj8_h03_capture_pair(volatile Lfj8RawVss *vss, volatile Lfj8RawCapture *nt,
     const int coherent = span <= max_read_span_ticks;
     pair->now_tml0 = after;
     if (coherent) {
-        pair->now_tml0 = before + span / 2u;
-        pair->vss = raw_capture_at(vss, pair->now_tml0, vss_timeout_ticks);
-        pair->nt = raw_capture_at(nt, nt_now, nt_timeout_ticks);
+        pair->vss = raw_capture_at(vss, after, vss_timeout_ticks);
         if (pair->vss.state == LFJ8_VSS_VALID) {
             pair->vss_at_tml0 = vss->last_edge;
         }
-        if (pair->nt.state == LFJ8_VSS_VALID) {
+
+        const Lfj8CaptureSnapshot nt_sample = raw_capture_at(nt, nt_now, nt_timeout_ticks);
+        /* TML1 could have been read at the start of the bracket. A valid
+         * raw sample guarantees its age fits before subtracting it. */
+        if (nt_sample.state == LFJ8_VSS_VALID &&
+            span <= nt_timeout_ticks - (nt_now - nt->last_edge)) {
+            pair->nt = nt_sample;
             pair->nt_edge_tml1 = nt->last_edge;
-            pair->nt_at_tml0 = pair->now_tml0 - (nt_now - pair->nt_edge_tml1);
+            pair->nt_at_tml0 = before + span / 2u - (nt_now - pair->nt_edge_tml1);
             pair->nt_alignment_error_ticks = (uint16_t)((span + 1u) / 2u);
         }
     }

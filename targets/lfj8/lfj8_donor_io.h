@@ -107,8 +107,11 @@ void lfj8_9e1c_raw_nt_after_capture_store(volatile Lfj8RawCapture *nt,
 Lfj8CaptureSnapshot lfj8_9e1c_raw_nt_snapshot(volatile Lfj8RawCapture *nt,
                                             const Lfj8RegisterIo *io, uint32_t timeout_ticks);
 
-/* Use on H03 where TML0 and TML1 run from the same clock bus. Convert both
- * edge times to the TML0 epoch and reject an excessively wide counter read. */
+/* Use on H03 where TML0 and TML1 run from the same clock bus. now_tml0
+ * marks the end of the read bracket. S51 and S83 must be fresh at that
+ * point even at the oldest possible time of the TML1 read. The S83 edge
+ * timestamp uses the bracket midpoint with its alignment error. Reject an
+ * excessively wide bracket without consuming either capture. */
 int lfj8_h03_capture_pair(volatile Lfj8RawVss *vss, volatile Lfj8RawCapture *nt,
                           const Lfj8RegisterIo *io, uint32_t vss_timeout_ticks,
                           uint32_t nt_timeout_ticks, uint16_t max_read_span_ticks,
