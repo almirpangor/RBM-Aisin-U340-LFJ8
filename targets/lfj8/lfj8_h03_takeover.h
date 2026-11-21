@@ -33,6 +33,7 @@ typedef struct {
     uint32_t generation;
     uint32_t command_at;
     uint32_t pressure_word;
+    uint32_t prepared_phase; /* Consumed H03 release when the pending command was prepared. */
     uint8_t shift_mask;
     uint8_t shift_before;
     uint8_t have_generation;

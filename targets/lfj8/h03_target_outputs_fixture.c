@@ -24,6 +24,9 @@ volatile uint8_t rbm_h03_tml0_1mhz_qualified;
 
 static int owned;
 
+extern void h03_stock_commit_caller(void);
+extern void h03_stock_phase2(void);
+
 int rbm_h03_target_ram_owned(void *context)
 {
     (void)context;
@@ -115,6 +118,18 @@ static int take_release(uint32_t generation)
         event.sequence == generation && event.released_at == now;
 }
 
+static int advance_release(void)
+{
+    REG32(TML0CT) += 10u; /* Fixture cadence within the profile's 8–12 tick window. */
+    return take_release(fixture_phase_clock.latest.sequence + 1u);
+}
+
+static int stage_output(Lfj8H03Takeover *state, uint32_t generation)
+{
+    return advance_release() &&
+        lfj8_h03_takeover_prepare_plan(state, &plan, generation, REG32(TML0CT));
+}
+
 int main(void)
 {
     const Lfj8H03ApplicationBinding *const binding = &rbm_h03_application_binding;
@@ -131,30 +146,49 @@ int main(void)
     REG8(0x800FEB) = 0x31u;
     REG32(TML0CT) = UINT32_MAX - 5u;
     if (ops != &rbm_h03_target_takeover_ops || ops->io != &lfj8_h03_mmio ||
-        ops->phase_clock != &fixture_phase_clock || ops->qualified(NULL) ||
-        !lfj8_h03_phase_startup(state, ops, &binding->phase_config)) {
+        ops->phase_clock != &fixture_phase_clock || ops->qualified(NULL)) {
         return 1;
     }
 
     owned = 1;
+    state->pending = 1u;
+    seed_latched_outputs();
+    h03_stock_commit_caller();
+    if (!outputs_revoked()) {
+        return 14;
+    }
+    if (!lfj8_h03_phase_startup(state, ops, &binding->phase_config)) {
+        return 1;
+    }
+    /* The logical command serial and the H03 release serial are independent.
+     * The first pair of phases runs across the H03 release serial's rollover. */
+    fixture_phase_clock.latest.sequence = UINT32_MAX - 1u;
+    fixture_phase_clock.consumed = UINT32_MAX - 1u;
     rbm_h03_application.running = 1u;
     rbm_h03_tml0_1mhz_qualified = 1u;
     REG32(TML0CT) = 2u; /* Same timebase and release continue across wrap. */
-    if (!take_release(1u) ||
+    if (!take_release(UINT32_MAX) ||
         !lfj8_h03_takeover_prepare_plan(state, &plan, 1u, 2u) ||
         REG8(P3DATA) != 0x15u || REG8(P10SEL) != 0xa0u ||
         REG8(SHIFT_D_PROPOSAL) != 1u || REG8(SHIFT_D_FINAL) != 1u ||
         REG32(PRESSURE_PROPOSAL) != ONE_AMP || REG32(PRESSURE_FINAL) != ONE_AMP) {
         return 2;
     }
-    if (!lfj8_h03_takeover_apply(state, 1u) || REG8(P3DATA) != 0x95u ||
+    if (!advance_release() || fixture_phase_clock.latest.sequence != 0u) {
+        return 3;
+    }
+    h03_stock_phase2();
+    if (state->pending || REG8(P3DATA) != 0x95u ||
         REG8(P10SEL) != 0xa1u || REG16(PRESSURE_WIDTH) != 1000u ||
         REG16(TIO4RL1) != 1999u || REG16(TIO4RL0) != 999u) {
         return 3;
     }
+    h03_stock_commit_caller();
+    if (!outputs_revoked()) {
+        return 13;
+    }
 
-    REG32(TML0CT) = 12u;
-    if (!take_release(2u) || !lfj8_h03_takeover_prepare_plan(state, &plan, 2u, 12u)) {
+    if (!stage_output(state, 2u) || !advance_release()) {
         return 4;
     }
     REG8(P9DATA) = 0xA5u;
@@ -162,40 +196,72 @@ int main(void)
     REG16(TIO9RL1) = 123u;
     REG16(TIO9RL0) = 45u;
     REG8(TML0CR) = 0u;
-    if (lfj8_h03_takeover_apply(state, 2u) || !outputs_revoked() ||
+    h03_stock_commit_caller();
+    if (!outputs_revoked() ||
         REG8(P9DATA) != 0xA5u || REG8(P9SEL) != 0xB1u ||
         REG16(TIO9RL1) != 123u || REG16(TIO9RL0) != 45u) {
         return 5;
     }
     REG8(TML0CR) = 1u;
-    if (lfj8_h03_takeover_apply(state, 2u) || !outputs_revoked()) {
+    h03_stock_commit_caller();
+    if (!outputs_revoked()) {
         return 6;
     }
 
-    REG32(TML0CT) = 22u;
-    if (!take_release(3u) || !lfj8_h03_takeover_prepare_plan(state, &plan, 3u, 22u)) {
+    if (!stage_output(state, 3u) || !advance_release()) {
         return 7;
     }
     seed_latched_outputs();
     REG8(FLASH_CONTROL) = 1u;
-    if (lfj8_h03_takeover_apply(state, 3u) || !outputs_revoked()) {
+    h03_stock_commit_caller();
+    if (!outputs_revoked()) {
         return 8;
     }
     REG8(FLASH_CONTROL) = 0u;
 
-    REG32(TML0CT) = 32u;
-    if (!take_release(4u) || !lfj8_h03_takeover_prepare_plan(state, &plan, 4u, 32u)) {
+    if (!stage_output(state, 4u) || !advance_release()) {
         return 9;
     }
     seed_latched_outputs();
     rbm_h03_application.running = 0u;
-    if (lfj8_h03_takeover_apply(state, 4u) || !outputs_revoked()) {
+    h03_stock_commit_caller();
+    if (!outputs_revoked()) {
         return 10;
     }
     rbm_h03_application.running = 1u;
-    owned = 0;
-    if (ops->qualified(NULL)) {
+    if (!stage_output(state, 5u) || !advance_release()) {
         return 11;
+    }
+    owned = 0;
+    h03_stock_commit_caller();
+    if (ops->qualified(NULL) || !state->pending || state->generation != 5u ||
+        REG8(P3DATA) != 0x15u || REG8(P10SEL) != 0xa0u ||
+        REG32(PRESSURE_FINAL) != ONE_AMP) {
+        return 11;
+    }
+    owned = 1;
+    if (!advance_release()) {
+        return 12;
+    }
+    h03_stock_commit_caller();
+    if (!outputs_revoked()) {
+        return 12;
+    }
+    if (!stage_output(state, 6u)) {
+        return 15;
+    }
+    h03_stock_commit_caller();
+    if (!outputs_revoked()) {
+        return 15;
+    }
+    if (!stage_output(state, 7u)) {
+        return 16;
+    }
+    REG32(TML0CT) += 10u;
+    rbm_h03_phase_release_callback(REG32(TML0CT));
+    h03_stock_commit_caller();
+    if (!outputs_revoked() || fixture_phase_clock.latest.sequence == fixture_phase_clock.consumed) {
+        return 16;
     }
     return 0;
 }
