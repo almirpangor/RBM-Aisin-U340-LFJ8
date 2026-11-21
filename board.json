@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 812,
+  "sequence": 813,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -11983,9 +11983,37 @@
         "task": "MODE-02",
         "submitted_at": "2026-11-20T22:04:39+00:00"
       }
+    },
+    {
+      "operation_id": "4cdd9401bda342179906632a2125e25f",
+      "task": "TOY-05",
+      "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "action": "complete",
+      "claim_id": "ddeb80aa0d00427f9cdc2ac2b6ee7241",
+      "at": "2026-11-21T07:43:40+00:00",
+      "record": {
+        "owner": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+        "label": "Codex TOY-05 — неоднозначное восстановление адаптаций",
+        "branch": "codex/toy05-s01-startup-01a1fa79",
+        "files": [
+          "controller/include/rbm_u340e_runtime.h",
+          "controller/src/rbm_u340e_runtime.c",
+          "controller/tests/test_runtime.c",
+          "verification/project-audit/toy05-adaptation-generation.md"
+        ],
+        "stage": "done",
+        "claim_id": "ddeb80aa0d00427f9cdc2ac2b6ee7241",
+        "claimed_at": "2026-11-20T22:00:33+00:00",
+        "updated_at": "2026-11-21T07:43:40+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "9f269055aa9a2da430f2602e004408a038725c6b",
+        "based_on_reviews": [],
+        "task": "TOY-05",
+        "submitted_at": "2026-11-20T22:05:47+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:43:31+00:00",
+  "updated_at": "2026-11-21T07:43:40+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -13688,11 +13716,11 @@
         "controller/tests/test_runtime.c",
         "verification/project-audit/toy05-adaptation-generation.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "ddeb80aa0d00427f9cdc2ac2b6ee7241",
       "claimed_at": "2026-11-20T22:00:33+00:00",
-      "updated_at": "2026-11-20T22:05:47+00:00",
-      "note": "Реальное восстановление H03 применяет S01 BASELINE_UNTRUSTED при одинаковом поколении разных валидных записей. 8 новых вариантов ПК/M32R, 62 нативных запуска и 6 групп размещённого ядра прошли. Остаются startup_gear/gp, cold/warm и физический NVM. Отчёт verification/project-audit/toy05-adaptation-generation.md.",
+      "updated_at": "2026-11-21T07:43:40+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "9f269055aa9a2da430f2602e004408a038725c6b",
       "based_on_reviews": [],
       "task": "TOY-05",
