@@ -5,7 +5,10 @@
 
 int lfj8_h03_input_startup(const Lfj8H03InputBinding *binding, const Lfj8H03InputStartup *startup)
 {
-    return binding && startup && rbm_u340e_selector_profile_valid(binding->selector_profile) &&
+    return binding && startup && binding->selector_only <= 1u && binding->require_pn_agreement <= 1u &&
+        (!binding->selector_only || (!binding->p1_button_map &&
+          startup->policy.initial_mode == RBM_U340E_AUTO && !startup->policy.manual_selectors)) &&
+        rbm_u340e_selector_profile_valid(binding->selector_profile) &&
         lfj8_range_control_init(binding->control, &startup->policy, startup->selector_max_age_us) &&
         lfj8_button_filter_init(binding->button_filter, startup->button_debounce_us, startup->button_max_age_us);
 }
@@ -13,6 +16,9 @@ int lfj8_h03_input_startup(const Lfj8H03InputBinding *binding, const Lfj8H03Inpu
 static int valid_binding(const Lfj8H03InputBinding *binding)
 {
     return binding && binding->adc && binding->control && binding->button_filter &&
+        binding->selector_only <= 1u && binding->require_pn_agreement <= 1u &&
+        !(binding->selector_only && binding->p1_button_map) &&
+        binding->control->controller.initialized == 1u &&
         binding->control->max_age_us && binding->button_filter->max_age_us &&
         binding->io && binding->io->enter && binding->io->leave;
 }
@@ -21,9 +27,10 @@ static int captures_ready(const Lfj8H03InputBinding *binding, uint32_t now_us)
 {
     const Lfj8RangeControl *control = binding->control;
     const Lfj8ButtonFilter *buttons = binding->button_filter;
-    return control->selector != RBM_U340E_SELECTOR_UNKNOWN && buttons->armed &&
+    return control->selector != RBM_U340E_SELECTOR_UNKNOWN &&
         now_us - control->last_sample_us < control->max_age_us &&
-        now_us - buttons->last_sample_us < buttons->max_age_us;
+        (binding->selector_only || (buttons->armed &&
+         now_us - buttons->last_sample_us < buttons->max_age_us));
 }
 
 int lfj8_h03_input_capture(const Lfj8H03InputBinding *binding, const Lfj8ButtonReading *buttons,
@@ -37,9 +44,9 @@ int lfj8_h03_input_capture(const Lfj8H03InputBinding *binding, const Lfj8ButtonR
     Lfj8ButtonFilter *filter = binding->button_filter;
     const Lfj8SelectorAdcReading reading = lfj8_selector_adc_take(binding->adc, binding->io);
     lfj8_range_control_sample_selector_profile(control, reading, now_us, binding->selector_profile);
-    if (control->selector == RBM_U340E_SELECTOR_UNKNOWN) {
+    if (control->selector == RBM_U340E_SELECTOR_UNKNOWN || binding->selector_only) {
         lfj8_range_control_disarm_buttons(control, filter);
-        return 0;
+        return !buttons && binding->selector_only && captures_ready(binding, now_us);
     }
 
     Lfj8ButtonReading from_adc;
@@ -54,7 +61,10 @@ int lfj8_h03_input_capture(const Lfj8H03InputBinding *binding, const Lfj8ButtonR
         }
     }
     lfj8_range_control_sample_buttons(control, filter, buttons, now_us);
-    if ((filter->stable & SHIFT_BUTTONS) == SHIFT_BUTTONS) {
+    if ((filter->stable & SHIFT_BUTTONS) == SHIFT_BUTTONS ||
+        (control->manual_gear && (now_us - control->manual_started_us >= binding->manual_max_age_us ||
+            (filter->stable & RBM_U340E_BUTTON_MODE &&
+             !(control->controller.previous_buttons & RBM_U340E_BUTTON_MODE))))) {
         control->manual_gear = 0;
     }
     return captures_ready(binding, now_us);
@@ -107,8 +117,8 @@ static int propose_captured(const Lfj8H03InputBinding *binding,
     Lfj8RangeControl *control = binding->control;
     Lfj8ButtonFilter *buttons = binding->button_filter;
     Lfj8H03RangeSnapshot range;
-    if (!sources || !sources->cycle || !sources->driver ||
-        (binding->p1_button_map && sources->buttons) ||
+    if (!sources || !sources->cycle || (!binding->selector_only && !sources->driver) ||
+        ((binding->p1_button_map || binding->selector_only) && sources->buttons) ||
         sources->cycle->qualified != 1 || (!engine_after_take && sources->cycle->engine.coherent != 1) ||
         sources->now_us - sources->cycle->command_at >= HALF_CLOCK ||
         (control->manual_gear && control->manual_generation != sources->generation) ||
@@ -119,6 +129,12 @@ static int propose_captured(const Lfj8H03InputBinding *binding,
     }
 
     const uint32_t now = sources->now_us;
+    const int selector_in_pn = control->selector == RBM_U340E_SELECTOR_P ||
+                               control->selector == RBM_U340E_SELECTOR_N;
+    if (binding->require_pn_agreement && selector_in_pn != !!(range.range_5722 & (1u << 2))) {
+        lfj8_range_control_disarm_buttons(control, buttons);
+        return 0;
+    }
     if (!captures_ready(binding, now)) {
         control->manual_gear = 0;
         if (buttons->armed) {
@@ -126,21 +142,27 @@ static int propose_captured(const Lfj8H03InputBinding *binding,
         }
         return 0;
     }
-    const Lfj8SelectorAdcReading idle = {.event = LFJ8_SELECTOR_ADC_NONE};
-    if (!lfj8_range_control_step_with_buttons(control, idle, buttons, NULL,
-                                              now, sources->driver, &out->driver)) {
-        out->driver = (RbmU340eOutput){0};
-        return 0;
+    if (binding->selector_only) {
+        out->driver.mode = control->controller.mode;
+        out->driver.overdrive_enabled = control->controller.overdrive_enabled;
+    } else {
+        const Lfj8SelectorAdcReading idle = {.event = LFJ8_SELECTOR_ADC_NONE};
+        if (!lfj8_range_control_step_with_buttons(control, idle, buttons, NULL,
+                                                  now, sources->driver, &out->driver)) {
+            out->driver = (RbmU340eOutput){0};
+            return 0;
+        }
     }
     /* The H03 application does not route the deferred auxiliary relays. */
     out->driver.relay_mask = 0;
 
     out->cycle = *sources->cycle;
-    out->cycle.requested_gear = manual_target(binding, sources, &out->driver);
+    out->cycle.requested_gear = binding->selector_only ? 0u : manual_target(binding, sources, &out->driver);
     out->cycle.selector = control->selector;
     out->cycle.range_5722 = range.range_5722;
     out->cycle.inhibit_5250 = range.inhibit_5250;
-    const uint32_t captures[] = {control->last_sample_us, buttons->last_sample_us, range.oldest_us};
+    const uint32_t captures[] = {control->last_sample_us, range.oldest_us,
+        binding->selector_only ? control->last_sample_us : buttons->last_sample_us};
     for (unsigned i = 0; i < sizeof captures / sizeof captures[0]; ++i) {
         if (now - captures[i] > now - out->cycle.command_at) {
             out->cycle.command_at = captures[i];
@@ -176,7 +198,8 @@ int lfj8_h03_input_capture_toyota(void *context, const Lfj8H03SensorSnapshot *se
     const Lfj8H03InputBinding *const binding = capture->binding;
     const Lfj8RegisterIo *const io = binding->io;
     if (!io || !io->enter || !io->leave ||
-        !binding->manual_max_age_us || binding->manual_max_age_us >= HALF_CLOCK) {
+        (!binding->selector_only &&
+         (!binding->manual_max_age_us || binding->manual_max_age_us >= HALF_CLOCK))) {
         return 0;
     }
 
