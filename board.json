@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 875,
+  "sequence": 876,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -147,12 +147,12 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/h03-04-common-ram-aliases.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "a20975afc98c4d39aaad95e3eb018a5c",
       "claimed_at": "2026-11-21T08:07:13+00:00",
-      "updated_at": "2026-11-21T08:11:41+00:00",
-      "note": "Прошёл ранний прогон RAM owner в штатном и резидентном размещении. Проверяю итоговую общую компоновку, 14 абсолютных алиасов и пять оставшихся блокеров.",
-      "result": null,
+      "updated_at": "2026-11-21T08:13:43+00:00",
+      "note": "14 абсолютных алиасов RAM/SPI/PSW, поддержка резидентной политики. 27 тестов, частичный линк и оба варианта M32R, ранний reset/DMA4 и сервис 29/28 PASS. Общая модель 106416 Flash, 4 RAM, 14 unresolved. Остались нижние пределы и резервы SPI/PSW, rbm_h03_boot_writers_owned и целевой профиль. Отчёт h03-04-common-ram-aliases.md.",
+      "result": "396a1729a4194ea3939551d9193a591ac79356ff",
       "based_on_reviews": [
         "fe45b2270ed1477d94fcc54c637fa138"
       ]
@@ -13923,9 +13923,40 @@
           "77b7b955d10d45b89daaaa5912bd3a82"
         ]
       }
+    },
+    {
+      "operation_id": "127c030fa11d411ca693de4b7fbfd700",
+      "task": "H03-04",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "a20975afc98c4d39aaad95e3eb018a5c",
+      "at": "2026-11-21T08:13:43+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex H03-04 — подтверждённые RAM/SPI/PSW алиасы",
+        "branch": "codex/h03-04-verified-ram-aliases-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_placement.py",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "tests/test_h03_ram_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-04-common-ram-aliases.md"
+        ],
+        "stage": "review",
+        "claim_id": "a20975afc98c4d39aaad95e3eb018a5c",
+        "claimed_at": "2026-11-21T08:07:13+00:00",
+        "updated_at": "2026-11-21T08:13:43+00:00",
+        "note": "14 абсолютных алиасов RAM/SPI/PSW, поддержка резидентной политики. 27 тестов, частичный линк и оба варианта M32R, ранний reset/DMA4 и сервис 29/28 PASS. Общая модель 106416 Flash, 4 RAM, 14 unresolved. Остались нижние пределы и резервы SPI/PSW, rbm_h03_boot_writers_owned и целевой профиль. Отчёт h03-04-common-ram-aliases.md.",
+        "result": "396a1729a4194ea3939551d9193a591ac79356ff",
+        "based_on_reviews": [
+          "fe45b2270ed1477d94fcc54c637fa138"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:12:32+00:00",
+  "updated_at": "2026-11-21T08:13:43+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -16600,6 +16631,31 @@
       "based_on_reviews": [],
       "task": "CAN-01",
       "submitted_at": "2026-11-21T08:08:12+00:00"
+    },
+    "a20975afc98c4d39aaad95e3eb018a5c": {
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex H03-04 — подтверждённые RAM/SPI/PSW алиасы",
+      "branch": "codex/h03-04-verified-ram-aliases-7bd19ea4",
+      "files": [
+        "targets/lfj8/check_h03_ram_owner.py",
+        "targets/lfj8/lfj8_h03_ram_owner.c",
+        "targets/lfj8/lfj8_h03_ram_placement.py",
+        "targets/lfj8/test_lfj8_h03_ram_owner.c",
+        "tests/test_h03_ram_placement.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/h03-04-common-ram-aliases.md"
+      ],
+      "stage": "review",
+      "claim_id": "a20975afc98c4d39aaad95e3eb018a5c",
+      "claimed_at": "2026-11-21T08:07:13+00:00",
+      "updated_at": "2026-11-21T08:13:43+00:00",
+      "note": "14 абсолютных алиасов RAM/SPI/PSW, поддержка резидентной политики. 27 тестов, частичный линк и оба варианта M32R, ранний reset/DMA4 и сервис 29/28 PASS. Общая модель 106416 Flash, 4 RAM, 14 unresolved. Остались нижние пределы и резервы SPI/PSW, rbm_h03_boot_writers_owned и целевой профиль. Отчёт h03-04-common-ram-aliases.md.",
+      "result": "396a1729a4194ea3939551d9193a591ac79356ff",
+      "based_on_reviews": [
+        "fe45b2270ed1477d94fcc54c637fa138"
+      ],
+      "task": "H03-04",
+      "submitted_at": "2026-11-21T08:13:43+00:00"
     }
   }
 }
