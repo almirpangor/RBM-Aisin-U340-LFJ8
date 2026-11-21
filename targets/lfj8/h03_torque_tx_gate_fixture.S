@@ -41,8 +41,8 @@ _start:
     set_byte 0x80801c,0
     set_half 0x801010,0x8003
     set_half 0x80100c,4
-    set_byte lease_flag,LEASE_VALUE
-    set_byte fence_flag,FENCE_VALUE
+    set_byte h03_can_owner+LFJ8_CAN_OWNER_GRANT_OFFSET,LEASE_VALUE
+    set_byte h03_can_owner+LFJ8_CAN_OWNER_TX13_FENCE_OFFSET,FENCE_VALUE
 
     /* First matching OEM descriptor under mask 20 is 0x218.
      * The payload record is 14 bytes past the table's first record. */
@@ -96,19 +96,8 @@ test_exit:
     ldi r0,#1
     trap #0
 
+#if !HOOKED
     .section .tx_entry,"ax",@progbits
-#if HOOKED
-    bra h03_can13_tx_gate
-#else
+    .balign 4
     .incbin "tx-entry.bin"
 #endif
-
-    .section .fixture_state,"aw",@progbits
-    .global h03_can_owner
-h03_can_owner:
-    .space LFJ8_CAN_OWNER_GRANT_OFFSET
-lease_flag:
-    .byte 0
-    .space LFJ8_CAN_OWNER_TX13_FENCE_OFFSET - LFJ8_CAN_OWNER_GRANT_OFFSET - 1
-fence_flag:
-    .byte 0

@@ -9,12 +9,16 @@
     .section .text.h03_can13_tx_gate,"ax",@progbits
     .p2align 2
     .global h03_can13_tx_gate
+    .type h03_can13_tx_gate,@function
 h03_can13_tx_gate:
     push r0
     push r1
     mvfc r0,psw
     push r0
+    .global h03_can13_tx_owner_load
+h03_can13_tx_owner_load:
     ld24 r1,#h03_can_owner
+    .size h03_can13_tx_owner_load,.-h03_can13_tx_owner_load
     ldub r0,@(LFJ8_CAN_OWNER_TX13_FENCE_OFFSET,r1)
     bnez r0,.Lgrant_held
     ldub r0,@(LFJ8_CAN_OWNER_GRANT_OFFSET,r1)
@@ -26,8 +30,15 @@ h03_can13_tx_gate:
     pop r1
     pop r0
     /* Replay the displaced OEM entry instructions, including their packet. */
+    .balign 4
+    .global h03_can13_tx_replay
+h03_can13_tx_replay:
     .long 0x2E7F2A7F
-    bra h03_tx_writer_resume
+    .size h03_can13_tx_replay,.-h03_can13_tx_replay
+    .global h03_can13_tx_resume_branch
+h03_can13_tx_resume_branch:
+    bra.l h03_tx_writer_resume
+    .size h03_can13_tx_resume_branch,.-h03_can13_tx_resume_branch
 
     .p2align 2
 .Lgrant_held:
@@ -36,3 +47,4 @@ h03_can13_tx_gate:
     pop r1
     pop r0
     jmp lr
+    .size h03_can13_tx_gate,.-h03_can13_tx_gate
