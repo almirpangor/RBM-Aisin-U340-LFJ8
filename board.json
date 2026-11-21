@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 923,
+  "sequence": 924,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -542,12 +542,12 @@
         "targets/lfj8/test_h03_bench_sensor_profile.c",
         "verification/bench-wave/chat-5/handoff.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "cee15d1377aa4207a89e2eb78dd96995",
       "claimed_at": "2026-11-21T08:51:36+00:00",
-      "updated_at": "2026-11-21T08:57:21+00:00",
-      "note": "Профиль и выдача raw capture реализованы. Проверяю связь с H03 и M32R сценарии времени, датчиков и отзыва эпохи.",
-      "result": null,
+      "updated_at": "2026-11-21T09:09:06+00:00",
+      "note": "Нативный OEM_NOMINAL профиль TML0/TML1, S51/S83/ATF и raw capture опубликован. M32R PASS. Интегратору подобрать размещение и подключить согласованный транспорт raw capture. Стендовых замеров и BIN в этой порции нет.",
+      "result": "18dcf51f3a765f2d660e142003999cbf627782f4",
       "based_on_reviews": []
     },
     "TOY-01": {
@@ -15451,9 +15451,38 @@
         "result": "4842a325a0fa14c14c1fd5ccb48f9afc2c0bdc29",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "6fdb2dea6985455988df6d52aa28063e",
+      "task": "VSS-02",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "review",
+      "claim_id": "cee15d1377aa4207a89e2eb78dd96995",
+      "at": "2026-11-21T09:09:06+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex 5 — нативный стендовый профиль TML0/S51/S83/ATF",
+        "branch": "codex/vss-02-bench-clock-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/bench_sensor_profile.c",
+          "targets/lfj8/bench_sensor_profile.h",
+          "targets/lfj8/check_h03_bench_sensor_profile.py",
+          "targets/lfj8/lfj8_h03_sensor_feed.c",
+          "targets/lfj8/lfj8_h03_sensor_target.c",
+          "targets/lfj8/test_h03_bench_sensor_profile.c",
+          "verification/bench-wave/chat-5/handoff.json"
+        ],
+        "stage": "review",
+        "claim_id": "cee15d1377aa4207a89e2eb78dd96995",
+        "claimed_at": "2026-11-21T08:51:36+00:00",
+        "updated_at": "2026-11-21T09:09:06+00:00",
+        "note": "Нативный OEM_NOMINAL профиль TML0/TML1, S51/S83/ATF и raw capture опубликован. M32R PASS. Интегратору подобрать размещение и подключить согласованный транспорт raw capture. Стендовых замеров и BIN в этой порции нет.",
+        "result": "18dcf51f3a765f2d660e142003999cbf627782f4",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T09:08:38+00:00",
+  "updated_at": "2026-11-21T09:09:06+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -18330,6 +18359,29 @@
       "based_on_reviews": [],
       "task": "DTC-04",
       "submitted_at": "2026-11-21T09:08:38+00:00"
+    },
+    "cee15d1377aa4207a89e2eb78dd96995": {
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "label": "Codex 5 — нативный стендовый профиль TML0/S51/S83/ATF",
+      "branch": "codex/vss-02-bench-clock-mwp5rm2ofhaxjfi9dss",
+      "files": [
+        "targets/lfj8/bench_sensor_profile.c",
+        "targets/lfj8/bench_sensor_profile.h",
+        "targets/lfj8/check_h03_bench_sensor_profile.py",
+        "targets/lfj8/lfj8_h03_sensor_feed.c",
+        "targets/lfj8/lfj8_h03_sensor_target.c",
+        "targets/lfj8/test_h03_bench_sensor_profile.c",
+        "verification/bench-wave/chat-5/handoff.json"
+      ],
+      "stage": "review",
+      "claim_id": "cee15d1377aa4207a89e2eb78dd96995",
+      "claimed_at": "2026-11-21T08:51:36+00:00",
+      "updated_at": "2026-11-21T09:09:06+00:00",
+      "note": "Нативный OEM_NOMINAL профиль TML0/TML1, S51/S83/ATF и raw capture опубликован. M32R PASS. Интегратору подобрать размещение и подключить согласованный транспорт raw capture. Стендовых замеров и BIN в этой порции нет.",
+      "result": "18dcf51f3a765f2d660e142003999cbf627782f4",
+      "based_on_reviews": [],
+      "task": "VSS-02",
+      "submitted_at": "2026-11-21T09:09:06+00:00"
     }
   }
 }
