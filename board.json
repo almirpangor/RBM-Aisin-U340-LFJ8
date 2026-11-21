@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 811,
+  "sequence": 812,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -11951,9 +11951,41 @@
         "task": "TOY-02",
         "submitted_at": "2026-11-20T22:02:54+00:00"
       }
+    },
+    {
+      "operation_id": "08f0093415a947d696fabc3b4895cb25",
+      "task": "MODE-02",
+      "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+      "action": "complete",
+      "claim_id": "cda1c6bb3edf45bd993ee765cf29e055",
+      "at": "2026-11-21T07:43:31+00:00",
+      "record": {
+        "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+        "label": "Codex MODE-02 — квалифицированная ручная цель",
+        "branch": "codex/mode02-qualified-target-892d",
+        "files": [
+          "targets/lfj8/check_h03_toyota_source.py",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/lfj8_h03_input_binding.h",
+          "targets/lfj8/lfj8_range_control.c",
+          "targets/lfj8/lfj8_range_control.h",
+          "targets/lfj8/test_lfj8_h03_input_binding.c",
+          "targets/lfj8/test_lfj8_h03_toyota_source.c",
+          "verification/project-audit/mode02-qualified-manual-target.md"
+        ],
+        "stage": "done",
+        "claim_id": "cda1c6bb3edf45bd993ee765cf29e055",
+        "claimed_at": "2026-11-20T21:53:04+00:00",
+        "updated_at": "2026-11-21T07:43:31+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "5d793be878e4b3732133535f3255609bc7c44dd3",
+        "based_on_reviews": [],
+        "task": "MODE-02",
+        "submitted_at": "2026-11-20T22:04:39+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:43:21+00:00",
+  "updated_at": "2026-11-21T07:43:31+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -13636,11 +13668,11 @@
         "targets/lfj8/test_lfj8_h03_toyota_source.c",
         "verification/project-audit/mode02-qualified-manual-target.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "cda1c6bb3edf45bd993ee765cf29e055",
       "claimed_at": "2026-11-20T21:53:04+00:00",
-      "updated_at": "2026-11-20T22:04:39+00:00",
-      "note": "Нативный источник take_toyota исполнил адаптер MODE-02/03 с квалификацией, удержанием и отзывом цели. ПК 41 этап/179 тестов, входы ПК/M32R, нативный TML0 и AN2/P1DATA, 22+8 M32R, 6 размещённых групп. +692 байта Flash, +8 RAM. Старый check_h03_link воспроизводимо падает и на чистой main. Требуются финальная rbm_h03_target_take_toyota, поставщики driver/range/load и измеренные карта/OD/срок цели. Отчёт verification/project-audit/mode02-qualified-manual-target.md.",
+      "updated_at": "2026-11-21T07:43:31+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "5d793be878e4b3732133535f3255609bc7c44dd3",
       "based_on_reviews": [],
       "task": "MODE-02",
