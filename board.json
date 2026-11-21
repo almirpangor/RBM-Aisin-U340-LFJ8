@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 833,
+  "sequence": 834,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12637,9 +12637,51 @@
         "task": "H03-05",
         "submitted_at": "2026-11-20T23:18:28+00:00"
       }
+    },
+    {
+      "operation_id": "d423ab06683d4096927ed6d2e633478d",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "complete",
+      "claim_id": "4781e27fe7274496be65a8d2faf92977",
+      "at": "2026-11-21T07:47:18+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — остановка TX13",
+        "branch": "codex/can03-tx13-shutdown-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/check_h03_torque_tx_gate.py",
+          "targets/lfj8/h03_can13_tx_gate.S",
+          "targets/lfj8/h03_torque_tx_gate_fixture.S",
+          "targets/lfj8/lfj8_donor_io.c",
+          "targets/lfj8/lfj8_donor_io.h",
+          "targets/lfj8/lfj8_h03_can_monitor_revoke.c",
+          "targets/lfj8/lfj8_h03_can_monitor_startup.h",
+          "targets/lfj8/lfj8_h03_can_owner.c",
+          "targets/lfj8/lfj8_h03_can_owner.h",
+          "targets/lfj8/lfj8_h03_target_service.c",
+          "targets/lfj8/lfj8_h03_target_service.h",
+          "targets/lfj8/test_lfj8_h03_can_owner.c",
+          "verification/project-audit/can03-tx13-shutdown.md"
+        ],
+        "stage": "done",
+        "claim_id": "4781e27fe7274496be65a8d2faf92977",
+        "claimed_at": "2026-11-20T23:10:58+00:00",
+        "updated_at": "2026-11-21T07:47:18+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "40d644fdc0de059069d937be70d23aef80c5592f",
+        "based_on_reviews": [
+          "1b7a53b2c91c49d481c892507323d9d9",
+          "2101184d356545bfa9a1e0bd6716a9ee",
+          "da533c7a58aa441b9ba639bc0ad0992e"
+        ],
+        "task": "CAN-03",
+        "submitted_at": "2026-11-20T23:18:55+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:47:09+00:00",
+  "updated_at": "2026-11-21T07:47:18+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -14838,11 +14880,11 @@
         "targets/lfj8/test_lfj8_h03_can_owner.c",
         "verification/project-audit/can03-tx13-shutdown.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "4781e27fe7274496be65a8d2faf92977",
       "claimed_at": "2026-11-20T23:10:58+00:00",
-      "updated_at": "2026-11-20T23:18:55+00:00",
-      "note": "Закрытие H03 и потеря допуска запрашивают отмену TX13; OEM писатель блокируется до проверки освобождения. M32R 22/22, 18 путей gate, 16+2 связанных сценария, ПК 41 шаг, Bosch PASS_OFFLINE_ONLY. +476 Flash, RAM без роста. Остаются стенд и итоговая компоновка. Отчёт can03-tx13-shutdown.md.",
+      "updated_at": "2026-11-21T07:47:18+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "40d644fdc0de059069d937be70d23aef80c5592f",
       "based_on_reviews": [
         "1b7a53b2c91c49d481c892507323d9d9",
