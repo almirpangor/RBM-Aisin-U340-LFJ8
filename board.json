@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 776,
+  "sequence": 777,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -29,27 +29,24 @@
       "based_on_reviews": []
     },
     "DTC-02": {
-      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
-      "label": "Codex DTC-02 — нижние переходы в общей компоновке",
-      "branch": "codex/can01-h03-engine-owner-b0157640",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex DTC-02 — перезапись пары RX14/15",
+      "branch": "codex/dtc02-rx-pair-overwrite-7bd19ea4",
       "files": [
-        "targets/lfj8/h03_dtc_rx_redirects.S",
-        "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
-        "tests/test_h03_dtc_rx_placement.py",
-        "tools/check_h03_image_layout.py",
-        "verification/project-audit/dtc02-linked-lower-redirects.md"
+        "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
+        "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
+        "verification/project-audit/dtc02-pair-overwrite.md"
       ],
-      "stage": "review",
-      "claim_id": "7d595279d73d44b882c2a6d929c481bb",
-      "claimed_at": "2026-11-20T23:06:45+00:00",
-      "updated_at": "2026-11-20T23:13:54+00:00",
-      "note": "Два нижних BasicCAN перехода включены в общую H03-компоновку, M32R подтвердил оба слова на OEM-адресах. Офлайн RX→CAN13 0x722, 18 сравнений и обходы Virtual Flash прошли. Полный линк FAIL_BINDINGS до профиля приложения, конфигурации датчиков и типизированных RAM-символов. Без прошивки. Отчёт verification/project-audit/dtc02-linked-lower-redirects.md.",
-      "result": "1bc3c22b18114cf8f2d5d547026fe7ac44ad9926",
+      "stage": "in_progress",
+      "claim_id": "64f009ea37cb4be5904b007a47dfcea4",
+      "claimed_at": "2026-11-21T06:41:39+00:00",
+      "updated_at": "2026-11-21T06:41:39+00:00",
+      "note": "Проверяю потерю первого снимка при чтении второго слота и отбрасываю его до постановки в очередь; сохраняю доставку исправного слота.",
+      "result": null,
       "based_on_reviews": [
         "5bb09a6c858e41d7a7b760ee40373d75",
         "702717949ca545219ea4fbe0c6486d2c",
-        "8b0ce759514b4c68b04d002b192f50ff",
-        "96f93fae25924717a50bf354ff863f44"
+        "7d595279d73d44b882c2a6d929c481bb"
       ]
     },
     "CAN-03": {
@@ -10772,9 +10769,38 @@
           "da533c7a58aa441b9ba639bc0ad0992e"
         ]
       }
+    },
+    {
+      "operation_id": "eb99abd0dac84825a630a4f2157c9ade",
+      "task": "DTC-02",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "64f009ea37cb4be5904b007a47dfcea4",
+      "at": "2026-11-21T06:41:39+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-02 — перезапись пары RX14/15",
+        "branch": "codex/dtc02-rx-pair-overwrite-7bd19ea4",
+        "files": [
+          "targets/lfj8/lfj8_h03_dtc_rx_queue.c",
+          "targets/lfj8/test_lfj8_h03_dtc_rx_queue.c",
+          "verification/project-audit/dtc02-pair-overwrite.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "64f009ea37cb4be5904b007a47dfcea4",
+        "claimed_at": "2026-11-21T06:41:39+00:00",
+        "updated_at": "2026-11-21T06:41:39+00:00",
+        "note": "Проверяю потерю первого снимка при чтении второго слота и отбрасываю его до постановки в очередь; сохраняю доставку исправного слота.",
+        "result": null,
+        "based_on_reviews": [
+          "5bb09a6c858e41d7a7b760ee40373d75",
+          "702717949ca545219ea4fbe0c6486d2c",
+          "7d595279d73d44b882c2a6d929c481bb"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-20T23:18:55+00:00",
+  "updated_at": "2026-11-21T06:41:39+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
