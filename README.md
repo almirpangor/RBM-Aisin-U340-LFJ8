@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T09:07:29+00:00**. Изменение № **921**.
+Обновлено UTC: **2026-11-21T09:07:59+00:00**. Изменение № **922**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 13 · Ожидают с резервом: 0 · Порций на проверке: 0.**
+**В работе: 12 · Ожидают с резервом: 0 · Порций на проверке: 1.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -24,7 +24,6 @@
 | 6 | TOY-05 — Обучение и сохранение адаптаций | Codex 12 — TOY-05, стартовое состояние первой стендовой пары \[01a1fa79-a9fd-70c0-80a3-f59592edaf79\] | 2026-11-21T09:04:29+00:00 | Проверен штатный V850 reset и INIT донора. Реальный профиль использует две существующие типизированные области; M32R проверяет startup с пустым и валидным NVM и отказами. |
 | 8 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Codex чат 2 — Task 2 и профиль двигателя для первой стендовой пары \[codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3\] | 2026-11-21T09:04:47+00:00 | Native Task 2 and Bosch replay pass on host and M32R; measuring footprint and running integration regressions. |
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:05:59+00:00 | Общий профиль уже разрешает CAN config без fixture. Roundtrip Bosch/TCM и resident BasicCAN прошли. Довожу нативную проверку ACK/REFRESH/CANCEL и снимаю расход памяти. |
-| 13 | ECU-01 — Проверочная сборка Bosch E4M3 | Codex чат 8 — Bosch ST10 для стендовой пары \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | 2026-11-21T09:00:58+00:00 | Сборка и профиль Chery прошли, 48 RB START и 6 отзывов в ST10. Проверяю парные сценарии и оформляю handoff. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:07:29+00:00 | Готовы 7 OEM roots и 29 внешних связей. 68 boot, 22 wait, 8 target strategy/apply, 4 CAN monitor patch sites и 81 H03 тест. Требуется provider rbm_h03_target_strategy_snapshot из профиля выходов и явный интервал ожидания. Пересверяю новый main 3fe2893. |
 | 18 | H03-04 — Память, стек и сервисные пути | Codex H03-04 — ранний допуск IRQ и стендовый профиль SPI/PSW \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | 2026-11-21T09:03:18+00:00 | Пять символов разрешены в пробном составе 108212 байт. Оба reset очищают три значения до IE в общем ELF. Добавляю проверку профиля стека в replay сервисной защиты и Virtual Flash, чтобы они принимали только тот же защищённый диапазон. |
 | 19 | H03-05 — SLT, силовые выходы и реакция на отказ | Codex 7 H03-05 bench outputs \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | 2026-11-21T08:52:04+00:00 | Штатный путь H03: отдельный выходной профиль для первой пары, отказ по каждому непроверенному каналу, сырые данные для измерений, точка подключения интегратора. |
@@ -46,8 +45,7 @@
 
 | Задача | Автор | Коммит | Claim ID для приёмки | Результат |
 | --- | --- | --- | --- | --- |
-
-Очередь проверки пуста.
+| ECU-01 | Codex чат 8 — Bosch ST10 для стендовой пары | [9312c056ee46](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9312c056ee46e8f0495a64840bb82b722c1ee9ca) | bb95576349fc4befa4af7a3779ddb4ae | Нативный RPM-допуск RB подключён к START/REFRESH и трём ветвям ST10; CANCEL сохранён. 51 запись целостности, проверены ordinary, T4, парные сценарии. OFFLINE_ONLY; Toyota raw-контракт и остаток в verification/bench-wave/chat-8/handoff.json. |
 
 ## Что осталось доделать
 
@@ -73,7 +71,7 @@
 | 10 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-03) | Выполняется | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | H03-04 |
 | 11 | [CAN-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-04) | Свободна для продолжения | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
 | 12 | [CAN-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-05) | Свободна для продолжения | Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false. | TOY-02 |
-| 13 | [ECU-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#ecu-01) | Выполняется | Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false. | См. входные условия карточки |
+| 13 | [ECU-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#ecu-01) | Свободна для продолжения; порция на проверке | Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false. | См. входные условия карточки |
 | 14 | [ECU-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#ecu-02) | Свободна для продолжения | Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false. | CAN-05 |
 | 16 | [H03-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-02) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
 | 17 | [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-03) | Выполняется | Полный набор hooks/placement с проверкой original bytes, ссылками на native callbacks, проверкой CPU штатного/отказного/повторного пути; никаких fixture callbacks. | H03-04 |
@@ -347,7 +345,7 @@
 </details>
 
 <details>
-<summary>ECU-01 — Проверочная сборка Bosch E4M3: Выполняется</summary>
+<summary>ECU-01 — Проверочная сборка Bosch E4M3: Свободна для продолжения; порция на проверке</summary>
 
 **Сделано.** Повторно собран Bosch ordinary/no-cruise/no-override OFFLINE_ONLY; проверены целостность, 65536 native encoder cases и обмен с текущим TCM-кодом. SHA и результаты в INTEGRATION39.
 
@@ -361,7 +359,7 @@
 
 **Рекомендуемый чат.** Чат 8 — 01a1f9ab-19c7-72c0-ac90-6aa98e4aa488.
 
-**Сейчас выполняет.** Codex чат 8 — Bosch ST10 для стендовой пары — codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Это образ OFFLINE_ONLY, сохранение всех функций двигателя на машине не подтверждено.
 
@@ -747,6 +745,7 @@
 | CAN-02 | Порция принята | Codex CAN-02 — деградация скорости в телеметрии H03 | codex/can02-telemetry-availability-fea1b366 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit d87bf6438a30efd448feb8cac1d732f7d677a20c |
 | CAN-04 | Порция принята | Codex CAN-04 — отмена ожидающего START/REFRESH | codex/can04-pending-tx-revoke-b0157640 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 6ed9a9e2480dc356725b3f1d47f683bef6625171 |
 | CAN-05 | Порция принята | Codex CAN-05 — время приёма ST10 | codex/can05-st10-bound-t4-01a1f9a2 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit f3bb5000ebfdaaa30a33665bac1eab06ddb9165c |
+| ECU-01 | На проверке | Codex чат 8 — Bosch ST10 для стендовой пары | codex/c7e4-next-1121 | Нативный RPM-допуск RB подключён к START/REFRESH и трём ветвям ST10; CANCEL сохранён. 51 запись целостности, проверены ordinary, T4, парные сценарии. OFFLINE_ONLY; Toyota raw-контракт и остаток в verification/bench-wave/chat-8/handoff.json. / commit 9312c056ee46e8f0495a64840bb82b722c1ee9ca |
 | ECU-02 | Порция принята | Codex ECU-02 — граница допуска момента Bosch | codex/ecu02-torque-permit-boundary-7bd19ea4 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 85b2e9320cf8f6e4a3729915ed3ebbd0fc00a732 |
 | H03-02 | Порция принята | Codex H03-02 — граница свежести общего снимка S51/S83/ATF | codex/h03-02-capture-end-age-32e6ac79 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 3e9e9b2fb888e7d26161dde12e2bd0dcf3600c53 |
 | VSS-01 | Порция принята | Codex VSS-01 — допуск времени и окна S51 для 0x1AE | codex/vss01-tml0-timing-admission-32e6ac79 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 1bcfe06eb116940db1921a70130629bacb17da3a |
@@ -815,19 +814,6 @@
 - targets/lfj8/lfj8_h03_nvm_native.c
 - targets/lfj8/lfj8_h03_nvm_native.h
 - verification/bench-wave/chat-9/handoff.json
-
-### ECU-01
-
-Чат: Codex чат 8 — Bosch ST10 для стендовой пары. Claim ID: bb95576349fc4befa4af7a3779ddb4ae.
-
-- targets/bosch/README.md
-- targets/bosch/build.py
-- targets/bosch/rb_native_permit.py
-- targets/bosch/tx.py
-- targets/bosch/verify_bench_profile.py
-- targets/bosch/verify_ordinary_model_field.py
-- targets/bosch/verify_tx.py
-- verification/bench-wave/chat-8/handoff.json
 
 ### H03-03
 
@@ -956,6 +942,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T09:07:59+00:00 | ECU-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-21T09:07:29+00:00 | H03-03 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-21T09:05:59+00:00 | CAN-03 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-21T09:04:47+00:00 | CAN-01 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
@@ -985,4 +972,3 @@
 | 2026-11-21T08:37:56+00:00 | ORG-01 | complete | codex-integration-01a1f76d-20261120 |
 | 2026-11-21T08:37:46+00:00 | H03-03 | complete | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-21T08:37:35+00:00 | CAN-03 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
-| 2026-11-21T08:37:25+00:00 | H03-04 | complete | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
