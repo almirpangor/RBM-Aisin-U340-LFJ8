@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 814,
+  "sequence": 815,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -239,11 +239,11 @@
         "targets/lfj8/lfj8_h03_dtc_target.h",
         "verification/project-audit/dtc03-atf-clock-admission.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "3f58920fee114fad9045abc0e99a8a9b",
       "claimed_at": "2026-11-20T21:58:07+00:00",
-      "updated_at": "2026-11-20T22:06:50+00:00",
-      "note": "P0710 использует квалифицированный TML0 в захвате AN1 и CAN foreground; потеря времени отбрасывает снимок до перепривязки. M32R 20+20, 18 BasicCAN, PC 41 шаг и 179 тестов. Ошибка проверки S01 воспроизводится на main, прогон с добавленным корнем прошёл. Для общей композиции нужны целевой профиль ATF и стенд.",
+      "updated_at": "2026-11-21T07:44:00+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "98192034cc9888b95800f8f3b916a744172cc4ea",
       "based_on_reviews": []
     },
@@ -12039,9 +12039,38 @@
         "task": "H03-05",
         "submitted_at": "2026-11-20T22:06:17+00:00"
       }
+    },
+    {
+      "operation_id": "fec53de05c3a492e9d9d97c67b2a9b8e",
+      "task": "DTC-03",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "complete",
+      "claim_id": "3f58920fee114fad9045abc0e99a8a9b",
+      "at": "2026-11-21T07:44:00+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-03 — допуск времени P0710",
+        "branch": "codex/dtc03-atf-clock-admission-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_atf_fault.py",
+          "targets/lfj8/h03_atf_fault_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_dtc_target.c",
+          "targets/lfj8/lfj8_h03_dtc_target.h",
+          "verification/project-audit/dtc03-atf-clock-admission.md"
+        ],
+        "stage": "done",
+        "claim_id": "3f58920fee114fad9045abc0e99a8a9b",
+        "claimed_at": "2026-11-20T21:58:07+00:00",
+        "updated_at": "2026-11-21T07:44:00+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "98192034cc9888b95800f8f3b916a744172cc4ea",
+        "based_on_reviews": [],
+        "task": "DTC-03",
+        "submitted_at": "2026-11-20T22:06:50+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:43:50+00:00",
+  "updated_at": "2026-11-21T07:44:00+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -13785,11 +13814,11 @@
         "targets/lfj8/lfj8_h03_dtc_target.h",
         "verification/project-audit/dtc03-atf-clock-admission.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "3f58920fee114fad9045abc0e99a8a9b",
       "claimed_at": "2026-11-20T21:58:07+00:00",
-      "updated_at": "2026-11-20T22:06:50+00:00",
-      "note": "P0710 использует квалифицированный TML0 в захвате AN1 и CAN foreground; потеря времени отбрасывает снимок до перепривязки. M32R 20+20, 18 BasicCAN, PC 41 шаг и 179 тестов. Ошибка проверки S01 воспроизводится на main, прогон с добавленным корнем прошёл. Для общей композиции нужны целевой профиль ATF и стенд.",
+      "updated_at": "2026-11-21T07:44:00+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "98192034cc9888b95800f8f3b916a744172cc4ea",
       "based_on_reviews": [],
       "task": "DTC-03",
