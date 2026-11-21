@@ -9,6 +9,8 @@ import subprocess
 from tempfile import TemporaryDirectory
 
 from check_h03_link import TARGET, identify_h03
+from lfj8_h03_layout import read_elf
+from lfj8_h03_service_placement import early_overlay
 
 
 RESET_VECTORS = (0x000000, 0x000020)
@@ -22,6 +24,136 @@ SPI_TOP = 0x809EFC
 PSW_CURSOR = 0x809F9C
 # At each trap GNU M32R exposes the pre-break PSW in the saved byte.
 BREAKPOINT_SAVED_IE = 0x4000
+
+
+def check_common(base, compiler, placed_elf, layout_report):
+    identity = identify_h03(base)
+    layout = json.loads(layout_report.read_text(encoding="utf-8"))
+    if layout["base"] != identity:
+        raise ValueError("The early IRQ report uses a different H03 base")
+    model = layout["early_irq_model"]
+    source = base.read_bytes()
+    if sha256(source).hexdigest() != identity["sha256"]:
+        raise ValueError("H03 changed before the early IRQ replay")
+    rom = early_overlay(source, placed_elf, model)
+    pointer = model["irq_pointer"]
+    elf = read_elf(placed_elf, 2)
+    dispatch = elf["symbols"]["rbm_h03_dtc_rx_begin"]["address"]
+    observe = elf["symbols"]["rbm_h03_dtc_rx_observe"]["address"]
+    debugger = compiler.with_name(f"m32r-elf-gdb{compiler.suffix}")
+    with TemporaryDirectory(prefix="rbm-h03-common-irq-") as directory:
+        stage = Path(directory)
+
+        def run(*args):
+            return subprocess.run([str(arg) for arg in args], cwd=stage, check=True,
+                                  capture_output=True, timeout=60).stdout
+
+        (stage / "placed.rom").write_bytes(rom)
+        (stage / "fixture.S").write_text("""
+    .section .h03,"ax",@progbits
+    .incbin "placed.rom"
+    .text
+    .global _start, fixture_irq, fixture_dma, fixture_after_denied, fixture_after_allowed
+_start:
+    ld24 r4,#VECTOR
+    jmp r4
+    .p2align 2
+fixture_irq:
+    ld24 r4,#0x004724
+    jl r4
+    nop
+    ldi r8,#14
+    ld24 r4,#0x001534
+    jmp r4
+    .p2align 2
+fixture_dma:
+    ldi r0,#2
+    ld24 r1,#IRQ_POINTER
+    ldi r2,#0
+    ld24 r4,#0x00cf0c
+    jl r4
+    nop
+    .p2align 2
+fixture_after_denied:
+    ldi r0,#2
+    ld24 r1,#0x80683a
+    ldi r2,#0
+    ld24 r4,#0x00cf0c
+    jl r4
+    nop
+    .p2align 2
+fixture_after_allowed:
+    bra fixture_after_allowed
+""", encoding="ascii")
+        results = []
+        read_pointer = f"*(unsigned int*){pointer:#x}"
+        for vector in RESET_VECTORS:
+            run(compiler, *TARGET, "-nostdlib",
+                "-Wl,-Ttext=0x80000,--section-start=.h03=0,-e,_start",
+                f"-DVECTOR={vector:#x}", f"-DIRQ_POINTER={pointer:#x}", "fixture.S", "-o", "fixture.elf")
+            nm = compiler.with_name(f"m32r-elf-nm{compiler.suffix}")
+            symbols = {name.decode(): int(address, 16) for address, _, name in (
+                row.split() for row in run(nm, "--defined-only", "fixture.elf").splitlines()
+                if b" fixture_" in row
+            )}
+
+            def redirect(site, target):
+                word = 0xff000000 | (((symbols[target] - site) >> 2) & 0xffffff)
+                return f"set {{unsigned int}}{site:#x} = {word:#x}"
+
+            commands = [
+                "set confirm off", "target sim --memory-fill 0xa5 --memory-region 0x0,0x1000000",
+                "load", f"tbreak *{IE_BEFORE:#x}", "run",
+                f'printf "BEFORE %x %x %x\\n", $psw, $sp, {read_pointer}',
+                f"tbreak *{IE_AFTER:#x}", "continue",
+                f'printf "AFTER %x %x %x\\n", $psw, $sp, {read_pointer}',
+                # Force the early OEM CAN entry in the simulator. Plain Flash
+                # selects the real callback, which finds no bound application.
+                "set {unsigned char}0x80801c = 0", "set {unsigned char}0x804887 = 0",
+                "set {unsigned char}0x8007e2 = 0",
+                *(f"set {{unsigned short}}{addr:#x} = 0"
+                  for addr in (0x8007E8, 0x8007EA, 0x8007F0, 0x8007F2)),
+                "set {unsigned short}0x80100c = 1", "set {unsigned char}0x801014 = 0",
+                redirect(IE_AFTER, "fixture_irq"), redirect(0x001538, "fixture_dma"),
+                f"tbreak *{dispatch:#x}", "continue",
+                f'printf "DISPATCH %x %x\\n", $pc, {read_pointer}',
+                "tbreak *0x0013f0", "continue",
+                'printf "OEM %x\\n", $pc',
+                # Exercise the observer's own OEM site without modelling W0C.
+                "set {unsigned short}0x80100c = 0", f"tbreak *{observe:#x}", "continue",
+                f'printf "OBSERVE %x %x\\n", $pc, {read_pointer}',
+                "tbreak *0x001538", "continue",
+                'printf "RESUME %x %x\\n", $pc, $r0',
+            ]
+            for label in ("DENIED", "ALLOWED"):
+                commands += [
+                    "set {unsigned int}0x809f9c = 0x809f9c",
+                    "set {unsigned char}0x800450 = 0x25", "set {unsigned char}0x800451 = 0x07",
+                    "set {unsigned short}0x800454 = 0x683b",
+                    f"tbreak *{symbols['fixture_after_' + label.lower()]:#x}", "continue",
+                    f'printf "{label} %x %x %x %x\\n", *(unsigned char*)0x800450, '
+                    f'*(unsigned char*)0x800451, *(unsigned short*)0x800454, {read_pointer}',
+                ]
+            (stage / "early.gdb").write_text("\n".join(commands) + "\n", encoding="ascii")
+            trace = run(debugger, "--batch", "-nx", "-x", "early.gdb", "fixture.elf")
+            rows = {key.decode(): [int(word, 16) for word in values.split()]
+                    for key, values in re.findall(rb"^([A-Z]+) ([0-9a-f ]+)\r?$", trace, re.M)}
+            for name in ("BEFORE", "AFTER"):
+                if name in rows:
+                    rows[name][0] &= BREAKPOINT_SAVED_IE
+            expected = {
+                "BEFORE": [0, SPI_TOP, 0xA5A5A5A5],
+                "AFTER": [BREAKPOINT_SAVED_IE, SPI_TOP, 0],
+                "DISPATCH": [dispatch, 0], "OEM": [0x0013F0],
+                "OBSERVE": [observe, 0], "RESUME": [0x001538, 14],
+                "DENIED": [0x25, 7, 0x683B, 0], "ALLOWED": [0x6D, 1, 0x683A, 0],
+            }
+            if {key: rows.get(key) for key in expected} != expected:
+                raise ValueError(f"Unexpected H03 reset, early IRQ or DMA4 observations from {vector:#x}: {rows}")
+            results.append({"reset_vector": vector, "observations": rows})
+    return {"base": identity, "early_model_sha256": model["elf_sha256"],
+            "irq_pointer": pointer, "cases": results, "hardware_irq_or_dma_triggered": False,
+            "full_boot_writer_ownership_verified": False, "flashable_image": None}
 
 
 def check(base, compiler):
@@ -145,13 +277,19 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base", required=True, type=Path)
     parser.add_argument("--gcc", required=True, type=Path)
+    parser.add_argument("--placed-elf", type=Path)
+    parser.add_argument("--layout-report", type=Path)
     args = parser.parse_args()
+    if bool(args.placed_elf) != bool(args.layout_report):
+        parser.error("--placed-elf and --layout-report must be used together")
     try:
-        print(json.dumps(check(args.base, args.gcc.resolve()), indent=2))
+        result = (check_common(args.base, args.gcc.resolve(), args.placed_elf, args.layout_report)
+                  if args.placed_elf else check(args.base, args.gcc.resolve()))
+        print(json.dumps(result, indent=2))
     except subprocess.CalledProcessError as error:
         message = error.stderr or error.stdout or str(error).encode()
         parser.exit(1, message.decode(errors="replace") + "\n")
-    except (ValueError, OSError, subprocess.TimeoutExpired) as error:
+    except (ValueError, KeyError, OSError, subprocess.TimeoutExpired) as error:
         parser.exit(1, f"{error}\n")
 
 
