@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 807,
+  "sequence": 808,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -11830,9 +11830,39 @@
         "task": "VSS-02",
         "submitted_at": "2026-11-20T22:01:03+00:00"
       }
+    },
+    {
+      "operation_id": "726e7749a72542dd809cfa90345458dc",
+      "task": "DTC-04",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "complete",
+      "claim_id": "e72d13fcb2254ca89fd0736136b11462",
+      "at": "2026-11-21T07:42:52+00:00",
+      "record": {
+        "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "label": "Codex DTC-04 — запрет ложной очистки в H03",
+        "branch": "codex/target-continuation-922b7b11",
+        "files": [
+          "targets/lfj8/check_h03_dtc_basiccan.py",
+          "targets/lfj8/lfj8_h03_dtc_can.c",
+          "targets/lfj8/lfj8_h03_dtc_can.h",
+          "targets/lfj8/lfj8_h03_dtc_native.c",
+          "targets/lfj8/lfj8_h03_dtc_native.h",
+          "verification/project-audit/dtc04-native-clear-admission.md"
+        ],
+        "stage": "done",
+        "claim_id": "e72d13fcb2254ca89fd0736136b11462",
+        "claimed_at": "2026-11-20T21:52:52+00:00",
+        "updated_at": "2026-11-21T07:42:52+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "dc2afd95a829473823c05f10eabd66142177a0dc",
+        "based_on_reviews": [],
+        "task": "DTC-04",
+        "submitted_at": "2026-11-20T22:01:30+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:42:42+00:00",
+  "updated_at": "2026-11-21T07:42:52+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -13424,11 +13454,11 @@
         "targets/lfj8/lfj8_h03_dtc_native.h",
         "verification/project-audit/dtc04-native-clear-admission.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "e72d13fcb2254ca89fd0736136b11462",
       "claimed_at": "2026-11-20T21:52:52+00:00",
-      "updated_at": "2026-11-20T22:01:30+00:00",
-      "note": "Нативная привязка H03 запрещает подтверждение очистки DTC при отсутствии постоянного носителя. В M32R запрос 14 FF 00 поглощается без TX13, следующий ответ 17 FF 00 сохраняет P0710. Пройдены BasicCAN, foreground, ATF, NVM, RAM и отзыв разрешения CAN. Полная линковка имеет те же отсутствующие привязки, что чистая main. Остались два подтверждённых стираемых блока и право записи H03-04, физический драйвер, загрузочное восстановление и фиксация очистки вне блокировки CAN. Отчёт verification/project-audit/dtc04-native-clear-admission.md.",
+      "updated_at": "2026-11-21T07:42:52+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "dc2afd95a829473823c05f10eabd66142177a0dc",
       "based_on_reviews": [],
       "task": "DTC-04",
