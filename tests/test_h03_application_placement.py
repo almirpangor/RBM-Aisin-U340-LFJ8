@@ -128,13 +128,19 @@ class ApplicationPlacementTest(unittest.TestCase):
 
     def test_bench_wait_interval_is_explicit_and_fits_the_relocation(self):
         self.assertNotIn(bench.INTERVAL_SYMBOL, bench.STOCK_SYMBOLS)
-        symbols = bench.qualified_stock_symbols(20, 30)
+        self.assertNotIn(bench.SPIN_LIMIT_SYMBOL, bench.STOCK_SYMBOLS)
+        symbols = bench.qualified_stock_symbols(20, 30, 40)
+        self.assertEqual(symbols[bench.SPIN_LIMIT_SYMBOL], 40)
         self.assertEqual(symbols[bench.INTERVAL_SYMBOL], 20)
         self.assertEqual(symbols["h03_phase_wait_ticks"], 0x8003E0)
         for interval, maximum in ((None, 30), (0, 30), (31, 30), (0x1000000, 0x1000000)):
             with self.subTest(interval=interval, maximum=maximum):
                 with self.assertRaisesRegex(ValueError, "TML0CT tick count"):
-                    bench.qualified_stock_symbols(interval, maximum)
+                    bench.qualified_stock_symbols(interval, maximum, 40)
+        for spins in (None, 0, 0x1000000):
+            with self.subTest(spins=spins):
+                with self.assertRaisesRegex(ValueError, "loop iteration bound"):
+                    bench.qualified_stock_symbols(20, 30, spins)
 
     def test_rejects_changed_continuation(self):
         self.elf["symbols"]["h03_stock_application_after_entry"]["address"] += 4

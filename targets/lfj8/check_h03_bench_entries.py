@@ -95,7 +95,8 @@ def export_entries(base, compiler, out, memory_model, controller=None):
         strategy = read_elf(work / names[1], 1)
         sections = alloc_sections(hooks)
         fixed, wrappers = fixed_redirects(sections, redirects=profile.REDIRECTS)
-        expected = set((*profile.NATIVE_CALLBACKS, *profile.STOCK_SYMBOLS, profile.INTERVAL_SYMBOL))
+        expected = set((*profile.NATIVE_CALLBACKS, *profile.STOCK_SYMBOLS,
+                        profile.INTERVAL_SYMBOL, profile.SPIN_LIMIT_SYMBOL))
         if set(undefined(hooks)) != expected or any(section["flags"] & 1 for section in sections):
             raise ValueError("Unexpected external call, legacy route or writable section in the H03 entry object")
         if any(hooks["symbols"][name]["section"] == 0 for name in profile.ROOTS):
@@ -131,7 +132,10 @@ def export_entries(base, compiler, out, memory_model, controller=None):
                 {"entry": ["0x805000", "0x8051E8", "SBI and IRQ vector tables"],
                  "rule": "Resolve any target callbacks from runtime RAM and populated vectors before pruning"}],
 
-            "configuration": {profile.INTERVAL_SYMBOL: {"value": None, "units": "TML0CT ticks"}},
+            "configuration": {
+                profile.INTERVAL_SYMBOL: {"value": None, "units": "TML0CT ticks"},
+                profile.SPIN_LIMIT_SYMBOL: {"value": None, "units": "foreground loop iterations per guard call"},
+            },
             "verified_original_packets": [
                 {"address": address, "word": word, "purpose": purpose}
                 for address, (word, purpose) in profile.RETAINED_PACKETS.items()

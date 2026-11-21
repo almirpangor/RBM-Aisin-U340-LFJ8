@@ -282,8 +282,9 @@ SECTIONS {
 
 
 POLL_INTERVAL = 2
+SPIN_LIMIT = 12
 STACK_TOP = 0x9FFFFC
-WAIT_BYTES = 8
+WAIT_BYTES = 12
 CALLBACK_ENTRY_BYTES = 64
 CALLBACK_LR_BYTES = 4
 OEM_IRQ_FRAME_BYTES = 48
@@ -311,7 +312,7 @@ commands
     printf "TICK DRIVER LIMIT\\n"
     quit
   end
-  if $samples % 2 == 0
+  if !$frozen_counter && $samples % 2 == 0
     set *(unsigned int*)0x8003e0 = *(unsigned int*)0x8003e0 + 1
   end
   if $release_early && $samples == 2
@@ -438,6 +439,7 @@ def check(base, compiler):
             (1, "native_delayed_across_wrap", 3, 8, False, None, True),
             (2, "native_stalled_then_late", 6, 20, False, None, True),
             (4, "native_coalesced", 1, 0, False, None, True),
+            (5, "frozen_tml0_software_poll", 2, SPIN_LIMIT, False, None, False),
         ):
             top8 = top8_status is not None
             release_hook = [HERE / "h03_phase_release_hook.S"] if native else []
@@ -453,11 +455,13 @@ def check(base, compiler):
                      f"-DSCENARIO={scenario}", f"-DCARRY={carry}", f"-DOEM_TOP8={int(top8)}",
                      f"-DNATIVE_PUBLISH={int(native)}",
                      f"-Wl,--defsym,h03_phase_wait_interval_ticks={POLL_INTERVAL}",
+                     f"-Wl,--defsym,h03_phase_wait_max_spins={SPIN_LIMIT}",
                      "fixture.S", "wait-redirect.S", "hook.S", *sources, *release_hook, "-lc", "-lgcc", "-o", "fixture.elf"],
                     cwd=work, check=True, capture_output=True, timeout=90,
                 )
                 output = subprocess.run(
                     [debugger, "--batch", "-nx", "-ex", f"set $release_early = {int(scenario == 3)}",
+                     "-ex", f"set $frozen_counter = {int(scenario == 5)}",
                      "-ex", f"set $inject_nested = {int(nested)}",
                      "-ex", f"set $oem_top8 = {int(top8)}",
                      "-ex", f"set $top8_status = {top8_status or 0}",
@@ -481,11 +485,12 @@ def check(base, compiler):
                                 "oem_irq_levels_injected": returns,
                                 "oem_top8_status_before": top8_status,
                                 "native_release_callbacks": (2 if scenario == 4 else 1) if native else 0,
-                                "stock_flag_cleared": True, "phase_consumed": scenario not in (2, 4),
-                                "command_revoked": scenario in (2, 4)})
+                                "stock_flag_cleared": True, "phase_consumed": scenario not in (2, 4, 5),
+                                "command_revoked": scenario in (2, 4, 5)})
     return {"base": identity, "compiler": compiler_version, "wait": f"0x{WAIT:06X}", "stock_clear": f"0x{CLEAR:06X}",
             "native_continuation": f"0x{CONTINUE:06X}", "cases": results,
-            "test_poll_interval_ticks": POLL_INTERVAL, "extra_persistent_ram_bytes": 0,
+            "test_poll_interval_ticks": POLL_INTERVAL, "test_wait_max_spins": SPIN_LIMIT,
+            "extra_persistent_ram_bytes": 0,
             "wrapper_stack_bytes": {"waiting": WAIT_BYTES, "at_callback_entry": CALLBACK_ENTRY_BYTES},
             "callback_stack_probe": {
                 "kind": "deepest overwritten aligned word below initial wrapper SP",

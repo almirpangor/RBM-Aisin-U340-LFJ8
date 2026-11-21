@@ -8,6 +8,7 @@ enum {
     STALLED = 2,
     EARLY_FLAG = 3,
     COALESCED = 4,
+    FROZEN_COUNTER = 5,
     EARLY_RELEASE_AGE = 7,
     RELEASE_AGE = 8,
     LAST_VALID_AGE = 12,
@@ -159,6 +160,9 @@ int fixture_init(void)
     } else if (SCENARIO == STALLED) {
         *timer_shadow = origin + 6u;
         expected_checks = 6;
+    } else if (SCENARIO == FROZEN_COUNTER) {
+        *timer_shadow = origin + 6u;
+        expected_checks = 2;
     } else if (SCENARIO == EARLY_FLAG) {
         *timer_shadow = origin + EARLY_RELEASE_AGE - 1u;
         expected_checks = 2;
@@ -178,6 +182,20 @@ int fixture_poll(void)
     const uint32_t now = lfj8_h03_tml0ct_m32r(0);
     const uint32_t age = now - origin;
     const int early_flag = SCENARIO == EARLY_FLAG && *oem_flag;
+    /* Model the clock authority declining the unchanged clock once the
+     * native spin bound gets the foreground back into the guard. */
+    if (SCENARIO == FROZEN_COUNTER && checks == 1u) {
+        if (now != last_check || *oem_flag || !state.pending || inhibits) {
+            return 0;
+        }
+        const uint32_t saved = lfj8_h03_mmio.enter(0);
+        phase.faulted = 1u;
+        lfj8_h03_takeover_revoke_locked(&state);
+        lfj8_h03_mmio.leave(0, saved);
+        ++checks;
+        *oem_flag = 1u;
+        return !invalid && interrupts_enabled() && !state.pending && inhibits == 1u;
+    }
     if (checks && now - last_check != (early_flag ? 1u : POLL_INTERVAL)) {
         return 0;
     }
@@ -223,6 +241,9 @@ int fixture_finish(void)
     if (SCENARIO == COALESCED) {
         return inhibits == 1 && phase.faulted && phase.latest.sequence == 1 &&
             phase.consumed == 0 && !state.pending;
+    }
+    if (SCENARIO == FROZEN_COUNTER) {
+        return inhibits == 1 && phase.faulted && phase.consumed == 0 && !state.pending;
     }
     if (SCENARIO == STALLED) {
         return inhibits == 2 && phase.faulted &&

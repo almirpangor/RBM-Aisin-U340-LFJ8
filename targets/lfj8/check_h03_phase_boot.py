@@ -482,6 +482,7 @@ def check(base, compiler, controller=None):
             "  h03_stock_phase_clear = 0x815c;\n"
             "  h03_phase_wait_ticks = 0x8003e0;\n"
             "  h03_phase_wait_interval_ticks = 2;\n"
+            "  h03_phase_wait_max_spins = 64;\n"
             f'  ASSERT(ADDR(.text) + SIZEOF(.text) <= {CANDIDATE_END:#x}, "Candidate code exceeds H03 window")\n'
             "}\n",
             encoding="ascii",

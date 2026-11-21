@@ -2,7 +2,9 @@
  * checks deadlines without consuming the phase. It must return with IRQ
  * configuration and PSW control bits intact. The linker supplies an aligned
  * running 32-bit clock address and an interval in [1, 0xffffff] ticks.
- * The callback uses the M32R C ABI, including preservation of r8. */
+ * The linker also supplies a positive spin bound independent of TML0CT.
+ * It triggers another guard call even if the counter and OEM publisher stop.
+ * The callback uses the M32R C ABI, including preservation of r8 and r9. */
     .section .text.rbm_h03_phase_wait_hook,"ax",@progbits
     .p2align 2
     .global rbm_h03_phase_wait_hook
@@ -10,13 +12,14 @@
 rbm_h03_phase_wait_hook:
     /* The OEM clear overwrites r0 and leaves r4 holding the flag address. */
     push r8
+    push r9
     mvfc r0,psw
     push r0
 .Lcheck:
     ld24 r4,#h03_phase_wait_ticks
     ld r8,@r4
     /* Save the rest of the OEM context only across the callback. */
-    .irp reg,r1,r2,r3,r5,r6,r7,r9,r10,r11,r12,r13,lr
+    .irp reg,r1,r2,r3,r5,r6,r7,r10,r11,r12,r13,lr
     push \reg
     .endr
     mvfachi r0
@@ -28,9 +31,10 @@ rbm_h03_phase_wait_hook:
     mvtaclo r0
     pop r0
     mvtachi r0
-    .irp reg,lr,r13,r12,r11,r10,r9,r7,r6,r5,r3,r2,r1
+    .irp reg,lr,r13,r12,r11,r10,r7,r6,r5,r3,r2,r1
     pop \reg
     .endr
+    ld24 r9,#h03_phase_wait_max_spins
     ld24 r4,#0x804ade
     ldub r0,@r4
     bnez r0,.Lready
@@ -46,6 +50,8 @@ rbm_h03_phase_wait_tick_sample:
     ld24 r4,#h03_phase_wait_interval_ticks
     cmpu r0,r4
     bnc .Lcheck
+    addi r9,#-1
+    beqz r9,.Lcheck
     ld24 r4,#0x804ade
     bra .Lwait
 
@@ -54,6 +60,7 @@ rbm_h03_phase_wait_tick_sample:
     and3 r0,r0,#1
     ldi r4,#0
     cmpu r4,r0
+    pop r9
     pop r8
 
     ld24 r4,#0x804ade

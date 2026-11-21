@@ -32,6 +32,7 @@ STOCK_SYMBOLS = {
     "h03_phase_wait_ticks": 0x8003E0,  # Running 32-bit TML0CT, not a frequency declaration.
 }
 INTERVAL_SYMBOL = "h03_phase_wait_interval_ticks"
+SPIN_LIMIT_SYMBOL = "h03_phase_wait_max_spins"
 
 # Edges retained around the hooks. The shared inner strategy and apply sites
 # also intercept the OEM combined routine; its same-release apply is denied.
@@ -65,9 +66,11 @@ def redirect_source(rom):
     return assembly(rom, REDIRECTS)
 
 
-def qualified_stock_symbols(poll_interval_ticks, max_poll_interval_ticks):
+def qualified_stock_symbols(poll_interval_ticks, max_poll_interval_ticks, max_spins):
     """Accept the integration profile's explicit poll limit in TML0CT ticks."""
     if (type(poll_interval_ticks) is not int or type(max_poll_interval_ticks) is not int or
             not 1 <= poll_interval_ticks <= min(max_poll_interval_ticks, 0xFFFFFF)):
         raise ValueError("H03 wait interval needs a positive, bounded TML0CT tick count")
-    return {**STOCK_SYMBOLS, INTERVAL_SYMBOL: poll_interval_ticks}
+    if type(max_spins) is not int or not 1 <= max_spins <= 0xFFFFFF:
+        raise ValueError("H03 wait needs a positive 24-bit loop iteration bound")
+    return {**STOCK_SYMBOLS, INTERVAL_SYMBOL: poll_interval_ticks, SPIN_LIMIT_SYMBOL: max_spins}
