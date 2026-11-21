@@ -139,7 +139,8 @@ void fixture_initialize_outputs(void)
 {
     rbm_h03_application.running = 1u;
     h03_can_owner = (Lfj8H03CanOwner){.setup_generation = 42u, .admitted_generation = 42u,
-                                     .grant = 1u, .initialized = true, .setup_permitted = true};
+                                     .grant = 1u, .initialized = true, .setup_permitted = true,
+                                     .tx13_fenced = 1u};
     rbm_h03_main_result.valid = 1u;
     rbm_h03_fast_output.valid = 1u;
     rbm_h03_takeover_state = (Lfj8H03Takeover){.ops = &rbm_h03_target_takeover_ops, .generation = 7u,
@@ -191,12 +192,14 @@ int __wrap_rbm_h03_can_monitor_cold_owner_init_locked(void)
     const Lfj8H03CanOwner retained = h03_can_owner;
     const int ready = __real_rbm_h03_can_monitor_cold_owner_init_locked();
     if (ready && (!h03_can_owner.initialized || h03_can_owner.grant || h03_can_owner.setup_permitted ||
-                  h03_can_owner.setup_generation || h03_can_owner.admitted_generation)) {
+                  h03_can_owner.tx13_fenced || h03_can_owner.setup_generation ||
+                  h03_can_owner.admitted_generation)) {
         ++unsafe_writes;
     }
     if (!ready && (h03_can_owner.initialized != retained.initialized ||
                    h03_can_owner.setup_permitted != retained.setup_permitted ||
                    h03_can_owner.grant != retained.grant ||
+                   h03_can_owner.tx13_fenced != retained.tx13_fenced ||
                    h03_can_owner.setup_generation != retained.setup_generation ||
                    h03_can_owner.admitted_generation != retained.admitted_generation)) {
         ++unsafe_writes;
@@ -561,7 +564,7 @@ void fixture_target_service_path(void)
 
     service_turn(1511u);
     if (h03_can_owner.grant || rbm_h03_can_service.t6.active ||
-        !rbm_h03_can13.lease_lost) {
+        !rbm_h03_can13.lease_lost || !h03_can_owner.tx13_fenced || BYTE(CAN0 + 0x5du) != 0x0fu) {
         return;
     }
     ++fixture_service_steps;
@@ -591,12 +594,47 @@ void fixture_target_service_path(void)
     }
     ++fixture_service_steps;
 
+    /* Emulate an active TR just before the real application closes. The
+     * memory-backed controller retains the abort command until readback
+     * is driven below. The OEM writer must remain excluded in between. */
+    BYTE(CAN0 + 0x5du) = 0x82u;
+    WORD(CAN0 + 0x1d0u) = 0x171e0000u;
+    WORD(CAN0 + 0x1d8u) = 0x12345678u;
     rbm_h03_application_cold_gate();
+    stock_tx_writer();
     stage_dtc_request();
     rbm_h03_dtc_rx_observe(14u);
-    if (!h03_can_owner.grant && !rbm_h03_can_service.config &&
-        !rbm_h03_dtc_target.queue.count && !rbm_h03_tml0_1mhz_qualified &&
-        !rbm_h03_application.running) {
+    if (h03_can_owner.grant || rbm_h03_can_service.config || rbm_h03_dtc_target.queue.count ||
+        rbm_h03_tml0_1mhz_qualified || rbm_h03_application.running || !h03_can_owner.tx13_fenced ||
+        BYTE(CAN0 + 0x5du) != 0x0fu || WORD(CAN0 + 0x1d0u) != 0x171e0000u ||
+        WORD(CAN0 + 0x1d8u) != 0x12345678u) {
+        return;
+    }
+    ++fixture_service_steps;
+
+    const uint32_t restore_saved = lfj8_h03_mmio.enter(NULL);
+    BYTE(CAN0 + 0x5du) = 0x80u;
+    HALF(0x8007f2u) = 0x8000u;
+    rbm_h03_can_monitor_retire_tx13_locked();
+    const bool bank_blocked = h03_can_owner.tx13_fenced && BYTE(CAN0 + 0x5du) == 0x80u;
+    HALF(0x8007f2u) = 0u;
+    lfj8_h03_mmio.leave(NULL, restore_saved);
+    if (!bank_blocked) {
+        return;
+    }
+    ++fixture_service_steps;
+
+    const uint32_t permit_saved = lfj8_h03_mmio.enter(NULL);
+    BYTE(CAN0 + 0x5eu) = 0x40u;
+    HALF(CAN0 + 0x0cu) = 0u;
+    BYTE(CAN0 + 0x5du) = 0x02u;
+    rbm_h03_can_monitor_publish_setup_locked();
+    const bool pending_kept = h03_can_owner.tx13_fenced && !h03_can_owner.grant;
+    BYTE(CAN0 + 0x5du) = 0x81u;
+    rbm_h03_can_monitor_publish_setup_locked();
+    const bool complete_released = !h03_can_owner.tx13_fenced && !h03_can_owner.grant;
+    lfj8_h03_mmio.leave(NULL, permit_saved);
+    if (pending_kept && complete_released) {
         ++fixture_service_steps;
     }
 }
@@ -762,7 +800,7 @@ def probe_binding(base, compiler, aliases, addresses):
         for name, patch_set, expected in (
             ("stock_writers", (), 1),
             ("missing_dtc_dispatch", service_patches[:-1], 1),
-            ("native_service", (*service_patches, fixture_flag), 14),
+            ("native_service", (*service_patches, fixture_flag), 16),
         ):
             observed, = startup.read_probe(run, work, debugger, "&fixture_target_service_path",
                                            patch_set, ((symbols["fixture_done"][0],),), 0,

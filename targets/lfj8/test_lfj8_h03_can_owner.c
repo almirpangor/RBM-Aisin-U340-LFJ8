@@ -22,6 +22,7 @@ typedef struct {
     uint32_t now_us;
     unsigned locks;
     unsigned sends;
+    unsigned aborts;
     uint16_t stat;
     uint16_t slist;
     uint16_t slimk;
@@ -29,6 +30,7 @@ typedef struct {
     uint8_t slots[2][16];
     bool irq_after_grant;
     bool demand;
+    bool explicit_retire;
 } Fixture;
 
 Lfj8H03CanOwner h03_can_owner;
@@ -107,6 +109,20 @@ static uint16_t read16(void *context, uint32_t address)
 static void write8(void *context, uint32_t address, uint8_t value)
 {
     Fixture *f = context;
+    if (f->explicit_retire) {
+        assert(f->locks && h03_can_owner.tx13_fenced && !h03_can_owner.grant);
+        assert(address == MSC13);
+        if (value == 0x0fu) {
+            const uint8_t before = f->msc[0];
+            assert(before == 0x80u || before == 0x82u);
+            f->msc[0] = before & 2u;
+            ++f->aborts;
+        } else {
+            assert(value == 0u && f->msc[0] == 0x40u);
+            f->msc[0] = 0u;
+        }
+        return;
+    }
     assert(f->locks && h03_can_owner.grant == 1u);
     if (address == MSC13) {
         f->msc[0] = value == 0x4e ? 0x40 : value;
@@ -325,13 +341,59 @@ static void test_foreground_s51_without_raw_tracker(void)
     assert(f.slots[0][12] == 0x17u && f.slots[0][13] == 0x70u);
 }
 
+static void test_retire_after_lease_loss(void)
+{
+    Fixture f;
+    init(&f, 0u);
+    setup();
+    assert(poll(&f, 100u, true).available);
+    assert(h03_can_owner.grant && h03_can_owner.tx13_fenced);
+    assert(!poll(&f, 200u, false).available);
+    assert(!h03_can_owner.grant && h03_can_owner.tx13_fenced);
+    uint32_t generation = 17u;
+    assert(!lfj8_h03_can_owner_rx_epoch(&h03_can_owner, &generation) && generation == 17u);
+
+    f.explicit_retire = true;
+    const uint32_t saved = f.io.enter(f.io.context);
+    memset(f.slots[0], 0x5au, sizeof f.slots[0]);
+    uint8_t before[16];
+    memcpy(before, f.slots[0], sizeof before);
+
+    f.msc[0] = 0x80u;
+    assert(lfj8_h03_can0_retire_tx13_locked(&f.io) && f.aborts == 1u && f.msc[0] == 0u);
+    f.msc[0] = 0x82u;
+    assert(!lfj8_h03_can0_retire_tx13_locked(&f.io) && f.aborts == 2u && f.msc[0] == 2u);
+    assert(!lfj8_h03_can0_retire_tx13_locked(&f.io) && f.aborts == 2u);
+    f.msc[0] = 0x81u; /* A transfer could already have reached the bus. */
+    assert(lfj8_h03_can0_retire_tx13_locked(&f.io) && f.aborts == 2u);
+    assert(!memcmp(f.slots[0], before, sizeof before));
+
+    f.msc[0] = 0x80u;
+    f.stat |= 0x4000u;
+    assert(!lfj8_h03_can0_retire_tx13_locked(&f.io) && f.msc[0] == 0x80u && f.aborts == 2u);
+    f.stat = 0x0800u;
+    f.slimk |= 4u;
+    assert(!lfj8_h03_can0_retire_tx13_locked(&f.io) && f.msc[0] == 0x80u && f.aborts == 2u);
+    f.slimk &= (uint16_t)~4u;
+    f.msc[0] = 0x40u;
+    assert(!lfj8_h03_can0_retire_tx13_locked(&f.io) && f.msc[0] == 0x40u);
+    f.slots[0][0] = 0x5e9u >> 6;
+    f.slots[0][1] = 0x5e9u & 0x3fu;
+    assert(lfj8_h03_can0_retire_tx13_locked(&f.io) && f.msc[0] == 0u && f.aborts == 2u);
+    f.io.leave(f.io.context, saved);
+    lfj8_h03_can_owner_init(&h03_can_owner);
+    assert(!h03_can_owner.grant && !h03_can_owner.tx13_fenced);
+}
+
 int main(void)
 {
     test_reset_and_irq_orders();
     test_torque_fault_and_generation_wrap();
     test_foreground_s51_without_raw_tracker();
+    test_retire_after_lease_loss();
     printf("H03 CAN owner: setup, BasicCAN drain, both IRQ orders, TX13 and BusOff PASS\n");
     puts("H03 CAN owner: foreground S51 capture to 0x1AE without raw tracker PASS");
+    puts("H03 CAN owner: fenced TX13 retirement, late completion and no payload writes PASS");
     printf("CAN owner state: %u bytes\n", (unsigned)sizeof(Lfj8H03CanOwner));
     return 0;
 }

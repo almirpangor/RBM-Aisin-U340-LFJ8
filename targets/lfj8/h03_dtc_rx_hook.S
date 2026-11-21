@@ -31,8 +31,8 @@
     pop lr
     .endm
 
-/* The wrapper must already be visible in Flash. Match the native CAN
- * monitor's service/programming/Flash gate before consulting project RAM. */
+/* The resident wrapper must already be visible in Flash. Apply the
+ * H03 RAM owner's plain-Flash conditions before consulting project RAM. */
     .macro bypass_rx_callback resume
     ld24 r0,#0x80801c
     ldub r0,@r0
@@ -44,6 +44,18 @@
     ldub r0,@r0
     ldi r1,#4
     beq r0,r1,\resume
+    /* FELBANK0/1 and FESBANK0/1 have separate bank-enable bits.
+     * Reject bit 15 regardless of the FCNT1 value. */
+    ld24 r0,#0x8007e8
+    lduh r1,@r0
+    lduh r2,@(2,r0)
+    or r1,r2
+    lduh r2,@(8,r0)
+    or r1,r2
+    lduh r2,@(10,r0)
+    or r1,r2
+    srli r1,#15
+    bnez r1,\resume
     .endm
 
     .section .text.rbm_h03_dtc_rx_hook,"ax",@progbits

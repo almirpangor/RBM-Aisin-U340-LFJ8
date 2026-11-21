@@ -247,6 +247,8 @@ def build(args):
         if not args.with_bindings or args.storage_report is None:
             raise ValueError("Resident RX needs --with-bindings and a typed --storage-report")
         dtc_rx.validate_stock(rom)
+        # The two pinned OEM words are occupied, unlike the packing windows.
+        validate_windows((*flash_windows, *dtc_rx.REDIRECT_WINDOWS))
         storage_space(args.storage_report)
         owner_address = dtc_rx.owner_address(json.loads(args.storage_report.read_text(encoding="utf-8")))
     validate_windows(flash_windows,rom)
@@ -288,6 +290,7 @@ def build(args):
     roots=set((*legacy.H03_ROOTS,*legacy.DTC_ROOTS,*legacy.CAN_EXTENSION_ROOTS,*EXTRA_ROOTS))
     if with_dtc_rx:
         roots.update(dtc_rx.RX_ROOTS)
+        roots.update(dtc_rx.REDIRECT_ROOTS)
     report={"base":identity,"profile":args.profile,"compiler_memory_model":args.memory_model,
             "input_objects":{p.name:digest(p) for p in (args.bridge,args.controller)},
             "input_sources":{p.relative_to(ROOT).as_posix():digest(p) for p in modules},
@@ -388,8 +391,9 @@ def build(args):
             if not with_dtc_rx:
                 return pack(flash,windows)
             names = dtc_rx.closure_sections(run, args.gcc, flags, stage)
-            resident, upper = dtc_rx.split_flash(flash, names)
-            return pack(resident, (dtc_rx.RX_WINDOW,)) + pack(upper, windows)
+            fixed, remaining = dtc_rx.fixed_redirects(flash)
+            resident, upper = dtc_rx.split_flash(remaining, names)
+            return fixed + pack(resident, (dtc_rx.RX_WINDOW,)) + pack(upper, windows)
 
         if unresolved:
             try:
@@ -397,9 +401,11 @@ def build(args):
                 if platform_flash:
                     report["target_platform"]["flash_placements"] = [
                         item for item in provisional if item["section"] in platform_flash]
-                report["known_sections_candidate_plan"]={"sections":len(provisional),
+                packing_windows = {w.name for w in flash_windows}
+                packed = [p for p in provisional if p["window"] in packing_windows]
+                report["known_sections_candidate_plan"]={"sections":len(packed),
                     "capacity_bytes":sum(w.end-w.start for w in flash_windows),
-                    "payload_bytes":sum(p["bytes"] for p in provisional),
+                    "payload_bytes":sum(p["bytes"] for p in packed),
                     "ownership_verified":False,"unresolved_material_counted":False}
                 if stock_symbols:
                     report["sensor_redirects"] = sensor_placement(rom, retained, provisional)
@@ -485,7 +491,7 @@ def main():
     parser.add_argument("--sensor-calibration-profile", type=Path,
                         help="H03 sensor limits and observed maxima for the paired clock reference")
     parser.add_argument("--with-dtc-rx", action="store_true",
-                        help="Place the protected BasicCAN RX graph in the lower H03 sector")
+                        help="Link the two OEM-site BasicCAN redirects and place the resident RX graph")
     parser.add_argument("--cpu-test",action="store_true")
     parser.add_argument("--storage-report",type=Path)
     args=parser.parse_args()

@@ -470,7 +470,7 @@ static void test_capture_pair(void)
     volatile Lfj8RawCapture nt = {.last_edge = 20u, .interval_ticks = 20u, .primed = 1u};
     Lfj8CapturePair pair;
     assert(lfj8_h03_capture_pair(&vss, &nt, &io, 100u, 100u, 4u, &pair));
-    assert(pair.now_tml0 == 0u && pair.vss_at_tml0 == UINT32_MAX - 11u);
+    assert(pair.now_tml0 == 2u && pair.vss_at_tml0 == UINT32_MAX - 11u);
     assert(pair.nt_at_tml0 == UINT32_MAX - 4u && pair.nt_edge_tml1 == 20u);
     assert(pair.nt_alignment_error_ticks == 2u);
     assert(pair.vss.state == LFJ8_VSS_VALID && pair.nt.state == LFJ8_VSS_VALID);
@@ -480,6 +480,29 @@ static void test_capture_pair(void)
     assert(lfj8_h03_capture_pair(&vss, &nt, &io, 100u, 100u, 4u, &pair));
     assert(pair.nt.state == LFJ8_VSS_UNAVAILABLE && pair.vss.state == LFJ8_VSS_VALID);
     assert(f.lock_depth == 0u);
+}
+
+static void test_capture_pair_end_of_window(void)
+{
+    Fixture f = {.capture_timer = 1000u, .capture_timer_read_step = 5u, .nt_timer = 2000u};
+    const Lfj8RegisterIo io = {&f, read8, read16, read32, write8, lock, unlock};
+    volatile Lfj8RawVss vss = {.last_edge = 904u, .interval_ticks = 80u, .primed = 1u};
+    volatile Lfj8RawCapture nt = {.last_edge = 1904u, .interval_ticks = 80u, .primed = 1u};
+    Lfj8CapturePair pair;
+
+    assert(lfj8_h03_capture_pair(&vss, &nt, &io, 100u, 100u, 5u, &pair));
+    assert(pair.vss.state == LFJ8_VSS_UNAVAILABLE && !vss.primed);
+    assert(pair.nt.state == LFJ8_VSS_UNAVAILABLE && nt.primed && nt.last_edge == 1904u);
+    assert(pair.now_tml0 == 1005u && f.lock_depth == 0u);
+
+    f.capture_timer = 1010u;
+    f.nt_timer = 2010u;
+    vss = (Lfj8RawVss){.last_edge = 915u, .interval_ticks = 80u, .primed = 1u};
+    nt = (Lfj8RawCapture){.last_edge = 1915u, .interval_ticks = 80u, .primed = 1u};
+    assert(lfj8_h03_capture_pair(&vss, &nt, &io, 100u, 100u, 5u, &pair));
+    assert(pair.now_tml0 == 1015u && pair.vss_at_tml0 == 915u);
+    assert(pair.vss.state == LFJ8_VSS_VALID && pair.nt.state == LFJ8_VSS_VALID);
+    assert(pair.nt_at_tml0 == 917u && pair.nt_alignment_error_ticks == 3u);
 }
 
 static void test_speed(void)
@@ -988,6 +1011,7 @@ int main(void)
     test_fullcan_copy_configuration();
     test_engine_can_lifecycle();
     test_capture_pair();
+    test_capture_pair_end_of_window();
     test_raw_capture();
     test_9e1c_capture();
     test_9e1c_nt_capture();

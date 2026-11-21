@@ -38,7 +38,9 @@ typedef struct {
 bool lfj8_h03_target_service_prepare_locked(const Lfj8H03TargetServiceConfig *config);
 
 /* Under the same lock, before rebasing clocks or discarding owned RAM.
- * Controller-level cancellation/drain remains with the guarded CAN monitor. */
+ * The guarded cold entry must already have initialized the CAN owner.
+ * Retire the fenced TX13 slot after withdrawing software authority.
+ * If retirement cannot be confirmed, the fence remains through recovery. */
 void lfj8_h03_target_service_stop_locked(void);
 
 #endif

@@ -2,6 +2,7 @@
 #include "lfj8_h03_application_binding.h"
 #include "lfj8_h03_atf_feed.h"
 #include "lfj8_h03_atf_target.h"
+#include "lfj8_h03_can_monitor_startup.h"
 #include "lfj8_h03_can_owner.h"
 #include "lfj8_h03_mmio.h"
 #include "lfj8_h03_sensor_target.h"
@@ -37,6 +38,7 @@ static bool can_redirects_installed(void)
 void lfj8_h03_target_service_stop_locked(void)
 {
     lfj8_h03_dtc_native_unbind();
+    rbm_h03_can_monitor_retire_tx13_locked();
     rbm_h03_can_service = (Lfj8H03TargetService){.config = NULL};
 }
 
@@ -141,6 +143,7 @@ void rbm_h03_target_service_phase(void *context, const Lfj8H03PhaseEvent *phase,
         }
     }
     lfj8_h03_dtc_native_poll_t6(&rbm_h03_dtc_target, input, ready, &service->t6);
+    rbm_h03_can_monitor_retire_tx13_locked();
     if (input->status) {
         rbm_h03_tx_input.s51_capture = NULL;
     }

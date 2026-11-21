@@ -71,21 +71,26 @@ def check(base, compiler):
         if run(compiler, "-dumpmachine").stdout.strip() != b"m32r-elf":
             raise ValueError("A bare-metal M32R compiler is required")
         for path, irq in (("foreground", 0), ("CAN0_irq", 1)):
-            for hooked, lease, control in ((0, 0, 0x00), (0, 0, 0x81), (1, 0, 0x00),
-                                           (1, 1, 0x00), (1, 1, 0x81), (1, 1, 0x41)):
-                parameters = {"IRQ_PATH": irq, "HOOKED": hooked, "LEASE_VALUE": lease,
+            for hooked, lease, fence, control in (
+                (0, 0, 0, 0x00), (0, 0, 0, 0x81), (1, 0, 0, 0x00),
+                (1, 1, 0, 0x00), (1, 1, 0, 0x81), (1, 1, 0, 0x41),
+                (1, 0, 1, 0x82), (1, 0, 1, 0x02), (1, 0, 1, 0x81),
+            ):
+                parameters = {"IRQ_PATH": irq, "HOOKED": hooked, "LEASE_VALUE": lease, "FENCE_VALUE": fence,
                               "INITIAL_CONTROL": control}
                 run(compiler, "-m32r", "-Wa,-EB", "-nostdlib", "-Wl,-T,fixture.ld",
                     *(f"-D{k}={v}" for k, v in parameters.items()),
                     f"-I{HERE}", "fixture.S", HERE / "h03_can13_tx_gate.S", "-o", "fixture.elf")
                 run(simulator, "--memory-size", "16M", "fixture.elf")
+                blocked = bool(hooked and (lease or fence))
                 cases.append({
                     "caller": path,
                     "hooked": bool(hooked),
                     "lease": bool(lease),
+                    "fence": bool(fence),
                     "initial_slot_control": f"0x{control:02X}",
-                    "final_slot_control": f"0x{control if lease else 0x80:02X}",
-                    "slot_data_preserved": bool(lease),
+                    "final_slot_control": f"0x{control if blocked else 0x80:02X}",
+                    "slot_data_preserved": blocked,
                 })
     return {
         "base": identity,
