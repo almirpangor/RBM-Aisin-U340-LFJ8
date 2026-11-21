@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 883,
+  "sequence": 884,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -14174,9 +14174,37 @@
           "fe45b2270ed1477d94fcc54c637fa138"
         ]
       }
+    },
+    {
+      "operation_id": "30b1f69659a144eda2056d34c3924786",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "complete",
+      "claim_id": "ad014517bfa54394bf4b7185d135b504",
+      "at": "2026-11-21T08:34:56+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex H03-03 — штатные переходы запуска и foreground",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_phase_boot.py",
+          "targets/lfj8/lfj8_h03_application_placement.py",
+          "tests/test_h03_application_placement.py",
+          "verification/project-audit/h03-03-application-entry-placement.md"
+        ],
+        "stage": "done",
+        "claim_id": "ad014517bfa54394bf4b7185d135b504",
+        "claimed_at": "2026-11-21T07:55:30+00:00",
+        "updated_at": "2026-11-21T08:34:56+00:00",
+        "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
+        "result": "579b20f72aecf3880f10f05ebeefd6c7c8951135",
+        "based_on_reviews": [],
+        "task": "H03-03",
+        "submitted_at": "2026-11-21T08:01:57+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:34:42+00:00",
+  "updated_at": "2026-11-21T08:34:56+00:00",
   "main_commit": "abd3cba0093cf834950d7883fcc6cbacec4420d3",
   "catalog": [
     {
@@ -16679,11 +16707,11 @@
         "tests/test_h03_application_placement.py",
         "verification/project-audit/h03-03-application-entry-placement.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "ad014517bfa54394bf4b7185d135b504",
       "claimed_at": "2026-11-21T07:55:30+00:00",
-      "updated_at": "2026-11-21T08:01:57+00:00",
-      "note": "Четыре штатных перехода H03 включены через генерацию ASM, точное размещение и проверку ELF. 68 M32R и 27 Python PASS. Состав 106464 байта, верх 102860/102356, FAIL_BINDINGS. Общий компоновщик в резерве H03-04; открыты выпускной профиль, RAM/стек и остальные переходы. BIN не выпускались.",
+      "updated_at": "2026-11-21T08:34:56+00:00",
+      "note": "Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN.",
       "result": "579b20f72aecf3880f10f05ebeefd6c7c8951135",
       "based_on_reviews": [],
       "task": "H03-03",
