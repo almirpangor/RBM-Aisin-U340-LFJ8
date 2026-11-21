@@ -11,6 +11,8 @@ SERVICE_RAM_FIELDS = {
     "rbm_h03_application": "control/application",
     "rbm_h03_sensor_state": "control/sensors",
     "rbm_h03_tml0_1mhz_qualified": "control/clock_qualified",
+    "rbm_h03_atf_state": "control/atf",
+    "rbm_h03_selector_adc_state": "control/selector_adc",
     "h03_can_owner": "communication/can_owner",
     "rbm_h03_can_service": "communication/can_service",
     "rbm_h03_can13": "communication/can13",
@@ -39,3 +41,19 @@ def typed_alias_ranges(storage, fields=SERVICE_RAM_FIELDS):
             raise ValueError(f"Overlapping native symbol {symbol}")
         ranges[symbol] = (start, end)
     return ranges
+
+
+def referenced_aliases(symbols, ranges, pinned):
+    """Bind named references without permitting a second copy of typed state."""
+    result = {}
+    for name, (address, _) in ranges.items():
+        symbol = symbols.get(name)
+        if symbol is None:
+            continue
+        if (symbol["section"] != 0 and
+                (symbol["section"], symbol["address"]) != (0xFFF1, address)):
+            raise ValueError(f"Native H03 symbol allocates duplicate RAM or conflicts with its typed address: {name}")
+        if name in pinned and pinned[name] != address:
+            raise ValueError(f"Conflicting existing H03 RAM binding: {name}")
+        result[name] = address
+    return result

@@ -19,6 +19,8 @@ from lfj8_h03_layout import (PROFILES,Window,PlacementError,read_elf,alloc_secti
 import lfj8_h03_sensor_hooks as sensor_hooks
 import lfj8_h03_dtc_rx_placement as dtc_rx
 import lfj8_h03_service_placement as service
+import lfj8_h03_can_service_placement as can_service
+import lfj8_h03_tx13_placement as tx13
 
 EXTRA_ROOTS=(
     "rbm_u340e_step",
@@ -214,25 +216,32 @@ def sensor_placement(rom, elf, provisional=None):
             "patches": sensor_hooks.patch_plan(rom, addresses)}
 
 
-def early_irq_model(args, stage, run, flags, rom, placement, bindings, ranges, pointer):
-    """Link the independent boot, DMA4 and BasicCAN graph at the common addresses."""
-    roots = (*service.COMMON_ROOTS, *dtc_rx.REDIRECT_ROOTS)
+def link_placed_roots(args, stage, run, flags, placement, bindings, roots, name):
+    """Link an independent closure at the addresses from the common plan."""
+    obj = f"{name}.o"
     run(args.gcc, *flags, "-r", "-nostdlib", "-Wl,--gc-sections",
-        *(f"-Wl,--undefined={name}" for name in roots), "retained.o", "-o", "early.o")
-    retained = read_elf(stage / "early.o", 1)
-    required = {name for name, symbol in retained["symbols"].items() if symbol["section"] == 0}
+        *(f"-Wl,--undefined={root}" for root in roots), "retained.o", "-o", obj)
+    retained = read_elf(stage / obj, 1)
+    required = {symbol for symbol, record in retained["symbols"].items() if record["section"] == 0}
     if required - bindings.keys():
-        raise ValueError(f"Early IRQ/DMA4 graph requires other providers: {sorted(required - bindings.keys())}")
+        raise ValueError(f"{name} graph requires other providers: {sorted(required - bindings.keys())}")
     names = {section["name"] for section in alloc_sections(retained)}
     selected = [item for item in placement if item["section"] in names]
     if names != {item["section"] for item in selected}:
-        raise ValueError("An early IRQ/DMA4 section is missing from the common layout")
-    pinned = "".join(f"{name} = {bindings[name]:#x};\n" for name in sorted(required))
-    script = pinned + linker_script(selected, object_name="early.o", entry=roots[0])
-    (stage / "early.ld").write_text(script, encoding="ascii")
-    run(args.gcc, *flags, "-nostdlib", "-Wl,-T,early.ld", "early.o", "-o", "early-irq.elf")
-    path = stage / "early-irq.elf"
+        raise ValueError(f"A {name} section is missing from the common layout")
+    pinned = "".join(f"{symbol} = {bindings[symbol]:#x};\n" for symbol in sorted(required))
+    script = pinned + linker_script(selected, object_name=obj, entry=roots[0])
+    (stage / f"{name}.ld").write_text(script, encoding="ascii")
+    run(args.gcc, *flags, "-nostdlib", f"-Wl,-T,{name}.ld", obj, "-o", f"{name}.elf")
+    path = stage / f"{name}.elf"
     linked = read_elf(path, 2)
+    verify_linked(linked, selected, roots)
+    return path, linked, selected
+
+
+def early_irq_model(args, stage, run, flags, rom, placement, bindings, ranges, pointer):
+    roots = (*service.COMMON_ROOTS, *dtc_rx.REDIRECT_ROOTS)
+    path, linked, selected = link_placed_roots(args, stage, run, flags, placement, bindings, roots, "early-irq")
     # Verify the independent graph against the same fixed sites and policy.
     model = {"elf_sha256": linked["sha256"], "placements": selected, "roots": list(roots),
              "irq_pointer": pointer, "policy_ranges": ranges,
@@ -271,6 +280,12 @@ def build(args):
     windows=PROFILES[args.profile]
     with_dtc_rx = getattr(args, "with_dtc_rx", False)
     with_dma4 = getattr(args, "with_dma4_guard", False)
+    with_can_service = getattr(args, "with_can_service", False)
+    if with_can_service:
+        if not (with_dtc_rx and args.with_bindings and args.storage_report):
+            raise ValueError("CAN service requires --with-bindings, --with-dtc-rx and --storage-report")
+        can_ram = can_service.typed_alias_ranges(read_storage_report(args.storage_report))
+        tx13.validate_stock(rom)
     if with_dma4:
         if not (with_dtc_rx and args.with_bindings and args.storage_report):
             raise ValueError("DMA4 and early IRQ protection require --with-bindings, --with-dtc-rx and --storage-report")
@@ -295,7 +310,8 @@ def build(args):
             raise ValueError("Resident RX needs --with-bindings and a typed --storage-report")
         dtc_rx.validate_stock(rom)
         # The two pinned OEM words are occupied, unlike the packing windows.
-        fixed_windows = (*dtc_rx.REDIRECT_WINDOWS, *(service.COMMON_WINDOWS if with_dma4 else ()))
+        fixed_windows = (*dtc_rx.REDIRECT_WINDOWS, *(service.COMMON_WINDOWS if with_dma4 else ()),
+                         *((tx13.REDIRECT_WINDOW,) if with_can_service else ()))
         validate_windows((*flash_windows, *fixed_windows))
         storage_space(args.storage_report)
         owner_address = dtc_rx.owner_address(json.loads(args.storage_report.read_text(encoding="utf-8")))
@@ -336,6 +352,8 @@ def build(args):
         bindings.extend(LFJ8/name for name in dtc_rx.MODULES)
     if with_dma4:
         bindings.append(LFJ8 / "h03_dma4_guard.S")
+    if with_can_service:
+        bindings.extend(LFJ8 / name for name in (*can_service.SERVICE_MODULES, *tx13.MODULES))
     modules=list(dict.fromkeys([*modules,*bindings]))
     roots=set((*legacy.H03_ROOTS,*legacy.DTC_ROOTS,*legacy.CAN_EXTENSION_ROOTS,*EXTRA_ROOTS))
     if with_dtc_rx:
@@ -369,6 +387,10 @@ def build(args):
     if with_dma4:
         path = Path(service.__file__).resolve()
         report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
+    if with_can_service:
+        for provider in (can_service, tx13):
+            path = Path(provider.__file__).resolve()
+            report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
     with TemporaryDirectory(prefix="rbm-h03-placement-") as folder:
         stage=Path(folder)
         if sensor_source is not None:
@@ -441,6 +463,13 @@ def build(args):
             native_bindings.update(dtc_rx.STOCK_SYMBOLS, h03_can_owner=owner_address)
         if with_dma4:
             native_bindings.update(service.COMMON_STOCK_TARGETS, h03_dtc_irq_pointer=pointer)
+        if with_can_service:
+            if retained["symbols"].get(tx13.RESUME, {}).get("section") != 0:
+                raise ValueError("Expected the OEM H03 TX13 continuation reference")
+            aliases = can_service.referenced_aliases(retained["symbols"], can_ram, native_bindings)
+            native_bindings.update(aliases, **{tx13.RESUME: tx13.SITE + 4})
+            report["can_service"] = {"typed_aliases": {name: can_ram[name] for name in aliases},
+                                     "allocates_new_alias_storage": False}
         unresolved=[name for name,symbol in retained["symbols"].items()
                     if symbol["section"]==0 and name not in native_bindings]
         sections=alloc_sections(retained)
@@ -454,6 +483,9 @@ def build(args):
                 return pack(flash,windows)
             names = dtc_rx.closure_sections(run, args.gcc, flags, stage)
             fixed, remaining = dtc_rx.fixed_redirects(flash)
+            if with_can_service:
+                tx_fixed, remaining = tx13.fixed_redirect(remaining)
+                fixed.extend(tx_fixed)
             if with_dma4:
                 service_fixed, remaining = service.fixed_common_redirects(remaining)
                 fixed.extend(service_fixed)
@@ -487,6 +519,13 @@ def build(args):
                 if with_dtc_rx:
                     report["dtc_rx_redirects"] = dtc_rx.describe(
                         rom, retained, provisional, owner_address, linked=False)
+                if with_can_service:
+                    _, tx_elf, tx_places = link_placed_roots(
+                        args, stage, run, flags, sorted(provisional, key=lambda p: p["address"]),
+                        native_bindings, tx13.ROOTS, "tx13")
+                    report["can_service"]["tx13"] = tx13.describe(
+                        rom, tx_elf, tx_places, owner_address, linked=True)
+                    report["can_service"]["tx13"]["verification_scope"] = "independent_link_at_common_addresses"
                 if with_dma4:
                     clock = storage["fields"]["control/clock_qualified"]
                     control = storage["blocks"]["control"]
@@ -532,6 +571,12 @@ def build(args):
             report["sensor_redirects"] = sensor_placement(rom, linked)
         if with_dtc_rx:
             report["dtc_rx_redirects"] = dtc_rx.describe(rom, linked, placement, owner_address, linked=True)
+        if with_can_service:
+            for name, address in aliases.items():
+                symbol = linked["symbols"].get(name, {})
+                if (symbol.get("section"), symbol.get("address")) != (0xFFF1, address):
+                    raise ValueError("Linked H03 CAN service RAM differs from its typed binding: " + name)
+            report["can_service"]["tx13"] = tx13.describe(rom, linked, placement, owner_address, linked=True)
         if with_dma4:
             report["common_service"] = {"patches": service.verify_common(rom, linked, policy, pointer),
                                         "policy_ranges": policy, "irq_pointer": pointer}
@@ -588,6 +633,8 @@ def main():
                         help="Link the two OEM-site BasicCAN redirects and place the resident RX graph")
     parser.add_argument("--with-dma4-guard", action="store_true",
                         help="Include the DMA4 guard and clear the BasicCAN pointer before the first IRQ")
+    parser.add_argument("--with-can-service", action="store_true",
+                        help="Include native CAN service, typed application RAM and the OEM TX13 redirect")
     parser.add_argument("--cpu-test",action="store_true")
     parser.add_argument("--storage-report",type=Path)
     args=parser.parse_args()
