@@ -24,16 +24,21 @@ void chery_dtc_link_end_session(CheryDtcLink *link)
     }
 }
 
-bool chery_dtc_link_expire(CheryDtcLink *link, uint32_t tick)
+bool chery_dtc_link_timeout_due(const CheryDtcLink *link, uint32_t tick)
 {
     if (link == NULL || link->phase == CHERY_DTC_LINK_IDLE) {
         return false;
     }
 
-    uint32_t limit = link->phase == CHERY_DTC_LINK_AWAITING_TX
+    const uint32_t limit = link->phase == CHERY_DTC_LINK_AWAITING_TX
         ? CHERY_DTC_LINK_TX_CONFIRM_TICKS
         : CHERY_DTC_LINK_FLOW_CONTROL_TICKS;
-    if ((uint32_t)(tick - link->phase_tick) < limit) {
+    return (uint32_t)(tick - link->phase_tick) >= limit;
+}
+
+bool chery_dtc_link_expire(CheryDtcLink *link, uint32_t tick)
+{
+    if (!chery_dtc_link_timeout_due(link, tick)) {
         return false;
     }
 
