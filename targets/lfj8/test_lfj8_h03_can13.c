@@ -30,6 +30,9 @@ typedef struct {
     bool busy_on_listener_pause;
     bool bus_off_before_tx_request;
     bool receive_starts_during_id_read;
+    bool omit_vehicle;
+    bool omit_vss;
+    bool omit_status;
     unsigned sent;
     unsigned aborts;
     unsigned writes;
@@ -159,7 +162,9 @@ static Lfj8H03Can13Result poll(Fixture *f, uint32_t time_us)
     };
     const Lfj8H03Can13Input input = {
         f->generation, now, UINT32_MAX - 5u + time_us / 100u, f->grant, &torque,
-        &torque_cal, &f->dtc, f->queued ? &f->head : NULL, &f->vss, &vehicle, &status,
+        &torque_cal, &f->dtc, f->queued ? &f->head : NULL,
+        f->omit_vss ? NULL : &f->vss, f->omit_vehicle ? NULL : &vehicle,
+        f->omit_status ? NULL : &status,
     };
     const Lfj8H03Can13Result result = lfj8_h03_can13_poll(&f->broker, &f->io, &input);
     assert(!f->lock);
@@ -518,6 +523,38 @@ static void test_listener_busy_during_id_read(void)
     assert(lfj8_h03_can0_torque_yield(&f.io, 1u) == LFJ8_CAN_READY && !f.control);
 }
 
+static void test_status_without_speed_inputs(void)
+{
+    Fixture f;
+    init(&f, 1000u, 1000u);
+    f.omit_vehicle = f.omit_vss = f.omit_status = true;
+    assert(poll(&f, 0u).available);
+    assert(poll(&f, 1000u).available && !f.sent);
+
+    f.omit_status = false;
+    capture(&f, 1000u, (const uint8_t[]){2, 0x10, 0x86}, 3u);
+    const Lfj8H03Can13Result first = poll(&f, 1010u);
+    assert(first.diagnostic_consumed && !first.status_submitted);
+    assert(active_id(&f) == CHERY_DTC_CAN_REPLY_ID && f.slot[7] == 0x50u);
+    finish(&f, 1020u);
+
+    assert(poll(&f, 1040u).status_submitted == LFJ8_DUE_1AE);
+    assert(active_id(&f) == LFJ8_CAN_1AE && f.slot[12] == 0xffu && f.slot[13] == 0xffu);
+    assert(f.broker.status.counter_f8e4 == 1u);
+    finish(&f, 1060u);
+
+    assert(poll(&f, 1080u).status_submitted == LFJ8_DUE_300);
+    assert(active_id(&f) == LFJ8_CAN_300 && f.slot[9] == 110u);
+    assert(f.sent == 3u);
+    finish(&f, 1100u);
+
+    f.grant = false;
+    const unsigned writes = f.writes;
+    assert(!poll(&f, 2100u).available && f.writes == writes);
+    f.grant = true;
+    assert(!poll(&f, 2120u).available && f.writes == writes);
+}
+
 int main(void)
 {
     test_torque_priority_and_cancel();
@@ -532,6 +569,7 @@ int main(void)
     test_foreign_queued_tx_is_not_aborted();
     test_foreign_listener_keeps_its_slot();
     test_listener_busy_during_id_read();
+    test_status_without_speed_inputs();
     puts("H03 CAN13 broker: torque preemption, diagnostic FC and generation recovery PASS");
     return 0;
 }

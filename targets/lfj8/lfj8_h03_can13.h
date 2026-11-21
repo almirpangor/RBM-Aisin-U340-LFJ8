@@ -62,8 +62,9 @@ bool lfj8_h03_can13_init(Lfj8H03Can13 *broker, const Lfj8H03Can13Config *config,
  * RX queue. Remove the head when diagnostic_consumed is set. Drop captures
  * before half a timestamp wrap even if the broker is busy. Torque input
  * and the status inputs are optional, with one owner of their data.
- * Status needs vehicle and status, with either raw vss or an S51 capture
- * attached to status for this foreground turn. */
+ * Status needs qualified frame operands in status. Missing vehicle
+ * calibration or S51 input produces unavailable speed in 0x1AE. 0x300
+ * does not depend on either speed input. */
 Lfj8H03Can13Result lfj8_h03_can13_poll(Lfj8H03Can13 *broker, const Lfj8RegisterIo *io,
                                       const Lfj8H03Can13Input *input);
 

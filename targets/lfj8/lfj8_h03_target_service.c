@@ -80,7 +80,7 @@ static void prepare_inputs(void *context, const Lfj8H03TargetServiceConfig *conf
                            const Lfj8H03SensorSnapshot *sensors, const Lfj8H03MainResult *main,
                            uint32_t now, Lfj8H03Can13Input *input)
 {
-    if (config->status && config->vehicle && config->vehicle->tick_hz == 1000000u) {
+    if (config->status) {
         Lfj8CheryTxInputs *const status = &rbm_h03_tx_input;
         *status = (Lfj8CheryTxInputs){.s51_capture = NULL};
         if (config->status(context, sensors, main, status)) {
