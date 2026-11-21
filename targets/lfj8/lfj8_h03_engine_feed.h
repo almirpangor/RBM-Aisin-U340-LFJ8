@@ -59,6 +59,7 @@ typedef struct {
     const Lfj8H03CanOwner *can_owner;
     const Lfj8RegisterIo *io;
     int (*now_us)(uint32_t *now_us);
+    uint8_t bit_time_us; /* Qualified upper bound on one CAN0 timestamp tick. */
 } Lfj8H03EngineFeedTarget;
 
 /* Startup binds the existing storage to h03_can_owner, lfj8_h03_mmio and
@@ -76,9 +77,11 @@ void lfj8_h03_engine_feed_target_poll(const Lfj8H03EngineFeedTarget *target);
 
 /* Called once per eligible Task 2 release, after CAN owner service. Pass
  * the current cycle input's engine field as feed. This is input qualification
- * only. Recheck application and CAN admission before issuing outputs. */
+ * only. oldest_us enters with the oldest context operand (including any
+ * fallback) and is widened to cover the published CAN or retained RPM
+ * operands. Recheck application and CAN admission before issuing outputs. */
 unsigned lfj8_h03_engine_feed_target_task2(const Lfj8H03EngineFeedTarget *target,
     const Ta2005EngineQualificationContext *context, bool inhibit_history,
-    RbmU340eQualifiedEngineFeed *feed, Lfj8H03EngineModelSample *model);
+    RbmU340eQualifiedEngineFeed *feed, Lfj8H03EngineModelSample *model, uint32_t *oldest_us);
 
 #endif
