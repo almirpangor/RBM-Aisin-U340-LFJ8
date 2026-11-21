@@ -1,0 +1,18 @@
+test_calibration_symbol_bounds_are_checked (test_h03_layout.PlacementTests.test_calibration_symbol_bounds_are_checked) ... ok
+test_candidate_profiles_never_touch_boot_or_end_marker (test_h03_layout.PlacementTests.test_candidate_profiles_never_touch_boot_or_end_marker) ... ok
+test_elf_wrong_machine_endian_truncated_table_and_names_rejected (test_h03_layout.PlacementTests.test_elf_wrong_machine_endian_truncated_table_and_names_rejected) ... ok
+test_erased_candidate_checks_every_byte_and_bounds (test_h03_layout.PlacementTests.test_erased_candidate_checks_every_byte_and_bounds) ... ok
+test_every_section_preserved_at_aligned_nonoverlapping_address (test_h03_layout.PlacementTests.test_every_section_preserved_at_aligned_nonoverlapping_address) ... ok
+test_final_link_roots_sections_relocations_and_addresses (test_h03_layout.PlacementTests.test_final_link_roots_sections_relocations_and_addresses) ... ok
+test_initialized_state_tls_duplicate_and_bad_alignment_rejected (test_h03_layout.PlacementTests.test_initialized_state_tls_duplicate_and_bad_alignment_rejected) ... ok
+test_missing_or_unidentified_ram_inventory_refused (test_h03_layout.PlacementTests.test_missing_or_unidentified_ram_inventory_refused) ... ok
+test_new_attempt_invalidates_stale_success_but_preserves_inputs (test_h03_layout.PlacementTests.test_new_attempt_invalidates_stale_success_but_preserves_inputs) ... ok
+test_overflow_and_fragmentation_fail_without_truncating (test_h03_layout.PlacementTests.test_overflow_and_fragmentation_fail_without_truncating) ... ok
+test_overlapping_duplicate_unaligned_and_out_of_range_windows (test_h03_layout.PlacementTests.test_overlapping_duplicate_unaligned_and_out_of_range_windows) ... ok
+test_toyota_release_is_resolved_only_from_a_typed_field (test_h03_layout.PlacementTests.test_toyota_release_is_resolved_only_from_a_typed_field) ... ok
+test_toyota_release_rejects_wrong_geometry_or_overlapping_storage (test_h03_layout.PlacementTests.test_toyota_release_rejects_wrong_geometry_or_overlapping_storage) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.010s
+
+OK

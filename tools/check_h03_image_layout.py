@@ -4,6 +4,7 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import shutil
+import struct
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
@@ -64,6 +65,56 @@ def save(path,data):
 
 def digest(path):
     return sha256(Path(path).read_bytes()).hexdigest()
+
+
+def readonly_objects(elf, path):
+    """Whole constant sections with no relocations or executable bytes."""
+    data = path.read_bytes()
+    table = struct.unpack_from(">I", data, 32)[0]
+    stride, count = struct.unpack_from(">HH", data, 46)
+    relocations = set()
+    for index in range(count):
+        row = struct.unpack_from(">10I", data, table + index * stride)
+        if row[1] in (4, 9) and row[5]:
+            relocations.add(row[7])  # ELF sh_info names the relocated section.
+    result = {}
+    for section in elf["sections"]:
+        if (section["flags"] != 2 or section["type"] != 1 or not section["name"].startswith(".rodata.")
+                or not section["size"] or section["index"] in relocations):
+            continue
+        result[section["name"]] = (section["name"], section["size"], sha256(section["data"]).hexdigest())
+    return result
+
+
+def pack_resident_constants(resident, upper, windows, eligible, resident_window):
+    """Keep the resident code fixed; spill only approved tables after it."""
+    base = pack(resident, (resident_window,))
+    try:
+        return base + pack(upper, windows), []
+    except PlacementError as error:
+        original_error = error
+    start = (max((p["address"] + p["bytes"] for p in base),
+                 default=resident_window.start) + 3) & ~3
+    if start >= resident_window.end:
+        raise original_error
+    spare = Window(resident_window.name, start, resident_window.end)
+    moved = []
+    candidates = sorted((s for s in upper if s["name"] in eligible and
+                         s["flags"] == 2 and s["type"] == 1),
+                        key=lambda s: (-s["size"], -s["alignment"], s["name"]))
+    for candidate in candidates:
+        try:
+            low = pack([*moved, candidate], (spare,))
+        except PlacementError:
+            continue
+        moved.append(candidate)
+        names = {s["name"] for s in moved}
+        try:
+            high = pack([s for s in upper if s["name"] not in names], windows)
+            return base + low + high, sorted(names)
+        except PlacementError:
+            continue
+    raise original_error
 
 
 def invalidate_outputs(output,inputs):
@@ -316,6 +367,9 @@ def build(args):
     application_source = application_entries.assembly(rom) if with_application_entries else None
     windows=PROFILES[args.profile]
     with_dtc_rx = getattr(args, "with_dtc_rx", False)
+    with_resident_constants = getattr(args, "with_resident_constants", False)
+    if with_resident_constants and not with_dtc_rx:
+        raise ValueError("Resident constants require --with-dtc-rx")
     with_dma4 = getattr(args, "with_dma4_guard", False)
     with_can_service = getattr(args, "with_can_service", False)
     with_service_guard = getattr(args, "with_service_guard", False)
@@ -613,6 +667,37 @@ def build(args):
                 )
                 names.update(writer_names)
             resident, upper = dtc_rx.split_flash(remaining, names)
+            if with_resident_constants:
+                approved = readonly_objects(retained, stage / "retained.o")
+                for name, size, expected in legacy.S01_LINK_TABLES:
+                    content = symbol_bytes(retained, name)
+                    if len(content) != size or sha256(content).hexdigest() != expected:
+                        raise ValueError("Changed donor table before placement: " + name)
+                packed, moved = pack_resident_constants(resident, upper, windows, approved, dtc_rx.RX_WINDOW)
+                report["resident_constants"] = {"scope": "candidate address model; ownership unverified",
+                                                "moved": [dict(section=s,
+                                                bytes=approved[s][1], sha256=approved[s][2]) for s in moved]}
+                if moved:
+                    locations = [p for p in packed if p["section"] in moved]
+                    objcopy = run(args.gcc, "-print-prog-name=objcopy")
+                    run(objcopy, *(f"--only-section={s}" for s in moved),
+                        "retained.o", "resident-constants.o")
+                    script = (f"rbm_constant_probe = {locations[0]['address']:#x};\n" +
+                              linker_script(locations, object_name="resident-constants.o", entry="rbm_constant_probe"))
+                    (stage / "resident-constants.ld").write_text(script, encoding="ascii")
+                    run(args.gcc, *flags, "-nostdlib", "-Wl,-T,resident-constants.ld",
+                        "resident-constants.o", "-o", "resident-constants.elf")
+                    constants = read_elf(stage / "resident-constants.elf", 2)
+                    verify_linked(constants, locations, ())
+                    for location in locations:
+                        name, size, expected = approved[location["section"]]
+                        content = next(s["data"] for s in alloc_sections(constants)
+                                       if s["address"] == location["address"])
+                        if len(content) != size or sha256(content).hexdigest() != expected:
+                            raise ValueError("Linked donor table changed: " + name)
+                    report["resident_constants"].update(elf_sha256=constants["sha256"],
+                                                       placements=locations, linked_bytes_verified=True)
+                return fixed + packed
             return fixed + pack(resident, (dtc_rx.RX_WINDOW,)) + pack(upper, windows)
 
         def place_ram():
@@ -771,6 +856,8 @@ def main():
     parser.add_argument("--profile",choices=PROFILES,default="two-window")
     parser.add_argument("--memory-model",choices=("medium","small"),default="medium")
     parser.add_argument("--with-bindings",action="store_true")
+    parser.add_argument("--with-resident-constants", action="store_true",
+                        help="On overflow, place verified relocation-free constant objects after the resident RX closure")
     parser.add_argument("--application-profile",type=Path,
                         help="Include the application binding and platform with an explicit header and --storage-report")
     parser.add_argument("--sensor-clock-reference", type=Path,
