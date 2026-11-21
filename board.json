@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 858,
+  "sequence": 859,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -306,8 +306,8 @@
       "stage": "in_progress",
       "claim_id": "403b34a2893d4d969a7b8eb7964150c2",
       "claimed_at": "2026-11-21T07:58:13+00:00",
-      "updated_at": "2026-11-21T07:58:13+00:00",
-      "note": "Подключаю существующее безопасное чтение массива M32176 к профилю FactoryAdaptRead для TOY-05 после cold-проекции. Использую текущий workspace без новой RAM; два внешне подтверждённых блока обязательны, конкретные адреса и запись остаются открытыми.",
+      "updated_at": "2026-11-21T08:02:40+00:00",
+      "note": "Реальный FactoryAdaptRead и защищённый массив прошли в M32R, включая rollover и отказ Virtual Flash. Инвентарь RAM не вырос. Проверяю профиль в общей композиции и повторяю регрессии.",
       "result": null,
       "based_on_reviews": []
     },
@@ -13400,9 +13400,38 @@
         "result": "579b20f72aecf3880f10f05ebeefd6c7c8951135",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "3d587fad1fb84a5ab9623d44571fae8a",
+      "task": "TOY-05",
+      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+      "action": "heartbeat",
+      "claim_id": "403b34a2893d4d969a7b8eb7964150c2",
+      "at": "2026-11-21T08:02:40+00:00",
+      "record": {
+        "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
+        "label": "Codex TOY-05 — чтение адаптаций из нативного массива при старте",
+        "branch": "codex/integration39-c7e4",
+        "files": [
+          "targets/lfj8/check_h03_nvm.py",
+          "targets/lfj8/h03_nvm_native_fixture.c",
+          "targets/lfj8/lfj8_h03_cycle.h",
+          "targets/lfj8/lfj8_h03_nvm_native.c",
+          "targets/lfj8/lfj8_h03_nvm_native.h",
+          "targets/lfj8/lfj8_h03_toyota_nvm_profile.h",
+          "verification/project-audit/toy05-native-adaptation-reader.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "403b34a2893d4d969a7b8eb7964150c2",
+        "claimed_at": "2026-11-21T07:58:13+00:00",
+        "updated_at": "2026-11-21T08:02:40+00:00",
+        "note": "Реальный FactoryAdaptRead и защищённый массив прошли в M32R, включая rollover и отказ Virtual Flash. Инвентарь RAM не вырос. Проверяю профиль в общей композиции и повторяю регрессии.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:01:57+00:00",
+  "updated_at": "2026-11-21T08:02:40+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
