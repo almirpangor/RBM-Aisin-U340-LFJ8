@@ -9,7 +9,7 @@
     "engine": "GW4G15 / Bosch ME7.9.71 E4M3"
   },
   "release_ready": false,
-  "audit": "verification/project-audit/integration-11-20261121/audit.json",
+  "audit": "verification/project-audit/bench-first-20261121/audit.json",
   "status_labels": {
     "closed": "Завершено в указанном объёме",
     "model": "Проверено программно",
@@ -345,6 +345,15 @@
         "verification/project-audit/integration-11-20261121/composition.json",
         "verification/project-audit/integration-11-20261121/roundtrip.json"
       ]
+    },
+    "BENCH_PREP": {
+      "title": "Пересверка и сборка байтов H03",
+      "command": "build-summary.json; python -B -m unittest tests.test_h03_image и тесты размещения; repeat-composition.py сохраняет FAIL_BINDINGS.",
+      "reports": [
+        "verification/project-audit/bench-first-20261121/report.md",
+        "verification/project-audit/bench-first-20261121/summary.json",
+        "verification/project-audit/bench-first-20261121/composition.json"
+      ]
     }
   },
   "modules": [
@@ -425,7 +434,8 @@
         "FINAL_INTEGRATION",
         "COORD_HANDOFF",
         "INTEGRATION39",
-        "INTEGRATION11"
+        "INTEGRATION11",
+        "BENCH_PREP"
       ],
       "docs": [
         "docs/decisions.md",
@@ -1316,7 +1326,8 @@
         "FINAL_INTEGRATION",
         "S01_COLD",
         "INTEGRATION39",
-        "INTEGRATION11"
+        "INTEGRATION11",
+        "BENCH_PREP"
       ],
       "docs": [
         "docs/lfj8-h03-ram-audit.md",
@@ -1990,7 +2001,7 @@
       ],
       "title": "Два целевых BIN и воспроизводимый комплект",
       "status": "open",
-      "current": "Все 11 новых результатов объединены. 41 этап ПК, 210 Python до новой упаковки, 55 целевых проверок упаковки, 22 native, 8 компонентов и 6 групп ядра прошли. Известный состав помещается после переноса двух таблиц, но 15 ссылок остаются открытыми. TCM BIN отсутствует; Bosch OFFLINE_ONLY.",
+      "current": "Добавлена детерминированная сборка байтов полного H03 ELF с проверкой исходных участков и всех секций. Проверены 12 новых сценариев. Полного native ELF и TCM BIN ещё нет; работают 12 чатов первой стендовой волны.",
       "remaining": "Закончить реальные профили/поставщики, полный native link и все redirects, сериализацию TCM BIN, целевую Bosch пару, целостность, сквозные проверки и манифест. Измерения новой пары следуют после выдачи файлов.",
       "acceptance": "Два целевых реализованных BIN, source/final SHA и карта правок, воспроизводимая сборка, подтвержденные software checks, явные ограничения первого стенда. Аппаратная приемка учитывается отдельно в REL-02.",
       "code": [
@@ -1998,7 +2009,8 @@
         "targets/lfj8/check_h03_link.py",
         "targets/bosch/build.py",
         "tools/package_workset.py",
-        "tests/test_package_workset.py"
+        "tests/test_package_workset.py",
+        "tools/h03_image.py"
       ],
       "settings": "Отдельные поля build_verified, model_verified и hardware_verified. Не переименовывать ELF/тестовый BIN в рабочую прошивку.",
       "checks": [
@@ -2014,7 +2026,8 @@
         "INTEGRATION21",
         "FINAL_INTEGRATION",
         "INTEGRATION39",
-        "INTEGRATION11"
+        "INTEGRATION11",
+        "BENCH_PREP"
       ],
       "docs": [
         "docs/verification.md",

@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-21",
+  "source_commit_before_audit": "10f7c1513b910f42473690255641140989cc10d0",
+  "release_ready": false,
+  "bench_pair_ready": false,
+  "hardware_verified": false,
+  "passed": {
+    "fresh_pc_stages": 41,
+    "broad_python_tests": 216,
+    "image_and_layout_tests": 67,
+    "fresh_controller_m32r": true,
+    "fresh_bridge_m32r": true,
+    "source_provenance": true,
+    "native_provider_option_exercised": true,
+    "preprocessed_translation_units_recorded": 58
+  },
+  "composition": {
+    "status": "FAIL_BINDINGS",
+    "flash_payload_bytes": 107884,
+    "new_static_ram_bytes": 4,
+    "unresolved_symbols": [
+      "fixture_engine_context",
+      "qualified_adaptation_blocks",
+      "rbm_h03_boot_writers_owned",
+      "rbm_h03_ram_psw_first",
+      "rbm_h03_ram_psw_reserve",
+      "rbm_h03_ram_spi_first",
+      "rbm_h03_ram_spi_reserve",
+      "rbm_h03_sensor_config",
+      "rbm_h03_target_clock_ready",
+      "rbm_h03_target_startup_gear",
+      "rbm_h03_target_startup_gp",
+      "rbm_h03_target_takeover_ops",
+      "test_can_service_config",
+      "test_initialize_inputs",
+      "test_input_capture"
+    ]
+  },
+  "tcm_bin": null,
+  "bosch_status": "Previous OFFLINE_ONLY; target path is being reworked by chat 8",
+  "dispatch": {
+    "existing_chats": 12,
+    "all_delivered": true,
+    "new_chats_created": 0,
+    "plan": "docs/bench-first-wave.md"
+  },
+  "limits": [
+    "No full native application ELF yet",
+    "Byte assembler tested on synthetic complete ELF; no TCM image emitted",
+    "Hardware acceptance after implemented bench pair"
+  ]
+}

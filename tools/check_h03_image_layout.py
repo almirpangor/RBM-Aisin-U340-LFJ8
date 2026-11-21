@@ -67,6 +67,22 @@ def digest(path):
     return sha256(Path(path).read_bytes()).hexdigest()
 
 
+def extra_binding_sources(values):
+    """Explicit production providers; keep fixtures and outside files out."""
+    sources = []
+    for value in values:
+        path = Path(value)
+        path = (ROOT / path).resolve() if not path.is_absolute() else path.resolve()
+        if (not path.is_relative_to(LFJ8.resolve()) or not path.is_file()
+                or path.suffix not in (".c", ".S")
+                or path.name.startswith("test_") or "fixture" in path.name.lower()):
+            raise ValueError("Expected a native H03 binding source: " + str(value))
+        if path in sources:
+            raise ValueError("Duplicate native H03 binding source: " + str(value))
+        sources.append(path)
+    return sources
+
+
 def readonly_objects(elf, path):
     """Whole constant sections with no relocations or executable bytes."""
     data = path.read_bytes()
@@ -337,6 +353,9 @@ def early_irq_model(args, stage, run, flags, rom, placement, bindings, ranges, p
 
 def build(args):
     application_profile = getattr(args, "application_profile", None)
+    extras = extra_binding_sources(getattr(args, "binding_source", ()))
+    if extras and (not args.with_bindings or application_profile is None):
+        raise ValueError("Extra native bindings require --with-bindings and --application-profile")
     with_application_entries = getattr(args, "with_application_entries", False)
     if with_application_entries and application_profile is None:
         raise ValueError("H03 application entries require --application-profile")
@@ -454,6 +473,7 @@ def build(args):
     bindings=[LFJ8/name for name in BINDING_MODULES if (LFJ8/name).is_file()] if args.with_bindings else []
     if application_profile is not None:
         bindings.extend(LFJ8 / name for name in PROFILED_BINDINGS)
+    bindings.extend(source for source in extras if source not in bindings)
     if args.with_bindings:
         bindings.extend(LFJ8/name for name in SENSOR_ASSEMBLY)
     if with_application_entries:
@@ -485,6 +505,8 @@ def build(args):
             "bindings_not_present":[name for name in BINDING_MODULES if not (LFJ8/name).is_file()],
             "raw_reference_patterns":raw_reference_patterns(rom,flash_windows),
             "hardware_verified":False,"target_ownership_verified":False,"flashable_image":None}
+    report["extra_binding_sources"] = [path.relative_to(ROOT).as_posix() for path in extras]
+    report["translation_units"] = {}
     if sensor_source is not None:
         generator = Path(sensor_config.__file__).resolve()
         report["input_sources"][generator.relative_to(ROOT).as_posix()] = digest(generator)
@@ -558,9 +580,18 @@ def build(args):
                 raise ValueError("Ambiguous or test-only input module")
             profile_flags = (["-I", application_profile.parent,
                 '-DRBM_H03_APPLICATION_PROFILE="' + application_profile.name + '"']
-                if source.name in PROFILED_BINDINGS else [])
+                if source.name in PROFILED_BINDINGS or source in extras else [])
             if source.name == "h03_dma4_guard.S":
                 profile_flags.append("-DRBM_H03_COMMON_DMA4_GUARD=1")
+            # The profile can include other domain headers. A single top-level
+            # header digest does not identify the code actually compiled.
+            preprocessed = run(args.gcc, *flags, *module_flags, *profile_flags,
+                *(x for p in includes for x in ("-I", p)), "-E", "-P", source)
+            report["translation_units"][source.name] = {
+                "preprocessed_sha256": sha256(preprocessed.encode("utf-8")).hexdigest(),
+                "profile_enabled": bool(application_profile is not None and
+                    (source.name in PROFILED_BINDINGS or source in extras)),
+            }
             run(args.gcc,*flags,*module_flags,*profile_flags,*(x for p in includes for x in ("-I",p)),
                 "-c",source,"-o",name)
             objects.append(name)
@@ -860,6 +891,8 @@ def main():
                         help="On overflow, place verified relocation-free constant objects after the resident RX closure")
     parser.add_argument("--application-profile",type=Path,
                         help="Include the application binding and platform with an explicit header and --storage-report")
+    parser.add_argument("--binding-source", type=Path, action="append", default=[],
+                        help="Additional production H03 provider; repeat per file. Uses the explicit application profile")
     parser.add_argument("--sensor-clock-reference", type=Path,
                         help="Paired TML0/TML1 observations against an independent time reference")
     parser.add_argument("--sensor-calibration-profile", type=Path,
@@ -886,6 +919,7 @@ def main():
         if getattr(args,name) is not None:
             setattr(args,name,getattr(args,name).resolve())
     inputs=[getattr(args,name) for name in input_names if getattr(args,name) is not None]
+    inputs.extend(Path(path).resolve() for path in args.binding_source)
     # Invalidate the previous result before any new attempt, including failure.
     try:
         invalidate_outputs(args.out,inputs)
