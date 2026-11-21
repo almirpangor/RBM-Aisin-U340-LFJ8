@@ -49,7 +49,9 @@ bool lfj8_h03_target_service_prepare_locked(const Lfj8H03TargetServiceConfig *co
     }
     lfj8_h03_target_service_stop_locked();
     const Lfj8H03ApplicationEngine *const engine = rbm_h03_application_binding.engine;
-    if (!config || !can_redirects_installed() || !h03_can_owner.initialized ||
+    if (!config || (config->status_from_t6 &&
+                    (config->can13.period_1ae_us || config->can13.period_300_us)) ||
+        !can_redirects_installed() || !h03_can_owner.initialized ||
         !engine || !engine->target.dtc || engine->target.io != io ||
         engine->target.can_owner != &h03_can_owner ||
         engine->target.now_us != rbm_h03_atf_now_us ||
@@ -66,7 +68,8 @@ static bool start_locked(Lfj8H03TargetService *service, uint32_t sensor_epoch)
     const Lfj8H03TargetServiceConfig *const config = service->config;
     service->start_pending = false;
     service->sensor_epoch = sensor_epoch;
-    if (!lfj8_h03_dtc_native_start_t6(&service->t6, &config->t6, config->initial_t6_tick) ||
+    if (!lfj8_h03_dtc_native_start_t6(&service->t6, &config->t6, config->initial_t6_tick,
+                                    config->status_from_t6) ||
         !lfj8_h03_dtc_native_bind(&rbm_h03_dtc_target, &rbm_h03_can13, config->max_clock_span_us) ||
         (config->atf_diagnostic &&
          !lfj8_h03_dtc_target_enable_atf(&rbm_h03_dtc_target, config->atf_diagnostic))) {

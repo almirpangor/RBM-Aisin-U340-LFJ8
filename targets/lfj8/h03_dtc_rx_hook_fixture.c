@@ -12,10 +12,14 @@ volatile uint8_t rbm_h03_tml0_1mhz_qualified;
 uint8_t fixture_native_bound;
 volatile uint8_t fixture_rebind;
 volatile uint8_t fixture_t6_action;
+volatile uint8_t fixture_t6_status;
+volatile uint8_t fixture_have_status;
 uint8_t fixture_t6_started;
+uint8_t fixture_t6_due;
 uint32_t fixture_t6_initial;
 Lfj8H03DtcT6Config fixture_t6_config;
 Lfj8H03DtcT6Clock fixture_t6_clock;
+static const Lfj8CheryTxInputs fixture_status = {.status0_300 = 0x0fu};
 #endif
 
 Lfj8H03DtcTarget fixture_target;
@@ -93,6 +97,7 @@ void fixture_rx_foreground(void)
 {
     Lfj8H03Can13Input input = {.diagnostic_tick = 10, .owns_slot13 = 1, .dtc = &dtc};
 #ifdef RBM_DTC_RX_CAN_OWNER_FIXTURE
+    input.status = fixture_have_status ? &fixture_status : NULL;
     if (fixture_rebind) {
         fixture_rebind = 0u;
         lfj8_h03_dtc_native_unbind();
@@ -100,12 +105,13 @@ void fixture_rx_foreground(void)
     }
     if (fixture_t6_action == 1u) {
         fixture_t6_started = lfj8_h03_dtc_native_start_t6(
-            &fixture_t6_clock, &fixture_t6_config, fixture_t6_initial);
+            &fixture_t6_clock, &fixture_t6_config, fixture_t6_initial, fixture_t6_status != 0u);
         fixture_t6_action = 2u;
     }
     fixture_foreground_result = fixture_t6_action
         ? lfj8_h03_dtc_native_poll_t6(&fixture_target, &input, true, &fixture_t6_clock)
         : lfj8_h03_dtc_native_poll(&fixture_target, &input, true);
+    fixture_t6_due = input.status_due;
 #else
     fixture_foreground_result = lfj8_h03_dtc_target_poll(&fixture_target, &input, true);
 #endif

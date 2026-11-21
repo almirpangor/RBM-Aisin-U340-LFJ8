@@ -37,6 +37,7 @@ typedef struct {
     uint32_t tick;
     uint32_t remainder;
     bool active;
+    uint8_t status_phase;
 } Lfj8H03DtcT6Clock;
 
 /* The application owns this foreground-only state. Supply the verified T6
@@ -44,10 +45,13 @@ typedef struct {
  * bound on consecutive sampling gaps, less than half a TML0 wrap. The low
  * bits of initial_tick determine the donor task phase at the first sample.
  * Start after TML0 qualification and before admitting CAN. Rephase only
- * with CAN admission closed. On a timer reconfiguration run the normal
+ * with CAN admission closed. With status_from_t6, initial_tick also sets the
+ * S03 status phase modulo 12. Use a broker with its local status periods
+ * disabled. On a timer reconfiguration run the normal
  * unbind/clock qualification/startup path before reusing this state. */
 bool lfj8_h03_dtc_native_start_t6(Lfj8H03DtcT6Clock *clock,
-                                  const Lfj8H03DtcT6Config *config, uint32_t initial_tick);
+                                  const Lfj8H03DtcT6Config *config, uint32_t initial_tick,
+                                  bool status_from_t6);
 
 /* Use in place of native_poll when the application supplies T6 from TML0.
  * Advances the wrapping T6 tick and writes it to input->diagnostic_tick.
