@@ -21,6 +21,15 @@ RPM = Signal("rpm", 0x0FA, 14, 40, RPM_LAST, 625)
 COOLANT = Signal("coolant", 0x278, 15, 41, COOLANT_LAST, 1250)
 
 
+def require_native_rpm(a, invalid):
+    # Proven native qualification used by the 0x0FA producer.
+    for address, mask, reject in ((0xFD18, 0x0040, 2), (0xFD1A, 0x4000, 3)):
+        a.ld(4, address)
+        a.andi(4, mask)
+        a.cmp(4, 0)
+        a.branch(reject, invalid)
+
+
 def encode_model_delta(a, source, name):
     # S02 0A18F8 and 0A1956, calibration bytes 25/40. Compute the high
     # word of abs(source-base)*125 without changing the MCU's MD registers.
@@ -214,14 +223,7 @@ def assemble(diag, torque, *, model_fields=False, ordinary_model_field=False):
         a.branch(0, "free")
 
     a.label("pack_rpm")
-    a.ld(4, 0xFD18)
-    a.andi(4, 0x0040)
-    a.cmp(4, 0)
-    a.branch(2, "rpm_invalid")
-    a.ld(4, 0xFD1A)
-    a.andi(4, 0x4000)
-    a.cmp(4, 0)
-    a.branch(3, "rpm_invalid")
+    require_native_rpm(a, "rpm_invalid")
     a.physical(4, 0xF7C4)
     a.cmp(4, 0)
     a.branch(2, "rpm_invalid")

@@ -272,11 +272,13 @@ def revised_wrapper(diag, labels):
 
 
 def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fields=False,
-          ordinary_model_field=False, rx_timestamp=False):
+          ordinary_model_field=False, rx_timestamp=False, rb_native_permit=False):
     if digest(s04) != S04_SHA:
         raise ValueError("S04 SHA-256 does not match the pinned E4M3 image")
     if ordinary_model_field and not model_fields:
         raise ValueError("The ordinary model field requires the Chery model transmitter")
+    if rb_native_permit and not ordinary_model_field:
+        raise ValueError("Native RB RPM qualification requires the ordinary Chery profile")
     sys.path.insert(0, str(engine / "tools"))
     import build_can_diag as diag
     import build_e4
@@ -321,11 +323,16 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fie
     ]
     if tx_part:
         sections.append(("engine_signals_tx", tx_part.origin, tx_code))
+    if rb_native_permit:
+        import rb_native_permit as permit
+
+        gate, gate_patch, guard, guard_code = permit.assemble(diag, old_torque)
+        sections.append(("rb_native_permit", guard.origin, guard_code))
     torque_start = diag.offset(old_torque.origin)
     torque_span = slice(torque_start, torque_start + len(old_torque.data))
     offsets = section_offsets(len(s04), diag.offset, sections, torque_span)
     for (name, cpu, code), off in zip(sections, offsets, strict=True):
-        if name in ("speed_receiver", "engine_signals_tx") and any(
+        if name in ("speed_receiver", "engine_signals_tx", "rb_native_permit") and any(
             byte != 255 for byte in s04[off:off + len(code)]
         ):
             raise ValueError(f"{name} flash region overlaps existing contents")
@@ -337,6 +344,20 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fie
         output[off:off + len(code)] = code
         allowed.update(range(off, off + len(code)))
         regions[name] = {"cpu": hex(cpu), "offset": hex(off), "length": len(code)}
+    expected_torque = bytearray(s04[torque_span])
+    if rb_native_permit:
+        gate_offset = diag.offset(gate)
+        relative = gate_offset - torque_start
+        if not 0 <= relative <= len(expected_torque) - len(gate_patch):
+            raise ValueError("RB gate entry is outside the pinned torque section")
+        if s04[torque_span] != bytes(old_torque.data):
+            raise ValueError("Pinned RB torque section differs from S04")
+        expected_torque[relative:relative + len(gate_patch)] = gate_patch
+        output[gate_offset:gate_offset + len(gate_patch)] = gate_patch
+        allowed.update(range(gate_offset, gate_offset + len(gate_patch)))
+        regions["rb_native_permit_hook"] = {
+            "cpu": hex(gate), "offset": hex(gate_offset), "length": len(gate_patch),
+        }
     for _ in range(5):
         invalid = [record for record in checksum_records(diag, output) if not record["valid"]]
         if not invalid:
@@ -348,8 +369,8 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fie
     records = checksum_records(diag, output)
     if not all(record["valid"] for record in records):
         raise ValueError("Bosch checksum records failed after rebuild")
-    if output[torque_span] != s04[torque_span]:
-        raise ValueError("Existing E4 torque machine code changed")
+    if output[torque_span] != expected_torque:
+        raise ValueError("Unexpected change to the existing E4 torque machine code")
     changed = {i for i, (old, new) in enumerate(zip(s04, output, strict=True)) if old != new}
     if not changed <= allowed:
         raise ValueError("Unexpected S04 differences")
@@ -374,6 +395,17 @@ def build(engine, s04, *, with_engine_signals_tx=False, compact=False, model_fie
             "bound_high": hex(timestamp.BOUND_HIGH),
             "requires_empty_poll": True,
         }
+    if rb_native_permit:
+        manifest["rb_native_permit"] = {
+            "requires": ["FD18.6=1", "FD1A.14=0", "pinned_RB_gate"],
+            "original_gate_reentry": hex(gate + len(gate_patch)),
+            "original_gate_reject": hex(old_torque.labels["gate_bad"]),
+            "additional_ram_bytes": 0,
+            "additional_call_stack_bytes": 0,
+        }
+        speed.rows.append((gate, len(gate_patch), "JMPA rb_native_permit"))
+        speed.rows += guard.rows
+        speed.labels.update({f"rb_native_permit_{name}": address for name, address in guard.labels.items()})
     if tx_part:
         from tx import COOLANT, RPM
         if model_fields:
@@ -408,13 +440,17 @@ def main():
     parser.add_argument("--compact", action="store_true", help="Shorten local RX/TX branches")
     parser.add_argument("--with-rx-timestamp", action="store_true",
                         help="Require an ordered native T4 observation around the 0x1AE transfer")
+    parser.add_argument("--with-rb-native-permit", action="store_true",
+                        help="Also qualify E4M3 native RPM before RB request and actuation")
     args = parser.parse_args()
+    if args.with_rb_native_permit and not args.with_ordinary_model_field:
+        parser.error("--with-rb-native-permit requires --with-ordinary-model-field")
     if args.with_ordinary_model_field and not args.with_model_fields:
         parser.error("--with-ordinary-model-field requires --with-model-fields")
     image, manifest, wrapper, speed = build(
         args.engine.resolve(), args.s04.read_bytes(), with_engine_signals_tx=args.with_engine_signals_tx,
         compact=args.compact, model_fields=args.with_model_fields, ordinary_model_field=args.with_ordinary_model_field,
-        rx_timestamp=args.with_rx_timestamp,
+        rx_timestamp=args.with_rx_timestamp, rb_native_permit=args.with_rb_native_permit,
     )
     try:
         args.outdir.mkdir(parents=True)
@@ -427,6 +463,8 @@ def main():
         filename = "E4M3_CHERY_ORDINARY_MODEL_NO_CRUISE_OFFLINE_ONLY.bin"
     if args.with_rx_timestamp:
         filename = filename.replace("_OFFLINE_ONLY", "_RX_TIMESTAMP_OFFLINE_ONLY")
+    if args.with_rb_native_permit:
+        filename = filename.replace("_OFFLINE_ONLY", "_RB_NATIVE_PERMIT_OFFLINE_ONLY")
     if args.compact:
         filename = filename.replace("_OFFLINE_ONLY", "_COMPACT_OFFLINE_ONLY")
     (args.outdir / filename).write_bytes(image)

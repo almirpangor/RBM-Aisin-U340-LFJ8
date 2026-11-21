@@ -1,0 +1,221 @@
+{
+  "task": "ECU-01",
+  "chat": 8,
+  "base_main": "3fe28938163e1dddc98a37733c229390ab7f0fff",
+  "assignment_main": "10f7c1513b910f42473690255641140989cc10d0",
+  "status": "PASS_OFFLINE_ONLY",
+  "deliverable": {
+    "image": "E4M3_CHERY_ORDINARY_MODEL_NO_CRUISE_RB_NATIVE_PERMIT_COMPACT_OFFLINE_ONLY.bin",
+    "image_bytes": 851968,
+    "s04_sha256": "e25a1c97492ae556b1a52043e6ae85b88d2da86c03a78ef01dc2151c8a0a4a2a",
+    "ordinary_sha256": "bd0afefa40dfd1ea82e647ea5af7e64e2f652c27ccc5c3b91a986224fd77ec79",
+    "qualified_sha256": "1082487f2ca496197e73a46f31f3a76d0ba5ec7467b32013d3fd106fa51cf581",
+    "r4_commit": "dc6b4f08a24e648d3d0dab986c1765abb6fd294a",
+    "s02_sha256": "99dc271a861ab6d9e6749e8beb4637ab5c6c7e111f3ff0d9df4e147b2a0a6e1c",
+    "c167_model_commit": "7585de6945b4b6b3ef381c6062070a5f417cf588",
+    "c167_model_sha256_lf": "7de99b47c8c077cc70f38239d4cdd5162b6faee0760f1b6bb93e46c58f7a6ae3",
+    "qualified_with_rx_timestamp_sha256": "5292fdd41cfb5e2055742ab28d85d5e109f509f840fb82c855ee0bd1b82d8875",
+    "bench_pair_ready": false,
+    "hardware_tested": false
+  },
+  "native_paths": {
+    "foreground": "S04 wrapper at CPU 0x01E200, called at 0x09405C, serialized CAN1 IF1",
+    "startup": "Caller slices 0x01BC4A and 0x01BAA4 with CP 0xF800/0xFC00. Selected native initialization and first stack-use slices execute on this exact BIN and keep E7C0–E7FF reserved.",
+    "hook_air": "0x0595A8",
+    "hook_fast": "0x05B0BE",
+    "hook_load": "0x05B5D6",
+    "integrity": "51 native records. S04 hook entry bytes unchanged. All differences from S04 restricted to the declared sections and checksum value/complement words. Injection and ignition peripherals are outside this ST10 model.",
+    "rb_gate": "CPU 0x064E60 JMPA to 0x066F00; same-segment JMPA to 0x064E64 or 0x064EAE. Original preceding and subsequent call frames preserved."
+  },
+  "memory_and_map": {
+    "s04_changed_bytes": 8069,
+    "ordinary_changed_bytes": 54,
+    "ordinary_changed_checksum_bytes": 6,
+    "sections": [
+      {
+        "section": "wrapper",
+        "cpu": "0x01E200",
+        "file_offset": "0x00E200",
+        "bytes": 7672
+      },
+      {
+        "section": "speed_receiver",
+        "cpu": "0x066000",
+        "file_offset": "0x056000",
+        "bytes": 590
+      },
+      {
+        "section": "speed_selector",
+        "cpu": "0x0B8441",
+        "file_offset": "0x0A8441",
+        "bytes": 1
+      },
+      {
+        "section": "engine_signals_tx",
+        "cpu": "0x066800",
+        "file_offset": "0x056800",
+        "bytes": 1116
+      },
+      {
+        "section": "rb_native_permit",
+        "cpu": "0x066F00",
+        "file_offset": "0x056F00",
+        "bytes": 44
+      },
+      {
+        "section": "rb_native_permit_hook",
+        "cpu": "0x064E60",
+        "file_offset": "0x054E60",
+        "bytes": 4
+      }
+    ],
+    "combined_timestamp_profile": {
+      "s04_changed_bytes": 8277,
+      "speed_receiver_bytes": 804,
+      "timestamp_words": ["0xE7F4", "0xE7FE"]
+    },
+    "rb_permit_added_flash_bytes": 44,
+    "rb_permit_added_ram_bytes": 0,
+    "rb_permit_added_call_stack_bytes": 0,
+    "s04_reserved_native_ram_bytes": 64,
+    "native_r0_stack_top": "0xE7BE",
+    "highest_stack_bytes_seen_in_revocation_model": 34,
+    "stack_and_flash_coverage": "Selected startup and model paths only. Whole-image indirect-reference coverage and hardware interrupt nesting were not exercised."
+  },
+  "profile_and_units": {
+    "chery_tx_0x0FA": "Object 14, 625 T4 ticks, bytes 0–1 F7C4 big-endian at 4 counts/rpm or FFFF; native FD18.6 set and FD1A.14 clear. Bytes 2/3/5 from audited E4M3 native words in ordinary mode; no cruise or override. Nonzero native donor byte 7 flags have no GW mapping in this profile.",
+    "chery_tx_0x278": "Object 15, 1250 T4 ticks, byte 0 is 0.75 °C/count minus 48 °C or FF. Bytes 1–7 reserved as FF in this candidate; C0/C1 temperature consumer uses byte 0.",
+    "chery_rx_0x1AE": "Object 13, DLC 8, speed raw d[6:8] big-endian in 0.01 km/h; floor(raw/25)*32 in native Q7. Existing 32-service-call offline lease is not a physical-time calibration. Optional T4 chronology was independently retested.",
+    "rb_0x5E8_0x5E9": "Objects 11/12. Pinned R4 CRC-8/SAE-J1850, token, sequence and START/REFRESH/CANCEL. Historical bounds 1–64 unsigned Q8 counts and 1–30 duration codes of nominal 10 ms. Historical lease 3906 T4 ticks and release one Q8 count/128 ticks; this range is an existing protocol bound for the historical pair, not a release calibration for the current pair.",
+    "rpm_permit": "E4M3 S04 native FD18.6=1, FD1A.14=0 plus original RB CAN/T4 and F7C4 4800–26000 counts (1200–6500 rpm). Only checks the selected source flags; no new authority over actuator requests.",
+    "t4": "FF44[8:0]=0x046; FE44 low and E176 overflow high. Native fCPU/512. 40 MHz is the R4 nominal CPU assumption, not measured on this unit.",
+    "provenance": [
+      "targets/bosch/tx.py",
+      "targets/bosch/rb_native_permit.py",
+      "R4 development/E4M3/engine/tools/torque_patch.py",
+      "docs/bosch-integration.md",
+      "docs/chery-can-dtc.md"
+    ]
+  },
+  "toy02_sender_contract": {
+    "status": "RAW_NATIVE_SOURCES_IDENTIFIED_PAYLOAD_AND_GP_MAPPING_PENDING",
+    "only_accept_as": "Diagnostic source snapshot. Authorize Toyota GP only after an independent mapping validation. Collision rerun showed the same 0x0FA and 0x5E0 bytes at different TPS, F8D6, F4686 and 9680 raw states.",
+    "capture_requirements": [
+      "Take one coherent snapshot with native writer qualification. Carry source sequence, validity and age together; clear the source set across reset, loss of CAN or invalid T4.",
+      "Bind the capture time to the native publication boundary. Repeated equal words alone do not prove a fresh producer sample. H03 measures receive age in its local clock and rejects loss or epoch change.",
+      "Do not select a new CAN identifier, default age or bit meaning unilaterally. The existing 0x6B1 E4 in the R3 REV8 diagnostic build is a separate trace contract and absent from this S04 profile."
+    ],
+    "raw_fields": [
+      {
+        "key": "rpm_q4",
+        "storage": "0xF7C4 u16",
+        "units": "counts at 4 per rpm",
+        "validity": "FD18.6 set, FD1A.14 clear; 0x0FA current profile also rejects 0 and >40000",
+        "source": "E4M3 tx.py; S04 PID 0C; docs/chery-can-dtc.md"
+      },
+      {
+        "key": "tps_adc_x4",
+        "storage": "0x8616 logical / 0x0F0616 physical u16",
+        "units": "raw ADC code multiplied by 4, not calibrated driver demand",
+        "validity": "Preserve native ADC producer and qualify both ADC channels when the receiver needs a driver-demand operand",
+        "source": "audit_toyota_load_inputs.py::sample_native; R3 GW_BENCH_DIAGNOSTICS_RU.md captures paired TPS after 0x020D48..0x020D60"
+      },
+      {
+        "key": "gw_load_raw",
+        "storage": "0xF8D6 u16",
+        "units": "unsigned GW model counts, saturating sum of selected 90F6 and 9156",
+        "validity": "Do not treat the fallback constant 0x10AB from 0x0C1E80 as a qualified operating sample; carry writer and mode. REV8 diagnostic capture observed 0x0490EC and 0x04913E; current S04 sender still needs verification there.",
+        "source": "S04 0x04889E..0x04894E; audit_toyota_load_producers.py"
+      },
+      {
+        "key": "gw_load_denominator",
+        "storage": "0x0F4686 u16",
+        "units": "native GW normalization denominator; PID 04 truncates F8D6*256/F4686 and saturates to 255",
+        "validity": "Positive denominator and working PID 04 branch, with same source sample as F8D6",
+        "source": "S04 0x0490AC..0x049142; audit_toyota_load_inputs.py"
+      },
+      {
+        "key": "gw_model_base",
+        "storage": "0x9680 logical / 0x0F1680 physical u16",
+        "units": "unsigned GW model counts; distinct from normalized load",
+        "validity": "Require fresh 0x059D6A..0x059DBE path and qualifying mode; existing differences 0x0FA[2,5] lose absolute value",
+        "source": "audit_toyota_load_producers.py; tx.py::pack_model_fields"
+      }
+    ],
+    "historical_age_only": "R3 REV8 0x6B1 E3/E4 uses the same sample counter and a 19531 T4 tick writer-age limit. This is a trace-profile precedent, approximately 250 ms at nominal R4 clock, with no acceptance role for the new H03 receiver.",
+    "receiver_dependency": {
+      "task": "TOY-02",
+      "branch": "codex/toy02-load-evidence-01a1f9c7",
+      "planned_contract": "verification/bench-wave/chat-4/raw-source-contract.md",
+      "available_branch_sha_when_checked": "f1f622d93c3e0ae143cb41ba83813160d7b3063a",
+      "payload_compatibility_proven": false
+    },
+    "unmapped_toyota_operands": [
+      "GP-9046",
+      "GP-8288",
+      "GP-8330",
+      "GP-5299.1"
+    ],
+    "sources": [
+      "verification/project-audit/toy02-bosch-load-producers.md",
+      "verification/project-audit/toy02-bosch-load-mode-source.md",
+      "verification/project-audit/toy02-load-traces.md",
+      "R3 docs/GW_BENCH_DIAGNOSTICS_RU.md"
+    ]
+  },
+  "checks": [
+    {
+      "command": "Add --with-rx-timestamp to the build command; verify the resulting BIN via verify_bench_profile.py --with-rx-timestamp --h03-fixture $h03TorqueFixture",
+      "result": "PASS on the same combined image: 9 ordered captures, 11 rejected captures, 3 recovery cases, 51 integrity records, all qualified-RB cases and three H03 requester dialogues. No physical-time ceiling for 0x1AE certified."
+    },
+    {
+      "command": "python -B targets/bosch/verify_bench_profile.py --engine $r4Engine --s04 $s04 --image $qualified --h03-fixture $h03TorqueFixture",
+      "result": "PASS, H03 requester compiled from the current unchanged TCM sources and exact Bosch ST10. Normal START confirmed, followed by five REFRESH and CANCEL. Lost status and status at the deadline both ended with CANCEL and zero status; no REFRESH or confirmed application. Simulated timing only."
+    },
+    {
+      "command": "python -B targets/bosch/build.py --engine $r4Engine --s04 $s04 --outdir $out --with-model-fields --with-ordinary-model-field --compact --with-rb-native-permit",
+      "result": "PASS, exact R4 rebuild of S04, 851968 bytes, 51 integrity records; separate output file kept offline"
+    },
+    {
+      "command": "python -B targets/bosch/verify_bench_profile.py --engine $r4Engine --s04 $s04 --image $qualified",
+      "result": "PASS, 48 START cases, 6 revocations across all three hooks, valid and inhibited REFRESH, CANCEL with and without RPM permit, four native startup/CP paths and diff allowlist"
+    },
+    {
+      "command": "python -B targets/bosch/verify_ordinary_model_field.py --engine $r4Engine --s04 $s04 --model $c167Model --image $qualified --compact --with-rb-native-permit",
+      "result": "PASS, 56 mode cases, 65536 encoder values, 64 wire qualification cases, 6 changed-input cases, three IF1 delays and 51 records"
+    },
+    {
+      "command": "python -B -m unittest discover -s tests -p 'test_bosch_*.py'",
+      "result": "13 passed"
+    },
+    {
+      "command": "python -B targets/bosch/verify_e4m3_torque_rpm.py --engine $r4Engine --s04 $s04",
+      "result": "PASS on previous ordinary image, including T4 lease, service cutoff and wrap"
+    },
+    {
+      "command": "python -B targets/bosch/verify_rx_timestamp.py --engine $r4Engine --s04 $s04",
+      "result": "PASS on separate RX timestamp profile"
+    },
+    {
+      "command": "python -B targets/bosch/audit_toyota_load_producers.py --rev8 $rev8 --s04 $s04 --model $c167Model",
+      "result": "PASS, native windows for raw load and its mode"
+    },
+    {
+      "command": "python -B targets/bosch/audit_toyota_load_inputs.py --engine $r4Engine --rev8 $rev8 --s04 $s04 --model $c167Model --image $previousOrdinary",
+      "result": "SOURCE_AUDIT_OFFLINE_ONLY, collision reproduced in previous ordinary image"
+    }
+  ],
+  "audit_snapshot": "The shared project_status snapshot lists six new or altered Bosch code paths for integration review. Exact reruns and the artifact digests are listed here; shared snapshot is left to the integrator.",
+  "software_blockers": [
+    "Target authorization for Chery 0x1AE bytes 1 and 4 is absent: corresponding E4M3 native operands, gates, unit conversion and availability across the current pair are unproven. Existing RB is separate; its modeled status does not grant permission to synthesize a Chery-to-RB reduction.",
+    "No production S04 sender for Chat 4 raw-source snapshot or validated mapping from F8D6/F4686/9680/ADC to GP-9046, GP-8288, GP-8330 and GP-5299.1.",
+    "S04 profile receives 0x1AE speed. The S02 0x300 byte-3 ATF consumer and the auxiliary 0x0FA/0x278 fields have not been bound to confirmed E4M3 consumers/producers for the requested full exchange.",
+    "A common H03/Bosch target application profile, native readiness and full-pair image manifest are still needed. The new RPM gate does not replace that admission."
+  ],
+  "post_flash_measurements": [
+    "Confirm native start, injection and ignition on the intended Bosch hardware; observe watchdog, IRQ stack and cold/warm restarts.",
+    "Log source freshness and service intervals, IF1 timing and bus loss/recovery on the paired blocks.",
+    "Compare physical response and timing on each safely enabled RB path with measured operating conditions; derive a target reduction and duration envelope before changing offline bounds.",
+    "Record matched raw engine/TCM values in steady state and during transitions to validate the selected Toyota load interpretation."
+  ]
+}

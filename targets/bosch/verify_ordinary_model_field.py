@@ -136,9 +136,9 @@ def verify_wire(image, symbols):
     return combinations, len(inputs), wire
 
 
-def verify(engine, s04, model, image, compact):
+def verify(engine, s04, model, image, compact, *, rb_native_permit=False):
     rebuilt, manifest, _, _ = build(engine, s04, model_fields=True, compact=compact,
-                                     ordinary_model_field=True)
+                                     ordinary_model_field=True, rb_native_permit=rb_native_permit)
     if image != rebuilt:
         raise ValueError("Expected the exact no-cruise profile rebuild")
     default, _, _, _ = build(engine, s04, model_fields=True, compact=True)
@@ -154,7 +154,7 @@ def verify(engine, s04, model, image, compact):
                              int(symbols["ordinary_model_done"], 16))
     gates, changes, wire = verify_wire(image, symbols)
     regressions = verify_transmitter(engine, s04, image, compact=compact, model_fields=True,
-                                     ordinary_model_field=True)
+                                     ordinary_model_field=True, rb_native_permit=rb_native_permit)
     return {
         "status": "PASS_OFFLINE_ONLY",
         "sha256": digest(image),
@@ -177,9 +177,10 @@ def main():
     for arg in ("engine", "s04", "model", "image"):
         parser.add_argument("--" + arg, type=Path, required=True)
     parser.add_argument("--compact", action="store_true")
+    parser.add_argument("--with-rb-native-permit", action="store_true")
     args = parser.parse_args()
     report = verify(args.engine.resolve(), args.s04.read_bytes(), args.model, args.image.read_bytes(),
-                    args.compact)
+                    args.compact, rb_native_permit=args.with_rb_native_permit)
     print(json.dumps(report, indent=2))
 
 

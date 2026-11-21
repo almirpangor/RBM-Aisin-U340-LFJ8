@@ -12,10 +12,11 @@ from verify import SPEED_PHYS, calls, payload
 V3_SHA = "cde5d04fb871043ffcc387d4cb1e7087659745ca0f4b0cf406604fd76facf4b3"
 
 
-def verify_transmitter(engine, base, candidate, *, compact=False, model_fields=False, ordinary_model_field=False):
+def verify_transmitter(engine, base, candidate, *, compact=False, model_fields=False,
+                       ordinary_model_field=False, rb_native_permit=False):
     expected, manifest, _, _ = build(engine, base, with_engine_signals_tx=True,
                                     compact=compact, model_fields=model_fields,
-                                    ordinary_model_field=ordinary_model_field)
+                                    ordinary_model_field=ordinary_model_field, rb_native_permit=rb_native_permit)
     assert expected == candidate, "Candidate differs from its exact rebuild"
     v3, v3_manifest, _, _ = build(engine, base)
     assert v3_manifest["sha256"] == V3_SHA, "Default speed-only output changed"
