@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 799,
+  "sequence": 800,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -282,23 +282,30 @@
       "based_on_reviews": []
     },
     "MODE-02": {
-      "owner": "codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4",
-      "label": "Codex MODE-02 — конфликт Tiptronic между событиями Toyota",
-      "branch": "codex/mode02-chord-1121-c7e4",
+      "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+      "label": "Codex MODE-02 — ручная цель в полном профиле H03",
+      "branch": "codex/mode02-profile-foreground-892d",
       "files": [
-        "targets/lfj8/lfj8_range_control.c",
-        "targets/lfj8/test_lfj8_h03_input_binding.c",
-        "targets/lfj8/test_lfj8_h03_toyota_source.c",
-        "verification/project-audit/mode02-h03-conflict-recovery.md"
+        "targets/lfj8/check_h03_target_platform.py",
+        "targets/lfj8/lfj8_h03_target_platform.c",
+        "targets/lfj8/lfj8_h03_target_platform.h",
+        "targets/lfj8/lfj8_h03_toyota_input_profile.h",
+        "targets/lfj8/test_lfj8_h03_target_platform.c",
+        "verification/project-audit/mode02-native-profile-capture.md"
       ],
-      "stage": "review",
-      "claim_id": "4a65fba7869f4e4b9d9ae39ae27d33a4",
-      "claimed_at": "2026-11-20T22:42:45+00:00",
-      "updated_at": "2026-11-20T22:51:25+00:00",
-      "note": "После конфликта плюс/минус AN2/P1DATA удерживает запрет до квалифицированного отпускания обеих кнопок. Штатный источник Toyota M32R подтвердил отзыв и один новый запрос после отпускания. ПК 41 шаг, 179 Python с отдельным повтором S03, M32R 8 компонентных, 6 размещённых, 11+18 с локально добавленным cold S01. +56 байт кода, 0 новых RAM. Полная привязка H03 и измерения MODE-02 открыты. Отчёт mode02-h03-conflict-recovery.md.",
-      "result": "3823b6baa0f3a6aa165584e1d4b1df5fb71a4312",
+      "stage": "in_progress",
+      "claim_id": "ec35ff2a13a14818a96ced1510f85588",
+      "claimed_at": "2026-11-21T07:21:27+00:00",
+      "updated_at": "2026-11-21T07:21:27+00:00",
+      "note": "Привязка готового владельца ручной цели к нативному профилю и проверка в полном цикле. Ветка включает опубликованные review MODE-02, H03-03 и TOY-05.",
+      "result": null,
       "based_on_reviews": [
-        "cda1c6bb3edf45bd993ee765cf29e055"
+        "0ecd2acccbb947a886b1dceb6d968fb9",
+        "2101184d356545bfa9a1e0bd6716a9ee",
+        "43d58327bd434219b328d74d652d3be9",
+        "4a65fba7869f4e4b9d9ae39ae27d33a4",
+        "cda1c6bb3edf45bd993ee765cf29e055",
+        "d86e0ce440d6458dbdcec18da3c3671b"
       ]
     },
     "TOY-05": {
@@ -11536,9 +11543,44 @@
           "4781e27fe7274496be65a8d2faf92977"
         ]
       }
+    },
+    {
+      "operation_id": "4a5fa811405f476693553bda644bb9b0",
+      "task": "MODE-02",
+      "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+      "action": "claim",
+      "claim_id": "ec35ff2a13a14818a96ced1510f85588",
+      "at": "2026-11-21T07:21:27+00:00",
+      "record": {
+        "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+        "label": "Codex MODE-02 — ручная цель в полном профиле H03",
+        "branch": "codex/mode02-profile-foreground-892d",
+        "files": [
+          "targets/lfj8/check_h03_target_platform.py",
+          "targets/lfj8/lfj8_h03_target_platform.c",
+          "targets/lfj8/lfj8_h03_target_platform.h",
+          "targets/lfj8/lfj8_h03_toyota_input_profile.h",
+          "targets/lfj8/test_lfj8_h03_target_platform.c",
+          "verification/project-audit/mode02-native-profile-capture.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "ec35ff2a13a14818a96ced1510f85588",
+        "claimed_at": "2026-11-21T07:21:27+00:00",
+        "updated_at": "2026-11-21T07:21:27+00:00",
+        "note": "Привязка готового владельца ручной цели к нативному профилю и проверка в полном цикле. Ветка включает опубликованные review MODE-02, H03-03 и TOY-05.",
+        "result": null,
+        "based_on_reviews": [
+          "0ecd2acccbb947a886b1dceb6d968fb9",
+          "2101184d356545bfa9a1e0bd6716a9ee",
+          "43d58327bd434219b328d74d652d3be9",
+          "4a65fba7869f4e4b9d9ae39ae27d33a4",
+          "cda1c6bb3edf45bd993ee765cf29e055",
+          "d86e0ce440d6458dbdcec18da3c3671b"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:15:28+00:00",
+  "updated_at": "2026-11-21T07:21:27+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
