@@ -16,7 +16,20 @@ typedef struct {
     const Lfj8H03ButtonMap *p1_button_map;
     /* Maximum qualified time from admission to completed shift, in us. */
     uint32_t manual_max_age_us;
+    /* Immutable windows validated on startup. NULL keeps legacy callers. */
+    const RbmU340eSelectorProfile *selector_profile;
 } Lfj8H03InputBinding;
+
+typedef struct {
+    RbmU340ePolicy policy;
+    uint32_t selector_max_age_us;
+    uint32_t button_debounce_us;
+    uint32_t button_max_age_us;
+} Lfj8H03InputStartup;
+
+/* Prepare the selector and button owners while their lifecycle gate is closed.
+ * The caller owns the RAM and resets the ADC mailbox on the same epoch. */
+int lfj8_h03_input_startup(const Lfj8H03InputBinding *binding, const Lfj8H03InputStartup *startup);
 
 typedef struct {
     const Lfj8H03CycleInput *cycle; /* Qualified engine, event, GP and oldest upstream timestamp. */

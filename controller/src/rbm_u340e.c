@@ -10,36 +10,62 @@ enum {
     OVERDRIVE_MODE_MASK = RBM_U340E_OVERDRIVE_AUTO | RBM_U340E_OVERDRIVE_TIPTRONIC
 };
 
-uint8_t rbm_u340e_selector_sample(RbmU340eSelectorInput *state, uint16_t adc)
+int rbm_u340e_selector_profile_valid(const RbmU340eSelectorProfile *profile)
 {
-    static const uint16_t limits[][2] = {
-        [RBM_U340E_SELECTOR_P] = {889, 980},
-        [RBM_U340E_SELECTOR_R] = {784, 857},
-        [RBM_U340E_SELECTOR_N] = {624, 717},
-        [RBM_U340E_SELECTOR_D] = {456, 544},
-        [RBM_U340E_SELECTOR_2] = {301, 377},
-        [RBM_U340E_SELECTOR_L] = {164, 224},
-    };
+    if (!profile || !profile->stable_samples) {
+        return 0;
+    }
+    for (unsigned i = 0; i < RBM_U340E_SELECTOR_L; ++i) {
+        const uint16_t low = profile->windows[i][0];
+        const uint16_t high = profile->windows[i][1];
+        if (low >= high || high > 1024u) {
+            return 0;
+        }
+        for (unsigned j = 0; j < i; ++j) {
+            if (low < profile->windows[j][1] && profile->windows[j][0] < high) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+uint8_t rbm_u340e_selector_sample_profile(RbmU340eSelectorInput *state, uint16_t adc,
+                                         const RbmU340eSelectorProfile *profile)
+{
     if (!state) {
         return RBM_U340E_SELECTOR_UNKNOWN;
     }
 
     uint8_t range = RBM_U340E_SELECTOR_UNKNOWN;
-    for (uint8_t position = RBM_U340E_SELECTOR_P; position <= RBM_U340E_SELECTOR_L; ++position) {
-        if (adc >= limits[position][0] && adc < limits[position][1]) {
-            range = position;
-            break;
+    if (profile && profile->stable_samples) {
+        for (uint8_t i = 0; i < RBM_U340E_SELECTOR_L; ++i) {
+            if (adc >= profile->windows[i][0] && adc < profile->windows[i][1]) {
+                range = (uint8_t)(RBM_U340E_SELECTOR_P + i);
+                break;
+            }
         }
     }
     if (range == RBM_U340E_SELECTOR_UNKNOWN) {
         *state = (RbmU340eSelectorInput){0};
-    } else if (range != state->candidate) {
+        return range;
+    }
+    if (range != state->candidate) {
         state->candidate = range;
         state->samples = 1;
-    } else if (state->samples < 4) {
+    } else if (state->samples < profile->stable_samples) {
         ++state->samples;
     }
-    return state->samples == 4 ? range : RBM_U340E_SELECTOR_UNKNOWN;
+    return state->samples == profile->stable_samples ? range : RBM_U340E_SELECTOR_UNKNOWN;
+}
+
+uint8_t rbm_u340e_selector_sample(RbmU340eSelectorInput *state, uint16_t adc)
+{
+    static const RbmU340eSelectorProfile legacy = {
+        .windows = {{889, 980}, {784, 857}, {624, 717}, {456, 544}, {301, 377}, {164, 224}},
+        .stable_samples = 4u,
+    };
+    return rbm_u340e_selector_sample_profile(state, adc, &legacy);
 }
 
 int rbm_u340e_init(RbmU340eController *controller, const RbmU340ePolicy *policy)

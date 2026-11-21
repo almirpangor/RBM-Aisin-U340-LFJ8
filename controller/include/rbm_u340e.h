@@ -31,6 +31,18 @@ typedef struct {
     uint8_t samples;
 } RbmU340eSelectorInput;
 
+typedef struct {
+    /* P, R, N, D, 2, L in that order. Each pair is [lower, upper). */
+    uint16_t windows[6][2];
+    uint8_t stable_samples;
+} RbmU340eSelectorProfile;
+
+/* Check once during startup. Windows must be disjoint and fit the 10-bit ADC.
+ * Keep the validated profile immutable for the lifetime of the selector. */
+int rbm_u340e_selector_profile_valid(const RbmU340eSelectorProfile *profile);
+uint8_t rbm_u340e_selector_sample_profile(RbmU340eSelectorInput *state, uint16_t adc,
+                                         const RbmU340eSelectorProfile *profile);
+
 /* Zero-initialize the state. Call once per scheduled ADC sample.
  * Input code is 0..1023 on the 5 V scale. Pass UINT16_MAX if the sample
  * is unavailable. Four consecutive samples in one window qualify a range. */

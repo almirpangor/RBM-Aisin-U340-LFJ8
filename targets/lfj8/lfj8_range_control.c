@@ -1,5 +1,7 @@
 #include "lfj8_range_control.h"
 
+#include <stddef.h>
+
 #define HALF_CLOCK UINT32_C(0x80000000)
 #define SHIFT_BUTTONS (RBM_U340E_BUTTON_UP | RBM_U340E_BUTTON_DOWN)
 #define BUTTON_MASK (RBM_U340E_BUTTON_MODE | SHIFT_BUTTONS | RBM_U340E_BUTTON_OVERDRIVE)
@@ -64,17 +66,23 @@ int lfj8_range_control_init(Lfj8RangeControl *control, const RbmU340ePolicy *pol
     return 1;
 }
 
-void lfj8_range_control_sample_selector(Lfj8RangeControl *control, Lfj8SelectorAdcReading reading,
-                                        uint32_t now_us)
+static void clear_selector(Lfj8RangeControl *control)
+{
+    control->filter = (RbmU340eSelectorInput){0};
+    control->selector = RBM_U340E_SELECTOR_UNKNOWN;
+}
+
+void lfj8_range_control_sample_selector_profile(Lfj8RangeControl *control,
+    Lfj8SelectorAdcReading reading, uint32_t now_us, const RbmU340eSelectorProfile *profile)
 {
     if (reading.event == LFJ8_SELECTOR_ADC_CLOCK_LOST) {
         control->sampled = 0;
-        control->selector = rbm_u340e_selector_sample(&control->filter, UINT16_MAX);
+        clear_selector(control);
         return;
     }
     if (control->sampled && now_us - control->last_sample_us >= control->max_age_us) {
         control->sampled = 0;
-        control->selector = rbm_u340e_selector_sample(&control->filter, UINT16_MAX);
+        clear_selector(control);
     }
     if (reading.event == LFJ8_SELECTOR_ADC_NONE) {
         return;
@@ -82,7 +90,7 @@ void lfj8_range_control_sample_selector(Lfj8RangeControl *control, Lfj8SelectorA
     const int has_value = reading.event == LFJ8_SELECTOR_ADC_VALUE;
     if (!has_value) {
         /* A reported fault invalidates the range even without a usable timestamp. */
-        control->selector = rbm_u340e_selector_sample(&control->filter, UINT16_MAX);
+        clear_selector(control);
     }
     if (now_us - reading.captured_us >= control->max_age_us) {
         return;
@@ -93,10 +101,18 @@ void lfj8_range_control_sample_selector(Lfj8RangeControl *control, Lfj8SelectorA
     }
 
     if (has_value) {
-        control->selector = rbm_u340e_selector_sample(&control->filter, reading.raw);
+        control->selector = profile
+            ? rbm_u340e_selector_sample_profile(&control->filter, reading.raw, profile)
+            : rbm_u340e_selector_sample(&control->filter, reading.raw);
     }
     control->last_sample_us = reading.captured_us;
     control->sampled = 1;
+}
+
+void lfj8_range_control_sample_selector(Lfj8RangeControl *control, Lfj8SelectorAdcReading reading,
+                                        uint32_t now_us)
+{
+    lfj8_range_control_sample_selector_profile(control, reading, now_us, NULL);
 }
 
 int lfj8_range_control_step(Lfj8RangeControl *control, Lfj8SelectorAdcReading reading,
