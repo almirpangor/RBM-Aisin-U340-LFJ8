@@ -8,17 +8,17 @@
 #define H03_FCNT1 UINT32_C(0x8007E2)
 #define H03_P3DATA UINT32_C(0x800703)
 #define H03_STARTUP_COUNT UINT32_C(0x80621A)
+#define H03_SHIFT_D_FINAL UINT32_C(0x8063D7)
 #define SERIAL_HALF_RANGE UINT32_C(0x80000000)
 
 enum { TAKEOVER_READY = 1, TAKEOVER_PREPARING };
 
-static const uint32_t shift_final[] = {0x8063D7, 0x8063DA, 0x8063DD};
-static const uint32_t pwm_proposal[] = {0x804F6C, 0x804F78, 0x804F84, 0x804F94};
-static const uint32_t pwm_final[] = {0x804F74, 0x804F80, 0x804F8C, 0x804F9C};
-static const uint32_t output_guards[] = {
-    0x8063AF, 0x8063B7, 0x8063C4, 0x806356, 0x8063F2,
-    0x80636E, 0x80636F, 0x806370, 0x80636D,
-    0x8065BA, 0x8065B8, 0x8065B7, 0x8065B6,
+/* Each PWM final word follows its proposal by eight bytes. */
+static const uint8_t pwm_proposal_offsets[] = {0x6C, 0x78, 0x84, 0x94}; /* 0x804F00 */
+static const uint16_t output_guard_offsets[] = { /* 0x800000 */
+    0x63AF, 0x63B7, 0x63C4, 0x6356, 0x63F2,
+    0x636E, 0x636F, 0x6370, 0x636D,
+    0x65BA, 0x65B8, 0x65B7, 0x65B6,
 };
 
 static int qualified(const Lfj8H03Takeover *state)
@@ -41,8 +41,8 @@ static int qualified(const Lfj8H03Takeover *state)
         ops->qualified(context) != 1) {
         return 0;
     }
-    for (size_t i = 0; i < sizeof(output_guards) / sizeof(output_guards[0]); ++i) {
-        if (io->read8(context, output_guards[i]) != 0u) {
+    for (size_t i = 0; i < sizeof(output_guard_offsets) / sizeof(output_guard_offsets[0]); ++i) {
+        if (io->read8(context, UINT32_C(0x800000) + output_guard_offsets[i]) != 0u) {
             return 0;
         }
     }
@@ -66,12 +66,15 @@ static void publish_proposals(const Lfj8H03Takeover *state)
     const Lfj8RegisterIo *const io = ops->io;
     void *const context = io->context;
 
-    for (size_t i = 0; i < sizeof(shift_final) / sizeof(shift_final[0]); ++i) {
-        io->write8(context, shift_final[i] - 2u, (uint8_t)(((unsigned)state->shift_mask >> i) & 1u));
+    /* The three D/E/F final bytes have a stride of three, with the
+     * corresponding proposal two bytes earlier in each record. */
+    for (unsigned i = 0; i < 3u; ++i) {
+        const uint32_t proposal = H03_SHIFT_D_FINAL + 3u * i - 2u;
+        io->write8(context, proposal, (uint8_t)(((unsigned)state->shift_mask >> i) & 1u));
     }
     ops->write32(context, 0x80508C, state->pressure_word);
-    for (size_t i = 0; i < sizeof(pwm_proposal) / sizeof(pwm_proposal[0]); ++i) {
-        ops->write32(context, pwm_proposal[i], 0u);
+    for (size_t i = 0; i < sizeof pwm_proposal_offsets; ++i) {
+        ops->write32(context, UINT32_C(0x804F00) + pwm_proposal_offsets[i], 0u);
     }
 }
 
@@ -80,16 +83,18 @@ static int matching_commands(const Lfj8H03Takeover *state)
     const Lfj8RegisterIo *const io = state->ops->io;
     void *const context = io->context;
 
-    for (size_t i = 0; i < sizeof(shift_final) / sizeof(shift_final[0]); ++i) {
-        if (io->read8(context, shift_final[i]) != (((unsigned)state->shift_mask >> i) & 1u)) {
+    for (unsigned i = 0; i < 3u; ++i) {
+        const uint32_t final = H03_SHIFT_D_FINAL + 3u * i;
+        if (io->read8(context, final) != (((unsigned)state->shift_mask >> i) & 1u)) {
             return 0;
         }
     }
     if (io->read32(context, 0x805094) != state->pressure_word) {
         return 0;
     }
-    for (size_t i = 0; i < sizeof(pwm_final) / sizeof(pwm_final[0]); ++i) {
-        if (io->read32(context, pwm_final[i]) != 0u) {
+    for (size_t i = 0; i < sizeof pwm_proposal_offsets; ++i) {
+        const uint32_t final = UINT32_C(0x804F00) + pwm_proposal_offsets[i] + 8u;
+        if (io->read32(context, final) != 0u) {
             return 0;
         }
     }
@@ -126,16 +131,16 @@ static int prepare(Lfj8H03Takeover *state, const Lfj8H03OutputPlan *plan,
     const Lfj8RegisterIo *const io = ops->io;
     void *const context = io->context;
     const uint32_t saved = io->enter(context);
-    const uint32_t advance = generation - state->generation;
+    /* The first command has no predecessor and enters as a fresh step. */
+    const uint32_t advance = state->have_generation ? generation - state->generation : 1u;
 
     const int missed_apply = state->pending;
-    const int consecutive = !state->have_generation || advance == 1u;
     state->pending = 0;
-    if (!state->have_generation || (advance != 0u && advance < SERIAL_HALF_RANGE)) {
+    if (advance != 0u && advance < SERIAL_HALF_RANGE) {
         state->generation = generation;
         state->have_generation = 1;
         state->command_at = command_at;
-        if (consecutive && !missed_apply && qualified(state)) {
+        if (advance == 1u && !missed_apply && qualified(state)) {
             const uint8_t before = read_shift_levels(io);
             uint8_t shift_mask;
             if (lfj8_h03_output_plan_resolve(plan, before, &shift_mask) &&

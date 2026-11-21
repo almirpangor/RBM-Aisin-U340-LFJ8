@@ -63,6 +63,7 @@ static uint32_t read_word(void *c, uint32_t address)
 static void write_byte(void *c, uint32_t address, uint8_t value)
 {
     Fixture *f = c;
+    assert(f->publications < 3u && address == shift_in[f->publications]);
     *cell(f, address) = value;
     ++f->publications;
 }
@@ -70,6 +71,7 @@ static void write_byte(void *c, uint32_t address, uint8_t value)
 static void write_word(void *c, uint32_t address, uint32_t value)
 {
     Fixture *f = c;
+    assert(f->publications >= 3u && f->publications < 8u && address == word_in[f->publications - 3u]);
     assert((address & 3u) == 0 && address <= LIMIT - sizeof(value));
     memcpy(cell(f, address), &value, sizeof(value));
     ++f->publications;
@@ -147,6 +149,36 @@ static void inhibit(void *c)
     Fixture *f = c;
     assert(f->locked);
     ++f->inhibits;
+}
+
+static void check_every_oem_guard(Fixture *fixture, const Lfj8H03TakeoverOps *ops,
+                                  const Lfj8H03OutputPlan *plan)
+{
+    static const uint32_t addresses[] = {
+        0x8063AF, 0x8063B7, 0x8063C4, 0x806356, 0x8063F2,
+        0x80636E, 0x80636F, 0x806370, 0x80636D,
+        0x8065BA, 0x8065B8, 0x8065B7, 0x8065B6,
+    };
+    memset(fixture, 0, sizeof *fixture);
+    fixture->permitted = 1u;
+    const uint16_t initialized = 3u;
+    memcpy(&fixture->ram[0x80621A - BASE], &initialized, sizeof initialized);
+    for (size_t i = 0; i < sizeof addresses / sizeof addresses[0]; ++i) {
+        Lfj8H03Takeover state;
+        const unsigned prior_arbitrations = fixture->arbitrations;
+        const unsigned prior_inhibits = fixture->inhibits;
+        uint8_t *const flag = &fixture->ram[addresses[i] - BASE];
+        assert(lfj8_h03_takeover_init(&state, ops, 8u));
+        *flag = 0x80u;
+        assert(!lfj8_h03_takeover_prepare_plan(&state, plan, 1u, 0u));
+        assert(!fixture->publications && fixture->arbitrations == prior_arbitrations);
+        *flag = 0u;
+        assert(lfj8_h03_takeover_prepare_plan(&state, plan, 2u, 0u));
+        *flag = 0x80u;
+        assert(!lfj8_h03_takeover_apply(&state, 2u));
+        assert(!state.pending && !fixture->applies && fixture->inhibits == prior_inhibits + 2u);
+        *flag = 0u;
+    }
 }
 
 int main(void)
@@ -379,6 +411,9 @@ int main(void)
     assert(lfj8_h03_takeover_prepare_plan(&state, &plan, 0u, fixture.now));
     assert(lfj8_h03_takeover_apply(&state, 0u));
     assert(fixture.applies == prior_applies + 1u && !state.pending && !fixture.locked);
+    ops.phase_clock = NULL;
+    plan.discrete_count = 0u;
+    check_every_oem_guard(&fixture, &ops, &plan);
     puts("H03 takeover: proposals, P3 replay, service guards, native phase expiry and arbitration revocation PASS");
     return 0;
 }
