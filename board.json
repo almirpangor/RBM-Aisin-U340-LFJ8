@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 826,
+  "sequence": 827,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12409,9 +12409,43 @@
         "task": "CAN-03",
         "submitted_at": "2026-11-20T22:52:33+00:00"
       }
+    },
+    {
+      "operation_id": "7e56c1ba9ae44461bb8513e6df586850",
+      "task": "DTC-02",
+      "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "action": "complete",
+      "claim_id": "7d595279d73d44b882c2a6d929c481bb",
+      "at": "2026-11-21T07:46:10+00:00",
+      "record": {
+        "owner": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+        "label": "Codex DTC-02 — нижние переходы в общей компоновке",
+        "branch": "codex/can01-h03-engine-owner-b0157640",
+        "files": [
+          "targets/lfj8/h03_dtc_rx_redirects.S",
+          "targets/lfj8/lfj8_h03_dtc_rx_placement.py",
+          "tests/test_h03_dtc_rx_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/dtc02-linked-lower-redirects.md"
+        ],
+        "stage": "done",
+        "claim_id": "7d595279d73d44b882c2a6d929c481bb",
+        "claimed_at": "2026-11-20T23:06:45+00:00",
+        "updated_at": "2026-11-21T07:46:10+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "1bc3c22b18114cf8f2d5d547026fe7ac44ad9926",
+        "based_on_reviews": [
+          "5bb09a6c858e41d7a7b760ee40373d75",
+          "702717949ca545219ea4fbe0c6486d2c",
+          "8b0ce759514b4c68b04d002b192f50ff",
+          "96f93fae25924717a50bf354ff863f44"
+        ],
+        "task": "DTC-02",
+        "submitted_at": "2026-11-20T23:13:54+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:46:00+00:00",
+  "updated_at": "2026-11-21T07:46:10+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -14429,11 +14463,11 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/dtc02-linked-lower-redirects.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "7d595279d73d44b882c2a6d929c481bb",
       "claimed_at": "2026-11-20T23:06:45+00:00",
-      "updated_at": "2026-11-20T23:13:54+00:00",
-      "note": "Два нижних BasicCAN перехода включены в общую H03-компоновку, M32R подтвердил оба слова на OEM-адресах. Офлайн RX→CAN13 0x722, 18 сравнений и обходы Virtual Flash прошли. Полный линк FAIL_BINDINGS до профиля приложения, конфигурации датчиков и типизированных RAM-символов. Без прошивки. Отчёт verification/project-audit/dtc02-linked-lower-redirects.md.",
+      "updated_at": "2026-11-21T07:46:10+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "1bc3c22b18114cf8f2d5d547026fe7ac44ad9926",
       "based_on_reviews": [
         "5bb09a6c858e41d7a7b760ee40373d75",
