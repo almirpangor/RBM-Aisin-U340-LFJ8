@@ -24,6 +24,9 @@ static const uint16_t output_guard_offsets[] = { /* 0x800000 */
 static int qualified(const Lfj8H03Takeover *state)
 {
     const Lfj8H03TakeoverOps *const ops = state->ops;
+    if (!ops->apply) {
+        return 0;
+    }
     const Lfj8RegisterIo *const io = ops->io;
     void *const context = io->context;
 
@@ -110,10 +113,17 @@ int lfj8_h03_takeover_init(Lfj8H03Takeover *state, const Lfj8H03TakeoverOps *ops
     *state = (Lfj8H03Takeover){0};
     if (!ops || !ops->io || !ops->io->read8 || !ops->io->read16 ||
         !ops->io->read32 || !ops->io->write8 || !ops->io->enter || !ops->io->leave ||
-        !ops->write32 || !ops->clock_ticks ||
-        !ops->qualified || !ops->arbitrate || !ops->apply || !ops->inhibit ||
-        ops->isolated_pwm_mask != LFJ8_H03_ALL_SPARE_PWM_ISOLATED ||
+        !ops->clock_ticks || !ops->inhibit ||
         max_age_ticks == 0u || max_age_ticks >= SERIAL_HALF_RANGE) {
+        return 0;
+    }
+
+    if (ops->apply) {
+        if (!ops->write32 || !ops->qualified || !ops->arbitrate ||
+            ops->isolated_pwm_mask != LFJ8_H03_ALL_SPARE_PWM_ISOLATED) {
+            return 0;
+        }
+    } else if (ops->write32 || ops->qualified || ops->arbitrate || ops->isolated_pwm_mask) {
         return 0;
     }
     state->ops = ops;

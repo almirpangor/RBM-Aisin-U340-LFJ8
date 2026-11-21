@@ -50,6 +50,9 @@ typedef struct {
  * inhibit carries out the commissioned failure response even when previous
  * outputs are latched. Arbitration and apply use the H03 OEM functions 0717B8
  * and 046900 respectively.
+ * A monitoring provider sets apply, arbitrate, write32 and qualified to NULL
+ * and the isolation mask to zero. It admits phase startup and always inhibits
+ * output preparation and application. Its inhibit performs the native revoke.
  * With phase_clock set, clock_ticks uses the phase publication timebase;
  * the I/O lock must also exclude that publisher. A command may advance only
  * after the current phase has been taken and while it is fresh.
