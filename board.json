@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 863,
+  "sequence": 864,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -519,8 +519,8 @@
       "stage": "in_progress",
       "claim_id": "1d81829ef6454d6589be1c0367f123d1",
       "claimed_at": "2026-11-21T07:54:10+00:00",
-      "updated_at": "2026-11-21T07:58:57+00:00",
-      "note": "Отзыв при остановке TML1 проверен в настоящем foreground H03 и нативных store-hook. Обновил модель синхронного хода двух счётчиков; повторяю сквозные проверки и измерение памяти.",
+      "updated_at": "2026-11-21T08:06:48+00:00",
+      "note": "Прошли финальные 22 native, 8 компонентов M32R и 6 групп размещённого ядра. Сравнение с 06ab447: +168 Flash, +12 типизированной RAM, +8 в кадрах foreground. Верхние окна требуют 102596 при 102356. Дожидаюсь полного прогона ПК.",
       "result": null,
       "based_on_reviews": []
     },
@@ -13555,9 +13555,42 @@
         "result": "44f118638a6ef4c728f9b729c328ea5359c96dee",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "fa9ac10763064b8aa3ba9d76306df3e9",
+      "task": "VSS-02",
+      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "action": "heartbeat",
+      "claim_id": "1d81829ef6454d6589be1c0367f123d1",
+      "at": "2026-11-21T08:06:48+00:00",
+      "record": {
+        "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+        "label": "Codex VSS-02 — согласованность таймеров в foreground",
+        "branch": "codex/vss02-h03-live-clock-continuity-01a1f9c7",
+        "files": [
+          "targets/lfj8/h03_application_binding_fixture.c",
+          "targets/lfj8/h03_phase_boot_fixture.c",
+          "targets/lfj8/h03_sensor_hook_fixture.c",
+          "targets/lfj8/lfj8_donor_io.c",
+          "targets/lfj8/lfj8_donor_io.h",
+          "targets/lfj8/lfj8_h03_sensor_feed.c",
+          "targets/lfj8/lfj8_h03_sensor_feed.h",
+          "targets/lfj8/lfj8_h03_sensor_target.c",
+          "targets/lfj8/test_lfj8_h03_sensor_feed.c",
+          "targets/lfj8/test_lfj8_h03_target_platform.c",
+          "verification/project-audit/vss02-h03-live-clock-continuity.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "1d81829ef6454d6589be1c0367f123d1",
+        "claimed_at": "2026-11-21T07:54:10+00:00",
+        "updated_at": "2026-11-21T08:06:48+00:00",
+        "note": "Прошли финальные 22 native, 8 компонентов M32R и 6 групп размещённого ядра. Сравнение с 06ab447: +168 Flash, +12 типизированной RAM, +8 в кадрах foreground. Верхние окна требуют 102596 при 102356. Дожидаюсь полного прогона ПК.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:06:33+00:00",
+  "updated_at": "2026-11-21T08:06:48+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
