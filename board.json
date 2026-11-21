@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 876,
+  "sequence": 877,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -117,22 +117,25 @@
       "result": "de7df4ab3da2c30240e0a8d3635f206787236d94"
     },
     "H03-03": {
-      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
-      "label": "Codex H03-03 — штатные переходы запуска и foreground",
-      "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex H03-03 — переходы приложения в общей компоновке",
+      "branch": "codex/h03-03-common-app-entries-7bd19ea4",
       "files": [
-        "targets/lfj8/check_h03_phase_boot.py",
-        "targets/lfj8/lfj8_h03_application_placement.py",
         "tests/test_h03_application_placement.py",
-        "verification/project-audit/h03-03-application-entry-placement.md"
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/h03-03-common-application-entries.md"
       ],
-      "stage": "review",
-      "claim_id": "ad014517bfa54394bf4b7185d135b504",
-      "claimed_at": "2026-11-21T07:55:30+00:00",
-      "updated_at": "2026-11-21T08:01:57+00:00",
-      "note": "Четыре штатных перехода H03 включены через генерацию ASM, точное размещение и проверку ELF. 68 M32R и 27 Python PASS. Состав 106464 байта, верх 102860/102356, FAIL_BINDINGS. Общий компоновщик в резерве H03-04; открыты выпускной профиль, RAM/стек и остальные переходы. BIN не выпускались.",
-      "result": "579b20f72aecf3880f10f05ebeefd6c7c8951135",
-      "based_on_reviews": []
+      "stage": "in_progress",
+      "claim_id": "6078f52e802d408c95fb67f636dd6008",
+      "claimed_at": "2026-11-21T08:15:52+00:00",
+      "updated_at": "2026-11-21T08:15:52+00:00",
+      "note": "Подключаю четыре принятых для модели OEM-перехода startup/foreground к общему линкеру. Отдельно проверю совместимость со связанными сервисными переходами и новые затраты Flash.",
+      "result": null,
+      "based_on_reviews": [
+        "a20975afc98c4d39aaad95e3eb018a5c",
+        "ad014517bfa54394bf4b7185d135b504",
+        "fe45b2270ed1477d94fcc54c637fa138"
+      ]
     },
     "H03-04": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -13954,9 +13957,38 @@
           "fe45b2270ed1477d94fcc54c637fa138"
         ]
       }
+    },
+    {
+      "operation_id": "62eaa5a4279f4b688248f6126d335108",
+      "task": "H03-03",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "claim",
+      "claim_id": "6078f52e802d408c95fb67f636dd6008",
+      "at": "2026-11-21T08:15:52+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex H03-03 — переходы приложения в общей компоновке",
+        "branch": "codex/h03-03-common-app-entries-7bd19ea4",
+        "files": [
+          "tests/test_h03_application_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-03-common-application-entries.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "6078f52e802d408c95fb67f636dd6008",
+        "claimed_at": "2026-11-21T08:15:52+00:00",
+        "updated_at": "2026-11-21T08:15:52+00:00",
+        "note": "Подключаю четыре принятых для модели OEM-перехода startup/foreground к общему линкеру. Отдельно проверю совместимость со связанными сервисными переходами и новые затраты Flash.",
+        "result": null,
+        "based_on_reviews": [
+          "a20975afc98c4d39aaad95e3eb018a5c",
+          "ad014517bfa54394bf4b7185d135b504",
+          "fe45b2270ed1477d94fcc54c637fa138"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:13:43+00:00",
+  "updated_at": "2026-11-21T08:15:52+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
