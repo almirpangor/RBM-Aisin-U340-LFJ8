@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T08:36:44+00:00**. Изменение № **888**.
+Обновлено UTC: **2026-11-21T08:36:54+00:00**. Изменение № **889**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main abd3cba0093cf834950d7883fcc6cbacec4420d3.
 
-**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 7.**
+**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 6.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -36,7 +36,6 @@
 | CAN-03 | Codex CAN-03 — проверка профиля сервиса до допуска фаз | [813f9513ff06](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/813f9513ff06ced54bcf2d92b0f254bebec47ca7) | 229997a636ba4ae5a74668a70fe58cae | Пять неверных профилей T6/окна DTC/ATF теперь отключаются до допуска фаз. Повторное использование общих проверок и 16 шагов штатного CAN прошли. Исправлена несовместимость теста CAN13 со status_due в e207a57. ПК 41/194, M32R 22 native + 8 components + 6 placed и BasicCAN 18+18+3. +140 байт Flash, 0 новой RAM, полный FAIL_BINDINGS и дефицит верхней Flash 624 байта. Открыты выпускные параметры и поля, мониторные переходы и стенд. Отчёт can03-h03-service-startup-admission.md. |
 | H03-03 | Codex H03-03 — переходы приложения в общей компоновке | [9874e2757151](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9874e2757151d2ea258c2c0a3e74e9a7da0c4ed0) | 6078f52e802d408c95fb67f636dd6008 | Четыре OEM-перехода startup/foreground включены в общий компоновщик по явному профилю. ПК 41/210, M32R 68, проверки 49, сервис 29/28 и reset/DMA4 PASS. +432 Flash и 16 замен, RAM +0. Полный состав FAIL_BINDINGS, 14 ссылок, дефицит 356 байт верхней Flash. Отчёт h03-03-common-application-entries.md. |
 | H03-04 | Codex H03-04 — подтверждённые RAM/SPI/PSW алиасы | [396a1729a419](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/396a1729a4194ea3939551d9193a591ac79356ff) | a20975afc98c4d39aaad95e3eb018a5c | 14 абсолютных алиасов RAM/SPI/PSW, поддержка резидентной политики. 27 тестов, частичный линк и оба варианта M32R, ранний reset/DMA4 и сервис 29/28 PASS. Общая модель 106416 Flash, 4 RAM, 14 unresolved. Остались нижние пределы и резервы SPI/PSW, rbm_h03_boot_writers_owned и целевой профиль. Отчёт h03-04-common-ram-aliases.md. |
-| H03-05 | Codex H03-05 reduce native output flash | [0d3b2d09b5db](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/0d3b2d09b5db03c24bdacb123372e385ba14edb3) | cfeb6b2c68764c1486a4151c11fa115d | Сократил штатный takeover на 94 байта M32R medium и 86 small без роста RAM. Известные верхние секции теперь размещаются 102334/102356. Проверены точные порядки публикации, 13 флагов, нативные выходы в двух моделях, 22 native, 8 components, 6 размещённых и 41 этап ПК. Полный линк сохраняет 32 ссылки и ждёт реальных профилей и поставщиков. |
 | ORG-01 | Общая сборка 11 новых результатов | [abd3cba0093c](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/abd3cba0093cf834950d7883fcc6cbacec4420d3) | 53eb08d472e4456e91a1545391804ea6 | Объединены 11 порций; известный состав размещён переносом 1532 байт неизменённых таблиц. Проверки пройдены в указанном объёме; 15 ссылок остаются, рабочих BIN нет. Отчёт integration-11-20261121. |
 | TOY-05 | Codex TOY-05 — чтение адаптаций из нативного массива при старте | [9cec04d64dfe](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9cec04d64dfe83df578de05919ace1d6c7f840aa) | 403b34a2893d4d969a7b8eb7964150c2 | Профиль штатного startup читает пару UFL1 из защищённого массива M32176 в существующее workspace до допуска фаз. M32R подтвердил rollover, Virtual Flash, повторный старт и фактическое восстановление; 22 native, 8 components, 6 placed, ПК 41/194. +316 байт Flash, 0 новых RAM, общий верхний дефицит 388 байт. Нужны два доказанно свободных блока, запись, полный startup GP/gear и стенд. Отчёт toy05-native-adaptation-reader.md. |
 
@@ -56,7 +55,7 @@
 | 1 | [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#toy-02) | Свободна для продолжения | Поставщик нагрузки для take_toyota: происхождение каждого GP, единицы, диапазон, период и тест потери данных. | См. входные условия карточки |
 | 2 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#h03-04) | Свободна для продолжения; порция на проверке | rbm_h03_target_ram_owned, карта размещения/стека и проверка DMA/SBI/сервиса на едином составе. | См. входные условия карточки |
 | 3 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#vss-02) | Свободна для продолжения | rbm_h03_sensor_config и rbm_h03_target_clock_ready; проверка несовпадения/сброса часов, тайм-аутов и недостоверной остановки. | См. входные условия карточки |
-| 4 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#h03-05) | Свободна для продолжения; порция на проверке | rbm_h03_target_takeover_ops с трассой до регистров и явными условиями допуска SLT/SLU. | См. входные условия карточки |
+| 4 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#h03-05) | Свободна для продолжения | rbm_h03_target_takeover_ops с трассой до регистров и явными условиями допуска SLT/SLU. | См. входные условия карточки |
 | 5 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#can-01) | Свободна для продолжения; порция на проверке | rbm_h03_target_engine, реальные пределы возраста/опроса, испытания потери и восстановления данных через общий startup/foreground. | См. входные условия карточки |
 | 6 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#dtc-04) | Свободна для продолжения | Физический NVM backend, адреса, busy/ошибки, восстановление после прерывания и очистка без ложного подтверждения. | H03-04 |
 | 7 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/abd3cba0093cf834950d7883fcc6cbacec4420d3/docs/project-map.md#toy-05) | Свободна для продолжения; порция на проверке | rbm_h03_target_startup_gear/gp с происхождением полей; порядок init → prepare_s01_cold → restore_adaptation до допуска выходов. | TOY-04, H03-04 |
@@ -148,7 +147,7 @@
 </details>
 
 <details>
-<summary>H03-05 — SLT, силовые выходы и реакция на отказ: Свободна для продолжения; порция на проверке</summary>
+<summary>H03-05 — SLT, силовые выходы и реакция на отказ: Свободна для продолжения</summary>
 
 **Сделано.** Нативный takeover сокращён на 94 байта medium/86 small без роста RAM. Порядок публикации и 13 флагов проверены, штатные выходные сценарии прошли.
 
@@ -682,7 +681,7 @@
 | TOY-02 | Порция принята | Codex TOY-02 — допуск нагрузки в H03 | codex/toy02-load-evidence-01a1f9c7 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit f1f622d93c3e0ae143cb41ba83813160d7b3063a |
 | H03-04 | На проверке | Codex H03-04 — подтверждённые RAM/SPI/PSW алиасы | codex/h03-04-verified-ram-aliases-7bd19ea4 | 14 абсолютных алиасов RAM/SPI/PSW, поддержка резидентной политики. 27 тестов, частичный линк и оба варианта M32R, ранний reset/DMA4 и сервис 29/28 PASS. Общая модель 106416 Flash, 4 RAM, 14 unresolved. Остались нижние пределы и резервы SPI/PSW, rbm_h03_boot_writers_owned и целевой профиль. Отчёт h03-04-common-ram-aliases.md. / commit 396a1729a4194ea3939551d9193a591ac79356ff |
 | VSS-02 | Порция принята | Codex VSS-02 — согласованность таймеров в foreground | codex/vss02-h03-live-clock-continuity-01a1f9c7 | Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN. / commit 9235b22a1f5a1c455cb33a45d21b58c13d17bd52 |
-| H03-05 | На проверке | Codex H03-05 reduce native output flash | codex/h03-05-output-flash-01a1f9a2 | Сократил штатный takeover на 94 байта M32R medium и 86 small без роста RAM. Известные верхние секции теперь размещаются 102334/102356. Проверены точные порядки публикации, 13 флагов, нативные выходы в двух моделях, 22 native, 8 components, 6 размещённых и 41 этап ПК. Полный линк сохраняет 32 ссылки и ждёт реальных профилей и поставщиков. / commit 0d3b2d09b5db03c24bdacb123372e385ba14edb3 |
+| H03-05 | Порция принята | Codex H03-05 reduce native output flash | codex/h03-05-output-flash-01a1f9a2 | Включено в main abd3cba. Общие проверки и ограничения — integration-11-20261121. Приёмка порции не означает готовность двух BIN. / commit 0d3b2d09b5db03c24bdacb123372e385ba14edb3 |
 | CAN-01 | На проверке | Codex CAN-01 — реальная привязка единственного состояния двигателя | codex/can-01-shared-engine-binding-32e6ac79 | Целевой rbm_h03_target_engine подключён к штатному запуску и foreground, единым CAN owner/DTC и TML0 через типизированные алиасы. ПК 41/194, 68 запусков, 16 шагов CAN и четыре отклонённых профиля. +36 байт Flash, RAM без прироста. Нужны реальные параметры и контекст Task 2; полный состав FAIL_BINDINGS. / commit 94f93c6067d338290333a1fa45f39787476a2d62 |
 | DTC-04 | Порция принята | Codex DTC-04 — проверка физического чтения журнала | codex/dtc04-native-restore-bank-gate-922b7b11 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 456abca6b0dda9bf8f542f1fbe90653246959443 |
 | TOY-05 | На проверке | Codex TOY-05 — чтение адаптаций из нативного массива при старте | codex/integration39-c7e4 | Профиль штатного startup читает пару UFL1 из защищённого массива M32176 в существующее workspace до допуска фаз. M32R подтвердил rollover, Virtual Flash, повторный старт и фактическое восстановление; 22 native, 8 components, 6 placed, ПК 41/194. +316 байт Flash, 0 новых RAM, общий верхний дефицит 388 байт. Нужны два доказанно свободных блока, запись, полный startup GP/gear и стенд. Отчёт toy05-native-adaptation-reader.md. / commit 9cec04d64dfe83df578de05919ace1d6c7f840aa |
@@ -721,6 +720,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T08:36:54+00:00 | H03-05 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T08:36:44+00:00 | VSS-02 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-21T08:36:34+00:00 | CAN-03 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-21T08:36:24+00:00 | MODE-02 | complete | codex-dtc04-mwp5rm2ofhaxjfi9dss |
@@ -750,4 +750,3 @@
 | 2026-11-21T08:05:42+00:00 | MODE-02 | heartbeat | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-21T08:03:37+00:00 | H03-04 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-21T08:02:52+00:00 | CAN-03 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-21T08:02:40+00:00 | TOY-05 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
