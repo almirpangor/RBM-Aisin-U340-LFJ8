@@ -5,7 +5,7 @@
     "TOY-04",
     "TOY-06"
   ],
-  "base_main": "10f7c1513b910f42473690255641140989cc10d0",
+  "base_main": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "implementation_commit": "e52a5c665a185132a4e4335ca70605ee0cba50fe",
   "branch": "codex/h03-05-bench-output-01a1f9a2",
   "scope": "Профиль H03 для наблюдения и проверки запуска, обмена и диагностики с программно снятыми командами целевых соленоидов. Допуск физического управления остаётся открытым.",
@@ -77,7 +77,7 @@
   "entry_points": [
     {
       "symbol": "rbm_h03_target_takeover_ops",
-      "connection": "Целевое внешнее определение для lfj8_h03_application_binding.c. В общем профиле оставить RBM_H03_PROFILE_OUTPUT_ISOLATION_MASK и RBM_H03_PROFILE_OUTPUT_PHASE_CLOCK неопределёнными. Добавить модуль в список native bindings. Alias rbm_h03_bench_phase_clock связывается с существующим control/phase_clock по свежему RAM-инвентарю."
+      "connection": "Целевое внешнее определение для lfj8_h03_application_binding.c. В общем профиле оставить RBM_H03_PROFILE_OUTPUT_ISOLATION_MASK и RBM_H03_PROFILE_OUTPUT_PHASE_CLOCK неопределёнными. Добавить модуль в список native bindings. Alias rbm_h03_bench_phase_clock связывается с существующим control/phase_clock по свежему RAM-инвентарю. В актуальной общей компоновке файл передаётся --binding-source targets/lfj8/lfj8_h03_bench_outputs.c."
     },
     {
       "symbol": "rbm_h03_strategy_callback",
@@ -158,7 +158,8 @@
         "flash_bytes_including_fixed_redirects": 107924,
         "known_sections_bytes": 107868,
         "unresolved_symbols": 15,
-        "native_bench_provider_linked": false
+        "native_bench_provider_linked": false,
+        "source_baseline": "10f7c1513b910f42473690255641140989cc10d0"
       },
       "small_candidate_with_bench_snapshot_root": {
         "flash_bytes_including_fixed_redirects": 106944,
@@ -169,7 +170,8 @@
         "phase_clock_typed_alias": "0x806EBC",
         "phase_clock_bytes": 28,
         "phase_clock_alignment": 4,
-        "both_output_redirects_tested_separately": true
+        "both_output_redirects_tested_separately": true,
+        "source_baseline": "3fe28938163e1dddc98a37733c229390ab7f0fff"
       },
       "qualification": "Известные секции размещены в адресной модели. Размеры ещё не включают определения остального профиля, штатные переходы выходов в общей компоновке и диагностику сетевой выдачи."
     }
@@ -251,8 +253,17 @@
       {
         "command": "python -B tools/check_integrated_h03.py --suite expanded --small-model --base $h03 --gcc $m32rGcc --controller $controller --bridge $bridge --out $out/expanded-small --jobs 1",
         "result": "Ошибку в существующей expanded-обёртке воспроизводит несовместимая сигнатура split: передаётся 9 аргументов при 7 в самой обёртке. Скрипты совпадают с main. Модели small проверены отдельно прямым тестом двух выводных переходов и расширенным адресным кандидатом с native provider."
+      },
+      {
+        "command": "python -B $out/check-explicit-bench-small.py --base $h03 --gcc $m32rGcc --controller $controllerSmall --bridge $bridgeSmall --storage-report $out/native-final/storage.json --out $out/composition-explicit-bench-small",
+        "result": "На main 3fe2893 повторены 106944 байта и FAIL_BINDINGS c 14 ссылками. Новый выходной модуль принят через официальный повторяемый --binding-source, snapshot удержан, контрольный alias 0x806EBC подключён через RAM-инвентарь в параметрах эксперимента. Точный расчёт адреса использует проверенный control/phase_clock в текущей карте. Финальные redirect и alias в общий профиль добавляет интегратор."
+      },
+      {
+        "command": "python -B -m unittest discover -s tests -p test_h03_image*.py и python -B -m unittest discover -s tests -p test_h03_layout.py",
+        "result": "PASS, 12 + 13 тестов общего сериализатора и размещения после слияния 3fe2893."
       }
     ],
     "logs": "D:/RBM-Codex-Work/h03-bench-wave-01a1f9a2"
-  }
+  },
+  "runtime_test_base_main": "10f7c1513b910f42473690255641140989cc10d0"
 }
