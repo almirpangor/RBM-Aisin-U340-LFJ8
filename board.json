@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 936,
+  "sequence": 937,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -157,12 +157,12 @@
         "verification/bench-wave/chat-6/handoff.json",
         "verification/bench-wave/chat-6/memory.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "734b4f9d3a9c43f6aaa67927cf88ab12",
       "claimed_at": "2026-11-21T08:52:24+00:00",
-      "updated_at": "2026-11-21T09:10:36+00:00",
-      "note": "Первая общая компоновка подтверждена. Резервирую отдельный повторяемый скрипт прогона; target_memory.c остаётся без изменений.",
-      "result": null,
+      "updated_at": "2026-11-21T09:14:22+00:00",
+      "note": "Стендовый профиль и native boot owner, 5 ссылок разрешены в общей композиции. Оба reset, DMA4, service и Virtual Flash PASS в M32R; 94 теста. Полный link и стек от foreground/IRQ отдельно; нижнюю Flash должен доставить квалифицированный режим записи. Подключение и точные результаты в verification/bench-wave/chat-6/handoff.json.",
+      "result": "2718128ed693b9fa2f69da981a7e316e7b106fa1",
       "based_on_reviews": []
     },
     "DTC-04": {
@@ -15865,9 +15865,46 @@
         "result": "3def8b732d271760e8f62c4e9e6b5b7d1f53804f",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "2ab46c2ad7c149c0843cf8f5cdbd19db",
+      "task": "H03-04",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "734b4f9d3a9c43f6aaa67927cf88ab12",
+      "at": "2026-11-21T09:14:22+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex H03-04 — ранний допуск IRQ и стендовый профиль SPI/PSW",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_boot_writers.py",
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/check_h03_service_guard.py",
+          "targets/lfj8/check_h03_vflash_lockout.py",
+          "targets/lfj8/h03_dma4_guard.S",
+          "targets/lfj8/lfj8_h03_bench_memory.c",
+          "targets/lfj8/lfj8_h03_bench_memory_profile.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_owner.h",
+          "targets/lfj8/lfj8_h03_service_placement.py",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "tests/test_h03_bench_memory_profile.py",
+          "verification/bench-wave/chat-6/check-composition.py",
+          "verification/bench-wave/chat-6/handoff.json",
+          "verification/bench-wave/chat-6/memory.md"
+        ],
+        "stage": "review",
+        "claim_id": "734b4f9d3a9c43f6aaa67927cf88ab12",
+        "claimed_at": "2026-11-21T08:52:24+00:00",
+        "updated_at": "2026-11-21T09:14:22+00:00",
+        "note": "Стендовый профиль и native boot owner, 5 ссылок разрешены в общей композиции. Оба reset, DMA4, service и Virtual Flash PASS в M32R; 94 теста. Полный link и стек от foreground/IRQ отдельно; нижнюю Flash должен доставить квалифицированный режим записи. Подключение и точные результаты в verification/bench-wave/chat-6/handoff.json.",
+        "result": "2718128ed693b9fa2f69da981a7e316e7b106fa1",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T09:14:03+00:00",
+  "updated_at": "2026-11-21T09:14:22+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -18894,6 +18931,37 @@
       "based_on_reviews": [],
       "task": "CAN-01",
       "submitted_at": "2026-11-21T09:14:03+00:00"
+    },
+    "734b4f9d3a9c43f6aaa67927cf88ab12": {
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex H03-04 — ранний допуск IRQ и стендовый профиль SPI/PSW",
+      "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+      "files": [
+        "targets/lfj8/check_h03_boot_writers.py",
+        "targets/lfj8/check_h03_ram_owner.py",
+        "targets/lfj8/check_h03_service_guard.py",
+        "targets/lfj8/check_h03_vflash_lockout.py",
+        "targets/lfj8/h03_dma4_guard.S",
+        "targets/lfj8/lfj8_h03_bench_memory.c",
+        "targets/lfj8/lfj8_h03_bench_memory_profile.py",
+        "targets/lfj8/lfj8_h03_ram_owner.c",
+        "targets/lfj8/lfj8_h03_ram_owner.h",
+        "targets/lfj8/lfj8_h03_service_placement.py",
+        "targets/lfj8/test_lfj8_h03_ram_owner.c",
+        "tests/test_h03_bench_memory_profile.py",
+        "verification/bench-wave/chat-6/check-composition.py",
+        "verification/bench-wave/chat-6/handoff.json",
+        "verification/bench-wave/chat-6/memory.md"
+      ],
+      "stage": "review",
+      "claim_id": "734b4f9d3a9c43f6aaa67927cf88ab12",
+      "claimed_at": "2026-11-21T08:52:24+00:00",
+      "updated_at": "2026-11-21T09:14:22+00:00",
+      "note": "Стендовый профиль и native boot owner, 5 ссылок разрешены в общей композиции. Оба reset, DMA4, service и Virtual Flash PASS в M32R; 94 теста. Полный link и стек от foreground/IRQ отдельно; нижнюю Flash должен доставить квалифицированный режим записи. Подключение и точные результаты в verification/bench-wave/chat-6/handoff.json.",
+      "result": "2718128ed693b9fa2f69da981a7e316e7b106fa1",
+      "based_on_reviews": [],
+      "task": "H03-04",
+      "submitted_at": "2026-11-21T09:14:22+00:00"
     }
   }
 }
