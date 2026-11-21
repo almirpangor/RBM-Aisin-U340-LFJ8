@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 817,
+  "sequence": 818,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12128,9 +12128,38 @@
         "task": "DTC-04",
         "submitted_at": "2026-11-20T22:44:18+00:00"
       }
+    },
+    {
+      "operation_id": "ad48e51fc7354a988aed6d3716bc7adb",
+      "task": "DTC-02",
+      "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "action": "complete",
+      "claim_id": "702717949ca545219ea4fbe0c6486d2c",
+      "at": "2026-11-21T07:44:39+00:00",
+      "record": {
+        "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+        "label": "Codex DTC-02 — регистры банков Flash",
+        "branch": "codex/dtc02-flash-bank-admission-922b7b11",
+        "files": [
+          "targets/lfj8/check_h03_dtc_service_gate.py",
+          "targets/lfj8/h03_dtc_rx_hook.S",
+          "verification/project-audit/dtc02-flash-bank-admission.md"
+        ],
+        "stage": "done",
+        "claim_id": "702717949ca545219ea4fbe0c6486d2c",
+        "claimed_at": "2026-11-20T22:41:20+00:00",
+        "updated_at": "2026-11-21T07:44:39+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "1e27a0f6dc02d66f62edbd3724af9d55b17d3e44",
+        "based_on_reviews": [
+          "5bb09a6c858e41d7a7b760ee40373d75"
+        ],
+        "task": "DTC-02",
+        "submitted_at": "2026-11-20T22:45:52+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:44:29+00:00",
+  "updated_at": "2026-11-21T07:44:39+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -13937,11 +13966,11 @@
         "targets/lfj8/h03_dtc_rx_hook.S",
         "verification/project-audit/dtc02-flash-bank-admission.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "702717949ca545219ea4fbe0c6486d2c",
       "claimed_at": "2026-11-20T22:41:20+00:00",
-      "updated_at": "2026-11-20T22:45:52+00:00",
-      "note": "Обе нижние обёртки BasicCAN проверяют бит включения FELBANK0/1 и FESBANK0/1 перед доступом к проектному RX, включая FCNT1=0. Девять сценариев M32R и 18+18 BasicCAN, четыре проверки размещения, совместный прогон с dc2afd9 PASS. +72 байта Flash, RAM 2728 байт. Общая линковка требует прежних платформенных привязок; аппаратное наложение и размещение переходов требуют подтверждения. Отчёт verification/project-audit/dtc02-flash-bank-admission.md.",
+      "updated_at": "2026-11-21T07:44:39+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "1e27a0f6dc02d66f62edbd3724af9d55b17d3e44",
       "based_on_reviews": [
         "5bb09a6c858e41d7a7b760ee40373d75"
