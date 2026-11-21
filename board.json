@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 784,
+  "sequence": 785,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -62,12 +62,12 @@
         "tests/test_h03_tx13_placement.py",
         "verification/project-audit/can03-linked-tx13.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "62a5dbfef8914f5fb88386697f6070a8",
       "claimed_at": "2026-11-21T06:43:03+00:00",
-      "updated_at": "2026-11-21T06:45:52+00:00",
-      "note": "Отдельный M32R ELF подтвердил переход, возврат и typed owner. Оба штатных пути прошли 18 сценариев; повторяю native suite и регрессию компоновки.",
-      "result": null,
+      "updated_at": "2026-11-21T06:47:47+00:00",
+      "note": "OEM-слово TX13 0x00C34C и возврат 0x00C350 проверены в отдельном M32R ELF с typed CAN owner. 18 OEM-сценариев, 22 native, 48 H03 Python. Общий компоновщик зарезервирован H03-04; подключение описано в can03-linked-tx13.md. Без выпуска BIN.",
+      "result": "1eefa2abd890b71c4334408555285750fa6911a0",
       "based_on_reviews": [
         "1b7a53b2c91c49d481c892507323d9d9",
         "2101184d356545bfa9a1e0bd6716a9ee",
@@ -11033,9 +11033,42 @@
           "96f93fae25924717a50bf354ff863f44"
         ]
       }
+    },
+    {
+      "operation_id": "74a2b62a930449a185b2d81ec78f9441",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "62a5dbfef8914f5fb88386697f6070a8",
+      "at": "2026-11-21T06:47:47+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — отдельное размещение TX13",
+        "branch": "codex/can03-linked-tx13-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_torque_tx_gate.py",
+          "targets/lfj8/h03_can13_tx_gate.S",
+          "targets/lfj8/h03_can13_tx_redirect.S",
+          "targets/lfj8/h03_torque_tx_gate_fixture.S",
+          "targets/lfj8/lfj8_h03_tx13_placement.py",
+          "tests/test_h03_tx13_placement.py",
+          "verification/project-audit/can03-linked-tx13.md"
+        ],
+        "stage": "review",
+        "claim_id": "62a5dbfef8914f5fb88386697f6070a8",
+        "claimed_at": "2026-11-21T06:43:03+00:00",
+        "updated_at": "2026-11-21T06:47:47+00:00",
+        "note": "OEM-слово TX13 0x00C34C и возврат 0x00C350 проверены в отдельном M32R ELF с typed CAN owner. 18 OEM-сценариев, 22 native, 48 H03 Python. Общий компоновщик зарезервирован H03-04; подключение описано в can03-linked-tx13.md. Без выпуска BIN.",
+        "result": "1eefa2abd890b71c4334408555285750fa6911a0",
+        "based_on_reviews": [
+          "1b7a53b2c91c49d481c892507323d9d9",
+          "2101184d356545bfa9a1e0bd6716a9ee",
+          "4781e27fe7274496be65a8d2faf92977"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T06:46:45+00:00",
+  "updated_at": "2026-11-21T06:47:47+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -13247,6 +13280,33 @@
       ],
       "task": "CAN-03",
       "submitted_at": "2026-11-20T23:18:55+00:00"
+    },
+    "62a5dbfef8914f5fb88386697f6070a8": {
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex CAN-03 — отдельное размещение TX13",
+      "branch": "codex/can03-linked-tx13-fea1b366",
+      "files": [
+        "targets/lfj8/check_h03_torque_tx_gate.py",
+        "targets/lfj8/h03_can13_tx_gate.S",
+        "targets/lfj8/h03_can13_tx_redirect.S",
+        "targets/lfj8/h03_torque_tx_gate_fixture.S",
+        "targets/lfj8/lfj8_h03_tx13_placement.py",
+        "tests/test_h03_tx13_placement.py",
+        "verification/project-audit/can03-linked-tx13.md"
+      ],
+      "stage": "review",
+      "claim_id": "62a5dbfef8914f5fb88386697f6070a8",
+      "claimed_at": "2026-11-21T06:43:03+00:00",
+      "updated_at": "2026-11-21T06:47:47+00:00",
+      "note": "OEM-слово TX13 0x00C34C и возврат 0x00C350 проверены в отдельном M32R ELF с typed CAN owner. 18 OEM-сценариев, 22 native, 48 H03 Python. Общий компоновщик зарезервирован H03-04; подключение описано в can03-linked-tx13.md. Без выпуска BIN.",
+      "result": "1eefa2abd890b71c4334408555285750fa6911a0",
+      "based_on_reviews": [
+        "1b7a53b2c91c49d481c892507323d9d9",
+        "2101184d356545bfa9a1e0bd6716a9ee",
+        "4781e27fe7274496be65a8d2faf92977"
+      ],
+      "task": "CAN-03",
+      "submitted_at": "2026-11-21T06:47:47+00:00"
     }
   }
 }
