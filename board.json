@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 935,
+  "sequence": 936,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -279,12 +279,12 @@
         "targets/lfj8/test_lfj8_h03_engine_context.c",
         "verification/bench-wave/chat-2/handoff.json"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "1bfd0b8442764a5e8a833763cc57815a",
       "claimed_at": "2026-11-21T08:50:55+00:00",
-      "updated_at": "2026-11-21T09:10:53+00:00",
-      "note": "Native composition removes fixture_engine_context, uses 636 more Flash bytes and adds no static RAM. Phase boot passed 68 cases; preparing review.",
-      "result": null,
+      "updated_at": "2026-11-21T09:14:03+00:00",
+      "note": "Native Task 2 engine context and guarded CAN RX. Host and M32R replay PASS; 68 phase, 20 CAN owner scenarios and 41 PC stages. Scratch composition resolves fixture_engine_context (+636 Flash, 0 static RAM); remaining integration inputs in verification/bench-wave/chat-2/handoff.json. No hardware validation or paired BIN.",
+      "result": "3def8b732d271760e8f62c4e9e6b5b7d1f53804f",
       "based_on_reviews": []
     },
     "MODE-02": {
@@ -15833,9 +15833,41 @@
         "result": "2d3569d4f7c9b4cf23fdbf1d262b7c5136e9d667",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "46b326e7218746a198b3a56565cd3124",
+      "task": "CAN-01",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "review",
+      "claim_id": "1bfd0b8442764a5e8a833763cc57815a",
+      "at": "2026-11-21T09:14:03+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex чат 2 — Task 2 и профиль двигателя для первой стендовой пары",
+        "branch": "codex/can-01-shared-engine-binding-32e6ac79",
+        "files": [
+          "targets/lfj8/bench_engine_profile.h",
+          "targets/lfj8/check_h03_engine_context.py",
+          "targets/lfj8/lfj8_h03_engine_context.c",
+          "targets/lfj8/lfj8_h03_engine_context.h",
+          "targets/lfj8/lfj8_h03_engine_feed.c",
+          "targets/lfj8/lfj8_h03_engine_feed.h",
+          "targets/lfj8/lfj8_h03_engine_rx.c",
+          "targets/lfj8/lfj8_h03_engine_rx.h",
+          "targets/lfj8/test_lfj8_h03_engine_context.c",
+          "verification/bench-wave/chat-2/handoff.json"
+        ],
+        "stage": "review",
+        "claim_id": "1bfd0b8442764a5e8a833763cc57815a",
+        "claimed_at": "2026-11-21T08:50:55+00:00",
+        "updated_at": "2026-11-21T09:14:03+00:00",
+        "note": "Native Task 2 engine context and guarded CAN RX. Host and M32R replay PASS; 68 phase, 20 CAN owner scenarios and 41 PC stages. Scratch composition resolves fixture_engine_context (+636 Flash, 0 static RAM); remaining integration inputs in verification/bench-wave/chat-2/handoff.json. No hardware validation or paired BIN.",
+        "result": "3def8b732d271760e8f62c4e9e6b5b7d1f53804f",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T09:13:36+00:00",
+  "updated_at": "2026-11-21T09:14:03+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -18836,6 +18868,32 @@
       "based_on_reviews": [],
       "task": "MODE-02",
       "submitted_at": "2026-11-21T09:13:36+00:00"
+    },
+    "1bfd0b8442764a5e8a833763cc57815a": {
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "label": "Codex чат 2 — Task 2 и профиль двигателя для первой стендовой пары",
+      "branch": "codex/can-01-shared-engine-binding-32e6ac79",
+      "files": [
+        "targets/lfj8/bench_engine_profile.h",
+        "targets/lfj8/check_h03_engine_context.py",
+        "targets/lfj8/lfj8_h03_engine_context.c",
+        "targets/lfj8/lfj8_h03_engine_context.h",
+        "targets/lfj8/lfj8_h03_engine_feed.c",
+        "targets/lfj8/lfj8_h03_engine_feed.h",
+        "targets/lfj8/lfj8_h03_engine_rx.c",
+        "targets/lfj8/lfj8_h03_engine_rx.h",
+        "targets/lfj8/test_lfj8_h03_engine_context.c",
+        "verification/bench-wave/chat-2/handoff.json"
+      ],
+      "stage": "review",
+      "claim_id": "1bfd0b8442764a5e8a833763cc57815a",
+      "claimed_at": "2026-11-21T08:50:55+00:00",
+      "updated_at": "2026-11-21T09:14:03+00:00",
+      "note": "Native Task 2 engine context and guarded CAN RX. Host and M32R replay PASS; 68 phase, 20 CAN owner scenarios and 41 PC stages. Scratch composition resolves fixture_engine_context (+636 Flash, 0 static RAM); remaining integration inputs in verification/bench-wave/chat-2/handoff.json. No hardware validation or paired BIN.",
+      "result": "3def8b732d271760e8f62c4e9e6b5b7d1f53804f",
+      "based_on_reviews": [],
+      "task": "CAN-01",
+      "submitted_at": "2026-11-21T09:14:03+00:00"
     }
   }
 }
