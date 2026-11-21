@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 865,
+  "sequence": 866,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -72,12 +72,12 @@
         "targets/lfj8/lfj8_h03_target_service.h",
         "verification/project-audit/can03-h03-t6-status.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "4bba8d216cdb44aaa3b5b2922f11a8ea",
       "claimed_at": "2026-11-21T07:56:38+00:00",
-      "updated_at": "2026-11-21T08:02:52+00:00",
-      "note": "Целевая модель T6 и TX13 прошла. Сверяю строгую сборку штатного сервиса и повторяю общую компоновку; инвентарь RAM без роста.",
-      "result": null,
+      "updated_at": "2026-11-21T08:07:17+00:00",
+      "note": "Подключено расписание S03 4/12 тиков от общего T6 к штатному сервису и TX13. Связанный M32R и 22 группы native PASS. +192 байта Flash, RAM без роста, известному составу не хватает 264 байт верхней Flash. Измеренный профиль и поля статуса/момента остаются открыты. Доказательства в can03-h03-t6-status.md.",
+      "result": "e207a57f970e99f015115d89bcd3e320e6d0fb81",
       "based_on_reviews": []
     },
     "TOY-03": {
@@ -13617,9 +13617,40 @@
           "fe45b2270ed1477d94fcc54c637fa138"
         ]
       }
+    },
+    {
+      "operation_id": "8f8396bbd61d48b8bb019604fdaeffa2",
+      "task": "CAN-03",
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "action": "review",
+      "claim_id": "4bba8d216cdb44aaa3b5b2922f11a8ea",
+      "at": "2026-11-21T08:07:17+00:00",
+      "record": {
+        "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+        "label": "Codex CAN-03 — расписание статуса от общих T6",
+        "branch": "codex/can03-t6-status-fea1b366",
+        "files": [
+          "targets/lfj8/check_h03_dtc_basiccan.py",
+          "targets/lfj8/h03_dtc_rx_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_can13.c",
+          "targets/lfj8/lfj8_h03_can13.h",
+          "targets/lfj8/lfj8_h03_dtc_native.c",
+          "targets/lfj8/lfj8_h03_dtc_native.h",
+          "targets/lfj8/lfj8_h03_target_service.c",
+          "targets/lfj8/lfj8_h03_target_service.h",
+          "verification/project-audit/can03-h03-t6-status.md"
+        ],
+        "stage": "review",
+        "claim_id": "4bba8d216cdb44aaa3b5b2922f11a8ea",
+        "claimed_at": "2026-11-21T07:56:38+00:00",
+        "updated_at": "2026-11-21T08:07:17+00:00",
+        "note": "Подключено расписание S03 4/12 тиков от общего T6 к штатному сервису и TX13. Связанный M32R и 22 группы native PASS. +192 байта Flash, RAM без роста, известному составу не хватает 264 байт верхней Flash. Измеренный профиль и поля статуса/момента остаются открыты. Доказательства в can03-h03-t6-status.md.",
+        "result": "e207a57f970e99f015115d89bcd3e320e6d0fb81",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:07:13+00:00",
+  "updated_at": "2026-11-21T08:07:17+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -16180,6 +16211,31 @@
       "based_on_reviews": [],
       "task": "MODE-02",
       "submitted_at": "2026-11-21T08:06:33+00:00"
+    },
+    "4bba8d216cdb44aaa3b5b2922f11a8ea": {
+      "owner": "codex-fea1b366-66b6-4667-8206-915153ca1033",
+      "label": "Codex CAN-03 — расписание статуса от общих T6",
+      "branch": "codex/can03-t6-status-fea1b366",
+      "files": [
+        "targets/lfj8/check_h03_dtc_basiccan.py",
+        "targets/lfj8/h03_dtc_rx_hook_fixture.c",
+        "targets/lfj8/lfj8_h03_can13.c",
+        "targets/lfj8/lfj8_h03_can13.h",
+        "targets/lfj8/lfj8_h03_dtc_native.c",
+        "targets/lfj8/lfj8_h03_dtc_native.h",
+        "targets/lfj8/lfj8_h03_target_service.c",
+        "targets/lfj8/lfj8_h03_target_service.h",
+        "verification/project-audit/can03-h03-t6-status.md"
+      ],
+      "stage": "review",
+      "claim_id": "4bba8d216cdb44aaa3b5b2922f11a8ea",
+      "claimed_at": "2026-11-21T07:56:38+00:00",
+      "updated_at": "2026-11-21T08:07:17+00:00",
+      "note": "Подключено расписание S03 4/12 тиков от общего T6 к штатному сервису и TX13. Связанный M32R и 22 группы native PASS. +192 байта Flash, RAM без роста, известному составу не хватает 264 байт верхней Flash. Измеренный профиль и поля статуса/момента остаются открыты. Доказательства в can03-h03-t6-status.md.",
+      "result": "e207a57f970e99f015115d89bcd3e320e6d0fb81",
+      "based_on_reviews": [],
+      "task": "CAN-03",
+      "submitted_at": "2026-11-21T08:07:17+00:00"
     }
   }
 }
