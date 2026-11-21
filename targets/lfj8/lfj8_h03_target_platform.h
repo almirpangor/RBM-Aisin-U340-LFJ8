@@ -33,6 +33,14 @@ extern Lfj8H03ToyotaRelease rbm_h03_toyota_release_state;
  * Acquire the qualified load/driver operands using the supplied snapshot.
  * Preserve producer timestamps and load lifetime; the release owner assigns
  * the event number, and the application supplies its shared CAN engine feed.
- * Return 1 only when the complete required input set is usable. */
+ * Return 1 only when the complete required input set is usable.
+ *
+ * lfj8_h03_toyota_input_profile.h selects this callback and the optional
+ * RBM_H03_PROFILE_SAMPLE_TOYOTA_INPUTS (int (uint32_t now, uint8_t previous_gear)).
+ * It updates qualification with IRQs masked on each admitted H03 foreground
+ * phase and returns 1 while the inputs still support the previous command.
+ * The platform withdraws a stale command immediately. The release callback
+ * remains responsible for admitting freshly qualified operands. The profile
+ * initializer resets the input owners before opening the application gate. */
 
 #endif

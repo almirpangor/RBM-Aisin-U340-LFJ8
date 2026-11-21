@@ -35,6 +35,17 @@ extern const Lfj8H03TargetServiceConfig test_can_service_config;
 #define RBM_H03_PROFILE_CAN_SERVICE_CONFIG test_can_service_config
 """
 
+MANUAL_PROFILE = (
+    PROFILE.replace("MAX_PERIOD_TICKS 20u", "MAX_PERIOD_TICKS 70u")
+    .replace("PERIOD_TICKS 16u", "PERIOD_TICKS 64u")
+    .replace("#define RBM_H03_PROFILE_CAPTURE_TOYOTA test_capture_inputs", """
+#include "lfj8_h03_input_binding.h"
+extern const Lfj8H03ToyotaInputCapture test_input_capture;
+#define RBM_H03_PROFILE_TOYOTA_INPUT_CAPTURE test_input_capture
+#include "lfj8_h03_toyota_input_profile.h"
+""".strip())
+)
+
 
 def common_placement(run, work, base, compiler, controller, bridge, profile):
     storage = work / "storage.json"
@@ -178,8 +189,41 @@ def check(compiler, controller, bridge, *, base=None):
         expected = "H03 target platform: native startup, CAN service lifecycle, Toyota rollover and inhibition PASS"
         if output != expected:
             raise ValueError(f"Unexpected M32R result: {output}")
+
+        (work / "manual-profile.h").write_text(MANUAL_PROFILE, encoding="ascii")
+        manual_flag = '-DRBM_H03_APPLICATION_PROFILE="manual-profile.h"'
+        manual_flags = [*flags, "-DRBM_H03_TEST_MANUAL_PROFILE"]
+        run(*compile_platform, manual_flag)
+        manual_sections = alloc_sections(read_elf(work / "platform.o", 1))
+        if any(section["flags"] & 1 for section in manual_sections):
+            raise ValueError("The manual profile added writable storage to the platform object")
+        manual_sources = ("lfj8_h03_input_target.c", "lfj8_h03_input_binding.c",
+                          "lfj8_h03_button_capture.c", "lfj8_range_control.c")
+        manual_objects = ("platform.o", *sources)
+        manual_options = []
+        manual_placed = None
+        if base is not None:
+            manual_layout = work / "manual-layout"
+            manual_layout.mkdir()
+            manual_placed = common_placement(
+                run, manual_layout, base, compiler, controller, bridge, work / "manual-profile.h")
+            manual_objects, manual_options, manual_names = placed_objects(
+                run, compiler, manual_flags, manual_flag, sources, manual_sections, manual_placed)
+        run(*manual_flags, manual_flag, "-nostartfiles", crt,
+            *manual_objects, *(HERE / name for name in manual_sources), *manual_options,
+            ROOT / "diagnostics/chery_dtc.c", shim, bridge, controller,
+            "-Wl,--gc-sections,-e,_start,--start-group", "-lc", "-lgloss", "-lgcc", "-Wl,--end-group",
+            "-o", "manual.elf")
+        if manual_placed is not None:
+            verify_placed_elf(read_elf(work / "manual.elf", 2), manual_placed, manual_names)
+        manual = run(simulator, "--memory-size=16M", "manual.elf").stdout.strip()
+        if manual != "H03 manual profile: native foreground, Toyota hold, MAIN S1/S2 and revocation PASS":
+            raise ValueError(f"Unexpected manual profile result: {manual}")
         return {"status": "PASS", "m32r": output, "unprofiled_and_inconsistent_timing_refused": True,
                 "missing_can_service_profile_refused": True,
+                "manual_profile_m32r": manual,
+                "manual_profile_flash_section_bytes": sum(section["size"] for section in manual_sections),
+                "manual_placed_model": manual_placed,
                 "flash_section_bytes": flash,
                 "required_release_alias_bytes": 16, "platform_object_writable_bytes": 0,
                 "placed_model": placed, "hardware_tested": False, "flashable_image": None}
@@ -202,6 +246,7 @@ def main():
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         print(report["m32r"])
+        print(report["manual_profile_m32r"])
     except subprocess.CalledProcessError as error:
         parser.exit(1, (error.stderr or error.stdout or str(error)) + "\n")
     except (KeyError, OSError, ValueError, subprocess.TimeoutExpired) as error:
