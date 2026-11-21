@@ -78,9 +78,30 @@ int rbm_h03_target_initialize(void *context)
 Lfj8H03ToyotaEvent rbm_h03_target_take_toyota(void *context, const Lfj8H03SensorSnapshot *sensors,
     Lfj8H03CycleInput *input, Lfj8H03CycleLoad *load, uint32_t *released_at)
 {
-    if (!native_io(context)) {
+    if (!native_io(context) || !input) {
         return LFJ8_H03_TOYOTA_FAULT;
     }
+#ifdef RBM_H03_PROFILE_SAMPLE_TOYOTA_INPUTS
+    const Lfj8RegisterIo *const io = &lfj8_h03_mmio;
+    const uint32_t saved = io->enter(context);
+    const int ready = lfj8_h03_application_running_locked() && rbm_h03_target_clock_ready(context) == 1;
+    if (ready) {
+        const uint32_t now = lfj8_h03_tml0ct_m32r(context);
+        const int have_event = rbm_h03_cycle_state.have_event;
+        const uint8_t previous_gear = have_event ? input->requested_gear : 0u;
+        if (!RBM_H03_PROFILE_SAMPLE_TOYOTA_INPUTS(now, previous_gear) && have_event) {
+            /* Withdraw any old command while the selector/buttons settle.
+             * The capture callback decides admission on the next release. */
+            input->requested_gear = 0u;
+            rbm_h03_main_result.valid = 0u;
+            lfj8_h03_takeover_revoke_locked(&rbm_h03_takeover_state);
+        }
+    }
+    io->leave(context, saved);
+    if (!ready) {
+        return LFJ8_H03_TOYOTA_FAULT;
+    }
+#endif
     /* Native H03 I/O has a NULL context. The source owns its descriptor and
      * passes that same platform context to the clock, RAM and input providers. */
     return lfj8_h03_toyota_source_take((void *)&toyota_source, sensors, input, load, released_at);

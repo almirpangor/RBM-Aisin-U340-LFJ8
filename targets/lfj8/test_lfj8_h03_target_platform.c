@@ -3,6 +3,7 @@
 #include "lfj8_h03_target_platform.h"
 #include "lfj8_h03_application_binding.h"
 #include "lfj8_h03_atf_target.h"
+#include "lfj8_h03_input_binding.h"
 #include "lfj8_h03_mmio.h"
 #include "lfj8_h03_sensor_target.h"
 #include "lfj8_h03_target_service.h"
@@ -47,6 +48,33 @@ static int revoke_at_start;
 static int can_ready = 1, can_prepared, fail_after_prepare;
 static unsigned can_starts, can_live_stops, can_stops;
 static uint8_t clock_at_last_live_stop;
+
+#ifdef RBM_H03_TEST_MANUAL_PROFILE
+enum {
+    PHASE_TICKS = 8u, TOYOTA_TICKS = 64u,
+    PORT_IDLE = 8u, PORT_UP = PORT_IDLE | 64u, PORT_BOTH = PORT_UP | 32u,
+};
+static Lfj8RangeControl manual_control;
+static Lfj8ButtonFilter manual_buttons;
+static Lfj8H03InputProposal manual_proposal;
+static Lfj8H03RangeInputs manual_range;
+static RbmU340eInput manual_driver;
+static unsigned mains;
+static uint16_t an2 = 665u;
+static uint8_t button_port = PORT_IDLE;
+
+/* Synthetic inputs and timing confined to this simulator profile. */
+static const Lfj8H03ButtonMap manual_pins = {{
+    {LFJ8_H03_BUTTON_P1, 8u, 1u}, {LFJ8_H03_BUTTON_P1, 64u, 0u},
+    {LFJ8_H03_BUTTON_P1, 32u, 0u}, {0},
+}};
+static const Lfj8H03RangeAgeLimits manual_limits = {{16u, 16u, 16u, 16u}, 16u};
+static const Lfj8H03InputBinding manual_binding = {
+    .adc = &rbm_h03_selector_adc_state, .control = &manual_control, .button_filter = &manual_buttons,
+    .io = &lfj8_h03_mmio, .range_limits = &manual_limits, .p1_button_map = &manual_pins,
+    .manual_max_age_us = 32768u,
+};
+#endif
 
 const Lfj8H03TargetServiceConfig test_can_service_config = {
     .can13 = {.bit_time_us = 2u},
@@ -96,6 +124,14 @@ int test_initialize_inputs(void *context)
     assert(!context && irq_enabled() && stock_startups == 1u && !rbm_h03_application.running);
     assert(rbm_h03_selector_adc_state.pending_event == LFJ8_SELECTOR_ADC_NONE);
     ++input_starts;
+#ifdef RBM_H03_TEST_MANUAL_PROFILE
+    static const RbmU340ePolicy policy = {
+        .manual_selectors = 1u << RBM_U340E_SELECTOR_D,
+        .initial_mode = RBM_U340E_TIPTRONIC, .initial_overdrive_enabled = 1u,
+    };
+    assert(lfj8_range_control_init(&manual_control, &policy, 24u));
+    assert(lfj8_button_filter_init(&manual_buttons, PHASE_TICKS, 24u));
+#endif
     if (revoke_at_start) {
         owned = 0;
     }
@@ -117,6 +153,29 @@ int test_capture_inputs(void *context, const Lfj8H03SensorSnapshot *sensors, uin
     *load = (Lfj8H03CycleLoad){.sample = &sample, .now_us = TML0CT, .max_age_us = 5u};
     return capture_ready;
 }
+
+#ifdef RBM_H03_TEST_MANUAL_PROFILE
+static int read_manual_inputs(void *context, const Lfj8H03SensorSnapshot *sensors, uint32_t due_at,
+    Lfj8H03CycleInput *input, Lfj8H03CycleLoad *load, Lfj8H03InputSources *sources)
+{
+    const int ready = test_capture_inputs(context, sensors, due_at, input, load);
+    const uint8_t range = an2 == 665u ? 5u : 1u;
+    for (unsigned bit = 0; bit < 4u; ++bit) {
+        manual_range.range_5722[bit] =
+            (Lfj8H03RangeBit){due_at - 3u, sensors->epoch, (uint8_t)((range >> bit) & 1u), 1u};
+    }
+    manual_range.inhibit_5250_2 = (Lfj8H03RangeBit){due_at - 2u, sensors->epoch, 0u, 1u};
+    load->max_age_us = 8u;
+    sources->driver = &manual_driver;
+    sources->range = &manual_range;
+    return ready;
+}
+
+const Lfj8H03ToyotaInputCapture test_input_capture = {
+    .binding = &manual_binding, .proposal = &manual_proposal,
+    .ram_owned = rbm_h03_target_ram_owned, .read = read_manual_inputs,
+};
+#endif
 
 static int engine_context(void *context, const Lfj8H03SensorSnapshot *sensors,
     Ta2005EngineQualificationContext *engine, bool *history, uint32_t *oldest)
@@ -154,14 +213,27 @@ void h03_stock_foreground_inputs(void)
 {
     assert(irq_enabled());
     ++stock_updates;
+#ifdef RBM_H03_TEST_MANUAL_PROFILE
+    MMIO8(LFJ8_H03_P1DATA_ADDRESS) = button_port;
+    const uint32_t saved = lfj8_h03_mmio.enter(NULL);
+    rbm_h03_selector_adc_capture(an2);
+    lfj8_h03_mmio.leave(NULL, saved);
+#endif
 }
 
 void rbm_h03_target_service_phase(void *context, const Lfj8H03PhaseEvent *phase,
     const Lfj8H03SensorSnapshot *sensors, const Lfj8H03MainResult *main)
 {
-    (void)main;
     assert(!context && irq_enabled() && can_prepared && sensors->capture.now_tml0 == phase->released_at);
     ++services;
+#ifdef RBM_H03_TEST_MANUAL_PROFILE
+    if (main) {
+        assert(main == &rbm_h03_main_result && main->valid && main->command_at == last_due - 3u);
+        ++mains;
+    }
+#else
+    (void)main;
+#endif
 }
 
 static void inhibit(void *context)
@@ -224,6 +296,137 @@ static void assert_faulted(void)
     assert(!can_prepared && clock_at_last_live_stop == 1u);
 }
 
+#ifdef RBM_H03_TEST_MANUAL_PROFILE
+static void next_manual_release(uint32_t *at)
+{
+    for (unsigned i = 0; i < TOYOTA_TICKS / PHASE_TICKS; ++i) {
+        *at += PHASE_TICKS;
+        foreground(*at);
+        if (!rbm_h03_application.running) {
+            fprintf(stderr, "at=%lu captures=%u services=%u mains=%u selector=%u armed=%u release=%u now=%lu have=%u input=%u\n",
+                (unsigned long)*at, captures, services, mains, manual_control.selector, manual_buttons.armed,
+                rbm_h03_toyota_release_state.status, (unsigned long)rbm_h03_toyota_release_state.last_observed,
+                rbm_h03_cycle_state.have_event, rbm_h03_cycle_input.qualified);
+        }
+        assert(rbm_h03_application.running);
+    }
+    assert(last_due == *at && rbm_h03_cycle_input.engine.coherent == 1u);
+}
+
+static void next_manual_main(uint32_t *at)
+{
+    const unsigned before = mains;
+    for (unsigned i = 0; i < 17u && mains == before; ++i) {
+        next_manual_release(at);
+    }
+    assert(mains == before + 1u);
+}
+
+static void expect_shift(uint32_t target, unsigned s2)
+{
+    const Lfj8H03MainResult *const result = &rbm_h03_main_result;
+    uint32_t requested;
+    assert(factory_hydraulics_get(&rbm_h03_runtime_state.gp, -4854, 1u, &requested));
+    assert(requested == target && result->shift.count == 2u);
+    assert(result->shift.writes[0].channel == 0u && result->shift.writes[0].value == 1u);
+    assert(result->shift.writes[1].channel == 1u && result->shift.writes[1].value == s2);
+}
+
+static int test_manual_profile(void)
+{
+    uint32_t at = UINT32_MAX - 31u;
+    manual_driver = (RbmU340eInput){.actual_gear = 1u, .allowed_gears = 15u};
+    startup(at);
+    assert(rbm_h03_application.running && !manual_buttons.armed);
+    next_manual_release(&at);
+    assert(captures == 1u && services == TOYOTA_TICKS / PHASE_TICKS && manual_buttons.armed);
+    assert(rbm_h03_cycle_state.last_event == 0u && rbm_h03_cycle_input.selector == RBM_U340E_SELECTOR_N);
+    next_manual_main(&at);
+    next_manual_main(&at);
+
+    an2 = 500u; /* D */
+    assert(factory_hydraulics_set(&rbm_h03_runtime_state.gp, -7154, 2u, 6400u));
+    for (unsigned i = 0; i < 130u; ++i) {
+        next_manual_main(&at);
+    }
+    assert(factory_hydraulics_set(&rbm_h03_runtime_state.gp, -4548, 1u, 19u));
+    assert(factory_hydraulics_set(&rbm_h03_runtime_state.gp, -4549, 1u, 19u));
+    next_manual_main(&at);
+    expect_shift(0u, 1u);
+
+    button_port = PORT_UP;
+    next_manual_release(&at);
+    assert(rbm_h03_cycle_input.requested_gear == 2u && manual_proposal.driver.requested_gear == 2u);
+    button_port = PORT_IDLE;
+    manual_driver.shifting = 1u;
+    next_manual_release(&at);
+    assert(rbm_h03_cycle_input.requested_gear == 2u && !manual_proposal.driver.requested_gear);
+    for (unsigned i = 0; i < 12u; ++i) {
+        next_manual_main(&at);
+        assert(rbm_h03_cycle_input.requested_gear == 2u);
+    }
+    expect_shift(1u, 0u);
+
+    manual_driver.actual_gear = 2u;
+    next_manual_release(&at);
+    assert(rbm_h03_cycle_input.requested_gear == 2u); /* Target observed, shift still in progress. */
+    manual_driver.shifting = 0u;
+    next_manual_release(&at);
+    assert(!rbm_h03_cycle_input.requested_gear && !manual_control.manual_gear);
+    assert(factory_hydraulics_set(&rbm_h03_runtime_state.gp, -4548, 1u, 17u));
+    assert(factory_hydraulics_set(&rbm_h03_runtime_state.gp, -4549, 1u, 17u));
+    next_manual_main(&at);
+    expect_shift(0u, 1u);
+
+    manual_driver.actual_gear = 1u;
+    button_port = PORT_UP;
+    next_manual_release(&at);
+    assert(rbm_h03_cycle_input.requested_gear == 2u);
+    const unsigned before_conflict = captures;
+    button_port = PORT_BOTH;
+    foreground(at += PHASE_TICKS);
+    assert(rbm_h03_cycle_input.requested_gear == 2u); /* Chord still debouncing. */
+    foreground(at += PHASE_TICKS);
+    assert(!rbm_h03_cycle_input.requested_gear && !manual_control.manual_gear);
+    assert(captures == before_conflict && rbm_h03_application.running);
+    for (unsigned i = 2; i < TOYOTA_TICKS / PHASE_TICKS; ++i) {
+        foreground(at += PHASE_TICKS);
+    }
+    assert(manual_proposal.driver.conflicting_buttons && !rbm_h03_cycle_input.requested_gear);
+    button_port = PORT_IDLE;
+    next_manual_release(&at);
+    assert(!rbm_h03_cycle_input.requested_gear);
+
+    button_port = PORT_UP;
+    next_manual_main(&at);
+    assert(rbm_h03_cycle_input.requested_gear == 2u && rbm_h03_main_result.valid);
+    const unsigned before = services;
+    const unsigned captured = captures;
+    const unsigned inhibited = inhibits;
+    an2 = UINT16_MAX;
+    foreground(at += PHASE_TICKS); /* No Toyota event due, but invalid AN2 revokes output. */
+    assert(rbm_h03_application.running && captures == captured && services == before + 1u);
+    assert(!rbm_h03_cycle_input.requested_gear && !manual_control.manual_gear && !manual_buttons.armed);
+    assert(!rbm_h03_takeover_state.pending && !rbm_h03_main_result.valid && inhibits == inhibited + 1u);
+    for (unsigned i = 1; i < TOYOTA_TICKS / PHASE_TICKS; ++i) {
+        foreground(at += PHASE_TICKS);
+    }
+    assert_faulted();
+    assert(captures == captured + 1u && services == before + TOYOTA_TICKS / PHASE_TICKS - 1u);
+
+    an2 = 500u;
+    startup(at);
+    assert(!manual_control.manual_gear && !manual_buttons.armed);
+    for (unsigned i = 0; i < TOYOTA_TICKS / PHASE_TICKS; ++i) {
+        foreground(at += PHASE_TICKS); /* Held UP never establishes the new baseline. */
+    }
+    assert_faulted();
+    assert(!manual_control.manual_gear && captures == captured + 2u);
+    puts("H03 manual profile: native foreground, Toyota hold, MAIN S1/S2 and revocation PASS");
+    return 0;
+}
+#endif
+
 int main(void)
 {
     __asm__ volatile ("setpsw #0x40" ::: "memory", "cc");
@@ -234,6 +437,10 @@ int main(void)
     assert(factory_hydraulics_set(&rbm_h03_target_startup_gp, -7164, 2u, 26000u));
     assert(factory_hydraulics_set(&rbm_h03_target_startup_gp, -7186, 2u, 3072u));
     _Static_assert(sizeof(Lfj8H03ToyotaRelease) == 16u, "Toyota release RAM inventory");
+
+#ifdef RBM_H03_TEST_MANUAL_PROFILE
+    return test_manual_profile();
+#endif
 
     rbm_h03_toyota_release_state.status = UINT8_MAX;
     owned = 0;
