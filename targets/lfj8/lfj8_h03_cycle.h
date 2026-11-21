@@ -18,10 +18,15 @@ typedef struct {
 } Lfj8H03Cycle;
 
 /* MAIN finishes using the typed gear view before hydraulic processing.
- * They share one caller-owned buffer rather than growing the IRQ stack. */
+ * Startup reuses the same buffer for adaptation reads after cold projection
+ * and before any cycle runs. The views never have simultaneous users. */
 typedef union {
     FactoryGearState gear;
     FactoryHydraulics hydraulics;
+    struct {
+        uint8_t slots[2][FACTORY_ADAPT_RECORD_BYTES];
+        bool readable;
+    } adaptation;
 } Lfj8H03CycleWorkspace;
 
 typedef struct {

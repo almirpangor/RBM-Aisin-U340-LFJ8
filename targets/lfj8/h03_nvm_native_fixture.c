@@ -15,6 +15,14 @@ enum { FIRST = 0x006000, SECOND = 0x020000, SLOT_BYTES = 34, PUBLISHED = 30, RET
 
 static const uint8_t test_blocks[2] = {4, 7};
 
+#define RBM_H03_PROFILE_ADAPTATION_BLOCKS test_blocks
+#include "lfj8_h03_toyota_nvm_profile.h"
+
+Lfj8H03CycleWorkspace rbm_h03_cycle_workspace;
+
+_Static_assert(sizeof(Lfj8H03CycleWorkspace) == sizeof(union { FactoryGearState gear; FactoryHydraulics gp; }),
+               "Adaptation snapshots must fit the existing workspace");
+
 static void seed_slot(uint32_t address, const CheryDtcState *source, uint32_t generation)
 {
     uint8_t slot[SLOT_BYTES];
@@ -52,6 +60,71 @@ static void expect_restore(const uint8_t blocks[2], Lfj8H03NvmResult result,
     assert(memcmp(restored.current, no_current, sizeof no_current) == 0);
     assert(memcmp(restored.history, expected->history, sizeof restored.history) == 0);
     assert(memcmp(restored.snapshot_index, expected->snapshot_index, sizeof restored.snapshot_index) == 0);
+}
+
+static void seed_adaptation(uint32_t address, const FactoryAdaptation *data, uint32_t generation)
+{
+    uint8_t record[FACTORY_ADAPT_RECORD_BYTES];
+    assert(factory_adaptation_encode(record, data, generation));
+    for (unsigned i = 0; i < sizeof record; ++i) {
+        REG8(address + i) = record[i];
+    }
+}
+
+static void check_adaptation(void)
+{
+    const FactoryAdaptation *const baseline = rbm_u340e_s01_adaptation_baseline();
+    const FactoryAdaptation saved = {.down = {-40, 40}, .down_seen = 1u};
+    static FactoryGearState gear;
+    static FactoryHydraulics gp;
+    static RbmU340eRuntime runtime;
+    assert(factory_hydraulics_set(&gp, 1492, 2u, 0x5a5au));
+    const RbmU340eStartupSeed seed = {
+        .gear = &gear, .gp = &gp,
+        .cold_work = &rbm_h03_cycle_workspace.gear,
+        .kind = RBM_U340E_STARTUP_S01_COLD,
+        .read_adaptation = RBM_H03_PROFILE_READ_ADAPTATION,
+    };
+
+    seed_adaptation(FIRST, baseline, UINT32_MAX);
+    seed_adaptation(SECOND, &saved, 0u);
+    const unsigned ie = irq_enabled();
+    const uint8_t *const first = seed.read_adaptation(NULL, 0u);
+    REG8(SECOND) ^= 1u;
+    const uint8_t *const second = seed.read_adaptation(NULL, 1u);
+    FactoryAdaptation decoded;
+    uint32_t generation;
+    assert(first && second && first != second && irq_enabled() == ie);
+    assert(factory_adaptation_decode(first, &decoded, &generation) && generation == UINT32_MAX);
+    assert(factory_adaptation_decode(second, &decoded, &generation) && generation == 0u);
+    assert(!seed.read_adaptation(NULL, 1u) && !seed.read_adaptation(NULL, 2u));
+    REG8(SECOND) ^= 1u;
+
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) == RBM_U340E_ADAPTATION_LOADED);
+    uint32_t fast_filter;
+    assert(factory_hydraulics_get(&runtime.gp, 1492, 2u, &fast_filter) && fast_filter == 0u);
+    factory_hydraulics_capture(&runtime.gp, &decoded);
+    assert(decoded.down_seen == saved.down_seen && decoded.down[0] == saved.down[0]);
+    assert(irq_enabled() == ie);
+
+    /* A subsequent start must never use the pair captured by an earlier start. */
+    REG8(FCNT1) = 1u;
+    assert(rbm_u340e_runtime_start_from_seed(&runtime, &seed) == RBM_U340E_ADAPTATION_BASELINE_UNTRUSTED);
+    assert(!seed.read_adaptation(NULL, 1u) && REG8(FCNT1) == 1u && irq_enabled() == ie);
+    REG8(FCNT1) = 0u;
+    REG16(0x8007F0) = 0x8000u;
+    assert(!seed.read_adaptation(NULL, 0u) && !seed.read_adaptation(NULL, 1u));
+    assert(REG16(0x8007F0) == 0x8000u);
+    REG16(0x8007F0) = 0u;
+
+    uint8_t (*const slots)[FACTORY_ADAPT_RECORD_BYTES] = rbm_h03_cycle_workspace.adaptation.slots;
+    const uint8_t duplicate[] = {4, 4};
+    const uint8_t out_of_range[] = {4, LFJ8_H03_NVM_BLOCK_COUNT};
+    assert(!lfj8_h03_nvm_native_read_adaptation(duplicate, slots));
+    assert(!lfj8_h03_nvm_native_read_adaptation(out_of_range, slots));
+    assert(!lfj8_h03_nvm_native_read_adaptation(NULL, slots));
+    assert(!lfj8_h03_nvm_native_read_adaptation(test_blocks, NULL));
+    puts("PASS native H03 array: TOY-05 startup pair, wrap, unavailable array and invalid ownership input");
 }
 
 int main(void)
@@ -133,5 +206,6 @@ int main(void)
     assert(lfj8_h03_nvm_native_restore_dtc(test_blocks, NULL) == LFJ8_H03_NVM_INVALID);
     expect_restore(test_blocks, LFJ8_H03_NVM_SLOT_1, &learned, &learned);
     puts("PASS native H03 array: inaccessible, busy, erase/program error, E/W, Virtual Flash bank enable with FCNT1 clear, invalid blocks");
+    check_adaptation();
     return 0;
 }
