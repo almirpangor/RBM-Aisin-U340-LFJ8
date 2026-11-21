@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 852,
+  "sequence": 853,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -460,16 +460,15 @@
       "label": "Codex H03-05 reduce native output flash",
       "branch": "codex/h03-05-output-flash-01a1f9a2",
       "files": [
-        "targets/lfj8/lfj8_h03_output_inhibit.c",
-        "targets/lfj8/lfj8_h03_outputs.c",
         "targets/lfj8/lfj8_h03_takeover.c",
+        "targets/lfj8/test_lfj8_h03_takeover.c",
         "verification/project-audit/h03-05-output-flash.md"
       ],
       "stage": "in_progress",
       "claim_id": "cfeb6b2c68764c1486a4151c11fa115d",
       "claimed_at": "2026-11-21T07:54:48+00:00",
-      "updated_at": "2026-11-21T07:54:48+00:00",
-      "note": "Сокращаю верхнюю Flash на действующем пути силовых выходов без изменения регистровых транзакций, калибровок и профилей. Повторю общий расчёт известных поставщиков; файл компоновщика зарезервирован H03-04.",
+      "updated_at": "2026-11-21T07:57:20+00:00",
+      "note": "Действующий takeover сократился на 90 байт в medium; известный состав теперь размещается. Добавляю регрессию адресов 13 флагов и порядка публикации, изменения в других выходных файлах не требуются.",
       "result": null,
       "based_on_reviews": []
     },
@@ -13244,9 +13243,34 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "7a0bfa04e9ea490c86d7e5f5870ca31f",
+      "task": "H03-05",
+      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "action": "heartbeat",
+      "claim_id": "cfeb6b2c68764c1486a4151c11fa115d",
+      "at": "2026-11-21T07:57:20+00:00",
+      "record": {
+        "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+        "label": "Codex H03-05 reduce native output flash",
+        "branch": "codex/h03-05-output-flash-01a1f9a2",
+        "files": [
+          "targets/lfj8/lfj8_h03_takeover.c",
+          "targets/lfj8/test_lfj8_h03_takeover.c",
+          "verification/project-audit/h03-05-output-flash.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "cfeb6b2c68764c1486a4151c11fa115d",
+        "claimed_at": "2026-11-21T07:54:48+00:00",
+        "updated_at": "2026-11-21T07:57:20+00:00",
+        "note": "Действующий takeover сократился на 90 байт в medium; известный состав теперь размещается. Добавляю регрессию адресов 13 флагов и порядка публикации, изменения в других выходных файлах не требуются.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:56:38+00:00",
+  "updated_at": "2026-11-21T07:57:20+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
