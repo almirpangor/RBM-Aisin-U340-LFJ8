@@ -14,7 +14,7 @@
 #define POLICY_ADDRESS 0x30000u
 #define CONTROL_ADDRESS 0x806b40u
 #define COMM_ADDRESS 0x808e40u
-#define IRQ_ADDRESS 0x8094c0u
+#define IRQ_ADDRESS ((uint32_t)(uintptr_t)h03_dtc_irq_pointer)
 #define OWNER (*(Lfj8H03RamOwner *)(uintptr_t)OWNER_ADDRESS)
 #define POLICY (*(Lfj8H03ServicePolicy *)(uintptr_t)POLICY_ADDRESS)
 
@@ -22,6 +22,9 @@ void rbm_h03_service_direct_hook(void);
 void rbm_h03_service_span_hook(void);
 void rbm_h03_service_copy_hook(void);
 void rbm_h03_service_close_hook(void);
+void rbm_h03_early_irq_gate(void);
+void rbm_h03_dma4_guard(void);
+extern uint8_t h03_dtc_irq_pointer[];
 
 Lfj8H03Application rbm_h03_application;
 static Lfj8RegisterIo application_io;
@@ -62,8 +65,9 @@ __asm__(
     "jmp lr\n"
 );
 
-static const uint32_t sites[] = {0x2924u, 0x294cu, 0x2d1cu, 0x2e9cu, 0x3568u};
-static const uint32_t original[] = {ROM_DIRECT, ROM_SPAN, ROM_COPY, ROM_CLOSE, ROM_VIRTUAL};
+static const uint32_t sites[] = {0x2924u, 0x294cu, 0x2d1cu, 0x2e9cu, 0x3568u, 0x3dbcu, 0xcf0cu};
+static const uint32_t original[] = {ROM_DIRECT, ROM_SPAN, ROM_COPY, ROM_CLOSE, ROM_VIRTUAL,
+                                    ROM_EARLY_IRQ, ROM_DMA4};
 static const uint32_t sbi_sites[] = {0x10u, 0x3e5cu, 0x3e60u, 0x3f7cu, 0x3fc0u, 0x3fc4u};
 static const uint32_t sbi_words[] = {ROM_SBI_VECTOR, ROM_SBI_MASK_READ, ROM_SBI_PSW_SAVE,
                                    ROM_SBI_SAVE_CALL, ROM_SBI_LAST_STORE, ROM_SBI_STOP};
@@ -147,6 +151,8 @@ static void fixture_map(void)
         .span_hook = (uint32_t)(uintptr_t)&rbm_h03_service_span_hook,
         .copy_hook = (uint32_t)(uintptr_t)&rbm_h03_service_copy_hook,
         .close_hook = (uint32_t)(uintptr_t)&rbm_h03_service_close_hook,
+        .early_irq_hook = (uint32_t)(uintptr_t)&rbm_h03_early_irq_gate,
+        .dma4_hook = (uint32_t)(uintptr_t)&rbm_h03_dma4_guard,
         .platform = &platform_owned, .boot_and_other_writers_owned = boot_ready,
     };
     WORD(0x809f9cu) = 0x809f9cu;
@@ -254,6 +260,8 @@ int main(void)
         branch(sites[2], OWNER.copy_hook, UINT32_C(0xff000000)),
         branch(sites[3], OWNER.close_hook, UINT32_C(0xff000000)),
         branch(sites[4], 0x003594u, UINT32_C(0xff000000)),
+        branch(sites[5], OWNER.early_irq_hook, UINT32_C(0xff000000)),
+        branch(sites[6], OWNER.dma4_hook, UINT32_C(0xff000000)),
     };
     for (unsigned i = 0; i < sizeof sites / sizeof sites[0]; ++i) {
         WORD(sites[i]) = patched[i];
@@ -282,6 +290,23 @@ int main(void)
     WORD(span_call) = original_call + 1u;
     require_cold_gate(0);
     WORD(span_call) = original_call;
+
+    const uint32_t writer_words[] = {
+        OWNER.early_irq_hook + 0x04u,  /* A different BasicCAN pointer. */
+        OWNER.early_irq_hook + 0x08u,  /* The zero store. */
+        OWNER.early_irq_hook + 0x14u,  /* The native continuation. */
+        OWNER.dma4_hook + 0x3cu,       /* A different service policy. */
+        OWNER.dma4_hook + 0x40u,       /* A different policy callback. */
+        OWNER.dma4_hook + 0x44u,       /* Failure must skip OEM setup. */
+        OWNER.dma4_hook + 0x64u,       /* The native continuation. */
+    };
+    for (unsigned i = 0; i < sizeof writer_words / sizeof writer_words[0]; ++i) {
+        const uint32_t saved = WORD(writer_words[i]);
+        WORD(writer_words[i]) ^= 4u;
+        require_cold_gate(0);
+        WORD(writer_words[i]) = saved;
+    }
+    require_cold_gate(1);
 
     const uint32_t flash_banks[] = {0x8007e8u, 0x8007eau, 0x8007f0u, 0x8007f2u};
     for (unsigned i = 0; i < sizeof flash_banks / sizeof flash_banks[0]; ++i) {
