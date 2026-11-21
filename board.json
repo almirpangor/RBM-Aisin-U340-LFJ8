@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 860,
+  "sequence": 861,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -143,12 +143,12 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/h03-04-common-service-writers.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "fe45b2270ed1477d94fcc54c637fa138",
       "claimed_at": "2026-11-21T07:52:59+00:00",
-      "updated_at": "2026-11-21T07:57:33+00:00",
-      "note": "Связаны пять сервисных слов; полный известный состав помещается в верхние окна. M32R прошёл сценарии записи, закрытия и общий ранний ELF. Перепроверяю штатный запуск проверки и регрессии.",
-      "result": null,
+      "updated_at": "2026-11-21T08:03:37+00:00",
+      "note": "Пять сервисных переходов связаны в общем H03 с единой защитой RAM/DMA4. Ранний ELF: 29 сценариев записи, 28 закрытий, ранний IRQ и DMA4; 22 проверки размещения. Известная верхняя часть 102224/102356, 28 ссылок ещё открыты. Без выпуска BIN.",
+      "result": "1cf7aa5eb5c8ead6866eb1be12a7a3fad8f6fbbe",
       "based_on_reviews": []
     },
     "DTC-04": {
@@ -13460,9 +13460,36 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "dcc10cbe0106404393a4fc8bf217ddc4",
+      "task": "H03-04",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "review",
+      "claim_id": "fe45b2270ed1477d94fcc54c637fa138",
+      "at": "2026-11-21T08:03:37+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex H03-04 — сервисные переходы в общей компоновке",
+        "branch": "codex/h03-04-common-service-resident-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_service_guard.py",
+          "targets/lfj8/lfj8_h03_service_placement.py",
+          "tests/test_h03_service_placement.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-04-common-service-writers.md"
+        ],
+        "stage": "review",
+        "claim_id": "fe45b2270ed1477d94fcc54c637fa138",
+        "claimed_at": "2026-11-21T07:52:59+00:00",
+        "updated_at": "2026-11-21T08:03:37+00:00",
+        "note": "Пять сервисных переходов связаны в общем H03 с единой защитой RAM/DMA4. Ранний ELF: 29 сценариев записи, 28 закрытий, ранний IRQ и DMA4; 22 проверки размещения. Известная верхняя часть 102224/102356, 28 ссылок ещё открыты. Без выпуска BIN.",
+        "result": "1cf7aa5eb5c8ead6866eb1be12a7a3fad8f6fbbe",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:02:52+00:00",
+  "updated_at": "2026-11-21T08:03:37+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -15974,6 +16001,27 @@
       "based_on_reviews": [],
       "task": "H03-03",
       "submitted_at": "2026-11-21T08:01:57+00:00"
+    },
+    "fe45b2270ed1477d94fcc54c637fa138": {
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "label": "Codex H03-04 — сервисные переходы в общей компоновке",
+      "branch": "codex/h03-04-common-service-resident-7bd19ea4",
+      "files": [
+        "targets/lfj8/check_h03_service_guard.py",
+        "targets/lfj8/lfj8_h03_service_placement.py",
+        "tests/test_h03_service_placement.py",
+        "tools/check_h03_image_layout.py",
+        "verification/project-audit/h03-04-common-service-writers.md"
+      ],
+      "stage": "review",
+      "claim_id": "fe45b2270ed1477d94fcc54c637fa138",
+      "claimed_at": "2026-11-21T07:52:59+00:00",
+      "updated_at": "2026-11-21T08:03:37+00:00",
+      "note": "Пять сервисных переходов связаны в общем H03 с единой защитой RAM/DMA4. Ранний ELF: 29 сценариев записи, 28 закрытий, ранний IRQ и DMA4; 22 проверки размещения. Известная верхняя часть 102224/102356, 28 ссылок ещё открыты. Без выпуска BIN.",
+      "result": "1cf7aa5eb5c8ead6866eb1be12a7a3fad8f6fbbe",
+      "based_on_reviews": [],
+      "task": "H03-04",
+      "submitted_at": "2026-11-21T08:03:37+00:00"
     }
   }
 }
