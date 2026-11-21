@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 927,
+  "sequence": 928,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -284,8 +284,8 @@
       "stage": "in_progress",
       "claim_id": "1bfd0b8442764a5e8a833763cc57815a",
       "claimed_at": "2026-11-21T08:50:55+00:00",
-      "updated_at": "2026-11-21T09:04:47+00:00",
-      "note": "Native Task 2 and Bosch replay pass on host and M32R; measuring footprint and running integration regressions.",
+      "updated_at": "2026-11-21T09:10:53+00:00",
+      "note": "Native composition removes fixture_engine_context, uses 636 more Flash bytes and adds no static RAM. Phase boot passed 68 cases; preparing review.",
       "result": null,
       "based_on_reviews": []
     },
@@ -15586,9 +15586,41 @@
         "result": "a1e173336874cb52dae2bb75f4cf4287df105dff",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "7313493ed76d4d04955b3c4c12d72fc3",
+      "task": "CAN-01",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "heartbeat",
+      "claim_id": "1bfd0b8442764a5e8a833763cc57815a",
+      "at": "2026-11-21T09:10:53+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex чат 2 — Task 2 и профиль двигателя для первой стендовой пары",
+        "branch": "codex/can-01-shared-engine-binding-32e6ac79",
+        "files": [
+          "targets/lfj8/bench_engine_profile.h",
+          "targets/lfj8/check_h03_engine_context.py",
+          "targets/lfj8/lfj8_h03_engine_context.c",
+          "targets/lfj8/lfj8_h03_engine_context.h",
+          "targets/lfj8/lfj8_h03_engine_feed.c",
+          "targets/lfj8/lfj8_h03_engine_feed.h",
+          "targets/lfj8/lfj8_h03_engine_rx.c",
+          "targets/lfj8/lfj8_h03_engine_rx.h",
+          "targets/lfj8/test_lfj8_h03_engine_context.c",
+          "verification/bench-wave/chat-2/handoff.json"
+        ],
+        "stage": "in_progress",
+        "claim_id": "1bfd0b8442764a5e8a833763cc57815a",
+        "claimed_at": "2026-11-21T08:50:55+00:00",
+        "updated_at": "2026-11-21T09:10:53+00:00",
+        "note": "Native composition removes fixture_engine_context, uses 636 more Flash bytes and adds no static RAM. Phase boot passed 68 cases; preparing review.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T09:10:43+00:00",
+  "updated_at": "2026-11-21T09:10:53+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
