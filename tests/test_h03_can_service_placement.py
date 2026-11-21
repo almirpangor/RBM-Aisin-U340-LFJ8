@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "targets/lfj8"))
-from lfj8_h03_can_service_placement import typed_alias_ranges
+from lfj8_h03_can_service_placement import referenced_aliases, typed_alias_ranges
 
 
 class CanServicePlacementTests(unittest.TestCase):
@@ -46,3 +46,22 @@ class CanServicePlacementTests(unittest.TestCase):
             with self.subTest(overrides=overrides), self.assertRaises(ValueError):
                 self.storage["fields"]["communication/can_service"] = {**initial, **overrides}
                 typed_alias_ranges(self.storage, self.aliases)
+
+    def test_common_binding_reuses_an_existing_absolute_owner(self):
+        ranges = typed_alias_ranges(self.storage, self.aliases)
+        symbols = {
+            "h03_can_owner": {"section": 0xFFF1, "address": 0x100},
+            "rbm_h03_can_service": {"section": 0, "address": 0},
+        }
+        self.assertEqual(referenced_aliases(symbols, ranges, {"h03_can_owner": 0x100}),
+                         {"h03_can_owner": 0x100, "rbm_h03_can_service": 0x10C})
+
+    def test_common_binding_refuses_duplicate_and_conflicting_symbols(self):
+        ranges = typed_alias_ranges(self.storage, self.aliases)
+        for record, anchors in (
+            ({"section": 1, "address": 0x100}, {}),
+            ({"section": 0xFFF1, "address": 0x104}, {}),
+            ({"section": 0, "address": 0}, {"h03_can_owner": 0x104}),
+        ):
+            with self.subTest(record=record, anchors=anchors), self.assertRaises(ValueError):
+                referenced_aliases({"h03_can_owner": record}, ranges, anchors)

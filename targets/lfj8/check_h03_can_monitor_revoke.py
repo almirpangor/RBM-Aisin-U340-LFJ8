@@ -20,8 +20,6 @@ from hydraulic_port import write_port
 
 ALIASES = {
     **SERVICE_RAM_FIELDS,
-    "rbm_h03_atf_state": "control/atf",
-    "rbm_h03_selector_adc_state": "control/selector_adc",
     "rbm_h03_takeover_state": "control/takeover",
     "rbm_h03_runtime_state": "control/runtime",
     "rbm_h03_cycle_state": "control/cycle",
@@ -842,16 +840,10 @@ def profiled_service_placement(args, addresses):
     sys.path.insert(0, str(ROOT))
     from tools import check_h03_image_layout as layout
 
-    bindings = {name: addresses[name][0] for name in SERVICE_RAM_FIELDS}
-    bindings["h03_tx_writer_resume"] = 0xC350
     local = ROOT / "local"
     local.mkdir(exist_ok=True)
-    before = layout.BINDING_MODULES
     with TemporaryDirectory(prefix="rbm-profiled-can-", dir=local) as directory:
         work = Path(directory)
-        alias_path = work / "can-service-anchors.S"
-        alias_path.write_text("".join(f".global {name}\n.set {name}, {address:#x}\n"
-                                      for name, address in bindings.items()), encoding="ascii")
         profile = work / "service-profile.h"
         profile.write_text(FIXTURE_PROFILE, encoding="ascii")
         out = work / "placement"
@@ -860,11 +852,10 @@ def profiled_service_placement(args, addresses):
             base=args.base.resolve(), gcc=args.gcc.resolve(), controller=args.controller.resolve(),
             bridge=args.bridge.resolve(), storage_report=args.storage_report.resolve(), out=out,
             profile="padding-candidate", memory_model="medium", with_bindings=True,
-            with_dtc_rx=True, application_profile=profile, cpu_test=False,
+            with_dtc_rx=True, with_can_service=True, with_dma4_guard=True,
+            application_profile=profile, cpu_test=False,
         )
-        alias_source = Path(os.path.relpath(alias_path, HERE)).as_posix()
         try:
-            layout.BINDING_MODULES = (*before, *SERVICE_MODULES, "h03_can13_tx_gate.S", alias_source)
             report = layout.build(options)
         except ValueError:
             report_path = out / "layout.json"
@@ -873,23 +864,27 @@ def profiled_service_placement(args, addresses):
             report = json.loads(report_path.read_text(encoding="utf-8"))
             if report["status"] != "FAIL_BINDINGS":
                 raise
-        finally:
-            layout.BINDING_MODULES = before
 
     entries = {
         "lfj8_h03_target_service_prepare_locked", "rbm_h03_target_service_phase",
         "lfj8_h03_target_service_stop_locked", "rbm_h03_can_monitor_retire_tx13_locked", "h03_can13_tx_gate",
     }
     missing = set(report.get("unresolved_symbols", ()))
-    if not entries.issubset(report["required_roots"]) or missing & (entries | bindings.keys()):
+    aliases = report["can_service"]["typed_aliases"]
+    expected = {name: addresses[name] for name in SERVICE_RAM_FIELDS}
+    if (not entries.issubset(report["required_roots"]) or missing & (entries | expected.keys()) or
+            {name: tuple(span) for name, span in aliases.items()} != expected):
         raise ValueError("The profiled address model is missing a CAN service entry or RAM alias")
+    if not report["can_service"]["tx13"]["elf_words_verified"] or not report["early_irq_model"]:
+        raise ValueError("The profile did not verify linked TX13 and early IRQ/DMA4")
     candidate = report.get("known_sections_candidate_plan", {})
     if not report["accepted_layout"] and "sections" not in candidate:
         raise ValueError("The retained CAN service composition did not fit the H03 address model")
     return {"status": report["status"], "known_flash_bytes": report["flash_payload_bytes"],
             "known_static_ram_bytes": report["new_static_ram_bytes"], "service_entries": sorted(entries),
             "typed_addresses": {name: [f"0x{start:06X}", f"0x{end:06X}"]
-                                for name, (start, end) in addresses.items() if name in SERVICE_RAM_FIELDS},
+                                for name, (start, end) in aliases.items()},
+            "tx13": report["can_service"]["tx13"], "early_irq_model": report["early_irq_model"],
             "missing_symbols": sorted(missing), "hardware_verified": False, "flashable_image": None}
 
 
