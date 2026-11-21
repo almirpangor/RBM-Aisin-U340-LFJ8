@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 836,
+  "sequence": 837,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12745,9 +12745,44 @@
         "task": "DTC-02",
         "submitted_at": "2026-11-21T06:47:59+00:00"
       }
+    },
+    {
+      "operation_id": "6aa36a159e564abb90f9f3513870b897",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "1291ee065c0840b5a6cb8ef51a1a6c5c",
+      "at": "2026-11-21T07:47:57+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex H03-03 — общие привязки сервиса CAN",
+        "branch": "codex/h03-03-common-can-service-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "targets/lfj8/check_h03_can_monitor_revoke.py",
+          "targets/lfj8/lfj8_h03_can_service_placement.py",
+          "tests/test_h03_can_service_placement.py",
+          "verification/project-audit/h03-03-common-can-service.md"
+        ],
+        "stage": "done",
+        "claim_id": "1291ee065c0840b5a6cb8ef51a1a6c5c",
+        "claimed_at": "2026-11-21T06:44:00+00:00",
+        "updated_at": "2026-11-21T07:47:57+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "d7c758ffd1cddf8a976501b1dccd2b9966b72a77",
+        "based_on_reviews": [
+          "0ecd2acccbb947a886b1dceb6d968fb9",
+          "1b7a53b2c91c49d481c892507323d9d9",
+          "2101184d356545bfa9a1e0bd6716a9ee",
+          "43d58327bd434219b328d74d652d3be9",
+          "4781e27fe7274496be65a8d2faf92977",
+          "96f93fae25924717a50bf354ff863f44"
+        ],
+        "task": "H03-03",
+        "submitted_at": "2026-11-21T06:49:47+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:47:47+00:00",
+  "updated_at": "2026-11-21T07:47:57+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -15020,11 +15055,11 @@
         "tests/test_h03_can_service_placement.py",
         "verification/project-audit/h03-03-common-can-service.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "1291ee065c0840b5a6cb8ef51a1a6c5c",
       "claimed_at": "2026-11-21T06:44:00+00:00",
-      "updated_at": "2026-11-21T06:49:47+00:00",
-      "note": "Общие четыре модуля сервиса и 11 RAM-алиасов подготовлены. Профильная проверка M32R удерживает CAN prepare/phase/stop и резидентный RX; известные 101052 байта помещаются, общий линк ждёт другие привязки. 16+2 CAN, 18 связанных TX13, 22 native и 51 H03 Python. Для штатного подключения общего инструмента ждём освобождения резерва H03-04.",
+      "updated_at": "2026-11-21T07:47:57+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "d7c758ffd1cddf8a976501b1dccd2b9966b72a77",
       "based_on_reviews": [
         "0ecd2acccbb947a886b1dceb6d968fb9",
