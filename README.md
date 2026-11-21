@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T09:13:05+00:00**. Изменение № **933**.
+Обновлено UTC: **2026-11-21T09:13:19+00:00**. Изменение № **934**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 10 · Ожидают с резервом: 0 · Порций на проверке: 5.**
+**В работе: 9 · Ожидают с резервом: 0 · Порций на проверке: 6.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -25,7 +25,6 @@
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
 | 18 | H03-04 — Память, стек и сервисные пути | Codex H03-04 — ранний допуск IRQ и стендовый профиль SPI/PSW \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | 2026-11-21T09:10:36+00:00 | Первая общая компоновка подтверждена. Резервирую отдельный повторяемый скрипт прогона; target_memory.c остаётся без изменений. |
-| 19 | H03-05 — SLT, силовые выходы и реакция на отказ | Codex 7 H03-05 bench outputs \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | 2026-11-21T08:52:04+00:00 | Штатный путь H03: отдельный выходной профиль для первой пары, отказ по каждому непроверенному каналу, сырые данные для измерений, точка подключения интегратора. |
 | 25 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | Чат 11 · MODE-02, стендовый профиль селектора и ручных режимов \[01a1fa79-892d-7ca3-bb8a-44698892c53e\] | 2026-11-21T08:50:46+00:00 | Привязка обоснованных номиналов и трактов H03 к существующим владельцам AN2, кнопок и ручной цели, проверки полного цикла, явные границы OD и данных Toyota. |
 | 30 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Codex чат 10 — чтение статуса NVM \[01a1fa76-b015-7640-a0ba-433b36dcf55f\] | 2026-11-21T09:12:26+00:00 | Поверх сданного a1e1733 включён DTC-04 4842a32. Добавляю условную страницу статуса NVM/SFR для no-media профиля, проверяю реальные ответы через TX13. Без чтения массива, записи и положительного ACK очистки. |
 | 32 | DTC-04 — Хранение DTC после выключения питания | Чат 9 — холодный старт и транспорт NVM \[01a1fa76-922b-7b11-a2f2-346a15d1dc95\] | 2026-11-21T09:11:30+00:00 | Включён 4842a32. Совместный офлайн-прогон действующего холодного callback, профиля NVM и штатного CAN-диагностического пути. Проверю отсутствие ложной очистки и поведение после перепривязки. Файлы действующих резервов TOY-05/DTC-02/CAN-03 не затрагиваю. |
@@ -46,6 +45,7 @@
 | DTC-02 | Codex чат 10 — диагностика H03 для стенда | [a1e173336874](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/a1e173336874cb52dae2bb75f4cf4287df105dff) | 8d2e9979b8b94adab47c6ca68b65d7f6 | Чат 10. Нативный стендовый readout 13 страниц через BasicCAN/C0/TX13, включая полный 3-кадровый ответ TML0/TML1 с Flow Control. 41 этап ПК, S03 96, 18 сравнений IRQ, 9 сервисных и 40 ATF проверок. История сохраняется и ACK не выдаётся без DTC-04 backend. Интеграция --binding-source, +1064 байта Flash к той же модели, RAM без прироста, FAIL_BINDINGS. Контракт verification/bench-wave/chat-10/handoff.json. Без прошивки. |
 | DTC-04 | Чат 9 — стендовый NVM H03 | [4842a325a0fa](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/4842a325a0fa14c14c1fd5ccb48f9afc2c0bdc29) | fdfd811485f4417a8f450b2e455bc6e3 | Чат 9. Профиль NVM без носителя для первого стенда: штатная база S01, холодный DTC, явный NO_ASSIGNED_MEDIA и native read-only статус SFR/32-байтовый счётчик. Единственные пустые сектора 4/7 заняты резидентом и приложением. NVM ПК/M32R, BasicCAN 18+18, 22 native с двумя повторными проверками и 91 тест компоновки прошли. В модели с реальным bench профилем qualified_adaptation_blocks исключён, 14 внешних символов остаются. Контракт, карта, память и результаты: verification/bench-wave/chat-9/handoff.json. Запись и аппаратная приёмка открыты. |
 | ECU-01 | Codex чат 8 — Bosch ST10 для стендовой пары | [9312c056ee46](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9312c056ee46e8f0495a64840bb82b722c1ee9ca) | bb95576349fc4befa4af7a3779ddb4ae | Нативный RPM-допуск RB подключён к START/REFRESH и трём ветвям ST10; CANCEL сохранён. 51 запись целостности, проверены ordinary, T4, парные сценарии. OFFLINE_ONLY; Toyota raw-контракт и остаток в verification/bench-wave/chat-8/handoff.json. |
+| H03-05 | Codex 7 H03-05 bench outputs | [0a9523b203a2](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/0a9523b203a2cae2b21a81da4c14ce910b570ed3) | 9e7f752b72ac4c3ab97038f13486690a | Чат 7: native bench profile запускает phase_startup с mask=0 и без actuator callbacks. D/E/F, Pressure A и TIO9 отозваны в обеих штатных фазах, есть снимок AN3/таймеров. Native 22/22, components 8/8; common small через --binding-source 106944 байта, 14 нерешённых ссылок. Подключение обоих redirect и типизированного alias, пределы и измерения в verification/bench-wave/chat-7/handoff.json. Активный силовой допуск открыт. |
 | TOY-02 | Чат 4 — нативные входы Toyota и сырой Bosch CAN | [7a7ac7f97d32](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/7a7ac7f97d328cd6f5de88f02c043b1f8b21efac) | 5d84c76a488c45b6bf0b82f1f835af45 | Сырой контракт Bosch 0x6B2, приём стабильной BasicCAN копии и штатный H03 capture вместо test_input_capture собраны. ПК/M32R RX→GP прошли; найдены все 8 writer S01 и бит режима, сверены 198 инструкций, повторены C167 и аудит CAN. Остались издатель, dispatch, порядок первого release и обоснованные project_load/read_local. Handoff verification/bench-wave/chat-4/handoff.json. |
 | VSS-02 | Codex 5 — нативный стендовый профиль TML0/S51/S83/ATF | [18dcf51f3a76](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/18dcf51f3a765f2d660e142003999cbf627782f4) | cee15d1377aa4207a89e2eb78dd96995 | Нативный OEM_NOMINAL профиль TML0/TML1, S51/S83/ATF и raw capture опубликован. M32R PASS. Интегратору подобрать размещение и подключить согласованный транспорт raw capture. Стендовых замеров и BIN в этой порции нет. |
 
@@ -78,7 +78,7 @@
 | 16 | [H03-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-02) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
 | 17 | [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-03) | Выполняется | Полный набор hooks/placement с проверкой original bytes, ссылками на native callbacks, проверкой CPU штатного/отказного/повторного пути; никаких fixture callbacks. | H03-04 |
 | 18 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-04) | Выполняется | Пять реальных определений/профиль, полный список писателей, linker constraints и доказательства покрытия; стоимость RAM/стеков и сценарии отказа. | См. входные условия карточки |
-| 19 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-05) | Выполняется | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | См. входные условия карточки |
+| 19 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-05) | Свободна для продолжения; порция на проверке | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | См. входные условия карточки |
 | 21 | [VSS-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-01) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
 | 22 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-02) | Свободна для продолжения; порция на проверке | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
 | 24 | [MODE-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-01) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
@@ -462,7 +462,7 @@
 </details>
 
 <details>
-<summary>H03-05 — SLT, силовые выходы и реакция на отказ: Выполняется</summary>
+<summary>H03-05 — SLT, силовые выходы и реакция на отказ: Свободна для продолжения; порция на проверке</summary>
 
 **Сделано.** Нативный takeover сокращён на 94 байта medium/86 small без роста RAM. Порядок публикации и 13 флагов проверены, штатные выходные сценарии прошли.
 
@@ -476,7 +476,7 @@
 
 **Рекомендуемый чат.** Чат 7 — 01a1f9a2-d0ae-78d3-86f1-21b27426fd3f.
 
-**Сейчас выполняет.** Codex 7 H03-05 bench outputs — codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Измеренные таблицы в допустимой области питания/ATF, реакция каждого выхода и гидравлики на отказ, отсутствие старой команды после восстановления.
 
@@ -751,6 +751,7 @@
 | ECU-01 | На проверке | Codex чат 8 — Bosch ST10 для стендовой пары | codex/c7e4-next-1121 | Нативный RPM-допуск RB подключён к START/REFRESH и трём ветвям ST10; CANCEL сохранён. 51 запись целостности, проверены ordinary, T4, парные сценарии. OFFLINE_ONLY; Toyota raw-контракт и остаток в verification/bench-wave/chat-8/handoff.json. / commit 9312c056ee46e8f0495a64840bb82b722c1ee9ca |
 | ECU-02 | Порция принята | Codex ECU-02 — граница допуска момента Bosch | codex/ecu02-torque-permit-boundary-7bd19ea4 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 85b2e9320cf8f6e4a3729915ed3ebbd0fc00a732 |
 | H03-02 | Порция принята | Codex H03-02 — граница свежести общего снимка S51/S83/ATF | codex/h03-02-capture-end-age-32e6ac79 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 3e9e9b2fb888e7d26161dde12e2bd0dcf3600c53 |
+| H03-05 | На проверке | Codex 7 H03-05 bench outputs | codex/h03-05-bench-output-01a1f9a2 | Чат 7: native bench profile запускает phase_startup с mask=0 и без actuator callbacks. D/E/F, Pressure A и TIO9 отозваны в обеих штатных фазах, есть снимок AN3/таймеров. Native 22/22, components 8/8; common small через --binding-source 106944 байта, 14 нерешённых ссылок. Подключение обоих redirect и типизированного alias, пределы и измерения в verification/bench-wave/chat-7/handoff.json. Активный силовой допуск открыт. / commit 0a9523b203a2cae2b21a81da4c14ce910b570ed3 |
 | VSS-01 | Порция принята | Codex VSS-01 — допуск времени и окна S51 для 0x1AE | codex/vss01-tml0-timing-admission-32e6ac79 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 1bcfe06eb116940db1921a70130629bacb17da3a |
 | VSS-02 | На проверке | Codex 5 — нативный стендовый профиль TML0/S51/S83/ATF | codex/vss-02-bench-clock-mwp5rm2ofhaxjfi9dss | Нативный OEM_NOMINAL профиль TML0/TML1, S51/S83/ATF и raw capture опубликован. M32R PASS. Интегратору подобрать размещение и подключить согласованный транспорт raw capture. Стендовых замеров и BIN в этой порции нет. / commit 18dcf51f3a765f2d660e142003999cbf627782f4 |
 | MODE-01 | Порция принята | Codex MODE-01 — отзыв диапазона при отказе ADC | codex/mode01-selector-fault-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 8974a4a5002fd1786eb02ad8d7c19a829c47ad6f |
@@ -855,20 +856,6 @@
 - verification/bench-wave/chat-6/handoff.json
 - verification/bench-wave/chat-6/memory.md
 
-### H03-05
-
-Чат: Codex 7 H03-05 bench outputs. Claim ID: 9e7f752b72ac4c3ab97038f13486690a.
-
-- targets/lfj8/bench_output_profile.h
-- targets/lfj8/check_h03_bench_outputs.py
-- targets/lfj8/h03_bench_outputs_fixture.c
-- targets/lfj8/lfj8_h03_bench_outputs.c
-- targets/lfj8/lfj8_h03_takeover.c
-- targets/lfj8/lfj8_h03_takeover.h
-- targets/lfj8/lfj8_h03_target_commit.c
-- targets/lfj8/test_lfj8_h03_takeover.c
-- verification/bench-wave/chat-7/handoff.json
-
 ### MODE-02
 
 Чат: Чат 11 · MODE-02, стендовый профиль селектора и ручных режимов. Claim ID: 027a36c5f3ef44518bf3ba1bbaf2f464.
@@ -919,6 +906,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T09:13:19+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T09:13:05+00:00 | TOY-05 | heartbeat | 01a1fa79-a9fd-70c0-80a3-f59592edaf79 |
 | 2026-11-21T09:12:39+00:00 | H03-03 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-21T09:12:26+00:00 | DTC-02 | claim | 01a1fa76-b015-7640-a0ba-433b36dcf55f |
@@ -948,4 +936,3 @@
 | 2026-11-21T08:52:14+00:00 | ECU-01 | claim | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-21T08:52:04+00:00 | H03-05 | claim | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T08:51:36+00:00 | VSS-02 | claim | codex-dtc04-mwp5rm2ofhaxjfi9dss |
-| 2026-11-21T08:51:28+00:00 | DTC-04 | claim | 01a1fa76-922b-7b11-a2f2-346a15d1dc95 |
