@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 822,
+  "sequence": 823,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -203,11 +203,11 @@
         "targets/lfj8/test_lfj8_h03_sensor_feed.c",
         "verification/project-audit/h03-02-capture-end-age.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "da533c7a58aa441b9ba639bc0ad0992e",
       "claimed_at": "2026-11-20T22:42:30+00:00",
-      "updated_at": "2026-11-20T22:51:15+00:00",
-      "note": "S51 и ATF квалифицируются на конце общего окна TML0; S83 по максимальному возрасту с сохранённым пересчётом и ошибкой. ПК 41/179, S51/S83/ATF на ПК и M32R, 62 запуска, 8 компонентных и 6 размещённых групп прошли. +24 Flash, RAM прежняя. Измерения и окончательная установка hooks открыты.",
+      "updated_at": "2026-11-21T07:45:31+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "3e9e9b2fb888e7d26161dde12e2bd0dcf3600c53",
       "based_on_reviews": []
     },
@@ -12279,9 +12279,38 @@
         "task": "VSS-02",
         "submitted_at": "2026-11-20T22:51:06+00:00"
       }
+    },
+    {
+      "operation_id": "3d8e1bd30f294fcfbd4ea5fbb32d60f9",
+      "task": "H03-02",
+      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+      "action": "complete",
+      "claim_id": "da533c7a58aa441b9ba639bc0ad0992e",
+      "at": "2026-11-21T07:45:31+00:00",
+      "record": {
+        "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+        "label": "Codex H03-02 — граница свежести общего снимка S51/S83/ATF",
+        "branch": "codex/h03-02-capture-end-age-32e6ac79",
+        "files": [
+          "targets/lfj8/host_check.c",
+          "targets/lfj8/lfj8_donor_io.c",
+          "targets/lfj8/lfj8_donor_io.h",
+          "targets/lfj8/test_lfj8_h03_sensor_feed.c",
+          "verification/project-audit/h03-02-capture-end-age.md"
+        ],
+        "stage": "done",
+        "claim_id": "da533c7a58aa441b9ba639bc0ad0992e",
+        "claimed_at": "2026-11-20T22:42:30+00:00",
+        "updated_at": "2026-11-21T07:45:31+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "3e9e9b2fb888e7d26161dde12e2bd0dcf3600c53",
+        "based_on_reviews": [],
+        "task": "H03-02",
+        "submitted_at": "2026-11-20T22:51:15+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:45:21+00:00",
+  "updated_at": "2026-11-21T07:45:31+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -14201,11 +14230,11 @@
         "targets/lfj8/test_lfj8_h03_sensor_feed.c",
         "verification/project-audit/h03-02-capture-end-age.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "da533c7a58aa441b9ba639bc0ad0992e",
       "claimed_at": "2026-11-20T22:42:30+00:00",
-      "updated_at": "2026-11-20T22:51:15+00:00",
-      "note": "S51 и ATF квалифицируются на конце общего окна TML0; S83 по максимальному возрасту с сохранённым пересчётом и ошибкой. ПК 41/179, S51/S83/ATF на ПК и M32R, 62 запуска, 8 компонентных и 6 размещённых групп прошли. +24 Flash, RAM прежняя. Измерения и окончательная установка hooks открыты.",
+      "updated_at": "2026-11-21T07:45:31+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "3e9e9b2fb888e7d26161dde12e2bd0dcf3600c53",
       "based_on_reviews": [],
       "task": "H03-02",
