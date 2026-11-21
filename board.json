@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 925,
+  "sequence": 926,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -152,17 +152,17 @@
         "targets/lfj8/lfj8_h03_ram_owner.c",
         "targets/lfj8/lfj8_h03_ram_owner.h",
         "targets/lfj8/lfj8_h03_service_placement.py",
-        "targets/lfj8/lfj8_h03_target_memory.c",
         "targets/lfj8/test_lfj8_h03_ram_owner.c",
         "tests/test_h03_bench_memory_profile.py",
+        "verification/bench-wave/chat-6/check-composition.py",
         "verification/bench-wave/chat-6/handoff.json",
         "verification/bench-wave/chat-6/memory.md"
       ],
       "stage": "in_progress",
       "claim_id": "734b4f9d3a9c43f6aaa67927cf88ab12",
       "claimed_at": "2026-11-21T08:52:24+00:00",
-      "updated_at": "2026-11-21T09:03:18+00:00",
-      "note": "Пять символов разрешены в пробном составе 108212 байт. Оба reset очищают три значения до IE в общем ELF. Добавляю проверку профиля стека в replay сервисной защиты и Virtual Flash, чтобы они принимали только тот же защищённый диапазон.",
+      "updated_at": "2026-11-21T09:10:36+00:00",
+      "note": "Первая общая компоновка подтверждена. Резервирую отдельный повторяемый скрипт прогона; target_memory.c остаётся без изменений.",
       "result": null,
       "based_on_reviews": []
     },
@@ -15518,9 +15518,46 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "4e89f34da380489d843b2f118cea737d",
+      "task": "H03-04",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "heartbeat",
+      "claim_id": "734b4f9d3a9c43f6aaa67927cf88ab12",
+      "at": "2026-11-21T09:10:36+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex H03-04 — ранний допуск IRQ и стендовый профиль SPI/PSW",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_boot_writers.py",
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/check_h03_service_guard.py",
+          "targets/lfj8/check_h03_vflash_lockout.py",
+          "targets/lfj8/h03_dma4_guard.S",
+          "targets/lfj8/lfj8_h03_bench_memory.c",
+          "targets/lfj8/lfj8_h03_bench_memory_profile.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_owner.h",
+          "targets/lfj8/lfj8_h03_service_placement.py",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "tests/test_h03_bench_memory_profile.py",
+          "verification/bench-wave/chat-6/check-composition.py",
+          "verification/bench-wave/chat-6/handoff.json",
+          "verification/bench-wave/chat-6/memory.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "734b4f9d3a9c43f6aaa67927cf88ab12",
+        "claimed_at": "2026-11-21T08:52:24+00:00",
+        "updated_at": "2026-11-21T09:10:36+00:00",
+        "note": "Первая общая компоновка подтверждена. Резервирую отдельный повторяемый скрипт прогона; target_memory.c остаётся без изменений.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T09:10:01+00:00",
+  "updated_at": "2026-11-21T09:10:36+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
