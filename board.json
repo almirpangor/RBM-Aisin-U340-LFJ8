@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 816,
+  "sequence": 817,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12097,9 +12097,40 @@
         "task": "CAN-03",
         "submitted_at": "2026-11-20T22:08:56+00:00"
       }
+    },
+    {
+      "operation_id": "d7933030ff834c5d9513f8ffce9b1b03",
+      "task": "DTC-04",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "complete",
+      "claim_id": "eb973761003948398f33f495758fde06",
+      "at": "2026-11-21T07:44:29+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Codex DTC-04 — чтение массива H03",
+        "branch": "codex/dtc04-native-array-read-7bd19ea4-v2",
+        "files": [
+          "targets/lfj8/check_h03_nvm.py",
+          "targets/lfj8/h03_nvm_native_fixture.c",
+          "targets/lfj8/lfj8_h03_nvm_native.c",
+          "targets/lfj8/lfj8_h03_nvm_native.h",
+          "verification/project-audit/dtc04-h03-native-array-read.md"
+        ],
+        "stage": "done",
+        "claim_id": "eb973761003948398f33f495758fde06",
+        "claimed_at": "2026-11-20T22:37:29+00:00",
+        "updated_at": "2026-11-21T07:44:29+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "0ea8154b495bc10e565ecac034f19babadf3585f",
+        "based_on_reviews": [
+          "e72d13fcb2254ca89fd0736136b11462"
+        ],
+        "task": "DTC-04",
+        "submitted_at": "2026-11-20T22:44:18+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:44:10+00:00",
+  "updated_at": "2026-11-21T07:44:29+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -13885,11 +13916,11 @@
         "targets/lfj8/lfj8_h03_nvm_native.h",
         "verification/project-audit/dtc04-h03-native-array-read.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "eb973761003948398f33f495758fde06",
       "claimed_at": "2026-11-20T22:37:29+00:00",
-      "updated_at": "2026-11-20T22:44:18+00:00",
-      "note": "Читатель внутренней Flash связан с восстановлением журнала DTC через нативный MMIO, с отказом в E/W и Virtual Flash. Модели ПК/M32R, 22 native, 41 шаг ПК и 179 тестов прошли. Не назначены два эксклюзивных блока, запись и подключение общего запуска.",
+      "updated_at": "2026-11-21T07:44:29+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "0ea8154b495bc10e565ecac034f19babadf3585f",
       "based_on_reviews": [
         "e72d13fcb2254ca89fd0736136b11462"
