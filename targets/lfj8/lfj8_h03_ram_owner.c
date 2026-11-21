@@ -36,10 +36,9 @@
 #define LD24_R0 UINT32_C(0xE0000000)
 #define LOW_24_BITS UINT32_C(0x00FFFFFF)
 
-static int in_application_flash(uintptr_t address, uint32_t bytes)
+static int in_flash_span(uintptr_t address, uint32_t bytes, uint32_t first, uint32_t end)
 {
-    return !(address & 3u) && address >= H03_APPLICATION_START &&
-           address <= H03_FLASH_END - bytes;
+    return !(address & 3u) && address >= first && address <= end - bytes;
 }
 
 static uint32_t read_word(uint32_t address)
@@ -194,7 +193,7 @@ static int boot_routes_installed(const Lfj8H03RamOwner *owner,
     }
 
     /* Check the policy call, its denial branch, and resumption of the setter. */
-    return in_application_flash(dma4, 0x80u) &&
+    return in_flash_span(dma4, 0x80u, H03_APPLICATION_START, H03_FLASH_END) &&
            branch_matches(H03_DMA4_SITE, dma4, LONG_BRA) &&
            read_word(dma4 + 0x04u) == UINT32_C(0x18907240) &&
            read_word(dma4 + 0x3cu) == (LD24_R0 | (uint32_t)(uintptr_t)policy) &&
@@ -207,10 +206,14 @@ static int boot_routes_installed(const Lfj8H03RamOwner *owner,
 
 static const Lfj8H03ServicePolicy *installed_policy(const Lfj8H03RamOwner *owner)
 {
-    if (!in_application_flash(owner->direct_hook, 4u) ||
-        !in_application_flash(owner->span_hook, 0x24u) ||
-        !in_application_flash(owner->copy_hook, 0x30u) ||
-        !in_application_flash(owner->close_hook, 0x30u) ||
+    /* The common layout keeps all service hooks and their policy below 0x8000. */
+    const int resident = owner->direct_hook < H03_APPLICATION_START;
+    const uint32_t first = resident ? H03_EARLY_IRQ_RESIDENT_START : H03_APPLICATION_START;
+    const uint32_t end = resident ? H03_APPLICATION_START : H03_FLASH_END;
+    if (!in_flash_span(owner->direct_hook, 4u, first, end) ||
+        !in_flash_span(owner->span_hook, 0x24u, first, end) ||
+        !in_flash_span(owner->copy_hook, 0x30u, first, end) ||
+        !in_flash_span(owner->close_hook, 0x30u, first, end) ||
         !branch_matches(H03_DIRECT_SITE, owner->direct_hook, LONG_BRA) ||
         !branch_matches(H03_SPAN_SITE, owner->span_hook, LONG_BL) ||
         !branch_matches(H03_COPY_SITE, owner->copy_hook, LONG_BRA) ||
@@ -224,7 +227,7 @@ static const Lfj8H03ServicePolicy *installed_policy(const Lfj8H03RamOwner *owner
     const uint32_t policy_load = read_word(owner->span_hook + 0x1cu);
     const uint32_t address = policy_load & LOW_24_BITS;
     if (policy_load != (LD24_R0 | address) ||
-        !in_application_flash(address, sizeof(Lfj8H03ServicePolicy)) ||
+        !in_flash_span(address, sizeof(Lfj8H03ServicePolicy), first, end) ||
         read_word(owner->copy_hook + 0x18u) != policy_load ||
         read_word(owner->close_hook + 0x20u) != policy_load ||
         !branch_matches(owner->span_hook + 0x20u,
@@ -289,7 +292,7 @@ static int qualified_layout(const Lfj8H03RamOwner *owner, const Lfj8H03ServicePo
 int lfj8_h03_ram_owned(void *context)
 {
     const Lfj8H03RamOwner *const owner = context;
-    if (!in_application_flash((uintptr_t)owner, sizeof *owner) ||
+    if (!in_flash_span((uintptr_t)owner, sizeof *owner, H03_APPLICATION_START, H03_FLASH_END) ||
         !owner->boot_and_other_writers_owned || !plain_flash() || !live_stacks_ready(owner) ||
         !stock_sbi_words_match()) {
         return 0;
