@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 916,
+  "sequence": 917,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -140,6 +140,8 @@
       "files": [
         "targets/lfj8/check_h03_boot_writers.py",
         "targets/lfj8/check_h03_ram_owner.py",
+        "targets/lfj8/check_h03_service_guard.py",
+        "targets/lfj8/check_h03_vflash_lockout.py",
         "targets/lfj8/h03_dma4_guard.S",
         "targets/lfj8/lfj8_h03_bench_memory.c",
         "targets/lfj8/lfj8_h03_bench_memory_profile.py",
@@ -155,8 +157,8 @@
       "stage": "in_progress",
       "claim_id": "734b4f9d3a9c43f6aaa67927cf88ab12",
       "claimed_at": "2026-11-21T08:52:24+00:00",
-      "updated_at": "2026-11-21T08:52:24+00:00",
-      "note": "Волна chat-6. Закрываю сохранённые признаки приложения до IE, привязываю проверку писателей к нативному допуску и выделяю стековый профиль с проверяемыми ограничениями. Общий компоновщик не редактирую.",
+      "updated_at": "2026-11-21T09:03:18+00:00",
+      "note": "Пять символов разрешены в пробном составе 108212 байт. Оба reset очищают три значения до IE в общем ELF. Добавляю проверку профиля стека в replay сервисной защиты и Virtual Flash, чтобы они принимали только тот же защищённый диапазон.",
       "result": null,
       "based_on_reviews": []
     },
@@ -15231,10 +15233,47 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "583cdf0510a44d78a32aa65441d24d9d",
+      "task": "H03-04",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "heartbeat",
+      "claim_id": "734b4f9d3a9c43f6aaa67927cf88ab12",
+      "at": "2026-11-21T09:03:18+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex H03-04 — ранний допуск IRQ и стендовый профиль SPI/PSW",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_boot_writers.py",
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/check_h03_service_guard.py",
+          "targets/lfj8/check_h03_vflash_lockout.py",
+          "targets/lfj8/h03_dma4_guard.S",
+          "targets/lfj8/lfj8_h03_bench_memory.c",
+          "targets/lfj8/lfj8_h03_bench_memory_profile.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_owner.h",
+          "targets/lfj8/lfj8_h03_service_placement.py",
+          "targets/lfj8/lfj8_h03_target_memory.c",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c",
+          "tests/test_h03_bench_memory_profile.py",
+          "verification/bench-wave/chat-6/handoff.json",
+          "verification/bench-wave/chat-6/memory.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "734b4f9d3a9c43f6aaa67927cf88ab12",
+        "claimed_at": "2026-11-21T08:52:24+00:00",
+        "updated_at": "2026-11-21T09:03:18+00:00",
+        "note": "Пять символов разрешены в пробном составе 108212 байт. Оба reset очищают три значения до IE в общем ELF. Добавляю проверку профиля стека в replay сервисной защиты и Virtual Flash, чтобы они принимали только тот же защищённый диапазон.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T09:01:15+00:00",
-  "main_commit": "10f7c1513b910f42473690255641140989cc10d0",
+  "updated_at": "2026-11-21T09:03:18+00:00",
+  "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
       "id": "ORG-01",
@@ -15762,7 +15801,7 @@
       "id": "REL-01",
       "title": "Два целевых BIN и воспроизводимый комплект",
       "status": "open",
-      "current": "Все 11 новых результатов объединены. 41 этап ПК, 210 Python до новой упаковки, 55 целевых проверок упаковки, 22 native, 8 компонентов и 6 групп ядра прошли. Известный состав помещается после переноса двух таблиц, но 15 ссылок остаются открытыми. TCM BIN отсутствует; Bosch OFFLINE_ONLY.",
+      "current": "Добавлена детерминированная сборка байтов полного H03 ELF с проверкой исходных участков и всех секций. Проверены 12 новых сценариев. Полного native ELF и TCM BIN ещё нет; работают 12 чатов первой стендовой волны.",
       "remaining": "Закончить реальные профили/поставщики, полный native link и все redirects, сериализацию TCM BIN, целевую Bosch пару, целостность, сквозные проверки и манифест. Измерения новой пары следуют после выдачи файлов.",
       "acceptance": "Два целевых реализованных BIN, source/final SHA и карта правок, воспроизводимая сборка, подтвержденные software checks, явные ограничения первого стенда. Аппаратная приемка учитывается отдельно в REL-02.",
       "continuation": {

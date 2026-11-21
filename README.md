@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T09:01:15+00:00**. Изменение № **916**.
+Обновлено UTC: **2026-11-21T09:03:18+00:00**. Изменение № **917**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -10,7 +10,7 @@
 Нужен tools/task_coordination.py из актуальной main: старые клиенты не записывают формат доски 2.
 Давняя отметка не освобождается автоматически. Возобновившийся чат обязан проверить свой claim_id.
 
-Каталог задач взят из main 10f7c1513b910f42473690255641140989cc10d0.
+Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
 **В работе: 13 · Ожидают с резервом: 0 · Порций на проверке: 0.**
 
@@ -26,7 +26,7 @@
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T08:50:41+00:00 | Подключаю native bench CAN profile, реальные источники статуса, удержание и отзыв запроса момента через штатный TX13; Проверяю точные параметры и интеграцию |
 | 13 | ECU-01 — Проверочная сборка Bosch E4M3 | Codex чат 8 — Bosch ST10 для стендовой пары \[codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4\] | 2026-11-21T09:00:58+00:00 | Сборка и профиль Chery прошли, 48 RB START и 6 отзывов в ST10. Проверяю парные сценарии и оформляю handoff. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T08:52:41+00:00 | Найдены незамкнутые 008150/036F30/07C10C. Для фазы 3 добавляю целевой потребитель согласованных MAIN/FAST и отдельный контракт с профилем выходов, для фазы 2 оставляю существующий guard смежного выпуска. |
-| 18 | H03-04 — Память, стек и сервисные пути | Codex H03-04 — ранний допуск IRQ и стендовый профиль SPI/PSW \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | 2026-11-21T08:52:24+00:00 | Волна chat-6. Закрываю сохранённые признаки приложения до IE, привязываю проверку писателей к нативному допуску и выделяю стековый профиль с проверяемыми ограничениями. Общий компоновщик не редактирую. |
+| 18 | H03-04 — Память, стек и сервисные пути | Codex H03-04 — ранний допуск IRQ и стендовый профиль SPI/PSW \[codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51\] | 2026-11-21T09:03:18+00:00 | Пять символов разрешены в пробном составе 108212 байт. Оба reset очищают три значения до IE в общем ELF. Добавляю проверку профиля стека в replay сервисной защиты и Virtual Flash, чтобы они принимали только тот же защищённый диапазон. |
 | 19 | H03-05 — SLT, силовые выходы и реакция на отказ | Codex 7 H03-05 bench outputs \[codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f\] | 2026-11-21T08:52:04+00:00 | Штатный путь H03: отдельный выходной профиль для первой пары, отказ по каждому непроверенному каналу, сырые данные для измерений, точка подключения интегратора. |
 | 22 | VSS-02 — Кинематика и параметры реальной скорости | Codex 5 — нативный стендовый профиль TML0/S51/S83/ATF \[codex-dtc04-mwp5rm2ofhaxjfi9dss\] | 2026-11-21T08:57:21+00:00 | Профиль и выдача raw capture реализованы. Проверяю связь с H03 и M32R сценарии времени, датчиков и отзыва эпохи. |
 | 25 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | Чат 11 · MODE-02, стендовый профиль селектора и ручных режимов \[01a1fa79-892d-7ca3-bb8a-44698892c53e\] | 2026-11-21T08:50:46+00:00 | Привязка обоснованных номиналов и трактов H03 к существующим владельцам AN2, кнопок и ручной цели, проверки полного цикла, явные границы OD и данных Toyota. |
@@ -58,38 +58,38 @@
 
 Порядок задаёт приоритет продолжения. Зависимости нужны для итоговой приёмки; независимую часть можно делать сразу.
 Свободная задача может требовать ещё не полученных данных. Их отсутствие фиксируется отдельно от готовности кода.
-[Подробное распределение и единый текст для Codex / Claude](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/integration-next-tasks.md)
+[Подробное распределение и единый текст для Codex / Claude](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/integration-next-tasks.md)
 
 | Приоритет | Задача | Занятость | Что сдать | Зависимости приёмки |
 | --- | --- | --- | --- | --- |
-| 2 | [TOY-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#toy-01) | Свободна для продолжения | Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений. | См. входные условия карточки |
-| 3 | [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#toy-02) | Выполняется | Таблица всех необходимых операндов и реализованный capture/input backend; контракт для чата 8, реальные source offsets и отрицательные тесты неполного/устаревшего снимка. | См. входные условия карточки |
-| 4 | [TOY-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#toy-03) | Свободна для продолжения | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
-| 5 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#toy-04) | Свободна для продолжения | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, TOY-03, H03-03, MODE-02 |
-| 6 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#toy-05) | Выполняется | Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений. | TOY-04, H03-04 |
-| 7 | [TOY-06](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#toy-06) | Свободна для продолжения | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, H03-05 |
-| 8 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#can-01) | Выполняется | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
-| 9 | [CAN-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#can-02) | Свободна для продолжения | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
-| 10 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#can-03) | Выполняется | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | H03-04 |
-| 11 | [CAN-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#can-04) | Свободна для продолжения | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
-| 12 | [CAN-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#can-05) | Свободна для продолжения | Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false. | TOY-02 |
-| 13 | [ECU-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#ecu-01) | Выполняется | Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false. | См. входные условия карточки |
-| 14 | [ECU-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#ecu-02) | Свободна для продолжения | Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false. | CAN-05 |
-| 16 | [H03-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#h03-02) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
-| 17 | [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#h03-03) | Выполняется | Полный набор hooks/placement с проверкой original bytes, ссылками на native callbacks, проверкой CPU штатного/отказного/повторного пути; никаких fixture callbacks. | H03-04 |
-| 18 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#h03-04) | Выполняется | Пять реальных определений/профиль, полный список писателей, linker constraints и доказательства покрытия; стоимость RAM/стеков и сценарии отказа. | См. входные условия карточки |
-| 19 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#h03-05) | Выполняется | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | См. входные условия карточки |
-| 21 | [VSS-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#vss-01) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
-| 22 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#vss-02) | Выполняется | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
-| 24 | [MODE-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#mode-01) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
-| 25 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#mode-02) | Выполняется | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | H03-03 |
-| 26 | [MODE-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#mode-03) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
-| 27 | [REL-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#rel-01) | Свободна для продолжения | TCM BIN + Bosch BIN + SHA/manifest, карты правок, применимость и фактические результаты приёмки. | TOY-04, TOY-05, TOY-06, CAN-03, CAN-05, ECU-02, H03-04, H03-05, VSS-02, MODE-02, MODE-03, DTC-02, DTC-03, DTC-04 |
-| 28 | [REL-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#rel-02) | Свободна для продолжения | Фактические записи входов/CAN/момента/SLT/SLU и отказов с критериями приёмки. | REL-01 |
-| 29 | [DTC-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#dtc-01) | Свободна для продолжения | Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout. | См. входные условия карточки |
-| 30 | [DTC-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#dtc-02) | Выполняется | Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout. | См. входные условия карточки |
-| 31 | [DTC-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#dtc-03) | Свободна для продолжения | Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout. | H03-05, TOY-06 |
-| 32 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#dtc-04) | Выполняется | Рабочий backend или конкретная доказанная граница его доступности, профиль носителя/проверка восстановления, подлинные Flash-адреса; телеметрия для получения недостающего после BIN. | H03-04 |
+| 2 | [TOY-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-01) | Свободна для продолжения | Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений. | См. входные условия карточки |
+| 3 | [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-02) | Выполняется | Таблица всех необходимых операндов и реализованный capture/input backend; контракт для чата 8, реальные source offsets и отрицательные тесты неполного/устаревшего снимка. | См. входные условия карточки |
+| 4 | [TOY-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-03) | Свободна для продолжения | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
+| 5 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-04) | Свободна для продолжения | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, TOY-03, H03-03, MODE-02 |
+| 6 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-05) | Выполняется | Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений. | TOY-04, H03-04 |
+| 7 | [TOY-06](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-06) | Свободна для продолжения | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, H03-05 |
+| 8 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-01) | Выполняется | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
+| 9 | [CAN-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-02) | Свободна для продолжения | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
+| 10 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-03) | Выполняется | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | H03-04 |
+| 11 | [CAN-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-04) | Свободна для продолжения | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
+| 12 | [CAN-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-05) | Свободна для продолжения | Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false. | TOY-02 |
+| 13 | [ECU-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#ecu-01) | Выполняется | Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false. | См. входные условия карточки |
+| 14 | [ECU-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#ecu-02) | Свободна для продолжения | Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false. | CAN-05 |
+| 16 | [H03-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-02) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
+| 17 | [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-03) | Выполняется | Полный набор hooks/placement с проверкой original bytes, ссылками на native callbacks, проверкой CPU штатного/отказного/повторного пути; никаких fixture callbacks. | H03-04 |
+| 18 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-04) | Выполняется | Пять реальных определений/профиль, полный список писателей, linker constraints и доказательства покрытия; стоимость RAM/стеков и сценарии отказа. | См. входные условия карточки |
+| 19 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-05) | Выполняется | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | См. входные условия карточки |
+| 21 | [VSS-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-01) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
+| 22 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-02) | Выполняется | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
+| 24 | [MODE-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-01) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
+| 25 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-02) | Выполняется | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | H03-03 |
+| 26 | [MODE-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-03) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
+| 27 | [REL-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#rel-01) | Свободна для продолжения | TCM BIN + Bosch BIN + SHA/manifest, карты правок, применимость и фактические результаты приёмки. | TOY-04, TOY-05, TOY-06, CAN-03, CAN-05, ECU-02, H03-04, H03-05, VSS-02, MODE-02, MODE-03, DTC-02, DTC-03, DTC-04 |
+| 28 | [REL-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#rel-02) | Свободна для продолжения | Фактические записи входов/CAN/момента/SLT/SLU и отказов с критериями приёмки. | REL-01 |
+| 29 | [DTC-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-01) | Свободна для продолжения | Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout. | См. входные условия карточки |
+| 30 | [DTC-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-02) | Выполняется | Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout. | См. входные условия карточки |
+| 31 | [DTC-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-03) | Свободна для продолжения | Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout. | H03-05, TOY-06 |
+| 32 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-04) | Выполняется | Рабочий backend или конкретная доказанная граница его доступности, профиль носителя/проверка восстановления, подлинные Flash-адреса; телеметрия для получения недостающего после BIN. | H03-04 |
 
 ### Сделано и остаток по каждой незакрытой задаче
 
@@ -112,7 +112,7 @@
 
 **Критерий приёмки.** Программный результат относится к проверенным функциям, а не ко всем режимам АКПП.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#toy-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-01)
 
 </details>
 
@@ -135,7 +135,7 @@
 
 **Критерий приёмки.** Трасса происхождения каждого операнда, сравнение с S01 и отдельные переходные режимы. Одного TPS и кадров RPM/ОЖ недостаточно.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#toy-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-02)
 
 </details>
 
@@ -158,7 +158,7 @@
 
 **Критерий приёмки.** Для каждого бита известны источник, шкала времени и реакция на отказ. Проверка P/N не проверяет сама себя.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#toy-03)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-03)
 
 </details>
 
@@ -181,7 +181,7 @@
 
 **Критерий приёмки.** Матрица режимов с ожидаемыми результатами S01 и сквозными трассами. Отдельный тест момента не закрывает всё переключение 2→3.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#toy-04)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-04)
 
 </details>
 
@@ -204,7 +204,7 @@
 
 **Критерий приёмки.** Проверены пределы коррекции, повторный пуск, повреждённая запись и сброс адаптаций.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#toy-05)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-05)
 
 </details>
 
@@ -227,7 +227,7 @@
 
 **Критерий приёмки.** Трасса от квалифицированных входов до канала H03, проверка скольжения, удержания и снятия по отказу.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#toy-06)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-06)
 
 </details>
 
@@ -250,7 +250,7 @@
 
 **Критерий приёмки.** Результат ограничен перечисленными полями и сценариями приёма.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#can-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-01)
 
 </details>
 
@@ -273,7 +273,7 @@
 
 **Критерий приёмки.** Программные тесты не заменяют измерение окон приёма 0x5E9.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#can-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-02)
 
 </details>
 
@@ -296,7 +296,7 @@
 
 **Критерий приёмки.** Штатная ветвь не перезаписывает CAN13, старые кадры не принимаются после сброса, сохранена диагностика и отмена.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#can-03)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-03)
 
 </details>
 
@@ -319,7 +319,7 @@
 
 **Критерий приёмки.** Протокол 0x5E8/0x5E9 является RB. Его успешный тест не означает полного штатного Chery CAN.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#can-04)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-04)
 
 </details>
 
@@ -342,7 +342,7 @@
 
 **Критерий приёмки.** Для каждого требуемого поля есть источник, единицы, период, недостоверность и проверенный потребитель. Замена штатного протокола отдельным RB не считается закрытием §3.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#can-05)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-05)
 
 </details>
 
@@ -365,7 +365,7 @@
 
 **Критерий приёмки.** Это образ OFFLINE_ONLY, сохранение всех функций двигателя на машине не подтверждено.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#ecu-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#ecu-01)
 
 </details>
 
@@ -388,7 +388,7 @@
 
 **Критерий приёмки.** Протокол с идентифицированными BIN и измеренным результатом. Исторический стенд STM32 не переносит автоматически приёмку на LFJ8.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#ecu-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#ecu-02)
 
 </details>
 
@@ -411,7 +411,7 @@
 
 **Критерий приёмки.** Компоненты не подменяют окончательную установку обработчиков в BIN.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#h03-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-02)
 
 </details>
 
@@ -434,7 +434,7 @@
 
 **Критерий приёмки.** Полный цикл вызывается автономно, пропуск обнаруживается и без фазы выдачи, тестовые callbacks заменены подтверждёнными целевыми.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#h03-03)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-03)
 
 </details>
 
@@ -457,7 +457,7 @@
 
 **Критерий приёмки.** Карта сборки и анализ всех владельцев, подтверждённый запас стека и измерения. Свободное окно в ELF само по себе не разрешает запись.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#h03-04)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-04)
 
 </details>
 
@@ -480,7 +480,7 @@
 
 **Критерий приёмки.** Измеренные таблицы в допустимой области питания/ATF, реакция каждого выхода и гидравлики на отказ, отсутствие старой команды после восстановления.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#h03-05)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-05)
 
 </details>
 
@@ -503,7 +503,7 @@
 
 **Критерий приёмки.** Округление 4,545 не используется как расчётный коэффициент.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#vss-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-01)
 
 </details>
 
@@ -526,7 +526,7 @@
 
 **Критерий приёмки.** Скорость совпадает с эталоном в согласованном диапазоне, потеря импульсов отличается от остановки.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#vss-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-02)
 
 </details>
 
@@ -549,7 +549,7 @@
 
 **Критерий приёмки.** Компонентный requested_gear не равен выполненному гидравлическому переключению.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#mode-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-01)
 
 </details>
 
@@ -572,7 +572,7 @@
 
 **Критерий приёмки.** Реальные нажатия проходят до исполнения запроса в полном цикле, дребезг/обрыв не создают повторных команд.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#mode-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-02)
 
 </details>
 
@@ -595,14 +595,14 @@
 
 **Критерий приёмки.** Политика согласована с донорской логикой и подтверждена матрицей режимов. Тестовые defaults не выдаются за решение владельца.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#mode-03)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-03)
 
 </details>
 
 <details>
 <summary>REL-01 — Два целевых BIN и воспроизводимый комплект: Свободна для продолжения</summary>
 
-**Сделано.** Все 11 новых результатов объединены. 41 этап ПК, 210 Python до новой упаковки, 55 целевых проверок упаковки, 22 native, 8 компонентов и 6 групп ядра прошли. Известный состав помещается после переноса двух таблиц, но 15 ссылок остаются открытыми. TCM BIN отсутствует; Bosch OFFLINE_ONLY.
+**Сделано.** Добавлена детерминированная сборка байтов полного H03 ELF с проверкой исходных участков и всех секций. Проверены 12 новых сценариев. Полного native ELF и TCM BIN ещё нет; работают 12 чатов первой стендовой волны.
 
 **Осталось доделать.** Закончить реальные профили/поставщики, полный native link и все redirects, сериализацию TCM BIN, целевую Bosch пару, целостность, сквозные проверки и манифест. Измерения новой пары следуют после выдачи файлов.
 
@@ -616,7 +616,7 @@
 
 **Критерий приёмки.** Два целевых реализованных BIN, source/final SHA и карта правок, воспроизводимая сборка, подтвержденные software checks, явные ограничения первого стенда. Аппаратная приемка учитывается отдельно в REL-02.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#rel-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#rel-01)
 
 </details>
 
@@ -637,7 +637,7 @@
 
 **Критерий приёмки.** Журналы содержат версии BIN, условия, измерения, допуски и результат. Программные тесты учитываются отдельно.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#rel-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#rel-02)
 
 </details>
 
@@ -660,7 +660,7 @@
 
 **Критерий приёмки.** Поддержан конкретный профиль CAN C0. Остальные FC/сервисы и K-Line не объявлены реализованными.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#dtc-01)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-01)
 
 </details>
 
@@ -683,7 +683,7 @@
 
 **Критерий приёмки.** Прогон оригинального пути RX с потерей/перезаписью и ложными кадрами. Учтена граница приложения 0x008000.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#dtc-02)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-02)
 
 </details>
 
@@ -706,7 +706,7 @@
 
 **Критерий приёмки.** Код соответствует фактическому отказу и узлу, статусы подтверждены. Отсутствующий прямой аналог явно обозначен.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#dtc-03)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-03)
 
 </details>
 
@@ -729,7 +729,7 @@
 
 **Критерий приёмки.** Перезапуск и прерванная запись не восстанавливают очищенную или повреждённую историю.
 
-[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/10f7c1513b910f42473690255641140989cc10d0/docs/project-map.md#dtc-04)
+[Код, настройки, зависимости и проверки](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-04)
 
 </details>
 
@@ -853,6 +853,8 @@
 
 - targets/lfj8/check_h03_boot_writers.py
 - targets/lfj8/check_h03_ram_owner.py
+- targets/lfj8/check_h03_service_guard.py
+- targets/lfj8/check_h03_vflash_lockout.py
 - targets/lfj8/h03_dma4_guard.S
 - targets/lfj8/lfj8_h03_bench_memory.c
 - targets/lfj8/lfj8_h03_bench_memory_profile.py
@@ -955,6 +957,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T09:03:18+00:00 | H03-04 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
 | 2026-11-21T09:01:15+00:00 | TOY-02 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-21T09:00:58+00:00 | ECU-01 | heartbeat | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-21T08:59:41+00:00 | TOY-05 | heartbeat | 01a1fa79-a9fd-70c0-80a3-f59592edaf79 |
@@ -984,4 +987,3 @@
 | 2026-11-21T08:37:05+00:00 | TOY-05 | complete | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-21T08:36:54+00:00 | H03-05 | complete | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T08:36:44+00:00 | VSS-02 | complete | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
-| 2026-11-21T08:36:34+00:00 | CAN-03 | complete | codex-fea1b366-66b6-4667-8206-915153ca1033 |
