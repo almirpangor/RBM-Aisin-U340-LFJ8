@@ -15,6 +15,7 @@
 #include "lfj8_h03_input_binding.h"
 #include "lfj8_h03_dtc_target.h"
 #include "lfj8_h03_target_service.h"
+#include "lfj8_h03_toyota_source.h"
 
 /* Typed inventory of CURRENT components, not approved RAM addresses or a
  * startup initializer. Initialize each component through its own API.
@@ -30,6 +31,7 @@
     X(phase_clock, volatile Lfj8H03PhaseClock) \
     X(sensors, Lfj8H03SensorTarget) \
     X(application, Lfj8H03Application) \
+    X(toyota_release, Lfj8H03ToyotaRelease) \
     X(clock_qualified, volatile uint8_t) \
     X(atf, volatile Lfj8H03Atf) \
     X(selector_adc, volatile Lfj8SelectorAdc) \

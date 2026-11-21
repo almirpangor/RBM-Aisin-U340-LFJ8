@@ -13,6 +13,7 @@ from lfj8_h03_layout import alloc_sections, read_elf
 # Only this simulator translates the profile to the stand-in input and clock providers.
 PROFILE = """\
 #include "lfj8_h03_target_platform.h"
+#include "lfj8_h03_target_service.h"
 int test_initialize_inputs(void *);
 int test_capture_inputs(void *, const Lfj8H03SensorSnapshot *, uint32_t,
                         Lfj8H03CycleInput *, Lfj8H03CycleLoad *);
@@ -25,6 +26,8 @@ int test_capture_inputs(void *, const Lfj8H03SensorSnapshot *, uint32_t,
 #define RBM_H03_PROFILE_TOYOTA_MAX_LATENESS_TICKS 2u
 #define RBM_H03_PROFILE_INITIALIZE_INPUTS test_initialize_inputs
 #define RBM_H03_PROFILE_CAPTURE_TOYOTA test_capture_inputs
+extern const Lfj8H03TargetServiceConfig test_can_service_config;
+#define RBM_H03_PROFILE_CAN_SERVICE_CONFIG test_can_service_config
 """
 
 
@@ -50,8 +53,13 @@ def check(compiler, controller, bridge):
             raise ValueError("Platform accepted an absent application profile")
 
         profile = work / "test-profile.h"
-        profile.write_text(PROFILE.replace("MAX_PERIOD_TICKS 20u", "MAX_PERIOD_TICKS 17u"), encoding="ascii")
         profile_flag = '-DRBM_H03_APPLICATION_PROFILE="test-profile.h"'
+        profile.write_text(PROFILE.replace("#define RBM_H03_PROFILE_CAN_SERVICE_CONFIG test_can_service_config", ""),
+                           encoding="ascii")
+        refused = run(*compile_platform, profile_flag, checked=False)
+        if refused.returncode == 0 or "Define RBM_H03_PROFILE_CAN_SERVICE_CONFIG" not in refused.stderr:
+            raise ValueError("Platform accepted an absent CAN service profile")
+        profile.write_text(PROFILE.replace("MAX_PERIOD_TICKS 20u", "MAX_PERIOD_TICKS 17u"), encoding="ascii")
         refused = run(*compile_platform, profile_flag, checked=False)
         if refused.returncode == 0 or "lateness must fit the application watchdog" not in refused.stderr:
             raise ValueError("Platform accepted timing outside the application watchdog")
@@ -85,10 +93,11 @@ def check(compiler, controller, bridge):
             raise ValueError("The simulator release alias disagrees with the target RAM requirement")
         simulator = compiler.with_name(f"m32r-elf-run{compiler.suffix}")
         output = run(simulator, "--memory-size=16M", "platform.elf").stdout.strip()
-        expected = "H03 target platform: native startup and foreground, Toyota rollover and inhibition PASS"
+        expected = "H03 target platform: native startup, CAN service lifecycle, Toyota rollover and inhibition PASS"
         if output != expected:
             raise ValueError(f"Unexpected M32R result: {output}")
         return {"status": "PASS", "m32r": output, "unprofiled_and_inconsistent_timing_refused": True,
+                "missing_can_service_profile_refused": True,
                 "flash_section_bytes": flash,
                 "required_release_alias_bytes": 16, "platform_object_writable_bytes": 0,
                 "hardware_tested": False, "flashable_image": None}

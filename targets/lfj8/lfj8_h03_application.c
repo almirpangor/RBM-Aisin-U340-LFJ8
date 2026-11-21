@@ -29,11 +29,24 @@ static int initialize_engine_locked(const Lfj8RegisterIo *io)
         lfj8_h03_engine_feed_target_init(target, engine->max_age_ticks, engine->max_poll_gap_us);
 }
 
-static void close_gate_locked(const Lfj8RegisterIo *io)
+static void stop_service_locked(void)
+{
+    if (binding->stop_service_locked) {
+        binding->stop_service_locked();
+    }
+}
+
+static void deactivate_application_locked(void)
 {
     app->running = 0u;
     app->adaptation_status = RBM_U340E_ADAPTATION_INVALID;
+    stop_service_locked();
     rbm_h03_sensor_clock_rebase(0);
+}
+
+static void close_gate_locked(const Lfj8RegisterIo *io)
+{
+    deactivate_application_locked();
     binding->takeover->ops = NULL;
     binding->takeover->pending = 0u;
     binding->main->valid = 0u;
@@ -47,6 +60,16 @@ void rbm_h03_application_cold_gate(void)
     const uint32_t saved = io->enter(io->context);
     if (owns_ram(io)) {
         close_gate_locked(io);
+    }
+    io->leave(io->context, saved);
+}
+
+static void abort_startup(const Lfj8RegisterIo *io)
+{
+    const uint32_t saved = io->enter(io->context);
+    if (owns_ram(io)) {
+        stop_service_locked();
+        binding->runtime->initialized = 0u;
     }
     io->leave(io->context, saved);
 }
@@ -66,10 +89,13 @@ void rbm_h03_phase_startup_callback(void)
 
     if (!clock_ready || !binding->toyota_max_period_ticks ||
         binding->toyota_max_period_ticks >= SERIAL_HALF_RANGE ||
-        !binding->initialize || !binding->take_toyota || !binding->service_phase ||
-        binding->initialize(context) != 1 ||
+        !binding->initialize || !binding->take_toyota || !binding->service_phase) {
+        return;
+    }
+    if (binding->initialize(context) != 1 ||
         !lfj8_h03_cycle_init(binding->cycle, &binding->startup_range, binding->startup_request_1120) ||
         !rbm_u340e_runtime_init(binding->runtime, binding->startup_gear, binding->startup_gp)) {
+        abort_startup(io);
         return;
     }
 
@@ -83,7 +109,7 @@ void rbm_h03_phase_startup_callback(void)
     const RbmU340eAdaptationResult restored = rbm_u340e_runtime_restore_adaptation(
         binding->runtime, rbm_u340e_s01_adaptation_baseline(), slot0, slot1);
     if (restored == RBM_U340E_ADAPTATION_INVALID) {
-        binding->runtime->initialized = 0u;
+        abort_startup(io);
         return;
     }
 
@@ -97,6 +123,7 @@ void rbm_h03_phase_startup_callback(void)
             app->adaptation_status = (uint8_t)restored;
             app->running = 1u;
         } else {
+            stop_service_locked();
             rbm_h03_sensor_clock_rebase(0);
             binding->runtime->initialized = 0u;
         }
@@ -117,9 +144,7 @@ void rbm_h03_phase_release_callback(uint32_t released_at)
 
 static void fault_locked(void)
 {
-    app->running = 0u;
-    app->adaptation_status = RBM_U340E_ADAPTATION_INVALID;
-    rbm_h03_sensor_clock_rebase(0);
+    deactivate_application_locked();
     binding->takeover_ops->phase_clock->faulted = 1u;
     binding->cycle->faulted = 1u;
     binding->runtime->initialized = 0u;
