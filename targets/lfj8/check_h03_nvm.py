@@ -47,6 +47,9 @@ def check_geometry(base):
     return {
         "base": identity, "oem_geometry_offset": f"0x{GEOMETRY_OFFSET:06X}",
         "halfword_bytes": 2, "blocks": blocks, "assigned_nvm_blocks": [],
+        "erased_in_stock_image": [item["block"] for item in blocks if not item["non_ff_bytes"]],
+        "erased_outside_known_reservations": [item["block"] for item in blocks
+                                              if not item["non_ff_bytes"] and not item["overlaps"]],
     }
 
 
@@ -92,25 +95,32 @@ def run_backend_checks(cc, gcc, controller=None):
                         "-I", controller_root / "vendor/toyota/include")
         run(str(gcc), *native_flags, "-c", HERE / "lfj8_h03_nvm_native.c")
         native_object, _ = elf_info(stage / "lfj8_h03_nvm_native.o", 1)
-        run(str(gcc), *native_flags, "-nostartfiles", crt,
-            "lfj8_h03_nvm.c", "chery_dtc.c", "chery_dtc_journal.c", "lfj8_h03_nvm_native.o",
-            HERE / "lfj8_h03_mmio.c", HERE / "h03_nvm_native_fixture.c", hooks.name, controller,
-            "-Wl,-Ttext,0x100000,--gc-sections,-e,_start,--start-group", "-lc", "-lgloss", "-lgcc",
-            "-Wl,--end-group", "-o", "nvm-native.elf")
-        _, allocated = elf_info(stage / "nvm-native.elf", 2)
-        if any(address < ERASE_ENDS[-1] + 2 for address, _, _ in allocated):
-            raise ValueError("Simulator ELF overlaps the H03 flash used by the read fixture")
-        native = run(str(gcc.with_name("m32r-elf-run" + gcc.suffix)),
-                     "--memory-size", "16M", "nvm-native.elf")
+        probes = {}
+        for fixture in ("h03_nvm_native_fixture", "h03_bench_nvm_fixture"):
+            executable = fixture + ".elf"
+            run(str(gcc), *native_flags, "-nostartfiles", crt,
+                "lfj8_h03_nvm.c", "chery_dtc.c", "chery_dtc_journal.c", "lfj8_h03_nvm_native.o",
+                HERE / "lfj8_h03_mmio.c", HERE / (fixture + ".c"), hooks.name, controller,
+                "-Wl,-Ttext,0x100000,--gc-sections,-e,_start,--start-group", "-lc", "-lgloss", "-lgcc",
+                "-Wl,--end-group", "-o", executable)
+            _, allocated = elf_info(stage / executable, 2)
+            if any(address < ERASE_ENDS[-1] + 2 for address, _, _ in allocated):
+                raise ValueError("Simulator ELF overlaps the H03 flash used by the read fixture")
+            probes[fixture] = run(str(gcc.with_name("m32r-elf-run" + gcc.suffix)),
+                                  "--memory-size", "16M", executable).splitlines()
 
     expected = "H03 erase ends:" + "".join(f" {end:05X}" for end in ERASE_ENDS)
     if pc != m32r or not pc.startswith(expected + "\n") or not pc.endswith("restart PASS"):
         raise ValueError("PC/M32R backend checks disagree or did not finish")
-    native_lines = native.splitlines()
+    native_lines = probes["h03_nvm_native_fixture"]
     if len(native_lines) != 3 or not all(line.startswith("PASS native H03 array:") for line in native_lines):
         raise ValueError("Native H03 array checks did not finish")
+    bench_lines = probes["h03_bench_nvm_fixture"]
+    if len(bench_lines) != 2 or not all(line.startswith("PASS H03 no-media bench:") for line in bench_lines):
+        raise ValueError("No-media bench native checks did not finish")
     return {"pc": pc.splitlines(), "m32r": m32r.splitlines(), "m32r_simulator_elf": elf,
-            "m32r_native_read": native_lines, "m32r_native_reader_object": native_object}
+            "m32r_native_read": native_lines, "m32r_bench_no_media": bench_lines,
+            "m32r_native_reader_object": native_object}
 
 
 def main():

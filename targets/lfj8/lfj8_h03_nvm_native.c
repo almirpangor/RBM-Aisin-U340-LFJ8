@@ -76,3 +76,54 @@ bool lfj8_h03_nvm_native_read_adaptation(const uint8_t blocks[2],
     io->leave(io->context, saved);
     return readable;
 }
+
+bool lfj8_h03_nvm_native_bench_status(Lfj8H03NvmBenchStatus *out)
+{
+    if (!out) {
+        return false;
+    }
+    const Lfj8RegisterIo *const io = &lfj8_h03_mmio;
+    void *const context = io->context;
+    const uint32_t saved = io->enter(context);
+    out->persistence_status = LFJ8_H03_NVM_BENCH_NO_ASSIGNED_MEDIA;
+    out->fmod = io->read8(context, H03_FMOD);
+    out->fstat = io->read8(context, H03_FSTAT);
+    out->fcnt1 = io->read8(context, H03_FCNT1);
+    out->felbank0 = io->read16(context, H03_FELBANK0);
+    out->felbank1 = io->read16(context, H03_FELBANK1);
+    out->fesbank0 = io->read16(context, H03_FESBANK0);
+    out->fesbank1 = io->read16(context, H03_FESBANK1);
+    io->leave(context, saved);
+    return true;
+}
+
+Lfj8H03NvmInspectResult lfj8_h03_nvm_native_bench_inspect(
+    unsigned block, uint16_t chunk_index, uint8_t *non_erased_halfwords)
+{
+    Lfj8H03NvmBlock bounds;
+    const uint32_t offset = (uint32_t)chunk_index * LFJ8_H03_NVM_BENCH_SAMPLE_BYTES;
+    if (!non_erased_halfwords || !lfj8_h03_nvm_block(block, &bounds) ||
+        offset + LFJ8_H03_NVM_BENCH_SAMPLE_BYTES > bounds.end - bounds.first) {
+        return LFJ8_H03_NVM_INSPECT_INVALID;
+    }
+
+    uint8_t occupied = 0;
+    const Lfj8RegisterIo *const io = &lfj8_h03_mmio;
+    void *const context = io->context;
+    const uint32_t saved = io->enter(context);
+    bool read = array_ready();
+    if (read) {
+        const uint32_t first = bounds.first + offset;
+        const uint32_t end = first + LFJ8_H03_NVM_BENCH_SAMPLE_BYTES;
+        for (uint32_t address = first; address < end; address += sizeof(uint16_t)) {
+            occupied += io->read16(context, address) != UINT16_MAX;
+        }
+        read = array_ready();
+    }
+    io->leave(context, saved);
+    if (!read) {
+        return LFJ8_H03_NVM_INSPECT_UNAVAILABLE;
+    }
+    *non_erased_halfwords = occupied;
+    return LFJ8_H03_NVM_INSPECT_OK;
+}
