@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 800,
+  "sequence": 801,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -293,12 +293,12 @@
         "targets/lfj8/test_lfj8_h03_target_platform.c",
         "verification/project-audit/mode02-native-profile-capture.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "ec35ff2a13a14818a96ced1510f85588",
       "claimed_at": "2026-11-21T07:21:27+00:00",
-      "updated_at": "2026-11-21T07:21:27+00:00",
-      "note": "Привязка готового владельца ручной цели к нативному профилю и проверка в полном цикле. Ветка включает опубликованные review MODE-02, H03-03 и TOY-05.",
-      "result": null,
+      "updated_at": "2026-11-21T07:28:18+00:00",
+      "note": "Подключена ручная цель через профиль H03 и take_toyota до S01 MAIN. M32R подтвердил удержание, отзыв, S1/S2 и обрыв между релизами в обычной и размещённой моделях. ПК 41 этап и 181 тест, native 22, components 8, размещённое ядро 6. Выпускной профиль, карта P1DATA/OD, поставщик входов и аппаратные измерения ещё нужны. Отчёт verification/project-audit/mode02-native-profile-capture.md.",
+      "result": "9908d956f18cba01fe0ef9c9089dbd81d317fb75",
       "based_on_reviews": [
         "0ecd2acccbb947a886b1dceb6d968fb9",
         "2101184d356545bfa9a1e0bd6716a9ee",
@@ -11578,9 +11578,44 @@
           "d86e0ce440d6458dbdcec18da3c3671b"
         ]
       }
+    },
+    {
+      "operation_id": "6dbf3dec7bc84f079bca64c4f088460c",
+      "task": "MODE-02",
+      "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+      "action": "review",
+      "claim_id": "ec35ff2a13a14818a96ced1510f85588",
+      "at": "2026-11-21T07:28:18+00:00",
+      "record": {
+        "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+        "label": "Codex MODE-02 — ручная цель в полном профиле H03",
+        "branch": "codex/mode02-profile-foreground-892d",
+        "files": [
+          "targets/lfj8/check_h03_target_platform.py",
+          "targets/lfj8/lfj8_h03_target_platform.c",
+          "targets/lfj8/lfj8_h03_target_platform.h",
+          "targets/lfj8/lfj8_h03_toyota_input_profile.h",
+          "targets/lfj8/test_lfj8_h03_target_platform.c",
+          "verification/project-audit/mode02-native-profile-capture.md"
+        ],
+        "stage": "review",
+        "claim_id": "ec35ff2a13a14818a96ced1510f85588",
+        "claimed_at": "2026-11-21T07:21:27+00:00",
+        "updated_at": "2026-11-21T07:28:18+00:00",
+        "note": "Подключена ручная цель через профиль H03 и take_toyota до S01 MAIN. M32R подтвердил удержание, отзыв, S1/S2 и обрыв между релизами в обычной и размещённой моделях. ПК 41 этап и 181 тест, native 22, components 8, размещённое ядро 6. Выпускной профиль, карта P1DATA/OD, поставщик входов и аппаратные измерения ещё нужны. Отчёт verification/project-audit/mode02-native-profile-capture.md.",
+        "result": "9908d956f18cba01fe0ef9c9089dbd81d317fb75",
+        "based_on_reviews": [
+          "0ecd2acccbb947a886b1dceb6d968fb9",
+          "2101184d356545bfa9a1e0bd6716a9ee",
+          "43d58327bd434219b328d74d652d3be9",
+          "4a65fba7869f4e4b9d9ae39ae27d33a4",
+          "cda1c6bb3edf45bd993ee765cf29e055",
+          "d86e0ce440d6458dbdcec18da3c3671b"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:21:27+00:00",
+  "updated_at": "2026-11-21T07:28:18+00:00",
   "main_commit": "f64eff7c24744cef0fe608415039c6d10c677ff1",
   "catalog": [
     {
@@ -14007,6 +14042,35 @@
       ],
       "task": "CAN-02",
       "submitted_at": "2026-11-21T07:15:28+00:00"
+    },
+    "ec35ff2a13a14818a96ced1510f85588": {
+      "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+      "label": "Codex MODE-02 — ручная цель в полном профиле H03",
+      "branch": "codex/mode02-profile-foreground-892d",
+      "files": [
+        "targets/lfj8/check_h03_target_platform.py",
+        "targets/lfj8/lfj8_h03_target_platform.c",
+        "targets/lfj8/lfj8_h03_target_platform.h",
+        "targets/lfj8/lfj8_h03_toyota_input_profile.h",
+        "targets/lfj8/test_lfj8_h03_target_platform.c",
+        "verification/project-audit/mode02-native-profile-capture.md"
+      ],
+      "stage": "review",
+      "claim_id": "ec35ff2a13a14818a96ced1510f85588",
+      "claimed_at": "2026-11-21T07:21:27+00:00",
+      "updated_at": "2026-11-21T07:28:18+00:00",
+      "note": "Подключена ручная цель через профиль H03 и take_toyota до S01 MAIN. M32R подтвердил удержание, отзыв, S1/S2 и обрыв между релизами в обычной и размещённой моделях. ПК 41 этап и 181 тест, native 22, components 8, размещённое ядро 6. Выпускной профиль, карта P1DATA/OD, поставщик входов и аппаратные измерения ещё нужны. Отчёт verification/project-audit/mode02-native-profile-capture.md.",
+      "result": "9908d956f18cba01fe0ef9c9089dbd81d317fb75",
+      "based_on_reviews": [
+        "0ecd2acccbb947a886b1dceb6d968fb9",
+        "2101184d356545bfa9a1e0bd6716a9ee",
+        "43d58327bd434219b328d74d652d3be9",
+        "4a65fba7869f4e4b9d9ae39ae27d33a4",
+        "cda1c6bb3edf45bd993ee765cf29e055",
+        "d86e0ce440d6458dbdcec18da3c3671b"
+      ],
+      "task": "MODE-02",
+      "submitted_at": "2026-11-21T07:28:18+00:00"
     }
   }
 }

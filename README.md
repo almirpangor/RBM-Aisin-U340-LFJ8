@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-21T07:21:27+00:00**. Изменение № **800**.
+Обновлено UTC: **2026-11-21T07:28:18+00:00**. Изменение № **801**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,15 +12,13 @@
 
 Каталог задач взят из main f64eff7c24744cef0fe608415039c6d10c677ff1.
 
-**В работе: 1 · Ожидают с резервом: 0 · Порций на проверке: 38.**
+**В работе: 0 · Ожидают с резервом: 0 · Порций на проверке: 39.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
 ## Сейчас выполняются
 
-| Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
-| --- | --- | --- | --- | --- |
-| 9 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | Codex MODE-02 — ручная цель в полном профиле H03 \[01a1fa79-892d-7ca3-bb8a-44698892c53e\] | 2026-11-21T07:21:27+00:00 | Привязка готового владельца ручной цели к нативному профилю и проверка в полном цикле. Ветка включает опубликованные review MODE-02, H03-03 и TOY-05. |
+Нет действующих резервов выполнения.
 
 ## Ожидают — резерв сохранён
 
@@ -66,6 +64,7 @@
 | H03-05 | Codex H03-05 — снятие TIO9 в нативном отзыве | [07da572f8971](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/07da572f89718e96da71d34f2cb0e8fa36f28156) | fae2c834e65a428fb92e2fd73fc941d8 | Нативный callback отзыва снимает TIO9/P97 и сохранённую команду. Повторный OEM apply без новой команды удерживает P97 в GPIO low, свежая выдача фазы 2 сохранена. Пройдены 16 сценариев в каждой модели, 59 SLT, 18 OEM, 20 CAN, 22 native и 8 components. Отдельный адресный прогон с H03-04 bec09c3 прошёл. Физическая изоляция, калибровка, фаза 3 и стенд открыты. Отчёт verification/project-audit/h03-05-tio9-inhibit.md. |
 | MODE-02 | Codex MODE-02 — квалифицированная ручная цель | [5d793be878e4](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/5d793be878e4b3732133535f3255609bc7c44dd3) | cda1c6bb3edf45bd993ee765cf29e055 | Нативный источник take_toyota исполнил адаптер MODE-02/03 с квалификацией, удержанием и отзывом цели. ПК 41 этап/179 тестов, входы ПК/M32R, нативный TML0 и AN2/P1DATA, 22+8 M32R, 6 размещённых групп. +692 байта Flash, +8 RAM. Старый check_h03_link воспроизводимо падает и на чистой main. Требуются финальная rbm_h03_target_take_toyota, поставщики driver/range/load и измеренные карта/OD/срок цели. Отчёт verification/project-audit/mode02-qualified-manual-target.md. |
 | MODE-02 | Codex MODE-02 — конфликт Tiptronic между событиями Toyota | [3823b6baa0f3](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/3823b6baa0f3a6aa165584e1d4b1df5fb71a4312) | 4a65fba7869f4e4b9d9ae39ae27d33a4 | После конфликта плюс/минус AN2/P1DATA удерживает запрет до квалифицированного отпускания обеих кнопок. Штатный источник Toyota M32R подтвердил отзыв и один новый запрос после отпускания. ПК 41 шаг, 179 Python с отдельным повтором S03, M32R 8 компонентных, 6 размещённых, 11+18 с локально добавленным cold S01. +56 байт кода, 0 новых RAM. Полная привязка H03 и измерения MODE-02 открыты. Отчёт mode02-h03-conflict-recovery.md. |
+| MODE-02 | Codex MODE-02 — ручная цель в полном профиле H03 | [9908d956f18c](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9908d956f18cba01fe0ef9c9089dbd81d317fb75) | ec35ff2a13a14818a96ced1510f85588 | Подключена ручная цель через профиль H03 и take_toyota до S01 MAIN. M32R подтвердил удержание, отзыв, S1/S2 и обрыв между релизами в обычной и размещённой моделях. ПК 41 этап и 181 тест, native 22, components 8, размещённое ядро 6. Выпускной профиль, карта P1DATA/OD, поставщик входов и аппаратные измерения ещё нужны. Отчёт verification/project-audit/mode02-native-profile-capture.md. |
 | TOY-02 | Codex TOY-02 — допуск нагрузки в H03 | [f1f622d93c3e](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/f1f622d93c3e0ae143cb41ba83813160d7b3063a) | 4f0440768829471386bb278580bee3f8 | Квалификация трёх групп нагрузки включена до публикации GP и такта Toyota. Потеря метаданных, просрочка и старый epoch отзывают цикл. ПК 41/179, M32R 8 компонентных, 62 запуска и 6 размещённых. Flash +224, RAM прежняя. Нет парных Bosch/S01 для поставщика rbm_h03_target_take_toyota. Отчёт toy02-h03-load-evidence.md. |
 | TOY-05 | Codex TOY-05 — неоднозначное восстановление адаптаций | [9f269055aa9a](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9f269055aa9a2da430f2602e004408a038725c6b) | ddeb80aa0d00427f9cdc2ac2b6ee7241 | Реальное восстановление H03 применяет S01 BASELINE_UNTRUSTED при одинаковом поколении разных валидных записей. 8 новых вариантов ПК/M32R, 62 нативных запуска и 6 групп размещённого ядра прошли. Остаются startup_gear/gp, cold/warm и физический NVM. Отчёт verification/project-audit/toy05-adaptation-generation.md. |
 | TOY-05 | Codex TOY-05 — квалифицированный стартовый снимок | [ddb10371c24f](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/ddb10371c24f683d84c9eba30118ed7428a9af6a) | 6ce7588d41534bb3aae313663fe29f1a | В runtime реализован подготовленный/подтверждённый холодный старт: проверка снимка, проекция S01 до чтения NVM и восстановление. ПК/M32R, 258 сравнений R3, 62 старта H03 и шесть групп адресной сборки прошли. Точка штатного вызова у CAN-03; данные startup_gear/gp и квалификация cold/warm открыты. Отчёт verification/project-audit/toy05-qualified-startup-seed.md. |
@@ -94,7 +93,7 @@
 | 6 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#dtc-04) | Свободна для продолжения; порция на проверке | Физический NVM backend, адреса, busy/ошибки, восстановление после прерывания и очистка без ложного подтверждения. | H03-04 |
 | 7 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#toy-05) | Свободна для продолжения; порция на проверке | rbm_h03_target_startup_gear/gp с происхождением полей; порядок init → prepare_s01_cold → restore_adaptation до допуска выходов. | TOY-04, H03-04 |
 | 8 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#can-03) | Свободна для продолжения; порция на проверке | rbm_h03_target_service_phase и связанная CAN-композиция без дублирования owner/состояния. | H03-04 |
-| 9 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#mode-02) | Выполняется | Реальный захват селектора/кнопок до входа take_toyota, шесть положений и отказы проводов. | H03-03 |
+| 9 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#mode-02) | Свободна для продолжения; порция на проверке | Реальный захват селектора/кнопок до входа take_toyota, шесть положений и отказы проводов. | H03-03 |
 | 10 | [TOY-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#toy-03) | Свободна для продолжения | Поставщики GP−5722 и GP−5250.2 с происхождением, временем и отказом. | См. входные условия карточки |
 | 11 | [TOY-06](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#toy-06) | Свободна для продолжения | Цельный путь SLU от входов до выходного интерфейса H03-05, включая скольжение и отказ. | TOY-02, H03-05 |
 | 12 | [MODE-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/f64eff7c24744cef0fe608415039c6d10c677ff1/docs/project-map.md#mode-03) | Свободна для продолжения | Целевой профиль режимов с обоснованными ограничениями и проверкой повторного включения. | См. входные условия карточки |
@@ -286,7 +285,7 @@
 </details>
 
 <details>
-<summary>MODE-02 — Подключение селектора, Tiptronic и Overdrive: Выполняется</summary>
+<summary>MODE-02 — Подключение селектора, Tiptronic и Overdrive: Свободна для продолжения; порция на проверке</summary>
 
 **Сделано.** Объединённый результат 21.11.2026: Native AN2/P1DATA уважает допуск RAM. Приём на фазе H03 отделён от заявки Toyota, прежний вызов сохранён. Прошли 41 этап ПК/129 тестов, 8 сравнений AN2, 8 компонентных групп, остальные нативные с повтором phase-boot и 6 размещённых. Foreground занят CAN-01; открыты его привязка, карта/OD и ручная цель. Отчёт mode02-h03-sample-lifecycle.md.
 
@@ -298,7 +297,7 @@
 
 **Что сдать.** Реальный захват селектора/кнопок до входа take_toyota, шесть положений и отказы проводов.
 
-**Сейчас выполняет.** Codex MODE-02 — ручная цель в полном профиле H03 — 01a1fa79-892d-7ca3-bb8a-44698892c53e.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Реальные нажатия проходят до исполнения запроса в полном цикле, дребезг/обрыв не создают повторных команд.
 
@@ -720,6 +719,7 @@
 | DTC-04 | На проверке | Codex DTC-04 — проверка физического чтения журнала | codex/dtc04-native-restore-bank-gate-922b7b11 | Читатель холодного журнала отклоняет каждый из четырёх сигналов разрешения FELBANK/FESBANK до и после чтения слота даже при FCNT1=0. ПК/M32R, GDB с включением FESBANK1 после чтения, 22 native и BasicCAN 18+18 прошли. Объект 444 байта, без статической RAM. Остаются назначенные блоки с владением, подключение на холодном старте, физический драйвер записи, износ и проверка на блоке. Отчёт verification/project-audit/dtc04-native-restore-bank-gate.md. / commit 456abca6b0dda9bf8f542f1fbe90653246959443 |
 | TOY-05 | На проверке | Codex TOY-05 — квалифицированный холодный старт в H03 | codex/toy05-seed-native-1121-c7e4 | В штатном startup H03 после подготовки CAN и до допуска фаз вызывается start_from_seed; холодная проекция проверена до чтения NVM, отказ вида и буфера закрывает выходы. 68 нативных стартов, 96 IRQ, 22 native, 8 components, 6 размещённых, ПК 41/179; 11+18 с локальными корнями. Стек callback +24 байта, новых RAM-объектов нет. Профиль, полные снимки, физический NVM и стенд открыты. Отчёт toy05-h03-native-startup-seed.md. / commit 2ae850bef8c0f064aaf1cc0e3541eb143ef32f97 |
 | CAN-03 | На проверке | Codex CAN-03 — отдельное размещение TX13 | codex/can03-linked-tx13-fea1b366 | OEM-слово TX13 0x00C34C и возврат 0x00C350 проверены в отдельном M32R ELF с typed CAN owner. 18 OEM-сценариев, 22 native, 48 H03 Python. Общий компоновщик зарезервирован H03-04; подключение описано в can03-linked-tx13.md. Без выпуска BIN. / commit 1eefa2abd890b71c4334408555285750fa6911a0 |
+| MODE-02 | На проверке | Codex MODE-02 — ручная цель в полном профиле H03 | codex/mode02-profile-foreground-892d | Подключена ручная цель через профиль H03 и take_toyota до S01 MAIN. M32R подтвердил удержание, отзыв, S1/S2 и обрыв между релизами в обычной и размещённой моделях. ПК 41 этап и 181 тест, native 22, components 8, размещённое ядро 6. Выпускной профиль, карта P1DATA/OD, поставщик входов и аппаратные измерения ещё нужны. Отчёт verification/project-audit/mode02-native-profile-capture.md. / commit 9908d956f18cba01fe0ef9c9089dbd81d317fb75 |
 | TOY-03 | Порция принята | Codex TOY-03 — допуск независимого P/N | codex/toy03-independent-pn-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 3f2596f31930203fe9cd7918e9b62f81ea82699c |
 | TOY-06 | Порция принята | Codex TOY-06 — штатные выходы H03 | codex/toy06-native-lockup-output-01a1f9a2 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 4baf99ccd587811223aa05bc44460053dbade903 |
 | MODE-03 | Порция принята | Codex MODE-03 — допуск только после инициализации политики | codex/mode03-policy-init-admission-32e6ac79 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit d77a559150a3c586ca50caa4aa64488b4f02ce22 |
@@ -749,21 +749,11 @@
 
 ## Зарезервированные файлы
 
-### MODE-02
-
-Чат: Codex MODE-02 — ручная цель в полном профиле H03. Claim ID: ec35ff2a13a14818a96ced1510f85588.
-
-- targets/lfj8/check_h03_target_platform.py
-- targets/lfj8/lfj8_h03_target_platform.c
-- targets/lfj8/lfj8_h03_target_platform.h
-- targets/lfj8/lfj8_h03_toyota_input_profile.h
-- targets/lfj8/test_lfj8_h03_target_platform.c
-- verification/project-audit/mode02-native-profile-capture.md
-
 ## Последние события
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-21T07:28:18+00:00 | MODE-02 | review | 01a1fa79-892d-7ca3-bb8a-44698892c53e |
 | 2026-11-21T07:21:27+00:00 | MODE-02 | claim | 01a1fa79-892d-7ca3-bb8a-44698892c53e |
 | 2026-11-21T07:15:28+00:00 | CAN-02 | review | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-21T07:13:21+00:00 | CAN-02 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
@@ -793,4 +783,3 @@
 | 2026-11-20T23:18:13+00:00 | H03-04 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-20T23:16:42+00:00 | CAN-03 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-20T23:15:24+00:00 | TOY-05 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
-| 2026-11-20T23:14:53+00:00 | DTC-01 | review | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
