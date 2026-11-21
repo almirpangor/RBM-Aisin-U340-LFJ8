@@ -10,6 +10,7 @@ import sys
 from tempfile import TemporaryDirectory
 
 from check_h03_application_binding import FIXTURE_PROFILE
+from check_h03_boot_writers import check as replay_boot_writers
 from check_h03_can_monitor_revoke import aggregate_placement, aliases_for
 from check_h03_link import HERE, ROOT, TARGET, identify_h03
 from check_h03_toyota_source import RELEASE_ROOTS, simulate as simulate_toyota
@@ -18,6 +19,9 @@ from lfj8_h03_layout import alloc_sections, read_elf
 
 SITES = {"DIRECT": 0x002924, "SPAN": 0x00294C, "COPY": 0x002D1C,
          "CLOSE": 0x002E9C, "VIRTUAL": 0x003568}
+SBI_SITES = {"SBI_VECTOR": 0x000010, "SBI_MASK_READ": 0x003E5C,
+             "SBI_PSW_SAVE": 0x003E60, "SBI_SAVE_CALL": 0x003F7C,
+             "SBI_LAST_STORE": 0x003FC0, "SBI_STOP": 0x003FC4}
 CONTINUATIONS = {
     "h03_service_direct_after_entry": 0x002928,
     "h03_service_stock_span_check": 0x003528,
@@ -140,7 +144,8 @@ def simulate(base, compiler, blocks):
         run(compiler, *TARGET, "-Os", "-std=c11", "-Wall", "-Wextra", "-Werror",
             "-ffunction-sections", "-fdata-sections",
             *(option for path in includes for option in ("-I", path)),
-            *(f"-DROM_{name}=0x{rom[address:address + 4].hex()}u" for name, address in SITES.items()),
+            *(f"-DROM_{name}=0x{rom[address:address + 4].hex()}u"
+              for name, address in (SITES | SBI_SITES).items()),
             "-nostartfiles", crt, *(HERE / source for source in sources), shim,
             "-Wl,-e,_start,-Ttext=0x10000,--gc-sections",
             *(f"-Wl,--defsym={name}={address:#x}" for name, address in symbols.items()),
@@ -199,6 +204,7 @@ def check(args):
     result = simulate(args.base, compiler, storage["blocks"])
     application_link = probe_application_link(compiler)
     sbi = probe_sbi(args.base, compiler)
+    boot_writers = replay_boot_writers(args.base, compiler)
     toyota = simulate_toyota(compiler, args.bridge.resolve())
     old_modules = layout.BINDING_MODULES
     old_roots = layout.EXTRA_ROOTS
@@ -213,6 +219,7 @@ def check(args):
         "base": identity,
         "m32r": result,
         "stock_sbi": sbi,
+        "native_boot_writers_replay": boot_writers,
         "native_application_link": application_link,
         "toyota_m32r": toyota,
         "live_dma_model_tested": True,

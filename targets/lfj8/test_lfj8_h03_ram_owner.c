@@ -64,6 +64,9 @@ __asm__(
 
 static const uint32_t sites[] = {0x2924u, 0x294cu, 0x2d1cu, 0x2e9cu, 0x3568u};
 static const uint32_t original[] = {ROM_DIRECT, ROM_SPAN, ROM_COPY, ROM_CLOSE, ROM_VIRTUAL};
+static const uint32_t sbi_sites[] = {0x10u, 0x3e5cu, 0x3e60u, 0x3f7cu, 0x3fc0u, 0x3fc4u};
+static const uint32_t sbi_words[] = {ROM_SBI_VECTOR, ROM_SBI_MASK_READ, ROM_SBI_PSW_SAVE,
+                                   ROM_SBI_SAVE_CALL, ROM_SBI_LAST_STORE, ROM_SBI_STOP};
 
 static int irq_enabled(void)
 {
@@ -237,6 +240,9 @@ int main(void)
     application_io.context = &OWNER;
     platform_owned = 1;
     fixture_map();
+    for (unsigned i = 0; i < sizeof sbi_sites / sizeof sbi_sites[0]; ++i) {
+        WORD(sbi_sites[i]) = sbi_words[i];
+    }
     for (unsigned i = 0; i < sizeof sites / sizeof sites[0]; ++i) {
         WORD(sites[i]) = original[i];
     }
@@ -251,6 +257,13 @@ int main(void)
     };
     for (unsigned i = 0; i < sizeof sites / sizeof sites[0]; ++i) {
         WORD(sites[i]) = patched[i];
+    }
+    require_cold_gate(1);
+
+    for (unsigned i = 0; i < sizeof sbi_sites / sizeof sbi_sites[0]; ++i) {
+        WORD(sbi_sites[i]) ^= 1u;
+        require_cold_gate(0);
+        WORD(sbi_sites[i]) = sbi_words[i];
     }
     require_cold_gate(1);
 
