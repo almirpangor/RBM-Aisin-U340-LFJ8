@@ -2,10 +2,12 @@ import copy
 from pathlib import Path
 import sys
 import unittest
+from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "targets/lfj8"))
 import lfj8_h03_application_placement as placement
 from lfj8_h03_layout import Window
+from tools import check_h03_image_layout as common_layout
 
 
 class ApplicationPlacementTest(unittest.TestCase):
@@ -79,6 +81,31 @@ class ApplicationPlacementTest(unittest.TestCase):
         self.elf["sections"][1]["flags"] = 7
         with self.assertRaisesRegex(ValueError, "executable Flash"):
             placement.verify_linked(self.rom, self.elf, (self.window,))
+
+    def test_common_link_uses_the_retained_callback_offsets(self):
+        callbacks = common_layout.APPLICATION_CALLBACKS
+        elf = {
+            "sections": [{}, {"name": ".text.callbacks", "type": 1, "flags": 6}],
+            "symbols": {name: {"section": 1, "address": 4 * index}
+                        for index, name in enumerate(callbacks)},
+        }
+        placements = [{"section": ".text.callbacks", "address": self.window.start, "bytes": 16}]
+        self.assertEqual(common_layout.application_callback_addresses(elf, placements, (self.window,)),
+                         {name: self.window.start + 4 * index for index, name in enumerate(callbacks)})
+        placements[0]["address"] = self.window.end
+        with self.assertRaisesRegex(ValueError, "escaped the upper Flash"):
+            common_layout.application_callback_addresses(elf, placements, (self.window,))
+        placements[0]["address"] = self.window.start
+        elf["symbols"][callbacks[-1]]["address"] = 16
+        with self.assertRaisesRegex(ValueError, "outside a placed executable section"):
+            common_layout.application_callback_addresses(elf, placements, (self.window,))
+        del elf["symbols"][callbacks[-1]]
+        with self.assertRaisesRegex(ValueError, "Missing retained"):
+            common_layout.application_callback_addresses(elf, placements, (self.window,))
+
+    def test_common_link_requires_an_explicit_application_profile(self):
+        with self.assertRaisesRegex(ValueError, "require --application-profile"):
+            common_layout.build(SimpleNamespace(with_application_entries=True))
 
     def test_rejects_changed_continuation(self):
         self.elf["symbols"]["h03_stock_application_after_entry"]["address"] += 4

@@ -16,6 +16,7 @@ import check_h03_sensor_config as sensor_config
 from lfj8_h03_layout import (PROFILES,Window,PlacementError,read_elf,alloc_sections,
                             validate_windows,pack,linker_script,verify_linked,
                             symbol_bytes,raw_reference_patterns)
+import lfj8_h03_application_placement as application_entries
 import lfj8_h03_sensor_hooks as sensor_hooks
 import lfj8_h03_dtc_rx_placement as dtc_rx
 import lfj8_h03_service_placement as service
@@ -46,6 +47,12 @@ BINDING_MODULES=(
     "lfj8_h03_service_guard.c", "lfj8_h03_button_capture.c",
 )
 SENSOR_ASSEMBLY = ("h03_sensor_hooks.S", "h03_atf_hooks.S")
+APPLICATION_ENTRY_SOURCES = ("h03_application_hooks.S", "h03_phase_startup_hook.S", "h03_phase_release_hook.S")
+APPLICATION_REDIRECT_SOURCE = "h03_application_redirects.S"
+APPLICATION_CALLBACKS = (
+    "rbm_h03_application_cold_gate", "rbm_h03_phase_startup_callback",
+    "rbm_h03_application_foreground_callback", "rbm_h03_phase_release_callback",
+)
 PROFILED_BINDINGS = ("lfj8_h03_application_binding.c", "lfj8_h03_target_platform.c")
 TOYOTA_RELEASE_FIELD = "control/toyota_release"
 TOYOTA_RELEASE_SYMBOL = "rbm_h03_toyota_release_state"
@@ -217,11 +224,11 @@ def sensor_placement(rom, elf, provisional=None):
             "patches": sensor_hooks.patch_plan(rom, addresses)}
 
 
-def link_placed_roots(args, stage, run, flags, placement, bindings, roots, name):
+def link_placed_roots(args, stage, run, flags, placement, bindings, roots, name, *, objects=("retained.o",)):
     """Link an independent closure at the addresses from the common plan."""
     obj = f"{name}.o"
     run(args.gcc, *flags, "-r", "-nostdlib", "-Wl,--gc-sections",
-        *(f"-Wl,--undefined={root}" for root in roots), "retained.o", "-o", obj)
+        *(f"-Wl,--undefined={root}" for root in roots), *objects, "-o", obj)
     retained = read_elf(stage / obj, 1)
     required = {symbol for symbol, record in retained["symbols"].items() if record["section"] == 0}
     if required - bindings.keys():
@@ -238,6 +245,26 @@ def link_placed_roots(args, stage, run, flags, placement, bindings, roots, name)
     linked = read_elf(path, 2)
     verify_linked(linked, selected, roots)
     return path, linked, selected
+
+
+def application_callback_addresses(elf, placements, windows):
+    by_section = {item["section"]: item for item in placements}
+    addresses = {}
+    for name in APPLICATION_CALLBACKS:
+        symbol = elf["symbols"].get(name, {})
+        index = symbol.get("section", 0)
+        if not 0 < index < len(elf["sections"]):
+            raise ValueError(f"Missing retained H03 application callback: {name}")
+        section = elf["sections"][index]
+        entry = by_section.get(section["name"])
+        offset = symbol["address"]
+        if section["type"] != 1 or section["flags"] & 7 != 6 or entry is None or not 0 <= offset < entry["bytes"]:
+            raise ValueError(f"H03 application callback is outside a placed executable section: {name}")
+        address = entry["address"] + offset
+        if address % 4 or not any(window.start <= address < window.end for window in windows):
+            raise ValueError(f"H03 application callback escaped the upper Flash plan: {name}")
+        addresses[name] = address
+    return addresses
 
 
 def early_irq_model(args, stage, run, flags, rom, placement, bindings, ranges, pointer):
@@ -259,6 +286,9 @@ def early_irq_model(args, stage, run, flags, rom, placement, bindings, ranges, p
 
 def build(args):
     application_profile = getattr(args, "application_profile", None)
+    with_application_entries = getattr(args, "with_application_entries", False)
+    if with_application_entries and application_profile is None:
+        raise ValueError("H03 application entries require --application-profile")
     release_ram = None
     if application_profile is not None:
         application_profile = Path(application_profile).resolve()
@@ -283,6 +313,7 @@ def build(args):
         raise ValueError("H03 changed after identification")
     if args.with_bindings:
         sensor_hooks.validate_stock(rom)
+    application_source = application_entries.assembly(rom) if with_application_entries else None
     windows=PROFILES[args.profile]
     with_dtc_rx = getattr(args, "with_dtc_rx", False)
     with_dma4 = getattr(args, "with_dma4_guard", False)
@@ -323,17 +354,21 @@ def build(args):
         service.verify_stock(rom, (site for site, _ in service.COMMON_REDIRECTS))
     flash_windows = (*windows, dtc_rx.RX_WINDOW) if with_dtc_rx else windows
     owner_address = None
+    fixed_windows = tuple(
+        Window(window.name.removeprefix("."), window.start, window.end)
+        for window in application_entries.REDIRECT_WINDOWS
+    ) if with_application_entries else ()
     if with_dtc_rx:
         if not args.with_bindings or args.storage_report is None:
             raise ValueError("Resident RX needs --with-bindings and a typed --storage-report")
         dtc_rx.validate_stock(rom)
         # The two pinned OEM words are occupied, unlike the packing windows.
-        fixed_windows = (*dtc_rx.REDIRECT_WINDOWS, *(service.COMMON_WINDOWS if with_dma4 else ()),
+        fixed_windows = (*fixed_windows, *dtc_rx.REDIRECT_WINDOWS, *(service.COMMON_WINDOWS if with_dma4 else ()),
                          *(service.WRITER_WINDOWS if with_service_guard else ()),
                          *((tx13.REDIRECT_WINDOW,) if with_can_service else ()))
-        validate_windows((*flash_windows, *fixed_windows))
         storage_space(args.storage_report)
         owner_address = dtc_rx.owner_address(json.loads(args.storage_report.read_text(encoding="utf-8")))
+    validate_windows((*flash_windows, *fixed_windows))
     validate_windows(flash_windows,rom)
     controller_manifest=json.loads((args.controller.parent/"manifest.json").read_text(encoding="utf-8"))
     bridge_manifest=json.loads((args.bridge.parent/"build-manifest.json").read_text(encoding="utf-8"))
@@ -367,6 +402,8 @@ def build(args):
         bindings.extend(LFJ8 / name for name in PROFILED_BINDINGS)
     if args.with_bindings:
         bindings.extend(LFJ8/name for name in SENSOR_ASSEMBLY)
+    if with_application_entries:
+        bindings.extend(LFJ8 / name for name in APPLICATION_ENTRY_SOURCES)
     if with_dtc_rx:
         bindings.extend(LFJ8/name for name in dtc_rx.MODULES)
     if with_dma4:
@@ -384,6 +421,9 @@ def build(args):
         roots.update(dtc_rx.REDIRECT_ROOTS)
     if with_service_guard:
         roots.update(service.WRITER_ROOTS)
+    application_roots = tuple(site.root for site in application_entries.REDIRECTS)
+    if with_application_entries:
+        roots.update(application_roots)
     report={"base":identity,"profile":args.profile,"compiler_memory_model":args.memory_model,
             "input_objects":{p.name:digest(p) for p in (args.bridge,args.controller)},
             "input_sources":{p.relative_to(ROOT).as_posix():digest(p) for p in modules},
@@ -419,8 +459,16 @@ def build(args):
     if with_ram_owner:
         path = Path(ram_owner.__file__).resolve()
         report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
+    if with_application_entries:
+        path = Path(application_entries.__file__).resolve()
+        report["input_sources"][path.relative_to(ROOT).as_posix()] = digest(path)
     with TemporaryDirectory(prefix="rbm-h03-placement-") as folder:
         stage=Path(folder)
+        if application_source is not None:
+            redirects = stage / APPLICATION_REDIRECT_SOURCE
+            redirects.write_text(application_source, encoding="ascii", newline="\n")
+            modules.append(redirects)
+            report["input_sources"]["generated/" + APPLICATION_REDIRECT_SOURCE] = digest(redirects)
         if sensor_source is not None:
             generated = stage / "h03_sensor_config.c"
             generated.write_bytes(sensor_source)
@@ -477,6 +525,11 @@ def build(args):
             if retained["symbols"].get(name, {}).get("section") != 0:
                 raise ValueError("Unexpected definition or missing reference for H03 sensor continuation: "+name)
         native_bindings = dict(stock_symbols)
+        if with_application_entries:
+            for name in application_entries.STOCK_SYMBOLS:
+                if retained["symbols"].get(name, {}).get("section") != 0:
+                    raise ValueError("Unexpected definition or missing H03 application continuation: " + name)
+            native_bindings.update(application_entries.STOCK_SYMBOLS)
         platform_flash = set()
         if application_profile is not None:
             if retained["symbols"].get(TOYOTA_RELEASE_SYMBOL, {}).get("section") != 0:
@@ -528,11 +581,22 @@ def build(args):
         report.update(required_roots=roots,retained_sections=len(sections),
                       flash_payload_bytes=sum(s["size"] for s in flash),
                       new_static_ram_bytes=sum(s["size"] for s in ram))
+        if with_application_entries:
+            hook_sections = {f".text.{site.hook}" for site in application_entries.REDIRECTS}
+            report["application_entries"] = {
+                "status": "AWAITING_PLACEMENT",
+                "fixed_branch_bytes": sum(window.end - window.start for window in application_entries.REDIRECT_WINDOWS),
+                "wrapper_bytes": sum(section["size"] for section in flash if section["name"] in hook_sections),
+                "continuations": application_entries.STOCK_SYMBOLS,
+            }
+
         def place_flash():
+            fixed, remaining = application_entries.fixed_redirects(flash) if with_application_entries else ([], flash)
             if not with_dtc_rx:
-                return pack(flash,windows)
+                return fixed + pack(remaining, windows)
             names = dtc_rx.closure_sections(run, args.gcc, flags, stage)
-            fixed, remaining = dtc_rx.fixed_redirects(flash)
+            dtc_fixed, remaining = dtc_rx.fixed_redirects(remaining)
+            fixed.extend(dtc_fixed)
             if with_can_service:
                 tx_fixed, remaining = tx13.fixed_redirect(remaining)
                 fixed.extend(tx_fixed)
@@ -577,6 +641,24 @@ def build(args):
                 if with_dtc_rx:
                     report["dtc_rx_redirects"] = dtc_rx.describe(
                         rom, retained, provisional, owner_address, linked=False)
+                if with_application_entries:
+                    # Only the assembly wrappers are linked here. Their C calls use
+                    # addresses of retained application code in the common plan.
+                    callbacks = application_callback_addresses(retained, provisional, windows)
+                    wrapper_objects = tuple(Path(source).with_suffix(".o").name
+                                            for source in (*APPLICATION_ENTRY_SOURCES, APPLICATION_REDIRECT_SOURCE))
+                    _, app_elf, _ = link_placed_roots(
+                        args, stage, run, flags, sorted(provisional, key=lambda p: p["address"]),
+                        {**native_bindings, **callbacks}, application_roots, "application-entries",
+                        objects=wrapper_objects)
+                    for name, address in callbacks.items():
+                        symbol = app_elf["symbols"].get(name, {})
+                        if (symbol.get("section"), symbol.get("address")) != (0xFFF1, address):
+                            raise ValueError(f"H03 wrapper lost the placed application callback: {name}")
+                    report["application_entries"].update(
+                        status="LINKED_WRAPPERS_AT_COMMON_ADDRESSES", callbacks=callbacks,
+                        patches=application_entries.verify_linked(rom, app_elf, windows),
+                        wrapper_elf_sha256=app_elf["sha256"])
                 if with_can_service:
                     _, tx_elf, tx_places = link_placed_roots(
                         args, stage, run, flags, sorted(provisional, key=lambda p: p["address"]),
@@ -619,6 +701,10 @@ def build(args):
             "retained.o","-o","layout.elf")
         linked=read_elf(stage/"layout.elf",2,local_symbols=("irq_target",) if with_dma4 else ())
         verify_linked(linked,placement,roots)
+        if with_application_entries:
+            report["application_entries"].update(
+                status="LINKED_ADDRESS_MODEL",
+                patches=application_entries.verify_linked(rom, linked, windows))
         if release_ram is not None:
             release = linked["symbols"].get(TOYOTA_RELEASE_SYMBOL, {})
             if (release.get("section"), release.get("address")) != (0xFFF1, release_ram["address"]):
@@ -699,6 +785,8 @@ def main():
                         help="Link the resident service write guards and Virtual Flash lockout; requires DMA4")
     parser.add_argument("--with-ram-owner", action="store_true",
                         help="Link the native RAM owner and verified absolute bounds; requires service guards")
+    parser.add_argument("--with-application-entries", action="store_true",
+                        help="Link the four OEM H03 application redirects; requires --application-profile")
     parser.add_argument("--with-can-service", action="store_true",
                         help="Include native CAN service, typed application RAM and the OEM TX13 redirect")
     parser.add_argument("--cpu-test",action="store_true")
