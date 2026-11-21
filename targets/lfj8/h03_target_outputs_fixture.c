@@ -68,6 +68,9 @@ enum {
     TIO4RL0 = 0x800346,
     TIO9RL1 = 0x800394,
     TIO9RL0 = 0x800396,
+    TIO9_WIDTH = 0x8048CE,
+    TIO9_PROPOSAL = 0x8060F0,
+    TIO9_ROM_PROPOSAL = 0x0199C0,
     TML0CT = 0x8003E0,
     TML0CR = 0x8003EB,
     SHIFT_D_PROPOSAL = 0x8063D5,
@@ -88,6 +91,16 @@ static const Lfj8H03OutputPlan plan = {
     .toyota_compare = 400u,
 };
 
+static void seed_tio9(void)
+{
+    REG8(P9DATA) = 0xa5u;
+    REG8(P9SEL) = 0xb1u;
+    REG16(TIO9_WIDTH) = 66u;
+    REG16(TIO9RL1) = 183u;
+    REG16(TIO9RL0) = 65u;
+    REG32(TIO9_PROPOSAL) = REG32(TIO9_ROM_PROPOSAL);
+}
+
 static void seed_latched_outputs(void)
 {
     REG8(P3DATA) = 0x95u;
@@ -98,6 +111,14 @@ static void seed_latched_outputs(void)
     REG16(TIO4RL0) = 999u;
     REG32(PRESSURE_PROPOSAL) = ONE_AMP;
     REG32(PRESSURE_FINAL) = ONE_AMP;
+    seed_tio9();
+}
+
+static int tio9_revoked(void)
+{
+    return REG8(P9DATA) == 0xa4u && REG8(P9SEL) == 0xb0u &&
+        REG16(TIO9_WIDTH) == 1u && REG16(TIO9RL1) == 248u && REG16(TIO9RL0) == 0u &&
+        REG32(TIO9_PROPOSAL) == 0u;
 }
 
 static int outputs_revoked(void)
@@ -106,7 +127,7 @@ static int outputs_revoked(void)
         REG8(P10DATA) == 0xf2u && REG8(P10SEL) == 0xa0u &&
         REG16(PRESSURE_WIDTH) == 1u && REG16(TIO4RL1) == 2998u && REG16(TIO4RL0) == 0u &&
         !REG8(SHIFT_D_PROPOSAL) && !REG8(SHIFT_D_FINAL) &&
-        !REG32(PRESSURE_PROPOSAL) && !REG32(PRESSURE_FINAL);
+        !REG32(PRESSURE_PROPOSAL) && !REG32(PRESSURE_FINAL) && tio9_revoked();
 }
 
 static int take_release(uint32_t generation)
@@ -177,10 +198,16 @@ int main(void)
     if (!advance_release() || fixture_phase_clock.latest.sequence != 0u) {
         return 3;
     }
+    /* The OEM phase produces the TIO9 proposal before the commit call. */
+    REG32(0x805028) = 0x42a00000u; /* 80 C, an H03 interpolation knot. */
     h03_stock_phase2();
+    const uint16_t tio9_width = REG16(TIO9_WIDTH);
     if (state->pending || REG8(P3DATA) != 0x95u ||
         REG8(P10SEL) != 0xa1u || REG16(PRESSURE_WIDTH) != 1000u ||
-        REG16(TIO4RL1) != 1999u || REG16(TIO4RL0) != 999u) {
+        REG16(TIO4RL1) != 1999u || REG16(TIO4RL0) != 999u ||
+        REG8(P9SEL) != 0xb1u || tio9_width < 3u || tio9_width > 248u ||
+        REG16(TIO9RL1) != 249u - tio9_width || REG16(TIO9RL0) != tio9_width - 1u ||
+        !REG32(TIO9_PROPOSAL)) {
         return 3;
     }
     h03_stock_commit_caller();
@@ -191,15 +218,10 @@ int main(void)
     if (!stage_output(state, 2u) || !advance_release()) {
         return 4;
     }
-    REG8(P9DATA) = 0xA5u;
-    REG8(P9SEL) = 0xB1u;
-    REG16(TIO9RL1) = 123u;
-    REG16(TIO9RL0) = 45u;
+    seed_tio9();
     REG8(TML0CR) = 0u;
     h03_stock_commit_caller();
-    if (!outputs_revoked() ||
-        REG8(P9DATA) != 0xA5u || REG8(P9SEL) != 0xB1u ||
-        REG16(TIO9RL1) != 123u || REG16(TIO9RL0) != 45u) {
+    if (!outputs_revoked()) {
         return 5;
     }
     REG8(TML0CR) = 1u;
@@ -232,11 +254,14 @@ int main(void)
     if (!stage_output(state, 5u) || !advance_release()) {
         return 11;
     }
+    seed_tio9();
     owned = 0;
     h03_stock_commit_caller();
     if (ops->qualified(NULL) || !state->pending || state->generation != 5u ||
         REG8(P3DATA) != 0x15u || REG8(P10SEL) != 0xa0u ||
-        REG32(PRESSURE_FINAL) != ONE_AMP) {
+        REG32(PRESSURE_FINAL) != ONE_AMP || REG8(P9DATA) != 0xa5u || REG8(P9SEL) != 0xb1u ||
+        REG16(TIO9_WIDTH) != 66u || REG16(TIO9RL1) != 183u || REG16(TIO9RL0) != 65u ||
+        REG32(TIO9_PROPOSAL) != REG32(TIO9_ROM_PROPOSAL)) {
         return 11;
     }
     owned = 1;
