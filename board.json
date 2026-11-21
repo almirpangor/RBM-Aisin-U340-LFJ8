@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 819,
+  "sequence": 820,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -12188,9 +12188,39 @@
         "task": "H03-04",
         "submitted_at": "2026-11-20T22:47:20+00:00"
       }
+    },
+    {
+      "operation_id": "6d074697fb554f7984a7f0cd74663012",
+      "task": "H03-03",
+      "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+      "action": "complete",
+      "claim_id": "96f93fae25924717a50bf354ff863f44",
+      "at": "2026-11-21T07:45:00+00:00",
+      "record": {
+        "owner": "codex-dtc04-mwp5rm2ofhaxjfi9dss",
+        "label": "Codex H03-03 — общая компоновка Toyota",
+        "branch": "codex/h03-03-platform-layout-mwp5rm2ofhaxjfi9dss",
+        "files": [
+          "tests/test_h03_layout.py",
+          "tools/check_h03_image_layout.py",
+          "verification/project-audit/h03-03-platform-layout.md"
+        ],
+        "stage": "done",
+        "claim_id": "96f93fae25924717a50bf354ff863f44",
+        "claimed_at": "2026-11-20T22:39:35+00:00",
+        "updated_at": "2026-11-21T07:45:00+00:00",
+        "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
+        "result": "10acac98126b170bc836cbe897a2685497e833c5",
+        "based_on_reviews": [
+          "43d58327bd434219b328d74d652d3be9",
+          "8b0ce759514b4c68b04d002b192f50ff"
+        ],
+        "task": "H03-03",
+        "submitted_at": "2026-11-20T22:48:16+00:00"
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:44:49+00:00",
+  "updated_at": "2026-11-21T07:45:00+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -14041,11 +14071,11 @@
         "tools/check_h03_image_layout.py",
         "verification/project-audit/h03-03-platform-layout.md"
       ],
-      "stage": "review",
+      "stage": "done",
       "claim_id": "96f93fae25924717a50bf354ff863f44",
       "claimed_at": "2026-11-20T22:39:35+00:00",
-      "updated_at": "2026-11-20T22:48:16+00:00",
-      "note": "Общий компоновщик включает H03 platform и умеет связать 16 байт из typed RAM. M32R прошёл по кандидатным адресам Flash и RAM, 22 native, 8 components, 6 размещённых групп и 44 H03-теста. Поле RAM ещё не добавлено в инвентарь, файл удерживает CAN-03. Рабочая компоновка ожидает остальные поставщики и подтверждённый профиль.",
+      "updated_at": "2026-11-21T07:45:00+00:00",
+      "note": "Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке.",
       "result": "10acac98126b170bc836cbe897a2685497e833c5",
       "based_on_reviews": [
         "43d58327bd434219b328d74d652d3be9",
