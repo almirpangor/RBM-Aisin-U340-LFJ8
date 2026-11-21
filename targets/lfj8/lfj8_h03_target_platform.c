@@ -49,14 +49,18 @@ static int startup_allowed_locked(void *context)
 int rbm_h03_target_initialize(void *context)
 {
     if (!native_io(context)) {
-        return 0;
+        return RBM_U340E_STARTUP_UNQUALIFIED;
     }
     const Lfj8RegisterIo *const io = &lfj8_h03_mmio;
     uint32_t saved = io->enter(context);
     int allowed = startup_allowed_locked(context);
     io->leave(context, saved);
-    if (!allowed || RBM_H03_PROFILE_INITIALIZE_INPUTS(context) != 1) {
-        return 0;
+    if (!allowed) {
+        return RBM_U340E_STARTUP_UNQUALIFIED;
+    }
+    const int kind = RBM_H03_PROFILE_INITIALIZE_INPUTS(context);
+    if (kind != RBM_U340E_STARTUP_PREPARED && kind != RBM_U340E_STARTUP_S01_COLD) {
+        return RBM_U340E_STARTUP_UNQUALIFIED;
     }
 
     saved = io->enter(context);
@@ -68,7 +72,7 @@ int rbm_h03_target_initialize(void *context)
         allowed = 0;
     }
     io->leave(context, saved);
-    return allowed;
+    return allowed ? kind : RBM_U340E_STARTUP_UNQUALIFIED;
 }
 
 Lfj8H03ToyotaEvent rbm_h03_target_take_toyota(void *context, const Lfj8H03SensorSnapshot *sensors,

@@ -47,12 +47,37 @@ const FactoryAdaptation *rbm_u340e_s01_adaptation_baseline(void);
 /* Restore at startup before scheduling learning or outputs. The serialized
  * owner supplies a qualified baseline and independent, stable slot snapshots
  * from a last-marker-write store. A NULL slot represents a failed read.
+ * Valid records at the same generation require identical adaptation payloads.
+ * A conflict or ambiguous half-range ordering yields BASELINE_UNTRUSTED.
  * Keep the inputs disjoint from the runtime. An invalid call leaves GP intact.
  * Neither baseline outcome writes storage or qualifies actuation. The owner
  * must handle an untrusted store before allowing further saves. */
 RbmU340eAdaptationResult rbm_u340e_runtime_restore_adaptation(
     RbmU340eRuntime *runtime, const FactoryAdaptation *baseline,
     const uint8_t *slot0, const uint8_t *slot1);
+
+typedef enum {
+    RBM_U340E_STARTUP_UNQUALIFIED = 0,
+    RBM_U340E_STARTUP_PREPARED,
+    RBM_U340E_STARTUP_S01_COLD,
+} RbmU340eStartupKind;
+
+typedef struct {
+    const FactoryGearState *gear;
+    const FactoryHydraulics *gp;
+    FactoryGearState *cold_work;
+    RbmU340eStartupKind kind;
+    FactoryAdaptRead read_adaptation;
+    void *read_context;
+} RbmU340eStartupSeed;
+
+/* Start from complete, independently qualified gear and GP snapshots
+ * disjoint from the runtime. PREPARED preserves those fields. S01_COLD requires
+ * disjoint scratch and applies the donor projection before reading NVM.
+ * The owner keeps tasks and outputs closed until this returns. INVALID
+ * leaves the runtime uninitialized. Slot snapshots follow restore's contract. */
+RbmU340eAdaptationResult rbm_u340e_runtime_start_from_seed(
+    RbmU340eRuntime *runtime, const RbmU340eStartupSeed *seed);
 
 /* Project current GP and private gear state into caller-owned workspace. The
  * scheduler may update gear-only inputs there. Publish shared inputs in gp.

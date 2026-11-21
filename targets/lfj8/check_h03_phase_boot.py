@@ -12,7 +12,7 @@ from tempfile import TemporaryDirectory
 from check_h03_link import TARGET, identify_h03
 from check_h03_sensor_native import SITES as SENSOR_SITES
 from check_h03_phase_wait import IRQ_START, IRQ_END, PSW_HELPERS_START, PSW_HELPERS_END
-from lfj8_h03_layout import read_elf
+from lfj8_h03_layout import PROFILES, read_elf
 
 
 HERE = Path(__file__).resolve().parent
@@ -48,10 +48,13 @@ CASES = ("stock", "owned", "invalid_period", "unowned", "bad_header", "bad_trail
          "bad_clock", "no_provider", "coalesced", "overtaken", "sensor_clock_changed",
          "sensor_bad_config", "sensor_bad_startup", "adapt_no_store", "adapt_erased",
          "adapt_saved", "adapt_corrupt", "adapt_torn", "adapt_unreadable", "adapt_reset",
-         "adapt_restart", "adapt_alias", "engine", "engine_bad_time", "engine_bad_config")
+         "adapt_restart", "adapt_alias", "adapt_s01_cold", "adapt_bad_kind",
+         "adapt_cold_no_work", "engine", "engine_bad_time", "engine_bad_config")
 CLOSED_AT_START = {"invalid_period", "unowned", "partial", "bad_clock", "no_provider",
-                   "sensor_bad_startup", "adapt_alias", "engine_bad_config"}
-CANDIDATE_START, CANDIDATE_END = 0x20000, 0x30000
+                   "sensor_bad_startup", "adapt_alias", "adapt_bad_kind", "adapt_cold_no_work",
+                   "engine_bad_config"}
+BOOT_WINDOW = PROFILES["prefix-candidate"][0]
+CANDIDATE_START, CANDIDATE_END = BOOT_WINDOW.start, BOOT_WINDOW.end
 FIXTURE = r"""
     .section .entry,"ax"
     .global _start

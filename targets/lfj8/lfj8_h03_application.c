@@ -92,22 +92,23 @@ void rbm_h03_phase_startup_callback(void)
         !binding->initialize || !binding->take_toyota || !binding->service_phase) {
         return;
     }
-    if (binding->initialize(context) != 1 ||
-        !lfj8_h03_cycle_init(binding->cycle, &binding->startup_range, binding->startup_request_1120) ||
-        !rbm_u340e_runtime_init(binding->runtime, binding->startup_gear, binding->startup_gp)) {
+    const int kind = binding->initialize(context);
+    if ((kind != RBM_U340E_STARTUP_PREPARED && kind != RBM_U340E_STARTUP_S01_COLD) ||
+        !lfj8_h03_cycle_init(binding->cycle, &binding->startup_range, binding->startup_request_1120)) {
         abort_startup(io);
         return;
     }
 
-    const FactoryAdaptRead read_adaptation = binding->read_adaptation;
-    const uint8_t *slot0 = NULL;
-    const uint8_t *slot1 = NULL;
-    if (read_adaptation) {
-        slot0 = read_adaptation(context, 0u);
-        slot1 = read_adaptation(context, 1u);
-    }
-    const RbmU340eAdaptationResult restored = rbm_u340e_runtime_restore_adaptation(
-        binding->runtime, rbm_u340e_s01_adaptation_baseline(), slot0, slot1);
+    const RbmU340eStartupSeed seed = {
+        .gear = binding->startup_gear,
+        .gp = binding->startup_gp,
+        .cold_work = binding->workspace ? &binding->workspace->gear : NULL,
+        .kind = (RbmU340eStartupKind)kind,
+        .read_adaptation = binding->read_adaptation,
+        .read_context = context,
+    };
+    const RbmU340eAdaptationResult restored =
+        rbm_u340e_runtime_start_from_seed(binding->runtime, &seed);
     if (restored == RBM_U340E_ADAPTATION_INVALID) {
         abort_startup(io);
         return;

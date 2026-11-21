@@ -311,6 +311,28 @@ int main(void)
     assert(rbm_h03_toyota_release_state.last_observed == 408u);
     assert(captures == 3u && services == 1u && irq_enabled());
     assert(can_live_stops == 6u);
+
+    uint32_t fast_filter;
+    assert(factory_hydraulics_set(&rbm_h03_target_startup_gp, 1492, 2u, 0x5a5au));
+    inputs_ready = RBM_U340E_STARTUP_PREPARED;
+    startup(500u);
+    assert(rbm_h03_application.running && can_prepared);
+    assert(factory_hydraulics_get(&rbm_h03_runtime_state.gp, 1492, 2u, &fast_filter));
+    assert(fast_filter == 0x5a5au);
+
+    inputs_ready = RBM_U340E_STARTUP_S01_COLD;
+    startup(600u);
+    assert(rbm_h03_application.running && can_prepared && rbm_h03_runtime_state.initialized);
+    assert(factory_hydraulics_get(&rbm_h03_runtime_state.gp, 1492, 2u, &fast_filter));
+    assert(fast_filter == 0u);
+    assert(factory_hydraulics_get(&rbm_h03_target_startup_gp, 1492, 2u, &fast_filter));
+    assert(fast_filter == 0x5a5au);
+
+    inputs_ready = 3; /* An unsupported startup kind must not prepare CAN. */
+    const unsigned starts = can_starts;
+    startup(700u);
+    assert(!rbm_h03_application.running && !can_prepared && !rbm_h03_runtime_state.initialized);
+    assert(can_starts == starts && !rbm_h03_tml0_1mhz_qualified);
     puts("H03 target platform: native startup, CAN service lifecycle, Toyota rollover and inhibition PASS");
     return 0;
 }

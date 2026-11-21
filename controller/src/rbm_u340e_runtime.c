@@ -323,11 +323,13 @@ RbmU340eAdaptationResult rbm_u340e_runtime_restore_adaptation(
         if (slot >= 0) {
             const uint8_t *other = slot == 0 ? slot1 : slot0;
             FactoryAdaptation checked;
+            uint32_t other_generation;
             /* A damaged or partially written marker can conceal a newer
-             * reset. Use the older slot only when the peer is unpublished
-             * or the donor decoder can validate both generations. */
+             * reset. A valid peer with the same generation must carry the
+             * same payload: slot order cannot decide between learn and reset. */
             if (adaptation_marker_erased(other) ||
-                factory_adaptation_decode(other, &checked, &generation)) {
+                (factory_adaptation_decode(other, &checked, &other_generation) &&
+                 (other_generation != generation || memcmp(&selected, &checked, sizeof selected) == 0))) {
                 restore = &selected;
                 result = RBM_U340E_ADAPTATION_LOADED;
             }
@@ -337,6 +339,47 @@ RbmU340eAdaptationResult rbm_u340e_runtime_restore_adaptation(
     }
     if (!factory_hydraulics_restore(&runtime->gp, restore)) {
         return RBM_U340E_ADAPTATION_INVALID;
+    }
+    return result;
+}
+
+RbmU340eAdaptationResult rbm_u340e_runtime_start_from_seed(
+    RbmU340eRuntime *runtime, const RbmU340eStartupSeed *seed)
+{
+    if (!runtime) {
+        return RBM_U340E_ADAPTATION_INVALID;
+    }
+    runtime->initialized = 0u;
+    if (!seed || overlaps(runtime, sizeof *runtime, seed, sizeof *seed) ||
+        seed->gp == &runtime->gp ||
+        (seed->kind != RBM_U340E_STARTUP_PREPARED && seed->kind != RBM_U340E_STARTUP_S01_COLD)) {
+        return RBM_U340E_ADAPTATION_INVALID;
+    }
+
+    const int cold = seed->kind == RBM_U340E_STARTUP_S01_COLD;
+    if (cold && (!seed->cold_work ||
+        overlaps(seed->cold_work, sizeof *seed->cold_work, runtime, sizeof *runtime) ||
+        overlaps(seed->cold_work, sizeof *seed->cold_work, seed, sizeof *seed) ||
+        overlaps(seed->cold_work, sizeof *seed->cold_work, seed->gear, sizeof *seed->gear) ||
+        overlaps(seed->cold_work, sizeof *seed->cold_work, seed->gp, sizeof *seed->gp))) {
+        return RBM_U340E_ADAPTATION_INVALID;
+    }
+    if (!rbm_u340e_runtime_init(runtime, seed->gear, seed->gp) ||
+        (cold && !rbm_u340e_runtime_prepare_s01_cold(runtime, seed->cold_work))) {
+        runtime->initialized = 0u;
+        return RBM_U340E_ADAPTATION_INVALID;
+    }
+
+    const uint8_t *slot0 = NULL;
+    const uint8_t *slot1 = NULL;
+    if (seed->read_adaptation) {
+        slot0 = seed->read_adaptation(seed->read_context, 0u);
+        slot1 = seed->read_adaptation(seed->read_context, 1u);
+    }
+    const RbmU340eAdaptationResult result = rbm_u340e_runtime_restore_adaptation(
+        runtime, rbm_u340e_s01_adaptation_baseline(), slot0, slot1);
+    if (result == RBM_U340E_ADAPTATION_INVALID) {
+        runtime->initialized = 0u;
     }
     return result;
 }
