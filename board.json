@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 909,
+  "sequence": 910,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -115,18 +115,21 @@
         "targets/lfj8/check_h03_native_hooks.py",
         "targets/lfj8/check_h03_phase_boot.py",
         "targets/lfj8/check_h03_phase_wait.py",
+        "targets/lfj8/h03_bench_strategy_fixture.c",
         "targets/lfj8/h03_native_hooks.S",
         "targets/lfj8/h03_phase_wait_hook.S",
         "targets/lfj8/lfj8_h03_application_placement.py",
         "targets/lfj8/lfj8_h03_bench_entry_profile.py",
+        "targets/lfj8/lfj8_h03_target_strategy.c",
+        "targets/lfj8/lfj8_h03_target_strategy.h",
         "tests/test_h03_application_placement.py",
         "verification/bench-wave/chat-1/handoff.json"
       ],
       "stage": "in_progress",
       "claim_id": "b97db66371c34c108201a317218dcc3f",
       "claimed_at": "2026-11-21T08:50:32+00:00",
-      "updated_at": "2026-11-21T08:50:32+00:00",
-      "note": "Связываю оставшиеся ожидание, strategy и apply с нативными callback и проверяю обходы в штатном графе, включая монитор и reset. Общий линкер и привязка приложения у интегратора.",
+      "updated_at": "2026-11-21T08:52:41+00:00",
+      "note": "Найдены незамкнутые 008150/036F30/07C10C. Для фазы 3 добавляю целевой потребитель согласованных MAIN/FAST и отдельный контракт с профилем выходов, для фазы 2 оставляю существующий guard смежного выпуска.",
       "result": null,
       "based_on_reviews": []
     },
@@ -15003,9 +15006,44 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "89ba31932ba0481796e84dc89ebf502e",
+      "task": "H03-03",
+      "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+      "action": "heartbeat",
+      "claim_id": "b97db66371c34c108201a317218dcc3f",
+      "at": "2026-11-21T08:52:41+00:00",
+      "record": {
+        "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
+        "label": "Чат 1 — OEM-переходы стендовой H03",
+        "branch": "codex/h03-03-common-app-entries-7bd19ea4",
+        "files": [
+          "targets/lfj8/check_h03_bench_entries.py",
+          "targets/lfj8/check_h03_native_hooks.py",
+          "targets/lfj8/check_h03_phase_boot.py",
+          "targets/lfj8/check_h03_phase_wait.py",
+          "targets/lfj8/h03_bench_strategy_fixture.c",
+          "targets/lfj8/h03_native_hooks.S",
+          "targets/lfj8/h03_phase_wait_hook.S",
+          "targets/lfj8/lfj8_h03_application_placement.py",
+          "targets/lfj8/lfj8_h03_bench_entry_profile.py",
+          "targets/lfj8/lfj8_h03_target_strategy.c",
+          "targets/lfj8/lfj8_h03_target_strategy.h",
+          "tests/test_h03_application_placement.py",
+          "verification/bench-wave/chat-1/handoff.json"
+        ],
+        "stage": "in_progress",
+        "claim_id": "b97db66371c34c108201a317218dcc3f",
+        "claimed_at": "2026-11-21T08:50:32+00:00",
+        "updated_at": "2026-11-21T08:52:41+00:00",
+        "note": "Найдены незамкнутые 008150/036F30/07C10C. Для фазы 3 добавляю целевой потребитель согласованных MAIN/FAST и отдельный контракт с профилем выходов, для фазы 2 оставляю существующий guard смежного выпуска.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T08:52:27+00:00",
+  "updated_at": "2026-11-21T08:52:41+00:00",
   "main_commit": "10f7c1513b910f42473690255641140989cc10d0",
   "catalog": [
     {
