@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 857,
+  "sequence": 858,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -124,12 +124,12 @@
         "tests/test_h03_application_placement.py",
         "verification/project-audit/h03-03-application-entry-placement.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "ad014517bfa54394bf4b7185d135b504",
       "claimed_at": "2026-11-21T07:55:30+00:00",
-      "updated_at": "2026-11-21T07:55:30+00:00",
-      "note": "Вынесу подтверждённые переходы cold/startup/foreground/release в реальный вход адресной компоновки с привязкой к исходным словам и проверкой ELF. Общий компоновщик и fixture таймеров в чужом резерве не меняю.",
-      "result": null,
+      "updated_at": "2026-11-21T08:01:57+00:00",
+      "note": "Четыре штатных перехода H03 включены через генерацию ASM, точное размещение и проверку ELF. 68 M32R и 27 Python PASS. Состав 106464 байта, верх 102860/102356, FAIL_BINDINGS. Общий компоновщик в резерве H03-04; открыты выпускной профиль, RAM/стек и остальные переходы. BIN не выпускались.",
+      "result": "579b20f72aecf3880f10f05ebeefd6c7c8951135",
       "based_on_reviews": []
     },
     "H03-04": {
@@ -13374,9 +13374,35 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "605e79e5eff642cb8617522f4fa23ed6",
+      "task": "H03-03",
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "action": "review",
+      "claim_id": "ad014517bfa54394bf4b7185d135b504",
+      "at": "2026-11-21T08:01:57+00:00",
+      "record": {
+        "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+        "label": "Codex H03-03 — штатные переходы запуска и foreground",
+        "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+        "files": [
+          "targets/lfj8/check_h03_phase_boot.py",
+          "targets/lfj8/lfj8_h03_application_placement.py",
+          "tests/test_h03_application_placement.py",
+          "verification/project-audit/h03-03-application-entry-placement.md"
+        ],
+        "stage": "review",
+        "claim_id": "ad014517bfa54394bf4b7185d135b504",
+        "claimed_at": "2026-11-21T07:55:30+00:00",
+        "updated_at": "2026-11-21T08:01:57+00:00",
+        "note": "Четыре штатных перехода H03 включены через генерацию ASM, точное размещение и проверку ELF. 68 M32R и 27 Python PASS. Состав 106464 байта, верх 102860/102356, FAIL_BINDINGS. Общий компоновщик в резерве H03-04; открыты выпускной профиль, RAM/стек и остальные переходы. BIN не выпускались.",
+        "result": "579b20f72aecf3880f10f05ebeefd6c7c8951135",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-21T07:59:14+00:00",
+  "updated_at": "2026-11-21T08:01:57+00:00",
   "main_commit": "06ab447e19de0fa7d864e2ae674dff4a29678b10",
   "catalog": [
     {
@@ -15868,6 +15894,26 @@
       ],
       "task": "ORG-01",
       "submitted_at": "2026-11-21T07:42:09+00:00"
+    },
+    "ad014517bfa54394bf4b7185d135b504": {
+      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "label": "Codex H03-03 — штатные переходы запуска и foreground",
+      "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+      "files": [
+        "targets/lfj8/check_h03_phase_boot.py",
+        "targets/lfj8/lfj8_h03_application_placement.py",
+        "tests/test_h03_application_placement.py",
+        "verification/project-audit/h03-03-application-entry-placement.md"
+      ],
+      "stage": "review",
+      "claim_id": "ad014517bfa54394bf4b7185d135b504",
+      "claimed_at": "2026-11-21T07:55:30+00:00",
+      "updated_at": "2026-11-21T08:01:57+00:00",
+      "note": "Четыре штатных перехода H03 включены через генерацию ASM, точное размещение и проверку ELF. 68 M32R и 27 Python PASS. Состав 106464 байта, верх 102860/102356, FAIL_BINDINGS. Общий компоновщик в резерве H03-04; открыты выпускной профиль, RAM/стек и остальные переходы. BIN не выпускались.",
+      "result": "579b20f72aecf3880f10f05ebeefd6c7c8951135",
+      "based_on_reviews": [],
+      "task": "H03-03",
+      "submitted_at": "2026-11-21T08:01:57+00:00"
     }
   }
 }
