@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 954,
+  "sequence": 955,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -144,12 +144,12 @@
         "targets/lfj8/lfj8_h03_ram_owner.c",
         "targets/lfj8/lfj8_h03_target_memory.c"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "2287692bc6564719826ff62c12a7d829",
       "claimed_at": "2026-11-23T21:47:06+00:00",
-      "updated_at": "2026-11-23T21:47:06+00:00",
-      "note": "Continue H03-04 from reviewed SHA 2718128ed693b9fa2f69da981a7e316e7b106fa1; reserve only two unclaimed implementation files, excluding ORG-01's layout checker.",
-      "result": null,
+      "updated_at": "2026-11-23T21:52:36+00:00",
+      "note": "Published exact SHA. 94 H03 PC tests and 6 storage tests pass; M32R RAM-owner replay not run (worktree lacks local/project-paths.json, H03 donor and m32r-elf-gcc). project_status --check flags retest. Full native link/stack proof, physical SPI/PSW high-water and lower-Flash delivery remain open; no readiness claim.",
+      "result": "c1c6347c36f55606f0a89e32f975173b8c6520ad",
       "based_on_reviews": [
         "734b4f9d3a9c43f6aaa67927cf88ab12"
       ]
@@ -16403,9 +16403,35 @@
           "cee15d1377aa4207a89e2eb78dd96995"
         ]
       }
+    },
+    {
+      "operation_id": "338acbccbc9647af938c691562d15187",
+      "task": "H03-04",
+      "owner": "copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5",
+      "action": "review",
+      "claim_id": "2287692bc6564719826ff62c12a7d829",
+      "at": "2026-11-23T21:52:36+00:00",
+      "record": {
+        "owner": "copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5",
+        "label": "Copilot H03-04 memory integration",
+        "branch": "almirpangor-lfj8-h03-platform",
+        "files": [
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_target_memory.c"
+        ],
+        "stage": "review",
+        "claim_id": "2287692bc6564719826ff62c12a7d829",
+        "claimed_at": "2026-11-23T21:47:06+00:00",
+        "updated_at": "2026-11-23T21:52:36+00:00",
+        "note": "Published exact SHA. 94 H03 PC tests and 6 storage tests pass; M32R RAM-owner replay not run (worktree lacks local/project-paths.json, H03 donor and m32r-elf-gcc). project_status --check flags retest. Full native link/stack proof, physical SPI/PSW high-water and lower-Flash delivery remain open; no readiness claim.",
+        "result": "c1c6347c36f55606f0a89e32f975173b8c6520ad",
+        "based_on_reviews": [
+          "734b4f9d3a9c43f6aaa67927cf88ab12"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-23T21:52:16+00:00",
+  "updated_at": "2026-11-23T21:52:36+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -19486,6 +19512,26 @@
       "based_on_reviews": [],
       "task": "DTC-03",
       "submitted_at": "2026-11-23T21:49:06+00:00"
+    },
+    "2287692bc6564719826ff62c12a7d829": {
+      "owner": "copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5",
+      "label": "Copilot H03-04 memory integration",
+      "branch": "almirpangor-lfj8-h03-platform",
+      "files": [
+        "targets/lfj8/lfj8_h03_ram_owner.c",
+        "targets/lfj8/lfj8_h03_target_memory.c"
+      ],
+      "stage": "review",
+      "claim_id": "2287692bc6564719826ff62c12a7d829",
+      "claimed_at": "2026-11-23T21:47:06+00:00",
+      "updated_at": "2026-11-23T21:52:36+00:00",
+      "note": "Published exact SHA. 94 H03 PC tests and 6 storage tests pass; M32R RAM-owner replay not run (worktree lacks local/project-paths.json, H03 donor and m32r-elf-gcc). project_status --check flags retest. Full native link/stack proof, physical SPI/PSW high-water and lower-Flash delivery remain open; no readiness claim.",
+      "result": "c1c6347c36f55606f0a89e32f975173b8c6520ad",
+      "based_on_reviews": [
+        "734b4f9d3a9c43f6aaa67927cf88ab12"
+      ],
+      "task": "H03-04",
+      "submitted_at": "2026-11-23T21:52:36+00:00"
     }
   }
 }

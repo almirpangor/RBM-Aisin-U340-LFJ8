@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-23T21:52:16+00:00**. Изменение № **954**.
+Обновлено UTC: **2026-11-23T21:52:36+00:00**. Изменение № **955**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 9 · Ожидают с резервом: 2 · Порций на проверке: 10.**
+**В работе: 8 · Ожидают с резервом: 2 · Порций на проверке: 11.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -25,7 +25,6 @@
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
 | 13 | ECU-01 — Проверочная сборка Bosch E4M3 | Copilot — Bosch paired release \[9d4fcd7f-8d30-447e-b31d-6889553c0e20\] | 2026-11-23T21:46:11+00:00 | Continue the paired Bosch release by completing reproducible E4M3 profile assembly and integrity checks. Preserve OFFLINE_ONLY and no vehicle-ready claim. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
-| 18 | H03-04 — Память, стек и сервисные пути | Copilot H03-04 memory integration \[copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5\] | 2026-11-23T21:47:06+00:00 | Continue H03-04 from reviewed SHA 2718128ed693b9fa2f69da981a7e316e7b106fa1; reserve only two unclaimed implementation files, excluding ORG-01&#x27;s layout checker. |
 | 30 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Codex чат 10 — чтение статуса NVM \[01a1fa76-b015-7640-a0ba-433b36dcf55f\] | 2026-11-21T09:12:26+00:00 | Поверх сданного a1e1733 включён DTC-04 4842a32. Добавляю условную страницу статуса NVM/SFR для no-media профиля, проверяю реальные ответы через TX13. Без чтения массива, записи и положительного ACK очистки. |
 | 32 | DTC-04 — Хранение DTC после выключения питания | Чат 9 — холодный старт и транспорт NVM \[01a1fa76-922b-7b11-a2f2-346a15d1dc95\] | 2026-11-21T09:11:30+00:00 | Включён 4842a32. Совместный офлайн-прогон действующего холодного callback, профиля NVM и штатного CAN-диагностического пути. Проверю отсутствие ложной очистки и поведение после перепривязки. Файлы действующих резервов TOY-05/DTC-02/CAN-03 не затрагиваю. |
 | — | ORG-01 — Основа проекта и локальная работа | Ведущй — общая сборка и задания для стендовой пары \[codex-integration-01a1f76d-20261120\] | 2026-11-21T09:15:21+00:00 | Опубликованы план и общая инфраструктура 3fe2893. Ведётся приёмка 12 чатов; локально объединены 9/5/10, native NVM/sensor/BasicCAN readout повторно PASS. Выявлен и передан CAN-03 дефект отключения диагностики при недостоверных датчиках. Окончательный native ELF/BIN ещё не собран. |
@@ -51,6 +50,7 @@
 | DTC-04 | Чат 9 — стендовый NVM H03 | [4842a325a0fa](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/4842a325a0fa14c14c1fd5ccb48f9afc2c0bdc29) | fdfd811485f4417a8f450b2e455bc6e3 | Чат 9. Профиль NVM без носителя для первого стенда: штатная база S01, холодный DTC, явный NO_ASSIGNED_MEDIA и native read-only статус SFR/32-байтовый счётчик. Единственные пустые сектора 4/7 заняты резидентом и приложением. NVM ПК/M32R, BasicCAN 18+18, 22 native с двумя повторными проверками и 91 тест компоновки прошли. В модели с реальным bench профилем qualified_adaptation_blocks исключён, 14 внешних символов остаются. Контракт, карта, память и результаты: verification/bench-wave/chat-9/handoff.json. Запись и аппаратная приёмка открыты. |
 | ECU-01 | Codex чат 8 — Bosch ST10 для стендовой пары | [9312c056ee46](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9312c056ee46e8f0495a64840bb82b722c1ee9ca) | bb95576349fc4befa4af7a3779ddb4ae | Нативный RPM-допуск RB подключён к START/REFRESH и трём ветвям ST10; CANCEL сохранён. 51 запись целостности, проверены ordinary, T4, парные сценарии. OFFLINE_ONLY; Toyota raw-контракт и остаток в verification/bench-wave/chat-8/handoff.json. |
 | H03-04 | Codex H03-04 — ранний допуск IRQ и стендовый профиль SPI/PSW | [2718128ed693](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/2718128ed693b9fa2f69da981a7e316e7b106fa1) | 734b4f9d3a9c43f6aaa67927cf88ab12 | Стендовый профиль и native boot owner, 5 ссылок разрешены в общей композиции. Оба reset, DMA4, service и Virtual Flash PASS в M32R; 94 теста. Полный link и стек от foreground/IRQ отдельно; нижнюю Flash должен доставить квалифицированный режим записи. Подключение и точные результаты в verification/bench-wave/chat-6/handoff.json. |
+| H03-04 | Copilot H03-04 memory integration | [c1c6347c36f5](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/c1c6347c36f55606f0a89e32f975173b8c6520ad) | 2287692bc6564719826ff62c12a7d829 | Published exact SHA. 94 H03 PC tests and 6 storage tests pass; M32R RAM-owner replay not run (worktree lacks local/project-paths.json, H03 donor and m32r-elf-gcc). project_status --check flags retest. Full native link/stack proof, physical SPI/PSW high-water and lower-Flash delivery remain open; no readiness claim. |
 | H03-05 | Codex 7 H03-05 bench outputs | [0a9523b203a2](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/0a9523b203a2cae2b21a81da4c14ce910b570ed3) | 9e7f752b72ac4c3ab97038f13486690a | Чат 7: native bench profile запускает phase_startup с mask=0 и без actuator callbacks. D/E/F, Pressure A и TIO9 отозваны в обеих штатных фазах, есть снимок AN3/таймеров. Native 22/22, components 8/8; common small через --binding-source 106944 байта, 14 нерешённых ссылок. Подключение обоих redirect и типизированного alias, пределы и измерения в verification/bench-wave/chat-7/handoff.json. Активный силовой допуск открыт. |
 | MODE-02 | Чат 11 · MODE-02, стендовый профиль селектора и ручных режимов | [2d3569d4f7c9](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/2d3569d4f7c9b4cf23fdbf1d262b7c5136e9d667) | 027a36c5f3ef44518bf3ba1bbaf2f464 | Чат 11. Стендовые профили AN2 и ручных режимов подключены штатными точками; проверены 6 положений, независимый P/N, ручной цикл S1/S2, дребезг, удержание/отзыв и логика OD. 41 этап ПК, 216 тестов, native 22, components 8. Физическая карта, поставщики Toyota и порядок допуска релизов остаются явными зависимостями. verification/bench-wave/chat-11/handoff.json. |
 | TOY-02 | Чат 4 — нативные входы Toyota и сырой Bosch CAN | [7a7ac7f97d32](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/7a7ac7f97d328cd6f5de88f02c043b1f8b21efac) | 5d84c76a488c45b6bf0b82f1f835af45 | Сырой контракт Bosch 0x6B2, приём стабильной BasicCAN копии и штатный H03 capture вместо test_input_capture собраны. ПК/M32R RX→GP прошли; найдены все 8 writer S01 и бит режима, сверены 198 инструкций, повторены C167 и аудит CAN. Остались издатель, dispatch, порядок первого release и обоснованные project_load/read_local. Handoff verification/bench-wave/chat-4/handoff.json. |
@@ -84,7 +84,7 @@
 | 14 | [ECU-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#ecu-02) | Свободна для продолжения | Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false. | CAN-05 |
 | 16 | [H03-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-02) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
 | 17 | [H03-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-03) | Выполняется | Полный набор hooks/placement с проверкой original bytes, ссылками на native callbacks, проверкой CPU штатного/отказного/повторного пути; никаких fixture callbacks. | H03-04 |
-| 18 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-04) | Выполняется | Пять реальных определений/профиль, полный список писателей, linker constraints и доказательства покрытия; стоимость RAM/стеков и сценарии отказа. | См. входные условия карточки |
+| 18 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-04) | Свободна для продолжения; порция на проверке | Пять реальных определений/профиль, полный список писателей, linker constraints и доказательства покрытия; стоимость RAM/стеков и сценарии отказа. | См. входные условия карточки |
 | 19 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-05) | Свободна для продолжения; порция на проверке | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | См. входные условия карточки |
 | 21 | [VSS-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-01) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
 | 22 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-02) | Ожидает данных / решения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
@@ -446,7 +446,7 @@
 </details>
 
 <details>
-<summary>H03-04 — Память, стек и сервисные пути: Выполняется</summary>
+<summary>H03-04 — Память, стек и сервисные пути: Свободна для продолжения; порция на проверке</summary>
 
 **Сделано.** В общем составе связаны пять сервисных переходов, 14 алиасов RAM/SPI/PSW и резидентная политика. Интегратор разместил 1532 байта неизменённых таблиц в нижнем запасе; известный верх теперь 102200/102356.
 
@@ -460,7 +460,7 @@
 
 **Рекомендуемый чат.** Чат 6 — 01a1f99f-5cb5-70e0-afd0-60e6b41a5d51.
 
-**Сейчас выполняет.** Copilot H03-04 memory integration — copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Карта сборки и анализ всех владельцев, подтверждённый запас стека и измерения. Свободное окно в ELF само по себе не разрешает запись.
 
@@ -756,6 +756,7 @@
 | CAN-05 | Порция принята | Codex CAN-05 — время приёма ST10 | codex/can05-st10-bound-t4-01a1f9a2 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit f3bb5000ebfdaaa30a33665bac1eab06ddb9165c |
 | ECU-02 | Порция принята | Codex ECU-02 — граница допуска момента Bosch | codex/ecu02-torque-permit-boundary-7bd19ea4 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 85b2e9320cf8f6e4a3729915ed3ebbd0fc00a732 |
 | H03-02 | Порция принята | Codex H03-02 — граница свежести общего снимка S51/S83/ATF | codex/h03-02-capture-end-age-32e6ac79 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 3e9e9b2fb888e7d26161dde12e2bd0dcf3600c53 |
+| H03-04 | На проверке | Copilot H03-04 memory integration | almirpangor-lfj8-h03-platform | Published exact SHA. 94 H03 PC tests and 6 storage tests pass; M32R RAM-owner replay not run (worktree lacks local/project-paths.json, H03 donor and m32r-elf-gcc). project_status --check flags retest. Full native link/stack proof, physical SPI/PSW high-water and lower-Flash delivery remain open; no readiness claim. / commit c1c6347c36f55606f0a89e32f975173b8c6520ad |
 | H03-05 | На проверке | Codex 7 H03-05 bench outputs | codex/h03-05-bench-output-01a1f9a2 | Чат 7: native bench profile запускает phase_startup с mask=0 и без actuator callbacks. D/E/F, Pressure A и TIO9 отозваны в обеих штатных фазах, есть снимок AN3/таймеров. Native 22/22, components 8/8; common small через --binding-source 106944 байта, 14 нерешённых ссылок. Подключение обоих redirect и типизированного alias, пределы и измерения в verification/bench-wave/chat-7/handoff.json. Активный силовой допуск открыт. / commit 0a9523b203a2cae2b21a81da4c14ce910b570ed3 |
 | VSS-01 | Порция принята | Codex VSS-01 — допуск времени и окна S51 для 0x1AE | codex/vss01-tml0-timing-admission-32e6ac79 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 1bcfe06eb116940db1921a70130629bacb17da3a |
 | MODE-01 | Порция принята | Codex MODE-01 — отзыв диапазона при отказе ADC | codex/mode01-selector-fault-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 8974a4a5002fd1786eb02ad8d7c19a829c47ad6f |
@@ -859,13 +860,6 @@
 - tests/test_h03_application_placement.py
 - verification/bench-wave/chat-1/handoff.json
 
-### H03-04
-
-Чат: Copilot H03-04 memory integration. Claim ID: 2287692bc6564719826ff62c12a7d829.
-
-- targets/lfj8/lfj8_h03_ram_owner.c
-- targets/lfj8/lfj8_h03_target_memory.c
-
 ### ORG-01
 
 Чат: Ведущй — общая сборка и задания для стендовой пары. Claim ID: ae03538ba15145cc876e680b118fd0ae.
@@ -920,6 +914,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-23T21:52:36+00:00 | H03-04 | review | copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5 |
 | 2026-11-23T21:52:16+00:00 | VSS-02 | block | f83154cd-8064-4a50-97e5-c4263880e54b |
 | 2026-11-23T21:49:06+00:00 | DTC-03 | review | copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a |
 | 2026-11-23T21:48:08+00:00 | DTC-03 | heartbeat | copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a |
@@ -949,4 +944,3 @@
 | 2026-11-21T09:10:53+00:00 | CAN-01 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-21T09:10:43+00:00 | DTC-02 | review | 01a1fa76-b015-7640-a0ba-433b36dcf55f |
 | 2026-11-21T09:10:36+00:00 | H03-04 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
-| 2026-11-21T09:10:01+00:00 | CAN-03 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
