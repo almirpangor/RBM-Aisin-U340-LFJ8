@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-23T21:47:31+00:00**. Изменение № **951**.
+Обновлено UTC: **2026-11-23T21:48:08+00:00**. Изменение № **952**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -28,7 +28,7 @@
 | 18 | H03-04 — Память, стек и сервисные пути | Copilot H03-04 memory integration \[copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5\] | 2026-11-23T21:47:06+00:00 | Continue H03-04 from reviewed SHA 2718128ed693b9fa2f69da981a7e316e7b106fa1; reserve only two unclaimed implementation files, excluding ORG-01&#x27;s layout checker. |
 | 22 | VSS-02 — Кинематика и параметры реальной скорости | Copilot — VSS-02 H03 sensor profile integration \[f83154cd-8064-4a50-97e5-c4263880e54b\] | 2026-11-23T21:47:31+00:00 | Continue the VSS-02 sensor-clock/profile integration. Preserve 100/22 exactly; derive code/clock parameters from source/register evidence, mark unmeasured calibration explicitly, and do not treat bench fixtures as physical measurements. |
 | 30 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Codex чат 10 — чтение статуса NVM \[01a1fa76-b015-7640-a0ba-433b36dcf55f\] | 2026-11-21T09:12:26+00:00 | Поверх сданного a1e1733 включён DTC-04 4842a32. Добавляю условную страницу статуса NVM/SFR для no-media профиля, проверяю реальные ответы через TX13. Без чтения массива, записи и положительного ACK очистки. |
-| 31 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Copilot App — independent DTC-03 ATF evidence \[copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a\] | 2026-11-23T21:46:04+00:00 | Claiming only independent ATF/P0710 evidence files; no DTC-02 RX/session or DTC-04 NVM/clear ownership. |
+| 31 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Copilot App — independent DTC-03 ATF evidence \[copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a\] | 2026-11-23T21:48:08+00:00 | Added independent ATF qualified-sample guard and stale/wrap/oversize/invalid tests. Validation blocked locally by missing C compiler and .sources/R1; no DTC-02/DTC-04 files touched. |
 | 32 | DTC-04 — Хранение DTC после выключения питания | Чат 9 — холодный старт и транспорт NVM \[01a1fa76-922b-7b11-a2f2-346a15d1dc95\] | 2026-11-21T09:11:30+00:00 | Включён 4842a32. Совместный офлайн-прогон действующего холодного callback, профиля NVM и штатного CAN-диагностического пути. Проверю отсутствие ложной очистки и поведение после перепривязки. Файлы действующих резервов TOY-05/DTC-02/CAN-03 не затрагиваю. |
 | — | ORG-01 — Основа проекта и локальная работа | Ведущй — общая сборка и задания для стендовой пары \[codex-integration-01a1f76d-20261120\] | 2026-11-21T09:15:21+00:00 | Опубликованы план и общая инфраструктура 3fe2893. Ведётся приёмка 12 чатов; локально объединены 9/5/10, native NVM/sensor/BasicCAN readout повторно PASS. Выявлен и передан CAN-03 дефект отключения диагностики при недостоверных датчиках. Окончательный native ELF/BIN ещё не собран. |
 
@@ -931,6 +931,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-23T21:48:08+00:00 | DTC-03 | heartbeat | copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a |
 | 2026-11-23T21:47:31+00:00 | VSS-02 | claim | f83154cd-8064-4a50-97e5-c4263880e54b |
 | 2026-11-23T21:47:06+00:00 | H03-04 | claim | copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5 |
 | 2026-11-23T21:46:32+00:00 | CAN-01 | claim | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
@@ -960,4 +961,3 @@
 | 2026-11-21T09:10:01+00:00 | CAN-03 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
 | 2026-11-21T09:09:06+00:00 | VSS-02 | review | codex-dtc04-mwp5rm2ofhaxjfi9dss |
 | 2026-11-21T09:08:38+00:00 | DTC-04 | review | 01a1fa76-922b-7b11-a2f2-346a15d1dc95 |
-| 2026-11-21T09:07:59+00:00 | ECU-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
