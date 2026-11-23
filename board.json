@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 957,
+  "sequence": 958,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -267,15 +267,18 @@
         "targets/lfj8/lfj8_h03_engine_feed.h",
         "targets/lfj8/lfj8_h03_engine_rx.c",
         "targets/lfj8/lfj8_h03_engine_rx.h",
-        "targets/lfj8/test_lfj8_h03_engine_context.c"
+        "targets/lfj8/lfj8_h03_input_binding.c",
+        "targets/lfj8/test_lfj8_h03_engine_context.c",
+        "targets/lfj8/test_lfj8_h03_input_binding.c"
       ],
       "stage": "in_progress",
       "claim_id": "43c64ae0c01a43088c77386a743171c9",
       "claimed_at": "2026-11-23T21:46:32+00:00",
-      "updated_at": "2026-11-23T21:46:32+00:00",
-      "note": "Продолжаю независимую часть CAN-01: реализую нативный Task 2 context без пересечения активных резервов CAN-03/CAN-04.",
+      "updated_at": "2026-11-23T21:54:13+00:00",
+      "note": "Include the unclaimed Toyota input snapshot path and regression test to preserve retained Task 2 engine status.",
       "result": null,
       "based_on_reviews": [
+        "027a36c5f3ef44518bf3ba1bbaf2f464",
         "1bfd0b8442764a5e8a833763cc57815a"
       ]
     },
@@ -16505,9 +16508,45 @@
           "cee15d1377aa4207a89e2eb78dd96995"
         ]
       }
+    },
+    {
+      "operation_id": "fc6f677fa9bb4114ae3d15a3f00c91fb",
+      "task": "CAN-01",
+      "owner": "30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0",
+      "action": "heartbeat",
+      "claim_id": "43c64ae0c01a43088c77386a743171c9",
+      "at": "2026-11-23T21:54:13+00:00",
+      "record": {
+        "owner": "30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0",
+        "label": "Copilot — LFJ8 CAN and torque",
+        "branch": "almirpangor-lfj8-can-and-torque",
+        "files": [
+          "targets/lfj8/bench_engine_profile.h",
+          "targets/lfj8/check_h03_engine_context.py",
+          "targets/lfj8/lfj8_h03_engine_context.c",
+          "targets/lfj8/lfj8_h03_engine_context.h",
+          "targets/lfj8/lfj8_h03_engine_feed.c",
+          "targets/lfj8/lfj8_h03_engine_feed.h",
+          "targets/lfj8/lfj8_h03_engine_rx.c",
+          "targets/lfj8/lfj8_h03_engine_rx.h",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/test_lfj8_h03_engine_context.c",
+          "targets/lfj8/test_lfj8_h03_input_binding.c"
+        ],
+        "stage": "in_progress",
+        "claim_id": "43c64ae0c01a43088c77386a743171c9",
+        "claimed_at": "2026-11-23T21:46:32+00:00",
+        "updated_at": "2026-11-23T21:54:13+00:00",
+        "note": "Include the unclaimed Toyota input snapshot path and regression test to preserve retained Task 2 engine status.",
+        "result": null,
+        "based_on_reviews": [
+          "027a36c5f3ef44518bf3ba1bbaf2f464",
+          "1bfd0b8442764a5e8a833763cc57815a"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-23T21:53:46+00:00",
+  "updated_at": "2026-11-23T21:54:13+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {

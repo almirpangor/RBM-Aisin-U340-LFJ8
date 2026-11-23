@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-23T21:53:46+00:00**. Изменение № **957**.
+Обновлено UTC: **2026-11-23T21:54:13+00:00**. Изменение № **958**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -21,7 +21,7 @@
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
 | 6 | TOY-05 — Обучение и сохранение адаптаций | Codex 12 — TOY-05, стартовое состояние первой стендовой пары \[01a1fa79-a9fd-70c0-80a3-f59592edaf79\] | 2026-11-21T09:13:05+00:00 | По поручению ведущего переношу сброс DTC RAM в защищённый холодный вход. Application C и транспорт остаются у текущих владельцев. |
-| 8 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Copilot — LFJ8 CAN and torque \[30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0\] | 2026-11-23T21:46:32+00:00 | Продолжаю независимую часть CAN-01: реализую нативный Task 2 context без пересечения активных резервов CAN-03/CAN-04. |
+| 8 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Copilot — LFJ8 CAN and torque \[30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0\] | 2026-11-23T21:54:13+00:00 | Include the unclaimed Toyota input snapshot path and regression test to preserve retained Task 2 engine status. |
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
 | 13 | ECU-01 — Проверочная сборка Bosch E4M3 | Copilot — Bosch paired release \[9d4fcd7f-8d30-447e-b31d-6889553c0e20\] | 2026-11-23T21:46:11+00:00 | Continue the paired Bosch release by completing reproducible E4M3 profile assembly and integrity checks. Preserve OFFLINE_ONLY and no vehicle-ready claim. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
@@ -787,7 +787,9 @@
 - targets/lfj8/lfj8_h03_engine_feed.h
 - targets/lfj8/lfj8_h03_engine_rx.c
 - targets/lfj8/lfj8_h03_engine_rx.h
+- targets/lfj8/lfj8_h03_input_binding.c
 - targets/lfj8/test_lfj8_h03_engine_context.c
+- targets/lfj8/test_lfj8_h03_input_binding.c
 
 ### CAN-03
 
@@ -914,6 +916,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-23T21:54:13+00:00 | CAN-01 | heartbeat | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T21:53:46+00:00 | VSS-02 | resume | f83154cd-8064-4a50-97e5-c4263880e54b |
 | 2026-11-23T21:53:31+00:00 | VSS-02 | heartbeat | f83154cd-8064-4a50-97e5-c4263880e54b |
 | 2026-11-23T21:52:36+00:00 | H03-04 | review | copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5 |
@@ -943,4 +946,3 @@
 | 2026-11-21T09:12:26+00:00 | DTC-02 | claim | 01a1fa76-b015-7640-a0ba-433b36dcf55f |
 | 2026-11-21T09:12:07+00:00 | TOY-02 | review | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
 | 2026-11-21T09:11:30+00:00 | DTC-04 | claim | 01a1fa76-922b-7b11-a2f2-346a15d1dc95 |
-| 2026-11-21T09:10:53+00:00 | CAN-01 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
