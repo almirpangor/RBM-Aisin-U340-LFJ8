@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 968,
+  "sequence": 969,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -268,12 +268,12 @@
         "targets/lfj8/test_lfj8_h03_engine_context.c",
         "targets/lfj8/test_lfj8_h03_input_binding.c"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "43c64ae0c01a43088c77386a743171c9",
       "claimed_at": "2026-11-23T21:46:32+00:00",
-      "updated_at": "2026-11-23T22:17:16+00:00",
-      "note": "Host PC fixtures passed for commit 50202944bbe2206d79c948757752b5a3e7669007; starting M32R simulation with supplied toolchain.",
-      "result": null,
+      "updated_at": "2026-11-23T22:22:04+00:00",
+      "note": "Published commit 50202944bbe2206d79c948757752b5a3e7669007. PC evidence: controller host tests PASS under GCC 16.2 after demoting only legacy array-parameter, misleading-indentation, and missing-braces warnings; input-binding fixture compiled with -Werror and PASS; exact-H03 engine-context host replay PASS. M32R evidence: GCC 4.8.0 target m32r-elf; controller target build/simulator suite PASS; check_h03_input_binding.py PASS on M32R simulator; exact-H03 engine-context replay PASS on host and M32R simulator. H03 base: 524288 bytes, SHA-256 844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544. Pinned Bosch trace SHA-256 e9df9cbcae6eb741b9863688f7bbacd16f19064c063b76549f8b56939ca03b4b. Test ELF SHA-256 43a8448beb0b27773034fc4363f4236a2f92be9fb8d8507862a537089f06e716; M32R controller object SHA-256 13b42c89f3af237bbdc1307149918328561f0226f1443706d53160fc23c36ead. Simulator --version is unsupported; executable SHA-256 85D3CAD2770065C4F4A31571C924F092B8AA1AAC9C6C22F504A64E1003E87F38. Hardware not tested; no flashable image or release BIN created. Full release target-link/integrity gates remain outstanding. GCC 4.8 reports stack-usage computation unsupported for M32R. Independent FA7B fallback is unavailable and remains FF; timing values are engineering bounds, not measurements. project_status --check still reports changed files pending review/retest; no shared audit/registry files were modified.",
+      "result": "50202944bbe2206d79c948757752b5a3e7669007",
       "based_on_reviews": [
         "027a36c5f3ef44518bf3ba1bbaf2f464",
         "1bfd0b8442764a5e8a833763cc57815a"
@@ -16897,9 +16897,45 @@
           "cee15d1377aa4207a89e2eb78dd96995"
         ]
       }
+    },
+    {
+      "operation_id": "1151587ce5e846b8b43fa7cda710d372",
+      "task": "CAN-01",
+      "owner": "30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0",
+      "action": "review",
+      "claim_id": "43c64ae0c01a43088c77386a743171c9",
+      "at": "2026-11-23T22:22:04+00:00",
+      "record": {
+        "owner": "30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0",
+        "label": "Copilot — LFJ8 CAN and torque",
+        "branch": "almirpangor-lfj8-can-and-torque",
+        "files": [
+          "targets/lfj8/bench_engine_profile.h",
+          "targets/lfj8/check_h03_engine_context.py",
+          "targets/lfj8/lfj8_h03_engine_context.c",
+          "targets/lfj8/lfj8_h03_engine_context.h",
+          "targets/lfj8/lfj8_h03_engine_feed.c",
+          "targets/lfj8/lfj8_h03_engine_feed.h",
+          "targets/lfj8/lfj8_h03_engine_rx.c",
+          "targets/lfj8/lfj8_h03_engine_rx.h",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/test_lfj8_h03_engine_context.c",
+          "targets/lfj8/test_lfj8_h03_input_binding.c"
+        ],
+        "stage": "review",
+        "claim_id": "43c64ae0c01a43088c77386a743171c9",
+        "claimed_at": "2026-11-23T21:46:32+00:00",
+        "updated_at": "2026-11-23T22:22:04+00:00",
+        "note": "Published commit 50202944bbe2206d79c948757752b5a3e7669007. PC evidence: controller host tests PASS under GCC 16.2 after demoting only legacy array-parameter, misleading-indentation, and missing-braces warnings; input-binding fixture compiled with -Werror and PASS; exact-H03 engine-context host replay PASS. M32R evidence: GCC 4.8.0 target m32r-elf; controller target build/simulator suite PASS; check_h03_input_binding.py PASS on M32R simulator; exact-H03 engine-context replay PASS on host and M32R simulator. H03 base: 524288 bytes, SHA-256 844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544. Pinned Bosch trace SHA-256 e9df9cbcae6eb741b9863688f7bbacd16f19064c063b76549f8b56939ca03b4b. Test ELF SHA-256 43a8448beb0b27773034fc4363f4236a2f92be9fb8d8507862a537089f06e716; M32R controller object SHA-256 13b42c89f3af237bbdc1307149918328561f0226f1443706d53160fc23c36ead. Simulator --version is unsupported; executable SHA-256 85D3CAD2770065C4F4A31571C924F092B8AA1AAC9C6C22F504A64E1003E87F38. Hardware not tested; no flashable image or release BIN created. Full release target-link/integrity gates remain outstanding. GCC 4.8 reports stack-usage computation unsupported for M32R. Independent FA7B fallback is unavailable and remains FF; timing values are engineering bounds, not measurements. project_status --check still reports changed files pending review/retest; no shared audit/registry files were modified.",
+        "result": "50202944bbe2206d79c948757752b5a3e7669007",
+        "based_on_reviews": [
+          "027a36c5f3ef44518bf3ba1bbaf2f464",
+          "1bfd0b8442764a5e8a833763cc57815a"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-23T22:21:37+00:00",
+  "updated_at": "2026-11-23T22:22:04+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -20034,6 +20070,36 @@
       ],
       "task": "VSS-02",
       "submitted_at": "2026-11-23T22:21:37+00:00"
+    },
+    "43c64ae0c01a43088c77386a743171c9": {
+      "owner": "30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0",
+      "label": "Copilot — LFJ8 CAN and torque",
+      "branch": "almirpangor-lfj8-can-and-torque",
+      "files": [
+        "targets/lfj8/bench_engine_profile.h",
+        "targets/lfj8/check_h03_engine_context.py",
+        "targets/lfj8/lfj8_h03_engine_context.c",
+        "targets/lfj8/lfj8_h03_engine_context.h",
+        "targets/lfj8/lfj8_h03_engine_feed.c",
+        "targets/lfj8/lfj8_h03_engine_feed.h",
+        "targets/lfj8/lfj8_h03_engine_rx.c",
+        "targets/lfj8/lfj8_h03_engine_rx.h",
+        "targets/lfj8/lfj8_h03_input_binding.c",
+        "targets/lfj8/test_lfj8_h03_engine_context.c",
+        "targets/lfj8/test_lfj8_h03_input_binding.c"
+      ],
+      "stage": "review",
+      "claim_id": "43c64ae0c01a43088c77386a743171c9",
+      "claimed_at": "2026-11-23T21:46:32+00:00",
+      "updated_at": "2026-11-23T22:22:04+00:00",
+      "note": "Published commit 50202944bbe2206d79c948757752b5a3e7669007. PC evidence: controller host tests PASS under GCC 16.2 after demoting only legacy array-parameter, misleading-indentation, and missing-braces warnings; input-binding fixture compiled with -Werror and PASS; exact-H03 engine-context host replay PASS. M32R evidence: GCC 4.8.0 target m32r-elf; controller target build/simulator suite PASS; check_h03_input_binding.py PASS on M32R simulator; exact-H03 engine-context replay PASS on host and M32R simulator. H03 base: 524288 bytes, SHA-256 844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544. Pinned Bosch trace SHA-256 e9df9cbcae6eb741b9863688f7bbacd16f19064c063b76549f8b56939ca03b4b. Test ELF SHA-256 43a8448beb0b27773034fc4363f4236a2f92be9fb8d8507862a537089f06e716; M32R controller object SHA-256 13b42c89f3af237bbdc1307149918328561f0226f1443706d53160fc23c36ead. Simulator --version is unsupported; executable SHA-256 85D3CAD2770065C4F4A31571C924F092B8AA1AAC9C6C22F504A64E1003E87F38. Hardware not tested; no flashable image or release BIN created. Full release target-link/integrity gates remain outstanding. GCC 4.8 reports stack-usage computation unsupported for M32R. Independent FA7B fallback is unavailable and remains FF; timing values are engineering bounds, not measurements. project_status --check still reports changed files pending review/retest; no shared audit/registry files were modified.",
+      "result": "50202944bbe2206d79c948757752b5a3e7669007",
+      "based_on_reviews": [
+        "027a36c5f3ef44518bf3ba1bbaf2f464",
+        "1bfd0b8442764a5e8a833763cc57815a"
+      ],
+      "task": "CAN-01",
+      "submitted_at": "2026-11-23T22:22:04+00:00"
     }
   }
 }
