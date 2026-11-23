@@ -45,3 +45,17 @@ Bosch E4M3 по реестру выпуска остаётся `OFFLINE_ONLY`. �
 На рабочей копии повторно проверен предоставленный владельцем H03 `LFJ8-T-D.bin`, SHA-256 `844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544`. Команда `check_h03_sensor_config.py --base <H03> --out <temporary.json>` завершилась `PASS_STOCK_ONLY`: подтверждены десять наборов штатных инструкций, `PRS1=9`, `TML0CR=0x01`, `TML1CR=0x31` и OEM reload S51/S83 `225/500 ms`.
 
 Этот результат подтверждает только исходные байты и штатные параметры. Отчёт оставляет `production_sensor_config` неопределённым: независимых измерений частот TML0/TML1 и калибровочного профиля нет. Повторный M32R/native запуск здесь не выполнен: путь GCC 4.8.0 недоступен. Результат `PASS_BENCH_SENSOR_NATIVE` в `verification/bench-wave/chat-5/handoff.json` — унаследованное доказательство, не повторённое этой проверкой. Аппаратные измерения и пригодность скорости для управления остаются открытыми.
+
+## Повторные M32R/native проверки (24.11.2026)
+
+Для повторов использованы точный H03 SHA-256 `844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544`, M32R GCC 4.8.0 `F:\RBM-Codex-temp\toolchains\SysGCC-m32r-elf-4.8.0\bin\m32r-elf-gcc.exe` с target `m32r-elf` и временный вывод на ASCII-пути `F:\akpp-vss02-*`. Повторённые проверки:
+
+- `check_h03_bench_sensor_profile.py` — `PASS H03 bench profile: register changes, stalls, wrap, epochs, S51/S83 and AN1 freshness`.
+- `check_h03_sensor_native.py` — stock/hooked S51/S83 stores и общая ревокация clocks/epoch: `PASS`.
+- `check_h03_atf_native.py` — 11 stock/hooked пар AN1/ATF: `PASS`.
+- `check_h03_application_binding.py` — RAM/timer отказ, ревокация эпохи, wrap, restart, foreground и expiry: `PASS`.
+- `check_h03_input_binding.py` — шесть диапазонов, режим/OD, split-phase capture, freshness, manual hold/revocation: `PASS`.
+- `check_h03_bench_mode.py` — compiled selector, reset policy и divider margins: `PASS`.
+- `check_h03_target_platform.py --bench-mode` — startup, CAN lifecycle, Toyota rollover/inhibition, manual/selector native scenarios: `PASS`.
+
+Полные отчёты временных сборок сохранены под `F:\akpp-vss02-*`. Эти проверки подтверждают программные стоки и M32R-модель; они не подтверждают физическую частоту таймеров, абсолютную скорость, геометрию колесо/дифференциал, реальный standstill, антенну/полярность датчиков и приёмку прошитого блока. `production_sensor_config` остаётся `null`; не объявляются готовые или прошиваемые два BIN.
