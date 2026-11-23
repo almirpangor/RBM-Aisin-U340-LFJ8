@@ -1,0 +1,62 @@
+{
+  "task": "DTC-03",
+  "claim_id": "603dc4c445b846078f6c08ebe2f5ae81",
+  "source_commit": "fd3f5494a3c1fdb9f862c9cd84a6c53ee0875ec6",
+  "target": "LFJ8-18-9E1C / H03 LFJ8-T-D.bin",
+  "expected_h03_sha256": "844a11b809cda1f2fcaf90cb6a75666009487ccedd2e8190b7eb46137b855544",
+  "checks": {
+    "host_fixture": {
+      "working_directory": "F:\\АКПП\\lfj8-dtc03-rerun-20261124",
+      "command": "C:\\msys64\\mingw64\\bin\\gcc.exe -std=c11 -Wall -Wextra -Werror -pedantic -O2 -I C:\\Users\\RB-Motors-EN\\.copilot\\copilot-worktrees\\RBM-Aisin-U340-LFJ8\\almirpangor-bookish-spork\\diagnostics C:\\Users\\RB-Motors-EN\\.copilot\\copilot-worktrees\\RBM-Aisin-U340-LFJ8\\almirpangor-bookish-spork\\diagnostics\\chery_atf_circuit.c C:\\Users\\RB-Motors-EN\\.copilot\\copilot-worktrees\\RBM-Aisin-U340-LFJ8\\almirpangor-bookish-spork\\diagnostics\\chery_dtc.c C:\\Users\\RB-Motors-EN\\.copilot\\copilot-worktrees\\RBM-Aisin-U340-LFJ8\\almirpangor-bookish-spork\\diagnostics\\test_chery_atf_circuit.c -o atf-host-fixture.exe; run .\\atf-host-fixture.exe",
+      "compiler": "GCC 16.2.0 (MSYS2)",
+      "status": "PASS",
+      "exit_code": 0,
+      "output": "PASS P0710 debounce, service 17, history inhibit, recovery and diagnostic clear",
+      "artifact": "F:\\АКПП\\lfj8-dtc03-rerun-20261124\\atf-host-fixture.exe",
+      "artifact_sha256": "56d6555099546341ba8cf2b8a61c58d1989eb018a9bf7ece8522eb44abc89859"
+    },
+    "m32r_fixture": {
+      "working_directory": "F:\\АКПП\\lfj8-dtc03-rerun-20261124",
+      "compile": "F:\\RBM-Codex-temp\\toolchains\\SysGCC-m32r-elf-4.8.0\\bin\\m32r-elf-gcc.exe -m32r -Wa,-EB -mmodel=medium -msdata=none -std=c11 -O2 -Wall -Wextra -Werror -UNDEBUG -Wno-missing-braces -Wno-missing-field-initializers -nostartfiles f:/rbm-codex-temp/toolchains/sysgcc-m32r-elf-4.8.0/bin/../lib/gcc/m32r-elf/4.8.0/../../../../m32r-elf/lib/medium/crt0.o C:\\Users\\RB-Motors-EN\\.copilot\\copilot-worktrees\\RBM-Aisin-U340-LFJ8\\almirpangor-bookish-spork\\diagnostics\\chery_atf_circuit.c C:\\Users\\RB-Motors-EN\\.copilot\\copilot-worktrees\\RBM-Aisin-U340-LFJ8\\almirpangor-bookish-spork\\diagnostics\\chery_dtc.c C:\\Users\\RB-Motors-EN\\.copilot\\copilot-worktrees\\RBM-Aisin-U340-LFJ8\\almirpangor-bookish-spork\\diagnostics\\test_chery_atf_circuit.c crt_hooks.c -Wl,-e,_start,--start-group -lc -lgloss -lgcc -Wl,--end-group -o atf-m32r-fixture.elf",
+      "run": "m32r-elf-run.exe atf-m32r-fixture.elf",
+      "compiler": "GCC 4.8.0, target m32r-elf",
+      "simulator": "m32r-elf-run.exe; --version is not supported",
+      "status": "PASS",
+      "exit_code": 0,
+      "output": "PASS P0710 debounce, service 17, history inhibit, recovery and diagnostic clear",
+      "artifact": "F:\\АКПП\\lfj8-dtc03-rerun-20261124\\atf-m32r-fixture.elf",
+      "artifact_sha256": "0cb1ef6ba57cbd1e6d45921f325fc996a7d2ace07317c40523bc51094cc0a588"
+    },
+    "h03_native_atf": {
+      "status": "NOT_RERUN",
+      "reason": "The provided approved output folder contains no H03 BIN, and local/project-paths.json is absent from this worktree. The exact H03 SHA is known, but its file path was not available.",
+      "coordinator_reported_prior_result": {
+        "status": "PASS",
+        "scope": "targets/lfj8/check_h03_atf_fault.py M32R monitor and diagnostic-foreground simulator scenarios against the exact pinned H03; hardware_executed=false; target_image_emitted=false",
+        "independent_evidence": true
+      }
+    },
+    "s03_r1_model": {
+      "status": "NOT_RUN",
+      "reason": "Pinned .sources/R1 and .sources/R2 donor repositories are absent from this worktree; local/project-paths.json is absent."
+    }
+  },
+  "repository_status_check": {
+    "command": "python -X utf8 -B tools/project_status.py --check",
+    "status": "RETEST_REQUIRED",
+    "output": [
+      "Code needs review/retest: diagnostics/chery_atf_circuit.c",
+      "Code needs review/retest: diagnostics/chery_atf_circuit.h",
+      "Code needs review/retest: diagnostics/test_chery_atf_circuit.c"
+    ],
+    "reason": "The shared project audit snapshot was not rewritten because it is owned by ORG-01. The targeted host and M32R component fixtures are recorded above; integrate their evidence through the designated audit owner."
+  },
+  "limits": {
+    "hardware_executed": false,
+    "target_image_emitted": false,
+    "production_bin_emitted": false,
+    "real_atf_thresholds_or_max_age_measured": false,
+    "dtc02_or_dtc04_files_touched": false,
+    "org01_integration_files_touched": false
+  }
+}
