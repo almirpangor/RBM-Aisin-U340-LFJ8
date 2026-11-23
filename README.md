@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-23T21:46:11+00:00**. Изменение № **948**.
+Обновлено UTC: **2026-11-23T21:46:32+00:00**. Изменение № **949**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 8 · Ожидают с резервом: 1 · Порций на проверке: 9.**
+**В работе: 9 · Ожидают с резервом: 1 · Порций на проверке: 9.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -21,6 +21,7 @@
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
 | 6 | TOY-05 — Обучение и сохранение адаптаций | Codex 12 — TOY-05, стартовое состояние первой стендовой пары \[01a1fa79-a9fd-70c0-80a3-f59592edaf79\] | 2026-11-21T09:13:05+00:00 | По поручению ведущего переношу сброс DTC RAM в защищённый холодный вход. Application C и транспорт остаются у текущих владельцев. |
+| 8 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Copilot — LFJ8 CAN and torque \[30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0\] | 2026-11-23T21:46:32+00:00 | Продолжаю независимую часть CAN-01: реализую нативный Task 2 context без пересечения активных резервов CAN-03/CAN-04. |
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
 | 13 | ECU-01 — Проверочная сборка Bosch E4M3 | Copilot — Bosch paired release \[9d4fcd7f-8d30-447e-b31d-6889553c0e20\] | 2026-11-23T21:46:11+00:00 | Continue the paired Bosch release by completing reproducible E4M3 profile assembly and integrity checks. Preserve OFFLINE_ONLY and no vehicle-ready claim. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
@@ -72,7 +73,7 @@
 | 5 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-04) | Свободна для продолжения | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, TOY-03, H03-03, MODE-02 |
 | 6 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-05) | Выполняется | Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений. | TOY-04, H03-04 |
 | 7 | [TOY-06](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-06) | Свободна для продолжения | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, H03-05 |
-| 8 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-01) | Свободна для продолжения; порция на проверке | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
+| 8 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-01) | Выполняется | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
 | 9 | [CAN-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-02) | Свободна для продолжения | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
 | 10 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-03) | Выполняется | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | H03-04 |
 | 11 | [CAN-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-04) | Ожидает данных / решения | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
@@ -236,7 +237,7 @@
 </details>
 
 <details>
-<summary>CAN-01 — Форматы CAN и квалификация RPM/ОЖ: Свободна для продолжения; порция на проверке</summary>
+<summary>CAN-01 — Форматы CAN и квалификация RPM/ОЖ: Выполняется</summary>
 
 **Сделано.** Реальный дескриптор target_engine включается явным профилем и использует единые engine_rx/qualifier/DTC/CAN owner/TML0. Нативные тесты и свежий обмен с Bosch прошли.
 
@@ -250,7 +251,7 @@
 
 **Рекомендуемый чат.** Чат 2 — 01a1f9b1-c11a-7b23-abcf-3214ce643805.
 
-**Исполнитель сейчас.** Задача не занята.
+**Сейчас выполняет.** Copilot — LFJ8 CAN and torque — 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0.
 
 **Критерий приёмки.** Результат ограничен перечисленными полями и сценариями приёма.
 
@@ -749,7 +750,6 @@
 | TOY-03 | Порция принята | Codex TOY-03 — допуск независимого P/N | codex/toy03-independent-pn-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 3f2596f31930203fe9cd7918e9b62f81ea82699c |
 | TOY-04 | Порция принята | Codex TOY-04 — ручная заявка в цикле | codex/toy04-manual-cycle-892d | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit c7b0568cde39ddc27e71432e5028db9c9a351e16 |
 | TOY-06 | Порция принята | Codex TOY-06 — штатные выходы H03 | codex/toy06-native-lockup-output-01a1f9a2 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 4baf99ccd587811223aa05bc44460053dbade903 |
-| CAN-01 | На проверке | Codex чат 2 — Task 2 и профиль двигателя для первой стендовой пары | codex/can-01-shared-engine-binding-32e6ac79 | Native Task 2 engine context and guarded CAN RX. Host and M32R replay PASS; 68 phase, 20 CAN owner scenarios and 41 PC stages. Scratch composition resolves fixture_engine_context (+636 Flash, 0 static RAM); remaining integration inputs in verification/bench-wave/chat-2/handoff.json. No hardware validation or paired BIN. / commit 3def8b732d271760e8f62c4e9e6b5b7d1f53804f |
 | CAN-02 | Порция принята | Codex CAN-02 — деградация скорости в телеметрии H03 | codex/can02-telemetry-availability-fea1b366 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit d87bf6438a30efd448feb8cac1d732f7d677a20c |
 | CAN-05 | Порция принята | Codex CAN-05 — время приёма ST10 | codex/can05-st10-bound-t4-01a1f9a2 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit f3bb5000ebfdaaa30a33665bac1eab06ddb9165c |
 | ECU-02 | Порция принята | Codex ECU-02 — граница допуска момента Bosch | codex/ecu02-torque-permit-boundary-7bd19ea4 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 85b2e9320cf8f6e4a3729915ed3ebbd0fc00a732 |
@@ -772,6 +772,20 @@
 
 
 ## Зарезервированные файлы
+
+### CAN-01
+
+Чат: Copilot — LFJ8 CAN and torque. Claim ID: 43c64ae0c01a43088c77386a743171c9.
+
+- targets/lfj8/bench_engine_profile.h
+- targets/lfj8/check_h03_engine_context.py
+- targets/lfj8/lfj8_h03_engine_context.c
+- targets/lfj8/lfj8_h03_engine_context.h
+- targets/lfj8/lfj8_h03_engine_feed.c
+- targets/lfj8/lfj8_h03_engine_feed.h
+- targets/lfj8/lfj8_h03_engine_rx.c
+- targets/lfj8/lfj8_h03_engine_rx.h
+- targets/lfj8/test_lfj8_h03_engine_context.c
 
 ### CAN-03
 
@@ -892,6 +906,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-23T21:46:32+00:00 | CAN-01 | claim | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T21:46:11+00:00 | ECU-01 | claim | 9d4fcd7f-8d30-447e-b31d-6889553c0e20 |
 | 2026-11-23T21:46:04+00:00 | DTC-03 | claim | copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a |
 | 2026-11-23T20:28:41+00:00 | CAN-04 | heartbeat | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |
@@ -921,4 +936,3 @@
 | 2026-11-21T09:07:59+00:00 | ECU-01 | review | codex-4dcfb03f-87a2-4fbd-bf33-08a54073c7e4 |
 | 2026-11-21T09:07:29+00:00 | H03-03 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
 | 2026-11-21T09:05:59+00:00 | CAN-03 | heartbeat | codex-fea1b366-66b6-4667-8206-915153ca1033 |
-| 2026-11-21T09:04:47+00:00 | CAN-01 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 948,
+  "sequence": 949,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -266,9 +266,9 @@
       "based_on_reviews": []
     },
     "CAN-01": {
-      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex чат 2 — Task 2 и профиль двигателя для первой стендовой пары",
-      "branch": "codex/can-01-shared-engine-binding-32e6ac79",
+      "owner": "30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0",
+      "label": "Copilot — LFJ8 CAN and torque",
+      "branch": "almirpangor-lfj8-can-and-torque",
       "files": [
         "targets/lfj8/bench_engine_profile.h",
         "targets/lfj8/check_h03_engine_context.py",
@@ -278,16 +278,17 @@
         "targets/lfj8/lfj8_h03_engine_feed.h",
         "targets/lfj8/lfj8_h03_engine_rx.c",
         "targets/lfj8/lfj8_h03_engine_rx.h",
-        "targets/lfj8/test_lfj8_h03_engine_context.c",
-        "verification/bench-wave/chat-2/handoff.json"
+        "targets/lfj8/test_lfj8_h03_engine_context.c"
       ],
-      "stage": "review",
-      "claim_id": "1bfd0b8442764a5e8a833763cc57815a",
-      "claimed_at": "2026-11-21T08:50:55+00:00",
-      "updated_at": "2026-11-21T09:14:03+00:00",
-      "note": "Native Task 2 engine context and guarded CAN RX. Host and M32R replay PASS; 68 phase, 20 CAN owner scenarios and 41 PC stages. Scratch composition resolves fixture_engine_context (+636 Flash, 0 static RAM); remaining integration inputs in verification/bench-wave/chat-2/handoff.json. No hardware validation or paired BIN.",
-      "result": "3def8b732d271760e8f62c4e9e6b5b7d1f53804f",
-      "based_on_reviews": []
+      "stage": "in_progress",
+      "claim_id": "43c64ae0c01a43088c77386a743171c9",
+      "claimed_at": "2026-11-23T21:46:32+00:00",
+      "updated_at": "2026-11-23T21:46:32+00:00",
+      "note": "Продолжаю независимую часть CAN-01: реализую нативный Task 2 context без пересечения активных резервов CAN-03/CAN-04.",
+      "result": null,
+      "based_on_reviews": [
+        "1bfd0b8442764a5e8a833763cc57815a"
+      ]
     },
     "MODE-02": {
       "owner": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
@@ -16211,9 +16212,42 @@
           "bb95576349fc4befa4af7a3779ddb4ae"
         ]
       }
+    },
+    {
+      "operation_id": "829a951a991d407b84aa718572e2afee",
+      "task": "CAN-01",
+      "owner": "30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0",
+      "action": "claim",
+      "claim_id": "43c64ae0c01a43088c77386a743171c9",
+      "at": "2026-11-23T21:46:32+00:00",
+      "record": {
+        "owner": "30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0",
+        "label": "Copilot — LFJ8 CAN and torque",
+        "branch": "almirpangor-lfj8-can-and-torque",
+        "files": [
+          "targets/lfj8/bench_engine_profile.h",
+          "targets/lfj8/check_h03_engine_context.py",
+          "targets/lfj8/lfj8_h03_engine_context.c",
+          "targets/lfj8/lfj8_h03_engine_context.h",
+          "targets/lfj8/lfj8_h03_engine_feed.c",
+          "targets/lfj8/lfj8_h03_engine_feed.h",
+          "targets/lfj8/lfj8_h03_engine_rx.c",
+          "targets/lfj8/lfj8_h03_engine_rx.h",
+          "targets/lfj8/test_lfj8_h03_engine_context.c"
+        ],
+        "stage": "in_progress",
+        "claim_id": "43c64ae0c01a43088c77386a743171c9",
+        "claimed_at": "2026-11-23T21:46:32+00:00",
+        "updated_at": "2026-11-23T21:46:32+00:00",
+        "note": "Продолжаю независимую часть CAN-01: реализую нативный Task 2 context без пересечения активных резервов CAN-03/CAN-04.",
+        "result": null,
+        "based_on_reviews": [
+          "1bfd0b8442764a5e8a833763cc57815a"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-23T21:46:11+00:00",
+  "updated_at": "2026-11-23T21:46:32+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
