@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 971,
+  "sequence": 972,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -217,12 +217,12 @@
         "verification/project-audit/dtc03-m32r-rerun.json",
         "verification/project-audit/dtc03-ta2005-p0710.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "603dc4c445b846078f6c08ebe2f5ae81",
       "claimed_at": "2026-11-23T22:19:32+00:00",
-      "updated_at": "2026-11-23T22:22:21+00:00",
-      "note": "Host and M32R test_chery_atf_circuit fixtures PASS with artifact SHA recorded in verification/project-audit/dtc03-m32r-rerun.json. H03 native rerun awaits exact base path; DTC-02/DTC-04 untouched.",
-      "result": null,
+      "updated_at": "2026-11-23T22:23:32+00:00",
+      "note": "Recorded passing host GCC 16.2 and M32R GCC 4.8 component fixtures, exact output hashes, and fresh project_status RETEST_REQUIRED boundary in verification/project-audit/dtc03-m32r-rerun.json. Exact H03 image path and R1/R2 donor paths were unavailable in this worktree; coordinator has a prior independent H03 check result. DTC-02/DTC-04 checks were intentionally not run because their claims remain active. Hardware, image/BIN, thresholds, and measured max_age_us remain false/open.",
+      "result": "801bc261d28d3441e8cd6023473330489a4ce805",
       "based_on_reviews": [
         "6f672879c0094563b3ad7fef61831ed9"
       ]
@@ -16987,9 +16987,35 @@
           "bb95576349fc4befa4af7a3779ddb4ae"
         ]
       }
+    },
+    {
+      "operation_id": "8f9060aadd1844e593a241ba323b3912",
+      "task": "DTC-03",
+      "owner": "copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a",
+      "action": "review",
+      "claim_id": "603dc4c445b846078f6c08ebe2f5ae81",
+      "at": "2026-11-23T22:23:32+00:00",
+      "record": {
+        "owner": "copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a",
+        "label": "Copilot App — DTC-03 M32R verification",
+        "branch": "almirpangor-lfj8-diagnostics-storage",
+        "files": [
+          "verification/project-audit/dtc03-m32r-rerun.json",
+          "verification/project-audit/dtc03-ta2005-p0710.md"
+        ],
+        "stage": "review",
+        "claim_id": "603dc4c445b846078f6c08ebe2f5ae81",
+        "claimed_at": "2026-11-23T22:19:32+00:00",
+        "updated_at": "2026-11-23T22:23:32+00:00",
+        "note": "Recorded passing host GCC 16.2 and M32R GCC 4.8 component fixtures, exact output hashes, and fresh project_status RETEST_REQUIRED boundary in verification/project-audit/dtc03-m32r-rerun.json. Exact H03 image path and R1/R2 donor paths were unavailable in this worktree; coordinator has a prior independent H03 check result. DTC-02/DTC-04 checks were intentionally not run because their claims remain active. Hardware, image/BIN, thresholds, and measured max_age_us remain false/open.",
+        "result": "801bc261d28d3441e8cd6023473330489a4ce805",
+        "based_on_reviews": [
+          "6f672879c0094563b3ad7fef61831ed9"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-23T22:23:12+00:00",
+  "updated_at": "2026-11-23T22:23:32+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -20154,6 +20180,26 @@
       ],
       "task": "CAN-01",
       "submitted_at": "2026-11-23T22:22:04+00:00"
+    },
+    "603dc4c445b846078f6c08ebe2f5ae81": {
+      "owner": "copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a",
+      "label": "Copilot App — DTC-03 M32R verification",
+      "branch": "almirpangor-lfj8-diagnostics-storage",
+      "files": [
+        "verification/project-audit/dtc03-m32r-rerun.json",
+        "verification/project-audit/dtc03-ta2005-p0710.md"
+      ],
+      "stage": "review",
+      "claim_id": "603dc4c445b846078f6c08ebe2f5ae81",
+      "claimed_at": "2026-11-23T22:19:32+00:00",
+      "updated_at": "2026-11-23T22:23:32+00:00",
+      "note": "Recorded passing host GCC 16.2 and M32R GCC 4.8 component fixtures, exact output hashes, and fresh project_status RETEST_REQUIRED boundary in verification/project-audit/dtc03-m32r-rerun.json. Exact H03 image path and R1/R2 donor paths were unavailable in this worktree; coordinator has a prior independent H03 check result. DTC-02/DTC-04 checks were intentionally not run because their claims remain active. Hardware, image/BIN, thresholds, and measured max_age_us remain false/open.",
+      "result": "801bc261d28d3441e8cd6023473330489a4ce805",
+      "based_on_reviews": [
+        "6f672879c0094563b3ad7fef61831ed9"
+      ],
+      "task": "DTC-03",
+      "submitted_at": "2026-11-23T22:23:32+00:00"
     }
   }
 }

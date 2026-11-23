@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-23T22:23:12+00:00**. Изменение № **971**.
+Обновлено UTC: **2026-11-23T22:23:32+00:00**. Изменение № **972**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 8 · Ожидают с резервом: 1 · Порций на проверке: 13.**
+**В работе: 7 · Ожидают с резервом: 1 · Порций на проверке: 14.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -25,7 +25,6 @@
 | 13 | ECU-01 — Проверочная сборка Bosch E4M3 | Copilot — Bosch paired release \[9d4fcd7f-8d30-447e-b31d-6889553c0e20\] | 2026-11-23T22:23:12+00:00 | Pinned R1/R4/R3 rebuild PASS: ordinary/no-cruise/no-override OFFLINE_ONLY candidate bd0afe...; 51 checksum records; 65536 native encoder cases; hardware false. M32R 4.8.0 tools available. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
 | 30 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Codex чат 10 — чтение статуса NVM \[01a1fa76-b015-7640-a0ba-433b36dcf55f\] | 2026-11-21T09:12:26+00:00 | Поверх сданного a1e1733 включён DTC-04 4842a32. Добавляю условную страницу статуса NVM/SFR для no-media профиля, проверяю реальные ответы через TX13. Без чтения массива, записи и положительного ACK очистки. |
-| 31 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Copilot App — DTC-03 M32R verification \[copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a\] | 2026-11-23T22:22:21+00:00 | Host and M32R test_chery_atf_circuit fixtures PASS with artifact SHA recorded in verification/project-audit/dtc03-m32r-rerun.json. H03 native rerun awaits exact base path; DTC-02/DTC-04 untouched. |
 | 32 | DTC-04 — Хранение DTC после выключения питания | Чат 9 — холодный старт и транспорт NVM \[01a1fa76-922b-7b11-a2f2-346a15d1dc95\] | 2026-11-21T09:11:30+00:00 | Включён 4842a32. Совместный офлайн-прогон действующего холодного callback, профиля NVM и штатного CAN-диагностического пути. Проверю отсутствие ложной очистки и поведение после перепривязки. Файлы действующих резервов TOY-05/DTC-02/CAN-03 не затрагиваю. |
 | — | ORG-01 — Основа проекта и локальная работа | Ведущй — общая сборка и задания для стендовой пары \[codex-integration-01a1f76d-20261120\] | 2026-11-21T09:15:21+00:00 | Опубликованы план и общая инфраструктура 3fe2893. Ведётся приёмка 12 чатов; локально объединены 9/5/10, native NVM/sensor/BasicCAN readout повторно PASS. Выявлен и передан CAN-03 дефект отключения диагностики при недостоверных датчиках. Окончательный native ELF/BIN ещё не собран. |
 
@@ -47,6 +46,7 @@
 | CAN-01 | Copilot — LFJ8 CAN and torque | [50202944bbe2](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/50202944bbe2206d79c948757752b5a3e7669007) | 43c64ae0c01a43088c77386a743171c9 | Published commit 50202944bbe2206d79c948757752b5a3e7669007. PC evidence: controller host tests PASS under GCC 16.2 after demoting only legacy array-parameter, misleading-indentation, and missing-braces warnings; input-binding fixture compiled with -Werror and PASS; exact-H03 engine-context host replay PASS. M32R evidence: GCC 4.8.0 target m32r-elf; controller target build/simulator suite PASS; check_h03_input_binding.py PASS on M32R simulator; exact-H03 engine-context replay PASS on host and M32R simulator. H03 base: 524288 bytes, SHA-256 844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544. Pinned Bosch trace SHA-256 e9df9cbcae6eb741b9863688f7bbacd16f19064c063b76549f8b56939ca03b4b. Test ELF SHA-256 43a8448beb0b27773034fc4363f4236a2f92be9fb8d8507862a537089f06e716; M32R controller object SHA-256 13b42c89f3af237bbdc1307149918328561f0226f1443706d53160fc23c36ead. Simulator --version is unsupported; executable SHA-256 85D3CAD2770065C4F4A31571C924F092B8AA1AAC9C6C22F504A64E1003E87F38. Hardware not tested; no flashable image or release BIN created. Full release target-link/integrity gates remain outstanding. GCC 4.8 reports stack-usage computation unsupported for M32R. Independent FA7B fallback is unavailable and remains FF; timing values are engineering bounds, not measurements. project_status --check still reports changed files pending review/retest; no shared audit/registry files were modified. |
 | DTC-02 | Codex чат 10 — диагностика H03 для стенда | [a1e173336874](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/a1e173336874cb52dae2bb75f4cf4287df105dff) | 8d2e9979b8b94adab47c6ca68b65d7f6 | Чат 10. Нативный стендовый readout 13 страниц через BasicCAN/C0/TX13, включая полный 3-кадровый ответ TML0/TML1 с Flow Control. 41 этап ПК, S03 96, 18 сравнений IRQ, 9 сервисных и 40 ATF проверок. История сохраняется и ACK не выдаётся без DTC-04 backend. Интеграция --binding-source, +1064 байта Flash к той же модели, RAM без прироста, FAIL_BINDINGS. Контракт verification/bench-wave/chat-10/handoff.json. Без прошивки. |
 | DTC-03 | Copilot App — independent DTC-03 ATF evidence | [fd3f5494a3c1](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/fd3f5494a3c1fdb9f862c9cd84a6c53ee0875ec6) | 6f672879c0094563b3ad7fef61831ed9 | Independent ATF qualification guard and focused stale/wrap/oversize/invalid tests; project_status check PASS and only four claimed evidence files changed. C fixture not run: no zig/gcc/cl toolchain in worktree/PATH and .sources/R1 unavailable. Real ATF thresholds, measured max_age_us, H03 integration, BIN and hardware remain open. |
+| DTC-03 | Copilot App — DTC-03 M32R verification | [801bc261d28d](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/801bc261d28d3441e8cd6023473330489a4ce805) | 603dc4c445b846078f6c08ebe2f5ae81 | Recorded passing host GCC 16.2 and M32R GCC 4.8 component fixtures, exact output hashes, and fresh project_status RETEST_REQUIRED boundary in verification/project-audit/dtc03-m32r-rerun.json. Exact H03 image path and R1/R2 donor paths were unavailable in this worktree; coordinator has a prior independent H03 check result. DTC-02/DTC-04 checks were intentionally not run because their claims remain active. Hardware, image/BIN, thresholds, and measured max_age_us remain false/open. |
 | DTC-04 | Чат 9 — стендовый NVM H03 | [4842a325a0fa](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/4842a325a0fa14c14c1fd5ccb48f9afc2c0bdc29) | fdfd811485f4417a8f450b2e455bc6e3 | Чат 9. Профиль NVM без носителя для первого стенда: штатная база S01, холодный DTC, явный NO_ASSIGNED_MEDIA и native read-only статус SFR/32-байтовый счётчик. Единственные пустые сектора 4/7 заняты резидентом и приложением. NVM ПК/M32R, BasicCAN 18+18, 22 native с двумя повторными проверками и 91 тест компоновки прошли. В модели с реальным bench профилем qualified_adaptation_blocks исключён, 14 внешних символов остаются. Контракт, карта, память и результаты: verification/bench-wave/chat-9/handoff.json. Запись и аппаратная приёмка открыты. |
 | ECU-01 | Codex чат 8 — Bosch ST10 для стендовой пары | [9312c056ee46](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/9312c056ee46e8f0495a64840bb82b722c1ee9ca) | bb95576349fc4befa4af7a3779ddb4ae | Нативный RPM-допуск RB подключён к START/REFRESH и трём ветвям ST10; CANCEL сохранён. 51 запись целостности, проверены ordinary, T4, парные сценарии. OFFLINE_ONLY; Toyota raw-контракт и остаток в verification/bench-wave/chat-8/handoff.json. |
 | H03-04 | Codex H03-04 — ранний допуск IRQ и стендовый профиль SPI/PSW | [2718128ed693](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/2718128ed693b9fa2f69da981a7e316e7b106fa1) | 734b4f9d3a9c43f6aaa67927cf88ab12 | Стендовый профиль и native boot owner, 5 ссылок разрешены в общей композиции. Оба reset, DMA4, service и Virtual Flash PASS в M32R; 94 теста. Полный link и стек от foreground/IRQ отдельно; нижнюю Flash должен доставить квалифицированный режим записи. Подключение и точные результаты в verification/bench-wave/chat-6/handoff.json. |
@@ -96,7 +96,7 @@
 | 28 | [REL-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#rel-02) | Свободна для продолжения | Фактические записи входов/CAN/момента/SLT/SLU и отказов с критериями приёмки. | REL-01 |
 | 29 | [DTC-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-01) | Свободна для продолжения | Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout. | См. входные условия карточки |
 | 30 | [DTC-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-02) | Выполняется | Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout. | См. входные условия карточки |
-| 31 | [DTC-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-03) | Выполняется | Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout. | H03-05, TOY-06 |
+| 31 | [DTC-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-03) | Свободна для продолжения; порция на проверке | Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout. | H03-05, TOY-06 |
 | 32 | [DTC-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#dtc-04) | Выполняется | Рабочий backend или конкретная доказанная граница его доступности, профиль носителя/проверка восстановления, подлинные Flash-адреса; телеметрия для получения недостающего после BIN. | H03-04 |
 
 ### Сделано и остаток по каждой незакрытой задаче
@@ -696,7 +696,7 @@
 </details>
 
 <details>
-<summary>DTC-03 — Все диагностические события и соответствия Toyota/Chery: Выполняется</summary>
+<summary>DTC-03 — Все диагностические события и соответствия Toyota/Chery: Свободна для продолжения; порция на проверке</summary>
 
 **Сделано.** ATF fault допускается только с квалифицированным источником времени; native сценарии и отказ часов прошли.
 
@@ -710,7 +710,7 @@
 
 **Рекомендуемый чат.** Чат 10 — 01a1fa76-b015-7640-a0ba-433b36dcf55f.
 
-**Сейчас выполняет.** Copilot App — DTC-03 M32R verification — copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Код соответствует фактическому отказу и узлу, статусы подтверждены. Отсутствующий прямой аналог явно обозначен.
 
@@ -768,6 +768,7 @@
 | REL-01 | Порция принята | Codex REL-01 — идентификация BIN | codex/rel01-donor-firmware-guard-01a1f9c7 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit de7df4ab3da2c30240e0a8d3635f206787236d94 |
 | REL-02 | Порция принята | Codex REL-02 H03 DMA admission | codex/rel02-h03-ram-owner-01a1f99f | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 8ce841939a365433161c7e1fe5c51f9c0ca3a27b |
 | DTC-01 | Порция принята | Codex DTC-01 — граница RX при тайм-ауте протокола | codex/dtc01-transport-expiry-rx-7bd19ea4 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 0941e55fb9be406f3f8d5b3cb7d378aa18205349 |
+| DTC-03 | На проверке | Copilot App — DTC-03 M32R verification | almirpangor-lfj8-diagnostics-storage | Recorded passing host GCC 16.2 and M32R GCC 4.8 component fixtures, exact output hashes, and fresh project_status RETEST_REQUIRED boundary in verification/project-audit/dtc03-m32r-rerun.json. Exact H03 image path and R1/R2 donor paths were unavailable in this worktree; coordinator has a prior independent H03 check result. DTC-02/DTC-04 checks were intentionally not run because their claims remain active. Hardware, image/BIN, thresholds, and measured max_age_us remain false/open. / commit 801bc261d28d3441e8cd6023473330489a4ce805 |
 | AUD-01 | Освобождена | Codex AUD-01 — проверка архивного пакета R4 | codex/aud01-e4m3-diff-check-922b7b11 | Изолированный архивный прогон R4 завершён: 50 хешей и точная пересборка E4M3, статическая проверка, ST10, CAN и ISO-TP прошли. Отчёт сохранён только локально. Резерв освобождён. |
 | H03-01 | Порция принята | Codex H03-01 — сверка прочитанного образа | codex/h03-01-readback-01a1f9a2 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 57bf9ee7cfa47b68da922524f729a284a69f54b4 |
 | SRC-01 | Порция принята | Codex SRC-01 — регрессия происхождения исходников | codex/src01-pinned-input-tests-922b7b11 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 30a37a9f5672164bb8326dcc76d9581dc83c01db |
@@ -812,13 +813,6 @@
 - targets/lfj8/test_lfj8_h03_bench_diag.c
 - verification/bench-wave/chat-10/diagnostic-readout.md
 - verification/bench-wave/chat-10/handoff.json
-
-### DTC-03
-
-Чат: Copilot App — DTC-03 M32R verification. Claim ID: 603dc4c445b846078f6c08ebe2f5ae81.
-
-- verification/project-audit/dtc03-m32r-rerun.json
-- verification/project-audit/dtc03-ta2005-p0710.md
 
 ### DTC-04
 
@@ -891,6 +885,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-23T22:23:32+00:00 | DTC-03 | review | copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a |
 | 2026-11-23T22:23:12+00:00 | ECU-01 | heartbeat | 9d4fcd7f-8d30-447e-b31d-6889553c0e20 |
 | 2026-11-23T22:22:21+00:00 | DTC-03 | heartbeat | copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a |
 | 2026-11-23T22:22:04+00:00 | CAN-01 | review | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
@@ -920,4 +915,3 @@
 | 2026-11-23T19:28:22+00:00 | CAN-04 | block | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |
 | 2026-11-23T19:27:38+00:00 | CAN-04 | resume | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |
 | 2026-11-23T19:00:09+00:00 | CAN-04 | block | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |
-| 2026-11-23T18:46:06+00:00 | CAN-04 | resume | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |
