@@ -37,3 +37,23 @@ void chery_atf_circuit_step(CheryAtfCircuit *monitor, CheryDtcState *dtc,
         break;
     }
 }
+
+void chery_atf_circuit_step_qualified(CheryAtfCircuit *monitor, CheryDtcState *dtc,
+                                      CheryAtfCircuitQualifiedSample sample,
+                                      bool inhibit_history)
+{
+    CheryAtfCircuitSample accepted = CHERY_ATF_CIRCUIT_SKIPPED;
+
+    if (sample.qualified &&
+        sample.max_age < UINT32_C(0x80000000) &&
+        sample.now - sample.sampled_at <= sample.max_age) {
+        accepted = sample.sample;
+        if (accepted != CHERY_ATF_CIRCUIT_IN_RANGE &&
+            accepted != CHERY_ATF_CIRCUIT_OUT_OF_RANGE &&
+            accepted != CHERY_ATF_CIRCUIT_SKIPPED) {
+            accepted = CHERY_ATF_CIRCUIT_SKIPPED;
+        }
+    }
+
+    chery_atf_circuit_step(monitor, dtc, accepted, inhibit_history);
+}

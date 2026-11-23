@@ -13,6 +13,14 @@ typedef struct {
     uint8_t count;
 } CheryAtfCircuit;
 
+typedef struct {
+    CheryAtfCircuitSample sample;
+    uint32_t sampled_at;
+    uint32_t now;
+    uint32_t max_age;
+    bool qualified;
+} CheryAtfCircuitQualifiedSample;
+
 /* Reset at startup and when the diagnostic owner handles an accepted clear. */
 void chery_atf_circuit_reset(CheryAtfCircuit *monitor);
 
@@ -21,5 +29,12 @@ void chery_atf_circuit_reset(CheryAtfCircuit *monitor);
  * The caller qualifies sample freshness, reference and sensor range. */
 void chery_atf_circuit_step(CheryAtfCircuit *monitor, CheryDtcState *dtc,
                             CheryAtfCircuitSample sample, bool inhibit_history);
+
+/* Rejected age, wrap, or qualification state is consumed as SKIPPED.
+ * max_age is inclusive and must be below 2^31, matching the project clock contract.
+ * This guard does not supply a real LFJ8 sensor threshold or timing calibration. */
+void chery_atf_circuit_step_qualified(CheryAtfCircuit *monitor, CheryDtcState *dtc,
+                                      CheryAtfCircuitQualifiedSample sample,
+                                      bool inhibit_history);
 
 #endif

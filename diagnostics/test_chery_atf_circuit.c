@@ -76,6 +76,50 @@ int main(void)
     expect_reply(&dtc, read, active, sizeof(active));
     assert(dtc.snapshot_index[0] == 4 && dtc.snapshot_index[1] == UINT8_MAX);
 
+    chery_dtc_init(&dtc);
+    chery_atf_circuit_reset(&monitor);
+    const CheryAtfCircuitQualifiedSample stale = {
+        .sample = CHERY_ATF_CIRCUIT_OUT_OF_RANGE,
+        .sampled_at = 100u,
+        .now = 126u,
+        .max_age = 25u,
+        .qualified = true,
+    };
+    chery_atf_circuit_step_qualified(&monitor, &dtc, stale, false);
+    assert(monitor.count == 0 && dtc.current[0] == 0);
+
+    const CheryAtfCircuitQualifiedSample boundary = {
+        .sample = CHERY_ATF_CIRCUIT_OUT_OF_RANGE,
+        .sampled_at = UINT32_MAX - 10u,
+        .now = 15u,
+        .max_age = 26u,
+        .qualified = true,
+    };
+    chery_atf_circuit_step_qualified(&monitor, &dtc, boundary, false);
+    assert(monitor.count == 1 && dtc.current[0] == 0);
+
+    chery_atf_circuit_reset(&monitor);
+    const CheryAtfCircuitQualifiedSample unqualified = {
+        .sample = CHERY_ATF_CIRCUIT_OUT_OF_RANGE,
+        .sampled_at = 1u,
+        .now = 1u,
+        .max_age = 25u,
+        .qualified = false,
+    };
+    chery_atf_circuit_step_qualified(&monitor, &dtc, unqualified, false);
+    assert(monitor.count == 0 && dtc.current[0] == 0);
+
+    chery_atf_circuit_reset(&monitor);
+    const CheryAtfCircuitQualifiedSample oversize_age = {
+        .sample = CHERY_ATF_CIRCUIT_OUT_OF_RANGE,
+        .sampled_at = 1u,
+        .now = 1u,
+        .max_age = UINT32_C(0x80000000),
+        .qualified = true,
+    };
+    chery_atf_circuit_step_qualified(&monitor, &dtc, oversize_age, false);
+    assert(monitor.count == 0 && dtc.current[0] == 0);
+
     puts("PASS P0710 debounce, service 17, history inhibit, recovery and diagnostic clear");
     return 0;
 }
