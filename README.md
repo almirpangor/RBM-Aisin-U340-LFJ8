@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-23T21:58:08+00:00**. Изменение № **961**.
+Обновлено UTC: **2026-11-23T22:10:28+00:00**. Изменение № **962**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 7 · Ожидают с резервом: 3 · Порций на проверке: 11.**
+**В работе: 8 · Ожидают с резервом: 2 · Порций на проверке: 11.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -21,6 +21,7 @@
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
 | 6 | TOY-05 — Обучение и сохранение адаптаций | Codex 12 — TOY-05, стартовое состояние первой стендовой пары \[01a1fa79-a9fd-70c0-80a3-f59592edaf79\] | 2026-11-21T09:13:05+00:00 | По поручению ведущего переношу сброс DTC RAM в защищённый холодный вход. Application C и транспорт остаются у текущих владельцев. |
+| 8 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Copilot — LFJ8 CAN and torque \[30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0\] | 2026-11-23T22:10:28+00:00 | Resumed after approved F:\\АКПП temporary-build location became available; running host PC fixtures only. |
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
 | 13 | ECU-01 — Проверочная сборка Bosch E4M3 | Copilot — Bosch paired release \[9d4fcd7f-8d30-447e-b31d-6889553c0e20\] | 2026-11-23T21:46:11+00:00 | Continue the paired Bosch release by completing reproducible E4M3 profile assembly and integrity checks. Preserve OFFLINE_ONLY and no vehicle-ready claim. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
@@ -32,7 +33,6 @@
 
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
-| 8 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Copilot — LFJ8 CAN and torque \[30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0\] | 2026-11-23T21:58:08+00:00 | Changes are in the worktree and git diff --check passes, but PC/M32R fixture validation is blocked because D: is unavailable and project rules require temporary builds there. Reservation is preserved; resume when D: is available. |
 | 11 | CAN-04 — Запрос снижения момента по RB | Copilot App — запрос снижения момента CAN LFJ8 \[copilot-416d2a7e-79e0-4acb-8e40-27807c492e55\] | 2026-11-23T20:28:41+00:00 | Запуск M32R GCC 4.8.0 собран до probe-стадии: binutils/source downloaded, MSYS2/MinGW installed, but GCC 4.8 build probes fail in this host; WSL unavailable because virtualization is disabled. No unverified or fake TCM/Bosch BIN produced. |
 | 22 | VSS-02 — Кинематика и параметры реальной скорости | Copilot — VSS-02 H03 sensor profile integration \[f83154cd-8064-4a50-97e5-c4263880e54b\] | 2026-11-23T21:54:57+00:00 | Published a source-only H03 recheck record at a94dee26e1bbc4cee3303454cdc49bc175ad9510. Exact H03 SHA matched; check_h03_sensor_config.py returned PASS_STOCK_ONLY (PRS1=9, TML0CR=0x01, TML1CR=0x31, OEM reloads 225/500 ms); production_sensor_config remains null. M32R/native rerun remains blocked: GCC path unavailable; no host compiler substituted. |
 
@@ -75,7 +75,7 @@
 | 5 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-04) | Свободна для продолжения | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, TOY-03, H03-03, MODE-02 |
 | 6 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-05) | Выполняется | Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений. | TOY-04, H03-04 |
 | 7 | [TOY-06](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-06) | Свободна для продолжения | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, H03-05 |
-| 8 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-01) | Ожидает данных / решения | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
+| 8 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-01) | Выполняется | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
 | 9 | [CAN-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-02) | Свободна для продолжения | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
 | 10 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-03) | Выполняется | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | H03-04 |
 | 11 | [CAN-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-04) | Ожидает данных / решения | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
@@ -239,7 +239,7 @@
 </details>
 
 <details>
-<summary>CAN-01 — Форматы CAN и квалификация RPM/ОЖ: Ожидает данных / решения</summary>
+<summary>CAN-01 — Форматы CAN и квалификация RPM/ОЖ: Выполняется</summary>
 
 **Сделано.** Реальный дескриптор target_engine включается явным профилем и использует единые engine_rx/qualifier/DTC/CAN owner/TML0. Нативные тесты и свежий обмен с Bosch прошли.
 
@@ -253,7 +253,7 @@
 
 **Рекомендуемый чат.** Чат 2 — 01a1f9b1-c11a-7b23-abcf-3214ce643805.
 
-**Резерв удерживает.** Copilot — LFJ8 CAN and torque — 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0.
+**Сейчас выполняет.** Copilot — LFJ8 CAN and torque — 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0.
 
 **Критерий приёмки.** Результат ограничен перечисленными полями и сценариями приёма.
 
@@ -916,6 +916,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-23T22:10:28+00:00 | CAN-01 | resume | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T21:58:08+00:00 | CAN-01 | block | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T21:57:36+00:00 | CAN-01 | heartbeat | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T21:54:57+00:00 | VSS-02 | block | f83154cd-8064-4a50-97e5-c4263880e54b |
@@ -945,4 +946,3 @@
 | 2026-11-21T09:13:36+00:00 | MODE-02 | review | 01a1fa79-892d-7ca3-bb8a-44698892c53e |
 | 2026-11-21T09:13:19+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
 | 2026-11-21T09:13:05+00:00 | TOY-05 | heartbeat | 01a1fa79-a9fd-70c0-80a3-f59592edaf79 |
-| 2026-11-21T09:12:39+00:00 | H03-03 | heartbeat | codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046 |
