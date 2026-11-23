@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-23T21:52:36+00:00**. Изменение № **955**.
+Обновлено UTC: **2026-11-23T21:53:31+00:00**. Изменение № **956**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -34,7 +34,7 @@
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
 | 11 | CAN-04 — Запрос снижения момента по RB | Copilot App — запрос снижения момента CAN LFJ8 \[copilot-416d2a7e-79e0-4acb-8e40-27807c492e55\] | 2026-11-23T20:28:41+00:00 | Запуск M32R GCC 4.8.0 собран до probe-стадии: binutils/source downloaded, MSYS2/MinGW installed, but GCC 4.8 build probes fail in this host; WSL unavailable because virtualization is disabled. No unverified or fake TCM/Bosch BIN produced. |
-| 22 | VSS-02 — Кинематика и параметры реальной скорости | Copilot — VSS-02 H03 sensor profile integration \[f83154cd-8064-4a50-97e5-c4263880e54b\] | 2026-11-23T21:52:16+00:00 | Included pending VSS-02 and overlapping MODE-02 review commits and published branch e7d33267b6a1435433bca7583a73c81c631716c5. Python sensor tests pass (9 config, 11 VSS, 4 hook). Full project check flags 12 imported profile files for retest; M32R/native rerun is blocked because the worktree lacks local/project-paths.json and no H03/M32R GCC path is available. Waiting for exact paths; hardware calibration remains post-image. |
+| 22 | VSS-02 — Кинематика и параметры реальной скорости | Copilot — VSS-02 H03 sensor profile integration \[f83154cd-8064-4a50-97e5-c4263880e54b\] | 2026-11-23T21:53:31+00:00 | Confirmed owner and claim while resuming. Exact H03 path supplied; resume source-only timing/config verification. M32R GCC remains unavailable, so native build retest remains blocked. |
 
 
 ## Результаты на проверке — резерв свободен
@@ -914,6 +914,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-23T21:53:31+00:00 | VSS-02 | heartbeat | f83154cd-8064-4a50-97e5-c4263880e54b |
 | 2026-11-23T21:52:36+00:00 | H03-04 | review | copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5 |
 | 2026-11-23T21:52:16+00:00 | VSS-02 | block | f83154cd-8064-4a50-97e5-c4263880e54b |
 | 2026-11-23T21:49:06+00:00 | DTC-03 | review | copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a |
@@ -943,4 +944,3 @@
 | 2026-11-21T09:11:30+00:00 | DTC-04 | claim | 01a1fa76-922b-7b11-a2f2-346a15d1dc95 |
 | 2026-11-21T09:10:53+00:00 | CAN-01 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-21T09:10:43+00:00 | DTC-02 | review | 01a1fa76-b015-7640-a0ba-433b36dcf55f |
-| 2026-11-21T09:10:36+00:00 | H03-04 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
