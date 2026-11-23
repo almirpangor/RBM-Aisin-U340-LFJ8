@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-23T19:28:22+00:00**. Изменение № **945**.
+Обновлено UTC: **2026-11-23T20:28:41+00:00**. Изменение № **946**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -31,7 +31,7 @@
 
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
-| 11 | CAN-04 — Запрос снижения момента по RB | Copilot App — запрос снижения момента CAN LFJ8 \[copilot-416d2a7e-79e0-4acb-8e40-27807c492e55\] | 2026-11-23T19:28:22+00:00 | Проверены pinned SOURCES: SPEC, R1 commit, S01-S04 и H03 с точными SHA; CAN-04 C fixture и R4 ST10 replay PASS_OFFLINE_ONLY, hardware=false. Для следующего шага (M32R native link/TCM image) требуется M32R GCC 4.8.0; compiler отсутствует в PATH и указанных RBM-Codex tools. |
+| 11 | CAN-04 — Запрос снижения момента по RB | Copilot App — запрос снижения момента CAN LFJ8 \[copilot-416d2a7e-79e0-4acb-8e40-27807c492e55\] | 2026-11-23T20:28:41+00:00 | Запуск M32R GCC 4.8.0 собран до probe-стадии: binutils/source downloaded, MSYS2/MinGW installed, but GCC 4.8 build probes fail in this host; WSL unavailable because virtualization is disabled. No unverified or fake TCM/Bosch BIN produced. |
 
 
 ## Результаты на проверке — резерв свободен
@@ -871,6 +871,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-23T20:28:41+00:00 | CAN-04 | heartbeat | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |
 | 2026-11-23T19:28:22+00:00 | CAN-04 | block | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |
 | 2026-11-23T19:27:38+00:00 | CAN-04 | resume | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |
 | 2026-11-23T19:00:09+00:00 | CAN-04 | block | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |
@@ -900,4 +901,3 @@
 | 2026-11-21T09:04:47+00:00 | CAN-01 | heartbeat | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-21T09:04:29+00:00 | TOY-05 | heartbeat | 01a1fa79-a9fd-70c0-80a3-f59592edaf79 |
 | 2026-11-21T09:03:18+00:00 | H03-04 | heartbeat | codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51 |
-| 2026-11-21T09:01:15+00:00 | TOY-02 | heartbeat | 01a1f9c7-675a-78c3-be98-5bd65e44995c |
