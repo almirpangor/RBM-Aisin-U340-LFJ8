@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 949,
+  "sequence": 950,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -137,33 +137,22 @@
       "based_on_reviews": []
     },
     "H03-04": {
-      "owner": "codex-01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
-      "label": "Codex H03-04 — ранний допуск IRQ и стендовый профиль SPI/PSW",
-      "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+      "owner": "copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5",
+      "label": "Copilot H03-04 memory integration",
+      "branch": "almirpangor-lfj8-h03-platform",
       "files": [
-        "targets/lfj8/check_h03_boot_writers.py",
-        "targets/lfj8/check_h03_ram_owner.py",
-        "targets/lfj8/check_h03_service_guard.py",
-        "targets/lfj8/check_h03_vflash_lockout.py",
-        "targets/lfj8/h03_dma4_guard.S",
-        "targets/lfj8/lfj8_h03_bench_memory.c",
-        "targets/lfj8/lfj8_h03_bench_memory_profile.py",
         "targets/lfj8/lfj8_h03_ram_owner.c",
-        "targets/lfj8/lfj8_h03_ram_owner.h",
-        "targets/lfj8/lfj8_h03_service_placement.py",
-        "targets/lfj8/test_lfj8_h03_ram_owner.c",
-        "tests/test_h03_bench_memory_profile.py",
-        "verification/bench-wave/chat-6/check-composition.py",
-        "verification/bench-wave/chat-6/handoff.json",
-        "verification/bench-wave/chat-6/memory.md"
+        "targets/lfj8/lfj8_h03_target_memory.c"
       ],
-      "stage": "review",
-      "claim_id": "734b4f9d3a9c43f6aaa67927cf88ab12",
-      "claimed_at": "2026-11-21T08:52:24+00:00",
-      "updated_at": "2026-11-21T09:14:22+00:00",
-      "note": "Стендовый профиль и native boot owner, 5 ссылок разрешены в общей композиции. Оба reset, DMA4, service и Virtual Flash PASS в M32R; 94 теста. Полный link и стек от foreground/IRQ отдельно; нижнюю Flash должен доставить квалифицированный режим записи. Подключение и точные результаты в verification/bench-wave/chat-6/handoff.json.",
-      "result": "2718128ed693b9fa2f69da981a7e316e7b106fa1",
-      "based_on_reviews": []
+      "stage": "in_progress",
+      "claim_id": "2287692bc6564719826ff62c12a7d829",
+      "claimed_at": "2026-11-23T21:47:06+00:00",
+      "updated_at": "2026-11-23T21:47:06+00:00",
+      "note": "Continue H03-04 from reviewed SHA 2718128ed693b9fa2f69da981a7e316e7b106fa1; reserve only two unclaimed implementation files, excluding ORG-01's layout checker.",
+      "result": null,
+      "based_on_reviews": [
+        "734b4f9d3a9c43f6aaa67927cf88ab12"
+      ]
     },
     "DTC-04": {
       "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
@@ -16245,9 +16234,35 @@
           "1bfd0b8442764a5e8a833763cc57815a"
         ]
       }
+    },
+    {
+      "operation_id": "8c2362ce13814a5fbe22f1833f37bfb0",
+      "task": "H03-04",
+      "owner": "copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5",
+      "action": "claim",
+      "claim_id": "2287692bc6564719826ff62c12a7d829",
+      "at": "2026-11-23T21:47:06+00:00",
+      "record": {
+        "owner": "copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5",
+        "label": "Copilot H03-04 memory integration",
+        "branch": "almirpangor-lfj8-h03-platform",
+        "files": [
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_target_memory.c"
+        ],
+        "stage": "in_progress",
+        "claim_id": "2287692bc6564719826ff62c12a7d829",
+        "claimed_at": "2026-11-23T21:47:06+00:00",
+        "updated_at": "2026-11-23T21:47:06+00:00",
+        "note": "Continue H03-04 from reviewed SHA 2718128ed693b9fa2f69da981a7e316e7b106fa1; reserve only two unclaimed implementation files, excluding ORG-01's layout checker.",
+        "result": null,
+        "based_on_reviews": [
+          "734b4f9d3a9c43f6aaa67927cf88ab12"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-23T21:46:32+00:00",
+  "updated_at": "2026-11-23T21:47:06+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
