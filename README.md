@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-23T22:10:28+00:00**. Изменение № **962**.
+Обновлено UTC: **2026-11-23T22:16:53+00:00**. Изменение № **963**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 8 · Ожидают с резервом: 2 · Порций на проверке: 11.**
+**В работе: 9 · Ожидают с резервом: 1 · Порций на проверке: 11.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -25,6 +25,7 @@
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
 | 13 | ECU-01 — Проверочная сборка Bosch E4M3 | Copilot — Bosch paired release \[9d4fcd7f-8d30-447e-b31d-6889553c0e20\] | 2026-11-23T21:46:11+00:00 | Continue the paired Bosch release by completing reproducible E4M3 profile assembly and integrity checks. Preserve OFFLINE_ONLY and no vehicle-ready claim. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
+| 22 | VSS-02 — Кинематика и параметры реальной скорости | Copilot — VSS-02 H03 sensor profile integration \[f83154cd-8064-4a50-97e5-c4263880e54b\] | 2026-11-23T22:16:53+00:00 | Toolchain now supplied. Resume source/native VSS-02 reruns with verified m32r-elf-gcc 4.8.0 and the exact H03 base; temporary builds stay under F:\\АКПП. |
 | 30 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Codex чат 10 — чтение статуса NVM \[01a1fa76-b015-7640-a0ba-433b36dcf55f\] | 2026-11-21T09:12:26+00:00 | Поверх сданного a1e1733 включён DTC-04 4842a32. Добавляю условную страницу статуса NVM/SFR для no-media профиля, проверяю реальные ответы через TX13. Без чтения массива, записи и положительного ACK очистки. |
 | 32 | DTC-04 — Хранение DTC после выключения питания | Чат 9 — холодный старт и транспорт NVM \[01a1fa76-922b-7b11-a2f2-346a15d1dc95\] | 2026-11-21T09:11:30+00:00 | Включён 4842a32. Совместный офлайн-прогон действующего холодного callback, профиля NVM и штатного CAN-диагностического пути. Проверю отсутствие ложной очистки и поведение после перепривязки. Файлы действующих резервов TOY-05/DTC-02/CAN-03 не затрагиваю. |
 | — | ORG-01 — Основа проекта и локальная работа | Ведущй — общая сборка и задания для стендовой пары \[codex-integration-01a1f76d-20261120\] | 2026-11-21T09:15:21+00:00 | Опубликованы план и общая инфраструктура 3fe2893. Ведётся приёмка 12 чатов; локально объединены 9/5/10, native NVM/sensor/BasicCAN readout повторно PASS. Выявлен и передан CAN-03 дефект отключения диагностики при недостоверных датчиках. Окончательный native ELF/BIN ещё не собран. |
@@ -34,7 +35,6 @@
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
 | 11 | CAN-04 — Запрос снижения момента по RB | Copilot App — запрос снижения момента CAN LFJ8 \[copilot-416d2a7e-79e0-4acb-8e40-27807c492e55\] | 2026-11-23T20:28:41+00:00 | Запуск M32R GCC 4.8.0 собран до probe-стадии: binutils/source downloaded, MSYS2/MinGW installed, but GCC 4.8 build probes fail in this host; WSL unavailable because virtualization is disabled. No unverified or fake TCM/Bosch BIN produced. |
-| 22 | VSS-02 — Кинематика и параметры реальной скорости | Copilot — VSS-02 H03 sensor profile integration \[f83154cd-8064-4a50-97e5-c4263880e54b\] | 2026-11-23T21:54:57+00:00 | Published a source-only H03 recheck record at a94dee26e1bbc4cee3303454cdc49bc175ad9510. Exact H03 SHA matched; check_h03_sensor_config.py returned PASS_STOCK_ONLY (PRS1=9, TML0CR=0x01, TML1CR=0x31, OEM reloads 225/500 ms); production_sensor_config remains null. M32R/native rerun remains blocked: GCC path unavailable; no host compiler substituted. |
 
 
 ## Результаты на проверке — резерв свободен
@@ -87,7 +87,7 @@
 | 18 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-04) | Свободна для продолжения; порция на проверке | Пять реальных определений/профиль, полный список писателей, linker constraints и доказательства покрытия; стоимость RAM/стеков и сценарии отказа. | См. входные условия карточки |
 | 19 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-05) | Свободна для продолжения; порция на проверке | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | См. входные условия карточки |
 | 21 | [VSS-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-01) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
-| 22 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-02) | Ожидает данных / решения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
+| 22 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-02) | Выполняется | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
 | 24 | [MODE-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-01) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
 | 25 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-02) | Свободна для продолжения; порция на проверке | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | H03-03 |
 | 26 | [MODE-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-03) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
@@ -515,7 +515,7 @@
 </details>
 
 <details>
-<summary>VSS-02 — Кинематика и параметры реальной скорости: Ожидает данных / решения</summary>
+<summary>VSS-02 — Кинематика и параметры реальной скорости: Выполняется</summary>
 
 **Сделано.** Foreground сравнивает относительный ход TML0/TML1; разрыв отзывает эпоху и очищает S51/S83/ATF. Исправлен воспроизведённый дефект 06ab447; добавлено 12 байт типизированного состояния.
 
@@ -529,7 +529,7 @@
 
 **Рекомендуемый чат.** Чат 5 — 01a1f9a8-7b61-7763-adaa-0e3e11d1dbf4.
 
-**Резерв удерживает.** Copilot — VSS-02 H03 sensor profile integration — f83154cd-8064-4a50-97e5-c4263880e54b.
+**Сейчас выполняет.** Copilot — VSS-02 H03 sensor profile integration — f83154cd-8064-4a50-97e5-c4263880e54b.
 
 **Критерий приёмки.** Скорость совпадает с эталоном в согласованном диапазоне, потеря импульсов отличается от остановки.
 
@@ -916,6 +916,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-23T22:16:53+00:00 | VSS-02 | resume | f83154cd-8064-4a50-97e5-c4263880e54b |
 | 2026-11-23T22:10:28+00:00 | CAN-01 | resume | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T21:58:08+00:00 | CAN-01 | block | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T21:57:36+00:00 | CAN-01 | heartbeat | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
@@ -945,4 +946,3 @@
 | 2026-11-21T09:14:03+00:00 | CAN-01 | review | codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3 |
 | 2026-11-21T09:13:36+00:00 | MODE-02 | review | 01a1fa79-892d-7ca3-bb8a-44698892c53e |
 | 2026-11-21T09:13:19+00:00 | H03-05 | review | codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f |
-| 2026-11-21T09:13:05+00:00 | TOY-05 | heartbeat | 01a1fa79-a9fd-70c0-80a3-f59592edaf79 |
