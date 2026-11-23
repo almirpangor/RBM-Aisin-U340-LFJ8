@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-23T22:22:04+00:00**. Изменение № **969**.
+Обновлено UTC: **2026-11-23T22:22:21+00:00**. Изменение № **970**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -25,7 +25,7 @@
 | 13 | ECU-01 — Проверочная сборка Bosch E4M3 | Copilot — Bosch paired release \[9d4fcd7f-8d30-447e-b31d-6889553c0e20\] | 2026-11-23T22:18:35+00:00 | Updating handoff with reproducible Bosch build/check evidence; M32R tools are available but cannot hardware-qualify Bosch. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
 | 30 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Codex чат 10 — чтение статуса NVM \[01a1fa76-b015-7640-a0ba-433b36dcf55f\] | 2026-11-21T09:12:26+00:00 | Поверх сданного a1e1733 включён DTC-04 4842a32. Добавляю условную страницу статуса NVM/SFR для no-media профиля, проверяю реальные ответы через TX13. Без чтения массива, записи и положительного ACK очистки. |
-| 31 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Copilot App — DTC-03 M32R verification \[copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a\] | 2026-11-23T22:19:32+00:00 | Rerun the DTC-03 ATF host/M32R checks enabled by the verified toolchain and record exact artifact results; no DTC-02/DTC-04 claims or ORG-01 integration files. |
+| 31 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Copilot App — DTC-03 M32R verification \[copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a\] | 2026-11-23T22:22:21+00:00 | Host and M32R test_chery_atf_circuit fixtures PASS with artifact SHA recorded in verification/project-audit/dtc03-m32r-rerun.json. H03 native rerun awaits exact base path; DTC-02/DTC-04 untouched. |
 | 32 | DTC-04 — Хранение DTC после выключения питания | Чат 9 — холодный старт и транспорт NVM \[01a1fa76-922b-7b11-a2f2-346a15d1dc95\] | 2026-11-21T09:11:30+00:00 | Включён 4842a32. Совместный офлайн-прогон действующего холодного callback, профиля NVM и штатного CAN-диагностического пути. Проверю отсутствие ложной очистки и поведение после перепривязки. Файлы действующих резервов TOY-05/DTC-02/CAN-03 не затрагиваю. |
 | — | ORG-01 — Основа проекта и локальная работа | Ведущй — общая сборка и задания для стендовой пары \[codex-integration-01a1f76d-20261120\] | 2026-11-21T09:15:21+00:00 | Опубликованы план и общая инфраструктура 3fe2893. Ведётся приёмка 12 чатов; локально объединены 9/5/10, native NVM/sensor/BasicCAN readout повторно PASS. Выявлен и передан CAN-03 дефект отключения диагностики при недостоверных датчиках. Окончательный native ELF/BIN ещё не собран. |
 
@@ -891,6 +891,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-23T22:22:21+00:00 | DTC-03 | heartbeat | copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a |
 | 2026-11-23T22:22:04+00:00 | CAN-01 | review | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T22:21:37+00:00 | VSS-02 | review | f83154cd-8064-4a50-97e5-c4263880e54b |
 | 2026-11-23T22:19:32+00:00 | DTC-03 | claim | copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a |
@@ -920,4 +921,3 @@
 | 2026-11-23T19:00:09+00:00 | CAN-04 | block | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |
 | 2026-11-23T18:46:06+00:00 | CAN-04 | resume | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |
 | 2026-11-23T18:42:47+00:00 | CAN-04 | block | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |
-| 2026-11-23T18:41:10+00:00 | CAN-04 | heartbeat | copilot-416d2a7e-79e0-4acb-8e40-27807c492e55 |

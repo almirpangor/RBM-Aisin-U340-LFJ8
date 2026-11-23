@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 969,
+  "sequence": 970,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -220,8 +220,8 @@
       "stage": "in_progress",
       "claim_id": "603dc4c445b846078f6c08ebe2f5ae81",
       "claimed_at": "2026-11-23T22:19:32+00:00",
-      "updated_at": "2026-11-23T22:19:32+00:00",
-      "note": "Rerun the DTC-03 ATF host/M32R checks enabled by the verified toolchain and record exact artifact results; no DTC-02/DTC-04 claims or ORG-01 integration files.",
+      "updated_at": "2026-11-23T22:22:21+00:00",
+      "note": "Host and M32R test_chery_atf_circuit fixtures PASS with artifact SHA recorded in verification/project-audit/dtc03-m32r-rerun.json. H03 native rerun awaits exact base path; DTC-02/DTC-04 untouched.",
       "result": null,
       "based_on_reviews": [
         "6f672879c0094563b3ad7fef61831ed9"
@@ -16933,9 +16933,35 @@
           "1bfd0b8442764a5e8a833763cc57815a"
         ]
       }
+    },
+    {
+      "operation_id": "358a2f90f96444788e8ddeb5d7303ccd",
+      "task": "DTC-03",
+      "owner": "copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a",
+      "action": "heartbeat",
+      "claim_id": "603dc4c445b846078f6c08ebe2f5ae81",
+      "at": "2026-11-23T22:22:21+00:00",
+      "record": {
+        "owner": "copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a",
+        "label": "Copilot App — DTC-03 M32R verification",
+        "branch": "almirpangor-lfj8-diagnostics-storage",
+        "files": [
+          "verification/project-audit/dtc03-m32r-rerun.json",
+          "verification/project-audit/dtc03-ta2005-p0710.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "603dc4c445b846078f6c08ebe2f5ae81",
+        "claimed_at": "2026-11-23T22:19:32+00:00",
+        "updated_at": "2026-11-23T22:22:21+00:00",
+        "note": "Host and M32R test_chery_atf_circuit fixtures PASS with artifact SHA recorded in verification/project-audit/dtc03-m32r-rerun.json. H03 native rerun awaits exact base path; DTC-02/DTC-04 untouched.",
+        "result": null,
+        "based_on_reviews": [
+          "6f672879c0094563b3ad7fef61831ed9"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-23T22:22:04+00:00",
+  "updated_at": "2026-11-23T22:22:21+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
