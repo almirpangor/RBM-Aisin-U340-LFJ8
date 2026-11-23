@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 944,
+  "sequence": 945,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -344,11 +344,11 @@
         "targets/lfj8/test_lfj8_h03_torque.c",
         "targets/lfj8/verify_h03_torque.py"
       ],
-      "stage": "in_progress",
+      "stage": "blocked",
       "claim_id": "ce83cd1a727f4f35b11669ace40612a6",
       "claimed_at": "2026-11-23T18:39:13+00:00",
-      "updated_at": "2026-11-23T19:27:38+00:00",
-      "note": "H03 LFJ8-T-D.bin найден в указанной владельцем папке; SHA-256 сверена и совпадает с pinned H03. Проверяю provenance/source checks; M32R GCC ещё не найден.",
+      "updated_at": "2026-11-23T19:28:22+00:00",
+      "note": "Проверены pinned SOURCES: SPEC, R1 commit, S01-S04 и H03 с точными SHA; CAN-04 C fixture и R4 ST10 replay PASS_OFFLINE_ONLY, hardware=false. Для следующего шага (M32R native link/TCM image) требуется M32R GCC 4.8.0; compiler отсутствует в PATH и указанных RBM-Codex tools.",
       "result": null,
       "based_on_reviews": []
     },
@@ -16100,9 +16100,36 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "8ca6f575512d4eeebeb9dca4ace5aff6",
+      "task": "CAN-04",
+      "owner": "copilot-416d2a7e-79e0-4acb-8e40-27807c492e55",
+      "action": "block",
+      "claim_id": "ce83cd1a727f4f35b11669ace40612a6",
+      "at": "2026-11-23T19:28:22+00:00",
+      "record": {
+        "owner": "copilot-416d2a7e-79e0-4acb-8e40-27807c492e55",
+        "label": "Copilot App — запрос снижения момента CAN LFJ8",
+        "branch": "copilot/can-04-416d2a7e",
+        "files": [
+          "targets/bosch/replay_e4m3_torque.py",
+          "targets/lfj8/lfj8_h03_torque.c",
+          "targets/lfj8/lfj8_h03_torque.h",
+          "targets/lfj8/test_lfj8_h03_torque.c",
+          "targets/lfj8/verify_h03_torque.py"
+        ],
+        "stage": "blocked",
+        "claim_id": "ce83cd1a727f4f35b11669ace40612a6",
+        "claimed_at": "2026-11-23T18:39:13+00:00",
+        "updated_at": "2026-11-23T19:28:22+00:00",
+        "note": "Проверены pinned SOURCES: SPEC, R1 commit, S01-S04 и H03 с точными SHA; CAN-04 C fixture и R4 ST10 replay PASS_OFFLINE_ONLY, hardware=false. Для следующего шага (M32R native link/TCM image) требуется M32R GCC 4.8.0; compiler отсутствует в PATH и указанных RBM-Codex tools.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-23T19:27:38+00:00",
+  "updated_at": "2026-11-23T19:28:22+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
