@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 953,
+  "sequence": 954,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -543,11 +543,11 @@
         "targets/lfj8/test_lfj8_h03_target_platform.c",
         "verification/project-audit/vss02-h03-sensor-config.md"
       ],
-      "stage": "in_progress",
+      "stage": "blocked",
       "claim_id": "700f8602ef664b24894313c2415fbdb5",
       "claimed_at": "2026-11-23T21:47:31+00:00",
-      "updated_at": "2026-11-23T21:47:31+00:00",
-      "note": "Continue the VSS-02 sensor-clock/profile integration. Preserve 100/22 exactly; derive code/clock parameters from source/register evidence, mark unmeasured calibration explicitly, and do not treat bench fixtures as physical measurements.",
+      "updated_at": "2026-11-23T21:52:16+00:00",
+      "note": "Included pending VSS-02 and overlapping MODE-02 review commits and published branch e7d33267b6a1435433bca7583a73c81c631716c5. Python sensor tests pass (9 config, 11 VSS, 4 hook). Full project check flags 12 imported profile files for retest; M32R/native rerun is blocked because the worktree lacks local/project-paths.json and no H03/M32R GCC path is available. Waiting for exact paths; hardware calibration remains post-image.",
       "result": null,
       "based_on_reviews": [
         "027a36c5f3ef44518bf3ba1bbaf2f464",
@@ -16365,9 +16365,47 @@
         "result": "fd3f5494a3c1fdb9f862c9cd84a6c53ee0875ec6",
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "7a585d94d4514e929b044401d5ecace3",
+      "task": "VSS-02",
+      "owner": "f83154cd-8064-4a50-97e5-c4263880e54b",
+      "action": "block",
+      "claim_id": "700f8602ef664b24894313c2415fbdb5",
+      "at": "2026-11-23T21:52:16+00:00",
+      "record": {
+        "owner": "f83154cd-8064-4a50-97e5-c4263880e54b",
+        "label": "Copilot — VSS-02 H03 sensor profile integration",
+        "branch": "almirpangor-lfj8-sensors-and-modes",
+        "files": [
+          "targets/lfj8/check_h03_application_binding.py",
+          "targets/lfj8/check_h03_sensor_config.py",
+          "targets/lfj8/h03_sensor_hook_fixture.c",
+          "targets/lfj8/lfj8_bridge.h",
+          "targets/lfj8/lfj8_donor_io.c",
+          "targets/lfj8/lfj8_donor_io.h",
+          "targets/lfj8/lfj8_gear_observer.h",
+          "targets/lfj8/lfj8_h03_sensor_feed.c",
+          "targets/lfj8/lfj8_h03_sensor_feed.h",
+          "targets/lfj8/lfj8_h03_sensor_target.c",
+          "targets/lfj8/test_lfj8_h03_sensor_feed.c",
+          "targets/lfj8/test_lfj8_h03_target_platform.c",
+          "verification/project-audit/vss02-h03-sensor-config.md"
+        ],
+        "stage": "blocked",
+        "claim_id": "700f8602ef664b24894313c2415fbdb5",
+        "claimed_at": "2026-11-23T21:47:31+00:00",
+        "updated_at": "2026-11-23T21:52:16+00:00",
+        "note": "Included pending VSS-02 and overlapping MODE-02 review commits and published branch e7d33267b6a1435433bca7583a73c81c631716c5. Python sensor tests pass (9 config, 11 VSS, 4 hook). Full project check flags 12 imported profile files for retest; M32R/native rerun is blocked because the worktree lacks local/project-paths.json and no H03/M32R GCC path is available. Waiting for exact paths; hardware calibration remains post-image.",
+        "result": null,
+        "based_on_reviews": [
+          "027a36c5f3ef44518bf3ba1bbaf2f464",
+          "cee15d1377aa4207a89e2eb78dd96995"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-23T21:49:06+00:00",
+  "updated_at": "2026-11-23T21:52:16+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
