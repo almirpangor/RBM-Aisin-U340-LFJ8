@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 952,
+  "sequence": 953,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -222,12 +222,12 @@
         "targets/lfj8/h03_atf_fault_hook_fixture.c",
         "verification/project-audit/dtc03-ta2005-p0710.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "6f672879c0094563b3ad7fef61831ed9",
       "claimed_at": "2026-11-23T21:46:04+00:00",
-      "updated_at": "2026-11-23T21:48:08+00:00",
-      "note": "Added independent ATF qualified-sample guard and stale/wrap/oversize/invalid tests. Validation blocked locally by missing C compiler and .sources/R1; no DTC-02/DTC-04 files touched.",
-      "result": null,
+      "updated_at": "2026-11-23T21:49:06+00:00",
+      "note": "Independent ATF qualification guard and focused stale/wrap/oversize/invalid tests; project_status check PASS and only four claimed evidence files changed. C fixture not run: no zig/gcc/cl toolchain in worktree/PATH and .sources/R1 unavailable. Real ATF thresholds, measured max_age_us, H03 integration, BIN and hardware remain open.",
+      "result": "fd3f5494a3c1fdb9f862c9cd84a6c53ee0875ec6",
       "based_on_reviews": []
     },
     "TOY-02": {
@@ -16336,9 +16336,38 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "25ec8029a33e4179bad5a14fbf96b6eb",
+      "task": "DTC-03",
+      "owner": "copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a",
+      "action": "review",
+      "claim_id": "6f672879c0094563b3ad7fef61831ed9",
+      "at": "2026-11-23T21:49:06+00:00",
+      "record": {
+        "owner": "copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a",
+        "label": "Copilot App — independent DTC-03 ATF evidence",
+        "branch": "almirpangor-lfj8-diagnostics-storage",
+        "files": [
+          "diagnostics/chery_atf_circuit.c",
+          "diagnostics/chery_atf_circuit.h",
+          "diagnostics/test_chery_atf_circuit.c",
+          "diagnostics/verify_atf_circuit.py",
+          "targets/lfj8/check_h03_atf_fault.py",
+          "targets/lfj8/h03_atf_fault_hook_fixture.c",
+          "verification/project-audit/dtc03-ta2005-p0710.md"
+        ],
+        "stage": "review",
+        "claim_id": "6f672879c0094563b3ad7fef61831ed9",
+        "claimed_at": "2026-11-23T21:46:04+00:00",
+        "updated_at": "2026-11-23T21:49:06+00:00",
+        "note": "Independent ATF qualification guard and focused stale/wrap/oversize/invalid tests; project_status check PASS and only four claimed evidence files changed. C fixture not run: no zig/gcc/cl toolchain in worktree/PATH and .sources/R1 unavailable. Real ATF thresholds, measured max_age_us, H03 integration, BIN and hardware remain open.",
+        "result": "fd3f5494a3c1fdb9f862c9cd84a6c53ee0875ec6",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-23T21:48:08+00:00",
+  "updated_at": "2026-11-23T21:49:06+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -19396,6 +19425,29 @@
       "based_on_reviews": [],
       "task": "H03-04",
       "submitted_at": "2026-11-21T09:14:22+00:00"
+    },
+    "6f672879c0094563b3ad7fef61831ed9": {
+      "owner": "copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a",
+      "label": "Copilot App — independent DTC-03 ATF evidence",
+      "branch": "almirpangor-lfj8-diagnostics-storage",
+      "files": [
+        "diagnostics/chery_atf_circuit.c",
+        "diagnostics/chery_atf_circuit.h",
+        "diagnostics/test_chery_atf_circuit.c",
+        "diagnostics/verify_atf_circuit.py",
+        "targets/lfj8/check_h03_atf_fault.py",
+        "targets/lfj8/h03_atf_fault_hook_fixture.c",
+        "verification/project-audit/dtc03-ta2005-p0710.md"
+      ],
+      "stage": "review",
+      "claim_id": "6f672879c0094563b3ad7fef61831ed9",
+      "claimed_at": "2026-11-23T21:46:04+00:00",
+      "updated_at": "2026-11-23T21:49:06+00:00",
+      "note": "Independent ATF qualification guard and focused stale/wrap/oversize/invalid tests; project_status check PASS and only four claimed evidence files changed. C fixture not run: no zig/gcc/cl toolchain in worktree/PATH and .sources/R1 unavailable. Real ATF thresholds, measured max_age_us, H03 integration, BIN and hardware remain open.",
+      "result": "fd3f5494a3c1fdb9f862c9cd84a6c53ee0875ec6",
+      "based_on_reviews": [],
+      "task": "DTC-03",
+      "submitted_at": "2026-11-23T21:49:06+00:00"
     }
   }
 }
