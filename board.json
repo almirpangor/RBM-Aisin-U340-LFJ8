@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 943,
+  "sequence": 944,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -344,11 +344,11 @@
         "targets/lfj8/test_lfj8_h03_torque.c",
         "targets/lfj8/verify_h03_torque.py"
       ],
-      "stage": "blocked",
+      "stage": "in_progress",
       "claim_id": "ce83cd1a727f4f35b11669ace40612a6",
       "claimed_at": "2026-11-23T18:39:13+00:00",
-      "updated_at": "2026-11-23T19:00:09+00:00",
-      "note": "CAN-04 PC C fixture and R4 ST10 replay passed using exact archived Bosch SHA 624d47d7…; current_pair_hardware_tested=false. Overall TCM release blocked: provided folder has no H03 matching pinned SHA 844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544 or M32R GCC. Need exact base/toolchain paths before native link or TCM BIN.",
+      "updated_at": "2026-11-23T19:27:38+00:00",
+      "note": "H03 LFJ8-T-D.bin найден в указанной владельцем папке; SHA-256 сверена и совпадает с pinned H03. Проверяю provenance/source checks; M32R GCC ещё не найден.",
       "result": null,
       "based_on_reviews": []
     },
@@ -16073,9 +16073,36 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "cdf9a11f45ab48a1b1ccfbaa2bf3e98a",
+      "task": "CAN-04",
+      "owner": "copilot-416d2a7e-79e0-4acb-8e40-27807c492e55",
+      "action": "resume",
+      "claim_id": "ce83cd1a727f4f35b11669ace40612a6",
+      "at": "2026-11-23T19:27:38+00:00",
+      "record": {
+        "owner": "copilot-416d2a7e-79e0-4acb-8e40-27807c492e55",
+        "label": "Copilot App — запрос снижения момента CAN LFJ8",
+        "branch": "copilot/can-04-416d2a7e",
+        "files": [
+          "targets/bosch/replay_e4m3_torque.py",
+          "targets/lfj8/lfj8_h03_torque.c",
+          "targets/lfj8/lfj8_h03_torque.h",
+          "targets/lfj8/test_lfj8_h03_torque.c",
+          "targets/lfj8/verify_h03_torque.py"
+        ],
+        "stage": "in_progress",
+        "claim_id": "ce83cd1a727f4f35b11669ace40612a6",
+        "claimed_at": "2026-11-23T18:39:13+00:00",
+        "updated_at": "2026-11-23T19:27:38+00:00",
+        "note": "H03 LFJ8-T-D.bin найден в указанной владельцем папке; SHA-256 сверена и совпадает с pinned H03. Проверяю provenance/source checks; M32R GCC ещё не найден.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-23T19:00:09+00:00",
+  "updated_at": "2026-11-23T19:27:38+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
