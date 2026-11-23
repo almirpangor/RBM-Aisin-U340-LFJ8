@@ -18,6 +18,10 @@ typedef struct {
     uint32_t manual_max_age_us;
     /* Immutable windows validated on startup. NULL keeps legacy callers. */
     const RbmU340eSelectorProfile *selector_profile;
+    /* Auto-only commissioning with no configured button source. */
+    uint8_t selector_only;
+    /* Require the qualified independent GP-5722.2 input to agree with AN2. */
+    uint8_t require_pn_agreement;
 } Lfj8H03InputBinding;
 
 typedef struct {
@@ -33,7 +37,7 @@ int lfj8_h03_input_startup(const Lfj8H03InputBinding *binding, const Lfj8H03Inpu
 
 typedef struct {
     const Lfj8H03CycleInput *cycle; /* Qualified engine, event, GP and oldest upstream timestamp. */
-    const RbmU340eInput *driver;   /* Gear observation, allowed mask, shift state, donor Auto. */
+    const RbmU340eInput *driver;   /* Gear observation, allowed mask, shift state and donor Auto. */
     const Lfj8H03RangeInputs *range;
     const Lfj8ButtonReading *buttons; /* Current-generation, normalized board capture or NULL. */
     uint32_t generation;
