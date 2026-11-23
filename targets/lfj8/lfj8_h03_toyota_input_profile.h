@@ -19,7 +19,7 @@ static inline int lfj8_h03_profile_reset_toyota_inputs(void)
 {
     const Lfj8H03ToyotaInputCapture *const capture = &RBM_H03_PROFILE_TOYOTA_INPUT_CAPTURE;
     const Lfj8H03InputBinding *const binding = capture->binding;
-    return binding && binding->io == &lfj8_h03_mmio && binding->p1_button_map &&
+    return binding && binding->io == &lfj8_h03_mmio && (binding->p1_button_map || binding->selector_only) &&
         binding->adc == &rbm_h03_selector_adc_state &&
         capture->ram_owned && capture->ram_owned(capture->platform) == 1 &&
         lfj8_h03_input_startup(binding, &RBM_H03_PROFILE_TOYOTA_INPUT_STARTUP);
@@ -32,7 +32,7 @@ static inline int lfj8_h03_profile_sample_toyota_inputs(uint32_t now, uint8_t re
 {
     const Lfj8H03ToyotaInputCapture *const capture = &RBM_H03_PROFILE_TOYOTA_INPUT_CAPTURE;
     const Lfj8H03InputBinding *const binding = capture->binding;
-    return binding && binding->io == &lfj8_h03_mmio && binding->p1_button_map &&
+    return binding && binding->io == &lfj8_h03_mmio && (binding->p1_button_map || binding->selector_only) &&
         capture->ram_owned && capture->ram_owned(capture->platform) == 1 &&
         lfj8_h03_input_capture(binding, NULL, now) &&
         (!requested_gear || binding->control->manual_gear == requested_gear);
