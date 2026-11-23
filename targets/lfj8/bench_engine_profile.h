@@ -3,11 +3,11 @@
 
 #include "lfj8_h03_engine_context.h"
 
-/* H03 stock CONF/BRP and the paired S04 diagnostic TX schedule imply a
- * nominal 2 us per CAN bit and attempts every 8 ms (RPM) / 16 ms (ECT).
- * Use two ECT periods and 4 ms arbitration margin at nominal rate.
- * The 3 us upper bound and the 32 us read bracket are bench limits
- * enforced against qualified TML0, subject to post-flash measurement. */
+/* Stock H03 CONF/BRP and the paired S04 TX schedule imply a nominal 2 us
+ * CAN bit and attempts every 8 ms (RPM) / 16 ms (ECT). The 18,000-tick raw
+ * age is two ECT periods plus 4 ms arbitration at nominal rate. The
+ * 1..3 us bit-time range and 32 us read bracket are engineering bounds,
+ * enforced against qualified TML0; none is a hardware measurement. */
 #define RBM_H03_PROFILE_ENGINE_MAX_AGE_TICKS 18000u
 #define RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US 10000u
 #define RBM_H03_PROFILE_ENGINE_BIT_TIME_US 3u

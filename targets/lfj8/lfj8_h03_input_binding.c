@@ -204,7 +204,9 @@ int lfj8_h03_input_capture_toyota(void *context, const Lfj8H03SensorSnapshot *se
     }
 
     Lfj8H03InputSources sources = {0};
+    const RbmU340eQualifiedEngineFeed engine = input->engine;
     const int captured = capture->read(capture->platform, sensors, due_at, input, load, &sources);
+    input->engine = engine;
     const uint32_t saved = io->enter(io->context);
     int ready = 0;
     if (capture->ram_owned(capture->platform) == 1 && valid_binding(binding)) {
