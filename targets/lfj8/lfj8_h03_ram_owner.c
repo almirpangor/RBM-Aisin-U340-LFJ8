@@ -7,8 +7,11 @@
 #define H03_FLASH_END UINT32_C(0x080000)
 #define H03_RAM_START UINT32_C(0x804000)
 #define H03_RAM_END UINT32_C(0x80A000)
+#define H03_SPI_FIRST UINT32_C(0x809700)
 #define H03_SPI_START UINT32_C(0x809EFC)
+#define H03_PSW_FIRST UINT32_C(0x809F00)
 #define H03_PSW_CURSOR UINT32_C(0x809F9C)
+#define H03_PSW_END (H03_PSW_CURSOR + sizeof(uint32_t))
 #define H03_SBI_SPI_BYTES UINT32_C(40)
 #define H03_SBI_PSW_BYTES UINT32_C(4)
 #define H03_PSW_IE_OR_SM UINT32_C(0xC0)
@@ -285,8 +288,8 @@ static int qualified_layout(const Lfj8H03RamOwner *owner, const Lfj8H03ServicePo
         &monitor, &owner->spi, &owner->psw,
     };
     if (!lfj8_h03_service_span_allowed(policy, 0u, 0u) ||
-        owner->spi.first >= H03_SPI_START || owner->spi.end < H03_SPI_START ||
-        owner->psw.first >= H03_PSW_CURSOR || owner->psw.end <= H03_PSW_CURSOR) {
+        owner->spi.first != H03_SPI_FIRST || owner->spi.end != H03_SPI_START ||
+        owner->psw.first != H03_PSW_FIRST || owner->psw.end != H03_PSW_END) {
         return 0;
     }
     for (unsigned i = 0; i < sizeof required / sizeof required[0]; ++i) {
