@@ -59,3 +59,17 @@ Bosch E4M3 по реестру выпуска остаётся `OFFLINE_ONLY`. �
 - `check_h03_target_platform.py --bench-mode` — startup, CAN lifecycle, Toyota rollover/inhibition, manual/selector native scenarios: `PASS`.
 
 Полные отчёты временных сборок сохранены под `F:\akpp-vss02-*`. Эти проверки подтверждают программные стоки и M32R-модель; они не подтверждают физическую частоту таймеров, абсолютную скорость, геометрию колесо/дифференциал, реальный standstill, антенну/полярность датчиков и приёмку прошитого блока. `production_sensor_config` остаётся `null`; не объявляются готовые или прошиваемые два BIN.
+
+## Typed exports and expanded-layout rerun (24.11.2026)
+
+Using M32R GCC 4.8.0 and the same H03 SHA-256, `check_h03_storage.py` measured the typed H03 ABI model and `check_h03_can_monitor_revoke.py` completed its native RAM-alias and aggregate-placement checks. The VSS state exports are already mapped by `lfj8_h03_can_service_placement.py` to fields in the typed control block without allocating duplicate storage:
+
+| Symbol | Typed field | Candidate address range |
+| --- | --- | --- |
+| `rbm_h03_sensor_state` | `control/sensors` | `[0x806ED8, 0x806EFC)` |
+| `rbm_h03_tml0_1mhz_qualified` | `control/clock_qualified` | `[0x806F14, 0x806F15)` |
+| `rbm_h03_selector_adc_state` | `control/selector_adc` | `[0x806F2C, 0x806F38)` |
+
+These are address-model aliases, not an accepted production RAM assignment: the report keeps `aliases_allocate_new_ram=false` and `hardware_ram_ownership_verified=false`. Native H03 sensor-hook checks again passed, and the stock sensor audit again returned `PASS_STOCK_ONLY` with `production_sensor_config=null`.
+
+The expanded `check_h03_image_layout.py` run with bindings, DTC RX, CAN service, the padding candidate and the typed storage report stopped at `FAIL_BINDINGS`: `rbm_h03_sensor_config` and `rbm_h03_application_binding` remain unresolved. The sensor configuration is intentionally not synthesized from `PASS_STOCK_ONLY`; the only checked-in definition is the `OEM_NOMINAL` bench provider in `bench_sensor_profile.c`. An accepted paired TML0/TML1 clock reference and H03 calibration profile are still required to generate a production sensor config. Absolute clock rates, S51/S83 operating limits, S83 edges per revolution, ATF capture-to-publication age, and selector electrical/input mapping remain unmeasured or unconfirmed. No hardware RAM ownership, hardware acceptance, or flashable image is claimed.
