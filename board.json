@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1015,
+  "sequence": 1016,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -302,8 +302,8 @@
       "stage": "in_progress",
       "claim_id": "6e1c036c5cc7436590b1e7c909edb2d2",
       "claimed_at": "2026-11-24T05:09:17+00:00",
-      "updated_at": "2026-11-24T05:09:17+00:00",
-      "note": "Independent MODE-02 slice: document executable ADC/input commissioning and exact source-vs-hardware evidence; do not change production profile or shared aggregates.",
+      "updated_at": "2026-11-24T06:46:28+00:00",
+      "note": "Closeout: main/script refreshed; reviewing exact report commit and scoped checks before review/block.",
       "result": null,
       "based_on_reviews": [
         "027a36c5f3ef44518bf3ba1bbaf2f464"
@@ -18227,9 +18227,34 @@
           "8e8333c68a8848a6878a3cb87d244a76"
         ]
       }
+    },
+    {
+      "operation_id": "3d6f9447f03e472da4a6187fa6416769",
+      "task": "MODE-02",
+      "owner": "b9841cd6-bb32-4ab5-a5d7-3d1df09009f5",
+      "action": "heartbeat",
+      "claim_id": "6e1c036c5cc7436590b1e7c909edb2d2",
+      "at": "2026-11-24T06:46:28+00:00",
+      "record": {
+        "owner": "b9841cd6-bb32-4ab5-a5d7-3d1df09009f5",
+        "label": "LFJ8 selector measurement contract",
+        "branch": "almirpangor2-debug-lfj8-selector-measurement-contract",
+        "files": [
+          "verification/bench-wave/chat-selector-measurement-contract.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "6e1c036c5cc7436590b1e7c909edb2d2",
+        "claimed_at": "2026-11-24T05:09:17+00:00",
+        "updated_at": "2026-11-24T06:46:28+00:00",
+        "note": "Closeout: main/script refreshed; reviewing exact report commit and scoped checks before review/block.",
+        "result": null,
+        "based_on_reviews": [
+          "027a36c5f3ef44518bf3ba1bbaf2f464"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:46:14+00:00",
+  "updated_at": "2026-11-24T06:46:28+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
