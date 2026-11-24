@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-24T05:10:25+00:00**. Изменение № **986**.
+Обновлено UTC: **2026-11-24T05:59:44+00:00**. Изменение № **987**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 9 · Ожидают с резервом: 1 · Порций на проверке: 16.**
+**В работе: 10 · Ожидают с резервом: 1 · Порций на проверке: 16.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -21,6 +21,7 @@
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
 | 6 | TOY-05 — Обучение и сохранение адаптаций | Codex 12 — TOY-05, стартовое состояние первой стендовой пары \[01a1fa79-a9fd-70c0-80a3-f59592edaf79\] | 2026-11-21T09:13:05+00:00 | По поручению ведущего переношу сброс DTC RAM в защищённый холодный вход. Application C и транспорт остаются у текущих владельцев. |
+| 7 | TOY-06 — Блокировка гидротрансформатора SLU | Copilot TOY-06 SLU command \[631778fb-a3af-4621-8fcd-9b34d66cd355\] | 2026-11-24T05:59:44+00:00 | Implement software-defined SLU/output command and safe revoke only; physical channel and response remain unverified. |
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
 | 13 | ECU-01 — Проверочная сборка Bosch E4M3 | Copilot — Bosch paired release \[9d4fcd7f-8d30-447e-b31d-6889553c0e20\] | 2026-11-24T05:07:50+00:00 | ECU-01 source/candidate status refreshed for REL-01; ordinary signal/build checks PASS OFFLINE_ONLY, hardware/installed-ECU match false. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
@@ -79,7 +80,7 @@
 | 4 | [TOY-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-03) | Свободна для продолжения | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
 | 5 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-04) | Свободна для продолжения | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, TOY-03, H03-03, MODE-02 |
 | 6 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-05) | Выполняется | Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений. | TOY-04, H03-04 |
-| 7 | [TOY-06](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-06) | Свободна для продолжения | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, H03-05 |
+| 7 | [TOY-06](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-06) | Выполняется | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, H03-05 |
 | 8 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-01) | Свободна для продолжения; порция на проверке | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
 | 9 | [CAN-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-02) | Свободна для продолжения | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
 | 10 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-03) | Выполняется | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | H03-04 |
@@ -221,7 +222,7 @@
 </details>
 
 <details>
-<summary>TOY-06 — Блокировка гидротрансформатора SLU: Свободна для продолжения</summary>
+<summary>TOY-06 — Блокировка гидротрансформатора SLU: Выполняется</summary>
 
 **Сделано.** Объединённый результат 21.11.2026: 18 штатных сценариев M32R: Shift E/P31 (Mazda TCC 1H) отключается при общем inhibit и P0773, а TIO9/P97 сохраняет PWM. Проверены штатные входы ATF/питания и пороги TIO9. Повторены 6 сценариев арбитра и 59 мониторов. Для Toyota SLU открыты физический канал, отдельное отключение, калибровка и полный снимок. Отчёт toy06-h03-slu-output-paths.md.
 
@@ -235,7 +236,7 @@
 
 **Рекомендуемый чат.** Чат 7 — 01a1f9a2-d0ae-78d3-86f1-21b27426fd3f.
 
-**Исполнитель сейчас.** Задача не занята.
+**Сейчас выполняет.** Copilot TOY-06 SLU command — 631778fb-a3af-4621-8fcd-9b34d66cd355.
 
 **Критерий приёмки.** Трасса от квалифицированных входов до канала H03, проверка скольжения, удержания и снятия по отказу.
 
@@ -756,7 +757,6 @@
 | TOY-02 | На проверке | Чат 4 — нативные входы Toyota и сырой Bosch CAN | codex/toy02-load-evidence-01a1f9c7 | Сырой контракт Bosch 0x6B2, приём стабильной BasicCAN копии и штатный H03 capture вместо test_input_capture собраны. ПК/M32R RX→GP прошли; найдены все 8 writer S01 и бит режима, сверены 198 инструкций, повторены C167 и аудит CAN. Остались издатель, dispatch, порядок первого release и обоснованные project_load/read_local. Handoff verification/bench-wave/chat-4/handoff.json. / commit 7a7ac7f97d328cd6f5de88f02c043b1f8b21efac |
 | TOY-03 | Порция принята | Codex TOY-03 — допуск независимого P/N | codex/toy03-independent-pn-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 3f2596f31930203fe9cd7918e9b62f81ea82699c |
 | TOY-04 | Порция принята | Codex TOY-04 — ручная заявка в цикле | codex/toy04-manual-cycle-892d | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit c7b0568cde39ddc27e71432e5028db9c9a351e16 |
-| TOY-06 | Порция принята | Codex TOY-06 — штатные выходы H03 | codex/toy06-native-lockup-output-01a1f9a2 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 4baf99ccd587811223aa05bc44460053dbade903 |
 | CAN-01 | На проверке | Copilot — LFJ8 CAN and torque | almirpangor-lfj8-can-and-torque | Published commit 50202944bbe2206d79c948757752b5a3e7669007. PC evidence: controller host tests PASS under GCC 16.2 after demoting only legacy array-parameter, misleading-indentation, and missing-braces warnings; input-binding fixture compiled with -Werror and PASS; exact-H03 engine-context host replay PASS. M32R evidence: GCC 4.8.0 target m32r-elf; controller target build/simulator suite PASS; check_h03_input_binding.py PASS on M32R simulator; exact-H03 engine-context replay PASS on host and M32R simulator. H03 base: 524288 bytes, SHA-256 844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544. Pinned Bosch trace SHA-256 e9df9cbcae6eb741b9863688f7bbacd16f19064c063b76549f8b56939ca03b4b. Test ELF SHA-256 43a8448beb0b27773034fc4363f4236a2f92be9fb8d8507862a537089f06e716; M32R controller object SHA-256 13b42c89f3af237bbdc1307149918328561f0226f1443706d53160fc23c36ead. Simulator --version is unsupported; executable SHA-256 85D3CAD2770065C4F4A31571C924F092B8AA1AAC9C6C22F504A64E1003E87F38. Hardware not tested; no flashable image or release BIN created. Full release target-link/integrity gates remain outstanding. GCC 4.8 reports stack-usage computation unsupported for M32R. Independent FA7B fallback is unavailable and remains FF; timing values are engineering bounds, not measurements. project_status --check still reports changed files pending review/retest; no shared audit/registry files were modified. / commit 50202944bbe2206d79c948757752b5a3e7669007 |
 | CAN-02 | Порция принята | Codex CAN-02 — деградация скорости в телеметрии H03 | codex/can02-telemetry-availability-fea1b366 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit d87bf6438a30efd448feb8cac1d732f7d677a20c |
 | CAN-05 | Порция принята | Codex CAN-05 — время приёма ST10 | codex/can05-st10-bound-t4-01a1f9a2 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit f3bb5000ebfdaaa30a33665bac1eab06ddb9165c |
@@ -889,6 +889,17 @@
 - targets/lfj8/h03_bench_startup_fixture.c
 - verification/bench-wave/chat-12/handoff.json
 
+### TOY-06
+
+Чат: Copilot TOY-06 SLU command. Claim ID: d555acaf033d4dd2a9f3e77e36f3d6dd.
+
+- targets/lfj8/check_toyota_slu.py
+- targets/lfj8/lfj8_h03_cycle.c
+- targets/lfj8/lfj8_h03_outputs.h
+- targets/lfj8/lfj8_h03_slu.c
+- targets/lfj8/lfj8_h03_slu.h
+- targets/lfj8/test_lfj8_h03_cycle.c
+
 ### VSS-02
 
 Чат: Copilot LFJ8 sensor measurement contract. Claim ID: b1e4a5f6767647a0b73dba524a900759.
@@ -899,6 +910,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-24T05:59:44+00:00 | TOY-06 | claim | 631778fb-a3af-4621-8fcd-9b34d66cd355 |
 | 2026-11-24T05:10:25+00:00 | VSS-02 | claim | copilot-lfj8-sensor-contract-a4a37091 |
 | 2026-11-24T05:09:17+00:00 | MODE-02 | claim | b9841cd6-bb32-4ab5-a5d7-3d1df09009f5 |
 | 2026-11-24T05:07:50+00:00 | ECU-01 | heartbeat | 9d4fcd7f-8d30-447e-b31d-6889553c0e20 |
@@ -928,4 +940,3 @@
 | 2026-11-23T21:57:36+00:00 | CAN-01 | heartbeat | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T21:54:57+00:00 | VSS-02 | block | f83154cd-8064-4a50-97e5-c4263880e54b |
 | 2026-11-23T21:54:13+00:00 | CAN-01 | heartbeat | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
-| 2026-11-23T21:53:46+00:00 | VSS-02 | resume | f83154cd-8064-4a50-97e5-c4263880e54b |
