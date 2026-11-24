@@ -184,8 +184,8 @@ static Lfj8H03CycleResult cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *runti
     const Lfj8H03CycleInput *input, Lfj8H03CycleWorkspace *work, Lfj8H03MainResult *result,
     const Lfj8H03CycleLoad *load, const Lfj8H03CycleSlu *slu, SluStage run_slu)
 {
-    if (slu && slu->output) {
-        *slu->output = (Lfj8H03SluOutput){0};
+    if (slu) {
+        lfj8_h03_slu_output_revoke(slu->output);
     }
     if (!result) {
         return LFJ8_H03_CYCLE_FAULT;
@@ -269,7 +269,7 @@ static Lfj8H03CycleResult cycle_tick(Lfj8H03Cycle *cycle, RbmU340eRuntime *runti
     cycle->faulted = 1u;
     *result = (Lfj8H03MainResult){0};
     if (slu) {
-        *slu->output = (Lfj8H03SluOutput){0};
+        lfj8_h03_slu_output_revoke(slu->output);
     }
     return LFJ8_H03_CYCLE_FAULT;
 }

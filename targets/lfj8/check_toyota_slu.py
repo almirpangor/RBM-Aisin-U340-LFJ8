@@ -54,6 +54,22 @@ class SluCommand(C.Structure):
                 ("force", C.c_bool)]
 
 
+class SluSecondaryResult(C.Structure):
+    _fields_ = [("pressure_7136", C.c_uint16), ("command", SluCommand)]
+
+
+class SluOutput(C.Structure):
+    _fields_ = [("result", SluSecondaryResult), ("command_at", C.c_uint32), ("event", C.c_uint32),
+                ("valid", C.c_uint8), ("post_reset_flags_1636", C.c_uint8),
+                ("post_reset_offset_7028", C.c_int16)]
+
+
+class SluDemand(C.Structure):
+    _fields_ = [("selected_7246", C.c_uint16), ("characteristic_7130", C.c_uint16),
+                ("event", C.c_uint32), ("command_at", C.c_uint32),
+                ("force", C.c_uint8), ("valid", C.c_uint8)]
+
+
 class SecondaryInput(C.Structure):
     _fields_ = [("baseline_7026", C.c_uint16), ("override_7082", C.c_uint16),
                 ("temperature_7184", C.c_uint16), ("offset_7028", C.c_int16), ("offset_7030", C.c_int16),
@@ -83,6 +99,49 @@ class BaselineState(C.Structure):
 
 class SluDiagnostics(C.Structure):
     _fields_ = [("flags_4829", C.c_uint8), ("low_age_4741", C.c_uint8), ("high_age_4740", C.c_uint8)]
+
+
+def compare_slu_demand(h03):
+    demand_from_output = h03.lfj8_h03_slu_demand_from_output
+    demand_from_output.argtypes = [C.POINTER(SluOutput), C.c_uint32, C.c_uint32, C.c_uint32,
+                                   C.POINTER(SluDemand)]
+    demand_from_output.restype = C.c_bool
+    output = SluOutput(SluSecondaryResult(12000, SluCommand(13600, 4321, True)),
+                       0xFFFFFFF0, 9, 1, 0, 0)
+    demand = SluDemand(1, 2, 3, 4, 1, 1)
+    assert demand_from_output(C.byref(output), 9, 0x10, 32, C.byref(demand))
+    assert (demand.valid, demand.event, demand.command_at, demand.selected_7246,
+            demand.characteristic_7130, demand.force) == (1, 9, 0xFFFFFFF0, 13600, 4321, 1)
+
+    cases = (
+        (C.byref(output), 10, 0x10, 32),
+        (C.byref(output), 9, 0x11, 32),
+        (C.byref(output), 9, 0x10, 0x80000000),
+    )
+    rejected = 0
+
+    def assert_revoked(candidate):
+        assert (candidate.selected_7246, candidate.characteristic_7130, candidate.event,
+                candidate.command_at, candidate.force, candidate.valid) == (0, 0, 0, 0, 0, 0)
+
+    for candidate_output, event, now, max_age in cases:
+        demand = SluDemand(1, 2, 3, 4, 1, 1)
+        assert not demand_from_output(candidate_output, event, now, max_age, C.byref(demand))
+        assert_revoked(demand)
+        rejected += 1
+
+    output.valid = 2
+    demand = SluDemand(1, 2, 3, 4, 1, 1)
+    assert not demand_from_output(C.byref(output), 9, 0x10, 32, C.byref(demand))
+    assert_revoked(demand)
+    output.valid = 1
+    output.command_at = 0x11
+    demand = SluDemand(1, 2, 3, 4, 1, 1)
+    assert not demand_from_output(C.byref(output), 9, 0x10, 32, C.byref(demand))
+    assert_revoked(demand)
+    assert not demand_from_output(None, 9, 0x10, 32, C.byref(demand))
+    assert_revoked(demand)
+    return {"fresh_candidates": 1, "rejected_and_zeroed": rejected + 3}
 
 
 def compare_stage_boundaries(reference, h03):
@@ -582,6 +641,7 @@ def verify(r1, r3, compiler, m32r=None):
         try:
             coverage = compare(library, projection, rom)
             coverage["stage_boundaries"] = compare_stage_boundaries(library, projection)
+            coverage["logical_output_demand"] = compare_slu_demand(projection)
         finally:
             if os.name == "nt":
                 from _ctypes import FreeLibrary

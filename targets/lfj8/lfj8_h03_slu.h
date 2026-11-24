@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "lfj8_h03_outputs.h"
+
 typedef struct {
     uint16_t pressure_7136;
     uint8_t selector_4544;
@@ -116,5 +118,18 @@ typedef struct {
     uint8_t post_reset_flags_1636;
     int16_t post_reset_offset_7028;
 } Lfj8H03SluOutput;
+
+/* Clear the published logical command. This does not write or inhibit
+ * hardware; the physical SLU channel and response remain unverified. */
+void lfj8_h03_slu_output_revoke(Lfj8H03SluOutput *output);
+
+/* Copy a fresh command into a donor-unit demand for software handoff only.
+ * The caller supplies the qualified event clock and age limit. Rejection
+ * clears demand, including any previously published command; call on every
+ * event so a cleared cycle output revokes the prior demand. No physical
+ * channel, scale, or actuator permission is inferred. */
+bool lfj8_h03_slu_demand_from_output(const Lfj8H03SluOutput *output,
+                                     uint32_t expected_event, uint32_t now_us,
+                                     uint32_t max_age_us, Lfj8H03SluDemand *demand);
 
 #endif

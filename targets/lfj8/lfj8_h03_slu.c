@@ -4,6 +4,41 @@
 
 #include "factory_core.h"
 
+void lfj8_h03_slu_output_revoke(Lfj8H03SluOutput *output)
+{
+    if (output) {
+        *output = (Lfj8H03SluOutput){0};
+    }
+}
+
+bool lfj8_h03_slu_demand_from_output(const Lfj8H03SluOutput *output,
+                                     uint32_t expected_event, uint32_t now_us,
+                                     uint32_t max_age_us, Lfj8H03SluDemand *demand)
+{
+    if (!demand) {
+        return false;
+    }
+    *demand = (Lfj8H03SluDemand){0};
+    if (!output || output->valid != 1u || output->event != expected_event ||
+        max_age_us >= UINT32_C(0x80000000)) {
+        return false;
+    }
+
+    const uint32_t age = now_us - output->command_at;
+    if (age >= UINT32_C(0x80000000) || age > max_age_us) {
+        return false;
+    }
+    *demand = (Lfj8H03SluDemand){
+        .selected_7246 = output->result.command.selected_7246,
+        .characteristic_7130 = output->result.command.characteristic_7130,
+        .event = output->event,
+        .command_at = output->command_at,
+        .force = output->result.command.force ? 1u : 0u,
+        .valid = 1u,
+    };
+    return true;
+}
+
 void lfj8_h03_slu_reset_secondary(Lfj8H03SluSecondaryInput *input)
 {
     input->flags_1636 &= (uint8_t)~0x02u;

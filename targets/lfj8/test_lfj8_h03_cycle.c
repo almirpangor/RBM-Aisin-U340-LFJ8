@@ -297,6 +297,7 @@ typedef struct {
     Lfj8H03SluSnapshot sample;
     Lfj8H03SluState slu;
     Lfj8H03SluOutput output;
+    Lfj8H03SluDemand demand;
     uint32_t now;
 } SluFixture;
 
@@ -332,10 +333,51 @@ static void prepare_slu(SluFixture *fixture)
 
 static Lfj8H03CycleResult tick_slu(SluFixture *fixture, const Lfj8H03SluSnapshot *sample)
 {
-    return lfj8_h03_cycle_tick_with_slu(&fixture->cycle, &fixture->runtime,
+    const Lfj8H03CycleResult status = lfj8_h03_cycle_tick_with_slu(&fixture->cycle, &fixture->runtime,
         &fixture->input, &fixture->work, &fixture->result,
         (Lfj8H03CycleLoad){.sample = &fixture->load, .now_us = fixture->now, .max_age_us = 40u},
         (Lfj8H03CycleSlu){sample, &fixture->slu, &fixture->output});
+    (void)lfj8_h03_slu_demand_from_output(&fixture->output, fixture->input.event,
+                                          fixture->now, 40u, &fixture->demand);
+    return status;
+}
+
+static void test_slu_demand_revoke(void)
+{
+    Lfj8H03SluOutput output = {
+        .result = {.pressure_7136 = 12000u,
+                   .command = {.selected_7246 = 13600u, .characteristic_7130 = 4321u, .force = true}},
+        .command_at = UINT32_MAX - 15u, .event = 9u, .valid = 1u,
+        .post_reset_flags_1636 = 0xffu, .post_reset_offset_7028 = 123,
+    };
+    Lfj8H03SluDemand demand = {
+        .selected_7246 = 1u, .characteristic_7130 = 2u, .event = 3u,
+        .command_at = 4u, .force = 1u, .valid = 1u,
+    };
+
+    assert(lfj8_h03_slu_demand_from_output(&output, 9u, 16u, 32u, &demand));
+    assert(demand.valid && demand.event == 9u && demand.command_at == output.command_at);
+    assert(demand.selected_7246 == 13600u && demand.characteristic_7130 == 4321u && demand.force == 1u);
+
+    assert(!lfj8_h03_slu_demand_from_output(&output, 10u, 16u, 32u, &demand));
+    assert(!demand.valid && !demand.selected_7246 && !demand.characteristic_7130 &&
+           !demand.event && !demand.command_at && !demand.force);
+    assert(!lfj8_h03_slu_demand_from_output(&output, 9u, 17u, 32u, &demand));
+    assert(!demand.valid && !demand.selected_7246);
+    assert(!lfj8_h03_slu_demand_from_output(&output, 9u, 16u, UINT32_C(0x80000000), &demand));
+    assert(!demand.valid && !demand.selected_7246);
+
+    output.valid = 2u;
+    assert(!lfj8_h03_slu_demand_from_output(&output, 9u, 16u, 32u, &demand));
+    output.valid = 1u;
+    output.command_at = 17u;
+    assert(!lfj8_h03_slu_demand_from_output(&output, 9u, 16u, 32u, &demand));
+    output.command_at = UINT32_MAX - 15u;
+    lfj8_h03_slu_output_revoke(&output);
+    assert(!output.valid && !output.event && !output.command_at && !output.result.pressure_7136 &&
+           !output.result.command.selected_7246 &&
+           !output.result.command.characteristic_7130 && !output.result.command.force);
+    assert(!output.post_reset_flags_1636 && !output.post_reset_offset_7028);
 }
 
 static void test_slu_schedule(void)
@@ -374,6 +416,10 @@ static void test_slu_schedule(void)
         assert(result == (secondary && (index & 1u) == 0u ? LFJ8_H03_CYCLE_MAIN : LFJ8_H03_CYCLE_NO_MAIN));
         if (secondary) {
             assert(fixture.output.valid && fixture.output.event == fixture.input.event);
+            assert(fixture.demand.valid && fixture.demand.event == fixture.input.event);
+            assert(fixture.demand.command_at == fixture.output.command_at &&
+                   fixture.demand.selected_7246 == fixture.output.result.command.selected_7246 &&
+                   fixture.demand.characteristic_7130 == fixture.output.result.command.characteristic_7130);
             assert(fixture.output.command_at == (index == 3u ? fixture.load.sampled_at : fixture.sample.sampled_at));
             assert(fixture.output.result.pressure_7136 == pressure[index]);
             assert(fixture.output.result.command.selected_7246 == 25600u - pressure[index]);
@@ -387,11 +433,12 @@ static void test_slu_schedule(void)
             const unsigned mask = result == LFJ8_H03_CYCLE_MAIN ? 0xfeu : 0xffu;
             assert((read_gp(&fixture.runtime, -4829, 1u) & mask) == (flags_out[index] & mask));
             assert(tick_slu(&fixture, NULL) == LFJ8_H03_CYCLE_NO_MAIN);
-            assert(!fixture.output.valid && read_gp(&fixture.runtime, -4735, 1u) == timer[index]);
+            assert(!fixture.output.valid && !fixture.demand.valid &&
+                   read_gp(&fixture.runtime, -4735, 1u) == timer[index]);
             assert(read_gp(&fixture.runtime, -4741, 2u) == ages_out[index]);
         } else {
             const bool advances = (step & 3u) == 2u && (phase & 1u) == 0u;
-            assert(!fixture.output.valid);
+            assert(!fixture.output.valid && !fixture.demand.valid);
             assert(read_gp(&fixture.runtime, -4735, 1u) == before + (advances && before < 255u));
             assert(read_gp(&fixture.runtime, -4741, 1u) == low_age + (advances && low_age < 255u));
             assert(read_gp(&fixture.runtime, -4740, 1u) == high_age + (advances && high_age < 255u));
@@ -400,7 +447,8 @@ static void test_slu_schedule(void)
     prepare_slu(&fixture);
     ++fixture.input.event;
     assert(tick_slu(&fixture, &fixture.sample) == LFJ8_H03_CYCLE_FAULT);
-    assert(fixture.cycle.faulted && !fixture.output.valid && fixture.output.result.pressure_7136 == 0u);
+    assert(fixture.cycle.faulted && !fixture.output.valid && !fixture.demand.valid &&
+           fixture.output.result.pressure_7136 == 0u);
     assert(read_gp(&fixture.runtime, -4735, 1u) == timer[4]);
 }
 
@@ -428,8 +476,13 @@ static void test_slu_refusals(void)
             .valid = 1u, .result.pressure_7136 = 9999u,
             .post_reset_flags_1636 = 0xffu, .post_reset_offset_7028 = 123,
         };
+        fixture.demand = (Lfj8H03SluDemand){
+            .selected_7246 = 1u, .characteristic_7130 = 2u, .event = 3u,
+            .command_at = 4u, .force = 1u, .valid = 1u,
+        };
         assert(tick_slu(&fixture, which ? &fixture.sample : NULL) == LFJ8_H03_CYCLE_FAULT);
-        assert(fixture.cycle.faulted && !fixture.result.valid && !fixture.output.valid);
+        assert(fixture.cycle.faulted && !fixture.result.valid &&
+               !fixture.output.valid && !fixture.demand.valid);
         assert(fixture.output.result.pressure_7136 == 0u && fixture.slu.previous_mode_1637 == 0u);
         assert(fixture.output.post_reset_flags_1636 == 0u && fixture.output.post_reset_offset_7028 == 0);
         assert(read_gp(&fixture.runtime, -4735, 1u) == 255u);
@@ -440,6 +493,8 @@ static void test_slu_refusals(void)
 
 int main(void)
 {
+    test_slu_demand_revoke();
+    puts("SLU logical demand: event, age, wraparound and revoke checks passed.");
     test_slu_schedule();
     test_slu_refusals();
     puts("SLU SECONDARY: 5 publications, reset, diagnostic gates, FAST timers and 7 refusals PASS");

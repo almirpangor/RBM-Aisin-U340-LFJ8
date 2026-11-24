@@ -59,6 +59,16 @@ typedef struct {
     uint8_t on;
 } Lfj8H03DiscreteCommand;
 
+/* Donor-unit SLU request only; it is not an H03 channel, scale, or apply plan. */
+typedef struct {
+    uint16_t selected_7246;         /* Toyota donor units. */
+    uint16_t characteristic_7130;   /* Toyota donor characteristic. */
+    uint32_t event;                  /* Qualified cycle event. */
+    uint32_t command_at;             /* Oldest qualified input timestamp. */
+    uint8_t force;                   /* Donor branch selection, not output authority. */
+    uint8_t valid;                   /* Fresh software candidate only. */
+} Lfj8H03SluDemand;
+
 typedef struct {
     Lfj8H03DiscreteCommand discrete[5];
     uint8_t discrete_count;
