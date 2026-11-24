@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-24T04:48:14+00:00**. Изменение № **981**.
+Обновлено UTC: **2026-11-24T04:48:43+00:00**. Изменение № **982**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 7 · Ожидают с резервом: 2 · Порций на проверке: 15.**
+**В работе: 7 · Ожидают с резервом: 1 · Порций на проверке: 16.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -33,7 +33,6 @@
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
 | 11 | CAN-04 — Запрос снижения момента по RB | Copilot App — запрос снижения момента CAN LFJ8 \[copilot-416d2a7e-79e0-4acb-8e40-27807c492e55\] | 2026-11-23T20:28:41+00:00 | Запуск M32R GCC 4.8.0 собран до probe-стадии: binutils/source downloaded, MSYS2/MinGW installed, but GCC 4.8 build probes fail in this host; WSL unavailable because virtualization is disabled. No unverified or fake TCM/Bosch BIN produced. |
-| 22 | VSS-02 — Кинематика и параметры реальной скорости | Copilot H03 sensor production exports \[2a528e3d-3ef6-473c-a1f9-4222181d2edf\] | 2026-11-24T04:48:14+00:00 | Native evidence persisted in verification/project-audit/vss02-h03-sensor-config.md. Three state exports already map to typed candidate RAM fields; no accepted RAM ownership. Expanded layout still lacks rbm_h03_sensor_config and application profile. Do not edit tools/check_h03_image_layout.py or tests/test_h03_image.py while ORG-01 owns them. Keep production sensor config unresolved until actual paired clock and calibration evidence; no stock-only fallback. |
 
 
 ## Результаты на проверке — резерв свободен
@@ -58,6 +57,7 @@
 | TOY-02 | Чат 4 — нативные входы Toyota и сырой Bosch CAN | [7a7ac7f97d32](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/7a7ac7f97d328cd6f5de88f02c043b1f8b21efac) | 5d84c76a488c45b6bf0b82f1f835af45 | Сырой контракт Bosch 0x6B2, приём стабильной BasicCAN копии и штатный H03 capture вместо test_input_capture собраны. ПК/M32R RX→GP прошли; найдены все 8 writer S01 и бит режима, сверены 198 инструкций, повторены C167 и аудит CAN. Остались издатель, dispatch, порядок первого release и обоснованные project_load/read_local. Handoff verification/bench-wave/chat-4/handoff.json. |
 | VSS-02 | Codex 5 — нативный стендовый профиль TML0/S51/S83/ATF | [18dcf51f3a76](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/18dcf51f3a765f2d660e142003999cbf627782f4) | cee15d1377aa4207a89e2eb78dd96995 | Нативный OEM_NOMINAL профиль TML0/TML1, S51/S83/ATF и raw capture опубликован. M32R PASS. Интегратору подобрать размещение и подключить согласованный транспорт raw capture. Стендовых замеров и BIN в этой порции нет. |
 | VSS-02 | Copilot — VSS-02 H03 sensor profile integration | [a61f97304725](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/a61f973047258103fde0a3e7c9592eb053fa9a67) | 700f8602ef664b24894313c2415fbdb5 | Published VSS-02 source and M32R/native rerun: exact H03 SHA PASS_STOCK_ONLY, M32R bench sensor PASS, S51/S83 hooks PASS, 11 ATF pairs PASS, app/input/binding/target platform and MODE-02 native checks PASS. production_sensor_config remains null; no hardware readiness or two-BIN claim. |
+| VSS-02 | Copilot H03 sensor production exports | [20f42a30c48f](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/commit/20f42a30c48f5e80ada0bda5b1fc6f9cc0770edd) | a642d995b84d4360b6b126b543a56c64 | Published typed alias native/layout evidence and exact FAIL_BINDINGS blockers. Production sensor config remains unresolved without paired clock and calibration evidence; aggregate-owned layout files were not edited. |
 
 ## Что осталось доделать
 
@@ -90,7 +90,7 @@
 | 18 | [H03-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-04) | Свободна для продолжения; порция на проверке | Пять реальных определений/профиль, полный список писателей, linker constraints и доказательства покрытия; стоимость RAM/стеков и сценарии отказа. | См. входные условия карточки |
 | 19 | [H03-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#h03-05) | Свободна для продолжения; порция на проверке | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | См. входные условия карточки |
 | 21 | [VSS-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-01) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
-| 22 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-02) | Ожидает данных / решения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
+| 22 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-02) | Свободна для продолжения; порция на проверке | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
 | 24 | [MODE-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-01) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
 | 25 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-02) | Свободна для продолжения; порция на проверке | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | H03-03 |
 | 26 | [MODE-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-03) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
@@ -518,7 +518,7 @@
 </details>
 
 <details>
-<summary>VSS-02 — Кинематика и параметры реальной скорости: Ожидает данных / решения</summary>
+<summary>VSS-02 — Кинематика и параметры реальной скорости: Свободна для продолжения; порция на проверке</summary>
 
 **Сделано.** Foreground сравнивает относительный ход TML0/TML1; разрыв отзывает эпоху и очищает S51/S83/ATF. Исправлен воспроизведённый дефект 06ab447; добавлено 12 байт типизированного состояния.
 
@@ -532,7 +532,7 @@
 
 **Рекомендуемый чат.** Чат 5 — 01a1f9a8-7b61-7763-adaa-0e3e11d1dbf4.
 
-**Резерв удерживает.** Copilot H03 sensor production exports — 2a528e3d-3ef6-473c-a1f9-4222181d2edf.
+**Исполнитель сейчас.** Задача не занята.
 
 **Критерий приёмки.** Скорость совпадает с эталоном в согласованном диапазоне, потеря импульсов отличается от остановки.
 
@@ -763,6 +763,7 @@
 | H03-04 | На проверке | Copilot H03-04 memory integration | almirpangor-lfj8-h03-platform | Published exact SHA. 94 H03 PC tests and 6 storage tests pass; M32R RAM-owner replay not run (worktree lacks local/project-paths.json, H03 donor and m32r-elf-gcc). project_status --check flags retest. Full native link/stack proof, physical SPI/PSW high-water and lower-Flash delivery remain open; no readiness claim. / commit c1c6347c36f55606f0a89e32f975173b8c6520ad |
 | H03-05 | На проверке | Codex 7 H03-05 bench outputs | codex/h03-05-bench-output-01a1f9a2 | Чат 7: native bench profile запускает phase_startup с mask=0 и без actuator callbacks. D/E/F, Pressure A и TIO9 отозваны в обеих штатных фазах, есть снимок AN3/таймеров. Native 22/22, components 8/8; common small через --binding-source 106944 байта, 14 нерешённых ссылок. Подключение обоих redirect и типизированного alias, пределы и измерения в verification/bench-wave/chat-7/handoff.json. Активный силовой допуск открыт. / commit 0a9523b203a2cae2b21a81da4c14ce910b570ed3 |
 | VSS-01 | Порция принята | Codex VSS-01 — допуск времени и окна S51 для 0x1AE | codex/vss01-tml0-timing-admission-32e6ac79 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 1bcfe06eb116940db1921a70130629bacb17da3a |
+| VSS-02 | На проверке | Copilot H03 sensor production exports | almirpangor-lfj8-sensors-and-modes | Published typed alias native/layout evidence and exact FAIL_BINDINGS blockers. Production sensor config remains unresolved without paired clock and calibration evidence; aggregate-owned layout files were not edited. / commit 20f42a30c48f5e80ada0bda5b1fc6f9cc0770edd |
 | MODE-01 | Порция принята | Codex MODE-01 — отзыв диапазона при отказе ADC | codex/mode01-selector-fault-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 8974a4a5002fd1786eb02ad8d7c19a829c47ad6f |
 | MODE-02 | На проверке | Чат 11 · MODE-02, стендовый профиль селектора и ручных режимов | codex/mode02-profile-foreground-892d | Чат 11. Стендовые профили AN2 и ручных режимов подключены штатными точками; проверены 6 положений, независимый P/N, ручной цикл S1/S2, дребезг, удержание/отзыв и логика OD. 41 этап ПК, 216 тестов, native 22, components 8. Физическая карта, поставщики Toyota и порядок допуска релизов остаются явными зависимостями. verification/bench-wave/chat-11/handoff.json. / commit 2d3569d4f7c9b4cf23fdbf1d262b7c5136e9d667 |
 | MODE-03 | Порция принята | Codex MODE-03 — допуск только после инициализации политики | codex/mode03-policy-init-admission-32e6ac79 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit d77a559150a3c586ca50caa4aa64488b4f02ce22 |
@@ -882,19 +883,11 @@
 - targets/lfj8/h03_bench_startup_fixture.c
 - verification/bench-wave/chat-12/handoff.json
 
-### VSS-02
-
-Чат: Copilot H03 sensor production exports. Claim ID: a642d995b84d4360b6b126b543a56c64.
-
-- targets/lfj8/build.py
-- targets/lfj8/check_h03_sensor_providers.py
-- targets/lfj8/lfj8_h03_sensor_providers.c
-- verification/project-audit/vss02-h03-sensor-config.md
-
 ## Последние события
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-24T04:48:43+00:00 | VSS-02 | review | 2a528e3d-3ef6-473c-a1f9-4222181d2edf |
 | 2026-11-24T04:48:14+00:00 | VSS-02 | block | 2a528e3d-3ef6-473c-a1f9-4222181d2edf |
 | 2026-11-24T04:40:08+00:00 | VSS-02 | claim | 2a528e3d-3ef6-473c-a1f9-4222181d2edf |
 | 2026-11-24T04:35:37+00:00 | REL-01 | review | 416d2a7e-79e0-4acb-8e40-27807c492e55 |
@@ -924,4 +917,3 @@
 | 2026-11-23T21:52:36+00:00 | H03-04 | review | copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5 |
 | 2026-11-23T21:52:16+00:00 | VSS-02 | block | f83154cd-8064-4a50-97e5-c4263880e54b |
 | 2026-11-23T21:49:06+00:00 | DTC-03 | review | copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a |
-| 2026-11-23T21:48:08+00:00 | DTC-03 | heartbeat | copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a |
