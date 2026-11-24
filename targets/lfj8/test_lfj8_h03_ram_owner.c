@@ -174,7 +174,8 @@ static void fixture_map(void)
         .workspace = {workspace, workspace + sizeof(Lfj8H03WorkspaceStorage)},
         .dtc_irq_pointer = {IRQ_ADDRESS, IRQ_ADDRESS + 4u},
         .spi = {FIXTURE_SPI_FIRST, 0x809efcu}, .psw = {0x809f00u, 0x809fa0u},
-        .spi_reserve_bytes = 0x100u, .psw_reserve_bytes = 8u,
+        .spi_reserve_bytes = LFJ8_H03_RAM_SPI_RESERVE_MIN_BYTES,
+        .psw_reserve_bytes = LFJ8_H03_RAM_PSW_RESERVE_MIN_BYTES,
         .direct_hook = (uint32_t)(uintptr_t)&rbm_h03_service_direct_hook,
         .span_hook = (uint32_t)(uintptr_t)&rbm_h03_service_span_hook,
         .copy_hook = (uint32_t)(uintptr_t)&rbm_h03_service_copy_hook,
@@ -452,25 +453,33 @@ int main(void)
     HALF(0x801002u) = 0x0100u; /* CAN0/1 still parked. */
     HALF(0x801402u) = 0x0100u;
     require_cold_gate(1);
+    entry_spi = OWNER.spi.first + LFJ8_H03_RAM_SPI_RESERVE_MIN_BYTES;
+    require_cold_gate(1);
+    entry_spi -= 4u;
+    require_cold_gate(0);
     entry_spi = 0x809780u;
     require_cold_gate(0);
     entry_spi = 0x809efcu;
-    OWNER.spi_reserve_bytes = 36u;
+    OWNER.spi_reserve_bytes = LFJ8_H03_RAM_SPI_RESERVE_MIN_BYTES - 4u;
     require_cold_gate(0);
     fixture_map();
-    OWNER.spi_reserve_bytes += 1u;
+    OWNER.spi_reserve_bytes = LFJ8_H03_RAM_SPI_RESERVE_MIN_BYTES + 1u;
+    require_cold_gate(0);
+    fixture_map();
+    OWNER.psw_reserve_bytes = LFJ8_H03_RAM_PSW_RESERVE_MIN_BYTES - 4u;
+    require_cold_gate(0);
+    fixture_map();
+    OWNER.psw_reserve_bytes = LFJ8_H03_RAM_PSW_RESERVE_MIN_BYTES + 1u;
     require_cold_gate(0);
     fixture_map();
     WORD(0x809f9cu) = 0x809fa0u;
     require_cold_gate(0);
     WORD(0x809f9cu) = 0x809f09u;
     require_cold_gate(0);
-    WORD(0x809f9cu) = 0x809f04u;
+    WORD(0x809f9cu) = 0x809f3cu;
     require_cold_gate(0);
-    WORD(0x809f9cu) = 0x809f08u;
+    WORD(0x809f9cu) = 0x809f40u;
     require_cold_gate(1); /* Exact remaining PSW reserve. */
-    OWNER.psw_reserve_bytes = 0u;
-    require_cold_gate(0);
     fixture_map();
     require_cold_gate(1);
     use_target_owner = 1;

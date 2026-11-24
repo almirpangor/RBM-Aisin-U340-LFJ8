@@ -12,8 +12,6 @@
 #define H03_PSW_FIRST UINT32_C(0x809F00)
 #define H03_PSW_CURSOR UINT32_C(0x809F9C)
 #define H03_PSW_END (H03_PSW_CURSOR + sizeof(uint32_t))
-#define H03_SBI_SPI_BYTES UINT32_C(40)
-#define H03_SBI_PSW_BYTES UINT32_C(4)
 #define H03_PSW_IE_OR_SM UINT32_C(0xC0)
 #define H03_MONITOR_FIRST UINT32_C(0x808578)
 #define H03_MONITOR_END UINT32_C(0x808DB4)
@@ -77,8 +75,8 @@ static int live_stacks_ready(const Lfj8H03RamOwner *owner)
                       : "=r"(psw), "=r"(spi) : : "memory");
     if ((psw & H03_PSW_IE_OR_SM) ||
         (owner->spi_reserve_bytes | owner->psw_reserve_bytes) & 3u ||
-        owner->spi_reserve_bytes < H03_SBI_SPI_BYTES ||
-        owner->psw_reserve_bytes < H03_SBI_PSW_BYTES ||
+        owner->spi_reserve_bytes < LFJ8_H03_RAM_SPI_RESERVE_MIN_BYTES ||
+        owner->psw_reserve_bytes < LFJ8_H03_RAM_PSW_RESERVE_MIN_BYTES ||
         !has_stack_room(owner->spi, spi, H03_SPI_START, owner->spi_reserve_bytes)) {
         return 0;
     }
