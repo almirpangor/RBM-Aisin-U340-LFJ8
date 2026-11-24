@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1004,
+  "sequence": 1005,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -148,12 +148,12 @@
         "targets/lfj8/lfj8_h03_ram_owner.h",
         "targets/lfj8/test_lfj8_h03_ram_owner.c"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "2c436323b8804fc3b5ce732970b858a4",
       "claimed_at": "2026-11-24T06:33:44+00:00",
-      "updated_at": "2026-11-24T06:35:14+00:00",
-      "note": "Narrowed to the live admission contract and its producer/check/test: enforce the previously reviewed 1040-byte SPI and 64-byte PSW minima at exact boundaries.",
-      "result": null,
+      "updated_at": "2026-11-24T06:38:09+00:00",
+      "note": "Published software-only guard update. RAM admission now requires at least the existing H03 profile reserves (SPI 1040 B, PSW 64 B); M32R compilation and boundary tests cover exact fit, under-reserve, and misalignment. Profile/placement Python tests: 8 pass; checker imports; diff check passes. Full donor-based M32R replay, final linked stack proof, physical high-water, and hardware qualification remain open; no BIN.",
+      "result": "f3a320fe7c66dc9f258f23ec14abbf2e5c0d2c60",
       "based_on_reviews": [
         "2287692bc6564719826ff62c12a7d829",
         "734b4f9d3a9c43f6aaa67927cf88ab12"
@@ -17900,9 +17900,38 @@
           "6f672879c0094563b3ad7fef61831ed9"
         ]
       }
+    },
+    {
+      "operation_id": "573a697b20224c97a0981a8550eb334a",
+      "task": "H03-04",
+      "owner": "6f772758-d43b-4665-ad67-3eeb2481501a",
+      "action": "review",
+      "claim_id": "2c436323b8804fc3b5ce732970b858a4",
+      "at": "2026-11-24T06:38:09+00:00",
+      "record": {
+        "owner": "6f772758-d43b-4665-ad67-3eeb2481501a",
+        "label": "Copilot H03-04 software-only continuation",
+        "branch": "almirpangor-lfj8-h03-platform",
+        "files": [
+          "targets/lfj8/check_h03_ram_owner.py",
+          "targets/lfj8/lfj8_h03_ram_owner.c",
+          "targets/lfj8/lfj8_h03_ram_owner.h",
+          "targets/lfj8/test_lfj8_h03_ram_owner.c"
+        ],
+        "stage": "review",
+        "claim_id": "2c436323b8804fc3b5ce732970b858a4",
+        "claimed_at": "2026-11-24T06:33:44+00:00",
+        "updated_at": "2026-11-24T06:38:09+00:00",
+        "note": "Published software-only guard update. RAM admission now requires at least the existing H03 profile reserves (SPI 1040 B, PSW 64 B); M32R compilation and boundary tests cover exact fit, under-reserve, and misalignment. Profile/placement Python tests: 8 pass; checker imports; diff check passes. Full donor-based M32R replay, final linked stack proof, physical high-water, and hardware qualification remain open; no BIN.",
+        "result": "f3a320fe7c66dc9f258f23ec14abbf2e5c0d2c60",
+        "based_on_reviews": [
+          "2287692bc6564719826ff62c12a7d829",
+          "734b4f9d3a9c43f6aaa67927cf88ab12"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:36:28+00:00",
+  "updated_at": "2026-11-24T06:38:09+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -21216,6 +21245,29 @@
       ],
       "task": "DTC-03",
       "submitted_at": "2026-11-24T06:36:28+00:00"
+    },
+    "2c436323b8804fc3b5ce732970b858a4": {
+      "owner": "6f772758-d43b-4665-ad67-3eeb2481501a",
+      "label": "Copilot H03-04 software-only continuation",
+      "branch": "almirpangor-lfj8-h03-platform",
+      "files": [
+        "targets/lfj8/check_h03_ram_owner.py",
+        "targets/lfj8/lfj8_h03_ram_owner.c",
+        "targets/lfj8/lfj8_h03_ram_owner.h",
+        "targets/lfj8/test_lfj8_h03_ram_owner.c"
+      ],
+      "stage": "review",
+      "claim_id": "2c436323b8804fc3b5ce732970b858a4",
+      "claimed_at": "2026-11-24T06:33:44+00:00",
+      "updated_at": "2026-11-24T06:38:09+00:00",
+      "note": "Published software-only guard update. RAM admission now requires at least the existing H03 profile reserves (SPI 1040 B, PSW 64 B); M32R compilation and boundary tests cover exact fit, under-reserve, and misalignment. Profile/placement Python tests: 8 pass; checker imports; diff check passes. Full donor-based M32R replay, final linked stack proof, physical high-water, and hardware qualification remain open; no BIN.",
+      "result": "f3a320fe7c66dc9f258f23ec14abbf2e5c0d2c60",
+      "based_on_reviews": [
+        "2287692bc6564719826ff62c12a7d829",
+        "734b4f9d3a9c43f6aaa67927cf88ab12"
+      ],
+      "task": "H03-04",
+      "submitted_at": "2026-11-24T06:38:09+00:00"
     }
   }
 }
