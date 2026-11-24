@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1010,
+  "sequence": 1011,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -231,8 +231,8 @@
       "stage": "in_progress",
       "claim_id": "20021c325c344497a1a35bf986ba306c",
       "claimed_at": "2026-11-24T06:41:14+00:00",
-      "updated_at": "2026-11-24T06:41:14+00:00",
-      "note": "Implement the DTC-03 source-backed diagnostic event/readout contribution and field contract without editing DTC-02/DTC-04 transport or storage paths, shared registry/audit files, or inventing thresholds/ages/measurements.",
+      "updated_at": "2026-11-24T06:42:54+00:00",
+      "note": "Continuing claimed DTC-03 native event/readout contract; no DTC-02/DTC-04 files",
       "result": null,
       "based_on_reviews": [
         "603dc4c445b846078f6c08ebe2f5ae81",
@@ -18080,9 +18080,41 @@
           "b29ec3655b034f3c9d994624701a3e5a"
         ]
       }
+    },
+    {
+      "operation_id": "db13d19400474f1395f3e19600ca17ab",
+      "task": "DTC-03",
+      "owner": "copilot-71f474e418d946d2ab3d84e52afb56f1",
+      "action": "heartbeat",
+      "claim_id": "20021c325c344497a1a35bf986ba306c",
+      "at": "2026-11-24T06:42:54+00:00",
+      "record": {
+        "owner": "copilot-71f474e418d946d2ab3d84e52afb56f1",
+        "label": "Copilot — native diagnostic field provider",
+        "branch": "almirpangor-lfj8-diagnostics-storage",
+        "files": [
+          "docs/diagnostics-integration.md",
+          "targets/lfj8/check_h03_atf_fault.py",
+          "targets/lfj8/h03_atf_fault_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_dtc_target.c",
+          "targets/lfj8/lfj8_h03_dtc_target.h",
+          "verification/project-audit/dtc03-ta2005-p0710.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "20021c325c344497a1a35bf986ba306c",
+        "claimed_at": "2026-11-24T06:41:14+00:00",
+        "updated_at": "2026-11-24T06:42:54+00:00",
+        "note": "Continuing claimed DTC-03 native event/readout contract; no DTC-02/DTC-04 files",
+        "result": null,
+        "based_on_reviews": [
+          "603dc4c445b846078f6c08ebe2f5ae81",
+          "6f672879c0094563b3ad7fef61831ed9",
+          "8e8333c68a8848a6878a3cb87d244a76"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:41:22+00:00",
+  "updated_at": "2026-11-24T06:42:54+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {

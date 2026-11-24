@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-24T06:41:22+00:00**. Изменение № **1010**.
+Обновлено UTC: **2026-11-24T06:42:54+00:00**. Изменение № **1011**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -28,7 +28,7 @@
 | 25 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | LFJ8 selector measurement contract \[b9841cd6-bb32-4ab5-a5d7-3d1df09009f5\] | 2026-11-24T05:09:17+00:00 | Independent MODE-02 slice: document executable ADC/input commissioning and exact source-vs-hardware evidence; do not change production profile or shared aggregates. |
 | 26 | MODE-03 — Окончательная политика режимов | Copilot — MODE-03 manual policy continuation \[copilot-mode03-20261124-0829-9b51a672-80d4-41d8-b003-2ccf7df38731\] | 2026-11-24T05:59:48+00:00 | Продолжаю MODE-03 только в пределах исходно разрешённых пяти путей; сохраняю физически неподтверждённые selector/ADC значения явными блокерами. Проверенный MODE-03 review d77a559150a3c586ca50caa4aa64488b4f02ce22 и обязательный CAN-01 review 50202944bbe2206d79c948757752b5a3e7669007 включены в ветку. |
 | 30 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Codex чат 10 — чтение статуса NVM \[01a1fa76-b015-7640-a0ba-433b36dcf55f\] | 2026-11-21T09:12:26+00:00 | Поверх сданного a1e1733 включён DTC-04 4842a32. Добавляю условную страницу статуса NVM/SFR для no-media профиля, проверяю реальные ответы через TX13. Без чтения массива, записи и положительного ACK очистки. |
-| 31 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Copilot — native diagnostic field provider \[copilot-71f474e418d946d2ab3d84e52afb56f1\] | 2026-11-24T06:41:14+00:00 | Implement the DTC-03 source-backed diagnostic event/readout contribution and field contract without editing DTC-02/DTC-04 transport or storage paths, shared registry/audit files, or inventing thresholds/ages/measurements. |
+| 31 | DTC-03 — Все диагностические события и соответствия Toyota/Chery | Copilot — native diagnostic field provider \[copilot-71f474e418d946d2ab3d84e52afb56f1\] | 2026-11-24T06:42:54+00:00 | Continuing claimed DTC-03 native event/readout contract; no DTC-02/DTC-04 files |
 | 32 | DTC-04 — Хранение DTC после выключения питания | Чат 9 — холодный старт и транспорт NVM \[01a1fa76-922b-7b11-a2f2-346a15d1dc95\] | 2026-11-21T09:11:30+00:00 | Включён 4842a32. Совместный офлайн-прогон действующего холодного callback, профиля NVM и штатного CAN-диагностического пути. Проверю отсутствие ложной очистки и поведение после перепривязки. Файлы действующих резервов TOY-05/DTC-02/CAN-03 не затрагиваю. |
 | — | ORG-01 — Основа проекта и локальная работа | Ведущй — общая сборка и задания для стендовой пары \[codex-integration-01a1f76d-20261120\] | 2026-11-21T09:15:21+00:00 | Опубликованы план и общая инфраструктура 3fe2893. Ведётся приёмка 12 чатов; локально объединены 9/5/10, native NVM/sensor/BasicCAN readout повторно PASS. Выявлен и передан CAN-03 дефект отключения диагностики при недостоверных датчиках. Окончательный native ELF/BIN ещё не собран. |
 
@@ -927,6 +927,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-24T06:42:54+00:00 | DTC-03 | heartbeat | copilot-71f474e418d946d2ab3d84e52afb56f1 |
 | 2026-11-24T06:41:22+00:00 | REL-01 | review | bd412180-9ccb-4a23-a04a-ad23931a72a0 |
 | 2026-11-24T06:41:14+00:00 | DTC-03 | claim | copilot-71f474e418d946d2ab3d84e52afb56f1 |
 | 2026-11-24T06:41:00+00:00 | REL-01 | claim | bd412180-9ccb-4a23-a04a-ad23931a72a0 |
@@ -956,4 +957,3 @@
 | 2026-11-24T05:07:50+00:00 | ECU-01 | heartbeat | 9d4fcd7f-8d30-447e-b31d-6889553c0e20 |
 | 2026-11-24T05:07:01+00:00 | ECU-01 | heartbeat | 9d4fcd7f-8d30-447e-b31d-6889553c0e20 |
 | 2026-11-24T04:48:43+00:00 | VSS-02 | review | 2a528e3d-3ef6-473c-a1f9-4222181d2edf |
-| 2026-11-24T04:48:14+00:00 | VSS-02 | block | 2a528e3d-3ef6-473c-a1f9-4222181d2edf |
