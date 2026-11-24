@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 987,
+  "sequence": 988,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -487,23 +487,25 @@
       "based_on_reviews": []
     },
     "MODE-03": {
-      "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
-      "label": "Codex MODE-03 — допуск только после инициализации политики",
-      "branch": "codex/mode03-policy-init-admission-32e6ac79",
+      "owner": "copilot-mode03-20261124-0829-9b51a672-80d4-41d8-b003-2ccf7df38731",
+      "label": "Copilot — MODE-03 manual policy continuation",
+      "branch": "almirpangor-lfj8-sensors-and-modes",
       "files": [
         "controller/include/rbm_u340e.h",
         "controller/src/rbm_u340e.c",
         "controller/tests/test_mode_policy.c",
-        "verification/project-audit/mode03-policy-init-gate.md"
+        "targets/lfj8/lfj8_h03_input_binding.c",
+        "targets/lfj8/test_lfj8_h03_input_binding.c"
       ],
-      "stage": "done",
-      "claim_id": "1813d3172cb84949a9013f2851da5863",
-      "claimed_at": "2026-11-20T20:30:13+00:00",
-      "updated_at": "2026-11-20T21:14:43+00:00",
-      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
-      "result": "d77a559150a3c586ca50caa4aa64488b4f02ce22",
+      "stage": "in_progress",
+      "claim_id": "3e90cfe1f0d4488aa17308b72d24d98e",
+      "claimed_at": "2026-11-24T05:59:48+00:00",
+      "updated_at": "2026-11-24T05:59:48+00:00",
+      "note": "Продолжаю MODE-03 только в пределах исходно разрешённых пяти путей; сохраняю физически неподтверждённые selector/ADC значения явными блокерами. Проверенный MODE-03 review d77a559150a3c586ca50caa4aa64488b4f02ce22 и обязательный CAN-01 review 50202944bbe2206d79c948757752b5a3e7669007 включены в ветку.",
+      "result": null,
       "based_on_reviews": [
-        "881583aa76814d4da3f768699f01ca29"
+        "027a36c5f3ef44518bf3ba1bbaf2f464",
+        "43c64ae0c01a43088c77386a743171c9"
       ]
     },
     "ECU-01": {
@@ -17410,9 +17412,39 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "dac8a13f148144e78d42672b464741f3",
+      "task": "MODE-03",
+      "owner": "copilot-mode03-20261124-0829-9b51a672-80d4-41d8-b003-2ccf7df38731",
+      "action": "claim",
+      "claim_id": "3e90cfe1f0d4488aa17308b72d24d98e",
+      "at": "2026-11-24T05:59:48+00:00",
+      "record": {
+        "owner": "copilot-mode03-20261124-0829-9b51a672-80d4-41d8-b003-2ccf7df38731",
+        "label": "Copilot — MODE-03 manual policy continuation",
+        "branch": "almirpangor-lfj8-sensors-and-modes",
+        "files": [
+          "controller/include/rbm_u340e.h",
+          "controller/src/rbm_u340e.c",
+          "controller/tests/test_mode_policy.c",
+          "targets/lfj8/lfj8_h03_input_binding.c",
+          "targets/lfj8/test_lfj8_h03_input_binding.c"
+        ],
+        "stage": "in_progress",
+        "claim_id": "3e90cfe1f0d4488aa17308b72d24d98e",
+        "claimed_at": "2026-11-24T05:59:48+00:00",
+        "updated_at": "2026-11-24T05:59:48+00:00",
+        "note": "Продолжаю MODE-03 только в пределах исходно разрешённых пяти путей; сохраняю физически неподтверждённые selector/ADC значения явными блокерами. Проверенный MODE-03 review d77a559150a3c586ca50caa4aa64488b4f02ce22 и обязательный CAN-01 review 50202944bbe2206d79c948757752b5a3e7669007 включены в ветку.",
+        "result": null,
+        "based_on_reviews": [
+          "027a36c5f3ef44518bf3ba1bbaf2f464",
+          "43c64ae0c01a43088c77386a743171c9"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T05:59:44+00:00",
+  "updated_at": "2026-11-24T05:59:48+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
