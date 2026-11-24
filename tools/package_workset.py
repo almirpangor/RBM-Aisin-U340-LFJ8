@@ -98,6 +98,13 @@ def verify_firmware_pair(produced: list[tuple[dict, bytes]], offline_hashes: set
         if (PurePosixPath(item["path"]).suffix.lower() != ".bin"
                 or len(content) != FIRMWARE_SIZES[role]):
             raise ValueError(f"Неверное расширение или размер BIN для {role}")
+        status = item.get("status")
+        if not isinstance(status, str):
+            raise ValueError(f"Не указан статус выпуска для образа {role}")
+        status = status.upper()
+        if ("UNQUALIFIED" in status or "ADDRESS_MODEL_ONLY" in status
+                or ("bench_pair_ready" in item and item["bench_pair_ready"] is not True)):
+            raise ValueError(f"Образ {role} не прошёл выпускную программную квалификацию")
         labels = (item["file"], item["path"], item["status"])
         if any("OFFLINE_ONLY" in label.upper() for label in labels) or content.startswith(b"\x7fELF"):
             raise ValueError(f"Проверочный образ или ELF не подходит для комплекта BIN: {role}")

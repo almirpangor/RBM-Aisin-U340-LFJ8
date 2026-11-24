@@ -66,6 +66,25 @@ class FirmwarePairTests(unittest.TestCase):
             self.package(output)
         self.assertFalse(output.exists())
 
+    def test_unqualified_image_status_is_rejected_but_remains_valid_evidence(self):
+        image = self.artifacts[0]
+        for index, status in enumerate(("UNQUALIFIED_LINKED_IMAGE", "PASS_ADDRESS_MODEL_ONLY")):
+            with self.subTest(status=status):
+                image["status"] = status
+                output = self.root / f"pair-{index}.zip"
+                with self.assertRaisesRegex(ValueError, "выпускную программную квалификацию"):
+                    self.package(output)
+                self.assertFalse(output.exists())
+        self.package(self.root / "evidence.zip", firmware_pair=False)
+
+    def test_explicit_not_bench_ready_image_is_rejected(self):
+        image = self.artifacts[0]
+        image["bench_pair_ready"] = False
+        output = self.root / "pair.zip"
+        with self.assertRaisesRegex(ValueError, "выпускную программную квалификацию"):
+            self.package(output)
+        self.assertFalse(output.exists())
+
     def test_offline_manifest_identifies_unarchived_image(self):
         self.source_files["verification/ordinary/manifest.json"] = json.dumps({
             "status": "OFFLINE_ONLY_NOT_HARDWARE_TESTED",
