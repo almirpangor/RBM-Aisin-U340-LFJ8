@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1012,
+  "sequence": 1013,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -528,11 +528,11 @@
         "targets/bosch/tx.py",
         "tests/test_bosch_build_integrity.py"
       ],
-      "stage": "in_progress",
+      "stage": "blocked",
       "claim_id": "bc0dfc8cdfdc4082a71ddedafc6073dc",
       "claimed_at": "2026-11-23T21:46:11+00:00",
-      "updated_at": "2026-11-24T06:43:28+00:00",
-      "note": "Software rerun complete; waiting for external installed-ECU identity/readback and pair-hardware inputs. Ordinary bd0afe... and qualified 108248... remain OFFLINE_ONLY.",
+      "updated_at": "2026-11-24T06:43:49+00:00",
+      "note": "Software rerun complete: ordinary bd0afefa40dfd1ea82e647ea5af7e64e2f652c27ccc5c3b91a986224fd77ec79 PASS_OFFLINE_ONLY 65536 encoders/51 checksums/7 build-integrity tests; qualified 1082487f2ca496197e73a46f31f3a76d0ba5ec7467b32013d3fd106fa51cf581 PASS_OFFLINE_ONLY native torque/startup/revoke. Remaining external gates: exact installed-ECU readback/identity match, CAN-05 real T4/IF1/RAM/lease/consumer, ECU-02 paired torque action, mapped Toyota operands, post-flash start/injection/ignition and paired CAN acceptance. hardware_verified=false; no pair-ready or production-ready claim.",
       "result": null,
       "based_on_reviews": [
         "bb95576349fc4befa4af7a3779ddb4ae"
@@ -18140,9 +18140,37 @@
           "bb95576349fc4befa4af7a3779ddb4ae"
         ]
       }
+    },
+    {
+      "operation_id": "6b0cdcbc8ca045b585052ceea442687a",
+      "task": "ECU-01",
+      "owner": "9d4fcd7f-8d30-447e-b31d-6889553c0e20",
+      "action": "block",
+      "claim_id": "bc0dfc8cdfdc4082a71ddedafc6073dc",
+      "at": "2026-11-24T06:43:49+00:00",
+      "record": {
+        "owner": "9d4fcd7f-8d30-447e-b31d-6889553c0e20",
+        "label": "Copilot — Bosch paired release",
+        "branch": "almirpangor-bosch-paired-release",
+        "files": [
+          "targets/bosch/build.py",
+          "targets/bosch/compact_branches.py",
+          "targets/bosch/tx.py",
+          "tests/test_bosch_build_integrity.py"
+        ],
+        "stage": "blocked",
+        "claim_id": "bc0dfc8cdfdc4082a71ddedafc6073dc",
+        "claimed_at": "2026-11-23T21:46:11+00:00",
+        "updated_at": "2026-11-24T06:43:49+00:00",
+        "note": "Software rerun complete: ordinary bd0afefa40dfd1ea82e647ea5af7e64e2f652c27ccc5c3b91a986224fd77ec79 PASS_OFFLINE_ONLY 65536 encoders/51 checksums/7 build-integrity tests; qualified 1082487f2ca496197e73a46f31f3a76d0ba5ec7467b32013d3fd106fa51cf581 PASS_OFFLINE_ONLY native torque/startup/revoke. Remaining external gates: exact installed-ECU readback/identity match, CAN-05 real T4/IF1/RAM/lease/consumer, ECU-02 paired torque action, mapped Toyota operands, post-flash start/injection/ignition and paired CAN acceptance. hardware_verified=false; no pair-ready or production-ready claim.",
+        "result": null,
+        "based_on_reviews": [
+          "bb95576349fc4befa4af7a3779ddb4ae"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:43:28+00:00",
+  "updated_at": "2026-11-24T06:43:49+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
