@@ -128,7 +128,8 @@ def expanded(args):
     original = link.check_split_layout
     moved_roots = ("lfj8_h03_phase_clock_init", "lfj8_h03_phase_clock_release",
                    "lfj8_h03_phase_clock_take")
-    def split(stage, compiler, run, base, primary, extension, roots):
+    def split(stage, compiler, run, base, primary, extension, roots,
+              service_ranges=None, dma4_guard=False):
         link.H03_ROOTS += moved_roots
         try:
             kept_roots = tuple(root for root in roots if root not in moved_roots)
@@ -136,7 +137,7 @@ def expanded(args):
                 return original(stage, compiler, run, base,
                                 (*primary, "lfj8_h03_phase_clock.o"),
                                 [obj for obj in extension if obj != "lfj8_h03_phase_clock.o"],
-                                kept_roots)
+                                kept_roots, service_ranges, dma4_guard)
             except subprocess.CalledProcessError as error:
                 if "window overflow" not in (error.stderr or ""):
                     raise
