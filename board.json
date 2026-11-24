@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 996,
+  "sequence": 997,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -101,12 +101,12 @@
         "tests/test_package_workset.py",
         "tools/package_workset.py"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "9fafa66119bd4d68a67ffed2cc934265",
       "claimed_at": "2026-11-24T06:31:49+00:00",
-      "updated_at": "2026-11-24T06:31:49+00:00",
-      "note": "Reject unqualified H03 address-model output from firmware-pair packaging; preserve evidence-only packaging and validate the specific release gate.",
-      "result": null,
+      "updated_at": "2026-11-24T06:33:28+00:00",
+      "note": "Rejects explicit UNQUALIFIED/ADDRESS_MODEL_ONLY image statuses and bench_pair_ready:false in firmware-pair packaging; 11 package tests pass. Evidence-only packaging remains allowed. project_status --check still flags these changed paths and prior integration wrapper for review/retest; no BIN emitted.",
+      "result": "13bbf2bc00c2d53e01ad1d8cdfd57fbe69cc856c",
       "based_on_reviews": [
         "36a5a75d3ef44ab0a4cde5678f96bb0a"
       ]
@@ -17669,9 +17669,35 @@
           "6f672879c0094563b3ad7fef61831ed9"
         ]
       }
+    },
+    {
+      "operation_id": "c1c44adc15bc4ba0b96531f76ccdb861",
+      "task": "REL-01",
+      "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
+      "action": "review",
+      "claim_id": "9fafa66119bd4d68a67ffed2cc934265",
+      "at": "2026-11-24T06:33:28+00:00",
+      "record": {
+        "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
+        "label": "Copilot — REL-01 package gate",
+        "branch": "almirpangor-rel-01-integration-plan",
+        "files": [
+          "tests/test_package_workset.py",
+          "tools/package_workset.py"
+        ],
+        "stage": "review",
+        "claim_id": "9fafa66119bd4d68a67ffed2cc934265",
+        "claimed_at": "2026-11-24T06:31:49+00:00",
+        "updated_at": "2026-11-24T06:33:28+00:00",
+        "note": "Rejects explicit UNQUALIFIED/ADDRESS_MODEL_ONLY image statuses and bench_pair_ready:false in firmware-pair packaging; 11 package tests pass. Evidence-only packaging remains allowed. project_status --check still flags these changed paths and prior integration wrapper for review/retest; no BIN emitted.",
+        "result": "13bbf2bc00c2d53e01ad1d8cdfd57fbe69cc856c",
+        "based_on_reviews": [
+          "36a5a75d3ef44ab0a4cde5678f96bb0a"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:32:15+00:00",
+  "updated_at": "2026-11-24T06:33:28+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -20922,6 +20948,26 @@
       "based_on_reviews": [],
       "task": "TOY-06",
       "submitted_at": "2026-11-24T06:07:38+00:00"
+    },
+    "9fafa66119bd4d68a67ffed2cc934265": {
+      "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
+      "label": "Copilot — REL-01 package gate",
+      "branch": "almirpangor-rel-01-integration-plan",
+      "files": [
+        "tests/test_package_workset.py",
+        "tools/package_workset.py"
+      ],
+      "stage": "review",
+      "claim_id": "9fafa66119bd4d68a67ffed2cc934265",
+      "claimed_at": "2026-11-24T06:31:49+00:00",
+      "updated_at": "2026-11-24T06:33:28+00:00",
+      "note": "Rejects explicit UNQUALIFIED/ADDRESS_MODEL_ONLY image statuses and bench_pair_ready:false in firmware-pair packaging; 11 package tests pass. Evidence-only packaging remains allowed. project_status --check still flags these changed paths and prior integration wrapper for review/retest; no BIN emitted.",
+      "result": "13bbf2bc00c2d53e01ad1d8cdfd57fbe69cc856c",
+      "based_on_reviews": [
+        "36a5a75d3ef44ab0a4cde5678f96bb0a"
+      ],
+      "task": "REL-01",
+      "submitted_at": "2026-11-24T06:33:28+00:00"
     }
   }
 }
