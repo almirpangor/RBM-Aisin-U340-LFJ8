@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1008,
+  "sequence": 1009,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -217,24 +217,27 @@
       "result": "f3bb5000ebfdaaa30a33665bac1eab06ddb9165c"
     },
     "DTC-03": {
-      "owner": "copilot-0bc0cbc673de4134ab7d7b9afeb082a2",
-      "label": "Copilot — ATF component evidence",
+      "owner": "copilot-71f474e418d946d2ab3d84e52afb56f1",
+      "label": "Copilot — native diagnostic field provider",
       "branch": "almirpangor-lfj8-diagnostics-storage",
       "files": [
-        "diagnostics/chery_atf_circuit.c",
-        "diagnostics/chery_atf_circuit.h",
-        "diagnostics/test_chery_atf_circuit.c",
-        "verification/project-audit/dtc03-m32r-rerun.json"
+        "docs/diagnostics-integration.md",
+        "targets/lfj8/check_h03_atf_fault.py",
+        "targets/lfj8/h03_atf_fault_hook_fixture.c",
+        "targets/lfj8/lfj8_h03_dtc_target.c",
+        "targets/lfj8/lfj8_h03_dtc_target.h",
+        "verification/project-audit/dtc03-ta2005-p0710.md"
       ],
-      "stage": "review",
-      "claim_id": "8e8333c68a8848a6878a3cb87d244a76",
-      "claimed_at": "2026-11-24T06:31:14+00:00",
-      "updated_at": "2026-11-24T06:36:28+00:00",
-      "note": "Published focused DTC-03 ATF host GCC and M32R simulator reruns; evidence JSON refreshed with artifact hashes. Component fixtures PASS. Exact-H03 and S03/R1 evidence remain unavailable here; thresholds/age and hardware remain unmeasured; no production image or alias export claimed.",
-      "result": "84f49e6f164f2097023b0baa9ab26b83fea56ed5",
+      "stage": "in_progress",
+      "claim_id": "20021c325c344497a1a35bf986ba306c",
+      "claimed_at": "2026-11-24T06:41:14+00:00",
+      "updated_at": "2026-11-24T06:41:14+00:00",
+      "note": "Implement the DTC-03 source-backed diagnostic event/readout contribution and field contract without editing DTC-02/DTC-04 transport or storage paths, shared registry/audit files, or inventing thresholds/ages/measurements.",
+      "result": null,
       "based_on_reviews": [
         "603dc4c445b846078f6c08ebe2f5ae81",
-        "6f672879c0094563b3ad7fef61831ed9"
+        "6f672879c0094563b3ad7fef61831ed9",
+        "8e8333c68a8848a6878a3cb87d244a76"
       ]
     },
     "TOY-02": {
@@ -18017,9 +18020,41 @@
           "b29ec3655b034f3c9d994624701a3e5a"
         ]
       }
+    },
+    {
+      "operation_id": "8daf9f943ba94f769fa0da94e802f409",
+      "task": "DTC-03",
+      "owner": "copilot-71f474e418d946d2ab3d84e52afb56f1",
+      "action": "claim",
+      "claim_id": "20021c325c344497a1a35bf986ba306c",
+      "at": "2026-11-24T06:41:14+00:00",
+      "record": {
+        "owner": "copilot-71f474e418d946d2ab3d84e52afb56f1",
+        "label": "Copilot — native diagnostic field provider",
+        "branch": "almirpangor-lfj8-diagnostics-storage",
+        "files": [
+          "docs/diagnostics-integration.md",
+          "targets/lfj8/check_h03_atf_fault.py",
+          "targets/lfj8/h03_atf_fault_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_dtc_target.c",
+          "targets/lfj8/lfj8_h03_dtc_target.h",
+          "verification/project-audit/dtc03-ta2005-p0710.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "20021c325c344497a1a35bf986ba306c",
+        "claimed_at": "2026-11-24T06:41:14+00:00",
+        "updated_at": "2026-11-24T06:41:14+00:00",
+        "note": "Implement the DTC-03 source-backed diagnostic event/readout contribution and field contract without editing DTC-02/DTC-04 transport or storage paths, shared registry/audit files, or inventing thresholds/ages/measurements.",
+        "result": null,
+        "based_on_reviews": [
+          "603dc4c445b846078f6c08ebe2f5ae81",
+          "6f672879c0094563b3ad7fef61831ed9",
+          "8e8333c68a8848a6878a3cb87d244a76"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:41:00+00:00",
+  "updated_at": "2026-11-24T06:41:14+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
