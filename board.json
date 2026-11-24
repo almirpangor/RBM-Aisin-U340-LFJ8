@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 985,
+  "sequence": 986,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -522,23 +522,21 @@
       ]
     },
     "VSS-02": {
-      "owner": "2a528e3d-3ef6-473c-a1f9-4222181d2edf",
-      "label": "Copilot H03 sensor production exports",
-      "branch": "almirpangor-lfj8-sensors-and-modes",
+      "owner": "copilot-lfj8-sensor-contract-a4a37091",
+      "label": "Copilot LFJ8 sensor measurement contract",
+      "branch": "almirpangor2-debug-lfj8-sensor-measurement-contract",
       "files": [
-        "targets/lfj8/build.py",
-        "targets/lfj8/check_h03_sensor_providers.py",
-        "targets/lfj8/lfj8_h03_sensor_providers.c",
-        "verification/project-audit/vss02-h03-sensor-config.md"
+        "verification/bench-wave/chat-5/handoff.json"
       ],
-      "stage": "review",
-      "claim_id": "a642d995b84d4360b6b126b543a56c64",
-      "claimed_at": "2026-11-24T04:40:08+00:00",
-      "updated_at": "2026-11-24T04:48:43+00:00",
-      "note": "Published typed alias native/layout evidence and exact FAIL_BINDINGS blockers. Production sensor config remains unresolved without paired clock and calibration evidence; aggregate-owned layout files were not edited.",
-      "result": "20f42a30c48f5e80ada0bda5b1fc6f9cc0770edd",
+      "stage": "in_progress",
+      "claim_id": "b1e4a5f6767647a0b73dba524a900759",
+      "claimed_at": "2026-11-24T05:10:25+00:00",
+      "updated_at": "2026-11-24T05:10:25+00:00",
+      "note": "Deliver source-supported H03 S51/S83/ATF/TML0/TML1 measurement contract and unresolved hardware parameters; no BIN or aggregate layout changes.",
+      "result": null,
       "based_on_reviews": [
         "700f8602ef664b24894313c2415fbdb5",
+        "a642d995b84d4360b6b126b543a56c64",
         "cee15d1377aa4207a89e2eb78dd96995"
       ]
     },
@@ -17352,9 +17350,36 @@
           "027a36c5f3ef44518bf3ba1bbaf2f464"
         ]
       }
+    },
+    {
+      "operation_id": "138a465aa1fa4dc9931efa10f1cf41e8",
+      "task": "VSS-02",
+      "owner": "copilot-lfj8-sensor-contract-a4a37091",
+      "action": "claim",
+      "claim_id": "b1e4a5f6767647a0b73dba524a900759",
+      "at": "2026-11-24T05:10:25+00:00",
+      "record": {
+        "owner": "copilot-lfj8-sensor-contract-a4a37091",
+        "label": "Copilot LFJ8 sensor measurement contract",
+        "branch": "almirpangor2-debug-lfj8-sensor-measurement-contract",
+        "files": [
+          "verification/bench-wave/chat-5/handoff.json"
+        ],
+        "stage": "in_progress",
+        "claim_id": "b1e4a5f6767647a0b73dba524a900759",
+        "claimed_at": "2026-11-24T05:10:25+00:00",
+        "updated_at": "2026-11-24T05:10:25+00:00",
+        "note": "Deliver source-supported H03 S51/S83/ATF/TML0/TML1 measurement contract and unresolved hardware parameters; no BIN or aggregate layout changes.",
+        "result": null,
+        "based_on_reviews": [
+          "700f8602ef664b24894313c2415fbdb5",
+          "a642d995b84d4360b6b126b543a56c64",
+          "cee15d1377aa4207a89e2eb78dd96995"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T05:09:17+00:00",
+  "updated_at": "2026-11-24T05:10:25+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
