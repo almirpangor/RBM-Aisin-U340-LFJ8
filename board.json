@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 989,
+  "sequence": 990,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -413,12 +413,12 @@
         "targets/lfj8/lfj8_h03_slu.h",
         "targets/lfj8/test_lfj8_h03_cycle.c"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "d555acaf033d4dd2a9f3e77e36f3d6dd",
       "claimed_at": "2026-11-24T05:59:44+00:00",
-      "updated_at": "2026-11-24T06:07:12+00:00",
-      "note": "Implemented donor-unit SLU demand handoff and explicit logical revoke; physical channel remains unverified. Host/M32R checks are blocked by missing local donor/tool paths.",
-      "result": null,
+      "updated_at": "2026-11-24T06:07:38+00:00",
+      "note": "Published six-file software-only SLU demand and revoke change. git diff --check and Python AST/ctypes layout checks pass. Focused host/Zig and M32R execution blocked: local project-paths.json and .sources/R1/.sources/R2 are absent; Zig and M32R GCC are not on PATH. No hardware/channel/response verification; no profile, scale, or mapping added.",
+      "result": "4a5565f145d2a7b3aad81d35cef70b8251f4a24a",
       "based_on_reviews": []
     },
     "DTC-01": {
@@ -17470,9 +17470,37 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "45404dc5b8e74f63859e28248254522f",
+      "task": "TOY-06",
+      "owner": "631778fb-a3af-4621-8fcd-9b34d66cd355",
+      "action": "review",
+      "claim_id": "d555acaf033d4dd2a9f3e77e36f3d6dd",
+      "at": "2026-11-24T06:07:38+00:00",
+      "record": {
+        "owner": "631778fb-a3af-4621-8fcd-9b34d66cd355",
+        "label": "Copilot TOY-06 SLU command",
+        "branch": "almir458765-toy-06-slu-outputs",
+        "files": [
+          "targets/lfj8/check_toyota_slu.py",
+          "targets/lfj8/lfj8_h03_cycle.c",
+          "targets/lfj8/lfj8_h03_outputs.h",
+          "targets/lfj8/lfj8_h03_slu.c",
+          "targets/lfj8/lfj8_h03_slu.h",
+          "targets/lfj8/test_lfj8_h03_cycle.c"
+        ],
+        "stage": "review",
+        "claim_id": "d555acaf033d4dd2a9f3e77e36f3d6dd",
+        "claimed_at": "2026-11-24T05:59:44+00:00",
+        "updated_at": "2026-11-24T06:07:38+00:00",
+        "note": "Published six-file software-only SLU demand and revoke change. git diff --check and Python AST/ctypes layout checks pass. Focused host/Zig and M32R execution blocked: local project-paths.json and .sources/R1/.sources/R2 are absent; Zig and M32R GCC are not on PATH. No hardware/channel/response verification; no profile, scale, or mapping added.",
+        "result": "4a5565f145d2a7b3aad81d35cef70b8251f4a24a",
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:07:12+00:00",
+  "updated_at": "2026-11-24T06:07:38+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -20701,6 +20729,28 @@
       ],
       "task": "VSS-02",
       "submitted_at": "2026-11-24T04:48:43+00:00"
+    },
+    "d555acaf033d4dd2a9f3e77e36f3d6dd": {
+      "owner": "631778fb-a3af-4621-8fcd-9b34d66cd355",
+      "label": "Copilot TOY-06 SLU command",
+      "branch": "almir458765-toy-06-slu-outputs",
+      "files": [
+        "targets/lfj8/check_toyota_slu.py",
+        "targets/lfj8/lfj8_h03_cycle.c",
+        "targets/lfj8/lfj8_h03_outputs.h",
+        "targets/lfj8/lfj8_h03_slu.c",
+        "targets/lfj8/lfj8_h03_slu.h",
+        "targets/lfj8/test_lfj8_h03_cycle.c"
+      ],
+      "stage": "review",
+      "claim_id": "d555acaf033d4dd2a9f3e77e36f3d6dd",
+      "claimed_at": "2026-11-24T05:59:44+00:00",
+      "updated_at": "2026-11-24T06:07:38+00:00",
+      "note": "Published six-file software-only SLU demand and revoke change. git diff --check and Python AST/ctypes layout checks pass. Focused host/Zig and M32R execution blocked: local project-paths.json and .sources/R1/.sources/R2 are absent; Zig and M32R GCC are not on PATH. No hardware/channel/response verification; no profile, scale, or mapping added.",
+      "result": "4a5565f145d2a7b3aad81d35cef70b8251f4a24a",
+      "based_on_reviews": [],
+      "task": "TOY-06",
+      "submitted_at": "2026-11-24T06:07:38+00:00"
     }
   }
 }
