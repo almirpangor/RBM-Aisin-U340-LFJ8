@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 972,
+  "sequence": 973,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -94,20 +94,22 @@
       "result": "3f2596f31930203fe9cd7918e9b62f81ea82699c"
     },
     "REL-01": {
-      "owner": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
-      "label": "Codex REL-01 — идентификация BIN",
-      "branch": "codex/rel01-donor-firmware-guard-01a1f9c7",
+      "owner": "416d2a7e-79e0-4acb-8e40-27807c492e55",
+      "label": "Copilot REL-01 integration",
+      "branch": "almirpangor-rel-01-providers-416d2a7e",
       "files": [
+        "controller/build_target.py",
+        "targets/lfj8/check_h03_link.py",
         "tests/test_package_workset.py",
-        "tools/package_workset.py",
-        "verification/project-audit/rel01-firmware-identity.md"
+        "tools/package_workset.py"
       ],
-      "stage": "done",
-      "claim_id": "fe39fa893cbe4843b42a5e9a0f82f3ed",
-      "claimed_at": "2026-11-20T19:56:50+00:00",
-      "updated_at": "2026-11-20T21:14:43+00:00",
-      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
-      "result": "de7df4ab3da2c30240e0a8d3635f206787236d94"
+      "stage": "in_progress",
+      "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
+      "claimed_at": "2026-11-24T04:02:17+00:00",
+      "updated_at": "2026-11-24T04:02:17+00:00",
+      "note": "Continue H03 bench release integration; use existing Bosch and packaging handoffs; rerun native/link/layout gates and report exact blockers.",
+      "result": null,
+      "based_on_reviews": []
     },
     "H03-03": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -17013,9 +17015,35 @@
           "6f672879c0094563b3ad7fef61831ed9"
         ]
       }
+    },
+    {
+      "operation_id": "711e3ffc1a864657ae23d1b8a1cf5fd4",
+      "task": "REL-01",
+      "owner": "416d2a7e-79e0-4acb-8e40-27807c492e55",
+      "action": "claim",
+      "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
+      "at": "2026-11-24T04:02:17+00:00",
+      "record": {
+        "owner": "416d2a7e-79e0-4acb-8e40-27807c492e55",
+        "label": "Copilot REL-01 integration",
+        "branch": "almirpangor-rel-01-providers-416d2a7e",
+        "files": [
+          "controller/build_target.py",
+          "targets/lfj8/check_h03_link.py",
+          "tests/test_package_workset.py",
+          "tools/package_workset.py"
+        ],
+        "stage": "in_progress",
+        "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
+        "claimed_at": "2026-11-24T04:02:17+00:00",
+        "updated_at": "2026-11-24T04:02:17+00:00",
+        "note": "Continue H03 bench release integration; use existing Bosch and packaging handoffs; rerun native/link/layout gates and report exact blockers.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-23T22:23:32+00:00",
+  "updated_at": "2026-11-24T04:02:17+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
