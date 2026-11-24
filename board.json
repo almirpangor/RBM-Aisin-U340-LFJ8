@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 974,
+  "sequence": 975,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -103,11 +103,11 @@
         "tests/test_package_workset.py",
         "tools/package_workset.py"
       ],
-      "stage": "blocked",
+      "stage": "in_progress",
       "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
       "claimed_at": "2026-11-24T04:02:17+00:00",
-      "updated_at": "2026-11-24T04:23:23+00:00",
-      "note": "Native 22/22 and components 8/8 pass; direct H03 link fails CAN extension window overflow; padding layout FAIL_BINDINGS names seven unresolved production providers and accepted_layout/hardware/flashable false. Expanded wrapper TypeError in unreserved tools/check_integrated_h03.py. No source changes or BIN.",
+      "updated_at": "2026-11-24T04:25:31+00:00",
+      "note": "Resume to review requirements, correct executable build-wrapper issues, and rerun all safe release gates before any BIN output.",
       "result": null,
       "based_on_reviews": []
     },
@@ -17067,9 +17067,35 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "e9725778983a49d9b0f45e86349674a2",
+      "task": "REL-01",
+      "owner": "416d2a7e-79e0-4acb-8e40-27807c492e55",
+      "action": "resume",
+      "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
+      "at": "2026-11-24T04:25:31+00:00",
+      "record": {
+        "owner": "416d2a7e-79e0-4acb-8e40-27807c492e55",
+        "label": "Copilot REL-01 integration",
+        "branch": "almirpangor-rel-01-providers-416d2a7e",
+        "files": [
+          "controller/build_target.py",
+          "targets/lfj8/check_h03_link.py",
+          "tests/test_package_workset.py",
+          "tools/package_workset.py"
+        ],
+        "stage": "in_progress",
+        "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
+        "claimed_at": "2026-11-24T04:02:17+00:00",
+        "updated_at": "2026-11-24T04:25:31+00:00",
+        "note": "Resume to review requirements, correct executable build-wrapper issues, and rerun all safe release gates before any BIN output.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-24T04:23:23+00:00",
+  "updated_at": "2026-11-24T04:25:31+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
