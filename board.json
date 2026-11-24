@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1006,
+  "sequence": 1007,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -102,12 +102,12 @@
         "tools/package_workset.py",
         "verification/project-audit/rel01-offline-report-guard.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "b29ec3655b034f3c9d994624701a3e5a",
       "claimed_at": "2026-11-24T06:38:21+00:00",
-      "updated_at": "2026-11-24T06:38:21+00:00",
-      "note": "Require an explicit TCM bench_pair_ready:true attestation before firmware-pair packaging; test fail-closed missing/false values and document the contract.",
-      "result": null,
+      "updated_at": "2026-11-24T06:39:01+00:00",
+      "note": "Firmware-pair packaging requires explicit TCM bench_pair_ready:true and rejects unqualified/address-model-only statuses; evidence-only packaging remains allowed. H03/image+package tests pass 24/24; git diff --check passes.",
+      "result": "c812612a35ee30ef0b4a0295be70b24393db4250",
       "based_on_reviews": [
         "36a5a75d3ef44ab0a4cde5678f96bb0a",
         "9c7cba27017d403db01fb18c16725dd9",
@@ -17961,9 +17961,38 @@
           "9fafa66119bd4d68a67ffed2cc934265"
         ]
       }
+    },
+    {
+      "operation_id": "0638732f4f1f44d7840693e0a63bc75b",
+      "task": "REL-01",
+      "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
+      "action": "review",
+      "claim_id": "b29ec3655b034f3c9d994624701a3e5a",
+      "at": "2026-11-24T06:39:01+00:00",
+      "record": {
+        "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
+        "label": "Copilot — REL-01 explicit TCM bench readiness",
+        "branch": "almirpangor-rel-01-integration-plan",
+        "files": [
+          "tests/test_package_workset.py",
+          "tools/package_workset.py",
+          "verification/project-audit/rel01-offline-report-guard.md"
+        ],
+        "stage": "review",
+        "claim_id": "b29ec3655b034f3c9d994624701a3e5a",
+        "claimed_at": "2026-11-24T06:38:21+00:00",
+        "updated_at": "2026-11-24T06:39:01+00:00",
+        "note": "Firmware-pair packaging requires explicit TCM bench_pair_ready:true and rejects unqualified/address-model-only statuses; evidence-only packaging remains allowed. H03/image+package tests pass 24/24; git diff --check passes.",
+        "result": "c812612a35ee30ef0b4a0295be70b24393db4250",
+        "based_on_reviews": [
+          "36a5a75d3ef44ab0a4cde5678f96bb0a",
+          "9c7cba27017d403db01fb18c16725dd9",
+          "9fafa66119bd4d68a67ffed2cc934265"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:38:21+00:00",
+  "updated_at": "2026-11-24T06:39:01+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -21300,6 +21329,29 @@
       ],
       "task": "H03-04",
       "submitted_at": "2026-11-24T06:38:09+00:00"
+    },
+    "b29ec3655b034f3c9d994624701a3e5a": {
+      "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
+      "label": "Copilot — REL-01 explicit TCM bench readiness",
+      "branch": "almirpangor-rel-01-integration-plan",
+      "files": [
+        "tests/test_package_workset.py",
+        "tools/package_workset.py",
+        "verification/project-audit/rel01-offline-report-guard.md"
+      ],
+      "stage": "review",
+      "claim_id": "b29ec3655b034f3c9d994624701a3e5a",
+      "claimed_at": "2026-11-24T06:38:21+00:00",
+      "updated_at": "2026-11-24T06:39:01+00:00",
+      "note": "Firmware-pair packaging requires explicit TCM bench_pair_ready:true and rejects unqualified/address-model-only statuses; evidence-only packaging remains allowed. H03/image+package tests pass 24/24; git diff --check passes.",
+      "result": "c812612a35ee30ef0b4a0295be70b24393db4250",
+      "based_on_reviews": [
+        "36a5a75d3ef44ab0a4cde5678f96bb0a",
+        "9c7cba27017d403db01fb18c16725dd9",
+        "9fafa66119bd4d68a67ffed2cc934265"
+      ],
+      "task": "REL-01",
+      "submitted_at": "2026-11-24T06:39:01+00:00"
     }
   }
 }
