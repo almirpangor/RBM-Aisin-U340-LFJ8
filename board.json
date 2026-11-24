@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1005,
+  "sequence": 1006,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -95,19 +95,22 @@
     },
     "REL-01": {
       "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
-      "label": "Copilot — REL-01 package guard documentation",
+      "label": "Copilot — REL-01 explicit TCM bench readiness",
       "branch": "almirpangor-rel-01-integration-plan",
       "files": [
+        "tests/test_package_workset.py",
+        "tools/package_workset.py",
         "verification/project-audit/rel01-offline-report-guard.md"
       ],
-      "stage": "review",
-      "claim_id": "9c7cba27017d403db01fb18c16725dd9",
-      "claimed_at": "2026-11-24T06:35:54+00:00",
-      "updated_at": "2026-11-24T06:36:22+00:00",
-      "note": "Documents that firmware-pair packaging rejects UNQUALIFIED/ADDRESS_MODEL_ONLY output and bench_pair_ready:false while evidence archives remain available; git diff --check passes.",
-      "result": "844a73b5b40b6263273a30a791549d53676091a5",
+      "stage": "in_progress",
+      "claim_id": "b29ec3655b034f3c9d994624701a3e5a",
+      "claimed_at": "2026-11-24T06:38:21+00:00",
+      "updated_at": "2026-11-24T06:38:21+00:00",
+      "note": "Require an explicit TCM bench_pair_ready:true attestation before firmware-pair packaging; test fail-closed missing/false values and document the contract.",
+      "result": null,
       "based_on_reviews": [
         "36a5a75d3ef44ab0a4cde5678f96bb0a",
+        "9c7cba27017d403db01fb18c16725dd9",
         "9fafa66119bd4d68a67ffed2cc934265"
       ]
     },
@@ -17929,9 +17932,38 @@
           "734b4f9d3a9c43f6aaa67927cf88ab12"
         ]
       }
+    },
+    {
+      "operation_id": "5c5066bca1354c84aca641792f28b5c6",
+      "task": "REL-01",
+      "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
+      "action": "claim",
+      "claim_id": "b29ec3655b034f3c9d994624701a3e5a",
+      "at": "2026-11-24T06:38:21+00:00",
+      "record": {
+        "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
+        "label": "Copilot — REL-01 explicit TCM bench readiness",
+        "branch": "almirpangor-rel-01-integration-plan",
+        "files": [
+          "tests/test_package_workset.py",
+          "tools/package_workset.py",
+          "verification/project-audit/rel01-offline-report-guard.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "b29ec3655b034f3c9d994624701a3e5a",
+        "claimed_at": "2026-11-24T06:38:21+00:00",
+        "updated_at": "2026-11-24T06:38:21+00:00",
+        "note": "Require an explicit TCM bench_pair_ready:true attestation before firmware-pair packaging; test fail-closed missing/false values and document the contract.",
+        "result": null,
+        "based_on_reviews": [
+          "36a5a75d3ef44ab0a4cde5678f96bb0a",
+          "9c7cba27017d403db01fb18c16725dd9",
+          "9fafa66119bd4d68a67ffed2cc934265"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:38:09+00:00",
+  "updated_at": "2026-11-24T06:38:21+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
