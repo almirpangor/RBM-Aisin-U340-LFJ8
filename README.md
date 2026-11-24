@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-24T05:07:50+00:00**. Изменение № **984**.
+Обновлено UTC: **2026-11-24T05:09:17+00:00**. Изменение № **985**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 7 · Ожидают с резервом: 1 · Порций на проверке: 16.**
+**В работе: 8 · Ожидают с резервом: 1 · Порций на проверке: 16.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -24,6 +24,7 @@
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
 | 13 | ECU-01 — Проверочная сборка Bosch E4M3 | Copilot — Bosch paired release \[9d4fcd7f-8d30-447e-b31d-6889553c0e20\] | 2026-11-24T05:07:50+00:00 | ECU-01 source/candidate status refreshed for REL-01; ordinary signal/build checks PASS OFFLINE_ONLY, hardware/installed-ECU match false. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
+| 25 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | LFJ8 selector measurement contract \[b9841cd6-bb32-4ab5-a5d7-3d1df09009f5\] | 2026-11-24T05:09:17+00:00 | Independent MODE-02 slice: document executable ADC/input commissioning and exact source-vs-hardware evidence; do not change production profile or shared aggregates. |
 | 30 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Codex чат 10 — чтение статуса NVM \[01a1fa76-b015-7640-a0ba-433b36dcf55f\] | 2026-11-21T09:12:26+00:00 | Поверх сданного a1e1733 включён DTC-04 4842a32. Добавляю условную страницу статуса NVM/SFR для no-media профиля, проверяю реальные ответы через TX13. Без чтения массива, записи и положительного ACK очистки. |
 | 32 | DTC-04 — Хранение DTC после выключения питания | Чат 9 — холодный старт и транспорт NVM \[01a1fa76-922b-7b11-a2f2-346a15d1dc95\] | 2026-11-21T09:11:30+00:00 | Включён 4842a32. Совместный офлайн-прогон действующего холодного callback, профиля NVM и штатного CAN-диагностического пути. Проверю отсутствие ложной очистки и поведение после перепривязки. Файлы действующих резервов TOY-05/DTC-02/CAN-03 не затрагиваю. |
 | — | ORG-01 — Основа проекта и локальная работа | Ведущй — общая сборка и задания для стендовой пары \[codex-integration-01a1f76d-20261120\] | 2026-11-21T09:15:21+00:00 | Опубликованы план и общая инфраструктура 3fe2893. Ведётся приёмка 12 чатов; локально объединены 9/5/10, native NVM/sensor/BasicCAN readout повторно PASS. Выявлен и передан CAN-03 дефект отключения диагностики при недостоверных датчиках. Окончательный native ELF/BIN ещё не собран. |
@@ -92,7 +93,7 @@
 | 21 | [VSS-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-01) | Свободна для продолжения | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
 | 22 | [VSS-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#vss-02) | Свободна для продолжения; порция на проверке | Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки. | См. входные условия карточки |
 | 24 | [MODE-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-01) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
-| 25 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-02) | Свободна для продолжения; порция на проверке | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | H03-03 |
+| 25 | [MODE-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-02) | Выполняется | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | H03-03 |
 | 26 | [MODE-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#mode-03) | Свободна для продолжения | Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests. | См. входные условия карточки |
 | 27 | [REL-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#rel-01) | Свободна для продолжения; порция на проверке | TCM BIN + Bosch BIN + SHA/manifest, карты правок, применимость и фактические результаты приёмки. | TOY-04, TOY-05, TOY-06, CAN-03, CAN-05, ECU-02, H03-04, H03-05, VSS-02, MODE-02, MODE-03, DTC-02, DTC-03, DTC-04 |
 | 28 | [REL-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#rel-02) | Свободна для продолжения | Фактические записи входов/CAN/момента/SLT/SLU и отказов с критериями приёмки. | REL-01 |
@@ -564,7 +565,7 @@
 </details>
 
 <details>
-<summary>MODE-02 — Подключение селектора, Tiptronic и Overdrive: Свободна для продолжения; порция на проверке</summary>
+<summary>MODE-02 — Подключение селектора, Tiptronic и Overdrive: Выполняется</summary>
 
 **Сделано.** Нативный AN2/P1DATA поддерживает явные окна и политику; startup сбрасывает владельцев до CAN. Общие host/M32R проверки прошли.
 
@@ -578,7 +579,7 @@
 
 **Рекомендуемый чат.** Чат 11 — 01a1fa79-892d-7ca3-bb8a-44698892c53e.
 
-**Исполнитель сейчас.** Задача не занята.
+**Сейчас выполняет.** LFJ8 selector measurement contract — b9841cd6-bb32-4ab5-a5d7-3d1df09009f5.
 
 **Критерий приёмки.** Реальные нажатия проходят до исполнения запроса в полном цикле, дребезг/обрыв не создают повторных команд.
 
@@ -765,7 +766,6 @@
 | VSS-01 | Порция принята | Codex VSS-01 — допуск времени и окна S51 для 0x1AE | codex/vss01-tml0-timing-admission-32e6ac79 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 1bcfe06eb116940db1921a70130629bacb17da3a |
 | VSS-02 | На проверке | Copilot H03 sensor production exports | almirpangor-lfj8-sensors-and-modes | Published typed alias native/layout evidence and exact FAIL_BINDINGS blockers. Production sensor config remains unresolved without paired clock and calibration evidence; aggregate-owned layout files were not edited. / commit 20f42a30c48f5e80ada0bda5b1fc6f9cc0770edd |
 | MODE-01 | Порция принята | Codex MODE-01 — отзыв диапазона при отказе ADC | codex/mode01-selector-fault-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 8974a4a5002fd1786eb02ad8d7c19a829c47ad6f |
-| MODE-02 | На проверке | Чат 11 · MODE-02, стендовый профиль селектора и ручных режимов | codex/mode02-profile-foreground-892d | Чат 11. Стендовые профили AN2 и ручных режимов подключены штатными точками; проверены 6 положений, независимый P/N, ручной цикл S1/S2, дребезг, удержание/отзыв и логика OD. 41 этап ПК, 216 тестов, native 22, components 8. Физическая карта, поставщики Toyota и порядок допуска релизов остаются явными зависимостями. verification/bench-wave/chat-11/handoff.json. / commit 2d3569d4f7c9b4cf23fdbf1d262b7c5136e9d667 |
 | MODE-03 | Порция принята | Codex MODE-03 — допуск только после инициализации политики | codex/mode03-policy-init-admission-32e6ac79 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit d77a559150a3c586ca50caa4aa64488b4f02ce22 |
 | REL-01 | На проверке | Copilot REL-01 integration | almirpangor-rel-01-providers-416d2a7e | Published wrapper signature correction. 51 coordination/package tests pass and diff --check passes. Corrected expanded suite reaches real layout and fails CAN tail overflow 4060 bytes; padding layout fails seven unresolved production bindings. Native/components and project status pass; no BIN emitted. / commit 6465a78db4b6a73643e7d4fdcdf1aeb6392a8e33 |
 | REL-02 | Порция принята | Codex REL-02 H03 DMA admission | codex/rel02-h03-ram-owner-01a1f99f | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 8ce841939a365433161c7e1fe5c51f9c0ca3a27b |
@@ -851,6 +851,12 @@
 - tests/test_h03_application_placement.py
 - verification/bench-wave/chat-1/handoff.json
 
+### MODE-02
+
+Чат: LFJ8 selector measurement contract. Claim ID: 6e1c036c5cc7436590b1e7c909edb2d2.
+
+- verification/bench-wave/chat-selector-measurement-contract.md
+
 ### ORG-01
 
 Чат: Ведущй — общая сборка и задания для стендовой пары. Claim ID: ae03538ba15145cc876e680b118fd0ae.
@@ -887,6 +893,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-24T05:09:17+00:00 | MODE-02 | claim | b9841cd6-bb32-4ab5-a5d7-3d1df09009f5 |
 | 2026-11-24T05:07:50+00:00 | ECU-01 | heartbeat | 9d4fcd7f-8d30-447e-b31d-6889553c0e20 |
 | 2026-11-24T05:07:01+00:00 | ECU-01 | heartbeat | 9d4fcd7f-8d30-447e-b31d-6889553c0e20 |
 | 2026-11-24T04:48:43+00:00 | VSS-02 | review | 2a528e3d-3ef6-473c-a1f9-4222181d2edf |
@@ -916,4 +923,3 @@
 | 2026-11-23T21:54:13+00:00 | CAN-01 | heartbeat | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T21:53:46+00:00 | VSS-02 | resume | f83154cd-8064-4a50-97e5-c4263880e54b |
 | 2026-11-23T21:53:31+00:00 | VSS-02 | heartbeat | f83154cd-8064-4a50-97e5-c4263880e54b |
-| 2026-11-23T21:52:36+00:00 | H03-04 | review | copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5 |
