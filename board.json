@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 992,
+  "sequence": 993,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -524,8 +524,8 @@
       "stage": "in_progress",
       "claim_id": "bc0dfc8cdfdc4082a71ddedafc6073dc",
       "claimed_at": "2026-11-23T21:46:11+00:00",
-      "updated_at": "2026-11-24T06:29:14+00:00",
-      "note": "Resuming ECU-01 software-only continuation: verify ordinary/no-cruise OFFLINE_ONLY, start/injection/ignition preservation, hooks/checksum/provenance, CAN-05/ECU-02 and Toyota operand contracts.",
+      "updated_at": "2026-11-24T06:31:36+00:00",
+      "note": "ECU-01 software continuation rerun complete: ordinary/qualified candidates repeat exactly; 51 integrity records; native ordinary/torque profiles PASS OFFLINE_ONLY; sourced Toyota mapping and current pair hardware identity remain blocked.",
       "result": null,
       "based_on_reviews": [
         "bb95576349fc4befa4af7a3779ddb4ae"
@@ -17558,9 +17558,37 @@
           "6f672879c0094563b3ad7fef61831ed9"
         ]
       }
+    },
+    {
+      "operation_id": "a9f0686ea2a345d2a82da6a9360bc723",
+      "task": "ECU-01",
+      "owner": "9d4fcd7f-8d30-447e-b31d-6889553c0e20",
+      "action": "heartbeat",
+      "claim_id": "bc0dfc8cdfdc4082a71ddedafc6073dc",
+      "at": "2026-11-24T06:31:36+00:00",
+      "record": {
+        "owner": "9d4fcd7f-8d30-447e-b31d-6889553c0e20",
+        "label": "Copilot — Bosch paired release",
+        "branch": "almirpangor-bosch-paired-release",
+        "files": [
+          "targets/bosch/build.py",
+          "targets/bosch/compact_branches.py",
+          "targets/bosch/tx.py",
+          "tests/test_bosch_build_integrity.py"
+        ],
+        "stage": "in_progress",
+        "claim_id": "bc0dfc8cdfdc4082a71ddedafc6073dc",
+        "claimed_at": "2026-11-23T21:46:11+00:00",
+        "updated_at": "2026-11-24T06:31:36+00:00",
+        "note": "ECU-01 software continuation rerun complete: ordinary/qualified candidates repeat exactly; 51 integrity records; native ordinary/torque profiles PASS OFFLINE_ONLY; sourced Toyota mapping and current pair hardware identity remain blocked.",
+        "result": null,
+        "based_on_reviews": [
+          "bb95576349fc4befa4af7a3779ddb4ae"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:31:14+00:00",
+  "updated_at": "2026-11-24T06:31:36+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
