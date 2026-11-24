@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 994,
+  "sequence": 995,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -94,23 +94,22 @@
       "result": "3f2596f31930203fe9cd7918e9b62f81ea82699c"
     },
     "REL-01": {
-      "owner": "416d2a7e-79e0-4acb-8e40-27807c492e55",
-      "label": "Copilot REL-01 integration",
-      "branch": "almirpangor-rel-01-providers-416d2a7e",
+      "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
+      "label": "Copilot — REL-01 package gate",
+      "branch": "almirpangor-rel-01-integration-plan",
       "files": [
-        "controller/build_target.py",
-        "targets/lfj8/check_h03_link.py",
         "tests/test_package_workset.py",
-        "tools/check_integrated_h03.py",
         "tools/package_workset.py"
       ],
-      "stage": "review",
-      "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
-      "claimed_at": "2026-11-24T04:02:17+00:00",
-      "updated_at": "2026-11-24T04:35:37+00:00",
-      "note": "Published wrapper signature correction. 51 coordination/package tests pass and diff --check passes. Corrected expanded suite reaches real layout and fails CAN tail overflow 4060 bytes; padding layout fails seven unresolved production bindings. Native/components and project status pass; no BIN emitted.",
-      "result": "6465a78db4b6a73643e7d4fdcdf1aeb6392a8e33",
-      "based_on_reviews": []
+      "stage": "in_progress",
+      "claim_id": "9fafa66119bd4d68a67ffed2cc934265",
+      "claimed_at": "2026-11-24T06:31:49+00:00",
+      "updated_at": "2026-11-24T06:31:49+00:00",
+      "note": "Reject unqualified H03 address-model output from firmware-pair packaging; preserve evidence-only packaging and validate the specific release gate.",
+      "result": null,
+      "based_on_reviews": [
+        "36a5a75d3ef44ab0a4cde5678f96bb0a"
+      ]
     },
     "H03-03": {
       "owner": "codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046",
@@ -17615,9 +17614,35 @@
           "6f672879c0094563b3ad7fef61831ed9"
         ]
       }
+    },
+    {
+      "operation_id": "ff5988313bbb4513838b97d4757a31e5",
+      "task": "REL-01",
+      "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
+      "action": "claim",
+      "claim_id": "9fafa66119bd4d68a67ffed2cc934265",
+      "at": "2026-11-24T06:31:49+00:00",
+      "record": {
+        "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
+        "label": "Copilot — REL-01 package gate",
+        "branch": "almirpangor-rel-01-integration-plan",
+        "files": [
+          "tests/test_package_workset.py",
+          "tools/package_workset.py"
+        ],
+        "stage": "in_progress",
+        "claim_id": "9fafa66119bd4d68a67ffed2cc934265",
+        "claimed_at": "2026-11-24T06:31:49+00:00",
+        "updated_at": "2026-11-24T06:31:49+00:00",
+        "note": "Reject unqualified H03 address-model output from firmware-pair packaging; preserve evidence-only packaging and validate the specific release gate.",
+        "result": null,
+        "based_on_reviews": [
+          "36a5a75d3ef44ab0a4cde5678f96bb0a"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:31:41+00:00",
+  "updated_at": "2026-11-24T06:31:49+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
