@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 975,
+  "sequence": 976,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -103,11 +103,11 @@
         "tests/test_package_workset.py",
         "tools/package_workset.py"
       ],
-      "stage": "in_progress",
+      "stage": "blocked",
       "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
       "claimed_at": "2026-11-24T04:02:17+00:00",
-      "updated_at": "2026-11-24T04:25:31+00:00",
-      "note": "Resume to review requirements, correct executable build-wrapper issues, and rerun all safe release gates before any BIN output.",
+      "updated_at": "2026-11-24T04:27:14+00:00",
+      "note": "Requirements and release guards rechecked. 21 image/package tests and 22 layout/application tests pass. Native 22/22 and components 8/8 pass. Direct H03 link FAIL CAN extension window overflow. Padding layout FAIL_BINDINGS: rbm_h03_application, rbm_h03_application_binding, rbm_h03_atf_state, rbm_h03_selector_adc_state, rbm_h03_sensor_config, rbm_h03_sensor_state, rbm_h03_tml0_1mhz_qualified. Expanded wrapper bug is in unreserved tools/check_integrated_h03.py. No source edits or BIN emitted by safe policy.",
       "result": null,
       "based_on_reviews": []
     },
@@ -17093,9 +17093,35 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "746e6b9f266e4bbf8ae69a7e1bbd1c60",
+      "task": "REL-01",
+      "owner": "416d2a7e-79e0-4acb-8e40-27807c492e55",
+      "action": "block",
+      "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
+      "at": "2026-11-24T04:27:14+00:00",
+      "record": {
+        "owner": "416d2a7e-79e0-4acb-8e40-27807c492e55",
+        "label": "Copilot REL-01 integration",
+        "branch": "almirpangor-rel-01-providers-416d2a7e",
+        "files": [
+          "controller/build_target.py",
+          "targets/lfj8/check_h03_link.py",
+          "tests/test_package_workset.py",
+          "tools/package_workset.py"
+        ],
+        "stage": "blocked",
+        "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
+        "claimed_at": "2026-11-24T04:02:17+00:00",
+        "updated_at": "2026-11-24T04:27:14+00:00",
+        "note": "Requirements and release guards rechecked. 21 image/package tests and 22 layout/application tests pass. Native 22/22 and components 8/8 pass. Direct H03 link FAIL CAN extension window overflow. Padding layout FAIL_BINDINGS: rbm_h03_application, rbm_h03_application_binding, rbm_h03_atf_state, rbm_h03_selector_adc_state, rbm_h03_sensor_config, rbm_h03_sensor_state, rbm_h03_tml0_1mhz_qualified. Expanded wrapper bug is in unreserved tools/check_integrated_h03.py. No source edits or BIN emitted by safe policy.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-24T04:25:31+00:00",
+  "updated_at": "2026-11-24T04:27:14+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
