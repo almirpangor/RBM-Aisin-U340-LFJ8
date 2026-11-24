@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-24T04:27:14+00:00**. Изменение № **976**.
+Обновлено UTC: **2026-11-24T04:28:49+00:00**. Изменение № **977**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -33,7 +33,7 @@
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
 | 11 | CAN-04 — Запрос снижения момента по RB | Copilot App — запрос снижения момента CAN LFJ8 \[copilot-416d2a7e-79e0-4acb-8e40-27807c492e55\] | 2026-11-23T20:28:41+00:00 | Запуск M32R GCC 4.8.0 собран до probe-стадии: binutils/source downloaded, MSYS2/MinGW installed, but GCC 4.8 build probes fail in this host; WSL unavailable because virtualization is disabled. No unverified or fake TCM/Bosch BIN produced. |
-| 27 | REL-01 — Два целевых BIN и воспроизводимый комплект | Copilot REL-01 integration \[416d2a7e-79e0-4acb-8e40-27807c492e55\] | 2026-11-24T04:27:14+00:00 | Requirements and release guards rechecked. 21 image/package tests and 22 layout/application tests pass. Native 22/22 and components 8/8 pass. Direct H03 link FAIL CAN extension window overflow. Padding layout FAIL_BINDINGS: rbm_h03_application, rbm_h03_application_binding, rbm_h03_atf_state, rbm_h03_selector_adc_state, rbm_h03_sensor_config, rbm_h03_sensor_state, rbm_h03_tml0_1mhz_qualified. Expanded wrapper bug is in unreserved tools/check_integrated_h03.py. No source edits or BIN emitted by safe policy. |
+| 27 | REL-01 — Два целевых BIN и воспроизводимый комплект | Copilot REL-01 integration \[416d2a7e-79e0-4acb-8e40-27807c492e55\] | 2026-11-24T04:28:49+00:00 | Add tools/check_integrated_h03.py for the confirmed split-layout wrapper signature correction. |
 
 
 ## Результаты на проверке — резерв свободен
@@ -874,6 +874,7 @@
 - controller/build_target.py
 - targets/lfj8/check_h03_link.py
 - tests/test_package_workset.py
+- tools/check_integrated_h03.py
 - tools/package_workset.py
 
 ### TOY-05
@@ -894,6 +895,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-24T04:28:49+00:00 | REL-01 | heartbeat | 416d2a7e-79e0-4acb-8e40-27807c492e55 |
 | 2026-11-24T04:27:14+00:00 | REL-01 | block | 416d2a7e-79e0-4acb-8e40-27807c492e55 |
 | 2026-11-24T04:25:31+00:00 | REL-01 | resume | 416d2a7e-79e0-4acb-8e40-27807c492e55 |
 | 2026-11-24T04:23:23+00:00 | REL-01 | block | 416d2a7e-79e0-4acb-8e40-27807c492e55 |
@@ -923,4 +925,3 @@
 | 2026-11-23T21:47:06+00:00 | H03-04 | claim | copilot-62a3f43b-0046-429a-aa2b-f0a8cd07b5f5 |
 | 2026-11-23T21:46:32+00:00 | CAN-01 | claim | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T21:46:11+00:00 | ECU-01 | claim | 9d4fcd7f-8d30-447e-b31d-6889553c0e20 |
-| 2026-11-23T21:46:04+00:00 | DTC-03 | claim | copilot-bfacfe0e-1304-4445-88f1-5ccdc8faa80a |
