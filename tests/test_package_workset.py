@@ -33,7 +33,7 @@ class FirmwarePairTests(unittest.TestCase):
                 content[0xA844A:0xA844A + len(tag)] = tag
             file = f"{role}.bin"
             (self.root / file).write_bytes(content)
-            self.artifacts.append({
+            artifact = {
                 "file": file,
                 "path": f"artifacts/{file}",
                 "role": role,
@@ -42,7 +42,10 @@ class FirmwarePairTests(unittest.TestCase):
                 "build_verified": True,
                 "model_verified": True,
                 "hardware_verified": False,
-            })
+            }
+            if role == "tcm_h03":
+                artifact["bench_pair_ready"] = True
+            self.artifacts.append(artifact)
 
     def package(self, output, *, firmware_pair=True):
         self.source_files["data/sources.json"] = json.dumps(self.sources).encode()
@@ -84,6 +87,15 @@ class FirmwarePairTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "выпускную программную квалификацию"):
             self.package(output)
         self.assertFalse(output.exists())
+
+    def test_tcm_requires_explicit_bench_readiness(self):
+        image = self.artifacts[0]
+        del image["bench_pair_ready"]
+        output = self.root / "pair.zip"
+        with self.assertRaisesRegex(ValueError, "выпускную программную квалификацию"):
+            self.package(output)
+        self.assertFalse(output.exists())
+        self.package(self.root / "evidence.zip", firmware_pair=False)
 
     def test_offline_manifest_identifies_unarchived_image(self):
         self.source_files["verification/ordinary/manifest.json"] = json.dumps({
