@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 988,
+  "sequence": 989,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -416,8 +416,8 @@
       "stage": "in_progress",
       "claim_id": "d555acaf033d4dd2a9f3e77e36f3d6dd",
       "claimed_at": "2026-11-24T05:59:44+00:00",
-      "updated_at": "2026-11-24T05:59:44+00:00",
-      "note": "Implement software-defined SLU/output command and safe revoke only; physical channel and response remain unverified.",
+      "updated_at": "2026-11-24T06:07:12+00:00",
+      "note": "Implemented donor-unit SLU demand handoff and explicit logical revoke; physical channel remains unverified. Host/M32R checks are blocked by missing local donor/tool paths.",
       "result": null,
       "based_on_reviews": []
     },
@@ -17442,9 +17442,37 @@
           "43c64ae0c01a43088c77386a743171c9"
         ]
       }
+    },
+    {
+      "operation_id": "49f3702ac2194382892bb5cd5dfa99f6",
+      "task": "TOY-06",
+      "owner": "631778fb-a3af-4621-8fcd-9b34d66cd355",
+      "action": "heartbeat",
+      "claim_id": "d555acaf033d4dd2a9f3e77e36f3d6dd",
+      "at": "2026-11-24T06:07:12+00:00",
+      "record": {
+        "owner": "631778fb-a3af-4621-8fcd-9b34d66cd355",
+        "label": "Copilot TOY-06 SLU command",
+        "branch": "almir458765-toy-06-slu-outputs",
+        "files": [
+          "targets/lfj8/check_toyota_slu.py",
+          "targets/lfj8/lfj8_h03_cycle.c",
+          "targets/lfj8/lfj8_h03_outputs.h",
+          "targets/lfj8/lfj8_h03_slu.c",
+          "targets/lfj8/lfj8_h03_slu.h",
+          "targets/lfj8/test_lfj8_h03_cycle.c"
+        ],
+        "stage": "in_progress",
+        "claim_id": "d555acaf033d4dd2a9f3e77e36f3d6dd",
+        "claimed_at": "2026-11-24T05:59:44+00:00",
+        "updated_at": "2026-11-24T06:07:12+00:00",
+        "note": "Implemented donor-unit SLU demand handoff and explicit logical revoke; physical channel remains unverified. Host/M32R checks are blocked by missing local donor/tool paths.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-24T05:59:48+00:00",
+  "updated_at": "2026-11-24T06:07:12+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {

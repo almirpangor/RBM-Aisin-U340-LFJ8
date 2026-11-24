@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-24T05:59:48+00:00**. Изменение № **988**.
+Обновлено UTC: **2026-11-24T06:07:12+00:00**. Изменение № **989**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -21,7 +21,7 @@
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
 | 6 | TOY-05 — Обучение и сохранение адаптаций | Codex 12 — TOY-05, стартовое состояние первой стендовой пары \[01a1fa79-a9fd-70c0-80a3-f59592edaf79\] | 2026-11-21T09:13:05+00:00 | По поручению ведущего переношу сброс DTC RAM в защищённый холодный вход. Application C и транспорт остаются у текущих владельцев. |
-| 7 | TOY-06 — Блокировка гидротрансформатора SLU | Copilot TOY-06 SLU command \[631778fb-a3af-4621-8fcd-9b34d66cd355\] | 2026-11-24T05:59:44+00:00 | Implement software-defined SLU/output command and safe revoke only; physical channel and response remain unverified. |
+| 7 | TOY-06 — Блокировка гидротрансформатора SLU | Copilot TOY-06 SLU command \[631778fb-a3af-4621-8fcd-9b34d66cd355\] | 2026-11-24T06:07:12+00:00 | Implemented donor-unit SLU demand handoff and explicit logical revoke; physical channel remains unverified. Host/M32R checks are blocked by missing local donor/tool paths. |
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
 | 13 | ECU-01 — Проверочная сборка Bosch E4M3 | Copilot — Bosch paired release \[9d4fcd7f-8d30-447e-b31d-6889553c0e20\] | 2026-11-24T05:07:50+00:00 | ECU-01 source/candidate status refreshed for REL-01; ordinary signal/build checks PASS OFFLINE_ONLY, hardware/installed-ECU match false. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
@@ -920,6 +920,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-24T06:07:12+00:00 | TOY-06 | heartbeat | 631778fb-a3af-4621-8fcd-9b34d66cd355 |
 | 2026-11-24T05:59:48+00:00 | MODE-03 | claim | copilot-mode03-20261124-0829-9b51a672-80d4-41d8-b003-2ccf7df38731 |
 | 2026-11-24T05:59:44+00:00 | TOY-06 | claim | 631778fb-a3af-4621-8fcd-9b34d66cd355 |
 | 2026-11-24T05:10:25+00:00 | VSS-02 | claim | copilot-lfj8-sensor-contract-a4a37091 |
@@ -949,4 +950,3 @@
 | 2026-11-23T22:10:28+00:00 | CAN-01 | resume | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T21:58:08+00:00 | CAN-01 | block | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
 | 2026-11-23T21:57:36+00:00 | CAN-01 | heartbeat | 30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0 |
-| 2026-11-23T21:54:57+00:00 | VSS-02 | block | f83154cd-8064-4a50-97e5-c4263880e54b |
