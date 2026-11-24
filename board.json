@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1001,
+  "sequence": 1002,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -227,8 +227,8 @@
       "stage": "in_progress",
       "claim_id": "8e8333c68a8848a6878a3cb87d244a76",
       "claimed_at": "2026-11-24T06:31:14+00:00",
-      "updated_at": "2026-11-24T06:32:15+00:00",
-      "note": "PowerShell invocation needed argument quoting correction; rerunning the component fixtures with explicit argument arrays.",
+      "updated_at": "2026-11-24T06:36:08+00:00",
+      "note": "Host GCC and M32R fixtures both pass; refreshed the owned rerun JSON with current artifact hashes and retained the exact-H03/donor limitations.",
       "result": null,
       "based_on_reviews": [
         "603dc4c445b846078f6c08ebe2f5ae81",
@@ -17816,9 +17816,38 @@
           "9fafa66119bd4d68a67ffed2cc934265"
         ]
       }
+    },
+    {
+      "operation_id": "8c06c3e84ea444f793e91acffec7066e",
+      "task": "DTC-03",
+      "owner": "copilot-0bc0cbc673de4134ab7d7b9afeb082a2",
+      "action": "heartbeat",
+      "claim_id": "8e8333c68a8848a6878a3cb87d244a76",
+      "at": "2026-11-24T06:36:08+00:00",
+      "record": {
+        "owner": "copilot-0bc0cbc673de4134ab7d7b9afeb082a2",
+        "label": "Copilot — ATF component evidence",
+        "branch": "almirpangor-lfj8-diagnostics-storage",
+        "files": [
+          "diagnostics/chery_atf_circuit.c",
+          "diagnostics/chery_atf_circuit.h",
+          "diagnostics/test_chery_atf_circuit.c",
+          "verification/project-audit/dtc03-m32r-rerun.json"
+        ],
+        "stage": "in_progress",
+        "claim_id": "8e8333c68a8848a6878a3cb87d244a76",
+        "claimed_at": "2026-11-24T06:31:14+00:00",
+        "updated_at": "2026-11-24T06:36:08+00:00",
+        "note": "Host GCC and M32R fixtures both pass; refreshed the owned rerun JSON with current artifact hashes and retained the exact-H03/donor limitations.",
+        "result": null,
+        "based_on_reviews": [
+          "603dc4c445b846078f6c08ebe2f5ae81",
+          "6f672879c0094563b3ad7fef61831ed9"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:35:54+00:00",
+  "updated_at": "2026-11-24T06:36:08+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
