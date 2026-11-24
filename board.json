@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 977,
+  "sequence": 978,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -104,11 +104,11 @@
         "tools/check_integrated_h03.py",
         "tools/package_workset.py"
       ],
-      "stage": "blocked",
+      "stage": "in_progress",
       "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
       "claimed_at": "2026-11-24T04:02:17+00:00",
-      "updated_at": "2026-11-24T04:28:49+00:00",
-      "note": "Add tools/check_integrated_h03.py for the confirmed split-layout wrapper signature correction.",
+      "updated_at": "2026-11-24T04:28:57+00:00",
+      "note": "Resume to correct the expanded-wrapper signature mismatch and rerun layout/native gates.",
       "result": null,
       "based_on_reviews": []
     },
@@ -17147,9 +17147,36 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "62c6ebbe273f4b2da710cb2cafb36393",
+      "task": "REL-01",
+      "owner": "416d2a7e-79e0-4acb-8e40-27807c492e55",
+      "action": "resume",
+      "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
+      "at": "2026-11-24T04:28:57+00:00",
+      "record": {
+        "owner": "416d2a7e-79e0-4acb-8e40-27807c492e55",
+        "label": "Copilot REL-01 integration",
+        "branch": "almirpangor-rel-01-providers-416d2a7e",
+        "files": [
+          "controller/build_target.py",
+          "targets/lfj8/check_h03_link.py",
+          "tests/test_package_workset.py",
+          "tools/check_integrated_h03.py",
+          "tools/package_workset.py"
+        ],
+        "stage": "in_progress",
+        "claim_id": "36a5a75d3ef44ab0a4cde5678f96bb0a",
+        "claimed_at": "2026-11-24T04:02:17+00:00",
+        "updated_at": "2026-11-24T04:28:57+00:00",
+        "note": "Resume to correct the expanded-wrapper signature mismatch and rerun layout/native gates.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-24T04:28:49+00:00",
+  "updated_at": "2026-11-24T04:28:57+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
