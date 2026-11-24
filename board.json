@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1014,
+  "sequence": 1015,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -228,12 +228,12 @@
         "targets/lfj8/lfj8_h03_dtc_target.h",
         "verification/project-audit/dtc03-ta2005-p0710.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "20021c325c344497a1a35bf986ba306c",
       "claimed_at": "2026-11-24T06:41:14+00:00",
-      "updated_at": "2026-11-24T06:42:54+00:00",
-      "note": "Continuing claimed DTC-03 native event/readout contract; no DTC-02/DTC-04 files",
-      "result": null,
+      "updated_at": "2026-11-24T06:46:14+00:00",
+      "note": "Опубликован source-backed контракт стендового readout 01–0D и связь с DTC-03 P0710; DTC-02 provider остается отдельной review-порцией, финальный H03 ELF не подтвержден. git diff --check и проверка команд/полей PASS. project_status --check сохраняет прежние needs-review для компонентов ATF; точные local/project-paths.json, H03 и M32R toolchain отсутствуют в этой worktree, поэтому новый native rerun не выполнен. Аппаратные измерения/пороги не заявлены.",
+      "result": "11f5b3f8f90259f46c0526229806ac4a181a2b7f",
       "based_on_reviews": [
         "603dc4c445b846078f6c08ebe2f5ae81",
         "6f672879c0094563b3ad7fef61831ed9",
@@ -18195,9 +18195,41 @@
           "cee15d1377aa4207a89e2eb78dd96995"
         ]
       }
+    },
+    {
+      "operation_id": "ea09e429f9d04079bb09592e4348f005",
+      "task": "DTC-03",
+      "owner": "copilot-71f474e418d946d2ab3d84e52afb56f1",
+      "action": "review",
+      "claim_id": "20021c325c344497a1a35bf986ba306c",
+      "at": "2026-11-24T06:46:14+00:00",
+      "record": {
+        "owner": "copilot-71f474e418d946d2ab3d84e52afb56f1",
+        "label": "Copilot — native diagnostic field provider",
+        "branch": "almirpangor-lfj8-diagnostics-storage",
+        "files": [
+          "docs/diagnostics-integration.md",
+          "targets/lfj8/check_h03_atf_fault.py",
+          "targets/lfj8/h03_atf_fault_hook_fixture.c",
+          "targets/lfj8/lfj8_h03_dtc_target.c",
+          "targets/lfj8/lfj8_h03_dtc_target.h",
+          "verification/project-audit/dtc03-ta2005-p0710.md"
+        ],
+        "stage": "review",
+        "claim_id": "20021c325c344497a1a35bf986ba306c",
+        "claimed_at": "2026-11-24T06:41:14+00:00",
+        "updated_at": "2026-11-24T06:46:14+00:00",
+        "note": "Опубликован source-backed контракт стендового readout 01–0D и связь с DTC-03 P0710; DTC-02 provider остается отдельной review-порцией, финальный H03 ELF не подтвержден. git diff --check и проверка команд/полей PASS. project_status --check сохраняет прежние needs-review для компонентов ATF; точные local/project-paths.json, H03 и M32R toolchain отсутствуют в этой worktree, поэтому новый native rerun не выполнен. Аппаратные измерения/пороги не заявлены.",
+        "result": "11f5b3f8f90259f46c0526229806ac4a181a2b7f",
+        "based_on_reviews": [
+          "603dc4c445b846078f6c08ebe2f5ae81",
+          "6f672879c0094563b3ad7fef61831ed9",
+          "8e8333c68a8848a6878a3cb87d244a76"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:45:39+00:00",
+  "updated_at": "2026-11-24T06:46:14+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -21579,6 +21611,32 @@
       ],
       "task": "REL-01",
       "submitted_at": "2026-11-24T06:41:22+00:00"
+    },
+    "20021c325c344497a1a35bf986ba306c": {
+      "owner": "copilot-71f474e418d946d2ab3d84e52afb56f1",
+      "label": "Copilot — native diagnostic field provider",
+      "branch": "almirpangor-lfj8-diagnostics-storage",
+      "files": [
+        "docs/diagnostics-integration.md",
+        "targets/lfj8/check_h03_atf_fault.py",
+        "targets/lfj8/h03_atf_fault_hook_fixture.c",
+        "targets/lfj8/lfj8_h03_dtc_target.c",
+        "targets/lfj8/lfj8_h03_dtc_target.h",
+        "verification/project-audit/dtc03-ta2005-p0710.md"
+      ],
+      "stage": "review",
+      "claim_id": "20021c325c344497a1a35bf986ba306c",
+      "claimed_at": "2026-11-24T06:41:14+00:00",
+      "updated_at": "2026-11-24T06:46:14+00:00",
+      "note": "Опубликован source-backed контракт стендового readout 01–0D и связь с DTC-03 P0710; DTC-02 provider остается отдельной review-порцией, финальный H03 ELF не подтвержден. git diff --check и проверка команд/полей PASS. project_status --check сохраняет прежние needs-review для компонентов ATF; точные local/project-paths.json, H03 и M32R toolchain отсутствуют в этой worktree, поэтому новый native rerun не выполнен. Аппаратные измерения/пороги не заявлены.",
+      "result": "11f5b3f8f90259f46c0526229806ac4a181a2b7f",
+      "based_on_reviews": [
+        "603dc4c445b846078f6c08ebe2f5ae81",
+        "6f672879c0094563b3ad7fef61831ed9",
+        "8e8333c68a8848a6878a3cb87d244a76"
+      ],
+      "task": "DTC-03",
+      "submitted_at": "2026-11-24T06:46:14+00:00"
     }
   }
 }
