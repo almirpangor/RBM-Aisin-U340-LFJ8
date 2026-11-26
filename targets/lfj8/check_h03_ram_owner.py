@@ -16,6 +16,7 @@ from check_h03_link import HERE, ROOT, TARGET, identify_h03
 from check_h03_toyota_source import RELEASE_ROOTS, simulate as simulate_toyota
 from lfj8_h03_layout import alloc_sections, read_elf
 import lfj8_h03_ram_placement as ram_placement
+import lfj8_h03_bench_memory_profile as memory_profile
 
 
 SITES = {"DIRECT": 0x002924, "SPAN": 0x00294C, "COPY": 0x002D1C,
@@ -117,7 +118,7 @@ stock_{name}:
     }
 
 
-def simulate(base, compiler, blocks, *, resident_writers=False):
+def simulate(base, compiler, blocks, *, resident_writers=False, bench_storage=None):
     rom = base.read_bytes()
 
     def run(*args):
@@ -130,18 +131,29 @@ def simulate(base, compiler, blocks, *, resident_writers=False):
     sources = ("test_lfj8_h03_ram_owner.c", "lfj8_h03_ram_owner.c", "lfj8_h03_target_memory.c",
                "lfj8_h03_application.c", "h03_application_hooks.S", "lfj8_h03_mmio.c",
                "lfj8_h03_service_guard.c", "h03_service_guard_hooks.S", "h03_dma4_guard.S")
-    # Stack lower bounds, remaining reserves and the IRQ pointer below are
-    # fixture geometry. The state ranges and stack tops use the same linker inputs.
+    # Stack bounds and remaining reserves come from the pinned H03 software
+    # profile. Only the IRQ pointer is placed as fixture geometry here.
     confirmed = ram_placement.confirmed_ranges(rom, blocks)
     policy_address = 0x7000 if resident_writers else CONTINUATIONS["rbm_h03_service_policy"]
     symbols = dict(CONTINUATIONS, **confirmed, rbm_h03_service_policy=policy_address,
-                   rbm_h03_ram_spi_first=0x809700, rbm_h03_ram_psw_first=0x809f00,
-                   rbm_h03_ram_spi_reserve=0x100, rbm_h03_ram_psw_reserve=8,
+                   rbm_h03_ram_spi_first=memory_profile.SPI_FIRST,
+                   rbm_h03_ram_spi_reserve=memory_profile.SPI_REMAINING,
+                   rbm_h03_ram_psw_first=memory_profile.PSW_FIRST,
+                   rbm_h03_ram_psw_reserve=memory_profile.PSW_REMAINING,
                    h03_dtc_irq_pointer=blocks["workspace"]["end_exclusive"])
     with TemporaryDirectory(prefix="rbm-h03-ram-owner-") as directory:
         folder = Path(directory)
         shim = folder / "crt.c"
         shim.write_text("void __init(void) {}\nvoid __fini(void) {}\n", encoding="ascii")
+        bench_flags = ()
+        if bench_storage is not None:
+            import lfj8_h03_bench_memory_profile as bench
+
+            profile = bench.prepare(rom, bench_storage, symbols["h03_dtc_irq_pointer"], folder)
+            symbols.update(profile["symbols"], **profile["early_bindings"])
+            bench_flags = (f"-D{bench.NATIVE_DEFINE}", "-I", folder,
+                           f'-DRBM_H03_BENCH_MEMORY_HEADER="{profile["header"].name}"')
+            sources += (bench.MODULE,)
         resident = folder / "resident.ld"
         resident_sections = [".text.rbm_h03_early_irq_gate"]
         if resident_writers:
@@ -156,6 +168,7 @@ def simulate(base, compiler, blocks, *, resident_writers=False):
         run(compiler, *TARGET, "-Os", "-std=c11", "-Wall", "-Wextra", "-Werror",
             "-ffunction-sections", "-fdata-sections",
             "-DRBM_H03_COMMON_DMA4_GUARD=1", f"-DPOLICY_ADDRESS={policy_address:#x}u",
+            *bench_flags,
             *(option for path in includes for option in ("-I", path)),
             *(f"-DROM_{name}=0x{rom[address:address + 4].hex()}u"
               for name, address in (SITES | SBI_SITES).items()),
@@ -222,6 +235,7 @@ def check(args):
     storage = json.loads(args.storage_report.read_text(encoding="utf-8"))
     result = simulate(args.base, compiler, storage["blocks"])
     resident = simulate(args.base, compiler, storage["blocks"], resident_writers=True)
+    bench = simulate(args.base, compiler, storage["blocks"], resident_writers=True, bench_storage=storage)
     confirmed = ram_placement.confirmed_ranges(args.base.read_bytes(), storage["blocks"])
     confirmed.update(ram_placement.application_addresses(storage))
     application_link = probe_application_link(compiler, confirmed)
@@ -241,6 +255,7 @@ def check(args):
         "base": identity,
         "m32r": result,
         "m32r_resident_writers": resident,
+        "m32r_bench_boot_writers": bench,
         "stock_sbi": sbi,
         "native_boot_writers_replay": boot_writers,
         "native_application_link": application_link,

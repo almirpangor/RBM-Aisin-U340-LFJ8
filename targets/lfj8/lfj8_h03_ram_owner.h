@@ -3,6 +3,9 @@
 
 #include "lfj8_h03_service_guard.h"
 
+#define LFJ8_H03_RAM_SPI_RESERVE_MIN_BYTES 1040u
+#define LFJ8_H03_RAM_PSW_RESERVE_MIN_BYTES 64u
+
 typedef struct {
     Lfj8H03ServiceRange control, communication, workspace, dtc_irq_pointer;
     Lfj8H03ServiceRange spi, psw;
@@ -22,8 +25,9 @@ typedef struct {
  * witness must cover remaining DMA reconfiguration and other writers,
  * including SBI, remain covered. It must not inspect project RAM to decide
  * whether RAM can be accessed.
- * Supply the required remaining SPI/PSW reserves in bytes for the final
- * image. The native check reads CR2 and the OEM PSW cursor under the lock.
+ * Supply at least the software-profile SPI/PSW reserve minima above. They
+ * are static engineering bounds, not measured physical high-water values.
+ * The native check reads CR2 and the OEM PSW cursor under the lock.
  * It assumes the existing entry frame was already placed safely.
  * The caller must close the lifecycle gate before allowing a service owner
  * or a different memory map. CAN may be parked while this probe runs. */
@@ -33,7 +37,9 @@ int lfj8_h03_ram_owned(void *context);
  * native interrupt exclusion with a null context, before project RAM may
  * safely be read or written. Return 1 only when the startup order, remaining
  * CPU/SBI writers and DMA reconfiguration paths are qualified for this image.
- * The release link has no fallback definition. */
+ * The bench implementation checks pinned reset/CPU-writer instructions.
+ * The final link must still prove that the remaining CPU paths and the
+ * complete linked stack fit the bench profile. */
 int rbm_h03_boot_writers_owned(void *context);
 
 #endif

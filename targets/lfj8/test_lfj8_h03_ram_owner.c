@@ -3,6 +3,18 @@
 #include "lfj8_h03_ram_owner.h"
 #include "lfj8_h03_storage.h"
 
+#ifdef RBM_H03_BENCH_EARLY_LATCHES
+#include RBM_H03_BENCH_MEMORY_HEADER
+extern volatile uint8_t rbm_h03_tml0_1mhz_qualified;
+extern const uint8_t rbm_h03_ram_spi_first[];
+static const struct {
+    uint32_t address;
+    uint32_t word;
+} bench_boot_words[] = RBM_H03_BENCH_BOOT_WORDS;
+#define FIXTURE_SPI_FIRST ((uint32_t)(uintptr_t)rbm_h03_ram_spi_first)
+#else
+#define FIXTURE_SPI_FIRST 0x809700u
+#endif
 #undef NDEBUG
 #include <assert.h>
 #include <stdio.h>
@@ -16,7 +28,7 @@
 #endif
 #define CONTROL_ADDRESS 0x806b40u
 #define COMM_ADDRESS 0x808e40u
-#define IRQ_ADDRESS ((uint32_t)(uintptr_t)h03_dtc_irq_pointer)
+#define IRQ_ADDRESS ((uint32_t)(uintptr_t)&h03_dtc_irq_pointer)
 #define OWNER (*(Lfj8H03RamOwner *)(uintptr_t)OWNER_ADDRESS)
 #define POLICY (*(Lfj8H03ServicePolicy *)(uintptr_t)POLICY_ADDRESS)
 
@@ -26,9 +38,11 @@ void rbm_h03_service_copy_hook(void);
 void rbm_h03_service_close_hook(void);
 void rbm_h03_early_irq_gate(void);
 void rbm_h03_dma4_guard(void);
-extern uint8_t h03_dtc_irq_pointer[];
+extern volatile uint32_t h03_dtc_irq_pointer;
 
+#ifndef RBM_H03_BENCH_EARLY_LATCHES
 Lfj8H03Application rbm_h03_application;
+#endif
 static Lfj8RegisterIo application_io;
 static Lfj8H03Takeover takeover;
 static Lfj8H03MainResult result;
@@ -87,10 +101,22 @@ static int boot_ready(void *platform)
     return platform_owned;
 }
 
+#ifndef RBM_H03_BENCH_EARLY_LATCHES
 int rbm_h03_boot_writers_owned(void *context)
 {
     assert(!irq_enabled() && context == NULL);
     return platform_owned;
+}
+#endif
+
+static void set_platform_owned(int owned)
+{
+    platform_owned = owned;
+#ifdef RBM_H03_BENCH_EARLY_LATCHES
+    if (use_target_owner) {
+        WORD(bench_boot_words[0].address) = bench_boot_words[0].word ^ (unsigned)!owned;
+    }
+#endif
 }
 
 static int ram_owned(void *context)
@@ -147,8 +173,9 @@ static void fixture_map(void)
         .communication = {COMM_ADDRESS, workspace},
         .workspace = {workspace, workspace + sizeof(Lfj8H03WorkspaceStorage)},
         .dtc_irq_pointer = {IRQ_ADDRESS, IRQ_ADDRESS + 4u},
-        .spi = {0x809700u, 0x809efcu}, .psw = {0x809f00u, 0x809fa0u},
-        .spi_reserve_bytes = 0x100u, .psw_reserve_bytes = 8u,
+        .spi = {FIXTURE_SPI_FIRST, 0x809efcu}, .psw = {0x809f00u, 0x809fa0u},
+        .spi_reserve_bytes = LFJ8_H03_RAM_SPI_RESERVE_MIN_BYTES,
+        .psw_reserve_bytes = LFJ8_H03_RAM_PSW_RESERVE_MIN_BYTES,
         .direct_hook = (uint32_t)(uintptr_t)&rbm_h03_service_direct_hook,
         .span_hook = (uint32_t)(uintptr_t)&rbm_h03_service_span_hook,
         .copy_hook = (uint32_t)(uintptr_t)&rbm_h03_service_copy_hook,
@@ -246,11 +273,16 @@ int main(void)
     __asm__ volatile ("setpsw #0x40" ::: "memory", "cc");
     application_io = lfj8_h03_mmio;
     application_io.context = &OWNER;
-    platform_owned = 1;
+    set_platform_owned(1);
     fixture_map();
     for (unsigned i = 0; i < sizeof sbi_sites / sizeof sbi_sites[0]; ++i) {
         WORD(sbi_sites[i]) = sbi_words[i];
     }
+#ifdef RBM_H03_BENCH_EARLY_LATCHES
+    for (unsigned i = 0; i < sizeof bench_boot_words / sizeof bench_boot_words[0]; ++i) {
+        WORD(bench_boot_words[i].address) = bench_boot_words[i].word;
+    }
+#endif
     for (unsigned i = 0; i < sizeof sites / sizeof sites[0]; ++i) {
         WORD(sites[i]) = original[i];
     }
@@ -269,6 +301,27 @@ int main(void)
         WORD(sites[i]) = patched[i];
     }
     require_cold_gate(1);
+
+#ifdef RBM_H03_BENCH_EARLY_LATCHES
+    for (unsigned i = 0; i < sizeof bench_boot_words / sizeof bench_boot_words[0]; ++i) {
+        const uint32_t address = bench_boot_words[i].address;
+        WORD(address) ^= 1u;
+        require_cold_gate(0);
+        WORD(address) = bench_boot_words[i].word;
+    }
+    require_cold_gate(1);
+    /* Run the linked lower veneer, stopping at its native continuation. */
+    const uint32_t continuation = WORD(0x3dc0u);
+    WORD(0x3dc0u) = 0x1fcef000u; /* jmp lr || nop */
+    rbm_h03_application.running = 1u;
+    rbm_h03_tml0_1mhz_qualified = 1u;
+    h03_dtc_irq_pointer = 0xa5a5a5a5u;
+    __asm__ volatile ("clrpsw #0x40" ::: "memory", "cc");
+    rbm_h03_early_irq_gate();
+    assert(irq_enabled() && !h03_dtc_irq_pointer && !rbm_h03_application.running &&
+           !rbm_h03_tml0_1mhz_qualified);
+    WORD(0x3dc0u) = continuation;
+#endif
 
     for (unsigned i = 0; i < sizeof sbi_sites / sizeof sbi_sites[0]; ++i) {
         WORD(sbi_sites[i]) ^= 1u;
@@ -307,6 +360,12 @@ int main(void)
         OWNER.early_irq_hook + 0x04u,  /* A different BasicCAN pointer. */
         OWNER.early_irq_hook + 0x08u,  /* The zero store. */
         OWNER.early_irq_hook + 0x14u,  /* The native continuation. */
+#ifdef RBM_H03_BENCH_EARLY_LATCHES
+        OWNER.early_irq_hook + 0x0cu,  /* Application latch address. */
+        OWNER.early_irq_hook + 0x10u,  /* Application latch store. */
+        OWNER.early_irq_hook + 0x18u,  /* Clock latch store. */
+        OWNER.early_irq_hook + 0x20u,  /* Bench native continuation. */
+#endif
         OWNER.dma4_hook + 0x3cu,       /* A different service policy. */
         OWNER.dma4_hook + 0x40u,       /* A different policy callback. */
         OWNER.dma4_hook + 0x44u,       /* Failure must skip OEM setup. */
@@ -359,9 +418,9 @@ int main(void)
     POLICY.count = LFJ8_H03_SERVICE_RANGES + 1u;
     require_cold_gate(0);
     fixture_map();
-    platform_owned = 0;
+    set_platform_owned(0);
     require_cold_gate(0);
-    platform_owned = 1;
+    set_platform_owned(1);
     require_cold_gate(1);
 
     /* The wrapper uses the Flash descriptor, independently of the I/O context. */
@@ -382,9 +441,9 @@ int main(void)
     require_cold_gate(0);
     fixture_map();
 
-    platform_owned = 0;
+    set_platform_owned(0);
     require_cold_gate(0);
-    platform_owned = 1;
+    set_platform_owned(1);
     OWNER.boot_and_other_writers_owned = NULL;
     require_cold_gate(0);
     fixture_map();
@@ -394,25 +453,33 @@ int main(void)
     HALF(0x801002u) = 0x0100u; /* CAN0/1 still parked. */
     HALF(0x801402u) = 0x0100u;
     require_cold_gate(1);
+    entry_spi = OWNER.spi.first + LFJ8_H03_RAM_SPI_RESERVE_MIN_BYTES;
+    require_cold_gate(1);
+    entry_spi -= 4u;
+    require_cold_gate(0);
     entry_spi = 0x809780u;
     require_cold_gate(0);
     entry_spi = 0x809efcu;
-    OWNER.spi_reserve_bytes = 36u;
+    OWNER.spi_reserve_bytes = LFJ8_H03_RAM_SPI_RESERVE_MIN_BYTES - 4u;
     require_cold_gate(0);
     fixture_map();
-    OWNER.spi_reserve_bytes += 1u;
+    OWNER.spi_reserve_bytes = LFJ8_H03_RAM_SPI_RESERVE_MIN_BYTES + 1u;
+    require_cold_gate(0);
+    fixture_map();
+    OWNER.psw_reserve_bytes = LFJ8_H03_RAM_PSW_RESERVE_MIN_BYTES - 4u;
+    require_cold_gate(0);
+    fixture_map();
+    OWNER.psw_reserve_bytes = LFJ8_H03_RAM_PSW_RESERVE_MIN_BYTES + 1u;
     require_cold_gate(0);
     fixture_map();
     WORD(0x809f9cu) = 0x809fa0u;
     require_cold_gate(0);
     WORD(0x809f9cu) = 0x809f09u;
     require_cold_gate(0);
-    WORD(0x809f9cu) = 0x809f04u;
+    WORD(0x809f9cu) = 0x809f3cu;
     require_cold_gate(0);
-    WORD(0x809f9cu) = 0x809f08u;
+    WORD(0x809f9cu) = 0x809f40u;
     require_cold_gate(1); /* Exact remaining PSW reserve. */
-    OWNER.psw_reserve_bytes = 0u;
-    require_cold_gate(0);
     fixture_map();
     require_cold_gate(1);
     use_target_owner = 1;

@@ -77,6 +77,17 @@ rbm_h03_early_irq_gate:
     ld24 r0,#h03_dtc_irq_pointer
     ldi r1,#0
     st r1,@r0
+#ifdef RBM_H03_BENCH_EARLY_LATCHES
+    /* Both latches reside in the same linked control inventory. A stale
+     * BasicCAN pointer, application admission or time epoch must never
+     * survive into the first enabled IRQ after either reset vector. */
+    .global rbm_h03_early_irq_bench_latches
+rbm_h03_early_irq_bench_latches:
+    ld24 r0,#rbm_h03_application+4
+    stb r1,@r0
+    ld24 r0,#rbm_h03_tml0_1mhz_qualified
+    stb r1,@r0
+#endif
     pop r1
     ldi r0,#0x40 -> mvtc r0,psw
     bra.l h03_early_irq_after_entry

@@ -1,15 +1,17 @@
 #include "lfj8_h03_ram_owner.h"
 #include "lfj8_h03_mmio.h"
 #include "lfj8_h03_storage.h"
+#include <stddef.h>
 
 #define H03_APPLICATION_START UINT32_C(0x008000)
 #define H03_FLASH_END UINT32_C(0x080000)
 #define H03_RAM_START UINT32_C(0x804000)
 #define H03_RAM_END UINT32_C(0x80A000)
+#define H03_SPI_FIRST UINT32_C(0x809700)
 #define H03_SPI_START UINT32_C(0x809EFC)
+#define H03_PSW_FIRST UINT32_C(0x809F00)
 #define H03_PSW_CURSOR UINT32_C(0x809F9C)
-#define H03_SBI_SPI_BYTES UINT32_C(40)
-#define H03_SBI_PSW_BYTES UINT32_C(4)
+#define H03_PSW_END (H03_PSW_CURSOR + sizeof(uint32_t))
 #define H03_PSW_IE_OR_SM UINT32_C(0xC0)
 #define H03_MONITOR_FIRST UINT32_C(0x808578)
 #define H03_MONITOR_END UINT32_C(0x808DB4)
@@ -73,8 +75,8 @@ static int live_stacks_ready(const Lfj8H03RamOwner *owner)
                       : "=r"(psw), "=r"(spi) : : "memory");
     if ((psw & H03_PSW_IE_OR_SM) ||
         (owner->spi_reserve_bytes | owner->psw_reserve_bytes) & 3u ||
-        owner->spi_reserve_bytes < H03_SBI_SPI_BYTES ||
-        owner->psw_reserve_bytes < H03_SBI_PSW_BYTES ||
+        owner->spi_reserve_bytes < LFJ8_H03_RAM_SPI_RESERVE_MIN_BYTES ||
+        owner->psw_reserve_bytes < LFJ8_H03_RAM_PSW_RESERVE_MIN_BYTES ||
         !has_stack_room(owner->spi, spi, H03_SPI_START, owner->spi_reserve_bytes)) {
         return 0;
     }
@@ -178,17 +180,34 @@ static int boot_routes_installed(const Lfj8H03RamOwner *owner,
 {
     const uint32_t early = owner->early_irq_hook;
     const uint32_t dma4 = owner->dma4_hook;
+#ifdef RBM_H03_BENCH_EARLY_LATCHES
+    _Static_assert(offsetof(Lfj8H03Application, running) == 4, "H03 early reset ASM ABI");
+    const uint32_t running = owner->control.first + offsetof(Lfj8H03ControlStorage, application) +
+                             offsetof(Lfj8H03Application, running);
+    const uint32_t clock = owner->control.first + offsetof(Lfj8H03ControlStorage, clock_qualified);
+    const uint32_t enable_ie = early + 0x1cu;
+#else
+    const uint32_t enable_ie = early + 0x10u;
+#endif
 
     /* The lower veneer must clear the linked IRQ pointer before setting IE. */
     if ((early & 3u) || early < H03_EARLY_IRQ_RESIDENT_START ||
-        early > H03_APPLICATION_START - 0x18u ||
+        early >= H03_APPLICATION_START ||
+        enable_ie > H03_APPLICATION_START - 8u ||
         !branch_matches(H03_EARLY_IRQ_SITE, early, LONG_BRA) ||
         read_word(early) != UINT32_C(0x217FF000) ||
         read_word(early + 0x04u) != (LD24_R0 | owner->dtc_irq_pointer.first) ||
         read_word(early + 0x08u) != UINT32_C(0x61002140) ||
+#ifdef RBM_H03_BENCH_EARLY_LATCHES
+        read_word(early + 0x0cu) != (LD24_R0 | running) ||
+        read_word(early + 0x10u) != UINT32_C(0x2100F000) ||
+        read_word(early + 0x14u) != (LD24_R0 | clock) ||
+        read_word(early + 0x18u) != UINT32_C(0x210021EF) ||
+#else
         read_word(early + 0x0cu) != UINT32_C(0x21EFF000) ||
-        read_word(early + 0x10u) != UINT32_C(0x604010A0) ||
-        !branch_matches(early + 0x14u, H03_EARLY_IRQ_SITE + 4u, LONG_BRA)) {
+#endif
+        read_word(enable_ie) != UINT32_C(0x604010A0) ||
+        !branch_matches(enable_ie + 4u, H03_EARLY_IRQ_SITE + 4u, LONG_BRA)) {
         return 0;
     }
 
@@ -267,8 +286,8 @@ static int qualified_layout(const Lfj8H03RamOwner *owner, const Lfj8H03ServicePo
         &monitor, &owner->spi, &owner->psw,
     };
     if (!lfj8_h03_service_span_allowed(policy, 0u, 0u) ||
-        owner->spi.first >= H03_SPI_START || owner->spi.end < H03_SPI_START ||
-        owner->psw.first >= H03_PSW_CURSOR || owner->psw.end <= H03_PSW_CURSOR) {
+        owner->spi.first != H03_SPI_FIRST || owner->spi.end != H03_SPI_START ||
+        owner->psw.first != H03_PSW_FIRST || owner->psw.end != H03_PSW_END) {
         return 0;
     }
     for (unsigned i = 0; i < sizeof required / sizeof required[0]; ++i) {
