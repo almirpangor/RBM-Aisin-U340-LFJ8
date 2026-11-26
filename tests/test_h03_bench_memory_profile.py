@@ -1,12 +1,17 @@
 from hashlib import sha256
 from copy import deepcopy
+import json
+import os
 from pathlib import Path
+import shutil
+import subprocess
 import sys
 from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "targets/lfj8"))
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "targets/lfj8"))
 import lfj8_h03_bench_memory_profile as bench
 from lfj8_h03_ram_placement import STACK_STARTUP
 
@@ -95,6 +100,86 @@ class BenchMemoryProfileTest(unittest.TestCase):
                 self.assertIn('-DRBM_H03_BENCH_MEMORY_HEADER="h03_bench_memory_profile.h"', flags)
             self.assertEqual(bench.native_compile_flags(profile, "lfj8_h03_torque.c"), ())
             self.assertEqual(bench.native_compile_flags(profile, profile["symbol_source"]), ())
+
+    def test_native_inputs_with_exact_h03_and_fresh_typed_storage(self):
+        names = ("RBM_H03_TEST_BASE", "RBM_H03_TEST_STORAGE", "RBM_H03_TEST_GCC")
+        values = [os.environ.get(name) for name in names]
+        if not any(values):
+            self.skipTest("Native M32R inputs require " + ", ".join(names))
+        self.assertTrue(all(values), "Set all three native M32R input variables")
+        base, storage_path = (Path(value).resolve(strict=True) for value in values[:2])
+        executable = shutil.which(values[2])
+        self.assertIsNotNone(executable, "Native M32R compiler was not found")
+        compiler = Path(executable).resolve(strict=True)
+        sys.path.insert(0, str(ROOT / "tools"))
+        from check_h03_image_layout import read_storage_report
+        from lfj8_h03_layout import alloc_sections, read_elf
+        storage = read_storage_report(storage_path)
+        image = base.read_bytes()
+        self.assertEqual(sha256(image).hexdigest(), bench.IMAGE_HASH)
+        environment = dict(os.environ, PATH=str(compiler.parent) + os.pathsep + os.environ.get("PATH", ""))
+
+        def run(*args):
+            return subprocess.run([str(item) for item in args], cwd=ROOT, env=environment,
+                                  check=True, capture_output=True, text=True, timeout=60).stdout.strip()
+
+        self.assertEqual(run(compiler, "-dumpmachine"), "m32r-elf")
+        with TemporaryDirectory(prefix="h03-native-memory-") as temporary:
+            output = os.environ.get("RBM_H03_TEST_OUT")
+            stage = Path(output).resolve() if output else Path(temporary)
+            if output:
+                stage.mkdir(parents=True, exist_ok=False)
+            pointer = storage["blocks"]["control"]["end_exclusive"]
+            profile = bench.prepare(image, storage, pointer, stage)
+            expected = {*profile["symbols"], "rbm_h03_boot_writers_owned"}
+            include_flags = [flag for path in ("controller/include", "controller/vendor/toyota/include",
+                                               "targets/lfj8", "diagnostics") for flag in ("-I", str(ROOT / path))]
+            result = {"artifact_kind": "M32R_REL_MEMORY_INPUTS_COMPONENT_ONLY",
+                      "base_sha256": sha256(image).hexdigest(),
+                      "storage_sha256": sha256(storage_path.read_bytes()).hexdigest(),
+                      "compiler": run(compiler, "--version").splitlines()[0], "models": {},
+                      "hardware_verified": False, "flashable_image": None}
+            for model in ("medium", "small"):
+                destination = stage / model
+                destination.mkdir()
+                target = ["-m32r", "-mmodel=" + model, "-msdata=none", "-Wa,-EB"]
+                common = [*target, "-Os", "-std=c11", "-Wall", "-Wextra", "-Werror",
+                          "-Wno-missing-braces", "-Wno-missing-field-initializers", "-ffreestanding",
+                          "-fno-builtin", "-fno-common", "-ffunction-sections", "-fdata-sections", *include_flags]
+                objects = []
+                for name in (*bench.NATIVE_SOURCES, "lfj8_h03_target_memory.c"):
+                    source = ROOT / "targets/lfj8" / name
+                    obj = destination / (source.stem + ".o")
+                    flags = list(bench.native_compile_flags(profile, source))
+                    if name == "h03_dma4_guard.S":
+                        flags.append("-DRBM_H03_COMMON_DMA4_GUARD=1")
+                    run(compiler, *common, *flags, "-c", source, "-o", obj)
+                    objects.append(obj)
+                symbol_object = destination / "h03_bench_memory_symbols.o"
+                run(compiler, *target, "-c", profile["symbol_source"], "-o", symbol_object)
+                symbols_elf = read_elf(symbol_object, 1)
+                self.assertEqual(alloc_sections(symbols_elf), [], "ABS definitions must allocate no RAM/Flash")
+                alternatives = {}
+                for kind, extra in (("assembly", [symbol_object]),
+                                    ("linker_fragment", ["-Wl,-T," + str(profile["linker_fragment"])])):
+                    combined = destination / ("memory-inputs-" + kind + ".o")
+                    run(compiler, *target, "-fno-use-linker-plugin", "-r", "-nostdlib", *objects,
+                        *extra, "-o", combined)
+                    elf = read_elf(combined, 1)
+                    undefined = {name for name, symbol in elf["symbols"].items() if symbol["section"] == 0}
+                    self.assertFalse(expected & undefined, "A required memory definition remains unresolved")
+                    for name, value in profile["symbols"].items():
+                        symbol = elf["symbols"][name]
+                        self.assertEqual((symbol["section"], symbol["address"]), (0xFFF1, value))
+                    self.assertGreater(elf["symbols"]["rbm_h03_boot_writers_owned"]["section"], 0)
+                    gate = elf["symbols"]["rbm_h03_early_irq_gate"]
+                    latch = elf["symbols"]["rbm_h03_early_irq_bench_latches"]
+                    self.assertEqual((latch["section"], latch["address"]), (gate["section"], gate["address"] + 12))
+                    alternatives[kind] = {"sha256": elf["sha256"], "bytes": combined.stat().st_size,
+                                          "remaining_external_references": sorted(undefined)}
+                result["models"][model] = alternatives
+            (stage / "native-memory-inputs.json").write_text(
+                json.dumps(result, indent=2) + "\n", encoding="utf-8", newline="\n")
 
     def test_rejects_bad_identity_before_emitting_link_inputs(self):
         with TemporaryDirectory() as directory:
