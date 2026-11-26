@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1030,
+  "sequence": 1031,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -152,14 +152,16 @@
       "branch": "codex/h03-memory-20261126",
       "files": [
         "targets/lfj8/lfj8_h03_bench_memory_profile.py",
+        "tests/test_h03_bench_link.py",
         "tests/test_h03_bench_memory_profile.py",
+        "tools/link_h03_bench_candidate.py",
         "verification/bench-wave/h03-memory-20261126.md"
       ],
       "stage": "in_progress",
       "claim_id": "f37b890641a04cb1aa5f8aa7c5d9cf70",
       "claimed_at": "2026-11-26T07:05:40+00:00",
-      "updated_at": "2026-11-26T07:35:22+00:00",
-      "note": "Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress.",
+      "updated_at": "2026-11-26T07:55:06+00:00",
+      "note": "Добавлен независимый scoped orchestrator над существующим layout.build: fresh storage/memory inputs/strict full ET_EXEC; commonchecker не редактируется, fixtures/default providers запрещены.",
       "result": null,
       "based_on_reviews": [
         "2287692bc6564719826ff62c12a7d829",
@@ -18658,9 +18660,40 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "b98755727a7c44c2a94dbf74af8e135c",
+      "task": "H03-04",
+      "owner": "9fd4c5ba-b274-4d00-b557-024ef5f0196a",
+      "action": "heartbeat",
+      "claim_id": "f37b890641a04cb1aa5f8aa7c5d9cf70",
+      "at": "2026-11-26T07:55:06+00:00",
+      "record": {
+        "owner": "9fd4c5ba-b274-4d00-b557-024ef5f0196a",
+        "label": "Codex — native memory artifacts",
+        "branch": "codex/h03-memory-20261126",
+        "files": [
+          "targets/lfj8/lfj8_h03_bench_memory_profile.py",
+          "tests/test_h03_bench_link.py",
+          "tests/test_h03_bench_memory_profile.py",
+          "tools/link_h03_bench_candidate.py",
+          "verification/bench-wave/h03-memory-20261126.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "f37b890641a04cb1aa5f8aa7c5d9cf70",
+        "claimed_at": "2026-11-26T07:05:40+00:00",
+        "updated_at": "2026-11-26T07:55:06+00:00",
+        "note": "Добавлен независимый scoped orchestrator над существующим layout.build: fresh storage/memory inputs/strict full ET_EXEC; commonchecker не редактируется, fixtures/default providers запрещены.",
+        "result": null,
+        "based_on_reviews": [
+          "2287692bc6564719826ff62c12a7d829",
+          "2c436323b8804fc3b5ce732970b858a4",
+          "734b4f9d3a9c43f6aaa67927cf88ab12"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-26T07:51:04+00:00",
+  "updated_at": "2026-11-26T07:55:06+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {

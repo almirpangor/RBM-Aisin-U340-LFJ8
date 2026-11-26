@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-26T07:51:04+00:00**. Изменение № **1030**.
+Обновлено UTC: **2026-11-26T07:55:06+00:00**. Изменение № **1031**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -26,7 +26,7 @@
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
 | 12 | CAN-05 — Полнота штатного обмена Chery | Codex — Bosch paired-build evidence \[18de1d89-c1a8-4713-a009-785a4898e8e7\] | 2026-11-26T07:35:23+00:00 | Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
-| 18 | H03-04 — Память, стек и сервисные пути | Codex — native memory artifacts \[9fd4c5ba-b274-4d00-b557-024ef5f0196a\] | 2026-11-26T07:35:22+00:00 | Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress. |
+| 18 | H03-04 — Память, стек и сервисные пути | Codex — native memory artifacts \[9fd4c5ba-b274-4d00-b557-024ef5f0196a\] | 2026-11-26T07:55:06+00:00 | Добавлен независимый scoped orchestrator над существующим layout.build: fresh storage/memory inputs/strict full ET_EXEC; commonchecker не редактируется, fixtures/default providers запрещены. |
 | 25 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | LFJ8 selector measurement contract \[b9841cd6-bb32-4ab5-a5d7-3d1df09009f5\] | 2026-11-24T06:46:28+00:00 | Closeout: main/script refreshed; reviewing exact report commit and scoped checks before review/block. |
 | 26 | MODE-03 — Окончательная политика режимов | Copilot — MODE-03 manual policy continuation \[copilot-mode03-20261124-0829-9b51a672-80d4-41d8-b003-2ccf7df38731\] | 2026-11-24T05:59:48+00:00 | Продолжаю MODE-03 только в пределах исходно разрешённых пяти путей; сохраняю физически неподтверждённые selector/ADC значения явными блокерами. Проверенный MODE-03 review d77a559150a3c586ca50caa4aa64488b4f02ce22 и обязательный CAN-01 review 50202944bbe2206d79c948757752b5a3e7669007 включены в ветку. |
 | 27 | REL-01 — Два целевых BIN и воспроизводимый комплект | Codex — общая сборка BIN \[6b07cffe-43b8-83eb-b32c-1978261f0046\] | 2026-11-26T07:35:21+00:00 | Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress. |
@@ -904,7 +904,9 @@
 Чат: Codex — native memory artifacts. Claim ID: f37b890641a04cb1aa5f8aa7c5d9cf70.
 
 - targets/lfj8/lfj8_h03_bench_memory_profile.py
+- tests/test_h03_bench_link.py
 - tests/test_h03_bench_memory_profile.py
+- tools/link_h03_bench_candidate.py
 - verification/bench-wave/h03-memory-20261126.md
 
 ### MODE-02
@@ -969,6 +971,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-26T07:55:06+00:00 | H03-04 | heartbeat | 9fd4c5ba-b274-4d00-b557-024ef5f0196a |
 | 2026-11-26T07:51:04+00:00 | CAN-02 | claim | h03-native-can-20261126-2c849a72 |
 | 2026-11-26T07:35:23+00:00 | CAN-05 | heartbeat | 18de1d89-c1a8-4713-a009-785a4898e8e7 |
 | 2026-11-26T07:35:22+00:00 | CAN-01 | heartbeat | h03-profiles-20261126-0d9c5e74 |
@@ -998,4 +1001,3 @@
 | 2026-11-24T06:36:28+00:00 | DTC-03 | review | copilot-0bc0cbc673de4134ab7d7b9afeb082a2 |
 | 2026-11-24T06:36:22+00:00 | REL-01 | review | bd412180-9ccb-4a23-a04a-ad23931a72a0 |
 | 2026-11-24T06:36:08+00:00 | DTC-03 | heartbeat | copilot-0bc0cbc673de4134ab7d7b9afeb082a2 |
-| 2026-11-24T06:35:54+00:00 | REL-01 | claim | bd412180-9ccb-4a23-a04a-ad23931a72a0 |
