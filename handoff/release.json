@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-26",
+  "status": "OFFLINE_ONLY",
+  "project_requirements_fulfilled": false,
+  "bench_pair_ready": false,
+  "physical_hardware_tested": false,
+  "binary_pair_executed_together": false,
+  "complete_h03_link": "FAILED_NO_COMPLETE_IMAGE",
+  "revision": "e61b3195b19eea3fe8af3765c22882bf46450050",
+  "overlays": "checks/source-overlays.json",
+  "specification": "project/docs/RBM_TZ_Aisin_U340_LFJ8_Codex_v1_0.pdf",
+  "spec_audit": "СВЕРКА_ТЗ.txt",
+  "build": "rebuild.py",
+  "scope": {
+    "TCM": "Simulator image with early IRQ/DMA4 and service write guards. Does not execute the new U340E control application.",
+    "Bosch": "E4M3 with IF1/T4 passive byte capture of 0x1AE d1/d4. No Chery torque authority."
+  },
+  "bin_files": [
+    {
+      "path": "offline/E4M3_CHERY_ORDINARY_MODEL_NO_CRUISE_RX_TIMESTAMP_RB_NATIVE_PERMIT_CHERY_PASSIVE_CAPTURE_COMPACT_OFFLINE_ONLY.bin",
+      "bytes": 851968,
+      "sha256": "2fb7fbee3a7daf1f33f4e5612854bccc69fb6bda5a108b19fd75c2908981b75e"
+    },
+    {
+      "path": "offline/LFJ8_H03_EARLY_IRQ_DMA4_SERVICE_GUARDS_OFFLINE_ONLY.bin",
+      "bytes": 524288,
+      "sha256": "2e593a44841b73e454db9b33ea4194035d6b269d5210f6f36dc719d6c6b4ea02"
+    }
+  ],
+  "repeat_build_byte_identical": true,
+  "compiler": "m32r-elf-gcc 4.8.0",
+  "host_regression": {
+    "compiler": "Zig",
+    "stages": 41,
+    "tests_discovered": 263,
+    "skips": 2,
+    "report": "checks/PC-CHECKS.json"
+  },
+  "alternate_host_compiler_attempt": "checks/GCC-host-attempt.log",
+  "startup_component": "checks/startup/portable-m32r.json",
+  "phase_profile": "components/h03-timing/phase-profile-tests.log",
+  "ecu_test": "checks/image/Bosch-ST10-passive.json",
+  "tcm_simulator_report_for_identical_image": "checks/image/H03-M32R.json"
+}

@@ -1,0 +1,28 @@
+name: Publish U340E offline handoff
+on:
+  push:
+    branches: ['codex/publish-u340e-offline-20261126']
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify the complete handoff and publish the source snapshot
+        id: handoff
+        run: python3 publish/verify_handoff.py
+      - name: Publish the checked archives and firmware images
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ steps.handoff.outputs.commit }}
+          ASSETS: ${{ steps.handoff.outputs.assets }}
+        run: |
+          set -eu
+          gh release create u340e-offline-20261126 --target "$TARGET" --prerelease --latest=false \
+            --title 'U340E H03 и Bosch E4M3 — OFFLINE_ONLY, 26.11.2026' \
+            --notes-file publish/release-notes.md \
+            "$ASSETS"/*.zip "$ASSETS"/*.bin "$ASSETS/release.json" \
+            "$ASSETS/SHA256SUMS.txt" "$ASSETS/SPEC_AUDIT_RU.txt"
