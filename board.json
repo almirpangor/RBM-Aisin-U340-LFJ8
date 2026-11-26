@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1017,
+  "sequence": 1018,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -94,22 +94,28 @@
       "result": "3f2596f31930203fe9cd7918e9b62f81ea82699c"
     },
     "REL-01": {
-      "owner": "bd412180-9ccb-4a23-a04a-ad23931a72a0",
-      "label": "Copilot — REL-01 package evidence follow-up",
-      "branch": "almirpangor-rel-01-integration-plan",
+      "owner": "6b07cffe-43b8-83eb-b32c-1978261f0046",
+      "label": "Codex - build model continuation",
+      "branch": "codex/continue-6b07cffe",
       "files": [
-        "verification/project-audit/rel01-offline-report-guard.md"
+        "controller/build_target.py",
+        "targets/lfj8/build.py",
+        "tests/test_integrated_h03.py",
+        "tools/check_integrated_h03.py",
+        "verification/project-audit/continuation-20261126.md"
       ],
-      "stage": "review",
-      "claim_id": "7cb4836dcb9343c6bfcec71a4e5371e6",
-      "claimed_at": "2026-11-24T06:41:00+00:00",
-      "updated_at": "2026-11-24T06:41:22+00:00",
-      "note": "Freshly claimed published report follow-up; exact 24-test evidence note and package qualification limit verified, git diff --check passes.",
-      "result": "77f23b80347f16462f86ea775e3f511bc94b1276",
+      "stage": "in_progress",
+      "claim_id": "45aa19ae7e9f404aba609cc7fd686cbd",
+      "claimed_at": "2026-11-26T06:32:27+00:00",
+      "updated_at": "2026-11-26T06:32:27+00:00",
+      "note": "Continue after 77f23b8 and F drive reruns: propagate compiler memory model through controller, bridge and expanded layout; repeat affected builds and report remaining production bindings.",
+      "result": null,
       "based_on_reviews": [
         "36a5a75d3ef44ab0a4cde5678f96bb0a",
+        "7cb4836dcb9343c6bfcec71a4e5371e6",
         "9c7cba27017d403db01fb18c16725dd9",
         "9fafa66119bd4d68a67ffed2cc934265",
+        "a642d995b84d4360b6b126b543a56c64",
         "b29ec3655b034f3c9d994624701a3e5a"
       ]
     },
@@ -18279,9 +18285,43 @@
           "cee15d1377aa4207a89e2eb78dd96995"
         ]
       }
+    },
+    {
+      "operation_id": "7955b6cf51b849b2ab3e72443091cd7b",
+      "task": "REL-01",
+      "owner": "6b07cffe-43b8-83eb-b32c-1978261f0046",
+      "action": "claim",
+      "claim_id": "45aa19ae7e9f404aba609cc7fd686cbd",
+      "at": "2026-11-26T06:32:27+00:00",
+      "record": {
+        "owner": "6b07cffe-43b8-83eb-b32c-1978261f0046",
+        "label": "Codex - build model continuation",
+        "branch": "codex/continue-6b07cffe",
+        "files": [
+          "controller/build_target.py",
+          "targets/lfj8/build.py",
+          "tests/test_integrated_h03.py",
+          "tools/check_integrated_h03.py",
+          "verification/project-audit/continuation-20261126.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "45aa19ae7e9f404aba609cc7fd686cbd",
+        "claimed_at": "2026-11-26T06:32:27+00:00",
+        "updated_at": "2026-11-26T06:32:27+00:00",
+        "note": "Continue after 77f23b8 and F drive reruns: propagate compiler memory model through controller, bridge and expanded layout; repeat affected builds and report remaining production bindings.",
+        "result": null,
+        "based_on_reviews": [
+          "36a5a75d3ef44ab0a4cde5678f96bb0a",
+          "7cb4836dcb9343c6bfcec71a4e5371e6",
+          "9c7cba27017d403db01fb18c16725dd9",
+          "9fafa66119bd4d68a67ffed2cc934265",
+          "a642d995b84d4360b6b126b543a56c64",
+          "b29ec3655b034f3c9d994624701a3e5a"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-24T06:46:58+00:00",
+  "updated_at": "2026-11-26T06:32:27+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
