@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1018,
+  "sequence": 1019,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -104,12 +104,12 @@
         "tools/check_integrated_h03.py",
         "verification/project-audit/continuation-20261126.md"
       ],
-      "stage": "in_progress",
+      "stage": "review",
       "claim_id": "45aa19ae7e9f404aba609cc7fd686cbd",
       "claimed_at": "2026-11-26T06:32:27+00:00",
-      "updated_at": "2026-11-26T06:32:27+00:00",
-      "note": "Continue after 77f23b8 and F drive reruns: propagate compiler memory model through controller, bridge and expanded layout; repeat affected builds and report remaining production bindings.",
-      "result": null,
+      "updated_at": "2026-11-26T06:47:21+00:00",
+      "note": "Published explicit M32R model options, provenance-complete small rebuilds, isolated expanded-check state and F-drive audit. Six regression and twelve package tests pass. Both native build attempts fail before compilation with Windows 623; H03 download unavailable. No new BIN or hardware claim.",
+      "result": "70b6d601fd5dda4e7d7b94d9ba2a65864c132e1a",
       "based_on_reviews": [
         "36a5a75d3ef44ab0a4cde5678f96bb0a",
         "7cb4836dcb9343c6bfcec71a4e5371e6",
@@ -18319,9 +18319,43 @@
           "b29ec3655b034f3c9d994624701a3e5a"
         ]
       }
+    },
+    {
+      "operation_id": "ede6b4773be541c78c451b1921908808",
+      "task": "REL-01",
+      "owner": "6b07cffe-43b8-83eb-b32c-1978261f0046",
+      "action": "review",
+      "claim_id": "45aa19ae7e9f404aba609cc7fd686cbd",
+      "at": "2026-11-26T06:47:21+00:00",
+      "record": {
+        "owner": "6b07cffe-43b8-83eb-b32c-1978261f0046",
+        "label": "Codex - build model continuation",
+        "branch": "codex/continue-6b07cffe",
+        "files": [
+          "controller/build_target.py",
+          "targets/lfj8/build.py",
+          "tests/test_integrated_h03.py",
+          "tools/check_integrated_h03.py",
+          "verification/project-audit/continuation-20261126.md"
+        ],
+        "stage": "review",
+        "claim_id": "45aa19ae7e9f404aba609cc7fd686cbd",
+        "claimed_at": "2026-11-26T06:32:27+00:00",
+        "updated_at": "2026-11-26T06:47:21+00:00",
+        "note": "Published explicit M32R model options, provenance-complete small rebuilds, isolated expanded-check state and F-drive audit. Six regression and twelve package tests pass. Both native build attempts fail before compilation with Windows 623; H03 download unavailable. No new BIN or hardware claim.",
+        "result": "70b6d601fd5dda4e7d7b94d9ba2a65864c132e1a",
+        "based_on_reviews": [
+          "36a5a75d3ef44ab0a4cde5678f96bb0a",
+          "7cb4836dcb9343c6bfcec71a4e5371e6",
+          "9c7cba27017d403db01fb18c16725dd9",
+          "9fafa66119bd4d68a67ffed2cc934265",
+          "a642d995b84d4360b6b126b543a56c64",
+          "b29ec3655b034f3c9d994624701a3e5a"
+        ]
+      }
     }
   ],
-  "updated_at": "2026-11-26T06:32:27+00:00",
+  "updated_at": "2026-11-26T06:47:21+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
@@ -21750,6 +21784,34 @@
       ],
       "task": "VSS-02",
       "submitted_at": "2026-11-24T06:46:58+00:00"
+    },
+    "45aa19ae7e9f404aba609cc7fd686cbd": {
+      "owner": "6b07cffe-43b8-83eb-b32c-1978261f0046",
+      "label": "Codex - build model continuation",
+      "branch": "codex/continue-6b07cffe",
+      "files": [
+        "controller/build_target.py",
+        "targets/lfj8/build.py",
+        "tests/test_integrated_h03.py",
+        "tools/check_integrated_h03.py",
+        "verification/project-audit/continuation-20261126.md"
+      ],
+      "stage": "review",
+      "claim_id": "45aa19ae7e9f404aba609cc7fd686cbd",
+      "claimed_at": "2026-11-26T06:32:27+00:00",
+      "updated_at": "2026-11-26T06:47:21+00:00",
+      "note": "Published explicit M32R model options, provenance-complete small rebuilds, isolated expanded-check state and F-drive audit. Six regression and twelve package tests pass. Both native build attempts fail before compilation with Windows 623; H03 download unavailable. No new BIN or hardware claim.",
+      "result": "70b6d601fd5dda4e7d7b94d9ba2a65864c132e1a",
+      "based_on_reviews": [
+        "36a5a75d3ef44ab0a4cde5678f96bb0a",
+        "7cb4836dcb9343c6bfcec71a4e5371e6",
+        "9c7cba27017d403db01fb18c16725dd9",
+        "9fafa66119bd4d68a67ffed2cc934265",
+        "a642d995b84d4360b6b126b543a56c64",
+        "b29ec3655b034f3c9d994624701a3e5a"
+      ],
+      "task": "REL-01",
+      "submitted_at": "2026-11-26T06:47:21+00:00"
     }
   }
 }
