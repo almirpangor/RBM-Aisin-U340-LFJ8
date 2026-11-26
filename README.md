@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-26T07:55:06+00:00**. Изменение № **1031**.
+Обновлено UTC: **2026-11-26T07:56:56+00:00**. Изменение № **1032**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 14 · Ожидают с резервом: 2 · Порций на проверке: 26.**
+**В работе: 15 · Ожидают с резервом: 2 · Порций на проверке: 26.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -20,6 +20,7 @@
 
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
+| 3 | TOY-02 — Подтверждённая нагрузка двигателя для Toyota | Codex S01 startup — полное начальное состояние и provider \[native-startup-20261126-f8d430ae\] | 2026-11-26T07:56:56+00:00 | Независимый полный S01 reset seed и адаптер startup: BSS + последующие init writers. Продолжение входного контракта, без правок активных TOY-05/MODE-02 и без выдуманных окон/режимов. |
 | 6 | TOY-05 — Обучение и сохранение адаптаций | Codex 12 — TOY-05, стартовое состояние первой стендовой пары \[01a1fa79-a9fd-70c0-80a3-f59592edaf79\] | 2026-11-21T09:13:05+00:00 | По поручению ведущего переношу сброс DTC RAM в защищённый холодный вход. Application C и транспорт остаются у текущих владельцев. |
 | 8 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Codex — native application profile \[h03-profiles-20261126-0d9c5e74\] | 2026-11-26T07:35:22+00:00 | Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress. |
 | 9 | CAN-02 — Общий диспетчер CAN13 | Codex native CAN service — реальные status/torque projections \[h03-native-can-20261126-2c849a72\] | 2026-11-26T07:51:04+00:00 | Независимый native adapter общего owner/DTC/TML0/TX13 с source manifest и bounded projections; без переноса fixture timings/calibrations и без изменения активного CAN-03. |
@@ -91,7 +92,7 @@
 | Приоритет | Задача | Занятость | Что сдать | Зависимости приёмки |
 | --- | --- | --- | --- | --- |
 | 2 | [TOY-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-01) | Свободна для продолжения | Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений. | См. входные условия карточки |
-| 3 | [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-02) | Свободна для продолжения; порция на проверке | Таблица всех необходимых операндов и реализованный capture/input backend; контракт для чата 8, реальные source offsets и отрицательные тесты неполного/устаревшего снимка. | См. входные условия карточки |
+| 3 | [TOY-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-02) | Выполняется | Таблица всех необходимых операндов и реализованный capture/input backend; контракт для чата 8, реальные source offsets и отрицательные тесты неполного/устаревшего снимка. | См. входные условия карточки |
 | 4 | [TOY-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-03) | Свободна для продолжения | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
 | 5 | [TOY-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-04) | Свободна для продолжения | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, TOY-03, H03-03, MODE-02 |
 | 6 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-05) | Выполняется | Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений. | TOY-04, H03-04 |
@@ -145,7 +146,7 @@
 </details>
 
 <details>
-<summary>TOY-02 — Подтверждённая нагрузка двигателя для Toyota: Свободна для продолжения; порция на проверке</summary>
+<summary>TOY-02 — Подтверждённая нагрузка двигателя для Toyota: Выполняется</summary>
 
 **Сделано.** Три группы нагрузки требуют квалификации перед GP и планированием; смена epoch отзывает старые данные. Ручной профиль и основной цикл прошли.
 
@@ -159,7 +160,7 @@
 
 **Рекомендуемый чат.** Чат 4 — 01a1f9c7-675a-78c3-be98-5bd65e44995c.
 
-**Исполнитель сейчас.** Задача не занята.
+**Сейчас выполняет.** Codex S01 startup — полное начальное состояние и provider — native-startup-20261126-f8d430ae.
 
 **Критерий приёмки.** Трасса происхождения каждого операнда, сравнение с S01 и отдельные переходные режимы. Одного TPS и кадров RPM/ОЖ недостаточно.
 
@@ -769,7 +770,6 @@
 | Задача | Состояние порции | Предыдущий исполнитель | Ветка | Результат |
 | --- | --- | --- | --- | --- |
 | TOY-01 | Порция принята | Codex TOY-01 H03 independent release clock | codex/toy01-h03-release-clock-01a1f99f | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit c53aaf01d85f38f3fded16ae2c75ef52009f5bd9 |
-| TOY-02 | На проверке | Чат 4 — нативные входы Toyota и сырой Bosch CAN | codex/toy02-load-evidence-01a1f9c7 | Сырой контракт Bosch 0x6B2, приём стабильной BasicCAN копии и штатный H03 capture вместо test_input_capture собраны. ПК/M32R RX→GP прошли; найдены все 8 writer S01 и бит режима, сверены 198 инструкций, повторены C167 и аудит CAN. Остались издатель, dispatch, порядок первого release и обоснованные project_load/read_local. Handoff verification/bench-wave/chat-4/handoff.json. / commit 7a7ac7f97d328cd6f5de88f02c043b1f8b21efac |
 | TOY-03 | Порция принята | Codex TOY-03 — допуск независимого P/N | codex/toy03-independent-pn-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 3f2596f31930203fe9cd7918e9b62f81ea82699c |
 | TOY-04 | Порция принята | Codex TOY-04 — ручная заявка в цикле | codex/toy04-manual-cycle-892d | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit c7b0568cde39ddc27e71432e5028db9c9a351e16 |
 | TOY-06 | На проверке | Copilot TOY-06 SLU command | almir458765-toy-06-slu-outputs | Published six-file software-only SLU demand and revoke change. git diff --check and Python AST/ctypes layout checks pass. Focused host/Zig and M32R execution blocked: local project-paths.json and .sources/R1/.sources/R2 are absent; Zig and M32R GCC are not on PATH. No hardware/channel/response verification; no profile, scale, or mapping added. / commit 4a5565f145d2a7b3aad81d35cef70b8251f4a24a |
@@ -953,6 +953,18 @@
 - tools/package_workset.py
 - verification/bin-release-20261126/
 
+### TOY-02
+
+Чат: Codex S01 startup — полное начальное состояние и provider. Claim ID: 2faf7c4153a74cd994f746c924791b52.
+
+- targets/lfj8/bench_native_startup_profile.c
+- targets/lfj8/bench_native_startup_profile.h
+- targets/lfj8/check_h03_s01_startup_seed.py
+- targets/lfj8/lfj8_h03_s01_startup_seed.c
+- targets/lfj8/lfj8_h03_s01_startup_seed.h
+- targets/lfj8/test_lfj8_h03_s01_startup_seed.c
+- verification/bench-wave/native-startup-20261126.md
+
 ### TOY-05
 
 Чат: Codex 12 — TOY-05, стартовое состояние первой стендовой пары. Claim ID: 5ec8d9943cbd4616ab0bbf37dcec141b.
@@ -971,6 +983,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-26T07:56:56+00:00 | TOY-02 | claim | native-startup-20261126-f8d430ae |
 | 2026-11-26T07:55:06+00:00 | H03-04 | heartbeat | 9fd4c5ba-b274-4d00-b557-024ef5f0196a |
 | 2026-11-26T07:51:04+00:00 | CAN-02 | claim | h03-native-can-20261126-2c849a72 |
 | 2026-11-26T07:35:23+00:00 | CAN-05 | heartbeat | 18de1d89-c1a8-4713-a009-785a4898e8e7 |
@@ -1000,4 +1013,3 @@
 | 2026-11-24T06:38:09+00:00 | H03-04 | review | 6f772758-d43b-4665-ad67-3eeb2481501a |
 | 2026-11-24T06:36:28+00:00 | DTC-03 | review | copilot-0bc0cbc673de4134ab7d7b9afeb082a2 |
 | 2026-11-24T06:36:22+00:00 | REL-01 | review | bd412180-9ccb-4a23-a04a-ad23931a72a0 |
-| 2026-11-24T06:36:08+00:00 | DTC-03 | heartbeat | copilot-0bc0cbc673de4134ab7d7b9afeb082a2 |
