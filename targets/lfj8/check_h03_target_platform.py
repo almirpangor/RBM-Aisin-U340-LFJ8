@@ -35,14 +35,42 @@ extern const Lfj8H03TargetServiceConfig test_can_service_config;
 #define RBM_H03_PROFILE_CAN_SERVICE_CONFIG test_can_service_config
 """
 
-MANUAL_PROFILE = (
-    PROFILE.replace("MAX_PERIOD_TICKS 20u", "MAX_PERIOD_TICKS 70u")
-    .replace("PERIOD_TICKS 16u", "PERIOD_TICKS 64u")
-    .replace("#define RBM_H03_PROFILE_CAPTURE_TOYOTA test_capture_inputs", """
+MANUAL_CAPTURE = """\
 #include "lfj8_h03_input_binding.h"
 extern const Lfj8H03ToyotaInputCapture test_input_capture;
 #define RBM_H03_PROFILE_TOYOTA_INPUT_CAPTURE test_input_capture
 #include "lfj8_h03_toyota_input_profile.h"
+""".strip()
+
+MANUAL_PROFILE = (
+    PROFILE.replace("MAX_PERIOD_TICKS 20u", "MAX_PERIOD_TICKS 70u")
+    .replace("PERIOD_TICKS 16u", "PERIOD_TICKS 64u")
+    .replace("#define RBM_H03_PROFILE_CAPTURE_TOYOTA test_capture_inputs", MANUAL_CAPTURE)
+)
+
+BENCH_PROFILE = (
+    MANUAL_PROFILE.replace("{8u, 13u, 4u, 24u}", "{5000u, 5000u, 4u, 12000u}")
+    .replace("MAX_PERIOD_TICKS 70u", "MAX_PERIOD_TICKS 40004u")
+    .replace("PERIOD_TICKS 64u", "PERIOD_TICKS 40000u")
+    .replace(MANUAL_CAPTURE, """\
+#include "lfj8_h03_input_binding.h"
+extern Lfj8RangeControl manual_control;
+extern Lfj8ButtonFilter manual_buttons;
+extern Lfj8H03InputProposal manual_proposal;
+extern const Lfj8H03RangeAgeLimits manual_limits;
+int read_manual_inputs(void *, const Lfj8H03SensorSnapshot *, uint32_t,
+                       Lfj8H03CycleInput *, Lfj8H03CycleLoad *, Lfj8H03InputSources *);
+#define RBM_H03_BENCH_DRIVER_READ read_manual_inputs
+#define RBM_H03_BENCH_RANGE_CONTROL manual_control
+#define RBM_H03_BENCH_BUTTON_FILTER manual_buttons
+#define RBM_H03_BENCH_INPUT_PROPOSAL manual_proposal
+#define RBM_H03_BENCH_RANGE_LIMITS manual_limits
+#ifndef RBM_H03_TEST_SELECTOR_ONLY
+extern const Lfj8H03ButtonMap manual_pins;
+#define RBM_H03_BENCH_BUTTON_MAP manual_pins
+#define RBM_H03_BENCH_MANUAL_MAX_AGE_US (40000u * 512u)
+#endif
+#include "bench_mode_profile.h"
 """.strip())
 )
 
@@ -113,7 +141,7 @@ def verify_placed_elf(linked, placement, names):
         raise ValueError("Linked Toyota source descriptor does not point to the typed release field")
 
 
-def check(compiler, controller, bridge, *, base=None):
+def check(compiler, controller, bridge, *, base=None, bench_mode=False):
     source = HERE / "lfj8_h03_target_platform.c"
     with TemporaryDirectory(prefix="rbm-h03-target-platform-") as directory:
         work = Path(directory)
@@ -224,11 +252,32 @@ def check(compiler, controller, bridge, *, base=None):
         manual = run(simulator, "--memory-size=16M", "manual.elf").stdout.strip()
         if manual != "H03 manual profile: native foreground, Toyota hold, MAIN S1/S2 and revocation PASS":
             raise ValueError(f"Unexpected manual profile result: {manual}")
+
+        bench = {}
+        if bench_mode:
+            (work / "bench-profile.h").write_text(BENCH_PROFILE, encoding="ascii")
+            bench_flag = '-DRBM_H03_APPLICATION_PROFILE="bench-profile.h"'
+            for name, fixture_flags, expected in (
+                ("manual", (), "H03 bench manual: toggle, up/down, hold, S1/S2, OD and revocation PASS"),
+                ("selector", ("-DRBM_H03_TEST_SELECTOR_ONLY",),
+                 "H03 bench selector: all six ranges, no buttons, stale ADC and contradictory P/N PASS"),
+            ):
+                test_flags = [*manual_flags, "-DRBM_H03_TEST_BENCH_MODE", *fixture_flags]
+                run(*test_flags, bench_flag, "-nostartfiles", crt, source, *sources,
+                    *(HERE / name for name in manual_sources), HERE / "bench_mode_profile.c",
+                    ROOT / "diagnostics/chery_dtc.c", shim, bridge, controller,
+                    "-Wl,--gc-sections,-e,_start,--start-group", "-lc", "-lgloss", "-lgcc", "-Wl,--end-group",
+                    "-o", "bench.elf")
+                observed = run(simulator, "--memory-size=16M", "bench.elf").stdout.strip()
+                if observed != expected:
+                    raise ValueError(f"Unexpected bench {name} result: {observed}")
+                bench[name] = observed
         return {"status": "PASS", "m32r": output, "unprofiled_and_inconsistent_timing_refused": True,
                 "missing_can_service_profile_refused": True,
                 "manual_profile_m32r": manual,
                 "manual_profile_flash_section_bytes": sum(section["size"] for section in manual_sections),
                 "manual_placed_model": manual_placed,
+                "bench_mode_profiles_m32r": bench,
                 "flash_section_bytes": flash,
                 "required_release_alias_bytes": 16, "platform_object_writable_bytes": 0,
                 "placed_model": placed, "hardware_tested": False, "flashable_image": None}
@@ -239,6 +288,7 @@ def main():
     for name in ("gcc", "controller", "bridge", "out"):
         parser.add_argument(f"--{name}", type=Path, required=True)
     parser.add_argument("--base", type=Path, help="Also run the M32R model at the common layout's Flash and typed RAM addresses")
+    parser.add_argument("--bench-mode", action="store_true", help="Also exercise the bench mode configurations")
     args = parser.parse_args()
     inputs = [getattr(args, name).resolve() for name in ("gcc", "controller", "bridge")]
     base = args.base.resolve() if args.base else None
@@ -247,11 +297,13 @@ def main():
             for path in (*inputs, base) if path is not None):
         parser.error("Use a separate JSON report")
     try:
-        report = check(*inputs, base=base)
+        report = check(*inputs, base=base, bench_mode=args.bench_mode)
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         print(report["m32r"])
         print(report["manual_profile_m32r"])
+        for observed in report["bench_mode_profiles_m32r"].values():
+            print(observed)
     except subprocess.CalledProcessError as error:
         parser.exit(1, (error.stderr or error.stdout or str(error)) + "\n")
     except (KeyError, OSError, ValueError, subprocess.TimeoutExpired) as error:

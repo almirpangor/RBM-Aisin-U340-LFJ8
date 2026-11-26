@@ -28,14 +28,21 @@ def elf_flags(path: Path, machine: int, elf_type: int) -> int:
     return int.from_bytes(header[36:40], "big")
 
 
-def build(architecture: str, compiler: Path, destination: Path, sh_runner: Path | None) -> None:
+def build(architecture: str, compiler: Path, destination: Path, sh_runner: Path | None,
+          *, memory_model: str | None = None) -> None:
+    if memory_model not in (None, "medium", "small"):
+        raise ValueError("M32R memory model must be medium or small")
+    if memory_model is not None and architecture != "m32r":
+        raise ValueError("The memory model option applies only to M32R")
+    machine, architecture_flags, triplet = ARCHITECTURE[architecture]
+    target_flags = [flag.replace("-mmodel=medium", "-mmodel=" + (memory_model or "medium"))
+                    for flag in architecture_flags]
     provenance, files = verify_toyota()
     source_paths = sorted(path for path in CONTROLLER.rglob("*")
                           if path.is_file() and path.suffix in (".c", ".h", ".py"))
     source_hashes = {path.relative_to(CONTROLLER.parent).as_posix():
                      hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
                      for path in source_paths}
-    machine, target_flags, triplet = ARCHITECTURE[architecture]
     suffix = compiler.suffix
     environment = dict(os.environ, PATH=str(compiler.parent) + os.pathsep + os.environ.get("PATH", ""))
     nm = subprocess.check_output([compiler, "-print-prog-name=nm"], env=environment, text=True).strip()
@@ -193,13 +200,18 @@ def main() -> None:
     parser.add_argument("--cc", required=True, help="Path to the cross compiler")
     parser.add_argument("--out", type=Path)
     parser.add_argument("--sh-runner", type=Path, help="Build and run the SH-2 ELF in the project simulator")
+    parser.add_argument("--memory-model", choices=("medium", "small"),
+                        help="M32R symbol-address model (default: medium)")
     args = parser.parse_args()
+    if args.memory_model is not None and args.architecture != "m32r":
+        parser.error("--memory-model applies only to m32r")
     compiler = shutil.which(args.cc)
     if compiler is None:
         parser.error(f"Compiler not found: {args.cc}")
     destination = args.out or CONTROLLER.parent / "local/controller" / args.architecture
     sh_runner = args.sh_runner.resolve(strict=True) if args.sh_runner else None
-    build(args.architecture, Path(compiler).resolve(), destination.resolve(), sh_runner)
+    build(args.architecture, Path(compiler).resolve(), destination.resolve(), sh_runner,
+          memory_model=args.memory_model)
 
 
 if __name__ == "__main__":

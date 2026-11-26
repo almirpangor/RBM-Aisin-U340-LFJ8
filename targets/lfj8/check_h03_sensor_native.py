@@ -20,7 +20,8 @@ SOURCES = (
 
 
 def run(*args):
-    result = subprocess.run(args, capture_output=True, text=True, timeout=60)
+    result = subprocess.run(args, capture_output=True, text=True, encoding="utf-8",
+                            errors="replace", timeout=60)
     if result.returncode:
         raise ValueError(f"{Path(args[0]).name} failed:\n{result.stdout}{result.stderr}")
     return result.stdout.strip()

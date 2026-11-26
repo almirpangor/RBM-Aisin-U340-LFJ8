@@ -39,3 +39,37 @@ python -B targets/lfj8/check_h03_sensor_config.py --base $h03 --clock-reference 
 Известный C-состав с отзывом CAN, его обвязками и C-частью H03-04 занял 93 684 байта Flash, 164 корня и 510 секций. Прежние окна дают дефицит 12 048 байт. Известные секции помещаются в расширенных промежутках с номинальным остатком 8 672 байта до выравнивания и добавления недостающих объектов. Таблица и нативные обёртки H03-04 проверялись отдельно, поэтому этот остаток не характеризует установленную защиту. Итоговый статус `FAIL_BINDINGS`. В выбранном C-составе отсутствуют `rbm_h03_application_binding` и `rbm_h03_sensor_config`. [Снимок испытаний](2026-11-20-h03-sensor-config.json)
 
 Bosch E4M3 по реестру выпуска остаётся `OFFLINE_ONLY`. На оборудовании проверка не проводилась, двух файлов для записи пока нет. CANHacker нужен для подтверждения скорости, признаков потери данных и восстановления обмена. Частоту TML0/TML1, момент захвата AN1 и фактические уровни силовых выходов измеряют отдельно.
+
+## Повторная проверка исходника (24.11.2026)
+
+На рабочей копии повторно проверен предоставленный владельцем H03 `LFJ8-T-D.bin`, SHA-256 `844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544`. Команда `check_h03_sensor_config.py --base <H03> --out <temporary.json>` завершилась `PASS_STOCK_ONLY`: подтверждены десять наборов штатных инструкций, `PRS1=9`, `TML0CR=0x01`, `TML1CR=0x31` и OEM reload S51/S83 `225/500 ms`.
+
+Этот результат подтверждает только исходные байты и штатные параметры. Отчёт оставляет `production_sensor_config` неопределённым: независимых измерений частот TML0/TML1 и калибровочного профиля нет. Повторный M32R/native запуск здесь не выполнен: путь GCC 4.8.0 недоступен. Результат `PASS_BENCH_SENSOR_NATIVE` в `verification/bench-wave/chat-5/handoff.json` — унаследованное доказательство, не повторённое этой проверкой. Аппаратные измерения и пригодность скорости для управления остаются открытыми.
+
+## Повторные M32R/native проверки (24.11.2026)
+
+Для повторов использованы точный H03 SHA-256 `844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544`, M32R GCC 4.8.0 `F:\RBM-Codex-temp\toolchains\SysGCC-m32r-elf-4.8.0\bin\m32r-elf-gcc.exe` с target `m32r-elf` и временный вывод на ASCII-пути `F:\akpp-vss02-*`. Повторённые проверки:
+
+- `check_h03_bench_sensor_profile.py` — `PASS H03 bench profile: register changes, stalls, wrap, epochs, S51/S83 and AN1 freshness`.
+- `check_h03_sensor_native.py` — stock/hooked S51/S83 stores и общая ревокация clocks/epoch: `PASS`.
+- `check_h03_atf_native.py` — 11 stock/hooked пар AN1/ATF: `PASS`.
+- `check_h03_application_binding.py` — RAM/timer отказ, ревокация эпохи, wrap, restart, foreground и expiry: `PASS`.
+- `check_h03_input_binding.py` — шесть диапазонов, режим/OD, split-phase capture, freshness, manual hold/revocation: `PASS`.
+- `check_h03_bench_mode.py` — compiled selector, reset policy и divider margins: `PASS`.
+- `check_h03_target_platform.py --bench-mode` — startup, CAN lifecycle, Toyota rollover/inhibition, manual/selector native scenarios: `PASS`.
+
+Полные отчёты временных сборок сохранены под `F:\akpp-vss02-*`. Эти проверки подтверждают программные стоки и M32R-модель; они не подтверждают физическую частоту таймеров, абсолютную скорость, геометрию колесо/дифференциал, реальный standstill, антенну/полярность датчиков и приёмку прошитого блока. `production_sensor_config` остаётся `null`; не объявляются готовые или прошиваемые два BIN.
+
+## Typed exports and expanded-layout rerun (24.11.2026)
+
+Using M32R GCC 4.8.0 and the same H03 SHA-256, `check_h03_storage.py` measured the typed H03 ABI model and `check_h03_can_monitor_revoke.py` completed its native RAM-alias and aggregate-placement checks. The VSS state exports are already mapped by `lfj8_h03_can_service_placement.py` to fields in the typed control block without allocating duplicate storage:
+
+| Symbol | Typed field | Candidate address range |
+| --- | --- | --- |
+| `rbm_h03_sensor_state` | `control/sensors` | `[0x806ED8, 0x806EFC)` |
+| `rbm_h03_tml0_1mhz_qualified` | `control/clock_qualified` | `[0x806F14, 0x806F15)` |
+| `rbm_h03_selector_adc_state` | `control/selector_adc` | `[0x806F2C, 0x806F38)` |
+
+These are address-model aliases, not an accepted production RAM assignment: the report keeps `aliases_allocate_new_ram=false` and `hardware_ram_ownership_verified=false`. Native H03 sensor-hook checks again passed, and the stock sensor audit again returned `PASS_STOCK_ONLY` with `production_sensor_config=null`.
+
+The expanded `check_h03_image_layout.py` run with bindings, DTC RX, CAN service, the padding candidate and the typed storage report stopped at `FAIL_BINDINGS`: `rbm_h03_sensor_config` and `rbm_h03_application_binding` remain unresolved. The sensor configuration is intentionally not synthesized from `PASS_STOCK_ONLY`; the only checked-in definition is the `OEM_NOMINAL` bench provider in `bench_sensor_profile.c`. An accepted paired TML0/TML1 clock reference and H03 calibration profile are still required to generate a production sensor config. Absolute clock rates, S51/S83 operating limits, S83 edges per revolution, ATF capture-to-publication age, and selector electrical/input mapping remain unmeasured or unconfirmed. No hardware RAM ownership, hardware acceptance, or flashable image is claimed.

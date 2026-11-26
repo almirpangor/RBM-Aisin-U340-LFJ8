@@ -1,9 +1,9 @@
 """Repeat integrated H03 CPU checks; never emit a flashable firmware image."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from contextlib import contextmanager
 from hashlib import sha256
 import json
-import importlib.util
 from pathlib import Path
 import subprocess
 import sys
@@ -72,41 +72,48 @@ def native(args):
     return {"checks": rows, "passed": all(row["exit_code"] == 0 for row in rows)}
 
 
+@contextmanager
+def link_configuration(link):
+    names = ("TARGET", "H03_ROOTS", "DTC_FILES", "DTC_ROOTS", "CAN_EXTENSION_FILES",
+             "CAN_EXTENSION_ROOTS", "check_split_layout")
+    saved = {name: getattr(link, name) for name in names}
+    try:
+        yield
+    finally:
+        for name, value in saved.items():
+            setattr(link, name, value)
+
+
+def rebuild_objects(args, memory_model):
+    """Use the public builders so objects and complete provenance agree."""
+    controller = args.out / "controller"
+    bridge = args.out / "bridge"
+    subprocess.run([
+        sys.executable, "-B", str(ROOT / "controller/build_target.py"), "m32r",
+        "--cc", str(args.gcc), "--out", str(controller), "--memory-model", memory_model,
+    ], cwd=ROOT, check=True)
+    subprocess.run([
+        sys.executable, "-B", str(LFJ8 / "build.py"), "--output", str(bridge),
+        "--m32r-cc", str(args.gcc), "--base-9e1c", str(args.base),
+        "--m32r-memory-model", memory_model,
+    ], cwd=ROOT, check=True)
+    args.controller = controller / "rbm_u340e_m32r_be.o"
+    args.bridge = bridge / "lfj8_9e1c_m32r.o"
+
+
 def expanded(args):
     sys.path.insert(0, str(LFJ8))
     import check_h03_link as link
+    with link_configuration(link):
+        return expanded_check(argparse.Namespace(**vars(args)), link)
 
+
+def expanded_check(args, link):
     if args.small_model:
         # Optional sizing experiment. Only generated absolute symbol addresses
         # change; runtime pointer ABI is unchanged. GCC documents this model
         # for symbols below 16 MiB. Physical ownership is still unproved.
-        sys.path.insert(0, str(ROOT / "controller"))
-        import build_target
-        machine, flags, triple = build_target.ARCHITECTURE["m32r"]
-        build_target.ARCHITECTURE["m32r"] = (
-            machine, [flag.replace("-mmodel=medium", "-mmodel=small") for flag in flags], triple)
-        build_target.build("m32r", args.gcc, args.out / "controller", None)
-        args.controller = args.out / "controller/rbm_u340e_m32r_be.o"
-        spec = importlib.util.spec_from_file_location("integrated_lfj8_build", LFJ8 / "build.py")
-        builder = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(builder)
-        old_command = builder.command
-        def command(*items, **kwargs):
-            return old_command(*(str(item).replace("-mmodel=medium", "-mmodel=small")
-                                 for item in items), **kwargs)
-        builder.command = command
-        with TemporaryDirectory(prefix="rbm-small-bridge-") as directory:
-            obj, metadata = builder.build_embedded(args.gcc, Path(directory), "m32r", "m2", True)
-            metadata["target_flags"] = [flag.replace("-mmodel=medium", "-mmodel=small")
-                                        for flag in metadata["target_flags"]]
-            dest = args.out / "bridge"
-            dest.mkdir(exist_ok=True)
-            builder.publish(obj, dest)
-            save(dest / "build-manifest.json", {
-                "m32r_base": builder.verified_9e1c_base(args.base),
-                "artifacts": {obj.name: {**builder.summary(obj), **metadata}},
-                "scope": "explicit small-model sizing experiment"})
-            args.bridge = dest / obj.name
+        rebuild_objects(args, "small")
         link.TARGET = [flag.replace("-mmodel=medium", "-mmodel=small") for flag in link.TARGET]
 
     link.H03_ROOTS += (

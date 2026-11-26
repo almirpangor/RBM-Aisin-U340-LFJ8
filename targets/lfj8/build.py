@@ -101,7 +101,12 @@ def build_host(zig, work):
     }
 
 
-def build_embedded(compiler, work, architecture, sh_cpu, use_9e1c_base=False):
+def build_embedded(compiler, work, architecture, sh_cpu, use_9e1c_base=False,
+                   *, memory_model=None):
+    if memory_model not in (None, "medium", "small"):
+        raise ValueError("M32R memory model must be medium or small")
+    if memory_model is not None and architecture != "m32r":
+        raise ValueError("The memory model option applies only to M32R")
     triple = command(compiler, "-dumpmachine")
     if architecture == "m32r":
         if not triple.startswith("m32r"):
@@ -110,7 +115,7 @@ def build_embedded(compiler, work, architecture, sh_cpu, use_9e1c_base=False):
         if use_9e1c_base:
             sources.extend((H03_ATF, H03_ATF_FAULT, H03_ENGINE_RX, H03_MMIO, H03_GEAR,
                             "lfj8_h03_toyota_source.c"))
-        target_flags = ["-m32r", "-mmodel=medium", "-msdata=none"]
+        target_flags = ["-m32r", "-mmodel=" + (memory_model or "medium"), "-msdata=none"]
         assembler_flags = ["-Wa,-EB"]
         output_name = "lfj8_9e1c_m32r.o" if use_9e1c_base else "lfj8_m32r.o"
         expected_machine = 88
@@ -176,6 +181,8 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--zig", type=Path)
     parser.add_argument("--m32r-cc", type=Path)
+    parser.add_argument("--m32r-memory-model", choices=("medium", "small"),
+                        help="M32R symbol-address model (default: medium)")
     parser.add_argument("--base-9e1c", type=Path, help="Bind the M32R build report to the exact H03 input")
     parser.add_argument("--sh-cc", type=Path)
     parser.add_argument("--sh-cpu", choices=["m2", "m2e"], default="m2")
@@ -184,6 +191,8 @@ def main():
         parser.error("Supply at least one compiler with --zig, --m32r-cc or --sh-cc")
     if args.base_9e1c and not args.m32r_cc:
         parser.error("--base-9e1c requires --m32r-cc")
+    if args.m32r_memory_model is not None and not args.m32r_cc:
+        parser.error("--m32r-memory-model requires --m32r-cc")
 
     sources = [*CORE, *DONOR_ADAPTER, H03_ATF, H03_ATF_FAULT, H03_ATF_TEST,
                H03_ENGINE_RX, H03_MMIO, H03_GEAR, H03_GEAR_TEST,
@@ -214,7 +223,8 @@ def main():
                 results.append(build_host(args.zig.resolve(), work))
             if args.m32r_cc:
                 results.append(build_embedded(args.m32r_cc.resolve(), work, "m32r", args.sh_cpu,
-                                              use_9e1c_base=args.base_9e1c is not None))
+                                              use_9e1c_base=args.base_9e1c is not None,
+                                              memory_model=args.m32r_memory_model))
             if args.sh_cc:
                 results.append(build_embedded(args.sh_cc.resolve(), work, "sh", args.sh_cpu))
             for artifact, metadata in results:
