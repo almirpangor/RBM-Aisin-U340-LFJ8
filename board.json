@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1019,
+  "sequence": 1024,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -95,27 +95,27 @@
     },
     "REL-01": {
       "owner": "6b07cffe-43b8-83eb-b32c-1978261f0046",
-      "label": "Codex - build model continuation",
-      "branch": "codex/continue-6b07cffe",
+      "label": "Codex — общая сборка BIN",
+      "branch": "codex/bin-integration-6b07cffe",
       "files": [
-        "controller/build_target.py",
-        "targets/lfj8/build.py",
-        "tests/test_integrated_h03.py",
-        "tools/check_integrated_h03.py",
-        "verification/project-audit/continuation-20261126.md"
+        "tests/test_h03_bench_pair.py",
+        "tests/test_package_workset.py",
+        "tools/build_h03_bench_pair.py",
+        "tools/package_workset.py",
+        "verification/bin-release-20261126/"
       ],
-      "stage": "review",
-      "claim_id": "45aa19ae7e9f404aba609cc7fd686cbd",
-      "claimed_at": "2026-11-26T06:32:27+00:00",
-      "updated_at": "2026-11-26T06:47:21+00:00",
-      "note": "Published explicit M32R model options, provenance-complete small rebuilds, isolated expanded-check state and F-drive audit. Six regression and twelve package tests pass. Both native build attempts fail before compilation with Windows 623; H03 download unavailable. No new BIN or hardware claim.",
-      "result": "70b6d601fd5dda4e7d7b94d9ba2a65864c132e1a",
+      "stage": "in_progress",
+      "claim_id": "2d0e308611314df984fdc5a729efad40",
+      "claimed_at": "2026-11-26T07:05:39+00:00",
+      "updated_at": "2026-11-26T07:05:39+00:00",
+      "note": "User requested parallel Codex work and two BINs: integrate actual providers, qualify execution/integrity and compose a reproducible TCM/Bosch pair without fixture promotion.",
+      "result": null,
       "based_on_reviews": [
         "36a5a75d3ef44ab0a4cde5678f96bb0a",
+        "45aa19ae7e9f404aba609cc7fd686cbd",
         "7cb4836dcb9343c6bfcec71a4e5371e6",
         "9c7cba27017d403db01fb18c16725dd9",
         "9fafa66119bd4d68a67ffed2cc934265",
-        "a642d995b84d4360b6b126b543a56c64",
         "b29ec3655b034f3c9d994624701a3e5a"
       ]
     },
@@ -147,23 +147,23 @@
       "based_on_reviews": []
     },
     "H03-04": {
-      "owner": "6f772758-d43b-4665-ad67-3eeb2481501a",
-      "label": "Copilot H03-04 software-only continuation",
-      "branch": "almirpangor-lfj8-h03-platform",
+      "owner": "9fd4c5ba-b274-4d00-b557-024ef5f0196a",
+      "label": "Codex — native memory artifacts",
+      "branch": "codex/h03-memory-20261126",
       "files": [
-        "targets/lfj8/check_h03_ram_owner.py",
-        "targets/lfj8/lfj8_h03_ram_owner.c",
-        "targets/lfj8/lfj8_h03_ram_owner.h",
-        "targets/lfj8/test_lfj8_h03_ram_owner.c"
+        "targets/lfj8/lfj8_h03_bench_memory_profile.py",
+        "tests/test_h03_bench_memory_profile.py",
+        "verification/bench-wave/h03-memory-20261126.md"
       ],
-      "stage": "review",
-      "claim_id": "2c436323b8804fc3b5ce732970b858a4",
-      "claimed_at": "2026-11-24T06:33:44+00:00",
-      "updated_at": "2026-11-24T06:38:09+00:00",
-      "note": "Published software-only guard update. RAM admission now requires at least the existing H03 profile reserves (SPI 1040 B, PSW 64 B); M32R compilation and boundary tests cover exact fit, under-reserve, and misalignment. Profile/placement Python tests: 8 pass; checker imports; diff check passes. Full donor-based M32R replay, final linked stack proof, physical high-water, and hardware qualification remain open; no BIN.",
-      "result": "f3a320fe7c66dc9f258f23ec14abbf2e5c0d2c60",
+      "stage": "in_progress",
+      "claim_id": "f37b890641a04cb1aa5f8aa7c5d9cf70",
+      "claimed_at": "2026-11-26T07:05:40+00:00",
+      "updated_at": "2026-11-26T07:05:40+00:00",
+      "note": "Continue after f3a320f: emit genuine ABS symbol/linker fragments and exact native compile inputs from the pinned bench memory profile; verify final linked symbols/placements without monkeypatch bounds or weaker guards.",
+      "result": null,
       "based_on_reviews": [
         "2287692bc6564719826ff62c12a7d829",
+        "2c436323b8804fc3b5ce732970b858a4",
         "734b4f9d3a9c43f6aaa67927cf88ab12"
       ]
     },
@@ -206,21 +206,19 @@
       "based_on_reviews": []
     },
     "CAN-05": {
-      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
-      "label": "Codex CAN-05 — время приёма ST10",
-      "branch": "codex/can05-st10-bound-t4-01a1f9a2",
+      "owner": "18de1d89-c1a8-4713-a009-785a4898e8e7",
+      "label": "Codex — Bosch paired-build evidence",
+      "branch": "codex/bosch-pair-20261126",
       "files": [
-        "targets/bosch/build.py",
-        "targets/bosch/rx_timestamp.py",
-        "targets/bosch/verify_rx_timestamp.py",
-        "verification/project-audit/can05-st10-bound-t4.md"
+        "verification/bench-wave/bosch-pair-20261126/handoff.json"
       ],
-      "stage": "done",
-      "claim_id": "4be301294ddc41508ac41d1b94c6b14a",
-      "claimed_at": "2026-11-20T19:39:22+00:00",
-      "updated_at": "2026-11-20T21:14:43+00:00",
-      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
-      "result": "f3bb5000ebfdaaa30a33665bac1eab06ddb9165c"
+      "stage": "in_progress",
+      "claim_id": "26e9d44db4f1463a8c0fba7cafd4ed94",
+      "claimed_at": "2026-11-26T07:05:42+00:00",
+      "updated_at": "2026-11-26T07:05:42+00:00",
+      "note": "Reproduce ordinary and native-permit Bosch binaries and CPU verifiers from exact saved sources; identify remaining native Chery consumer/profile contract. Do not edit ECU-01 held files or rename OFFLINE_ONLY into a ready pair.",
+      "result": null,
+      "based_on_reviews": []
     },
     "DTC-03": {
       "owner": "copilot-71f474e418d946d2ab3d84e52afb56f1",
@@ -271,31 +269,24 @@
       "based_on_reviews": []
     },
     "CAN-01": {
-      "owner": "30ae8f10-a1b1-4e43-84cb-444ee6f5a2a0",
-      "label": "Copilot — LFJ8 CAN and torque",
-      "branch": "almirpangor-lfj8-can-and-torque",
+      "owner": "h03-profiles-20261126-0d9c5e74",
+      "label": "Codex — native application profile",
+      "branch": "codex/h03-profiles-20261126",
       "files": [
-        "targets/lfj8/bench_engine_profile.h",
-        "targets/lfj8/check_h03_engine_context.py",
-        "targets/lfj8/lfj8_h03_engine_context.c",
-        "targets/lfj8/lfj8_h03_engine_context.h",
-        "targets/lfj8/lfj8_h03_engine_feed.c",
-        "targets/lfj8/lfj8_h03_engine_feed.h",
-        "targets/lfj8/lfj8_h03_engine_rx.c",
-        "targets/lfj8/lfj8_h03_engine_rx.h",
-        "targets/lfj8/lfj8_h03_input_binding.c",
-        "targets/lfj8/test_lfj8_h03_engine_context.c",
-        "targets/lfj8/test_lfj8_h03_input_binding.c"
+        "targets/lfj8/bench_application_profile.h",
+        "targets/lfj8/check_h03_bench_application_profile.py",
+        "targets/lfj8/lfj8_h03_bench_application_profile.c",
+        "verification/bench-wave/h03-profiles-20261126.md"
       ],
-      "stage": "review",
-      "claim_id": "43c64ae0c01a43088c77386a743171c9",
-      "claimed_at": "2026-11-23T21:46:32+00:00",
-      "updated_at": "2026-11-23T22:22:04+00:00",
-      "note": "Published commit 50202944bbe2206d79c948757752b5a3e7669007. PC evidence: controller host tests PASS under GCC 16.2 after demoting only legacy array-parameter, misleading-indentation, and missing-braces warnings; input-binding fixture compiled with -Werror and PASS; exact-H03 engine-context host replay PASS. M32R evidence: GCC 4.8.0 target m32r-elf; controller target build/simulator suite PASS; check_h03_input_binding.py PASS on M32R simulator; exact-H03 engine-context replay PASS on host and M32R simulator. H03 base: 524288 bytes, SHA-256 844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544. Pinned Bosch trace SHA-256 e9df9cbcae6eb741b9863688f7bbacd16f19064c063b76549f8b56939ca03b4b. Test ELF SHA-256 43a8448beb0b27773034fc4363f4236a2f92be9fb8d8507862a537089f06e716; M32R controller object SHA-256 13b42c89f3af237bbdc1307149918328561f0226f1443706d53160fc23c36ead. Simulator --version is unsupported; executable SHA-256 85D3CAD2770065C4F4A31571C924F092B8AA1AAC9C6C22F504A64E1003E87F38. Hardware not tested; no flashable image or release BIN created. Full release target-link/integrity gates remain outstanding. GCC 4.8 reports stack-usage computation unsupported for M32R. Independent FA7B fallback is unavailable and remains FF; timing values are engineering bounds, not measurements. project_status --check still reports changed files pending review/retest; no shared audit/registry files were modified.",
-      "result": "50202944bbe2206d79c948757752b5a3e7669007",
+      "stage": "in_progress",
+      "claim_id": "32a8dde5bafe410c965914d8bebf3e14",
+      "claimed_at": "2026-11-26T07:05:41+00:00",
+      "updated_at": "2026-11-26T07:05:41+00:00",
+      "note": "Continue after CAN-01 5020294 and output 0a9523: connect existing native sensor/engine/output profile fragments and explicit startup/input/service provider contracts without SIMULATOR_ONLY callbacks or invented load.",
+      "result": null,
       "based_on_reviews": [
-        "027a36c5f3ef44518bf3ba1bbaf2f464",
-        "1bfd0b8442764a5e8a833763cc57815a"
+        "1bfd0b8442764a5e8a833763cc57815a",
+        "43c64ae0c01a43088c77386a743171c9"
       ]
     },
     "MODE-02": {
@@ -601,20 +592,21 @@
       "result": "85b2e9320cf8f6e4a3729915ed3ebbd0fc00a732"
     },
     "H03-01": {
-      "owner": "codex-01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
-      "label": "Codex H03-01 — сверка прочитанного образа",
-      "branch": "codex/h03-01-readback-01a1f9a2",
+      "owner": "d32061c3-c01f-44f5-aa31-d5ed8f982fc2",
+      "label": "Codex — M32R Windows CI",
+      "branch": "codex/m32r-toolchain-20261126",
       "files": [
-        "tests/test_h03_readback.py",
-        "tools/check_h03_readback.py",
-        "verification/project-audit/h03-01-readback.md"
+        ".github/workflows/m32r-toolchain.yml",
+        "tools/ci_m32r_build.py",
+        "verification/bin-release-20261126-toolchain/"
       ],
-      "stage": "done",
-      "claim_id": "afe9090e65ce4d9caf011f47cdcfe67a",
-      "claimed_at": "2026-11-20T20:13:14+00:00",
-      "updated_at": "2026-11-20T21:14:43+00:00",
-      "note": "Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена.",
-      "result": "57bf9ee7cfa47b68da922524f729a284a69f54b4"
+      "stage": "in_progress",
+      "claim_id": "82d76ac93c4045858b318d0452bffff2",
+      "claimed_at": "2026-11-26T07:05:40+00:00",
+      "updated_at": "2026-11-26T07:05:40+00:00",
+      "note": "New independent scope: official Sysprogs package extraction and real Windows CI M32R controller/bridge builds and CPU tests; local obsolete PE executables fail Windows 623. No sandbox or OS security changes.",
+      "result": null,
+      "based_on_reviews": []
     },
     "SRC-01": {
       "owner": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
@@ -18353,9 +18345,149 @@
           "b29ec3655b034f3c9d994624701a3e5a"
         ]
       }
+    },
+    {
+      "operation_id": "ee94b6b933d340788f0b8080a4175315",
+      "task": "REL-01",
+      "owner": "6b07cffe-43b8-83eb-b32c-1978261f0046",
+      "action": "claim",
+      "claim_id": "2d0e308611314df984fdc5a729efad40",
+      "at": "2026-11-26T07:05:39+00:00",
+      "record": {
+        "owner": "6b07cffe-43b8-83eb-b32c-1978261f0046",
+        "label": "Codex — общая сборка BIN",
+        "branch": "codex/bin-integration-6b07cffe",
+        "files": [
+          "tests/test_h03_bench_pair.py",
+          "tests/test_package_workset.py",
+          "tools/build_h03_bench_pair.py",
+          "tools/package_workset.py",
+          "verification/bin-release-20261126/"
+        ],
+        "stage": "in_progress",
+        "claim_id": "2d0e308611314df984fdc5a729efad40",
+        "claimed_at": "2026-11-26T07:05:39+00:00",
+        "updated_at": "2026-11-26T07:05:39+00:00",
+        "note": "User requested parallel Codex work and two BINs: integrate actual providers, qualify execution/integrity and compose a reproducible TCM/Bosch pair without fixture promotion.",
+        "result": null,
+        "based_on_reviews": [
+          "36a5a75d3ef44ab0a4cde5678f96bb0a",
+          "45aa19ae7e9f404aba609cc7fd686cbd",
+          "7cb4836dcb9343c6bfcec71a4e5371e6",
+          "9c7cba27017d403db01fb18c16725dd9",
+          "9fafa66119bd4d68a67ffed2cc934265",
+          "b29ec3655b034f3c9d994624701a3e5a"
+        ]
+      }
+    },
+    {
+      "operation_id": "587ae09732ba4469a891644450e1b0af",
+      "task": "H03-01",
+      "owner": "d32061c3-c01f-44f5-aa31-d5ed8f982fc2",
+      "action": "claim",
+      "claim_id": "82d76ac93c4045858b318d0452bffff2",
+      "at": "2026-11-26T07:05:40+00:00",
+      "record": {
+        "owner": "d32061c3-c01f-44f5-aa31-d5ed8f982fc2",
+        "label": "Codex — M32R Windows CI",
+        "branch": "codex/m32r-toolchain-20261126",
+        "files": [
+          ".github/workflows/m32r-toolchain.yml",
+          "tools/ci_m32r_build.py",
+          "verification/bin-release-20261126-toolchain/"
+        ],
+        "stage": "in_progress",
+        "claim_id": "82d76ac93c4045858b318d0452bffff2",
+        "claimed_at": "2026-11-26T07:05:40+00:00",
+        "updated_at": "2026-11-26T07:05:40+00:00",
+        "note": "New independent scope: official Sysprogs package extraction and real Windows CI M32R controller/bridge builds and CPU tests; local obsolete PE executables fail Windows 623. No sandbox or OS security changes.",
+        "result": null,
+        "based_on_reviews": []
+      }
+    },
+    {
+      "operation_id": "52d67c60004145968e6a3daaa6937289",
+      "task": "H03-04",
+      "owner": "9fd4c5ba-b274-4d00-b557-024ef5f0196a",
+      "action": "claim",
+      "claim_id": "f37b890641a04cb1aa5f8aa7c5d9cf70",
+      "at": "2026-11-26T07:05:40+00:00",
+      "record": {
+        "owner": "9fd4c5ba-b274-4d00-b557-024ef5f0196a",
+        "label": "Codex — native memory artifacts",
+        "branch": "codex/h03-memory-20261126",
+        "files": [
+          "targets/lfj8/lfj8_h03_bench_memory_profile.py",
+          "tests/test_h03_bench_memory_profile.py",
+          "verification/bench-wave/h03-memory-20261126.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "f37b890641a04cb1aa5f8aa7c5d9cf70",
+        "claimed_at": "2026-11-26T07:05:40+00:00",
+        "updated_at": "2026-11-26T07:05:40+00:00",
+        "note": "Continue after f3a320f: emit genuine ABS symbol/linker fragments and exact native compile inputs from the pinned bench memory profile; verify final linked symbols/placements without monkeypatch bounds or weaker guards.",
+        "result": null,
+        "based_on_reviews": [
+          "2287692bc6564719826ff62c12a7d829",
+          "2c436323b8804fc3b5ce732970b858a4",
+          "734b4f9d3a9c43f6aaa67927cf88ab12"
+        ]
+      }
+    },
+    {
+      "operation_id": "c2906b9513ca4de3a383343ceeeac488",
+      "task": "CAN-01",
+      "owner": "h03-profiles-20261126-0d9c5e74",
+      "action": "claim",
+      "claim_id": "32a8dde5bafe410c965914d8bebf3e14",
+      "at": "2026-11-26T07:05:41+00:00",
+      "record": {
+        "owner": "h03-profiles-20261126-0d9c5e74",
+        "label": "Codex — native application profile",
+        "branch": "codex/h03-profiles-20261126",
+        "files": [
+          "targets/lfj8/bench_application_profile.h",
+          "targets/lfj8/check_h03_bench_application_profile.py",
+          "targets/lfj8/lfj8_h03_bench_application_profile.c",
+          "verification/bench-wave/h03-profiles-20261126.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "32a8dde5bafe410c965914d8bebf3e14",
+        "claimed_at": "2026-11-26T07:05:41+00:00",
+        "updated_at": "2026-11-26T07:05:41+00:00",
+        "note": "Continue after CAN-01 5020294 and output 0a9523: connect existing native sensor/engine/output profile fragments and explicit startup/input/service provider contracts without SIMULATOR_ONLY callbacks or invented load.",
+        "result": null,
+        "based_on_reviews": [
+          "1bfd0b8442764a5e8a833763cc57815a",
+          "43c64ae0c01a43088c77386a743171c9"
+        ]
+      }
+    },
+    {
+      "operation_id": "239920636ec141a6bcc620c437e86cb1",
+      "task": "CAN-05",
+      "owner": "18de1d89-c1a8-4713-a009-785a4898e8e7",
+      "action": "claim",
+      "claim_id": "26e9d44db4f1463a8c0fba7cafd4ed94",
+      "at": "2026-11-26T07:05:42+00:00",
+      "record": {
+        "owner": "18de1d89-c1a8-4713-a009-785a4898e8e7",
+        "label": "Codex — Bosch paired-build evidence",
+        "branch": "codex/bosch-pair-20261126",
+        "files": [
+          "verification/bench-wave/bosch-pair-20261126/handoff.json"
+        ],
+        "stage": "in_progress",
+        "claim_id": "26e9d44db4f1463a8c0fba7cafd4ed94",
+        "claimed_at": "2026-11-26T07:05:42+00:00",
+        "updated_at": "2026-11-26T07:05:42+00:00",
+        "note": "Reproduce ordinary and native-permit Bosch binaries and CPU verifiers from exact saved sources; identify remaining native Chery consumer/profile contract. Do not edit ECU-01 held files or rename OFFLINE_ONLY into a ready pair.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-26T06:47:21+00:00",
+  "updated_at": "2026-11-26T07:05:42+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
