@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-26T07:35:23+00:00**. Изменение № **1029**.
+Обновлено UTC: **2026-11-26T07:51:04+00:00**. Изменение № **1030**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -12,7 +12,7 @@
 
 Каталог задач взят из main 3fe28938163e1dddc98a37733c229390ab7f0fff.
 
-**В работе: 13 · Ожидают с резервом: 2 · Порций на проверке: 26.**
+**В работе: 14 · Ожидают с резервом: 2 · Порций на проверке: 26.**
 
 Занятость определяется подтверждёнными резервами, а не присутствием чата онлайн. Предыдущие исполнители вынесены в историю.
 
@@ -22,6 +22,7 @@
 | --- | --- | --- | --- | --- |
 | 6 | TOY-05 — Обучение и сохранение адаптаций | Codex 12 — TOY-05, стартовое состояние первой стендовой пары \[01a1fa79-a9fd-70c0-80a3-f59592edaf79\] | 2026-11-21T09:13:05+00:00 | По поручению ведущего переношу сброс DTC RAM в защищённый холодный вход. Application C и транспорт остаются у текущих владельцев. |
 | 8 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Codex — native application profile \[h03-profiles-20261126-0d9c5e74\] | 2026-11-26T07:35:22+00:00 | Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress. |
+| 9 | CAN-02 — Общий диспетчер CAN13 | Codex native CAN service — реальные status/torque projections \[h03-native-can-20261126-2c849a72\] | 2026-11-26T07:51:04+00:00 | Независимый native adapter общего owner/DTC/TML0/TX13 с source manifest и bounded projections; без переноса fixture timings/calibrations и без изменения активного CAN-03. |
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
 | 12 | CAN-05 — Полнота штатного обмена Chery | Codex — Bosch paired-build evidence \[18de1d89-c1a8-4713-a009-785a4898e8e7\] | 2026-11-26T07:35:23+00:00 | Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
@@ -96,7 +97,7 @@
 | 6 | [TOY-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-05) | Выполняется | Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений. | TOY-04, H03-04 |
 | 7 | [TOY-06](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#toy-06) | Свободна для продолжения; порция на проверке | Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки. | TOY-02, H03-05 |
 | 8 | [CAN-01](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-01) | Выполняется | Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка. | См. входные условия карточки |
-| 9 | [CAN-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-02) | Свободна для продолжения | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
+| 9 | [CAN-02](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-02) | Выполняется | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
 | 10 | [CAN-03](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-03) | Выполняется | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | H03-04 |
 | 11 | [CAN-04](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-04) | Ожидает данных / решения | Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM. | См. входные условия карточки |
 | 12 | [CAN-05](https://github.com/almirpangor/RBM-Aisin-U340-LFJ8/blob/3fe28938163e1dddc98a37733c229390ab7f0fff/docs/project-map.md#can-05) | Выполняется | Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false. | TOY-02 |
@@ -282,7 +283,7 @@
 </details>
 
 <details>
-<summary>CAN-02 — Общий диспетчер CAN13: Свободна для продолжения</summary>
+<summary>CAN-02 — Общий диспетчер CAN13: Выполняется</summary>
 
 **Сделано.** При отсутствии калибровки S51 передаётся недоступная скорость 0xFFFF в 0x1AE, а ATF 0x300 сохраняется; общая модель обмена прошла.
 
@@ -296,7 +297,7 @@
 
 **Рекомендуемый чат.** Чат 3 — 01a1f9b5-5d41-79e0-8cd2-3dadc922f1ce.
 
-**Исполнитель сейчас.** Задача не занята.
+**Сейчас выполняет.** Codex native CAN service — реальные status/torque projections — h03-native-can-20261126-2c849a72.
 
 **Критерий приёмки.** Программные тесты не заменяют измерение окон приёма 0x5E9.
 
@@ -772,7 +773,6 @@
 | TOY-03 | Порция принята | Codex TOY-03 — допуск независимого P/N | codex/toy03-independent-pn-mwp5rm2ofhaxjfi9dss | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 3f2596f31930203fe9cd7918e9b62f81ea82699c |
 | TOY-04 | Порция принята | Codex TOY-04 — ручная заявка в цикле | codex/toy04-manual-cycle-892d | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit c7b0568cde39ddc27e71432e5028db9c9a351e16 |
 | TOY-06 | На проверке | Copilot TOY-06 SLU command | almir458765-toy-06-slu-outputs | Published six-file software-only SLU demand and revoke change. git diff --check and Python AST/ctypes layout checks pass. Focused host/Zig and M32R execution blocked: local project-paths.json and .sources/R1/.sources/R2 are absent; Zig and M32R GCC are not on PATH. No hardware/channel/response verification; no profile, scale, or mapping added. / commit 4a5565f145d2a7b3aad81d35cef70b8251f4a24a |
-| CAN-02 | Порция принята | Codex CAN-02 — деградация скорости в телеметрии H03 | codex/can02-telemetry-availability-fea1b366 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit d87bf6438a30efd448feb8cac1d732f7d677a20c |
 | ECU-02 | Порция принята | Codex ECU-02 — граница допуска момента Bosch | codex/ecu02-torque-permit-boundary-7bd19ea4 | Порция включена и проверена в main 55b9a240338e. Проверки относятся к указанному объёму; готовность BIN не объявлена. / commit 85b2e9320cf8f6e4a3729915ed3ebbd0fc00a732 |
 | H03-02 | Порция принята | Codex H03-02 — граница свежести общего снимка S51/S83/ATF | codex/h03-02-capture-end-age-32e6ac79 | Порция включена в main 06ab447. Общая проверка сохранена в integration-39-20261121; приёмка порции не означает готовность BIN. Остаток отражён в карточке. / commit 3e9e9b2fb888e7d26161dde12e2bd0dcf3600c53 |
 | H03-05 | На проверке | Codex 7 H03-05 bench outputs | codex/h03-05-bench-output-01a1f9a2 | Чат 7: native bench profile запускает phase_startup с mask=0 и без actuator callbacks. D/E/F, Pressure A и TIO9 отозваны в обеих штатных фазах, есть снимок AN3/таймеров. Native 22/22, components 8/8; common small через --binding-source 106944 байта, 14 нерешённых ссылок. Подключение обоих redirect и типизированного alias, пределы и измерения в verification/bench-wave/chat-7/handoff.json. Активный силовой допуск открыт. / commit 0a9523b203a2cae2b21a81da4c14ce910b570ed3 |
@@ -798,6 +798,17 @@
 - targets/lfj8/check_h03_bench_application_profile.py
 - targets/lfj8/lfj8_h03_bench_application_profile.c
 - verification/bench-wave/h03-profiles-20261126.md
+
+### CAN-02
+
+Чат: Codex native CAN service — реальные status/torque projections. Claim ID: 7bbfb73fdaef4ca1a85e4333ee68afb6.
+
+- targets/lfj8/bench_native_can_profile.h
+- targets/lfj8/check_h03_bench_can_service.py
+- targets/lfj8/lfj8_h03_bench_can_service.c
+- targets/lfj8/lfj8_h03_bench_can_service.h
+- targets/lfj8/test_lfj8_h03_bench_can_service.c
+- verification/bench-wave/native-can-service-20261126.md
 
 ### CAN-03
 
@@ -958,6 +969,7 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-26T07:51:04+00:00 | CAN-02 | claim | h03-native-can-20261126-2c849a72 |
 | 2026-11-26T07:35:23+00:00 | CAN-05 | heartbeat | 18de1d89-c1a8-4713-a009-785a4898e8e7 |
 | 2026-11-26T07:35:22+00:00 | CAN-01 | heartbeat | h03-profiles-20261126-0d9c5e74 |
 | 2026-11-26T07:35:22+00:00 | H03-04 | heartbeat | 9fd4c5ba-b274-4d00-b557-024ef5f0196a |
@@ -987,4 +999,3 @@
 | 2026-11-24T06:36:22+00:00 | REL-01 | review | bd412180-9ccb-4a23-a04a-ad23931a72a0 |
 | 2026-11-24T06:36:08+00:00 | DTC-03 | heartbeat | copilot-0bc0cbc673de4134ab7d7b9afeb082a2 |
 | 2026-11-24T06:35:54+00:00 | REL-01 | claim | bd412180-9ccb-4a23-a04a-ad23931a72a0 |
-| 2026-11-24T06:35:14+00:00 | H03-04 | heartbeat | 6f772758-d43b-4665-ad67-3eeb2481501a |
