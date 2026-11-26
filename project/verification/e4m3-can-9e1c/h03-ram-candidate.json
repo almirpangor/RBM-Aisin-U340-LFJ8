@@ -1,0 +1,117 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "candidate": [
+    "0x806B40",
+    "0x807000"
+  ],
+  "candidate_bytes": 1216,
+  "range_end_exclusive": true,
+  "fixed_reference_candidates": {
+    "LD24": [],
+    "aligned_u32": [],
+    "FP_relative": [],
+    "unaligned_u32": [
+      {
+        "rom_offset": "0x0000FD",
+        "ram_address": "0x806C00"
+      }
+    ]
+  },
+  "workspace_candidate": {
+    "window": [
+      "0x808E40",
+      "0x809074"
+    ],
+    "bytes": 564,
+    "fixed_reference_candidates": {
+      "LD24": [],
+      "aligned_u32": [],
+      "FP_relative": [],
+      "unaligned_u32": []
+    },
+    "exclusive_ownership_verified": false
+  },
+  "simulated_initializers": [
+    {
+      "case": "application_clear",
+      "rom_entry": "0x0404C4",
+      "stop": "0x040504",
+      "ram_bytes_compared": 24576,
+      "changed_bytes": 7848,
+      "candidate_unchanged": true,
+      "workspace_candidate_unchanged": true
+    },
+    {
+      "case": "can_records_initializer",
+      "rom_entry": "0x008A04",
+      "stop": "0x001010",
+      "ram_bytes_compared": 24576,
+      "changed_bytes": 208,
+      "candidate_unchanged": true,
+      "workspace_candidate_unchanged": true
+    },
+    {
+      "case": "capture_dma_initializer",
+      "rom_entry": "0x00AACC",
+      "stop": "0x001010",
+      "ram_bytes_compared": 24576,
+      "changed_bytes": 24,
+      "candidate_unchanged": true,
+      "workspace_candidate_unchanged": true,
+      "capture_dma_sfr_values_verified": true
+    },
+    {
+      "case": "configuration_clear_fragment",
+      "rom_entry": "0x0405C0",
+      "stop": "0x0405CC",
+      "ram_bytes_compared": 24576,
+      "changed_bytes": 2058,
+      "candidate_unchanged": true,
+      "workspace_candidate_unchanged": true
+    },
+    {
+      "case": "stock_service_profile_gate",
+      "rom_entry": "0x00D108",
+      "stop": "0x00D27C",
+      "ram_bytes_compared": 24576,
+      "changed_bytes": 5,
+      "candidate_unchanged": true,
+      "workspace_candidate_unchanged": true
+    },
+    {
+      "case": "service_buffer_initializer",
+      "rom_entry": "0x00D4F8",
+      "stop": "0x001010",
+      "ram_bytes_compared": 24576,
+      "changed_bytes": 4104,
+      "candidate_unchanged": true,
+      "workspace_candidate_unchanged": true
+    }
+  ],
+  "indirect_service_writer_rom": [
+    "0x00DBBC",
+    "0x00DC10"
+  ],
+  "writer_dispatch_disabled_in_this_rom": {
+    "profile_bytes": [
+      "0x03001B",
+      "0x03001C"
+    ],
+    "selector_byte": "0x8066AC",
+    "skipped_dispatch_calls": [
+      "0x00D154",
+      "0x00D1F0"
+    ]
+  },
+  "separate_oem_monitor": {
+    "configured_rom_byte_at_0x000201": 1,
+    "candidate_ownership_restricted_by_other_monitor_paths": true
+  },
+  "physical_hardware_executed": false,
+  "ram_ownership_verified": false,
+  "irq_stack_bound_verified": false
+}

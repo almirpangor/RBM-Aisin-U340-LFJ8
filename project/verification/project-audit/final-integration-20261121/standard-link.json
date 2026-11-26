@@ -1,0 +1,549 @@
+{
+  "source": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "artifact_kind": "address_model_and_cpu_test",
+  "bosch_trace_replay": {
+    "trace_sha256": "818627831cff4a55caaa2bd612dc411b4e5e63191e83f560a436de2246d88d2a",
+    "bosch_image_sha256": "bd0afefa40dfd1ea82e647ea5af7e64e2f652c27ccc5c3b91a986224fd77ec79",
+    "0x0FA": "12c05f7400230000",
+    "0x278": "b4ffffffffffffff"
+  },
+  "inputs": {
+    "lfj8_9e1c_m32r.o": {
+      "bytes": 31592,
+      "sha256": "f63509c6abb30692beed1709db9f5faa94c654aebdbae048f934858173846b15",
+      "flags": 0,
+      "alloc_bytes": {
+        "code": 11800,
+        "read_only_data": 32,
+        "writable_data": 0,
+        "bss": 0
+      },
+      "relocations": 185
+    },
+    "rbm_u340e_m32r_be.o": {
+      "bytes": 122104,
+      "sha256": "02b737d55791b9b311498e9869bbb6f3288ac6767f131f714c355e25f14574a1",
+      "flags": 0,
+      "alloc_bytes": {
+        "code": 52024,
+        "read_only_data": 6602,
+        "writable_data": 0,
+        "bss": 0
+      },
+      "relocations": 1257
+    },
+    "range.o": {
+      "bytes": 3508,
+      "sha256": "cdf5cc7d40339daf7d61c93d489af2afde2f171e4b1c7e0178366b4e5ca1b0cf",
+      "flags": 65536,
+      "alloc_bytes": {
+        "code": 1220,
+        "read_only_data": 0,
+        "writable_data": 0,
+        "bss": 0
+      },
+      "relocations": 16
+    },
+    "output-plan.o": {
+      "bytes": 2608,
+      "sha256": "cd13ff627ef678baa7c7d99b9654a28102bc42246e3f7584371bd218390673c3",
+      "flags": 65536,
+      "alloc_bytes": {
+        "code": 1064,
+        "read_only_data": 12,
+        "writable_data": 0,
+        "bss": 0
+      },
+      "relocations": 7
+    },
+    "takeover.o": {
+      "bytes": 5456,
+      "sha256": "490433a17db82add5e834f8c23977767f1c1e8b6fa74a99eb915fcfeb0dae854",
+      "flags": 65536,
+      "alloc_bytes": {
+        "code": 1784,
+        "read_only_data": 108,
+        "writable_data": 0,
+        "bss": 0
+      },
+      "relocations": 29
+    }
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "combined": {
+    "bytes": 161715,
+    "sha256": "8f8d8dca5842f3383de88d4fb25573c3a9667390f5d13877385ffc76c23f13f5",
+    "flags": 0,
+    "alloc_bytes": {
+      "code": 66164,
+      "read_only_data": 6646,
+      "writable_data": 0,
+      "bss": 0
+    },
+    "relocations": 1534
+  },
+  "address_model": {
+    "start": "0x020000",
+    "end_exclusive": "0x030000",
+    "oem_erase_start_record": "0x000958",
+    "target_ownership_verified": false,
+    "section_bytes": {
+      "code": 66164,
+      "read_only_data": 6648,
+      "writable_data": 0,
+      "bss": 0
+    },
+    "relocations": 0,
+    "rom_extent_bytes": 72812,
+    "window_margin_bytes": -7276,
+    "fits_window": false,
+    "role": "unbounded_reference_with_no_takeover_or_dtc"
+  },
+  "compact_address_model": {
+    "start": "0x020000",
+    "end_exclusive": "0x030000",
+    "oem_erase_start_record": "0x000958",
+    "target_ownership_verified": false,
+    "section_bytes": {
+      "code": 56296,
+      "read_only_data": 6652,
+      "writable_data": 0,
+      "bss": 0
+    },
+    "relocations": 0,
+    "rom_extent_bytes": 62948,
+    "window_margin_bytes": 2588,
+    "fits_window": true,
+    "retained_entry_points": [
+      "lfj8_selector_adc_init",
+      "lfj8_selector_adc_publish_9e1c",
+      "lfj8_selector_adc_take",
+      "lfj8_range_control_init",
+      "lfj8_range_control_step",
+      "lfj8_9e1c_raw_vss_init",
+      "lfj8_9e1c_raw_vss_after_capture_store",
+      "lfj8_9e1c_raw_nt_init",
+      "lfj8_9e1c_raw_nt_after_capture_store",
+      "lfj8_h03_capture_pair",
+      "lfj8_gear_observer_init",
+      "lfj8_gear_observe_pair",
+      "lfj8_h03_atf_init",
+      "lfj8_h03_atf_after_adc_store",
+      "lfj8_h03_atf_after_store",
+      "lfj8_h03_atf_snapshot",
+      "lfj8_h03_engine_rx_init",
+      "lfj8_h03_engine_rx_m32r",
+      "lfj8_h03_tml0ct_m32r",
+      "lfj8_chery_tx_init",
+      "lfj8_chery_tx_poll",
+      "rbm_u340e_outputs_init",
+      "rbm_u340e_outputs_step",
+      "lfj8_h03_plan_outputs",
+      "rbm_u340e_runtime_init",
+      "rbm_u340e_runtime_snapshot_gears",
+      "rbm_u340e_runtime_gears_outputs",
+      "rbm_u340e_runtime_prepare_engine",
+      "rbm_u340e_runtime_main_coolant",
+      "rbm_u340e_runtime_main_engine_speed",
+      "rbm_u340e_runtime_publish_load",
+      "rbm_u340e_runtime_secondary_load_qualify",
+      "rbm_u340e_range_fast",
+      "rbm_u340e_runtime_main_range",
+      "rbm_u340e_runtime_main_range_complete",
+      "rbm_u340e_schedule_finish_init",
+      "rbm_u340e_schedule_timer_irq",
+      "rbm_u340e_schedule_producer_publish",
+      "rbm_u340e_schedule_producer_done",
+      "rbm_u340e_schedule_fast_claim",
+      "rbm_u340e_schedule_fast_begin",
+      "rbm_u340e_schedule_fast_end",
+      "rbm_u340e_schedule_fast_done",
+      "rbm_u340e_schedule_secondary_claim",
+      "rbm_u340e_schedule_secondary_done",
+      "rbm_u340e_schedule_main_done",
+      "lfj8_h03_takeover_init",
+      "lfj8_h03_takeover_prepare",
+      "lfj8_h03_takeover_apply",
+      "factory_hydraulics_control_main",
+      "factory_hydraulics_fast_learning",
+      "factory_hydraulics_load_main",
+      "factory_hydraulics_load_observer",
+      "factory_hydraulics_counters_begin",
+      "factory_hydraulics_counters_end",
+      "factory_donor_engine_gate",
+      "factory_hydraulics_capture",
+      "factory_hydraulics_restore",
+      "factory_adaptation_load",
+      "factory_adaptation_save"
+    ]
+  },
+  "compact_address_model_with_dtc": {
+    "start": "0x020000",
+    "end_exclusive": "0x030000",
+    "oem_erase_start_record": "0x000958",
+    "target_ownership_verified": false,
+    "section_bytes": {
+      "code": 59012,
+      "read_only_data": 7040,
+      "writable_data": 0,
+      "bss": 0
+    },
+    "relocations": 0,
+    "rom_extent_bytes": 66052,
+    "window_margin_bytes": -516,
+    "fits_window": false,
+    "retained_entry_points": [
+      "lfj8_selector_adc_init",
+      "lfj8_selector_adc_publish_9e1c",
+      "lfj8_selector_adc_take",
+      "lfj8_range_control_init",
+      "lfj8_range_control_step",
+      "lfj8_9e1c_raw_vss_init",
+      "lfj8_9e1c_raw_vss_after_capture_store",
+      "lfj8_9e1c_raw_nt_init",
+      "lfj8_9e1c_raw_nt_after_capture_store",
+      "lfj8_h03_capture_pair",
+      "lfj8_gear_observer_init",
+      "lfj8_gear_observe_pair",
+      "lfj8_h03_atf_init",
+      "lfj8_h03_atf_after_adc_store",
+      "lfj8_h03_atf_after_store",
+      "lfj8_h03_atf_snapshot",
+      "lfj8_h03_engine_rx_init",
+      "lfj8_h03_engine_rx_m32r",
+      "lfj8_h03_tml0ct_m32r",
+      "lfj8_chery_tx_init",
+      "lfj8_chery_tx_poll",
+      "rbm_u340e_outputs_init",
+      "rbm_u340e_outputs_step",
+      "lfj8_h03_plan_outputs",
+      "rbm_u340e_runtime_init",
+      "rbm_u340e_runtime_snapshot_gears",
+      "rbm_u340e_runtime_gears_outputs",
+      "rbm_u340e_runtime_prepare_engine",
+      "rbm_u340e_runtime_main_coolant",
+      "rbm_u340e_runtime_main_engine_speed",
+      "rbm_u340e_runtime_publish_load",
+      "rbm_u340e_runtime_secondary_load_qualify",
+      "rbm_u340e_range_fast",
+      "rbm_u340e_runtime_main_range",
+      "rbm_u340e_runtime_main_range_complete",
+      "rbm_u340e_schedule_finish_init",
+      "rbm_u340e_schedule_timer_irq",
+      "rbm_u340e_schedule_producer_publish",
+      "rbm_u340e_schedule_producer_done",
+      "rbm_u340e_schedule_fast_claim",
+      "rbm_u340e_schedule_fast_begin",
+      "rbm_u340e_schedule_fast_end",
+      "rbm_u340e_schedule_fast_done",
+      "rbm_u340e_schedule_secondary_claim",
+      "rbm_u340e_schedule_secondary_done",
+      "rbm_u340e_schedule_main_done",
+      "lfj8_h03_takeover_init",
+      "lfj8_h03_takeover_prepare",
+      "lfj8_h03_takeover_apply",
+      "factory_hydraulics_control_main",
+      "factory_hydraulics_fast_learning",
+      "factory_hydraulics_load_main",
+      "factory_hydraulics_load_observer",
+      "factory_hydraulics_counters_begin",
+      "factory_hydraulics_counters_end",
+      "factory_donor_engine_gate",
+      "factory_hydraulics_capture",
+      "factory_hydraulics_restore",
+      "factory_adaptation_load",
+      "factory_adaptation_save",
+      "chery_dtc_init",
+      "chery_dtc_set_current",
+      "chery_dtc_store_snapshot",
+      "chery_dtc_link_init",
+      "chery_dtc_link_end_session",
+      "chery_dtc_link_expire",
+      "chery_dtc_link_receive",
+      "chery_dtc_link_confirm_tx",
+      "chery_model_monitor_init",
+      "chery_model_monitor_task2"
+    ],
+    "shared_s01_tables": {
+      "learning_001C3C": {
+        "address": 190784,
+        "bytes": 800,
+        "sha256": "8276650f90e31262d21eca82fd06ce04c9ed0456b74c9456cebf2b11b0b9fd5b"
+      },
+      "pressure_0015FC": {
+        "address": 190748,
+        "bytes": 36,
+        "sha256": "57d409e7acd5e96573b9857bd4275a2e850990facad3e1e668a7109b8600e41f"
+      },
+      "gear_000D08": {
+        "address": 190740,
+        "bytes": 8,
+        "sha256": "297dcae8b2e253f2f4087110887391050045684a250054e96ebf7b81624df67b"
+      }
+    },
+    "dtc_increment_bytes": 3104
+  },
+  "split_address_model": {
+    "windows": {
+      "primary": {
+        "start": "0x020000",
+        "end_exclusive": "0x030000",
+        "rom_extent_bytes": 63376,
+        "window_margin_bytes": 2160
+      },
+      "can_extension": {
+        "start": "0x07C118",
+        "end_exclusive": "0x07FFFC",
+        "rom_extent_bytes": 15956,
+        "window_margin_bytes": 144
+      }
+    },
+    "section_bytes": {
+      "code": 72700,
+      "read_only_data": 6652,
+      "writable_data": 0,
+      "bss": 0
+    },
+    "entry_points": {
+      "lfj8_selector_adc_init": "0x021670",
+      "lfj8_selector_adc_publish_9e1c": "0x02168C",
+      "lfj8_selector_adc_take": "0x0216A0",
+      "lfj8_range_control_init": "0x02D130",
+      "lfj8_range_control_step": "0x02D258",
+      "lfj8_9e1c_raw_vss_init": "0x020E7C",
+      "lfj8_9e1c_raw_vss_after_capture_store": "0x020E8C",
+      "lfj8_9e1c_raw_nt_init": "0x020EC0",
+      "lfj8_9e1c_raw_nt_after_capture_store": "0x020ED0",
+      "lfj8_h03_capture_pair": "0x020F04",
+      "lfj8_gear_observer_init": "0x021EFC",
+      "lfj8_gear_observe_pair": "0x0222F4",
+      "lfj8_h03_atf_init": "0x021724",
+      "lfj8_h03_atf_after_adc_store": "0x021754",
+      "lfj8_h03_atf_after_store": "0x02183C",
+      "lfj8_h03_atf_snapshot": "0x021A10",
+      "lfj8_h03_engine_rx_init": "0x021BDC",
+      "lfj8_h03_engine_rx_m32r": "0x021ED4",
+      "lfj8_h03_tml0ct_m32r": "0x021ECC",
+      "lfj8_chery_tx_init": "0x021384",
+      "lfj8_chery_tx_poll": "0x021588",
+      "rbm_u340e_outputs_init": "0x022768",
+      "rbm_u340e_outputs_step": "0x022860",
+      "lfj8_h03_plan_outputs": "0x02D40C",
+      "rbm_u340e_runtime_init": "0x022AE8",
+      "rbm_u340e_runtime_snapshot_gears": "0x022BCC",
+      "rbm_u340e_runtime_gears_outputs": "0x022D90",
+      "rbm_u340e_runtime_prepare_engine": "0x022DA0",
+      "rbm_u340e_runtime_main_coolant": "0x022E7C",
+      "rbm_u340e_runtime_main_engine_speed": "0x022EF4",
+      "rbm_u340e_runtime_publish_load": "0x022F2C",
+      "rbm_u340e_runtime_secondary_load_qualify": "0x07FCE4",
+      "rbm_u340e_range_fast": "0x02306C",
+      "rbm_u340e_runtime_main_range": "0x02312C",
+      "rbm_u340e_runtime_main_range_complete": "0x0236F8",
+      "rbm_u340e_schedule_finish_init": "0x023888",
+      "rbm_u340e_schedule_timer_irq": "0x023894",
+      "rbm_u340e_schedule_producer_publish": "0x0238D4",
+      "rbm_u340e_schedule_producer_done": "0x023950",
+      "rbm_u340e_schedule_fast_claim": "0x023970",
+      "rbm_u340e_schedule_fast_begin": "0x02399C",
+      "rbm_u340e_schedule_fast_end": "0x0239FC",
+      "rbm_u340e_schedule_fast_done": "0x023A48",
+      "rbm_u340e_schedule_secondary_claim": "0x023A74",
+      "rbm_u340e_schedule_secondary_done": "0x023A98",
+      "rbm_u340e_schedule_main_done": "0x023AD8",
+      "lfj8_h03_takeover_init": "0x02DBF4",
+      "lfj8_h03_takeover_prepare": "0x02DCA4",
+      "lfj8_h03_takeover_apply": "0x02DCDC",
+      "factory_hydraulics_control_main": "0x02CFAC",
+      "factory_hydraulics_fast_learning": "0x02D000",
+      "factory_hydraulics_load_main": "0x02CEE0",
+      "factory_hydraulics_load_observer": "0x02CF30",
+      "factory_hydraulics_counters_begin": "0x02CF80",
+      "factory_hydraulics_counters_end": "0x02CF98",
+      "factory_donor_engine_gate": "0x02C9EC",
+      "factory_hydraulics_capture": "0x02D06C",
+      "factory_hydraulics_restore": "0x02D0C0",
+      "factory_adaptation_load": "0x024020",
+      "factory_adaptation_save": "0x0240D0",
+      "chery_dtc_init": "0x07C118",
+      "chery_dtc_set_current": "0x07C140",
+      "chery_dtc_store_snapshot": "0x07C18C",
+      "chery_dtc_link_init": "0x07C828",
+      "chery_dtc_link_end_session": "0x07C7F0",
+      "chery_dtc_link_expire": "0x07C84C",
+      "chery_dtc_link_receive": "0x07CA88",
+      "chery_dtc_link_confirm_tx": "0x07CAA4",
+      "chery_model_monitor_init": "0x07CC04",
+      "chery_model_monitor_task2": "0x07CC28",
+      "lfj8_h03_torque_demand": "0x07CEE4",
+      "lfj8_h03_torque_init": "0x07CFC4",
+      "lfj8_h03_torque_poll": "0x07D068",
+      "lfj8_h03_torque_tx_done": "0x07D3D8",
+      "lfj8_h03_torque_receive": "0x07D41C",
+      "lfj8_h03_torque_applied": "0x07D6A4",
+      "lfj8_h03_dtc_can_decode_basic": "0x07D714",
+      "lfj8_h03_dtc_can_init": "0x07D7C8",
+      "lfj8_h03_dtc_can_poll": "0x07D818",
+      "lfj8_h03_dtc_rx_queue_init": "0x07DC58",
+      "lfj8_h03_dtc_rx_queue_reset": "0x07DCB8",
+      "lfj8_h03_dtc_rx_queue_publish": "0x07DD1C",
+      "lfj8_h03_dtc_rx_queue_peek": "0x07DDAC",
+      "lfj8_h03_dtc_rx_queue_consume": "0x07DE4C",
+      "lfj8_h03_torque_can_init": "0x07DF28",
+      "lfj8_h03_torque_can_poll": "0x07DFA4",
+      "ta2005_engine_qualifier_init": "0x07E320",
+      "ta2005_engine_qualifier_task2": "0x07E340",
+      "lfj8_h03_cycle_init": "0x07E904",
+      "lfj8_h03_cycle_tick": "0x07E98C",
+      "lfj8_h03_cycle_slt_inputs": "0x07E9B0",
+      "lfj8_h03_cycle_prepare_outputs": "0x07EA40",
+      "lfj8_h03_phase_clock_init": "0x07EBA8",
+      "lfj8_h03_phase_clock_release": "0x07EC38",
+      "lfj8_h03_phase_clock_take": "0x07ECE8",
+      "lfj8_h03_phase_startup": "0x07ED34",
+      "lfj8_h03_takeover_check_phase": "0x07FF48",
+      "lfj8_h03_takeover_take_phase": "0x07FF5C",
+      "lfj8_h03_engine_feed_task2": "0x07F058",
+      "lfj8_h03_can13_init": "0x07F098",
+      "lfj8_h03_can13_poll": "0x07F118",
+      "lfj8_h03_atf_feed": "0x07F5E8"
+    },
+    "relocations": 0,
+    "target_ownership_verified": false,
+    "shared_s01_tables": {
+      "learning_001C3C": {
+        "address": 188492,
+        "bytes": 800,
+        "sha256": "8276650f90e31262d21eca82fd06ce04c9ed0456b74c9456cebf2b11b0b9fd5b"
+      },
+      "pressure_0015FC": {
+        "address": 188456,
+        "bytes": 36,
+        "sha256": "57d409e7acd5e96573b9857bd4275a2e850990facad3e1e668a7109b8600e41f"
+      },
+      "gear_000D08": {
+        "address": 188448,
+        "bytes": 8,
+        "sha256": "297dcae8b2e253f2f4087110887391050045684a250054e96ebf7b81624df67b"
+      }
+    },
+    "service_protection": {
+      "elf_sha256": "c991f148b9e5f5a033ee341d06d7c892abbb6cb4277d1a69be694579ee22574a",
+      "guard_address": "0x20000",
+      "guard_bytes": 528,
+      "policy_ranges": [
+        [
+          "0x806b40",
+          "0x806f8c"
+        ],
+        [
+          "0x808578",
+          "0x808db4"
+        ],
+        [
+          "0x808e40",
+          "0x809070"
+        ],
+        [
+          "0x809070",
+          "0x80949c"
+        ],
+        [
+          "0x809700",
+          "0x80a000"
+        ]
+      ],
+      "sites": [
+        {
+          "address": "0x2924",
+          "original": "2e7f4ff8",
+          "model_patch": "ff0075b7",
+          "target": "0x20000"
+        },
+        {
+          "address": "0x294c",
+          "original": "fe0002f7",
+          "model_patch": "fe0075b5",
+          "target": "0x20020"
+        },
+        {
+          "address": "0x2d1c",
+          "original": "2e7f297f",
+          "model_patch": "ff0074d7",
+          "target": "0x20078"
+        },
+        {
+          "address": "0x2e9c",
+          "original": "a00a0008",
+          "model_patch": "ff007493",
+          "target": "0x200e8"
+        },
+        {
+          "address": "0x3568",
+          "original": "b810000b",
+          "model_patch": "ff00000b",
+          "target": "0x3594"
+        }
+      ],
+      "target_ownership_verified": false,
+      "requires_lower_rom_installation": true,
+      "storage_report_sha256": "e73bd9b87c217278983e89c35736deebdd39febda99a189a41a560e5a5155d6a"
+    },
+    "elf": {
+      "file": "service-model.elf",
+      "sha256": "c991f148b9e5f5a033ee341d06d7c892abbb6cb4277d1a69be694579ee22574a"
+    }
+  },
+  "emulated_integration": {
+    "speed_raw": 1440,
+    "0x1AE": "01ff0000ffff05a0",
+    "0x300": "0000007c00000000",
+    "panel_input_speed_q7": 1824,
+    "panel_period_ticks_1mhz": 42105,
+    "tc_rx_rpm_q3": 9600,
+    "tc_rx_coolant_plus_50": 137,
+    "tc_rx_model_codes": [
+      95,
+      116,
+      35
+    ],
+    "tc_qualified_model_codes": [
+      95,
+      35
+    ],
+    "selector_adc_events": "PASS",
+    "selector_timeout": "PASS"
+  },
+  "emulated_components": {
+    "lfj8_io": "LFJ8 I/O: S51, S83, Chery TX, CAN0 RX/TX and recovery, RPM/ECT, relays and schedule passed",
+    "h03_atf": "H03 ATF: acquisition pairing, electrical bounds, freshness, fixed point and Chery 0x300 passed.",
+    "h03_atf_feed": "h03 ATF feed: qualified GP, command age and Chery 0x300 OK",
+    "h03_mmio": "H03 M32R MMIO width, byte order and nested PSW restore passed.",
+    "gear_observer": "H03 measured gear: four ranges, independent epochs, inhibition and exact ratio passed.",
+    "h03_output_plan": "LFJ8 H03 output planning checks passed",
+    "h03_takeover": "H03 takeover: proposals, P3 replay, service guards, native phase expiry and arbitration revocation PASS",
+    "toyota_gp_runtime": "Toyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.\nToyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.\nToyota 05518C: SECONDARY load qualifiers, hysteresis, clamp, fallback and MAIN handoff passed.\nToyota S01 range: P/N to warm low-load D, standstill fill, S1/S2 and first upshift passed.\nToyota scheduler: event release, FAST phase latch, busy drop and rollover passed.",
+    "chery_dtc": "Chery C0 diagnostic link and independent model-field loss and recovery: passed\nChery C0 durable clear: storage before TX, no acknowledgement on failure, retry passed.",
+    "h03_torque_can": "H03 torque: 6 status deadline cases and pulse-end status passed.\nH03 shift torque provenance, protocol and release passed.",
+    "h03_dtc_can_io": "H03 CAN0 diagnostic TX13 completion, stale Flow Control, abort and recovery: PASS",
+    "h03_dtc_rx_queue": "H03 DTC RX queue: FIFO, overflow, stale delivery, time wrap and CAN reset PASS\nH03 DTC BasicCAN capture: both slots, unchanged MSC, overwritten copy and bus-off PASS\nqueue_bytes=180 delivery_bytes=28 capacity=4",
+    "h03_torque_can_io": "H03 torque CAN13: lease, TX/RX switch, freshness, arbitration, release and restart PASS\nH03 torque CAN13: pending START/REFRESH revoke and preservation of CANCEL PASS",
+    "h03_engine_qualifier": "TA2005 engine qualification passes reception age, fault thresholds and recovery",
+    "h03_cycle": "SLU SECONDARY: 5 publications, reset, diagnostic gates, FAST timers and 7 refusals PASS\nH03 Toyota cycle: P/N to D, 1->2, ranges 2/L, rollover and lost event passed.\nH03 Toyota cycle: manual 1->2, hold, withdrawal, reverse range and request refusal passed.\nH03 Toyota cycle: two 12-point D traces, S1/S2, cold fourth-gear inhibit and pending-shift loss passed.\nH03 Toyota cycle: two loaded D maps, qualified GP feed, six shift thresholds and S1/S2 passed.",
+    "h03_phase_clock": "",
+    "h03_engine_feed": "H03 qualified engine feed and Chery clear/fault/recovery passed\nH03 shared model snapshot: common RX poll, wrap, expiry, inhibit and recovery passed\nH03 engine RX: generation rollover, stale slot rejection and reattachment passed\nH03 engine target: CAN owner admission, shared clock, inter-release poll and revocation passed",
+    "h03_can13": "H03 CAN13 broker: torque preemption, diagnostic FC and generation recovery PASS"
+  },
+  "candidate_call": {
+    "offset": "0x00816C",
+    "oem_target": "0x040324",
+    "return": "0x008170"
+  },
+  "target_stack_budget_verified": false,
+  "target_ram_ownership_verified": false,
+  "flashable_image": null
+}

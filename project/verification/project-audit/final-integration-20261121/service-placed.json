@@ -1,0 +1,941 @@
+{
+  "status": "PASS_PLACED_SERVICE_GUARD_MODEL_ONLY",
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "placement": {
+    "elf_sha256": "c991f148b9e5f5a033ee341d06d7c892abbb6cb4277d1a69be694579ee22574a",
+    "guard_address": "0x20000",
+    "guard_bytes": 528,
+    "policy_ranges": [
+      [
+        "0x806b40",
+        "0x806f8c"
+      ],
+      [
+        "0x808578",
+        "0x808db4"
+      ],
+      [
+        "0x808e40",
+        "0x809070"
+      ],
+      [
+        "0x809070",
+        "0x80949c"
+      ],
+      [
+        "0x809700",
+        "0x80a000"
+      ]
+    ],
+    "sites": [
+      {
+        "address": "0x2924",
+        "original": "2e7f4ff8",
+        "model_patch": "ff0075b7",
+        "target": "0x20000"
+      },
+      {
+        "address": "0x294c",
+        "original": "fe0002f7",
+        "model_patch": "fe0075b5",
+        "target": "0x20020"
+      },
+      {
+        "address": "0x2d1c",
+        "original": "2e7f297f",
+        "model_patch": "ff0074d7",
+        "target": "0x20078"
+      },
+      {
+        "address": "0x2e9c",
+        "original": "a00a0008",
+        "model_patch": "ff007493",
+        "target": "0x200e8"
+      },
+      {
+        "address": "0x3568",
+        "original": "b810000b",
+        "model_patch": "ff00000b",
+        "target": "0x3594"
+      }
+    ],
+    "target_ownership_verified": false,
+    "requires_lower_rom_installation": true
+  },
+  "guard_with_fixture_policy_bytes": 528,
+  "new_mutable_state_bytes": 0,
+  "policy_test": "H03 service policy: 20 boundary, overflow, original-span and invalid-policy assertions PASS",
+  "native_cases": [
+    {
+      "case": "control_first_direct",
+      "destination": "0x806B40",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "control_first_after_close",
+      "destination": "0x806B40",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 1,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "control_last_direct",
+      "destination": "0x806F8B",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "control_last_after_close",
+      "destination": "0x806F8B",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 1,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "communication_first_direct",
+      "destination": "0x808E40",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "communication_first_after_close",
+      "destination": "0x808E40",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 1,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "communication_last_direct",
+      "destination": "0x80906F",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "communication_last_after_close",
+      "destination": "0x80906F",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 1,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "workspace_first_direct",
+      "destination": "0x809070",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "workspace_first_after_close",
+      "destination": "0x809070",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 1,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "workspace_last_direct",
+      "destination": "0x80949B",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "workspace_last_after_close",
+      "destination": "0x80949B",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 1,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "crosses_into_control",
+      "destination": "0x806B3F",
+      "count": 2,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 2,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "control_two_adc0_passes",
+      "destination": "0x806B40",
+      "count": 257,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 257,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        },
+        {
+          "bytes_written": 0,
+          "remaining": 257,
+          "checksum_remaining": 0,
+          "adc0_ticks": 2,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "no_pending_copy",
+      "destination": "0x806B40",
+      "count": 0,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "stock_protected_direct",
+      "destination": "0x8085A0",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "stock_protected_prepared_copy",
+      "destination": "0x8085A0",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 1,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "before_direct",
+      "destination": "0x806B3F",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "before_deferred",
+      "destination": "0x806B3F",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "after_direct",
+      "destination": "0x806F8C",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "after_deferred",
+      "destination": "0x806F8C",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "crossing_direct",
+      "destination": "0x806B3F",
+      "count": 2,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "allowed_257",
+      "destination": "0x806F8C",
+      "count": 257,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 256,
+          "remaining": 1,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        },
+        {
+          "bytes_written": 1,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 2,
+          "stop": "0x002DF4"
+        }
+      ]
+    },
+    {
+      "case": "allowed_checksum",
+      "destination": "0x806F8C",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 1,
+          "checksum_remaining": 1,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "conditional_stack_edge_direct",
+      "destination": "0x809700",
+      "count": 1,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "conditional_stack_crossing_direct",
+      "destination": "0x8096FF",
+      "count": 2,
+      "entry": "0x002924",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 0,
+          "checksum_remaining": 0,
+          "adc0_ticks": 0,
+          "stop": "0x100058"
+        }
+      ]
+    },
+    {
+      "case": "conditional_psw_edge_deferred",
+      "destination": "0x809FFF",
+      "count": 1,
+      "entry": "0x003608",
+      "session_flags": "0x20",
+      "lockout": true,
+      "fcnt1": 0,
+      "fesbank1": "0x0020",
+      "calls": [
+        {
+          "bytes_written": 0,
+          "remaining": 1,
+          "checksum_remaining": 0,
+          "adc0_ticks": 1,
+          "stop": "0x100058"
+        }
+      ]
+    }
+  ],
+  "close_cases": [
+    {
+      "case": "held_then_closed",
+      "caller_psw": 0,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 257,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "held_then_closed",
+      "caller_psw": 1,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 257,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "held_then_closed",
+      "caller_psw": 64,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 257,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "held_then_closed",
+      "caller_psw": 65,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 257,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "partial_original_overlap",
+      "caller_psw": 0,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 1,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "partial_original_overlap",
+      "caller_psw": 1,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 1,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "partial_original_overlap",
+      "caller_psw": 64,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 1,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "partial_original_overlap",
+      "caller_psw": 65,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 1,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "bad_remaining",
+      "caller_psw": 0,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 2,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "bad_remaining",
+      "caller_psw": 1,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 2,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "bad_remaining",
+      "caller_psw": 64,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 2,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "bad_remaining",
+      "caller_psw": 65,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 2,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "independent_checksum",
+      "caller_psw": 0,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 1,
+      "pending_after_close": 0,
+      "checksum_after_close": 257,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "independent_checksum",
+      "caller_psw": 1,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 1,
+      "pending_after_close": 0,
+      "checksum_after_close": 257,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "independent_checksum",
+      "caller_psw": 64,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 1,
+      "pending_after_close": 0,
+      "checksum_after_close": 257,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "independent_checksum",
+      "caller_psw": 65,
+      "lockout": true,
+      "active_close": true,
+      "retired": true,
+      "pending_before": 1,
+      "pending_after_close": 0,
+      "checksum_after_close": 257,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "accepted_allowed",
+      "caller_psw": 0,
+      "lockout": true,
+      "active_close": true,
+      "retired": false,
+      "pending_before": 1,
+      "pending_after_close": 1,
+      "checksum_after_close": 0,
+      "adc_stop": "0x2df4",
+      "bytes_written": 1
+    },
+    {
+      "case": "accepted_allowed",
+      "caller_psw": 1,
+      "lockout": true,
+      "active_close": true,
+      "retired": false,
+      "pending_before": 1,
+      "pending_after_close": 1,
+      "checksum_after_close": 0,
+      "adc_stop": "0x2df4",
+      "bytes_written": 1
+    },
+    {
+      "case": "accepted_allowed",
+      "caller_psw": 64,
+      "lockout": true,
+      "active_close": true,
+      "retired": false,
+      "pending_before": 1,
+      "pending_after_close": 1,
+      "checksum_after_close": 0,
+      "adc_stop": "0x2df4",
+      "bytes_written": 1
+    },
+    {
+      "case": "accepted_allowed",
+      "caller_psw": 65,
+      "lockout": true,
+      "active_close": true,
+      "retired": false,
+      "pending_before": 1,
+      "pending_after_close": 1,
+      "checksum_after_close": 0,
+      "adc_stop": "0x2df4",
+      "bytes_written": 1
+    },
+    {
+      "case": "inactive_close",
+      "caller_psw": 0,
+      "lockout": true,
+      "active_close": false,
+      "retired": false,
+      "pending_before": 1,
+      "pending_after_close": 1,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "inactive_close",
+      "caller_psw": 1,
+      "lockout": true,
+      "active_close": false,
+      "retired": false,
+      "pending_before": 1,
+      "pending_after_close": 1,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "inactive_close",
+      "caller_psw": 64,
+      "lockout": true,
+      "active_close": false,
+      "retired": false,
+      "pending_before": 1,
+      "pending_after_close": 1,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "inactive_close",
+      "caller_psw": 65,
+      "lockout": true,
+      "active_close": false,
+      "retired": false,
+      "pending_before": 1,
+      "pending_after_close": 1,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "idle_previous_count",
+      "caller_psw": 0,
+      "lockout": true,
+      "active_close": true,
+      "retired": false,
+      "pending_before": 0,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "idle_previous_count",
+      "caller_psw": 1,
+      "lockout": true,
+      "active_close": true,
+      "retired": false,
+      "pending_before": 0,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "idle_previous_count",
+      "caller_psw": 64,
+      "lockout": true,
+      "active_close": true,
+      "retired": false,
+      "pending_before": 0,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    },
+    {
+      "case": "idle_previous_count",
+      "caller_psw": 65,
+      "lockout": true,
+      "active_close": true,
+      "retired": false,
+      "pending_before": 0,
+      "pending_after_close": 0,
+      "checksum_after_close": 0,
+      "adc_stop": "0x100110",
+      "bytes_written": 0
+    }
+  ],
+  "hardware_tested": false,
+  "flashable_image": null
+}

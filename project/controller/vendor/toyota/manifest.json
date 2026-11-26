@@ -1,0 +1,162 @@
+{
+  "repository": "almirpangor/CM-AVEO-TCM-AKP-U340",
+  "commit": "8cf4308d8539253d4ac994dd99c9650f02da6236",
+  "source_directory": "firmware/tcm/toyota-u340e/source-u340e/factory",
+  "files": [
+    {
+      "path": "include/factory_adaptation_store.h",
+      "git_blob": "cbca8f4e117324e1c65542d9814978197e40b5d9",
+      "sha256": "787611d51114f5976f17ed3d5436d1e61607ca78f9162bcd949d4233e219b5d2"
+    },
+    {
+      "path": "include/factory_core.h",
+      "git_blob": "f138dd06ac539d060af2d7099a8bd042cd8e1bbe",
+      "sha256": "2536872ba4b2d6b9aa5fd5f73d8184133b81c2377618b9d5116b34de25298cbd"
+    },
+    {
+      "path": "include/factory_correction.h",
+      "git_blob": "6a6169669b383592b0d792e275f45dc5ac6fc6f1",
+      "sha256": "b6df36bf16f08ecaecdd3c389fa62118dc64b60951a8498c8ec6d71c57a439c8"
+    },
+    {
+      "path": "include/factory_gears.h",
+      "git_blob": "6e9d4e2a0b3a77a766b176e534a2804304421759",
+      "sha256": "29816ad99a9c5ffe1cd8e25a42281e0318db04c04d854b2c3b3ff752e71015b3"
+    },
+    {
+      "path": "include/factory_gears_state.h",
+      "git_blob": "4ddf279a343c1a9c6ecdc7924c7e5ec73dbe3dca",
+      "sha256": "d5db4101c87abfd6141f0b925c5c3170ee4f354c441f03f9df058a5a17e9c887"
+    },
+    {
+      "path": "include/factory_hydraulic_state.h",
+      "git_blob": "d35880b6eb0d44467417b050ecf0f6ac9bea599e",
+      "sha256": "f7c66ec07c3b0f3cf4d1c88a761c182b81ce70f6ddb9706918a465ea2c25d7d5"
+    },
+    {
+      "path": "include/factory_hydraulics.h",
+      "git_blob": "df0eec73d07972567e22f8333a504726688f533a",
+      "sha256": "4bdd3b60b05c9392317d2c85d36c8273871e5e936b164720e00412fbbe564646"
+    },
+    {
+      "path": "include/factory_inputs.h",
+      "git_blob": "33b28a251edf9653bd79d27c7a33a54ad45da16e",
+      "sha256": "719e3c6e868db3896df3d71d3c119c02da0d9e561cd7427b876a787899b67a0d"
+    },
+    {
+      "path": "include/factory_learning.h",
+      "git_blob": "b8c60a7b3f2f75332b3edf374d5471c1cc7cdcb8",
+      "sha256": "c42982b09ed232c2c698acf861e3855e7a7a5271d07b0b6cbcab06bfd294a535"
+    },
+    {
+      "path": "include/factory_learning_state.h",
+      "git_blob": "9ca1db9526983ce1706be7774620b0f215d73da5",
+      "sha256": "652fc03cf850422c5597fe2ea7e1cf38fbe27ff11e7d6dd0a5aeeaeae0ff2bfd"
+    },
+    {
+      "path": "include/factory_outputs.h",
+      "git_blob": "b72e857fe3e26b569bd3bb844d35d60c87e23f89",
+      "sha256": "d38585cf52ebbc7b424aab478de4ab81bf57355ff9d94b15a9f0a707c35b29ae"
+    },
+    {
+      "path": "include/factory_phase_modes.h",
+      "git_blob": "1d1f375c905151b3eaff9e023834b6ca36d50fa3",
+      "sha256": "9998bd2dd2af0d406809bb4890e6e04db3f0eef52742e18b84f40af3d76734dd"
+    },
+    {
+      "path": "include/factory_pressure.h",
+      "git_blob": "3dfef401008932bc205d32a023631bf085529641",
+      "sha256": "51dc36c6239f82f3c568f7b74d4ac9cee4d8a6bba12012b1c174e390453d57c2"
+    },
+    {
+      "path": "include/factory_torque.h",
+      "git_blob": "6058c185254809dfe89e35b56fd848cf33675331",
+      "sha256": "9588ca81a789e6ae1cb454515c5a90860d3b878ad2a62850e1d5e90fd93cf61a"
+    },
+    {
+      "path": "include/factory_torque_state.h",
+      "git_blob": "4daf66268099b24064d04b85763bcbbbb8f70b06",
+      "sha256": "5fcc1e6e3560d210d1e31fe2493fb2c69d7a280a6415579f945fd8e968f56c6c"
+    },
+    {
+      "path": "src/donor_calibration.h",
+      "git_blob": "38c477f2c66de34e8b2913ce62c3c8ec5e6e77fa",
+      "sha256": "3f8c7c26247bb58a9b263d126879a49e90fe8b6db41332f77705f342589231e7"
+    },
+    {
+      "path": "src/donor_shared_calibration.c",
+      "git_blob": "9bda4faa476850fb383e8d3480454cc3bf97150b",
+      "sha256": "6b3387dc62f4cfbc77bc2057d2ce7b06fe9ba80f0602612dcbf3e652d9d3080a"
+    },
+    {
+      "path": "src/factory_adaptation_store.c",
+      "git_blob": "d0d3bf03d9bcf146cf964945f2081901163a316a",
+      "sha256": "1d128ab45c8f3d266b215f70abe854b57cc856cc29cecc495e04a7484644bbea"
+    },
+    {
+      "path": "src/factory_core.c",
+      "git_blob": "a476c3e0dae3574879762f83c4e4266227f49474",
+      "sha256": "27c8bdf678126fb3aaa6fa7acb40cfed1441a35eae38d2a2151ef9f996fb14c9"
+    },
+    {
+      "path": "src/factory_correction.c",
+      "git_blob": "3199fdf7539c8fad08994c88578ee395607fa5fe",
+      "sha256": "9b064e45a2cf8d73a59c8df328ca2992116096f021666565e1c479e11d34e3f7"
+    },
+    {
+      "path": "src/factory_gear_strategy.c",
+      "git_blob": "b97e7ed9ee7aff4cf5865772870994c703badd40",
+      "sha256": "e5fea13cc084c259f85b77934f6fd3b0867b6b88ae5cdac8cfae5ef667c1cf46"
+    },
+    {
+      "path": "src/factory_gears.c",
+      "git_blob": "e9df91b4da8217816225d7ee971a29fdf00836ad",
+      "sha256": "187b0a2fb17da0478b748ad08e5ecb24de491d5f7bd44bc84ea1d56a6ec888f8"
+    },
+    {
+      "path": "src/factory_hydraulics.c",
+      "git_blob": "312af1844d0eae952a0fb9f76104472041a87f07",
+      "sha256": "7b897901a7ba4280e3bb2c1f3191e13858f8d92654b17dcbf6246cc3dc67bf5a"
+    },
+    {
+      "path": "src/factory_inputs.c",
+      "git_blob": "8c11d58add2523c7abbbf75346ff1cbd8431b4b5",
+      "sha256": "5972c8bdb81c9f0862d0e6496d22a0ded694437e994cfbb33d8bd92b0317604f"
+    },
+    {
+      "path": "src/factory_learning.c",
+      "git_blob": "98b0badd3867d264fef6f4e361a973f9e0586991",
+      "sha256": "c35e4f992a66d9bae1004b9c22e34f82385e1b441998ac00ac2c414fedac6680"
+    },
+    {
+      "path": "src/factory_outputs.c",
+      "git_blob": "307350a7ce1254e6544617526013eb7d3868ebc1",
+      "sha256": "3d94107f88b79ede3381e7938ae709e545a85669cd4df674c97cb7cca15fb4e2"
+    },
+    {
+      "path": "src/factory_phase_modes.c",
+      "git_blob": "b7227f452054fb3f96a3aa891ff933c7c62ba68d",
+      "sha256": "07a5d733e9259e6b22f9ba855dcd9a4b8758f0207356f739a1398252a194fe90"
+    },
+    {
+      "path": "src/factory_pressure.c",
+      "git_blob": "5717f1a32ef1147454bb1bb4e69cfbc15f9d544c",
+      "sha256": "2727aa206584e1182538d8c38cb3e7a1e8412912613989d0ebbdebabd2115dda"
+    },
+    {
+      "path": "src/factory_torque.c",
+      "git_blob": "dace21f3d9ddaa310e18d42ae5001e3db586f411",
+      "sha256": "f2229b9ea1d5b19a2434e9dd27ad6d5fc729194333bc2273b1d211d538019dd8"
+    },
+    {
+      "path": "src/gear_internal.h",
+      "git_blob": "e79fd9ea91cbab2fa7099e23f5fa7786d8ee2671",
+      "sha256": "a38a95a88d67c3819f675352a3ec7824c4ff542bc78ee3a52db4431efa1f8ace"
+    },
+    {
+      "path": "src/hydraulic_mapping.h",
+      "git_blob": "3957111d2d9100ed73ebb0fc36c966f00ac5c656",
+      "sha256": "4fdb66514875f44f29e563b8cc4d7f14b1783a53e6eba0d6b1620a337e84056f"
+    }
+  ]
+}

@@ -1,5 +1,0 @@
-{
-  "passed": false,
-  "error": "Retained section does not fit: .rodata.pressure_0017C4",
-  "flashable_image": null
-}

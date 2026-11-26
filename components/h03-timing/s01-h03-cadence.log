@@ -1,0 +1,26 @@
+{
+  "status": "PASS_LOGICAL_CADENCE_AND_H03_NOMINAL_SCALE",
+  "s01_sha256": "a3cd723e7e21bf547ca4c17ec49a1e098d203773547dba4d7af21991a2cbead1",
+  "s01_setup": {
+    "routine": "0x01A376",
+    "register_writes": [
+      "0xFFFFFB00 = 0x80",
+      "clear 0xFFFFF112.7",
+      "clear 0xFFFFF100.1"
+    ],
+    "clock_reset_control_site": "0x012C6C..0x012CB6",
+    "mcu_part_or_clock_rate_proven": false
+  },
+  "irq_per_same_edge": 8,
+  "irq_per_fast_secondary_main": [
+    4,
+    8,
+    16
+  ],
+  "qualification": {
+    "full_rtos_or_peripheral_emulated": false,
+    "source_paths": "Exact S01 IRQ and producer instructions with OS entry stubs",
+    "absolute_toyota_timing_proven": false,
+    "physical_clock_and_target_latency_measured": false
+  }
+}

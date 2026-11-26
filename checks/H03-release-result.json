@@ -1,0 +1,13 @@
+{
+  "artifact_kind": "H03_COMPLETE_LINK_ATTEMPT",
+  "bench_pair_ready": false,
+  "hardware_verified": false,
+  "flashable_image": null,
+  "base_sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544",
+  "storage_sha256": "4bc7e7b1d584552131a3f0d38b9d9b2bd7c6298244d12f6c0ab0cccce22cafcd",
+  "application_profile": "F:\\RBM-Codex-temp\\handoff-0e10ca9a\\release-profile\\h03_first_bench.h",
+  "compiler": "F:\\RBM-Codex-temp\\handoff-0e10ca9a\\delivery\\tools\\SysGCC-m32r-elf-4.8.0\\bin\\m32r-elf-gcc.exe",
+  "status": "FAILED_NO_COMPLETE_IMAGE",
+  "error": "Command '['F:\\\\RBM-Codex-temp\\\\handoff-0e10ca9a\\\\delivery\\\\tools\\\\SysGCC-m32r-elf-4.8.0\\\\bin\\\\m32r-elf-gcc.exe', '-m32r', '-mmodel=small', '-msdata=none', '-Wa,-EB', '-Os', '-std=c11', '-Wall', '-Wextra', '-Werror', '-Wno-missing-braces', '-Wno-missing-field-initializers', '-ffreestanding', '-fno-builtin', '-fno-common', '-ffunction-sections', '-fdata-sections', '-I', 'F:\\\\RBM-Codex-temp\\\\handoff-0e10ca9a\\\\release-profile', '-DRBM_H03_APPLICATION_PROFILE=\"h03_first_bench.h\"', '-I', 'F:\\\\RBM-Codex-temp\\\\handoff-0e10ca9a\\\\delivery\\\\project\\\\controller\\\\include', '-I', 'F:\\\\RBM-Codex-temp\\\\handoff-0e10ca9a\\\\delivery\\\\project\\\\controller\\\\vendor\\\\toyota\\\\include', '-I', 'F:\\\\RBM-Codex-temp\\\\handoff-0e10ca9a\\\\delivery\\\\project\\\\targets\\\\lfj8', '-I', 'F:\\\\RBM-Codex-temp\\\\handoff-0e10ca9a\\\\delivery\\\\project\\\\diagnostics', '-E', '-P', 'F:\\\\RBM-Codex-temp\\\\handoff-0e10ca9a\\\\delivery\\\\project\\\\targets\\\\lfj8\\\\lfj8_h03_application_binding.c']' returned non-zero exit status 1.",
+  "error_type": "CalledProcessError"
+}

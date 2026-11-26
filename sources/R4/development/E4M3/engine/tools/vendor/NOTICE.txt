@@ -1,0 +1,1 @@
+Independent table decoder is the existing Hajo Noerenberg C166-dis port by Kristof. Original notices are retained in c166_disasm.py; GPL-3.0 license in COPYING. This decoder is a separate verification tool, not code installed in the ECU.

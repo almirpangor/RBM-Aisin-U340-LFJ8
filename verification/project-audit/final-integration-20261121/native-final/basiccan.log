@@ -1,6 +1,0 @@
-PASS: 18 H03 BasicCAN RX cases (M32R CPU simulator)
-PASS: 18 stock/hook comparisons
-PASS: high accumulator operand, instruction and return probe
-PASS: 3 resident RX bypass comparisons
-PASS: H03 write and erase admission at the resident RX boundary
-PASS: H03 Virtual Flash register probes for the lower RX pages

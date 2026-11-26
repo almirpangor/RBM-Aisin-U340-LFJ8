@@ -1,0 +1,175 @@
+{
+  "schema": 1,
+  "chat": 5,
+  "task": "VSS-02",
+  "related": ["H03-02", "VSS-01"],
+  "status": "PASS_BENCH_SENSOR_NATIVE",
+  "base_main": "10f7c1513b910f42473690255641140989cc10d0",
+  "target": "LFJ8-18-9E1C / H03 / U340E",
+  "h03_sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544",
+  "hardware_tested": false,
+  "flashable_image": null,
+  "build": {
+    "source": "targets/lfj8/bench_sensor_profile.c",
+    "header": "targets/lfj8/bench_sensor_profile.h",
+    "selection": "Link this native source for the OEM_NOMINAL bench profile. Select either this source or the definitions from the measurement-backed sensor generator. Record OEM_NOMINAL in the bench manifest.",
+    "compiler": "m32r-elf-gcc 4.8.0, big-endian, medium model, -Os, -ffreestanding, per-function/data sections",
+    "clock_owner": "rbm_h03_phase_startup_callback and application fault/close gate own epoch creation and revocation via rbm_h03_sensor_clock_rebase. Create a new epoch after each timer reset or reinitialization."
+  },
+  "entry_points": [
+    {
+      "symbol": "rbm_h03_target_clock_ready",
+      "connected_path": "Existing application binding calls this under the platform interrupt lock before opening its epoch and during phase wait and foreground. It checks PRS1 and both capture mode registers and requires both counters to advance by a forward modular delta. A failed native check clears the shared qualification. Startup/rebase alone opens a fresh epoch. The sensor feed additionally rejects a change in the common offset."
+    },
+    {
+      "symbol": "rbm_h03_sensor_config",
+      "connected_path": "OEM S51/TML0 and S83/TML1 capture hooks read their respective edge timeout. The existing OEM ATF hooks timestamp AN1 in TML0. rbm_h03_sensor_foreground takes a single snapshot under native interrupt exclusion before Toyota and phase service."
+    },
+    {
+      "symbol": "rbm_h03_bench_raw_capture",
+      "connected_path": "Call with the coherent snapshot already passed to the phase service. The view borrows the capture pair for that call. Copy fields before queueing across phases or interrupts.",
+      "units": {
+        "epoch": "wrapping application epoch ID",
+        "capture.now_tml0": "live TML0 ticks",
+        "capture.vss.interval_ticks": "TML0 ticks per S51 edge",
+        "capture.nt.interval_ticks": "TML1 ticks per S83 edge",
+        "capture.vss_at_tml0": "original S51 capture in TML0 ticks",
+        "capture.nt_edge_tml1": "original S83 capture in TML1 ticks",
+        "capture.nt_at_tml0": "S83 edge aligned to TML0 ticks",
+        "capture.nt_alignment_error_ticks": "bound in TML0 ticks on aligned S83 time",
+        "capture.tml1_offset_min": "lower bound on TML1 minus final TML0, modulo 2^32",
+        "capture.tml_read_span_ticks": "TML0 read bracket width in ticks",
+        "capture.vss.state and capture.nt.state": "LFJ8_VSS_* channel validity, including unavailable or independent stop",
+        "nominal_tick_hz": "Hz, with clock_basis OEM_NOMINAL",
+        "s51_edges_num/s51_edges_den": "captured edges per differential carrier revolution, 100/22"
+      },
+      "interpretation": "For valid S51 data, 22/(100 * interval_ticks) gives differential revolutions per tick exactly. Use each channel's validity because a timestamp of zero occurs at wrap. S83 remains in ticks/edge. Use the same phase snapshot's ATF validity, acquisition timestamp and temperature."
+    }
+  ],
+  "provenance": [
+    {
+      "parameter": "PRS0, PRS1, TML0CR, TML1CR",
+      "values": {"PRS0": 39, "PRS1": 9, "TML0CR": 1, "TML1CR": 49},
+      "unit": "register encoding",
+      "status": "exact OEM instructions plus live checks of PRS1 and both TML modes",
+      "source": "H03 0x009E78-0x009E84 and 0x00A86C-0x00A878. Renesas 32176 Group Hardware Manual sections 10.2.2 and 10.6.4. Bus0 and Bus1 have BCLK/2 inputs with respective divide-by-40 and divide-by-10 settings.",
+      "reference": "https://www.renesas.com/en/document/mah/32176-group-hardware-manual"
+    },
+    {
+      "parameter": "TML0 and TML1 nominal rate, BCLK, CPUCLK",
+      "values": {"TML0": 1000000, "TML1": 1000000, "BCLK": 20000000, "CPUCLK": 40000000},
+      "unit": "Hz",
+      "status": "engineering inference from the OEM time scale and 32176 clock tree",
+      "source": "H03 S83 code 0x03BF4C-0x03BF68 multiplies by binary32 0x3A83126F at 0x0328AC, nominally 0.001 ms/tick. Both TMLs select Bus1. See docs/lfj8-h03-input-paths.md and docs/lfj8-h03-output-adapter.md."
+    },
+    {
+      "parameter": "TOP10 interrupt, OEM phase step, OEM sweep",
+      "values": {"top10": 500, "phase_step": 5000, "sweep": 25000},
+      "unit": "nominal TML ticks",
+      "status": "derived from stock divider and release sequence",
+      "source": "H03 TOP10 0x003FF4-0x004016 uses Bus0 and reload 124 (125 counts). Bus1 runs 4x Bus0. 0x040468 reloads the 10-event divider and 0x040480 the 5-step divider. See docs/lfj8-h03-output-adapter.md."
+    },
+    {
+      "parameter": "Bounded progress probe",
+      "value": 40,
+      "unit": "poll iterations with one read of each timer per iteration, after an initial read of each",
+      "status": "software bound",
+      "source": "40 MHz nominal CPU / 1 MHz nominal TML gives 40 CPU cycles per tick. The compiled poll executes multiple instructions per iteration. Progress over this bound detects a stall and cannot determine absolute frequency."
+    },
+    {
+      "parameter": "S51 and S83 maximum raw edge period and last-edge age",
+      "values": {"S51": 225000, "S83": 500000},
+      "unit": "TML ticks",
+      "status": "bench freshness policy derived from the OEM reloads",
+      "source": "H03 225 ms at 0x017194 loaded by 0x034A80 and 500 ms at 0x01703C loaded by 0x034AB8. The S83 reload precedes its stock eight-edge interval update. The new thresholds apply to each raw period and capture age. Lowest usable vehicle speed remains open."
+    },
+    {
+      "parameter": "AN1/ATF maximum age",
+      "value": 50000,
+      "unit": "nominal microseconds since the originating AN1 capture",
+      "status": "bench software deadline of two nominal OEM sweeps",
+      "source": "2 x 25 ms budget for acquisition, OEM publication and subsequent foreground read. AN1 store 0x040178 via 0x040008, consumer 0x03B134 via 0x03A838. The existing OEM ATF adapter preserves its provenance, electrical validity and temperature conversion."
+    },
+    {
+      "parameter": "TML0/TML1 read bracket ceiling",
+      "value": 500,
+      "unit": "TML0 ticks",
+      "status": "bench software ceiling of one nominal TOP10 interval",
+      "source": "125 Bus0 counts at a 4:1 TML/Bus0 rate. The read runs masked with no intervening producer. The actual bracket width and S83 alignment error remain visible in the snapshot."
+    },
+    {
+      "parameter": "S51 differential geometry",
+      "value": [100, 22],
+      "unit": "edges per differential carrier revolution",
+      "status": "exact project input",
+      "source": "Project specification section 7 and docs/lfj8-h03-input-paths.md. Further gearing after the differential and rolling circumference are required only for road speed."
+    }
+  ],
+  "memory": {
+    "clock_ready_text_bytes": 168,
+    "sensor_config_rodata_bytes": 16,
+    "raw_capture_text_bytes_if_retained": 84,
+    "total_flash_bytes_with_capture_view": 268,
+    "new_static_ram_bytes": 0,
+    "clock_ready_own_stack_bytes": 28,
+    "clock_ready_chain_stack_bytes": 40,
+    "raw_capture_own_stack_bytes": 4,
+    "raw_capture_caller_view_bytes": 16,
+    "scope": "M32R object sections and saved-register prologues, excluding final placement alignment and enclosing code. The 40-byte chain includes the existing 12-byte register checker and leaf MMIO access. The capture view's empty path calls existing memset. The 184 required bytes exceed the previous 156-byte upper-window remainder before other providers. Final placement and inclusive IRQ stack are integration checks."
+  },
+  "verification": [
+    {
+      "command": "python -B targets/lfj8/check_h03_bench_sensor_profile.py --base $h03 --gcc $gcc --out local/bench-vss/model",
+      "result": "PASS_BENCH_SENSOR_NATIVE. Exact H03 bytes and derivation, native M32R relocatable link with real MMIO, and M32R CPU scenarios with modeled timer MMIO. Covers single/joint stalls, register change at entry and during the probe, true wrap vs backward jump, clock loss/reset/rebase, offset discontinuity, window rejection, valid/stale/first-edge/independent-stop distinctions, exact 100/22, and ATF expiry.",
+      "report_sha256": "83868d8406d11364c58cffa0963f09ca3df978c2ba4f5191651d9ed251ccd793"
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_sensor_native.py --base $h03 --gcc $gcc --out local/bench-vss/existing-sensor",
+      "result": "PASS stock and hooked S51/S83 stores at OEM addresses, PSW, clock revocation and epoch renewal."
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_atf_native.py --base $h03 --gcc $gcc",
+      "result": "PASS 11 stock/hooked ATF pairs."
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_application_binding.py --gcc $gcc --controller local/bench-vss/controller/rbm_u340e_m32r_be.o --out local/bench-vss/application-binding.json",
+      "result": "PASS existing binding refusal and recovery regressions, including RAM and timer refusal, epoch revocation, wrap, restart, foreground and expiry. This existing regression uses its own validation fixture."
+    },
+    {
+      "command": "python -B controller/build_target.py m32r --cc $gcc --out local/bench-vss/controller",
+      "result": "PASS controller build and model tests."
+    },
+    {
+      "command": "python -B targets/lfj8/build.py --output local/bench-vss/bridge --m32r-cc $gcc --base-9e1c $h03",
+      "result": "PASS bridge ELF32 big-endian relocatable object."
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_link.py --base $h03 --gcc $gcc --controller $controller --bridge $bridge --out local/bench-vss/stock-link.json --bosch-trace verification/e4m3-can-9e1c/ordinary-model/round-trip.json",
+      "result": "Existing compact link reports CAN extension window overflow in this branch and in a separate clean 10f7c15 worktree. This path omits the new bench profile."
+    },
+    {
+      "command": "python -B tools/check_integrated_h03.py --suite native --base $h03 --gcc $gcc --controller local/bench-vss/controller/rbm_u340e_m32r_be.o --out local/bench-vss/native --jobs 3",
+      "result": "21 PASS, atf-fault exceeded its 30 s compiler subprocess limit under parallel load. Immediate standalone repeat using python -B targets/lfj8/check_h03_atf_fault.py --base $h03 --gcc $gcc passed all cases."
+    },
+    {
+      "command": "python -B -m unittest discover -s tests -p test_h03_sensor_config.py ; python -B -m unittest discover -s tests -p test_vss_measurements.py",
+      "result": "PASS 9 measurement-backed config tests and 11 VSS tests."
+    }
+  ],
+  "dependencies": [
+    "Existing H03 S51/S83/ATF hooks, startup/rebase and foreground, shared native MMIO and interrupt lock.",
+    "Existing application owner and the allocated rbm_h03_sensor_state, rbm_h03_atf_state and rbm_h03_tml0_1mhz_qualified aliases.",
+    "Existing freestanding memcpy/memset. No new runtime library or calibration fixture."
+  ],
+  "software_blockers": [
+    "Integrator must select this source in the bench package, reserve/verify placement and inclusive IRQ/foreground stack, and retain the raw capture provider if the phase service uses it.",
+    "Bind phase-service capture to the agreed bench diagnostics/trace transport so the owner can retrieve samples after flashing. This profile provides the typed view and does not allocate a CAN identifier or periodic transmitter.",
+    "Qualify the speed and standstill sources for control and CAN. The typed sample preserves the unavailable state when pulses disappear. Current native application code supplies no independent standstill source."
+  ],
+  "post_flash_measurements": [
+    "Paired absolute TML0/TML1 rates against independent elapsed time, with both counter read brackets and clock behavior across resets and representative supply/temperature.",
+    "S51/S83 pulse polarity, rate and age on the selected wiring, S83 counts per turbine turn, and lowest measurable speed using a controlled source. Compare the two capture streams and test deliberate signal loss.",
+    "Installed drivetrain ratios after the differential and effective rolling circumference required for physical road speed. Compare CAN speed to a reference after binding valid geometry and a separate stop source.",
+    "Real AN1-to-temperature-publication and foreground ages and MMIO bracket under full load. Confirm AN1 electrical response and ATF temperature with a reference on the installed sensor."
+  ]
+}

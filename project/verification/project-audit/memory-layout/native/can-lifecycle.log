@@ -1,0 +1,246 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "native_fragments": {
+    "guards": {
+      "start": "0x003E50",
+      "end_exclusive": "0x003E78",
+      "sha256": "d3730699d376a0a4645f6a5734f59e0223af828c4cb4ced31ec3c97aa72394c5"
+    },
+    "select": {
+      "start": "0x008324",
+      "end_exclusive": "0x008408",
+      "sha256": "b083c79c15490788722d32df5df0192e6aef0493f2467811620597dbbe534f8e"
+    },
+    "config": {
+      "start": "0x00BAF4",
+      "end_exclusive": "0x00BD5C",
+      "sha256": "a2293843c0fc7d201b14dd72b06967331a2867dcc11a502c8ccea655aa9534b8"
+    },
+    "variant": {
+      "start": "0x01652A",
+      "end_exclusive": "0x01652B",
+      "sha256": "4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a"
+    },
+    "config-mask": {
+      "start": "0x0310C4",
+      "end_exclusive": "0x0310C6",
+      "sha256": "ca2fd00fa001190744c15c317643ab092e7048ce086a243e2be9437c898de1bb"
+    },
+    "slot-tables": {
+      "start": "0x032628",
+      "end_exclusive": "0x032768",
+      "sha256": "02b409e97cd0df2fd660c26a1fff21c8220996fc390b000f0831be47321979f4"
+    },
+    "rx-table": {
+      "start": "0x032EC4",
+      "end_exclusive": "0x032F74",
+      "sha256": "f08440537473a9080eb05b9f0fc99d8f42e0aa55b9d0efbdd22d6f58c90f255d"
+    }
+  },
+  "executed_cases": 16,
+  "compared_state": [
+    "R0-R15",
+    "CR0",
+    "CAN0 CNT/STAT in RAM",
+    "slots 10-15 control bytes",
+    "CAN0SLIMK",
+    "OEM saved-PSW pointer"
+  ],
+  "observer_own_stack_bytes": 12,
+  "setup_hook_own_stack_bytes": 16,
+  "setup_hook_grant_and_generation_bound": "shared CAN owner layout at a simulator address",
+  "implemented_peripheral_behavior": "none; CAN0 register addresses are RAM shadows",
+  "cases": [
+    {
+      "path": "startup",
+      "call": "0x00B7D0",
+      "return": "0x00B7D4",
+      "call_bytes": "FE0000C9",
+      "before_oem": {
+        "can0slimk": 32775,
+        "slot13_msc": 0,
+        "basiccan_msc": [
+          65,
+          69
+        ]
+      },
+      "wrapped_oem_entry": {
+        "grant": 0,
+        "generation": 17
+      },
+      "wrapped_oem_return": {
+        "grant": 0,
+        "generation": 18
+      },
+      "at_observer": {
+        "can0cnt": 9,
+        "can0stat": 0,
+        "oem_state": 0,
+        "slot11_msc": 0,
+        "slot12_msc": 0,
+        "can0slimk": 32775,
+        "slot13_msc": 0,
+        "basiccan_msc": [
+          65,
+          69
+        ]
+      },
+      "after_oem_tail": {
+        "can0cnt": 8,
+        "can0stat": 0,
+        "oem_state": 6,
+        "can0slimk": 32775,
+        "slot13_msc": 0,
+        "basiccan_msc": [
+          65,
+          69
+        ]
+      }
+    },
+    {
+      "path": "recovery_in_reset",
+      "call": "0x00B878",
+      "return": "0x00B87C",
+      "call_bytes": "FE00009F",
+      "before_oem": {
+        "can0slimk": 32771,
+        "slot13_msc": 128,
+        "basiccan_msc": [
+          65,
+          69
+        ]
+      },
+      "wrapped_oem_entry": {
+        "grant": 0,
+        "generation": 17
+      },
+      "wrapped_oem_return": {
+        "grant": 0,
+        "generation": 18
+      },
+      "at_observer": {
+        "can0cnt": 9,
+        "can0stat": 256,
+        "oem_state": 3,
+        "slot11_msc": 0,
+        "slot12_msc": 0,
+        "can0slimk": 32771,
+        "slot13_msc": 0,
+        "basiccan_msc": [
+          65,
+          69
+        ]
+      },
+      "after_oem_tail": {
+        "can0cnt": 8,
+        "can0stat": 256,
+        "oem_state": 4,
+        "can0slimk": 32771,
+        "slot13_msc": 0,
+        "basiccan_msc": [
+          65,
+          69
+        ]
+      }
+    },
+    {
+      "path": "recovery_reset_released",
+      "call": "0x00B878",
+      "return": "0x00B87C",
+      "call_bytes": "FE00009F",
+      "before_oem": {
+        "can0slimk": 32771,
+        "slot13_msc": 64,
+        "basiccan_msc": [
+          65,
+          69
+        ]
+      },
+      "wrapped_oem_entry": {
+        "grant": 0,
+        "generation": 17
+      },
+      "wrapped_oem_return": {
+        "grant": 0,
+        "generation": 18
+      },
+      "at_observer": {
+        "can0cnt": 9,
+        "can0stat": 0,
+        "oem_state": 3,
+        "slot11_msc": 0,
+        "slot12_msc": 0,
+        "can0slimk": 32771,
+        "slot13_msc": 0,
+        "basiccan_msc": [
+          65,
+          69
+        ]
+      },
+      "after_oem_tail": {
+        "can0cnt": 8,
+        "can0stat": 0,
+        "oem_state": 7,
+        "can0slimk": 32771,
+        "slot13_msc": 0,
+        "basiccan_msc": [
+          65,
+          69
+        ]
+      }
+    },
+    {
+      "path": "recovery_bus_off_in_shadow",
+      "call": "0x00B878",
+      "return": "0x00B87C",
+      "call_bytes": "FE00009F",
+      "before_oem": {
+        "can0slimk": 32771,
+        "slot13_msc": 129,
+        "basiccan_msc": [
+          65,
+          69
+        ]
+      },
+      "wrapped_oem_entry": {
+        "grant": 0,
+        "generation": 4294967295
+      },
+      "wrapped_oem_return": {
+        "grant": 0,
+        "generation": 0
+      },
+      "at_observer": {
+        "can0cnt": 9,
+        "can0stat": 16384,
+        "oem_state": 3,
+        "slot11_msc": 0,
+        "slot12_msc": 0,
+        "can0slimk": 32771,
+        "slot13_msc": 0,
+        "basiccan_msc": [
+          65,
+          69
+        ]
+      },
+      "after_oem_tail": {
+        "can0cnt": 8,
+        "can0stat": 16384,
+        "oem_state": 7,
+        "can0slimk": 32771,
+        "slot13_msc": 0,
+        "basiccan_msc": [
+          65,
+          69
+        ]
+      }
+    }
+  ],
+  "hardware_executed": false,
+  "flashable_image": null
+}

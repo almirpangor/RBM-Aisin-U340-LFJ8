@@ -1,0 +1,189 @@
+[
+  {
+    "pid": "01",
+    "descriptor": "05",
+    "descriptor_enabled": true,
+    "data_bytes": 4,
+    "data_cpu_address": "0x0F40BB",
+    "valid_cpu_address": "0x0F40BF",
+    "pointer_file_offset": "0x0AB338",
+    "id_file_offset": "0x0AB33C",
+    "descriptor_file_offset": "0x0AB3B7"
+  },
+  {
+    "pid": "03",
+    "descriptor": "83",
+    "descriptor_enabled": true,
+    "data_bytes": 2,
+    "data_cpu_address": "0x0F40D8",
+    "valid_cpu_address": "0x0F40DA",
+    "pointer_file_offset": "0x0AB3A4",
+    "id_file_offset": "0x0AB3B0",
+    "descriptor_file_offset": "0x0AB3B9"
+  },
+  {
+    "pid": "04",
+    "descriptor": "82",
+    "descriptor_enabled": true,
+    "data_bytes": 1,
+    "data_cpu_address": "0x0F4195",
+    "valid_cpu_address": "0x0F4196",
+    "pointer_file_offset": "0x0AB33E",
+    "id_file_offset": "0x0AB382",
+    "descriptor_file_offset": "0x0AB3BA"
+  },
+  {
+    "pid": "05",
+    "descriptor": "82",
+    "descriptor_enabled": true,
+    "data_bytes": 1,
+    "data_cpu_address": "0x0F40CE",
+    "valid_cpu_address": "0x0F40CF",
+    "pointer_file_offset": "0x0AB342",
+    "id_file_offset": "0x0AB383",
+    "descriptor_file_offset": "0x0AB3BB"
+  },
+  {
+    "pid": "06",
+    "descriptor": "82",
+    "descriptor_enabled": true,
+    "data_bytes": 1,
+    "data_cpu_address": "0x0F409D",
+    "valid_cpu_address": "0x0F409E",
+    "pointer_file_offset": "0x0AB346",
+    "id_file_offset": "0x0AB384",
+    "descriptor_file_offset": "0x0AB3BC"
+  },
+  {
+    "pid": "07",
+    "descriptor": "82",
+    "descriptor_enabled": true,
+    "data_bytes": 1,
+    "data_cpu_address": "0x0F409F",
+    "valid_cpu_address": "0x0F40A0",
+    "pointer_file_offset": "0x0AB34A",
+    "id_file_offset": "0x0AB385",
+    "descriptor_file_offset": "0x0AB3BD"
+  },
+  {
+    "pid": "0B",
+    "descriptor": "82",
+    "descriptor_enabled": true,
+    "data_bytes": 1,
+    "data_cpu_address": "0x0F419C",
+    "valid_cpu_address": "0x0F419D",
+    "pointer_file_offset": "0x0AB34E",
+    "id_file_offset": "0x0AB386",
+    "descriptor_file_offset": "0x0AB3C1"
+  },
+  {
+    "pid": "0C",
+    "descriptor": "83",
+    "descriptor_enabled": true,
+    "data_bytes": 2,
+    "data_cpu_address": "0x0F4099",
+    "valid_cpu_address": "0x0F409B",
+    "pointer_file_offset": "0x0AB3A8",
+    "id_file_offset": "0x0AB3B1",
+    "descriptor_file_offset": "0x0AB3C2"
+  },
+  {
+    "pid": "0D",
+    "descriptor": "82",
+    "descriptor_enabled": true,
+    "data_bytes": 1,
+    "data_cpu_address": "0x0F01E1",
+    "valid_cpu_address": "0x0F01E2",
+    "pointer_file_offset": "0x0AB352",
+    "id_file_offset": "0x0AB387",
+    "descriptor_file_offset": "0x0AB3C3"
+  },
+  {
+    "pid": "0E",
+    "descriptor": "82",
+    "descriptor_enabled": true,
+    "data_bytes": 1,
+    "data_cpu_address": "0x0F40C0",
+    "valid_cpu_address": "0x0F40C1",
+    "pointer_file_offset": "0x0AB356",
+    "id_file_offset": "0x0AB388",
+    "descriptor_file_offset": "0x0AB3C4"
+  },
+  {
+    "pid": "0F",
+    "descriptor": "82",
+    "descriptor_enabled": true,
+    "data_bytes": 1,
+    "data_cpu_address": "0x0F40D0",
+    "valid_cpu_address": "0x0F40D1",
+    "pointer_file_offset": "0x0AB35A",
+    "id_file_offset": "0x0AB389",
+    "descriptor_file_offset": "0x0AB3C5"
+  },
+  {
+    "pid": "11",
+    "descriptor": "82",
+    "descriptor_enabled": true,
+    "data_bytes": 1,
+    "data_cpu_address": "0x0F40A3",
+    "valid_cpu_address": "0x0F40A4",
+    "pointer_file_offset": "0x0AB35E",
+    "id_file_offset": "0x0AB38A",
+    "descriptor_file_offset": "0x0AB3C7"
+  },
+  {
+    "pid": "13",
+    "descriptor": "02",
+    "descriptor_enabled": true,
+    "data_bytes": 1,
+    "data_cpu_address": "0x0F40CC",
+    "valid_cpu_address": "0x0F40CD",
+    "pointer_file_offset": "0x0AB31A",
+    "id_file_offset": "0x0AB322",
+    "descriptor_file_offset": "0x0AB3C9"
+  },
+  {
+    "pid": "14",
+    "descriptor": "03",
+    "descriptor_enabled": true,
+    "data_bytes": 2,
+    "data_cpu_address": "0x0F40B3",
+    "valid_cpu_address": "0x0F40B5",
+    "pointer_file_offset": "0x0AB326",
+    "id_file_offset": "0x0AB332",
+    "descriptor_file_offset": "0x0AB3CA"
+  },
+  {
+    "pid": "15",
+    "descriptor": "03",
+    "descriptor_enabled": true,
+    "data_bytes": 2,
+    "data_cpu_address": "0x0F40AF",
+    "valid_cpu_address": "0x0F40B1",
+    "pointer_file_offset": "0x0AB32A",
+    "id_file_offset": "0x0AB333",
+    "descriptor_file_offset": "0x0AB3CB"
+  },
+  {
+    "pid": "1C",
+    "descriptor": "02",
+    "descriptor_enabled": true,
+    "data_bytes": 1,
+    "data_cpu_address": "0x0F40B6",
+    "valid_cpu_address": "0x0F40B7",
+    "pointer_file_offset": "0x0AB31E",
+    "id_file_offset": "0x0AB323",
+    "descriptor_file_offset": "0x0AB3D2"
+  },
+  {
+    "pid": "21",
+    "descriptor": "03",
+    "descriptor_enabled": true,
+    "data_bytes": 2,
+    "data_cpu_address": "0x0F40B8",
+    "valid_cpu_address": "0x0F40BA",
+    "pointer_file_offset": "0x0AB32E",
+    "id_file_offset": "0x0AB334",
+    "descriptor_file_offset": "0x0AB3D7"
+  }
+]

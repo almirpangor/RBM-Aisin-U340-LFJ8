@@ -1,0 +1,216 @@
+{
+  "status": "PASS_LOGICAL_CADENCE_AND_H03_NOMINAL_SCALE",
+  "s01_sha256": "a3cd723e7e21bf547ca4c17ec49a1e098d203773547dba4d7af21991a2cbead1",
+  "s01_ecr": "0x0090",
+  "s01_vector_branch": "0x000090 -> 0x085058",
+  "s01_dispatch_entry": "0x0009F8 -> 0x013F96",
+  "s01_setup": {
+    "routine": "0x01A376",
+    "register_writes": [
+      "0xFFFFFB00 = 0x80",
+      "clear 0xFFFFF112.7",
+      "clear 0xFFFFF100.1"
+    ],
+    "clock_reset_control_site": "0x012C6C..0x012CB6",
+    "mcu_part_or_clock_rate_proven": false
+  },
+  "s01_running_gpio": "0xFFFFF408.5",
+  "irq_per_same_edge": 8,
+  "irq_per_fast_secondary_main": [
+    4,
+    8,
+    16
+  ],
+  "s01_irq_s": null,
+  "h03_oem_nominal": {
+    "base": {
+      "id": "H03",
+      "bytes": 524288,
+      "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+    },
+    "instruction_sites": {
+      "prescaler": {
+        "address": "0x009E78",
+        "bytes": "e4800202602720046109440121044078"
+      },
+      "capture_clock_selection": {
+        "address": "0x00A86C",
+        "bytes": "e48003eb60012004e5800feb61312105"
+      },
+      "s51_reload": {
+        "address": "0x034A80",
+        "bytes": "e401719420c4f000e5804ec4204528ef"
+      },
+      "s51_decay": {
+        "address": "0x03B670",
+        "bytes": "e4804ec420c4f000e580503c21c5f000feff4ec51189f000feffe263e4804ec420442ac4"
+      },
+      "s83_reload": {
+        "address": "0x034AB8",
+        "bytes": "e401703c21c42146"
+      },
+      "s83_capture_divider": {
+        "address": "0x034AC0",
+        "bytes": "e48061da21a4f000b0d1002762072224"
+      },
+      "s83_diagnostic_gate": {
+        "address": "0x03BF6C",
+        "bytes": "e5804ee020c51188feff4d2fb0c00005e48048d420c41188feff4d2bb0d00004"
+      },
+      "s83_decay": {
+        "address": "0x03BFA0",
+        "bytes": "e4804ee020c4f000e580503c21c5f000feff4c791188f000feffe017e4804ee02044f000"
+      },
+      "atf_an1": {
+        "address": "0x040160",
+        "bytes": "6101f000e0804bc2feff27a3e4804bc220b45006e5804bc420252eef"
+      },
+      "atf_consumer": {
+        "address": "0x03B134",
+        "bytes": "e4804bc420b4f000feff5049"
+      },
+      "nt_ticks_to_ms": {
+        "address": "0x03BF4C",
+        "bytes": "e480618420c4f000feff4cc3d4c00003a1c428acfeff4cd1"
+      },
+      "top10_setup": {
+        "address": "0x003FF4",
+        "bytes": "e58002ea90f0300021b501e02125617c45f82125e68002e02126f000"
+      },
+      "top10_phase_divider": {
+        "address": "0x040468",
+        "bytes": "2e7ff000e4804862600a2004"
+      },
+      "oem_five_step_reload": {
+        "address": "0x040480",
+        "bytes": "e48048642094f000b090000961052104"
+      },
+      "an1_task_call": {
+        "address": "0x040008",
+        "bytes": "7e53f000"
+      },
+      "atf_consumer_call": {
+        "address": "0x03A838",
+        "bytes": "fe000236"
+      }
+    },
+    "clock_basis": "OEM_NOMINAL",
+    "tml_ticks_to_ms_literal_address": "0x0328AC",
+    "tml_nominal_hz": 1000000,
+    "bclk_nominal_hz": 20000000,
+    "cpu_nominal_hz": 40000000,
+    "top10_ticks": 500,
+    "phase_ticks": 5000,
+    "sweep_ticks": 25000,
+    "config": {
+      "s51_timeout_ticks": 225000,
+      "s83_timeout_ticks": 500000,
+      "atf_max_age_us": 50000,
+      "max_read_span_ticks": 500
+    }
+  },
+  "rows": [
+    {
+      "irq_index_before_increment": 0,
+      "pin_high": true,
+      "fast_post": false,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 1,
+      "pin_high": true,
+      "fast_post": false,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 2,
+      "pin_high": true,
+      "fast_post": true,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 3,
+      "pin_high": true,
+      "fast_post": false,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 4,
+      "pin_high": false,
+      "fast_post": false,
+      "secondary_post": true
+    },
+    {
+      "irq_index_before_increment": 5,
+      "pin_high": false,
+      "fast_post": false,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 6,
+      "pin_high": false,
+      "fast_post": true,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 7,
+      "pin_high": false,
+      "fast_post": false,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 8,
+      "pin_high": true,
+      "fast_post": false,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 9,
+      "pin_high": true,
+      "fast_post": false,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 10,
+      "pin_high": true,
+      "fast_post": true,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 11,
+      "pin_high": true,
+      "fast_post": false,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 12,
+      "pin_high": false,
+      "fast_post": false,
+      "secondary_post": true
+    },
+    {
+      "irq_index_before_increment": 13,
+      "pin_high": false,
+      "fast_post": false,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 14,
+      "pin_high": false,
+      "fast_post": true,
+      "secondary_post": false
+    },
+    {
+      "irq_index_before_increment": 15,
+      "pin_high": false,
+      "fast_post": false,
+      "secondary_post": false
+    }
+  ],
+  "qualification": {
+    "full_rtos_or_peripheral_emulated": false,
+    "source_paths": "Exact S01 IRQ and producer instructions with OS entry stubs",
+    "absolute_toyota_timing_proven": false,
+    "physical_clock_and_target_latency_measured": false
+  }
+}

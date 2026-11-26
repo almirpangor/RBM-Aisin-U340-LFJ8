@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "target": "M32R simulator",
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "controller_sha256": "246ab351c1cef2adca3a56917198d2d5d817d7fed8a6f6a3a166b2f1acbd8d81",
+  "test_output": "H03 input proposal: six ranges, debounce, conflict, Auto/OD, independent freshness, ADC loss and rearm PASS",
+  "hardware_executed": false
+}

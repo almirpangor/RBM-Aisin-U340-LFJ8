@@ -1,0 +1,593 @@
+{
+  "status": "PASS_OFFLINE_ONLY",
+  "base_sha256": "e25a1c97492ae556b1a52043e6ae85b88d2da86c03a78ef01dc2151c8a0a4a2a",
+  "ordinary_sha256": "2adc63878d90589d3779144a096aee4f868ddd96e13330362a56c8536590569f",
+  "qualified_sha256": "5292fdd41cfb5e2055742ab28d85d5e109f509f840fb82c855ee0bd1b82d8875",
+  "regions_from_s04": {
+    "wrapper": {
+      "cpu": "0x1e200",
+      "offset": "0xe200",
+      "length": 7672
+    },
+    "speed_receiver": {
+      "cpu": "0x66000",
+      "offset": "0x56000",
+      "length": 804
+    },
+    "speed_selector": {
+      "cpu": "0xb8441",
+      "offset": "0xa8441",
+      "length": 1
+    },
+    "engine_signals_tx": {
+      "cpu": "0x66800",
+      "offset": "0x56800",
+      "length": 1116
+    },
+    "rb_native_permit": {
+      "cpu": "0x66f00",
+      "offset": "0x56f00",
+      "length": 44
+    },
+    "rb_native_permit_hook": {
+      "cpu": "0x64e60",
+      "offset": "0x54e60",
+      "length": 4
+    }
+  },
+  "changed_bytes_from_s04": 8277,
+  "changed_bytes_from_ordinary": 54,
+  "changed_bytes_per_new_region": {
+    "rb_native_permit_hook": 4,
+    "rb_native_permit": 44
+  },
+  "changed_checksum_bytes_from_ordinary": 6,
+  "checksum_records": 51,
+  "startup_stack_paths": [
+    {
+      "caller": "0x1bc4a",
+      "register_bank": "0xf800",
+      "r0_top": "0xe7be"
+    },
+    {
+      "caller": "0x1bc4a",
+      "register_bank": "0xfc00",
+      "r0_top": "0xe7be"
+    },
+    {
+      "caller": "0x1baa4",
+      "register_bank": "0xf800",
+      "r0_top": "0xe7be"
+    },
+    {
+      "caller": "0x1baa4",
+      "register_bank": "0xfc00",
+      "r0_top": "0xe7be"
+    }
+  ],
+  "unchanged_s04_arbitration_entry_points": {
+    "hook_air": "0x595a8",
+    "hook_fast": "0x5b0be",
+    "hook_load": "0x5b5d6"
+  },
+  "start_admission": [
+    {
+      "delay": 0,
+      "rpm_q4": 4799,
+      "synchronized": false,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 4799,
+      "synchronized": false,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 4799,
+      "synchronized": true,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 4799,
+      "synchronized": true,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 4800,
+      "synchronized": false,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 4800,
+      "synchronized": false,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 4800,
+      "synchronized": true,
+      "invalid": false,
+      "accepted": true
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 4800,
+      "synchronized": true,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 26000,
+      "synchronized": false,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 26000,
+      "synchronized": false,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 26000,
+      "synchronized": true,
+      "invalid": false,
+      "accepted": true
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 26000,
+      "synchronized": true,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 26001,
+      "synchronized": false,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 26001,
+      "synchronized": false,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 26001,
+      "synchronized": true,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 0,
+      "rpm_q4": 26001,
+      "synchronized": true,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 4799,
+      "synchronized": false,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 4799,
+      "synchronized": false,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 4799,
+      "synchronized": true,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 4799,
+      "synchronized": true,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 4800,
+      "synchronized": false,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 4800,
+      "synchronized": false,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 4800,
+      "synchronized": true,
+      "invalid": false,
+      "accepted": true
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 4800,
+      "synchronized": true,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 26000,
+      "synchronized": false,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 26000,
+      "synchronized": false,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 26000,
+      "synchronized": true,
+      "invalid": false,
+      "accepted": true
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 26000,
+      "synchronized": true,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 26001,
+      "synchronized": false,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 26001,
+      "synchronized": false,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 26001,
+      "synchronized": true,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 1,
+      "rpm_q4": 26001,
+      "synchronized": true,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 4799,
+      "synchronized": false,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 4799,
+      "synchronized": false,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 4799,
+      "synchronized": true,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 4799,
+      "synchronized": true,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 4800,
+      "synchronized": false,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 4800,
+      "synchronized": false,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 4800,
+      "synchronized": true,
+      "invalid": false,
+      "accepted": true
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 4800,
+      "synchronized": true,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 26000,
+      "synchronized": false,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 26000,
+      "synchronized": false,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 26000,
+      "synchronized": true,
+      "invalid": false,
+      "accepted": true
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 26000,
+      "synchronized": true,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 26001,
+      "synchronized": false,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 26001,
+      "synchronized": false,
+      "invalid": true,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 26001,
+      "synchronized": true,
+      "invalid": false,
+      "accepted": false
+    },
+    {
+      "delay": 3,
+      "rpm_q4": 26001,
+      "synchronized": true,
+      "invalid": true,
+      "accepted": false
+    }
+  ],
+  "native_revocation": [
+    {
+      "failure": "synchronization_lost",
+      "first_hook": "hook_air",
+      "zero_status_frames": 1,
+      "previous_refresh_cannot_revive": true,
+      "next_token_accepted": true,
+      "max_model_stack_bytes": 34
+    },
+    {
+      "failure": "synchronization_lost",
+      "first_hook": "hook_fast",
+      "zero_status_frames": 1,
+      "previous_refresh_cannot_revive": true,
+      "next_token_accepted": true,
+      "max_model_stack_bytes": 34
+    },
+    {
+      "failure": "synchronization_lost",
+      "first_hook": "hook_load",
+      "zero_status_frames": 1,
+      "previous_refresh_cannot_revive": true,
+      "next_token_accepted": true,
+      "max_model_stack_bytes": 34
+    },
+    {
+      "failure": "native_invalid",
+      "first_hook": "hook_air",
+      "zero_status_frames": 1,
+      "previous_refresh_cannot_revive": true,
+      "next_token_accepted": true,
+      "max_model_stack_bytes": 34
+    },
+    {
+      "failure": "native_invalid",
+      "first_hook": "hook_fast",
+      "zero_status_frames": 1,
+      "previous_refresh_cannot_revive": true,
+      "next_token_accepted": true,
+      "max_model_stack_bytes": 34
+    },
+    {
+      "failure": "native_invalid",
+      "first_hook": "hook_load",
+      "zero_status_frames": 1,
+      "previous_refresh_cannot_revive": true,
+      "next_token_accepted": true,
+      "max_model_stack_bytes": 34
+    }
+  ],
+  "refresh_cancel": {
+    "qualified_refresh": true,
+    "unqualified_refresh_leaves_receipt_unchanged": true,
+    "cancel_with_and_without_rpm_permit": true
+  },
+  "software": {
+    "requires": [
+      "FD18.6=1",
+      "FD1A.14=0",
+      "pinned_RB_gate"
+    ],
+    "original_gate_reentry": "0x64e64",
+    "original_gate_reject": "0x64eae",
+    "additional_ram_bytes": 0,
+    "additional_call_stack_bytes": 0
+  },
+  "hardware_tested": false,
+  "chery_t4_receive": {
+    "sha256": "5292fdd41cfb5e2055742ab28d85d5e109f509f840fb82c855ee0bd1b82d8875",
+    "checksum_records": 51,
+    "receiver_bytes": 804,
+    "captures": [
+      {
+        "if1_delay": 0,
+        "lower": 101,
+        "completion": 103,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 0,
+        "lower": 65535,
+        "completion": 65537,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 0,
+        "lower": 4294967295,
+        "completion": 1,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 1,
+        "lower": 101,
+        "completion": 103,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 1,
+        "lower": 65535,
+        "completion": 65537,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 1,
+        "lower": 4294967295,
+        "completion": 1,
+        "age_upper_bound": 2
+      },
+      {
+        "if1_delay": 3,
+        "lower": 101,
+        "completion": 105,
+        "age_upper_bound": 4
+      },
+      {
+        "if1_delay": 3,
+        "lower": 65535,
+        "completion": 65539,
+        "age_upper_bound": 4
+      },
+      {
+        "if1_delay": 3,
+        "lower": 4294967295,
+        "completion": 3,
+        "age_upper_bound": 4
+      }
+    ],
+    "rejections": [
+      "unarmed",
+      "dlc",
+      "msglst",
+      "checksum",
+      "clock_stopped",
+      "overflow_pending",
+      "torn_high_word",
+      "half_range",
+      "backward",
+      "late_bus_off",
+      "late_init"
+    ],
+    "back_to_back_requires_new_empty_poll": true,
+    "speed_expiry_service_calls": 32,
+    "idle_clock_recovery_requires_new_empty_poll": true,
+    "recovery": [
+      "bus_off",
+      "can_init",
+      "busy_timeout"
+    ]
+  },
+  "paired_host_dialogues": {
+    "normal": {
+      "can_commands": 9,
+      "status_frames_for_token": 18,
+      "start_us": 400000,
+      "full_reduction_confirmed_us": 430000,
+      "first_cancel_us": 520000,
+      "engine_status_confirmed_zero_us": 606000,
+      "refresh_commands": 5,
+      "terminal_state": "complete"
+    },
+    "lost_status": {
+      "can_commands": 4,
+      "status_frames_for_token": 16,
+      "start_us": 400000,
+      "full_reduction_confirmed_us": null,
+      "first_cancel_us": 460000,
+      "engine_status_confirmed_zero_us": 510000,
+      "refresh_commands": 0,
+      "terminal_state": "failed"
+    },
+    "late_status": {
+      "can_commands": 4,
+      "status_frames_for_token": 16,
+      "start_us": 400000,
+      "full_reduction_confirmed_us": null,
+      "first_cancel_us": 460000,
+      "engine_status_confirmed_zero_us": 510000,
+      "refresh_commands": 0,
+      "terminal_state": "failed",
+      "late_full_status_delivered_us": 460000
+    }
+  }
+}

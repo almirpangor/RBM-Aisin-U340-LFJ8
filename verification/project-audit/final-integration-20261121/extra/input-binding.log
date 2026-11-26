@@ -1,8 +1,0 @@
-{
-  "status": "PASS",
-  "target": "M32R simulator",
-  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
-  "controller_sha256": "02b737d55791b9b311498e9869bbb6f3288ac6767f131f714c355e25f14574a1",
-  "test_output": "H03 input proposal: six ranges, mode/OD, split phase capture, freshness, ADC/P1DATA pairing, loss and rearm PASS",
-  "hardware_executed": false
-}

@@ -1,7 +1,0 @@
-{
-  "status": "PASS",
-  "fixture_result": "H03 native binding: RAM/clock refusal, cold and warm AN2 reset, foreground and expiry PASS",
-  "unprofiled_compile_rejected": true,
-  "hardware_tested": false,
-  "flashable_image": null
-}

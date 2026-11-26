@@ -1,0 +1,45 @@
+{
+  "status": "PASS_OFFLINE_ONLY",
+  "host_controller_and_lfj8": {
+    "speed_raw": 1440,
+    "0x1AE": "01ff0000ffff05a0",
+    "0x300": "0000007c00000000",
+    "panel_input_speed_q7": 1824,
+    "panel_period_ticks_1mhz": 42105,
+    "tc_rx_rpm_q3": 9600,
+    "tc_rx_coolant_plus_50": 137,
+    "tc_rx_model_codes": [
+      95,
+      116,
+      35
+    ],
+    "tc_qualified_model_codes": [
+      95,
+      35
+    ],
+    "selector_adc_events": "PASS",
+    "selector_timeout": "PASS"
+  },
+  "speed_kmh_wire": "72/5",
+  "atf_c": "84",
+  "s02_model_speed_q7": 1824,
+  "s02_model_pid_0d": 14,
+  "panel_pulse_hz_calculated": "95/4",
+  "panel_nominal_pulses_per_km": 6000,
+  "equipment_tested": false,
+  "bosch_candidate_frame_probe": {
+    "status": "OFFLINE_ONLY",
+    "sha256": "bd0afefa40dfd1ea82e647ea5af7e64e2f652c27ccc5c3b91a986224fd77ec79",
+    "frame": "01ff0000ffff05a0",
+    "accepted_speed": true,
+    "speed_q7": 1824
+  },
+  "bosch_tx_to_tcm": {
+    "sha256": "bd0afefa40dfd1ea82e647ea5af7e64e2f652c27ccc5c3b91a986224fd77ec79",
+    "0x0FA": "12c05f7400230000",
+    "0x278": "b4ffffffffffffff",
+    "rpm": 1200,
+    "coolant_celsius": 87
+  },
+  "same_bosch_image_both_directions": true
+}

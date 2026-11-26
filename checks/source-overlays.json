@@ -1,0 +1,69 @@
+[
+  {
+    "file": "tools/build_h03_bench_pair.py",
+    "sha256": "9359e21d666d0e0a6a30b22ff4dc7176471cea2727c88c8d95606e3e7db9ec7d",
+    "origin": "RBM-Aisin-U340-LFJ8",
+    "source_worktree_head": "e61b3195b19eea3fe8af3765c22882bf46450050"
+  },
+  {
+    "file": "tests/test_h03_bench_pair.py",
+    "sha256": "229406e5ab5052f273ec08bdad1dba47cf22230e2f47831c4b6382f17ffb3863",
+    "origin": "RBM-Aisin-U340-LFJ8",
+    "source_worktree_head": "e61b3195b19eea3fe8af3765c22882bf46450050"
+  },
+  {
+    "file": "tools/link_h03_bench_candidate.py",
+    "sha256": "615e6d823c29c6c6341ec6a050af0b5db4b370d86f232066d1bc96c5722d1fd9",
+    "origin": "h03-memory",
+    "source_worktree_head": "00dbcbc4386c6c86c54b7e63e60b4a95b2f9d97b"
+  },
+  {
+    "file": "tests/test_h03_bench_link.py",
+    "sha256": "6977691db1d9cc4b8438d2c87d3c233e7c0fcaa8dd39a18d136f897622d3a8ee",
+    "origin": "h03-memory",
+    "source_worktree_head": "00dbcbc4386c6c86c54b7e63e60b4a95b2f9d97b"
+  },
+  {
+    "file": "targets/bosch/chery_native_consumer.py",
+    "sha256": "c451f46cd5214ed5e002f8bc6217d65b3b7c92f9cda8809066f168c803509998",
+    "origin": "bosch-pair",
+    "source_worktree_head": "7eedea4c2f32eb4f22e809f2b65521e6b445aaee"
+  },
+  {
+    "file": "targets/bosch/verify_chery_native_consumer.py",
+    "sha256": "55b9b9a41d7f36312ba55df825966b518d2922047be1872d1677033d28839382",
+    "origin": "bosch-pair",
+    "source_worktree_head": "7eedea4c2f32eb4f22e809f2b65521e6b445aaee"
+  },
+  {
+    "file": "tests/test_chery_native_consumer.py",
+    "sha256": "36afa3f884b69cbffe705ae2652d2cc8fafbb0b40cd201e07da6842ac3a26773",
+    "origin": "bosch-pair",
+    "source_worktree_head": "7eedea4c2f32eb4f22e809f2b65521e6b445aaee"
+  },
+  {
+    "file": "targets/lfj8/bench_application_profile.h",
+    "sha256": "bee3c5a1fb8a1c1dd54975d8a61789580db6a08ba5167ef9eec354f82ea10d95",
+    "origin": "components/h03-timing/h03-bench-phase-age.patch"
+  },
+  {
+    "file": "targets/lfj8/lfj8_h03_bench_can_service.c",
+    "origin": "tested M32R startup component worktree",
+    "sha256": "a5c8a5551d76599fc9d1ba1ee2b72cf2a9461ac746aa29fbc990e69e9e120f90"
+  },
+  {
+    "file": "targets/lfj8/h03_s01_verified_phase_clock_alias.S",
+    "origin": "tested M32R startup component worktree",
+    "sha256": "79ce60f09b32f2f5a088eb050ed9d04321bc0b7d27e777bf0f04b4126341811c"
+  },
+  {
+    "file": "targets/lfj8/lfj8_h03_s01_cold_start.c",
+    "origin": "tested M32R startup component worktree",
+    "sha256": "da7b2f1bc51364b9c24946815121ce3515bf8459ed1aab580f44478e91f4af0e"
+  },
+  {
+    "file": "targets/lfj8/h03_s01_cold_seed.S",
+    "origin": "tested M32R startup component worktree",
+    "sha256": "196b88df97a2c8e09e5dd727dda32f386f93adb337385f418990273ae216b52d"
+  }
+]

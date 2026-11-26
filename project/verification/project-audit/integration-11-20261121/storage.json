@@ -1,0 +1,489 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "artifact_kind": "M32R_ABI_storage_address_model",
+  "blocks": {
+    "control": {
+      "offset": 0,
+      "bytes": 1132,
+      "alignment": 4,
+      "address": 8416064,
+      "end_exclusive": 8417196
+    },
+    "communication": {
+      "offset": 0,
+      "bytes": 608,
+      "alignment": 4,
+      "address": 8425024,
+      "end_exclusive": 8425632
+    },
+    "workspace": {
+      "offset": 0,
+      "bytes": 1076,
+      "alignment": 4,
+      "address": 8425632,
+      "end_exclusive": 8426708
+    }
+  },
+  "fields": {
+    "control": {
+      "offset": 0,
+      "bytes": 1132,
+      "alignment": 4
+    },
+    "control/runtime": {
+      "offset": 0,
+      "bytes": 829,
+      "alignment": 1
+    },
+    "control/cycle": {
+      "offset": 832,
+      "bytes": 32,
+      "alignment": 4
+    },
+    "control/takeover": {
+      "offset": 864,
+      "bytes": 28,
+      "alignment": 4
+    },
+    "control/phase_clock": {
+      "offset": 892,
+      "bytes": 28,
+      "alignment": 4
+    },
+    "control/sensors": {
+      "offset": 920,
+      "bytes": 36,
+      "alignment": 4
+    },
+    "control/application": {
+      "offset": 956,
+      "bytes": 8,
+      "alignment": 4
+    },
+    "control/toyota_release": {
+      "offset": 964,
+      "bytes": 16,
+      "alignment": 4
+    },
+    "control/clock_qualified": {
+      "offset": 980,
+      "bytes": 1,
+      "alignment": 1
+    },
+    "control/atf": {
+      "offset": 984,
+      "bytes": 20,
+      "alignment": 4
+    },
+    "control/selector_adc": {
+      "offset": 1004,
+      "bytes": 12,
+      "alignment": 4
+    },
+    "control/range_control": {
+      "offset": 1016,
+      "bytes": 32,
+      "alignment": 4
+    },
+    "control/button_filter": {
+      "offset": 1048,
+      "bytes": 24,
+      "alignment": 4
+    },
+    "control/gear_observer": {
+      "offset": 1072,
+      "bytes": 52,
+      "alignment": 4
+    },
+    "control/slu_baseline": {
+      "offset": 1124,
+      "bytes": 4,
+      "alignment": 2
+    },
+    "control/slu_secondary": {
+      "offset": 1128,
+      "bytes": 2,
+      "alignment": 1
+    },
+    "communication": {
+      "offset": 0,
+      "bytes": 608,
+      "alignment": 4
+    },
+    "communication/engine_rx": {
+      "offset": 0,
+      "bytes": 56,
+      "alignment": 4
+    },
+    "communication/engine_qualifier": {
+      "offset": 56,
+      "bytes": 6,
+      "alignment": 2
+    },
+    "communication/can13": {
+      "offset": 64,
+      "bytes": 200,
+      "alignment": 4
+    },
+    "communication/can_owner": {
+      "offset": 264,
+      "bytes": 12,
+      "alignment": 4
+    },
+    "communication/dtc": {
+      "offset": 276,
+      "bytes": 30,
+      "alignment": 1
+    },
+    "communication/dtc_target": {
+      "offset": 308,
+      "bytes": 216,
+      "alignment": 4
+    },
+    "communication/can_service": {
+      "offset": 524,
+      "bytes": 40,
+      "alignment": 4
+    },
+    "communication/main_result": {
+      "offset": 564,
+      "bytes": 28,
+      "alignment": 4
+    },
+    "communication/fast_output": {
+      "offset": 592,
+      "bytes": 16,
+      "alignment": 4
+    },
+    "workspace": {
+      "offset": 0,
+      "bytes": 1076,
+      "alignment": 4
+    },
+    "workspace/toyota": {
+      "offset": 0,
+      "bytes": 564,
+      "alignment": 4
+    },
+    "workspace/capture": {
+      "offset": 564,
+      "bytes": 40,
+      "alignment": 4
+    },
+    "workspace/sensor_snapshot": {
+      "offset": 604,
+      "bytes": 56,
+      "alignment": 4
+    },
+    "workspace/input_proposal": {
+      "offset": 660,
+      "bytes": 52,
+      "alignment": 4
+    },
+    "workspace/cycle_input": {
+      "offset": 712,
+      "bytes": 24,
+      "alignment": 4
+    },
+    "workspace/load_feed": {
+      "offset": 736,
+      "bytes": 24,
+      "alignment": 4
+    },
+    "workspace/button_reading": {
+      "offset": 760,
+      "bytes": 8,
+      "alignment": 4
+    },
+    "workspace/range_inputs": {
+      "offset": 768,
+      "bytes": 60,
+      "alignment": 4
+    },
+    "workspace/range_snapshot": {
+      "offset": 828,
+      "bytes": 8,
+      "alignment": 4
+    },
+    "workspace/slu_input": {
+      "offset": 836,
+      "bytes": 10,
+      "alignment": 2
+    },
+    "workspace/slu_command": {
+      "offset": 846,
+      "bytes": 6,
+      "alignment": 2
+    },
+    "workspace/slu_baseline_input": {
+      "offset": 852,
+      "bytes": 22,
+      "alignment": 2
+    },
+    "workspace/slu_secondary_input": {
+      "offset": 874,
+      "bytes": 20,
+      "alignment": 2
+    },
+    "workspace/slu_secondary_result": {
+      "offset": 894,
+      "bytes": 8,
+      "alignment": 2
+    },
+    "workspace/dtc_delivery": {
+      "offset": 904,
+      "bytes": 28,
+      "alignment": 4
+    },
+    "workspace/atf_sample": {
+      "offset": 932,
+      "bytes": 8,
+      "alignment": 4
+    },
+    "workspace/engine_context": {
+      "offset": 940,
+      "bytes": 8,
+      "alignment": 2
+    },
+    "workspace/can13_input": {
+      "offset": 948,
+      "bytes": 44,
+      "alignment": 4
+    },
+    "workspace/tx_input": {
+      "offset": 992,
+      "bytes": 24,
+      "alignment": 4
+    },
+    "workspace/oem_output": {
+      "offset": 1016,
+      "bytes": 14,
+      "alignment": 1
+    },
+    "workspace/torque_input": {
+      "offset": 1032,
+      "bytes": 12,
+      "alignment": 4
+    },
+    "workspace/gear_observation": {
+      "offset": 1044,
+      "bytes": 32,
+      "alignment": 4
+    }
+  },
+  "storage_bytes": 2816,
+  "previous_two_window_capacity_bytes": 1780,
+  "previous_capacity_deficit_bytes": 1036,
+  "primary_unused_bytes": 84,
+  "expanded_secondary_candidate": [
+    8425024,
+    8426708
+  ],
+  "extra_secondary_bytes_over_old_workspace": 1120,
+  "gap_to_conditional_stack_lower_bound": 556,
+  "fixed_reference_candidates": {
+    "control": {
+      "LD24": [],
+      "aligned_u32": [],
+      "FP_relative": [],
+      "unaligned_u32": [
+        {
+          "rom_offset": "0x0000FD",
+          "ram_address": "0x806C00"
+        }
+      ]
+    },
+    "communication_and_workspace": {
+      "LD24": [],
+      "aligned_u32": [],
+      "FP_relative": [],
+      "unaligned_u32": []
+    }
+  },
+  "simulated_initializers": [
+    {
+      "case": "application_clear",
+      "rom_entry": "0x0404C4",
+      "stop": "0x040504",
+      "ram_bytes_compared": 24576,
+      "changed_bytes": 7848,
+      "candidate_unchanged": true,
+      "workspace_candidate_unchanged": true
+    },
+    {
+      "case": "can_records_initializer",
+      "rom_entry": "0x008A04",
+      "stop": "0x001010",
+      "ram_bytes_compared": 24576,
+      "changed_bytes": 208,
+      "candidate_unchanged": true,
+      "workspace_candidate_unchanged": true
+    },
+    {
+      "case": "capture_dma_initializer",
+      "rom_entry": "0x00AACC",
+      "stop": "0x001010",
+      "ram_bytes_compared": 24576,
+      "changed_bytes": 24,
+      "candidate_unchanged": true,
+      "workspace_candidate_unchanged": true,
+      "capture_dma_sfr_values_verified": true
+    },
+    {
+      "case": "configuration_clear_fragment",
+      "rom_entry": "0x0405C0",
+      "stop": "0x0405CC",
+      "ram_bytes_compared": 24576,
+      "changed_bytes": 2058,
+      "candidate_unchanged": true,
+      "workspace_candidate_unchanged": true
+    },
+    {
+      "case": "stock_service_profile_gate",
+      "rom_entry": "0x00D108",
+      "stop": "0x00D27C",
+      "ram_bytes_compared": 24576,
+      "changed_bytes": 5,
+      "candidate_unchanged": true,
+      "workspace_candidate_unchanged": true
+    },
+    {
+      "case": "service_buffer_initializer",
+      "rom_entry": "0x00D4F8",
+      "stop": "0x001010",
+      "ram_bytes_compared": 24576,
+      "changed_bytes": 4104,
+      "candidate_unchanged": true,
+      "workspace_candidate_unchanged": true
+    }
+  ],
+  "compiled_object": {
+    "bytes": 3225,
+    "sha256": "0f8f5f2dbbff4a1b9eefec497b4eded371723c05a8af546b304e1355e98e2955",
+    "flags": 65536,
+    "alloc_bytes": {
+      "code": 0,
+      "read_only_data": 2172,
+      "writable_data": 0,
+      "bss": 2816
+    },
+    "relocations": 0
+  },
+  "linked_storage_model": {
+    "bytes": 2981,
+    "sha256": "b765e16b8bf4814d11d7054731e134aef0c5c7c84f0b9054cc2d686d772a5ec0",
+    "flags": 0,
+    "alloc_bytes": {
+      "code": 0,
+      "read_only_data": 2172,
+      "writable_data": 0,
+      "bss": 2816
+    },
+    "relocations": 0
+  },
+  "input_sha256": {
+    "controller/include/rbm_u340e.h": "0face44761b960c10163415fd6761773d9ec702d4dc4824f3a7d4d67de5d9726",
+    "controller/include/rbm_u340e_hydraulic_workspace.h": "0e446b7272fce9af343f627e427b024e45b010fce07bc20ecef3d08c910938d5",
+    "controller/include/rbm_u340e_runtime.h": "d0a3d3abae6b4eaf44a5f1c840c61bd3b9955535a81de7669d91a067b5b291fc",
+    "controller/include/rbm_u340e_scheduler.h": "09be707bd3fc7da26c313d45a4092631e3db814934d8baf2703de25f16ea1b09",
+    "controller/vendor/toyota/include/factory_adaptation_store.h": "787611d51114f5976f17ed3d5436d1e61607ca78f9162bcd949d4233e219b5d2",
+    "controller/vendor/toyota/include/factory_core.h": "2536872ba4b2d6b9aa5fd5f73d8184133b81c2377618b9d5116b34de25298cbd",
+    "controller/vendor/toyota/include/factory_correction.h": "b6df36bf16f08ecaecdd3c389fa62118dc64b60951a8498c8ec6d71c57a439c8",
+    "controller/vendor/toyota/include/factory_gears.h": "29816ad99a9c5ffe1cd8e25a42281e0318db04c04d854b2c3b3ff752e71015b3",
+    "controller/vendor/toyota/include/factory_gears_state.h": "d5db4101c87abfd6141f0b925c5c3170ee4f354c441f03f9df058a5a17e9c887",
+    "controller/vendor/toyota/include/factory_hydraulic_state.h": "f7c66ec07c3b0f3cf4d1c88a761c182b81ce70f6ddb9706918a465ea2c25d7d5",
+    "controller/vendor/toyota/include/factory_hydraulics.h": "4bdd3b60b05c9392317d2c85d36c8273871e5e936b164720e00412fbbe564646",
+    "controller/vendor/toyota/include/factory_inputs.h": "719e3c6e868db3896df3d71d3c119c02da0d9e561cd7427b876a787899b67a0d",
+    "controller/vendor/toyota/include/factory_learning.h": "c42982b09ed232c2c698acf861e3855e7a7a5271d07b0b6cbcab06bfd294a535",
+    "controller/vendor/toyota/include/factory_learning_state.h": "652fc03cf850422c5597fe2ea7e1cf38fbe27ff11e7d6dd0a5aeeaeae0ff2bfd",
+    "controller/vendor/toyota/include/factory_outputs.h": "d38585cf52ebbc7b424aab478de4ab81bf57355ff9d94b15a9f0a707c35b29ae",
+    "controller/vendor/toyota/include/factory_phase_modes.h": "9998bd2dd2af0d406809bb4890e6e04db3f0eef52742e18b84f40af3d76734dd",
+    "controller/vendor/toyota/include/factory_pressure.h": "51dc36c6239f82f3c568f7b74d4ac9cee4d8a6bba12012b1c174e390453d57c2",
+    "controller/vendor/toyota/include/factory_torque.h": "9588ca81a789e6ae1cb454515c5a90860d3b878ad2a62850e1d5e90fd93cf61a",
+    "controller/vendor/toyota/include/factory_torque_state.h": "5fcc1e6e3560d210d1e31fe2493fb2c69d7a280a6415579f945fd8e968f56c6c",
+    "diagnostics/chery_atf_circuit.h": "99339df7550b1009f1cb13692326b3a88780d64883ca04d45c98131bad98cd20",
+    "diagnostics/chery_dtc.h": "d0c37e66ed56e64e043b2f6a78294d4a39bc0f881f512ce1de0daf548c12c8aa",
+    "diagnostics/chery_dtc_can.h": "f715f5d977de241092e592925228c9904d13f79e6792e3bdd80c7043ab686ebd",
+    "diagnostics/chery_dtc_journal.h": "56e387db7524b819f6891500557a0d72017b1f5e779b3cda9c6c1d53c402f692",
+    "diagnostics/chery_dtc_link.h": "06e72e38359ec1dce28e43c2a643e1d1b725b1d394df6029e239746a9b8d8e45",
+    "diagnostics/chery_model_monitor.h": "0f262f2913009ad60971081da7a2c1295b8ce47879169ef7aef60ea4827a0853",
+    "targets/lfj8/h03_native_hooks.h": "497e1c6da606e2e792934bc57b54d4f9f3eb25b5ec8389b2dc92b0a5c1264a35",
+    "targets/lfj8/h03_storage_layout.c": "e6dffd08c74d1f02d9786000298225babe1b39b14ec2a7151a62aa3b32a8dadb",
+    "targets/lfj8/lfj8_bridge.h": "a1bebf08a9c33a006780ac65b794980ba213763bcc2cd75e9e85985f6efa2fa6",
+    "targets/lfj8/lfj8_chery_tx.h": "4f2b7e1a9f94f922e3cfb4b99bf8c8377b8679b2fe3e9b2de532d3333ef8b4aa",
+    "targets/lfj8/lfj8_donor_io.h": "16ae040095c46abb1edf10235f15b3ee8238ab24bc13d69fd3060cee10ad6fd9",
+    "targets/lfj8/lfj8_gear_observer.h": "42ef5fef462a66065953bd0bb9910a499b42905f697975d47337ec2d3b111340",
+    "targets/lfj8/lfj8_h03_application.h": "897f43b4193c8c1d840f5ef07981dfdee677d65beace274da0c320cdaa80254b",
+    "targets/lfj8/lfj8_h03_application_binding.h": "496aff4d3bfa3e2e9be6f17d7516569ca5c388ad75c2316768f3dd83be489e8f",
+    "targets/lfj8/lfj8_h03_atf.h": "3a2c6f3cbc832b9d8f91e754437ff0bef2682d80d325ee2ab5d925533cbe129d",
+    "targets/lfj8/lfj8_h03_atf_fault.h": "17408f3fe7e45eb397b0e45177f9d9303ef410a023231169c0e78a4a4f477376",
+    "targets/lfj8/lfj8_h03_atf_feed.h": "ac2bcec3e9fb9a76483695e33aaedc139adda1cf2d01cad0e28a5fcde4a3dec1",
+    "targets/lfj8/lfj8_h03_atf_target.h": "5affbb19093ee6c3ebb6401d12b6ebd7ddbcec6f0353f16b747e5e5d95ac2e55",
+    "targets/lfj8/lfj8_h03_button_capture.h": "de58d0f414132166b386c818dbcbf96b5dc667d0cce4faa781736b11c04f45e7",
+    "targets/lfj8/lfj8_h03_can13.h": "81a5808ad29fe6bd559e7cf02e031903ae55cb36fa4dcf64ca44cb96e01b920e",
+    "targets/lfj8/lfj8_h03_can_monitor_startup.h": "ffdbeae692f0143af0cc89ba917cb752a7d4478c9b271a0adf8e8fd6ec09517e",
+    "targets/lfj8/lfj8_h03_can_owner.h": "3458a8f9be94689f3e6483482bb0b62dedd7fbb2c9bbed878799a30f8e694af6",
+    "targets/lfj8/lfj8_h03_can_target.h": "8ba4a3797a8a0091051e4521dd76cd2ffc8cfbe574a82b349acde3fabb9c0167",
+    "targets/lfj8/lfj8_h03_cycle.h": "0a4075e87d4c8b19d5cf8a9470affcd3250d0a44ac1ce462bb47661d00c28973",
+    "targets/lfj8/lfj8_h03_dtc_can.h": "2bf911b07f6d7bdf5fe72a9ad4b50e6ef922f2a472f75c271b1596b10aa921d9",
+    "targets/lfj8/lfj8_h03_dtc_foreground.h": "1ef05794dd410e0c094924232ab04cb84fcc268b959f9bdb3900a091a2a6eac7",
+    "targets/lfj8/lfj8_h03_dtc_native.h": "79d3a0ea93479cc542e45cbcb662d1920132c98a33a731ba3c38b2c295e175e9",
+    "targets/lfj8/lfj8_h03_dtc_rx_queue.h": "eb536d15a594cd34718e3ffb263c13bf6d620a37c18fdb747746b26790b9e048",
+    "targets/lfj8/lfj8_h03_dtc_target.h": "9a27e75e0d5ef8d70a371a8d9cdea183586ad610fa002c4b4a2217b6bb8426dc",
+    "targets/lfj8/lfj8_h03_engine_feed.h": "a2aa533d4fa9d1fc32ddf970757de159627ca15751eea55b83b767552896c0ac",
+    "targets/lfj8/lfj8_h03_engine_rx.h": "96d0b74f4e2cd92190b44dbb2480a0f41ac706a1ba76ec63c1f574cb78889cbc",
+    "targets/lfj8/lfj8_h03_input_binding.h": "0be2b8b3c79d40b586fb0676de2c09ea914c84d35b46c29006b029fded1a7fc0",
+    "targets/lfj8/lfj8_h03_input_lifecycle.h": "11219158a8bf72d8248f08b973562ca25a4f98e277a5a386e8692596d3af16fc",
+    "targets/lfj8/lfj8_h03_mmio.h": "5d2cbf1f88c5d9c33b63eff6db0afdca2797b26920529aacc8d7672e78b7ee33",
+    "targets/lfj8/lfj8_h03_monitor_quiesce.h": "2023cbd63875b1039718f179cd75f7cd9ad67c4b3bac110ef764ecf5dd56c940",
+    "targets/lfj8/lfj8_h03_nvm.h": "4bc73ee0edc04f55b83dee2d5d5db3375e7f795e5465492db38315966bf113b4",
+    "targets/lfj8/lfj8_h03_nvm_native.h": "bc4aca718dcc0f7d10d4a025cfb9862f140786394a453965ca8042637eea3086",
+    "targets/lfj8/lfj8_h03_output_inhibit.h": "8c41c9508f52756682391cc8b3d8a65e413811c43a161c9fb13e24ff3bc040c9",
+    "targets/lfj8/lfj8_h03_outputs.h": "d5a894cfed0922172a9920c9cc35da16d2fc844dffadd8e8be1479ee682313bf",
+    "targets/lfj8/lfj8_h03_phase_clock.h": "867996025e23d3205eec569019c8d7e4347f0a3b19b522b6b54bd154a1bfd96c",
+    "targets/lfj8/lfj8_h03_phase_startup.h": "7acba95ed9220ec399418d22232b59e3b7cd694bf0cd5d0f13e3cd97cb59d6e5",
+    "targets/lfj8/lfj8_h03_ram_owner.h": "fc3ce3435ce729684a19a38df2f4f31fb6023de5b4756b455979c1c7929e4374",
+    "targets/lfj8/lfj8_h03_range_pn.h": "8fda64edac38071d20441d9ee84b9cc1a93f05811f660491a6e9d4d3de5e7525",
+    "targets/lfj8/lfj8_h03_sensor_feed.h": "d0c5d924d75bf1ba69a179e81a3020f0df0537d1fa44dcf45ec7703f2a4ca3ad",
+    "targets/lfj8/lfj8_h03_sensor_target.h": "f005149623cc98463e279ca9c16b02a775a44d76cb99f2750f006e4b83c5e4e1",
+    "targets/lfj8/lfj8_h03_service_guard.h": "6a89955eb72a29886be68d3cd3e6be9b8c8b3603f13b7027592a998ea0af2a54",
+    "targets/lfj8/lfj8_h03_slu.h": "35c0eb6a31a39dfb29281b654f0d179bc804241053aee2f818d442e2670ef6d4",
+    "targets/lfj8/lfj8_h03_storage.h": "b6c781df9fc9770cbdc03d608a76710b60d0fb07ac5c2a74eb0fcff66b314ebb",
+    "targets/lfj8/lfj8_h03_takeover.h": "69088697913385a87d057dbbe98b03135e1e51deda024e33217f10fed0a758df",
+    "targets/lfj8/lfj8_h03_target_platform.h": "d65f8fe7f3dbf6e5dee129921032ab20a54b7c87cb275bc096afffdf9f619870",
+    "targets/lfj8/lfj8_h03_target_service.h": "cee3abcab73d02b3120433cee7d9fbb845c3915975cb8c32913b92f25e3201c6",
+    "targets/lfj8/lfj8_h03_torque.h": "5720630805a1edc7200be2169486a9d7548647d259561eabb1b202497453e8a4",
+    "targets/lfj8/lfj8_h03_torque_can.h": "fc9121a6f045fb399d77aa065a3f21170fcdd1fd5d55e7605ec830308a513d46",
+    "targets/lfj8/lfj8_h03_toyota_input_profile.h": "c509ce64c279fce2a39935f4178ae668c2d788be17f1b05f1930ec7d25a9a12f",
+    "targets/lfj8/lfj8_h03_toyota_nvm_profile.h": "6f4ba046fdae38f363846e634d906104182c1d9fc1f5f53d71c91bd65b26a41e",
+    "targets/lfj8/lfj8_h03_toyota_source.h": "1cea16e5a767c786ce79aa2b48f10bdc5a48ee487bb495be082fc66b4b280e3c",
+    "targets/lfj8/lfj8_range_control.h": "c2321cde023951412462e9d4dce4797150f1b56d9d08455def125f64536e58d0",
+    "targets/lfj8/lfj8_selector_adc.h": "a9f966d79239f5f2709b35041f482de536402d482eec6c506c3b2dc9a3bbc2ab",
+    "targets/lfj8/ta2005_chery_inputs.h": "b43104dffcf6642a375592a77339e38ae4e0edf2a43563a89dbbb92fdb703b1b",
+    "targets/lfj8/ta2005_engine_qualifier.h": "fab179e498a8f980e27e8335794b07863ed1cf86db4bda69f7933010fcb6b913"
+  },
+  "not_included": [
+    "native globals outside this inventory, including the DTC IRQ binding pointer",
+    "DTC/adaptation NVM transaction buffers on the stack and physical driver state",
+    "remaining Toyota stages",
+    "platform callback/context storage",
+    "stack frames and nested interrupts",
+    "read-only calibration and callback tables"
+  ],
+  "exclusive_ram_ownership_verified": false,
+  "stack_bound_verified": false,
+  "startup_initialization_implemented": false,
+  "hardware_executed": false,
+  "flashable_image": null,
+  "limits": [
+    "Selected OEM initializers and fixed reference classes only",
+    "Indirect monitor writes, DMA and remapping still require service isolation",
+    "Typed inventory is not a permission to overwrite original H03 RAM",
+    "No new runtime overlap or packing assumptions were introduced"
+  ]
+}

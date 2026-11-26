@@ -1,0 +1,117 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "simulation_patch": {
+    "site": "0x003568",
+    "stock_word": "B810000B",
+    "branch_word": "FF00000B",
+    "destination": "0x003594",
+    "resident_code_and_data_added": false
+  },
+  "selector_paths": [
+    "selector",
+    "service"
+  ],
+  "all_internal_pages": 128,
+  "patched_overlay_cases": 512,
+  "stock_positive_controls": 8,
+  "adjacent_destination_controls": 4,
+  "initial_overlay_states": [
+    "disabled",
+    "enabled"
+  ],
+  "unrelated_control_and_selection_bits_preserved_on_disable": true,
+  "stock_reset_dispatch": {
+    "valid_markers": "0x008100",
+    "bad_start_marker": "0x0047D8",
+    "bad_end_marker": "0x0047D8"
+  },
+  "native_update_start_addresses": [
+    {
+      "address": "0x003568",
+      "accepted": false
+    },
+    {
+      "address": "0x007FFF",
+      "accepted": false
+    },
+    {
+      "address": "0x008000",
+      "accepted": true
+    }
+  ],
+  "limits": [
+    "Native selector and internal monitor activation branch; MMIO is backed by simulator RAM.",
+    "This bench-only change disables Virtual Flash, not the monitor's direct or deferred RAM writes.",
+    "No external programmer profiles, physical remapping or recovery writes were tested."
+  ],
+  "hardware_executed": false,
+  "flashable_image": null,
+  "placed_service_protection": {
+    "elf_sha256": "d98db95d63effe53e3b69ca45c85946e6860fb61c5a78cd03f61eca5da4a484c",
+    "policy_ranges": [
+      [
+        8416064,
+        8417196
+      ],
+      [
+        8417196,
+        8417200
+      ],
+      [
+        8422776,
+        8424884
+      ],
+      [
+        8425024,
+        8425632
+      ],
+      [
+        8425632,
+        8426708
+      ],
+      [
+        8427264,
+        8429568
+      ]
+    ],
+    "sites": [
+      {
+        "address": 10532,
+        "stock": "2e7f4ff8",
+        "branch": "ff000e9c",
+        "target": 25492
+      },
+      {
+        "address": 10572,
+        "stock": "fe0002f7",
+        "branch": "fe000e9a",
+        "target": 25524
+      },
+      {
+        "address": 11548,
+        "stock": "2e7f297f",
+        "branch": "ff000dbc",
+        "target": 25612
+      },
+      {
+        "address": 11932,
+        "stock": "a00a0008",
+        "branch": "ff000d78",
+        "target": 25724
+      },
+      {
+        "address": 13672,
+        "stock": "b810000b",
+        "branch": "ff00000b",
+        "target": 13716
+      }
+    ],
+    "scope": "common_early_irq"
+  },
+  "replayed_image_sha256": "2e593a44841b73e454db9b33ea4194035d6b269d5210f6f36dc719d6c6b4ea02",
+  "replayed_image_file": "LFJ8_H03_EARLY_IRQ_DMA4_SERVICE_GUARDS_OFFLINE_ONLY.bin"
+}

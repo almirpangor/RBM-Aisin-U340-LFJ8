@@ -1,0 +1,192 @@
+{
+  "runtime": "host",
+  "platform": "win32",
+  "compiler": "0.13.0",
+  "runs": [
+    {
+      "name": "Toyota U340E",
+      "exit_code": 0,
+      "output": "Toyota adaptation store: 96 write cuts, 768 bit faults, reset and rollover passed.\nToyota adaptation recovery: 96 write cuts, 768 bit faults in either slot, and rollover passed.\nToyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.\nToyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.\nToyota 05518C: SECONDARY load qualifiers, hysteresis, clamp, fallback and MAIN handoff passed.\nToyota S01 range: P/N to warm low-load D, standstill fill, S1/S2 and first upshift passed.\nToyota scheduler: event release, FAST phase latch, busy drop and rollover passed.\nVerified 292 GP transfer fields and five donor hydraulic snapshots.\nController tests passed: six ADC ranges, relays, Auto, Tiptronic, OD, S1/S2, ST and SLT.\nMODE-03 policy: 128 restart profiles and 501760 gear proposal cases PASS.\n"
+    },
+    {
+      "name": "Сборка диагностики Chery",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Чтение, очистка и повтор DTC",
+      "exit_code": 0,
+      "output": "Chery DTC read, clear and recurrence: passed\n"
+    },
+    {
+      "name": "Сборка журнала истории DTC",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Восстановление журнала DTC после очистки и сбоя записи",
+      "exit_code": 0,
+      "output": "DTC journal: restore, wrap, clear, 30 interrupted prefixes and 240 bit faults PASS\nDTC journal: 30 unconfirmed clears withheld reply, one durable clear survived restart PASS\n"
+    },
+    {
+      "name": "Сборка CAN-кадров диагностики Chery",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Кадры диагностики Chery CAN",
+      "exit_code": 0,
+      "output": "Chery C0 diagnostic CAN frame fixtures: passed\n"
+    },
+    {
+      "name": "Сборка транспорта диагностики Chery C0",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Сеанс Chery C0, сегментация и тайм-ауты",
+      "exit_code": 0,
+      "output": "Chery C0 diagnostic link and independent model-field loss and recovery: passed\nChery C0 durable clear: storage before TX, no acknowledgement on failure, retry passed.\n"
+    },
+    {
+      "name": "Сборка расчёта импульсов панели",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Частота, коррекция и хранение калибровки панели",
+      "exit_code": 0,
+      "output": "PASS panel pulse nominal, range, timing, state, and storage\n"
+    },
+    {
+      "name": "Сборка планировщика вывода Bosch для панели",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Фронты панели и приоритет штатного выхода Bosch",
+      "exit_code": 0,
+      "output": "Bosch panel GPIO timing and ownership PASS (host)\n"
+    },
+    {
+      "name": "Сборка передачи управления LFJ8 H03",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Синхронизация команд и блокировки LFJ8 H03",
+      "exit_code": 0,
+      "output": "H03 takeover: proposals, P3 replay, service guards and native phase expiry PASS\n"
+    },
+    {
+      "name": "Сборка транспорта диагностики для CAN0 H03",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Диагностика H03 с подтверждением передачи CAN",
+      "exit_code": 0,
+      "output": "H03 CAN0 diagnostic TX13 completion, stale Flow Control, abort and recovery: PASS\n"
+    },
+    {
+      "name": "Сборка очереди приёма диагностики H03",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Очередь DTC: переполнение, давность и сброс CAN",
+      "exit_code": 0,
+      "output": "H03 DTC RX queue: FIFO, overflow, stale delivery, time wrap and CAN reset PASS\nH03 DTC BasicCAN capture: both slots, unchanged MSC, overwritten copy and bus-off PASS\nqueue_bytes=172 delivery_bytes=28 capacity=4\n"
+    },
+    {
+      "name": "Сборка запроса снижения момента U340E",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Запрос, подтверждение и снятие снижения момента",
+      "exit_code": 0,
+      "output": "H03 shift torque provenance, protocol and release passed.\n"
+    },
+    {
+      "name": "Сборка адаптера CAN0 для момента",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Передача запроса и приём статуса момента в CAN0",
+      "exit_code": 0,
+      "output": "H03 torque CAN13: lease, TX/RX switch, freshness, arbitration, release and restart PASS\n"
+    },
+    {
+      "name": "Сборка управления CAN13 H03",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Передача CAN13 между моментом, диагностикой и скоростью",
+      "exit_code": 0,
+      "output": "H03 CAN13 broker: torque preemption, diagnostic FC and generation recovery PASS\n"
+    },
+    {
+      "name": "Сборка квалификации оборотов и температуры TA2005",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Отказ и восстановление оборотов и температуры",
+      "exit_code": 0,
+      "output": "TA2005 engine qualification passes reception age, fault thresholds and recovery\n"
+    },
+    {
+      "name": "Сборка тракта оборотов, ОЖ и диагностических кодов",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Обороты и ОЖ, активные DTC, история и очистка",
+      "exit_code": 0,
+      "output": "H03 qualified engine feed and Chery clear/fault/recovery passed\nH03 shared model snapshot: common RX poll, wrap, expiry, inhibit and recovery passed\n"
+    },
+    {
+      "name": "Сборка цикла Toyota с адаптером H03",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Цикл включения D, переключение и потеря события",
+      "exit_code": 0,
+      "output": "SLU SECONDARY: 5 publications, canonical FAST timer and 7 refusals PASS\nH03 Toyota cycle: P/N to D, 1->2, ranges 2/L, rollover and lost event passed.\nH03 Toyota cycle: two 12-point D traces, S1/S2, cold fourth-gear inhibit and pending-shift loss passed.\nH03 Toyota cycle: two loaded D maps, qualified GP feed, six shift thresholds and S1/S2 passed.\n"
+    },
+    {
+      "name": "Сборка проверки допуска нагрузки в цикл H03",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Публикация нагрузки, давность и порядок событий H03",
+      "exit_code": 0,
+      "output": "H03 qualified load cycle: publication, expiry, clock wrap and event ordering PASS\n"
+    },
+    {
+      "name": "Сборка контроля тактов H03",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Очередность, пропуск и давность тактов H03",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "Тесты модели",
+      "exit_code": 0,
+      "output": "test_1ae_checksum_wrap_disable_and_restart (test_bench_can_trace.BenchCanTraceTests.test_1ae_checksum_wrap_disable_and_restart) ... ok\ntest_excludes_other_flag_pairs_and_dlc (test_bench_can_trace.BenchCanTraceTests.test_excludes_other_flag_pairs_and_dlc) ... ok\ntest_minute_wrap_requires_opt_in (test_bench_can_trace.BenchCanTraceTests.test_minute_wrap_requires_opt_in) ... ok\ntest_observation_keeps_streams_and_duplicate_timestamps (test_bench_can_trace.BenchCanTraceTests.test_observation_keeps_streams_and_duplicate_timestamps) ... ok\ntest_rejects_invalid_trace_or_criteria (test_bench_can_trace.BenchCanTraceTests.test_rejects_invalid_trace_or_criteria) ... ok\ntest_reports_only_requested_checks_and_requires_an_interval (test_bench_can_trace.BenchCanTraceTests.test_reports_only_requested_checks_and_requires_an_interval) ... ok\ntest_complete_table_is_accepted_without_requiring_order (test_bosch_build_integrity.BoschBuildIntegrityTests.test_complete_table_is_accepted_without_requiring_order) ... ok\ntest_duplicate_or_unexpected_offset_is_rejected (test_bosch_build_integrity.BoschBuildIntegrityTests.test_duplicate_or_unexpected_offset_is_rejected) ... ok\ntest_empty_or_partial_table_is_rejected (test_bosch_build_integrity.BoschBuildIntegrityTests.test_empty_or_partial_table_is_rejected) ... ok\ntest_control_field_does_not_cover_flags_counter_and_remaining_bytes (test_chery_1ae.Chery1AETests.test_control_field_does_not_cover_flags_counter_and_remaining_bytes) ... ok\ntest_control_field_wrap_and_corruption (test_chery_1ae.Chery1AETests.test_control_field_wrap_and_corruption) ... ok\ntest_counter_advances_wraps_and_resets (test_chery_1ae.Chery1AETests.test_counter_advances_wraps_and_resets) ... ok\ntest_modular_counter_delta_is_separate_from_checksum (test_chery_1ae.Chery1AETests.test_modular_counter_delta_is_separate_from_checksum) ... ok\ntest_native_packer_layout_and_field_boundaries (test_chery_1ae.Chery1AETests.test_native_packer_layout_and_field_boundaries) ... ok\ntest_rejects_non_byte_fields_and_invalid_payload_length (test_chery_1ae.Chery1AETests.test_rejects_non_byte_fields_and_invalid_payload_length) ... ok\ntest_reserved_codes_and_byte5_saturation (test_chery_1ae.Chery1AETests.test_reserved_codes_and_byte5_saturation) ... ok\ntest_vehicle_speed_quantization_and_reserved_word (test_chery_1ae.Chery1AETests.test_vehicle_speed_quantization_and_reserved_word) ... ok\ntest_vss_to_1ae_speed_and_ecm_scale (test_chery_1ae.Chery1AETests.test_vss_to_1ae_speed_and_ecm_scale) ... ok\ntest_1ae_parses_raw_fields_in_the_matching_observed_direction (test_chery_can.CheryCanTests.test_1ae_parses_raw_fields_in_the_matching_observed_direction) ... ok\ntest_1ae_receiver_wrap_and_reserved_word_preserve_raw (test_chery_can.CheryCanTests.test_1ae_receiver_wrap_and_reserved_word_preserve_raw) ... ok\ntest_1ae_speed_uses_big_endian_and_one_hundredth_kmh (test_chery_can.CheryCanTests.test_1ae_speed_uses_big_endian_and_one_hundredth_kmh) ... ok\ntest_300_requires_reported_ta2005_transmission (test_chery_can.CheryCanTests.test_300_requires_reported_ta2005_transmission) ... ok\ntest_300_temperature_uses_byte_three_and_saturates_at_104_c (test_chery_can.CheryCanTests.test_300_temperature_uses_byte_three_and_saturates_at_104_c) ... ok\ntest_coolant_converts_only_byte_zero (test_chery_can.CheryCanTests.test_coolant_converts_only_byte_zero) ... ok\ntest_coolant_ff_is_invalid_but_preserves_raw (test_chery_can.CheryCanTests.test_coolant_ff_is_invalid_but_preserves_raw) ... ok\ntest_decoding_requires_matching_observed_direction (test_chery_can.CheryCanTests.test_decoding_requires_matching_observed_direction) ... ok\ntest_dlc_and_payload_must_both_be_eight (test_chery_can.CheryCanTests.test_dlc_and_payload_must_both_be_eight) ... ok\ntest_engine_speed_ffff_is_invalid_but_zero_is_valid (test_chery_can.CheryCanTests.test_engine_speed_ffff_is_invalid_but_zero_is_valid) ... ok\ntest_engine_speed_uses_big_endian_and_quarter_rpm (test_chery_can.CheryCanTests.test_engine_speed_uses_big_endian_and_quarter_rpm) ... ok\ntest_rejects_other_frame_formats_and_nonstandard_id_width (test_chery_can.CheryCanTests.test_rejects_other_frame_formats_and_nonstandard_id_width) ... ok\ntest_unknown_id_stays_raw (test_chery_can.CheryCanTests.test_unknown_id_stays_raw) ... ok\ntest_extraction_matches_pinned_s03_image (test_chery_dtc_table.CheryDtcTableTests.test_extraction_matches_pinned_s03_image) ... ok\ntest_service_table_matches_extraction_in_index_order (test_chery_dtc_table.CheryDtcTableTests.test_service_table_matches_extraction_in_index_order) ... ok\ntest_busoff_diagnostic_selects_fallback_even_on_new_data (test_chery_transport.CheryTransportTests.test_busoff_diagnostic_selects_fallback_even_on_new_data) ... ok\ntest_checksum_fault_and_combined_recovery_delays_differ (test_chery_transport.CheryTransportTests.test_checksum_fault_and_combined_recovery_delays_differ) ... ok\ntest_counter_and_fallback_for_reserved_fields (test_chery_transport.CheryTransportTests.test_counter_and_fallback_for_reserved_fields) ... ok\ntest_disabled_variant_selects_its_default_without_polling (test_chery_transport.CheryTransportTests.test_disabled_variant_selects_its_default_without_polling) ... ok\ntest_poll_spacing_and_loss_thresholds (test_chery_transport.CheryTransportTests.test_poll_spacing_and_loss_thresholds) ... ok\ntest_calibration_symbol_bounds_are_checked (test_h03_layout.PlacementTests.test_calibration_symbol_bounds_are_checked) ... ok\ntest_candidate_profiles_never_touch_boot_or_end_marker (test_h03_layout.PlacementTests.test_candidate_profiles_never_touch_boot_or_end_marker) ... ok\ntest_elf_wrong_machine_endian_truncated_table_and_names_rejected (test_h03_layout.PlacementTests.test_elf_wrong_machine_endian_truncated_table_and_names_rejected) ... ok\ntest_erased_candidate_checks_every_byte_and_bounds (test_h03_layout.PlacementTests.test_erased_candidate_checks_every_byte_and_bounds) ... ok\ntest_every_section_preserved_at_aligned_nonoverlapping_address (test_h03_layout.PlacementTests.test_every_section_preserved_at_aligned_nonoverlapping_address) ... ok\ntest_final_link_roots_sections_relocations_and_addresses (test_h03_layout.PlacementTests.test_final_link_roots_sections_relocations_and_addresses) ... ok\ntest_initialized_state_tls_duplicate_and_bad_alignment_rejected (test_h03_layout.PlacementTests.test_initialized_state_tls_duplicate_and_bad_alignment_rejected) ... ok\ntest_missing_or_unidentified_ram_inventory_refused (test_h03_layout.PlacementTests.test_missing_or_unidentified_ram_inventory_refused) ... ok\ntest_new_attempt_invalidates_stale_success_but_preserves_inputs (test_h03_layout.PlacementTests.test_new_attempt_invalidates_stale_success_but_preserves_inputs) ... ok\ntest_overflow_and_fragmentation_fail_without_truncating (test_h03_layout.PlacementTests.test_overflow_and_fragmentation_fail_without_truncating) ... ok\ntest_overlapping_duplicate_unaligned_and_out_of_range_windows (test_h03_layout.PlacementTests.test_overlapping_duplicate_unaligned_and_out_of_range_windows) ... ok\ntest_duplicate_missing_and_unknown_groups (test_h03_storage.H03StorageTests.test_duplicate_missing_and_unknown_groups) ... ok\ntest_field_overlap_bounds_and_alignment (test_h03_storage.H03StorageTests.test_field_overlap_bounds_and_alignment) ... ok\ntest_layout_uses_target_alignment_and_disjoint_ranges (test_h03_storage.H03StorageTests.test_layout_uses_target_alignment_and_disjoint_ranges) ... ok\ntest_no_implicit_overlay_when_primary_has_spare_space (test_h03_storage.H03StorageTests.test_no_implicit_overlay_when_primary_has_spare_space) ... ok\ntest_primary_and_secondary_overflow_are_refused (test_h03_storage.H03StorageTests.test_primary_and_secondary_overflow_are_refused) ... ok\ntest_wrong_abi_endian_and_truncation (test_h03_storage.H03StorageTests.test_wrong_abi_endian_and_truncation) ... ok\ntest_default_and_strict_cli_exit_codes (test_inspect_lfj8_tcm.H03IdentityTests.test_default_and_strict_cli_exit_codes) ... ok\ntest_strict_check_requires_identity_length_and_digest (test_inspect_lfj8_tcm.H03IdentityTests.test_strict_check_requires_identity_length_and_digest) ... ok\ntest_distinct_candidate_is_deterministic (test_package_workset.FirmwarePairTests.test_distinct_candidate_is_deterministic) ... ok\ntest_offline_manifest_identifies_unarchived_image (test_package_workset.FirmwarePairTests.test_offline_manifest_identifies_unarchived_image) ... ok\ntest_renamed_archived_offline_image_is_rejected (test_package_workset.FirmwarePairTests.test_renamed_archived_offline_image_is_rejected) ... ok\ntest_continuation_cannot_reopen_closed_or_deferred_scope (test_project_status.ProjectStatusTests.test_continuation_cannot_reopen_closed_or_deferred_scope) ... ok\ntest_continuation_rejects_missing_action_and_invalid_chat (test_project_status.ProjectStatusTests.test_continuation_rejects_missing_action_and_invalid_chat) ... ok\ntest_default_digest_preserves_exact_binary_bytes (test_project_status.ProjectStatusTests.test_default_digest_preserves_exact_binary_bytes) ... ok\ntest_dependency_cycle_is_rejected (test_project_status.ProjectStatusTests.test_dependency_cycle_is_rejected) ... ok\ntest_lf_hash_survives_clone_conversion_and_detects_code_change (test_project_status.ProjectStatusTests.test_lf_hash_survives_clone_conversion_and_detects_code_change) ... ok\ntest_register_cannot_claim_release_with_open_work (test_project_status.ProjectStatusTests.test_register_cannot_claim_release_with_open_work) ... ok\ntest_block_resume_review_and_complete_require_published_result (test_task_coordination.CoordinationTests.test_block_resume_review_and_complete_require_published_result) ... ok\ntest_busy_continuation_does_not_appear_free_or_take_recommended_owner (test_task_coordination.CoordinationTests.test_busy_continuation_does_not_appear_free_or_take_recommended_owner) ... ok\ntest_continuation_tracks_main_without_reopening_accepted_work (test_task_coordination.CoordinationTests.test_continuation_tracks_main_without_reopening_accepted_work) ... ok\ntest_different_tasks_simultaneous_claim_preserves_both (test_task_coordination.CoordinationTests.test_different_tasks_simultaneous_claim_preserves_both) ... ok\ntest_existing_unrelated_branch_is_not_overwritten (test_task_coordination.CoordinationTests.test_existing_unrelated_branch_is_not_overwritten) ... ok\ntest_file_extension_and_same_branch_conflict (test_task_coordination.CoordinationTests.test_file_extension_and_same_branch_conflict) ... ok\ntest_invalid_paths_cannot_be_reserved (test_task_coordination.CoordinationTests.test_invalid_paths_cannot_be_reserved) ... ok\ntest_linked_worktrees_fetch_without_shared_tracking_ref_updates (test_task_coordination.CoordinationTests.test_linked_worktrees_fetch_without_shared_tracking_ref_updates) ... ok\ntest_old_claim_does_not_expire_automatically (test_task_coordination.CoordinationTests.test_old_claim_does_not_expire_automatically) ... ok\ntest_only_current_review_can_complete (test_task_coordination.CoordinationTests.test_only_current_review_can_complete) ... ok\ntest_other_owner_and_old_generation_cannot_release (test_task_coordination.CoordinationTests.test_other_owner_and_old_generation_cannot_release) ... ok\ntest_read_and_write_leave_worktree_index_and_branch_intact (test_task_coordination.CoordinationTests.test_read_and_write_leave_worktree_index_and_branch_intact) ... ok\ntest_rejected_push_does_not_claim_locally (test_task_coordination.CoordinationTests.test_rejected_push_does_not_claim_locally) ... ok\ntest_remote_error_is_not_treated_as_empty_board (test_task_coordination.CoordinationTests.test_remote_error_is_not_treated_as_empty_board) ... ok\ntest_result_typo_or_unknown_commit_cannot_complete (test_task_coordination.CoordinationTests.test_result_typo_or_unknown_commit_cannot_complete) ... ok\ntest_resume_racing_with_complete_preserves_new_work (test_task_coordination.CoordinationTests.test_resume_racing_with_complete_preserves_new_work) ... ok\ntest_same_task_simultaneous_claim_has_one_winner (test_task_coordination.CoordinationTests.test_same_task_simultaneous_claim_has_one_winner) ... ok\ntest_simultaneous_overlapping_directory_reservation_has_one_winner (test_task_coordination.CoordinationTests.test_simultaneous_overlapping_directory_reservation_has_one_winner) ... ok\ntest_successful_push_with_lost_ack_is_not_duplicated (test_task_coordination.CoordinationTests.test_successful_push_with_lost_ack_is_not_duplicated) ... ok\ntest_unknown_and_deferred_tasks_are_not_claimed (test_task_coordination.CoordinationTests.test_unknown_and_deferred_tasks_are_not_claimed) ... ok\ntest_first_sample_defines_button_baseline (test_u340.ControlsTests.test_first_sample_defines_button_baseline) ... ok\ntest_one_transition_per_press_with_bounce_and_hold (test_u340.ControlsTests.test_one_transition_per_press_with_bounce_and_hold) ... ok\ntest_opposite_shift_conflicts_while_the_first_button_is_held (test_u340.ControlsTests.test_opposite_shift_conflicts_while_the_first_button_is_held) ... ok\ntest_overdrive_press_is_reported_once (test_u340.ControlsTests.test_overdrive_press_is_reported_once) ... ok\ntest_simultaneous_shift_inputs_are_marked_ambiguous (test_u340.ControlsTests.test_simultaneous_shift_inputs_are_marked_ambiguous) ... ok\ntest_time_cannot_run_backwards (test_u340.ControlsTests.test_time_cannot_run_backwards) ... ok\ntest_up_down_in_tiptronic_and_only_on_a_press (test_u340.ControlsTests.test_up_down_in_tiptronic_and_only_on_a_press) ... ok\ntest_selector_positions (test_u340.RelayTests.test_selector_positions) ... ok\ntest_panel_coefficient_changes_panel_frequency_only (test_u340.SpeedTests.test_panel_coefficient_changes_panel_frequency_only) ... ok\ntest_rejects_missing_or_nonphysical_input (test_u340.SpeedTests.test_rejects_missing_or_nonphysical_input) ... ok\ntest_vss_ratio_is_exact (test_u340.SpeedTests.test_vss_ratio_is_exact) ... ok\ntest_overflow_is_reserved_and_produces_no_numeric_speed (test_u340_scenario.U340ScenarioTests.test_overflow_is_reserved_and_produces_no_numeric_speed) ... ok\ntest_stale_speed_ramps_to_zero_and_resumes_after_new_poll (test_u340_scenario.U340ScenarioTests.test_stale_speed_ramps_to_zero_and_resumes_after_new_poll) ... ok\ntest_vss_chery_bosch_calculation_and_driver_inputs (test_u340_scenario.U340ScenarioTests.test_vss_chery_bosch_calculation_and_driver_inputs) ... ok\ntest_checks_multiple_repositories_at_pinned_objects (test_verify_sources.SourceVerificationTests.test_checks_multiple_repositories_at_pinned_objects) ... ok\ntest_unavailable_commit_and_blob_are_rejected (test_verify_sources.SourceVerificationTests.test_unavailable_commit_and_blob_are_rejected) ... ok\ntest_cli_exit_codes_and_json_report (test_vss_measurements.VssMeasurementsTests.test_cli_exit_codes_and_json_report) ... ok\ntest_clock_check_recovers_rollover_and_accepts_exact_tolerance (test_vss_measurements.VssMeasurementsTests.test_clock_check_recovers_rollover_and_accepts_exact_tolerance) ... ok\ntest_clock_check_rejects_ambiguous_duration_and_empty_reference (test_vss_measurements.VssMeasurementsTests.test_clock_check_rejects_ambiguous_duration_and_empty_reference) ... ok\ntest_clock_check_rejects_wrong_and_stalled_clock (test_vss_measurements.VssMeasurementsTests.test_clock_check_rejects_wrong_and_stalled_clock) ... ok\ntest_fractional_error_uses_independent_reference (test_vss_measurements.VssMeasurementsTests.test_fractional_error_uses_independent_reference) ... ok\ntest_frame_checksum_and_length_checked (test_vss_measurements.VssMeasurementsTests.test_frame_checksum_and_length_checked) ... ok\ntest_malformed_profile_and_capture_rejected (test_vss_measurements.VssMeasurementsTests.test_malformed_profile_and_capture_rejected) ... ok\ntest_missing_cases_cannot_pass (test_vss_measurements.VssMeasurementsTests.test_missing_cases_cannot_pass) ... ok\ntest_moving_capture_must_be_fresh_and_in_range (test_vss_measurements.VssMeasurementsTests.test_moving_capture_must_be_fresh_and_in_range) ... ok\ntest_three_independent_cases (test_vss_measurements.VssMeasurementsTests.test_three_independent_cases) ... ok\ntest_zero_speed_cannot_pass_as_signal_loss (test_vss_measurements.VssMeasurementsTests.test_zero_speed_cannot_pass_as_signal_loss) ... ok\n\n----------------------------------------------------------------------\nRan 113 tests in 145.664s\n\nOK\n"
+    },
+    {
+      "name": "Сквозной сценарий с компонентами C",
+      "exit_code": 0,
+      "output": "{\n  \"status\": \"PASS_OFFLINE_ONLY\",\n  \"host_controller_and_lfj8\": {\n    \"speed_raw\": 1440,\n    \"0x1AE\": \"01ff0000ffff05a0\",\n    \"0x300\": \"0000007c00000000\",\n    \"panel_input_speed_q7\": 1824,\n    \"panel_period_ticks_1mhz\": 42105,\n    \"tc_rx_rpm_q3\": 9600,\n    \"tc_rx_coolant_plus_50\": 137,\n    \"tc_rx_model_codes\": [\n      255,\n      255,\n      255\n    ],\n    \"tc_qualified_model_codes\": [\n      50,\n      50\n    ],\n    \"selector_adc_events\": \"PASS\",\n    \"selector_timeout\": \"PASS\"\n  },\n  \"speed_kmh_wire\": \"72/5\",\n  \"atf_c\": \"84\",\n  \"s02_model_speed_q7\": 1824,\n  \"s02_model_pid_0d\": 14,\n  \"panel_pulse_hz_calculated\": \"95/4\",\n  \"panel_nominal_pulses_per_km\": 6000,\n  \"equipment_tested\": false,\n  \"bosch_candidate_frame_probe\": {\n    \"status\": \"OFFLINE_ONLY\",\n    \"sha256\": \"bd0afefa40dfd1ea82e647ea5af7e64e2f652c27ccc5c3b91a986224fd77ec79\",\n    \"frame\": \"01ff0000ffff05a0\",\n    \"accepted_speed\": true,\n    \"speed_q7\": 1824\n  }\n}\n"
+    }
+  ]
+}

@@ -1,1 +1,0 @@
-M32R SLU: 65536 words against pinned S01 curve, force and invalidation PASS

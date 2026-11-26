@@ -1,0 +1,757 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "aliases": {
+    "rbm_h03_application": [
+      "0x806EFC",
+      "0x806F04"
+    ],
+    "rbm_h03_sensor_state": [
+      "0x806ED8",
+      "0x806EFC"
+    ],
+    "rbm_h03_tml0_1mhz_qualified": [
+      "0x806F14",
+      "0x806F15"
+    ],
+    "rbm_h03_atf_state": [
+      "0x806F18",
+      "0x806F2C"
+    ],
+    "rbm_h03_selector_adc_state": [
+      "0x806F2C",
+      "0x806F38"
+    ],
+    "h03_can_owner": [
+      "0x808F48",
+      "0x808F54"
+    ],
+    "rbm_h03_engine_rx": [
+      "0x808E40",
+      "0x808E78"
+    ],
+    "rbm_h03_engine_qualifier": [
+      "0x808E78",
+      "0x808E7E"
+    ],
+    "rbm_h03_dtc_state": [
+      "0x808F54",
+      "0x808F72"
+    ],
+    "rbm_h03_can_service": [
+      "0x80904C",
+      "0x809074"
+    ],
+    "rbm_h03_can13": [
+      "0x808E80",
+      "0x808F48"
+    ],
+    "rbm_h03_dtc_target": [
+      "0x808F74",
+      "0x80904C"
+    ],
+    "rbm_h03_fast_output": [
+      "0x809090",
+      "0x8090A0"
+    ],
+    "rbm_h03_can13_input": [
+      "0x809454",
+      "0x809480"
+    ],
+    "rbm_h03_tx_input": [
+      "0x809480",
+      "0x809498"
+    ],
+    "rbm_h03_torque_input": [
+      "0x8094A8",
+      "0x8094B4"
+    ],
+    "rbm_h03_takeover_state": [
+      "0x806EA0",
+      "0x806EBC"
+    ],
+    "rbm_h03_runtime_state": [
+      "0x806B40",
+      "0x806E7D"
+    ],
+    "rbm_h03_cycle_state": [
+      "0x806E80",
+      "0x806EA0"
+    ],
+    "rbm_h03_toyota_release_state": [
+      "0x806F04",
+      "0x806F14"
+    ],
+    "rbm_h03_main_result": [
+      "0x809074",
+      "0x809090"
+    ],
+    "rbm_h03_cycle_workspace": [
+      "0x8090A0",
+      "0x8092D4"
+    ],
+    "rbm_h03_cycle_input": [
+      "0x809368",
+      "0x809380"
+    ]
+  },
+  "aliases_allocate_new_ram": false,
+  "hardware_ram_ownership_verified": false,
+  "fixture": {
+    "direct_cases": [
+      {
+        "case": "active",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": true
+      },
+      {
+        "case": "denied_ram",
+        "software_grant_withdrawn": false,
+        "inhibit_mmio_verified": false
+      },
+      {
+        "case": "cold",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": false
+      },
+      {
+        "case": "stale_takeover_ops",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": false
+      },
+      {
+        "case": "service_mode",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": false
+      },
+      {
+        "case": "programming_gate",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": false
+      },
+      {
+        "case": "virtual_flash",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": false
+      },
+      {
+        "case": "repeat",
+        "software_grant_withdrawn": true,
+        "inhibit_mmio_verified": true
+      }
+    ],
+    "native_entry_cases": {
+      "original_early_receive": "0x0012B4",
+      "cases": [
+        {
+          "case": "reset_to_app_safe",
+          "stop": "0x008100",
+          "qualified_receive_releases": 2,
+          "revoke_calls": 0,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 0,
+          "can13_grant": 0
+        },
+        {
+          "case": "reset_bad_marker",
+          "stop": "0x0047D8",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 0,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 1
+        },
+        {
+          "case": "reset_active_virtual_flash",
+          "stop": "0x0047D8",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 0,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 1
+        },
+        {
+          "case": "reset_timeout",
+          "stop": "0x0047D8",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 0,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 1
+        },
+        {
+          "case": "reset_filter_write_lost",
+          "stop": "0x0047D8",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 0,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 1
+        },
+        {
+          "case": "reset_copy_cancel_lost",
+          "stop": "0x0047D8",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 0,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 1
+        },
+        {
+          "case": "stock_start_permit",
+          "stop": "0x00B7FC",
+          "qualified_receive_releases": 2,
+          "revoke_calls": 1,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 43,
+          "can13_grant": 0
+        },
+        {
+          "case": "stock_start_keeps_reset_on_fault",
+          "stop": "0x00B7FC",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 1,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 0
+        },
+        {
+          "case": "recovery_before_and_after_permit",
+          "stop": "0x00B884",
+          "qualified_receive_releases": 2,
+          "revoke_calls": 2,
+          "lower_setup_stayed_parked": true,
+          "setup_generation": 43,
+          "can13_grant": 0
+        },
+        {
+          "case": "recovery_prepare_timeout",
+          "stop": "0x00B890",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 1,
+          "lower_setup_stayed_parked": false,
+          "setup_generation": 42,
+          "can13_grant": 0
+        },
+        {
+          "case": "recovery_rearm_rejects_wrong_mask",
+          "stop": "0x00B890",
+          "qualified_receive_releases": 0,
+          "revoke_calls": 2,
+          "lower_setup_stayed_parked": true,
+          "setup_generation": 42,
+          "can13_grant": 0
+        },
+        {
+          "case": "bus_off_recovery",
+          "stop": "0x00B884",
+          "qualified_receive_releases": 2,
+          "revoke_calls": 2,
+          "lower_setup_stayed_parked": true,
+          "setup_generation": 43,
+          "can13_grant": 0
+        }
+      ]
+    },
+    "cold_owner_initialized_while_both_can_parked": true,
+    "first_native_setup_generation": 1,
+    "cold_ram_denial_keeps_rx_parked": true,
+    "native_permit_preserves_unowned_generation": true,
+    "shared_irq_and_foreground_checks": 7,
+    "target_service": [
+      {
+        "case": "stock_writers",
+        "steps": 1,
+        "invalid_profiles_refused": 0
+      },
+      {
+        "case": "missing_dtc_dispatch",
+        "steps": 1,
+        "invalid_profiles_refused": 0
+      },
+      {
+        "case": "native_service",
+        "steps": 16,
+        "invalid_profiles_refused": 5
+      }
+    ],
+    "native_engine_profile_shared_ram_and_clock": true,
+    "rejected_engine_profiles": 4,
+    "used_actual_inhibit_implementation": true,
+    "physical_output_verified": false
+  },
+  "flashable_image": null,
+  "aggregate_placement": {
+    "protected_two_windows": {
+      "status": "FAIL_BINDINGS",
+      "profile": "two-window",
+      "capacity_bytes": 89828,
+      "retained_roots": 210,
+      "retained_sections": 586,
+      "known_flash_bytes": 106168,
+      "known_static_ram_bytes": 4,
+      "nominal_flash_margin_before_alignment_and_missing_material": -16340,
+      "missing_symbols": [
+        "rbm_h03_application_binding",
+        "rbm_h03_sensor_config"
+      ],
+      "known_sections_fit": false
+    },
+    "protected_padding": {
+      "status": "FAIL_BINDINGS",
+      "profile": "padding-candidate",
+      "capacity_bytes": 110548,
+      "retained_roots": 210,
+      "retained_sections": 586,
+      "known_flash_bytes": 106168,
+      "known_static_ram_bytes": 4,
+      "nominal_flash_margin_before_alignment_and_missing_material": 4380,
+      "missing_symbols": [
+        "rbm_h03_application_binding",
+        "rbm_h03_sensor_config"
+      ],
+      "known_sections_fit": false
+    },
+    "service_and_resident_rx_without_monitor_veneers": {
+      "status": "FAIL_BINDINGS",
+      "profile": "padding-candidate",
+      "capacity_bytes": 110548,
+      "retained_roots": 198,
+      "retained_sections": 562,
+      "known_flash_bytes": 102052,
+      "known_static_ram_bytes": 4,
+      "nominal_flash_margin_before_alignment_and_missing_material": 8496,
+      "missing_symbols": [
+        "rbm_h03_application_binding",
+        "rbm_h03_sensor_config"
+      ],
+      "known_sections_fit": true
+    }
+  },
+  "profiled_service_placement": {
+    "status": "FAIL_BINDINGS",
+    "known_flash_bytes": 103552,
+    "known_static_ram_bytes": 4,
+    "service_entries": [
+      "h03_can13_tx_gate",
+      "lfj8_h03_target_service_prepare_locked",
+      "lfj8_h03_target_service_stop_locked",
+      "rbm_h03_can_monitor_retire_tx13_locked",
+      "rbm_h03_target_service_phase"
+    ],
+    "typed_addresses": {
+      "rbm_h03_application": [
+        "0x806EFC",
+        "0x806F04"
+      ],
+      "rbm_h03_sensor_state": [
+        "0x806ED8",
+        "0x806EFC"
+      ],
+      "rbm_h03_tml0_1mhz_qualified": [
+        "0x806F14",
+        "0x806F15"
+      ],
+      "rbm_h03_atf_state": [
+        "0x806F18",
+        "0x806F2C"
+      ],
+      "rbm_h03_selector_adc_state": [
+        "0x806F2C",
+        "0x806F38"
+      ],
+      "h03_can_owner": [
+        "0x808F48",
+        "0x808F54"
+      ],
+      "rbm_h03_engine_rx": [
+        "0x808E40",
+        "0x808E78"
+      ],
+      "rbm_h03_engine_qualifier": [
+        "0x808E78",
+        "0x808E7E"
+      ],
+      "rbm_h03_dtc_state": [
+        "0x808F54",
+        "0x808F72"
+      ],
+      "rbm_h03_can_service": [
+        "0x80904C",
+        "0x809074"
+      ],
+      "rbm_h03_can13": [
+        "0x808E80",
+        "0x808F48"
+      ],
+      "rbm_h03_dtc_target": [
+        "0x808F74",
+        "0x80904C"
+      ],
+      "rbm_h03_fast_output": [
+        "0x809090",
+        "0x8090A0"
+      ],
+      "rbm_h03_can13_input": [
+        "0x809454",
+        "0x809480"
+      ],
+      "rbm_h03_tx_input": [
+        "0x809480",
+        "0x809498"
+      ],
+      "rbm_h03_torque_input": [
+        "0x8094A8",
+        "0x8094B4"
+      ]
+    },
+    "tx13": {
+      "status": "LINKED_ADDRESS_MODEL",
+      "installed": false,
+      "elf_words_verified": true,
+      "patch": {
+        "site": 49996,
+        "stock_word": "2e7f2a7f",
+        "branch_word": "ff008738",
+        "hook": "h03_can13_tx_gate",
+        "target": 188460,
+        "redirect_symbol": "h03_can13_tx_redirect"
+      },
+      "oem_overlay_bytes": 4,
+      "gate_bytes": 60,
+      "continuations": {
+        "h03_tx_writer_resume": 50000
+      },
+      "can_owner_address": 8425288,
+      "gate_words": {
+        "h03_can13_tx_owner_load": "e1808f48",
+        "h03_can13_tx_replay": "2e7f2a7f",
+        "h03_can13_tx_resume_branch": "ffff78be"
+      },
+      "verification_scope": "independent_link_at_common_addresses"
+    },
+    "early_irq_model": {
+      "elf_sha256": "f7f27afcec99b87e3ddf6e8ab23112562c7b022292ac4375ab9f6f8f243ac140",
+      "placements": [
+        {
+          "section": ".text.rbm_h03_dtc_rx_redirect",
+          "window": "dtc_rx_redirect",
+          "address": 5428,
+          "bytes": 4,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.rbm_h03_early_irq_redirect",
+          "window": "rbm_h03_early_irq_redirect",
+          "address": 15804,
+          "bytes": 4,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.rbm_h03_dtc_rx_dispatch_redirect",
+          "window": "dtc_rx_dispatch_redirect",
+          "address": 18232,
+          "bytes": 4,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.lfj8_h03_dtc_rx_queue_capture_pending",
+          "window": "dtc_rx_resident",
+          "address": 24576,
+          "bytes": 512,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.publish_locked",
+          "window": "dtc_rx_resident",
+          "address": 25088,
+          "bytes": 404,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.lfj8_h03_dtc_rx_queue_capture_basic",
+          "window": "dtc_rx_resident",
+          "address": 25492,
+          "bytes": 220,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text",
+          "window": "dtc_rx_resident",
+          "address": 25712,
+          "bytes": 216,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.expire",
+          "window": "dtc_rx_resident",
+          "address": 25928,
+          "bytes": 200,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.capture_basic.part.0",
+          "window": "dtc_rx_resident",
+          "address": 26128,
+          "bytes": 192,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.lfj8_h03_dtc_can_decode_basic",
+          "window": "dtc_rx_resident",
+          "address": 26320,
+          "bytes": 180,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.rbm_h03_dtc_rx_observe",
+          "window": "dtc_rx_resident",
+          "address": 26500,
+          "bytes": 172,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.rbm_h03_dtc_rx_hook",
+          "window": "dtc_rx_resident",
+          "address": 26672,
+          "bytes": 152,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.rbm_h03_dtc_rx_begin",
+          "window": "dtc_rx_resident",
+          "address": 26824,
+          "bytes": 148,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.rbm_h03_dtc_rx_dispatch_hook",
+          "window": "dtc_rx_resident",
+          "address": 26972,
+          "bytes": 148,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.sample_clocks",
+          "window": "dtc_rx_resident",
+          "address": 27120,
+          "bytes": 136,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.h03_can0_operational",
+          "window": "dtc_rx_resident",
+          "address": 27360,
+          "bytes": 92,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.lfj8_h03_can0_read_timestamp",
+          "window": "dtc_rx_resident",
+          "address": 27452,
+          "bytes": 92,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.can0_available",
+          "window": "dtc_rx_resident",
+          "address": 27544,
+          "bytes": 84,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.lfj8_h03_dtc_rx_dispatch_begin",
+          "window": "dtc_rx_resident",
+          "address": 27628,
+          "bytes": 84,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.lfj8_h03_dtc_rx_dispatch_skip_paired",
+          "window": "dtc_rx_resident",
+          "address": 27712,
+          "bytes": 84,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.ready",
+          "window": "dtc_rx_resident",
+          "address": 27896,
+          "bytes": 40,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.basiccan_active",
+          "window": "dtc_rx_resident",
+          "address": 27936,
+          "bytes": 36,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.rbm_h03_early_irq_gate",
+          "window": "dtc_rx_resident",
+          "address": 28024,
+          "bytes": 24,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.increment",
+          "window": "dtc_rx_resident",
+          "address": 28048,
+          "bytes": 16,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.rbm_h03_dma4_redirect",
+          "window": "rbm_h03_dma4_redirect",
+          "address": 53004,
+          "bytes": 4,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.rbm_h03_dma4_guard",
+          "window": "prefix_primary",
+          "address": 176556,
+          "bytes": 128,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".text.lfj8_h03_service_span_allowed",
+          "window": "prefix_primary",
+          "address": 180524,
+          "bytes": 104,
+          "alignment": 4,
+          "noload": false,
+          "flags": 6
+        },
+        {
+          "section": ".rodata.rbm_h03_service_policy",
+          "window": "prefix_primary",
+          "address": 186820,
+          "bytes": 68,
+          "alignment": 4,
+          "noload": false,
+          "flags": 2
+        },
+        {
+          "section": ".bss.irq_target",
+          "window": "early_irq_pointer",
+          "address": 8417196,
+          "bytes": 4,
+          "alignment": 4,
+          "noload": true,
+          "flags": 3
+        }
+      ],
+      "roots": [
+        "rbm_h03_early_irq_redirect",
+        "rbm_h03_dma4_redirect",
+        "rbm_h03_dtc_rx_redirect",
+        "rbm_h03_dtc_rx_dispatch_redirect"
+      ],
+      "irq_pointer": 8417196,
+      "policy_ranges": [
+        [
+          8416064,
+          8417196
+        ],
+        [
+          8417196,
+          8417200
+        ],
+        [
+          8422776,
+          8424884
+        ],
+        [
+          8425024,
+          8425632
+        ],
+        [
+          8425632,
+          8426708
+        ],
+        [
+          8427264,
+          8429568
+        ]
+      ],
+      "artifact_kind": "EARLY_IRQ_DMA4_SIMULATOR_ONLY"
+    },
+    "missing_symbols": [
+      "fixture_capture_toyota",
+      "fixture_engine_context",
+      "fixture_initialize_inputs",
+      "rbm_h03_cycle_input",
+      "rbm_h03_cycle_state",
+      "rbm_h03_cycle_workspace",
+      "rbm_h03_main_result",
+      "rbm_h03_runtime_state",
+      "rbm_h03_sensor_config",
+      "rbm_h03_takeover_state",
+      "rbm_h03_target_clock_ready",
+      "rbm_h03_target_ram_owned",
+      "rbm_h03_target_startup_gear",
+      "rbm_h03_target_startup_gp",
+      "rbm_h03_target_takeover_ops",
+      "service_profile"
+    ],
+    "hardware_verified": false,
+    "flashable_image": null
+  }
+}

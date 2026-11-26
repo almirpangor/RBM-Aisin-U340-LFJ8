@@ -1,0 +1,154 @@
+[
+  {
+    "name": "native",
+    "exit_code": 0,
+    "seconds": 106.48,
+    "command": [
+      "tools/check_integrated_h03.py",
+      "--suite",
+      "native",
+      "--base",
+      "D:/\u041d\u043e\u0432\u0430\u044f \u043f\u0430\u043f\u043a\u0430 (2)/\u041e\u0431\u0449\u0430\u044f \u043f\u0430\u043f\u043a\u0430/TCM/LFJ8-T-D.bin",
+      "--gcc",
+      "C:/Users/RBmotors/AppData/Local/Temp/rbm-m32r-smoke/gnu-m32r-elf/bin/m32r-elf-gcc.exe",
+      "--controller",
+      "D:\\RBM-Integration-39-20261121\\controller\\rbm_u340e_m32r_be.o",
+      "--bridge",
+      "D:\\RBM-Integration-39-20261121\\bridge\\lfj8_9e1c_m32r.o",
+      "--out",
+      "D:\\RBM-Integration-39-20261121\\native"
+    ]
+  },
+  {
+    "name": "components",
+    "exit_code": 0,
+    "seconds": 32.38,
+    "command": [
+      "tools/check_integrated_h03.py",
+      "--suite",
+      "components",
+      "--base",
+      "D:/\u041d\u043e\u0432\u0430\u044f \u043f\u0430\u043f\u043a\u0430 (2)/\u041e\u0431\u0449\u0430\u044f \u043f\u0430\u043f\u043a\u0430/TCM/LFJ8-T-D.bin",
+      "--gcc",
+      "C:/Users/RBmotors/AppData/Local/Temp/rbm-m32r-smoke/gnu-m32r-elf/bin/m32r-elf-gcc.exe",
+      "--controller",
+      "D:\\RBM-Integration-39-20261121\\controller\\rbm_u340e_m32r_be.o",
+      "--bridge",
+      "D:\\RBM-Integration-39-20261121\\bridge\\lfj8_9e1c_m32r.o",
+      "--out",
+      "D:\\RBM-Integration-39-20261121\\components"
+    ]
+  },
+  {
+    "name": "target-platform",
+    "exit_code": 0,
+    "seconds": 25.83,
+    "command": [
+      "targets/lfj8/check_h03_target_platform.py",
+      "--base",
+      "D:/\u041d\u043e\u0432\u0430\u044f \u043f\u0430\u043f\u043a\u0430 (2)/\u041e\u0431\u0449\u0430\u044f \u043f\u0430\u043f\u043a\u0430/TCM/LFJ8-T-D.bin",
+      "--gcc",
+      "C:/Users/RBmotors/AppData/Local/Temp/rbm-m32r-smoke/gnu-m32r-elf/bin/m32r-elf-gcc.exe",
+      "--controller",
+      "D:\\RBM-Integration-39-20261121\\controller\\rbm_u340e_m32r_be.o",
+      "--bridge",
+      "D:\\RBM-Integration-39-20261121\\bridge\\lfj8_9e1c_m32r.o",
+      "--out",
+      "D:\\RBM-Integration-39-20261121\\target-platform.json"
+    ]
+  },
+  {
+    "name": "target-outputs",
+    "exit_code": 0,
+    "seconds": 2.72,
+    "command": [
+      "targets/lfj8/check_h03_target_outputs.py",
+      "--base",
+      "D:/\u041d\u043e\u0432\u0430\u044f \u043f\u0430\u043f\u043a\u0430 (2)/\u041e\u0431\u0449\u0430\u044f \u043f\u0430\u043f\u043a\u0430/TCM/LFJ8-T-D.bin",
+      "--gcc",
+      "C:/Users/RBmotors/AppData/Local/Temp/rbm-m32r-smoke/gnu-m32r-elf/bin/m32r-elf-gcc.exe",
+      "--out",
+      "D:\\RBM-Integration-39-20261121\\target-outputs.json"
+    ]
+  },
+  {
+    "name": "dma4",
+    "exit_code": 0,
+    "seconds": 1.39,
+    "command": [
+      "targets/lfj8/check_h03_dma4_guard.py",
+      "--base",
+      "D:/\u041d\u043e\u0432\u0430\u044f \u043f\u0430\u043f\u043a\u0430 (2)/\u041e\u0431\u0449\u0430\u044f \u043f\u0430\u043f\u043a\u0430/TCM/LFJ8-T-D.bin",
+      "--gcc",
+      "C:/Users/RBmotors/AppData/Local/Temp/rbm-m32r-smoke/gnu-m32r-elf/bin/m32r-elf-gcc.exe",
+      "--out",
+      "D:\\RBM-Integration-39-20261121\\dma4.json"
+    ]
+  },
+  {
+    "name": "nvm",
+    "exit_code": 0,
+    "seconds": 32.22,
+    "command": [
+      "targets/lfj8/check_h03_nvm.py",
+      "--base",
+      "D:/\u041d\u043e\u0432\u0430\u044f \u043f\u0430\u043f\u043a\u0430 (2)/\u041e\u0431\u0449\u0430\u044f \u043f\u0430\u043f\u043a\u0430/TCM/LFJ8-T-D.bin",
+      "--gcc",
+      "C:/Users/RBmotors/AppData/Local/Temp/rbm-m32r-smoke/gnu-m32r-elf/bin/m32r-elf-gcc.exe",
+      "--cc",
+      "D:/RBMotors/DevelopmentTools/zig-windows-x86_64-0.13.0/zig.exe",
+      "--out",
+      "D:\\RBM-Integration-39-20261121\\nvm.json"
+    ]
+  },
+  {
+    "name": "service-gate",
+    "exit_code": 0,
+    "seconds": 16.05,
+    "command": [
+      "targets/lfj8/check_h03_dtc_service_gate.py",
+      "--base",
+      "D:/\u041d\u043e\u0432\u0430\u044f \u043f\u0430\u043f\u043a\u0430 (2)/\u041e\u0431\u0449\u0430\u044f \u043f\u0430\u043f\u043a\u0430/TCM/LFJ8-T-D.bin",
+      "--gcc",
+      "C:/Users/RBmotors/AppData/Local/Temp/rbm-m32r-smoke/gnu-m32r-elf/bin/m32r-elf-gcc.exe"
+    ]
+  },
+  {
+    "name": "bosch-build",
+    "exit_code": 0,
+    "seconds": 2.41,
+    "command": [
+      "targets/bosch/build.py",
+      "--engine",
+      "C:\\Users\\RBmotors\\Yandex.Disk\\\u041f\u0440\u043e\u0435\u043a\u0442\u044b\\\u0411\u043b\u043e\u043a \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 U340\\RBM-Aisin-U340-LFJ8\\local\\bosch-r4\\development\\E4M3\\engine",
+      "--s04",
+      "C:\\Users\\RBmotors\\Yandex.Disk\\\u041f\u0440\u043e\u0435\u043a\u0442\u044b\\\u0411\u043b\u043e\u043a \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 U340\\RBM-Aisin-U340-LFJ8\\local\\bosch-r4\\development\\E4M3\\engine\\firmware\\GW4G15_REV8_CAN_TORQUE_E4_BENCH.bin",
+      "--outdir",
+      "D:\\RBM-Integration-39-20261121\\bosch",
+      "--with-model-fields",
+      "--with-ordinary-model-field",
+      "--compact"
+    ]
+  },
+  {
+    "name": "placed-core",
+    "exit_code": 0,
+    "seconds": 34.11,
+    "command": [
+      "tools/check_h03_image_layout.py",
+      "--base",
+      "D:/\u041d\u043e\u0432\u0430\u044f \u043f\u0430\u043f\u043a\u0430 (2)/\u041e\u0431\u0449\u0430\u044f \u043f\u0430\u043f\u043a\u0430/TCM/LFJ8-T-D.bin",
+      "--gcc",
+      "C:/Users/RBmotors/AppData/Local/Temp/rbm-m32r-smoke/gnu-m32r-elf/bin/m32r-elf-gcc.exe",
+      "--controller",
+      "D:\\RBM-Integration-39-20261121\\controller\\rbm_u340e_m32r_be.o",
+      "--bridge",
+      "D:\\RBM-Integration-39-20261121\\bridge\\lfj8_9e1c_m32r.o",
+      "--profile",
+      "padding-candidate",
+      "--cpu-test",
+      "--out",
+      "D:\\RBM-Integration-39-20261121\\placed-core"
+    ]
+  }
+]

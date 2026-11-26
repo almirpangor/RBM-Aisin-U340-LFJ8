@@ -1,7 +1,0 @@
-test_extraction_matches_pinned_s03_image (test_chery_dtc_table.CheryDtcTableTests.test_extraction_matches_pinned_s03_image) ... ok
-test_service_table_matches_extraction_in_index_order (test_chery_dtc_table.CheryDtcTableTests.test_service_table_matches_extraction_in_index_order) ... ok
-
-----------------------------------------------------------------------
-Ran 2 tests in 0.019s
-
-OK

@@ -1,1 +1,0 @@
-CAN-05 PASS: 65536 operand pairs, counter wrap/gap/replay, checksum, disable and expiry (host model)

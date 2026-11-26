@@ -1,0 +1,4 @@
+before host: PROFILE min=4500 max=5500 age=5000 command=10000 startup=0 FAIL line 121: started == 1
+before M32R: PROFILE min=4500 max=5500 age=5000 command=10000 startup=0 FAIL line 121: started == 1
+after host: PROFILE min=4500 max=5500 age=4499 command=10000 startup=1 PASS selected H03 startup, phase age, wait, rollover and backlog boundaries
+after M32R: PROFILE min=4500 max=5500 age=4499 command=10000 startup=1 PASS selected H03 startup, phase age, wait, rollover and backlog boundaries

@@ -1,0 +1,28 @@
+diff --git a/targets/lfj8/bench_application_profile.h b/targets/lfj8/bench_application_profile.h
+--- a/targets/lfj8/bench_application_profile.h
++++ b/targets/lfj8/bench_application_profile.h
+@@ -57,13 +57,19 @@
+                RBM_H03_BENCH_TOYOTA_WATCHDOG_TICKS < UINT32_C(0x80000000),
+                "Toyota watchdog must include its bounded release latency");
+ 
+-/* TOP10's OEM nominal period is 500 ticks; the H03 publication is every
+- * ten TOP10 periods. Admit +/- one TOP10 period, not a measured tolerance.
+- * A lost whole publication is outside this window and latches a fault. */
++/* H03 publishes a phase every ten nominal 500-tick TOP10 intervals. The bench
++ * profile allows one TOP10 interval either side of nominal. The phase age
++ * is the window for using one publication and must expire before the next
++ * valid release can arrive. The next-release deadline is max_period_ticks. */
++#define RBM_H03_BENCH_PHASE_MIN_PERIOD_TICKS (LFJ8_H03_BENCH_PHASE_TICKS - LFJ8_H03_BENCH_TOP10_TICKS)
++#define RBM_H03_BENCH_PHASE_MAX_AGE_TICKS (RBM_H03_BENCH_PHASE_MIN_PERIOD_TICKS - 1u)
++_Static_assert(LFJ8_H03_BENCH_PHASE_TICKS > LFJ8_H03_BENCH_TOP10_TICKS + 1u,
++               "H03 phase age needs a positive window before the next release");
++
+ #define RBM_H03_PROFILE_PHASE_CONFIG { \
+-    LFJ8_H03_BENCH_PHASE_TICKS - LFJ8_H03_BENCH_TOP10_TICKS, \
++    RBM_H03_BENCH_PHASE_MIN_PERIOD_TICKS, \
+     LFJ8_H03_BENCH_PHASE_TICKS + LFJ8_H03_BENCH_TOP10_TICKS, \
+-    LFJ8_H03_BENCH_PHASE_TICKS, 2u * LFJ8_H03_BENCH_PHASE_TICKS }
++    RBM_H03_BENCH_PHASE_MAX_AGE_TICKS, 2u * LFJ8_H03_BENCH_PHASE_TICKS }
+ #define RBM_H03_PROFILE_TOYOTA_PERIOD_TICKS RBM_H03_BENCH_TOYOTA_PERIOD_TICKS
+ #define RBM_H03_PROFILE_TOYOTA_MAX_LATENESS_TICKS RBM_H03_BENCH_TOYOTA_MAX_LATENESS_TICKS
+ #define RBM_H03_PROFILE_TOYOTA_MAX_PERIOD_TICKS RBM_H03_BENCH_TOYOTA_WATCHDOG_TICKS

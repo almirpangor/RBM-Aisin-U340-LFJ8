@@ -1,0 +1,53 @@
+[
+  {
+    "name": "bosch-model",
+    "exit_code": 0,
+    "command": [
+      "targets/bosch/verify_ordinary_model_field.py",
+      "--engine",
+      "C:\\Users\\RBmotors\\Yandex.Disk\\\u041f\u0440\u043e\u0435\u043a\u0442\u044b\\\u0411\u043b\u043e\u043a \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 U340\\RBM-Aisin-U340-LFJ8\\local\\bosch-r4\\development\\E4M3\\engine",
+      "--s04",
+      "C:\\Users\\RBmotors\\Yandex.Disk\\\u041f\u0440\u043e\u0435\u043a\u0442\u044b\\\u0411\u043b\u043e\u043a \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 U340\\RBM-Aisin-U340-LFJ8\\local\\bosch-r4\\development\\E4M3\\engine\\firmware\\GW4G15_REV8_CAN_TORQUE_E4_BENCH.bin",
+      "--model",
+      "C:\\Users\\RBmotors\\Yandex.Disk\\\u041f\u0440\u043e\u0435\u043a\u0442\u044b\\\u0411\u043b\u043e\u043a \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 U340\\RBM-Aisin-U340-LFJ8\\.sources\\R2\\tools\\c167_subset.py",
+      "--image",
+      "D:\\RBM-Integration-11-20261121\\bosch\\E4M3_CHERY_ORDINARY_MODEL_NO_CRUISE_COMPACT_OFFLINE_ONLY.bin",
+      "--compact"
+    ]
+  },
+  {
+    "name": "roundtrip",
+    "exit_code": 0,
+    "command": [
+      "-m",
+      "model.run_integrated",
+      "--cc",
+      "D:/RBMotors/DevelopmentTools/zig-windows-x86_64-0.13.0/zig.exe",
+      "--bosch-engine",
+      "C:\\Users\\RBmotors\\Yandex.Disk\\\u041f\u0440\u043e\u0435\u043a\u0442\u044b\\\u0411\u043b\u043e\u043a \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 U340\\RBM-Aisin-U340-LFJ8\\local\\bosch-r4\\development\\E4M3\\engine",
+      "--bosch-s04",
+      "C:\\Users\\RBmotors\\Yandex.Disk\\\u041f\u0440\u043e\u0435\u043a\u0442\u044b\\\u0411\u043b\u043e\u043a \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 U340\\RBM-Aisin-U340-LFJ8\\local\\bosch-r4\\development\\E4M3\\engine\\firmware\\GW4G15_REV8_CAN_TORQUE_E4_BENCH.bin",
+      "--bosch-image",
+      "D:\\RBM-Integration-11-20261121\\bosch\\E4M3_CHERY_ORDINARY_MODEL_NO_CRUISE_COMPACT_OFFLINE_ONLY.bin",
+      "--bosch-tx-image",
+      "D:\\RBM-Integration-11-20261121\\bosch\\E4M3_CHERY_ORDINARY_MODEL_NO_CRUISE_COMPACT_OFFLINE_ONLY.bin",
+      "--bosch-tx-report",
+      "D:\\RBM-Integration-11-20261121\\bosch-model.json"
+    ]
+  },
+  {
+    "name": "placed-boot",
+    "exit_code": 0,
+    "command": [
+      "targets/lfj8/check_h03_boot_writers.py",
+      "--base",
+      "D:/\u041d\u043e\u0432\u0430\u044f \u043f\u0430\u043f\u043a\u0430 (2)/\u041e\u0431\u0449\u0430\u044f \u043f\u0430\u043f\u043a\u0430/TCM/LFJ8-T-D.bin",
+      "--gcc",
+      "C:/Users/RBmotors/AppData/Local/Temp/rbm-m32r-smoke/gnu-m32r-elf/bin/m32r-elf-gcc.exe",
+      "--placed-elf",
+      "D:\\RBM-Integration-11-20261121\\composition-spare\\early-irq.elf",
+      "--layout-report",
+      "D:\\RBM-Integration-11-20261121\\composition-spare\\layout.json"
+    ]
+  }
+]

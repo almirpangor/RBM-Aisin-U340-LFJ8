@@ -1,0 +1,25 @@
+test_block_resume_review_and_complete_require_published_result (test_task_coordination.CoordinationTests.test_block_resume_review_and_complete_require_published_result) ... ok
+test_busy_continuation_does_not_appear_free_or_take_recommended_owner (test_task_coordination.CoordinationTests.test_busy_continuation_does_not_appear_free_or_take_recommended_owner) ... ok
+test_continuation_tracks_main_without_reopening_accepted_work (test_task_coordination.CoordinationTests.test_continuation_tracks_main_without_reopening_accepted_work) ... ok
+test_different_tasks_simultaneous_claim_preserves_both (test_task_coordination.CoordinationTests.test_different_tasks_simultaneous_claim_preserves_both) ... ok
+test_existing_unrelated_branch_is_not_overwritten (test_task_coordination.CoordinationTests.test_existing_unrelated_branch_is_not_overwritten) ... ok
+test_file_extension_and_same_branch_conflict (test_task_coordination.CoordinationTests.test_file_extension_and_same_branch_conflict) ... ok
+test_invalid_paths_cannot_be_reserved (test_task_coordination.CoordinationTests.test_invalid_paths_cannot_be_reserved) ... ok
+test_linked_worktrees_fetch_without_shared_tracking_ref_updates (test_task_coordination.CoordinationTests.test_linked_worktrees_fetch_without_shared_tracking_ref_updates) ... ok
+test_old_claim_does_not_expire_automatically (test_task_coordination.CoordinationTests.test_old_claim_does_not_expire_automatically) ... ok
+test_only_current_review_can_complete (test_task_coordination.CoordinationTests.test_only_current_review_can_complete) ... ok
+test_other_owner_and_old_generation_cannot_release (test_task_coordination.CoordinationTests.test_other_owner_and_old_generation_cannot_release) ... ok
+test_read_and_write_leave_worktree_index_and_branch_intact (test_task_coordination.CoordinationTests.test_read_and_write_leave_worktree_index_and_branch_intact) ... ok
+test_rejected_push_does_not_claim_locally (test_task_coordination.CoordinationTests.test_rejected_push_does_not_claim_locally) ... ok
+test_remote_error_is_not_treated_as_empty_board (test_task_coordination.CoordinationTests.test_remote_error_is_not_treated_as_empty_board) ... ok
+test_result_typo_or_unknown_commit_cannot_complete (test_task_coordination.CoordinationTests.test_result_typo_or_unknown_commit_cannot_complete) ... ok
+test_resume_racing_with_complete_preserves_new_work (test_task_coordination.CoordinationTests.test_resume_racing_with_complete_preserves_new_work) ... ok
+test_same_task_simultaneous_claim_has_one_winner (test_task_coordination.CoordinationTests.test_same_task_simultaneous_claim_has_one_winner) ... ok
+test_simultaneous_overlapping_directory_reservation_has_one_winner (test_task_coordination.CoordinationTests.test_simultaneous_overlapping_directory_reservation_has_one_winner) ... ok
+test_successful_push_with_lost_ack_is_not_duplicated (test_task_coordination.CoordinationTests.test_successful_push_with_lost_ack_is_not_duplicated) ... ok
+test_unknown_and_deferred_tasks_are_not_claimed (test_task_coordination.CoordinationTests.test_unknown_and_deferred_tasks_are_not_claimed) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 74.533s
+
+OK

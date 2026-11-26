@@ -1,0 +1,4 @@
+/.sources/
+/local/
+__pycache__/
+*.pyc

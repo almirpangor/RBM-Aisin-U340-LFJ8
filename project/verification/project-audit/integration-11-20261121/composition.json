@@ -1,0 +1,1315 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "profile": "padding-candidate",
+  "compiler_memory_model": "medium",
+  "input_objects": {
+    "lfj8_9e1c_m32r.o": "fac7f677dd186d3a0b5f143bfee3dfc413b798836eb2bbc4168550ed13b42928",
+    "rbm_u340e_m32r_be.o": "13b42c89f3af237bbdc1307149918328561f0226f1443706d53160fc23c36ead"
+  },
+  "input_sources": {
+    "diagnostics/chery_dtc.c": "dd21f1d6bc5bf7607d72785eca7e007d3a1702812e0796a7c8f5d5cf826dd6de",
+    "diagnostics/chery_dtc_can.c": "f1df361c6eb78560f93fcdffb58e6d1d6591e8f74f411f01a877588caa1847e4",
+    "diagnostics/chery_dtc_link.c": "c64eb8b2a328751c8e7725892ee8dd54943aa4b1fbd5e7408e0945c7fdbdde14",
+    "diagnostics/chery_model_monitor.c": "00f7d1375be79efa54d308b76f6889fec29983dcdcb666af5dc9c9b8d97713b0",
+    "diagnostics/chery_dtc_journal.c": "880f38b3aac2cf5cd6f44a272683f2b0126eb1d451772cd875f8be864cc4cfbb",
+    "targets/lfj8/lfj8_range_control.c": "2db42512bfff635853bcb863c24db5dd3f96dee9a02c3d53e836ae83a5ffbe3c",
+    "targets/lfj8/lfj8_h03_outputs.c": "f4f7fffd84595a499490ee89785b7d030a44c20671ad3ff1963dbccd3dd53208",
+    "targets/lfj8/lfj8_h03_takeover.c": "0b98cf11638cdf77467723a11b10ad8028802c2e0b47230d5e289a4a38d9291a",
+    "targets/lfj8/lfj8_h03_torque.c": "ab086313da469e76065100dc5a90ddeb88b4c98a167e22bfb30b91252ae3b990",
+    "targets/lfj8/lfj8_h03_dtc_can.c": "e72164b5c9ec6af3ead985cf01228f489b552cd8030e615a0f3107227e80b824",
+    "targets/lfj8/lfj8_h03_dtc_rx_queue.c": "416b4164f0c57f946a8a59400559ac8a1a41b1db4c6dbd49ffb15dc6f2fda4dc",
+    "targets/lfj8/lfj8_h03_torque_can.c": "9703bb5ab434cb865ca6831d65265c34e11e82834c47e594ca711b2525cecfb5",
+    "targets/lfj8/ta2005_engine_qualifier.c": "3e8555cd59d42ca87c155ba918a2138695e0841bf40574ca4a947374a685091d",
+    "targets/lfj8/lfj8_h03_cycle.c": "10a47990c199d5b375d7d378f1c0ace9a038afb2aa48d8417b520221a2f51c57",
+    "targets/lfj8/lfj8_h03_phase_clock.c": "842354b863c8bc74e52835a5c8bdbe1925cfc9933c242977ab0b6a72564e7fbe",
+    "targets/lfj8/lfj8_h03_phase_startup.c": "a2978dcd24e83379d28ec0770bf11d0464373e19f9a48ff1331a01a3d52e2e6b",
+    "targets/lfj8/lfj8_h03_engine_feed.c": "504d98bc8df70691bdc16f4620524381045724031cbb8025422a451d33eb8642",
+    "targets/lfj8/lfj8_h03_can13.c": "8705ffd018601e3c21d3dcda807313ae65dc4c0005c8a313ea77a81d42783f7a",
+    "targets/lfj8/lfj8_h03_atf_feed.c": "6ea6666340f297cdd62643ea5170e9c49c541d64b47754a8cf62ae8ebc1540ac",
+    "targets/lfj8/lfj8_h03_slu.c": "0a95655bd4b1fa066e012bf77acdb00cd1e37efc44e93287d5f89cdac086880a",
+    "targets/lfj8/lfj8_h03_dtc_foreground.c": "aba7cfaabba754296039bbb82a124e66c0d0a8726f698cc40c96d877b62e341e",
+    "targets/lfj8/lfj8_h03_output_inhibit.c": "ed8a089ea9bce78d9c9b563acafe557d106b306ca3619824bc234ec38122678b",
+    "targets/lfj8/lfj8_h03_sensor_feed.c": "788a5b518986824bf02dc38d9b71192fe7b8a8d5cf4860045321bfb170d4fcf4",
+    "targets/lfj8/lfj8_h03_application.c": "89a4f659a17ce9d803c7593bcf41b7204a13aa9d676ac0e02a125abc21325259",
+    "targets/lfj8/lfj8_h03_can_owner.c": "f61802d84ddd4abba084140e16938c96a520f5a05b93f5194b3849675914c934",
+    "targets/lfj8/lfj8_h03_dtc_target.c": "94e2142b280bf8050ee2a7440a347293619c008656e28827550d45adf0b4ed4c",
+    "targets/lfj8/lfj8_h03_input_binding.c": "eecf7e2519832ec261f9c5a8f0de413dc9538a8f253a1365e4ca8586b84c1bf0",
+    "targets/lfj8/lfj8_h03_input_target.c": "688007ad2bfbb764dc761811041359443ca7278904ac6f3bca1f6ec082ef390d",
+    "targets/lfj8/lfj8_h03_nvm.c": "0e71bafddb016e1ed6f828ebf4738005e1ea61888dd8f5c7403bce54493c1883",
+    "targets/lfj8/lfj8_h03_sensor_target.c": "3cff97a538895c57e9a4c0493c78ea1ecebd0e4c98a0a83ade38c441612129d6",
+    "targets/lfj8/lfj8_h03_atf_target.c": "6dd5b7297a27234ea728cd9f0b2b9a423f088e00057325b85414d74f615b582c",
+    "targets/lfj8/lfj8_h03_atf_tml0.c": "4a67b5ee094b4409ae587dc0b8e9341ac0b723cb30b9c23e313cdca13ee91ef3",
+    "targets/lfj8/lfj8_h03_service_guard.c": "4ea24fca5e9acd7072f8273085679633e7aa6b872cc703a09dd6c483b5443d56",
+    "targets/lfj8/lfj8_h03_button_capture.c": "d1aa8453e389f43cc0924ce10d029e5a8ac8d5434ed850f96af8aec0960dde9a",
+    "targets/lfj8/lfj8_h03_target_memory.c": "5bd1212df8d6dbb5e73b21e89cb934540bed8f7f5087a92ace732f9f3300c3a2",
+    "targets/lfj8/lfj8_h03_ram_owner.c": "8bc2839a26d22a894d05652b0a078b9a205f24cfb383d7bd81edff532ca1762b",
+    "targets/lfj8/lfj8_h03_target_commit.c": "fec8c60a9c265911eb73971eff79a4cfe09ed3d60991234b802e95b14b44066c",
+    "targets/lfj8/lfj8_h03_nvm_native.c": "15efd208a2365099cb72ccd2c7ab5b928aeaa78107ce19071d298f29e5c973b8",
+    "targets/lfj8/lfj8_h03_application_binding.c": "71591d19f007bb4fe0ad162883c345f9e0a29a2f3903c8cc41d9ed47744dfc76",
+    "targets/lfj8/lfj8_h03_target_platform.c": "6cf538ff7ccc40cbd17c0d9996bbf6fd95d86a68ecffbc96265f0bf4c201a498",
+    "targets/lfj8/h03_sensor_hooks.S": "5d945d47a5b7581960f8ffa2dba0c2da981f5b36fceeaa8898a3d8a304ccdcef",
+    "targets/lfj8/h03_atf_hooks.S": "e6d3340f6edfd14b10f241537d71756e11acbd9afcae46f54f9453974ac2f5ff",
+    "targets/lfj8/h03_application_hooks.S": "b42367e655e2f744042382bed79a653bea9fc70a25964a14b8ccc4c6e1193595",
+    "targets/lfj8/h03_phase_startup_hook.S": "097d643d983de54946b990d5af7d89fe9b8be21af34335bc996508d5b5775d70",
+    "targets/lfj8/h03_phase_release_hook.S": "91281ce64998cf792656f5f970f9d0736664fcb7689e7aa202123ce66335981a",
+    "targets/lfj8/h03_dtc_rx_hook.S": "7abe50c2f81b5cb698822e5c17ec9b4cc61992cf53de46fae78088eed938e3eb",
+    "targets/lfj8/h03_dtc_rx_redirects.S": "e81e1defad50eb7065f169ad4c18cec3f13673a25ca8ee47441b6348b531113f",
+    "targets/lfj8/lfj8_h03_dtc_native.c": "13df7fad8ddd1f34319a20a6da21d4fc91c0afe277887737051cfa7577fb77d2",
+    "targets/lfj8/h03_dma4_guard.S": "58d21391d46239560d28a10e69b5a438883893c2ec649405e2c77b3d6746a041",
+    "targets/lfj8/h03_service_guard_hooks.S": "1a9a44d5dbc2213938ef62e17a7229203aa0d3612080169c46bc532a2618a530",
+    "targets/lfj8/lfj8_h03_can_monitor_revoke.c": "e17e858c0d7c239b0bcbb288c8671ab01a5fa11a3ac6941266c71d44c9d820c7",
+    "targets/lfj8/lfj8_h03_can_target.c": "340f34fafd84fb9b2578b5a52d445eaf6f3217c7e9d38ab99c782ec52a911f79",
+    "targets/lfj8/lfj8_h03_target_service.c": "e712f67bad2f9c873351b4094b9b5ff9f5ad7d928863f9b0fbc9b3cadcd3fa28",
+    "targets/lfj8/h03_can13_tx_gate.S": "1c92b8133f034bb92717a2da8029ebd5e627ca06a0a1e05ee0f9dae1c5abbb22",
+    "targets/lfj8/h03_can13_tx_redirect.S": "45bcdb4d53508eac6e5563661ea7395218b09111f8d4d0eeffd08f4620312fdc",
+    "targets/lfj8/lfj8_h03_sensor_hooks.py": "ea98429822fe01e97b00995838ba1536f24f11a2db537d87a9a539f016ac0aab",
+    "targets/lfj8/lfj8_h03_dtc_rx_placement.py": "9f6c3eb1b4da91999e18275ff4b4785c4a00f7dd231bf1eed3e43c6e22365ca8",
+    "targets/lfj8/lfj8_h03_service_placement.py": "65785c1da9f5fa4cb6dbd434452ba7693ba9020674d2c01a875ef7105180937a",
+    "targets/lfj8/lfj8_h03_can_service_placement.py": "0606f28c724dc4ce76f00329f52a6e8d60610cb77cd5938df8c4f2e27e18b4ad",
+    "targets/lfj8/lfj8_h03_tx13_placement.py": "892707ebd3ad0128db834a3948673277e59ff6f52e22b849ed9347fbc6ba9731",
+    "targets/lfj8/lfj8_h03_ram_placement.py": "f7c601515e149dd4f0d3a86cd3bc1ad086bd99b1a7aedab418899fcf3d3f87f4",
+    "targets/lfj8/lfj8_h03_application_placement.py": "6e2c763f8830722af96a3466828769ed831e22a8d3fc4481c6edf6e997c77bf7",
+    "generated/h03_application_redirects.S": "e88a0fa3af37069801dfcda794785376f9af47e20dd988ef4ff24524b3c33d04",
+    "generated/h03_service_policy.c": "e078a51719a7a572ab8c81fe61fe75afc81e4ac742dbb400f3abae4091ebc578",
+    "generated/h03_service_writer_redirects.S": "6d27752964667ca4ddc3ace1dfd7e199c1acaa56e385876de69904213fe05733"
+  },
+  "bindings_included": [
+    "lfj8_h03_output_inhibit.c",
+    "lfj8_h03_sensor_feed.c",
+    "lfj8_h03_application.c",
+    "lfj8_h03_can_owner.c",
+    "lfj8_h03_dtc_target.c",
+    "lfj8_h03_input_binding.c",
+    "lfj8_h03_input_target.c",
+    "lfj8_h03_nvm.c",
+    "lfj8_h03_sensor_target.c",
+    "lfj8_h03_atf_target.c",
+    "lfj8_h03_atf_tml0.c",
+    "lfj8_h03_service_guard.c",
+    "lfj8_h03_button_capture.c",
+    "lfj8_h03_target_memory.c",
+    "lfj8_h03_ram_owner.c",
+    "lfj8_h03_target_commit.c",
+    "lfj8_h03_nvm_native.c",
+    "lfj8_h03_application_binding.c",
+    "lfj8_h03_target_platform.c",
+    "h03_sensor_hooks.S",
+    "h03_atf_hooks.S",
+    "h03_application_hooks.S",
+    "h03_phase_startup_hook.S",
+    "h03_phase_release_hook.S",
+    "h03_dtc_rx_hook.S",
+    "h03_dtc_rx_redirects.S",
+    "lfj8_h03_dtc_native.c",
+    "h03_dma4_guard.S",
+    "h03_service_guard_hooks.S",
+    "lfj8_h03_can_monitor_revoke.c",
+    "lfj8_h03_can_target.c",
+    "lfj8_h03_target_service.c",
+    "lfj8_h03_atf_feed.c",
+    "h03_can13_tx_gate.S",
+    "h03_can13_tx_redirect.S"
+  ],
+  "bindings_not_present": [],
+  "raw_reference_patterns": {
+    "classification": "Raw patterns may be calibration data, not executed instructions. Computed references are not excluded.",
+    "windows": {
+      "pad_f5dc": {
+        "aligned_u32": [
+          "0x94c"
+        ],
+        "ld24_pattern": [
+          "0x364",
+          "0x4c0",
+          "0x584",
+          "0x614",
+          "0x439c",
+          "0x4768",
+          "0xae10",
+          "0xce70",
+          "0x3651c",
+          "0x3d41c",
+          "0x3d474"
+        ]
+      },
+      "pad_10af4": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_12b2c": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_14e68": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_16c0c": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_17d58": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_18c20": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_19e58": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_1aa1c": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_1bea0": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_1cec4": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_1eabc": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "prefix_primary": {
+        "aligned_u32": [
+          "0x954",
+          "0x958",
+          "0x95c",
+          "0x1a194",
+          "0x318a0"
+        ],
+        "ld24_pattern": [
+          "0x5220",
+          "0x5228",
+          "0x5274",
+          "0x527c"
+        ]
+      },
+      "tail": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_33084": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "pad_3f608": {
+        "aligned_u32": [],
+        "ld24_pattern": []
+      },
+      "dtc_rx_resident": {
+        "aligned_u32": [
+          "0x940",
+          "0x944"
+        ],
+        "ld24_pattern": []
+      }
+    }
+  },
+  "hardware_verified": false,
+  "target_ownership_verified": false,
+  "flashable_image": null,
+  "application_profile": {
+    "path": "D:\\RBM-Integration-11-20261121\\temp\\rbm-all-providers-pizmd26b\\SIMULATOR_ONLY.h",
+    "sha256": "563e284da55afbda4382ec6331b384b75818d45ca974e44a938b9319eec2afea",
+    "hardware_qualified_by_this_tool": false
+  },
+  "profiled_bindings_omitted": [],
+  "target_platform": {
+    "release_ram": {
+      "field": "control/toyota_release",
+      "symbol": "rbm_h03_toyota_release_state",
+      "address": 8417028,
+      "end_exclusive": 8417044,
+      "bytes": 16,
+      "alignment": 4
+    },
+    "storage_report_sha256": "4d019e8225918af66bdb027e36a8e3d57e360c78fcd9fd0843fbb8a16587109a",
+    "flash_placements": [
+      {
+        "section": ".text.rbm_h03_target_take_toyota",
+        "window": "prefix_primary",
+        "address": 150104,
+        "bytes": 360,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_target_initialize",
+        "window": "prefix_primary",
+        "address": 165344,
+        "bytes": 212,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.startup_allowed_locked",
+        "window": "prefix_primary",
+        "address": 190344,
+        "bytes": 64,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".rodata.toyota_source",
+        "window": "prefix_primary",
+        "address": 194592,
+        "bytes": 32,
+        "alignment": 4,
+        "noload": false,
+        "flags": 2
+      },
+      {
+        "section": ".text.lfj8_h03_profile_capture_toyota",
+        "window": "prefix_primary",
+        "address": 194688,
+        "bytes": 32,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      }
+    ]
+  },
+  "can_service": {
+    "typed_aliases": {
+      "rbm_h03_application": [
+        8417020,
+        8417028
+      ],
+      "rbm_h03_sensor_state": [
+        8416984,
+        8417020
+      ],
+      "rbm_h03_tml0_1mhz_qualified": [
+        8417044,
+        8417045
+      ],
+      "rbm_h03_atf_state": [
+        8417048,
+        8417068
+      ],
+      "rbm_h03_selector_adc_state": [
+        8417068,
+        8417080
+      ],
+      "h03_can_owner": [
+        8425288,
+        8425300
+      ],
+      "rbm_h03_engine_rx": [
+        8425024,
+        8425080
+      ],
+      "rbm_h03_engine_qualifier": [
+        8425080,
+        8425086
+      ],
+      "rbm_h03_dtc_state": [
+        8425300,
+        8425330
+      ],
+      "rbm_h03_can_service": [
+        8425548,
+        8425588
+      ],
+      "rbm_h03_can13": [
+        8425088,
+        8425288
+      ],
+      "rbm_h03_dtc_target": [
+        8425332,
+        8425548
+      ],
+      "rbm_h03_fast_output": [
+        8425616,
+        8425632
+      ],
+      "rbm_h03_can13_input": [
+        8426580,
+        8426624
+      ],
+      "rbm_h03_tx_input": [
+        8426624,
+        8426648
+      ],
+      "rbm_h03_torque_input": [
+        8426664,
+        8426676
+      ]
+    },
+    "allocates_new_alias_storage": false,
+    "tx13": {
+      "status": "LINKED_ADDRESS_MODEL",
+      "installed": false,
+      "elf_words_verified": true,
+      "patch": {
+        "site": 49996,
+        "stock_word": "2e7f2a7f",
+        "branch_word": "ff00893d",
+        "hook": "h03_can13_tx_gate",
+        "target": 190528,
+        "redirect_symbol": "h03_can13_tx_redirect"
+      },
+      "oem_overlay_bytes": 4,
+      "gate_bytes": 60,
+      "continuations": {
+        "h03_tx_writer_resume": 50000
+      },
+      "can_owner_address": 8425288,
+      "gate_words": {
+        "h03_can13_tx_owner_load": "e1808f48",
+        "h03_can13_tx_replay": "2e7f2a7f",
+        "h03_can13_tx_resume_branch": "ffff76b9"
+      },
+      "verification_scope": "independent_link_at_common_addresses"
+    }
+  },
+  "ram_owner": {
+    "absolute_aliases": {
+      "rbm_h03_ram_control_first": 8416064,
+      "rbm_h03_ram_control_end": 8417196,
+      "rbm_h03_ram_communication_first": 8425024,
+      "rbm_h03_ram_communication_end": 8425632,
+      "rbm_h03_ram_workspace_first": 8425632,
+      "rbm_h03_ram_workspace_end": 8426708,
+      "rbm_h03_ram_spi_end": 8429308,
+      "rbm_h03_ram_psw_end": 8429472,
+      "rbm_h03_takeover_state": 8416928,
+      "rbm_h03_cycle_state": 8416896,
+      "rbm_h03_runtime_state": 8416064,
+      "rbm_h03_main_result": 8425588,
+      "rbm_h03_cycle_workspace": 8425632,
+      "rbm_h03_cycle_input": 8426344
+    },
+    "storage_report_sha256": "4d019e8225918af66bdb027e36a8e3d57e360c78fcd9fd0843fbb8a16587109a",
+    "stock_stack_initialization_sites": [
+      2528,
+      15780
+    ],
+    "unresolved_qualification": [
+      "rbm_h03_ram_spi_first",
+      "rbm_h03_ram_spi_reserve",
+      "rbm_h03_ram_psw_first",
+      "rbm_h03_ram_psw_reserve",
+      "rbm_h03_boot_writers_owned"
+    ]
+  },
+  "required_roots": [
+    "chery_dtc_init",
+    "chery_dtc_journal_encode",
+    "chery_dtc_journal_restore",
+    "chery_dtc_link_confirm_tx",
+    "chery_dtc_link_end_session",
+    "chery_dtc_link_expire",
+    "chery_dtc_link_init",
+    "chery_dtc_link_receive",
+    "chery_dtc_set_current",
+    "chery_dtc_store_snapshot",
+    "chery_model_monitor_init",
+    "chery_model_monitor_task2",
+    "factory_adaptation_load",
+    "factory_adaptation_save",
+    "factory_donor_engine_gate",
+    "factory_hydraulics_capture",
+    "factory_hydraulics_control_main",
+    "factory_hydraulics_counters_begin",
+    "factory_hydraulics_counters_end",
+    "factory_hydraulics_fast_learning",
+    "factory_hydraulics_load_main",
+    "factory_hydraulics_load_observer",
+    "factory_hydraulics_restore",
+    "h03_can13_tx_gate",
+    "h03_can13_tx_owner_load",
+    "h03_can13_tx_redirect",
+    "h03_can13_tx_replay",
+    "h03_can13_tx_resume_branch",
+    "lfj8_9e1c_raw_nt_after_capture_store",
+    "lfj8_9e1c_raw_nt_init",
+    "lfj8_9e1c_raw_vss_after_capture_store",
+    "lfj8_9e1c_raw_vss_init",
+    "lfj8_button_filter_init",
+    "lfj8_chery_tx_init",
+    "lfj8_chery_tx_poll",
+    "lfj8_gear_observe_pair",
+    "lfj8_gear_observer_init",
+    "lfj8_h03_application_running_locked",
+    "lfj8_h03_atf_after_adc_store",
+    "lfj8_h03_atf_after_store",
+    "lfj8_h03_atf_circuit_after_monitor",
+    "lfj8_h03_atf_feed",
+    "lfj8_h03_atf_init",
+    "lfj8_h03_atf_snapshot",
+    "lfj8_h03_atf_target_snapshot",
+    "lfj8_h03_button_capture_locked",
+    "lfj8_h03_button_decode_p1",
+    "lfj8_h03_can13_init",
+    "lfj8_h03_can13_poll",
+    "lfj8_h03_can_owner_init",
+    "lfj8_h03_can_owner_poll",
+    "lfj8_h03_can_owner_rx_epoch",
+    "lfj8_h03_can_target_poll",
+    "lfj8_h03_capture_pair",
+    "lfj8_h03_cycle_init",
+    "lfj8_h03_cycle_prepare_outputs",
+    "lfj8_h03_cycle_slt_inputs",
+    "lfj8_h03_cycle_tick",
+    "lfj8_h03_cycle_tick_with_load",
+    "lfj8_h03_cycle_tick_with_slu",
+    "lfj8_h03_dtc_atf_config_valid",
+    "lfj8_h03_dtc_can_decode_basic",
+    "lfj8_h03_dtc_can_init",
+    "lfj8_h03_dtc_can_poll",
+    "lfj8_h03_dtc_foreground_poll",
+    "lfj8_h03_dtc_native_bind",
+    "lfj8_h03_dtc_native_cold_init",
+    "lfj8_h03_dtc_native_poll",
+    "lfj8_h03_dtc_native_poll_t6",
+    "lfj8_h03_dtc_native_start_t6",
+    "lfj8_h03_dtc_native_unbind",
+    "lfj8_h03_dtc_rx_clock_span_valid",
+    "lfj8_h03_dtc_rx_dispatch_begin",
+    "lfj8_h03_dtc_rx_dispatch_skip_paired",
+    "lfj8_h03_dtc_rx_queue_capture_basic",
+    "lfj8_h03_dtc_rx_queue_consume",
+    "lfj8_h03_dtc_rx_queue_init",
+    "lfj8_h03_dtc_rx_queue_peek",
+    "lfj8_h03_dtc_rx_queue_publish",
+    "lfj8_h03_dtc_rx_queue_reset",
+    "lfj8_h03_dtc_t6_config_valid",
+    "lfj8_h03_dtc_target_enable_atf",
+    "lfj8_h03_dtc_target_init",
+    "lfj8_h03_dtc_target_poll",
+    "lfj8_h03_dtc_target_unbind",
+    "lfj8_h03_engine_feed_task2",
+    "lfj8_h03_engine_feed_task2_with_model",
+    "lfj8_h03_engine_rx_init",
+    "lfj8_h03_engine_rx_m32r",
+    "lfj8_h03_input_capture",
+    "lfj8_h03_input_capture_toyota",
+    "lfj8_h03_input_propose",
+    "lfj8_h03_input_propose_captured",
+    "lfj8_h03_input_startup",
+    "lfj8_h03_mmio",
+    "lfj8_h03_nvm_block",
+    "lfj8_h03_nvm_commit_empty_dtc",
+    "lfj8_h03_nvm_native_read_adaptation",
+    "lfj8_h03_nvm_native_restore_dtc",
+    "lfj8_h03_nvm_restore_dtc",
+    "lfj8_h03_nvm_save_dtc",
+    "lfj8_h03_output_inhibit_locked",
+    "lfj8_h03_phase_clock_init",
+    "lfj8_h03_phase_clock_release",
+    "lfj8_h03_phase_clock_take",
+    "lfj8_h03_phase_startup",
+    "lfj8_h03_plan_outputs",
+    "lfj8_h03_ram_owned",
+    "lfj8_h03_range_snapshot",
+    "lfj8_h03_sensor_clock_ready_locked",
+    "lfj8_h03_sensor_clock_registers_match",
+    "lfj8_h03_sensor_feed_snapshot",
+    "lfj8_h03_service_copy_allowed",
+    "lfj8_h03_service_span_allowed",
+    "lfj8_h03_slu_secondary_from_baseline",
+    "lfj8_h03_takeover_apply",
+    "lfj8_h03_takeover_check_phase",
+    "lfj8_h03_takeover_init",
+    "lfj8_h03_takeover_prepare",
+    "lfj8_h03_takeover_take_phase",
+    "lfj8_h03_target_service_prepare_locked",
+    "lfj8_h03_target_service_stop_locked",
+    "lfj8_h03_tml0ct_m32r",
+    "lfj8_h03_torque_applied",
+    "lfj8_h03_torque_can_init",
+    "lfj8_h03_torque_can_poll",
+    "lfj8_h03_torque_demand",
+    "lfj8_h03_torque_init",
+    "lfj8_h03_torque_poll",
+    "lfj8_h03_torque_receive",
+    "lfj8_h03_torque_tx_done",
+    "lfj8_range_control_init",
+    "lfj8_range_control_step",
+    "lfj8_range_control_step_with_buttons",
+    "lfj8_selector_adc_init",
+    "lfj8_selector_adc_publish_9e1c",
+    "lfj8_selector_adc_take",
+    "rbm_h03_application_cold_gate",
+    "rbm_h03_application_cold_hook",
+    "rbm_h03_application_foreground_callback",
+    "rbm_h03_application_foreground_hook",
+    "rbm_h03_application_redirect_008100",
+    "rbm_h03_application_redirect_00814c",
+    "rbm_h03_application_redirect_00816c",
+    "rbm_h03_application_redirect_040424",
+    "rbm_h03_atf_adc",
+    "rbm_h03_atf_adc_callback",
+    "rbm_h03_atf_begin",
+    "rbm_h03_atf_direct",
+    "rbm_h03_atf_end",
+    "rbm_h03_atf_fault",
+    "rbm_h03_atf_filtered",
+    "rbm_h03_atf_now_us",
+    "rbm_h03_atf_publish_callback",
+    "rbm_h03_atf_read",
+    "rbm_h03_atf_source_callback",
+    "rbm_h03_can_monitor_cold_owner_init_locked",
+    "rbm_h03_can_monitor_publish_setup_locked",
+    "rbm_h03_can_monitor_retire_tx13_locked",
+    "rbm_h03_can_monitor_revoke_locked",
+    "rbm_h03_commit_callback",
+    "rbm_h03_dma4_guard",
+    "rbm_h03_dma4_redirect",
+    "rbm_h03_dtc_atf_capture",
+    "rbm_h03_dtc_rx_begin",
+    "rbm_h03_dtc_rx_dispatch_hook",
+    "rbm_h03_dtc_rx_dispatch_redirect",
+    "rbm_h03_dtc_rx_hook",
+    "rbm_h03_dtc_rx_observe",
+    "rbm_h03_dtc_rx_redirect",
+    "rbm_h03_early_irq_gate",
+    "rbm_h03_early_irq_redirect",
+    "rbm_h03_phase_release_callback",
+    "rbm_h03_phase_release_hook",
+    "rbm_h03_phase_startup_callback",
+    "rbm_h03_phase_startup_hook",
+    "rbm_h03_phase_wait_callback",
+    "rbm_h03_s51_capture_callback",
+    "rbm_h03_s51_capture_hook",
+    "rbm_h03_s83_capture_callback",
+    "rbm_h03_s83_capture_hook",
+    "rbm_h03_selector_adc_capture",
+    "rbm_h03_sensor_clock_rebase",
+    "rbm_h03_sensor_foreground",
+    "rbm_h03_service_close_hook",
+    "rbm_h03_service_copy_hook",
+    "rbm_h03_service_direct_hook",
+    "rbm_h03_service_redirect_002924",
+    "rbm_h03_service_redirect_00294c",
+    "rbm_h03_service_redirect_002d1c",
+    "rbm_h03_service_redirect_002e9c",
+    "rbm_h03_service_redirect_003568",
+    "rbm_h03_service_span_hook",
+    "rbm_h03_target_initialize",
+    "rbm_h03_target_ram_owned",
+    "rbm_h03_target_service_phase",
+    "rbm_h03_target_take_toyota",
+    "rbm_u340e_outputs_init",
+    "rbm_u340e_outputs_step",
+    "rbm_u340e_range_fast",
+    "rbm_u340e_runtime_gears_outputs",
+    "rbm_u340e_runtime_init",
+    "rbm_u340e_runtime_main_coolant",
+    "rbm_u340e_runtime_main_engine_speed",
+    "rbm_u340e_runtime_main_range",
+    "rbm_u340e_runtime_main_range_complete",
+    "rbm_u340e_runtime_prepare_engine",
+    "rbm_u340e_runtime_prepare_s01_cold",
+    "rbm_u340e_runtime_publish_load",
+    "rbm_u340e_runtime_restore_adaptation",
+    "rbm_u340e_runtime_secondary_load_qualify",
+    "rbm_u340e_runtime_snapshot_gears",
+    "rbm_u340e_s01_adaptation_baseline",
+    "rbm_u340e_schedule_fast_begin",
+    "rbm_u340e_schedule_fast_claim",
+    "rbm_u340e_schedule_fast_done",
+    "rbm_u340e_schedule_fast_end",
+    "rbm_u340e_schedule_finish_init",
+    "rbm_u340e_schedule_main_done",
+    "rbm_u340e_schedule_producer_done",
+    "rbm_u340e_schedule_producer_publish",
+    "rbm_u340e_schedule_secondary_claim",
+    "rbm_u340e_schedule_secondary_done",
+    "rbm_u340e_schedule_timer_irq",
+    "rbm_u340e_step",
+    "ta2005_engine_qualifier_init",
+    "ta2005_engine_qualifier_task2"
+  ],
+  "retained_sections": 604,
+  "flash_payload_bytes": 107884,
+  "new_static_ram_bytes": 4,
+  "application_entries": {
+    "status": "LINKED_WRAPPERS_AT_COMMON_ADDRESSES",
+    "fixed_branch_bytes": 16,
+    "wrapper_bytes": 432,
+    "continuations": {
+      "h03_stock_application_after_entry": 33028,
+      "h03_stock_startup_record": 43064,
+      "h03_stock_foreground_inputs": 262948,
+      "h03_stock_phase_release": 263272
+    },
+    "callbacks": {
+      "rbm_h03_application_cold_gate": 190088,
+      "rbm_h03_phase_startup_callback": 137864,
+      "rbm_h03_application_foreground_callback": 512228,
+      "rbm_h03_phase_release_callback": 187228
+    },
+    "patches": [
+      {
+        "address": 33024,
+        "stock_word": "2e7f4ffc",
+        "branch_word": "ff0091b7",
+        "hook": "rbm_h03_application_cold_hook",
+        "target": 182236
+      },
+      {
+        "address": 33100,
+        "stock_word": "fe0009bb",
+        "branch_word": "fe009227",
+        "hook": "rbm_h03_phase_startup_hook",
+        "target": 182760
+      },
+      {
+        "address": 33132,
+        "stock_word": "fe00e06e",
+        "branch_word": "fe009205",
+        "hook": "rbm_h03_application_foreground_hook",
+        "target": 182656
+      },
+      {
+        "address": 263204,
+        "stock_word": "7e11f000",
+        "branch_word": "feffaf85",
+        "hook": "rbm_h03_phase_release_hook",
+        "target": 180792
+      }
+    ],
+    "wrapper_elf_sha256": "e08bb78f19e0c6f6bc90e36e5a4e9fa9cd9c0a64c08524d102ed84b58a4278e2"
+  },
+  "service_writer_resident_bytes": 528,
+  "resident_constants": {
+    "scope": "candidate address model; ownership unverified",
+    "moved": [
+      {
+        "section": ".rodata.gear_001108",
+        "bytes": 732,
+        "sha256": "2369ad6455e8fd35ff68d040534e999179e73e7dc0676297b368c2933d522cd4"
+      },
+      {
+        "section": ".rodata.learning_001C3C",
+        "bytes": 800,
+        "sha256": "8276650f90e31262d21eca82fd06ce04c9ed0456b74c9456cebf2b11b0b9fd5b"
+      }
+    ],
+    "elf_sha256": "04618d501272bf5ec05216a81a4e7cc894cf02d81779cfb156b7827779a42133",
+    "placements": [
+      {
+        "section": ".rodata.learning_001C3C",
+        "window": "dtc_rx_resident",
+        "address": 28672,
+        "bytes": 800,
+        "alignment": 4,
+        "noload": false,
+        "flags": 2
+      },
+      {
+        "section": ".rodata.gear_001108",
+        "window": "dtc_rx_resident",
+        "address": 29472,
+        "bytes": 732,
+        "alignment": 4,
+        "noload": false,
+        "flags": 2
+      }
+    ],
+    "linked_bytes_verified": true
+  },
+  "known_sections_candidate_plan": {
+    "sections": 589,
+    "capacity_bytes": 110548,
+    "payload_bytes": 107828,
+    "ownership_verified": false,
+    "unresolved_material_counted": false
+  },
+  "sensor_redirects": {
+    "status": "PROVISIONAL_UNLINKED",
+    "installed": false,
+    "continuations": {
+      "h03_sensor_after_s51": 43536,
+      "h03_sensor_after_s83": 43636,
+      "h03_atf_after_begin": 241940,
+      "h03_atf_after_adc": 262524,
+      "h03_atf_after_read": 241980,
+      "h03_atf_resume_done": 242204,
+      "h03_atf_after_end": 242208
+    },
+    "patches": [
+      {
+        "site": 43532,
+        "stock_word": "2244f000",
+        "branch_word": "ff007f34",
+        "hook": "rbm_h03_s51_capture_hook",
+        "target": 173788
+      },
+      {
+        "site": 43632,
+        "stock_word": "2045f000",
+        "branch_word": "ff007f2e",
+        "hook": "rbm_h03_s83_capture_hook",
+        "target": 173864
+      },
+      {
+        "site": 241936,
+        "stock_word": "2e7f287f",
+        "branch_word": "ffff9db7",
+        "hook": "rbm_h03_atf_begin",
+        "target": 141292
+      },
+      {
+        "site": 241976,
+        "stock_word": "20b4f000",
+        "branch_word": "ffff9dc7",
+        "hook": "rbm_h03_atf_read",
+        "target": 141396
+      },
+      {
+        "site": 242040,
+        "stock_word": "20467f29",
+        "branch_word": "ffff9dcd",
+        "hook": "rbm_h03_atf_fault",
+        "target": 141484
+      },
+      {
+        "site": 242084,
+        "stock_word": "20447f1e",
+        "branch_word": "ffff9dd7",
+        "hook": "rbm_h03_atf_direct",
+        "target": 141568
+      },
+      {
+        "site": 242200,
+        "stock_word": "2044f000",
+        "branch_word": "ffff9dd2",
+        "hook": "rbm_h03_atf_filtered",
+        "target": 141664
+      },
+      {
+        "site": 242204,
+        "stock_word": "28ef2eef",
+        "branch_word": "ffff9de9",
+        "hook": "rbm_h03_atf_end",
+        "target": 141760
+      },
+      {
+        "site": 262520,
+        "stock_word": "20252eef",
+        "branch_word": "ffff89a3",
+        "hook": "rbm_h03_atf_adc",
+        "target": 141316
+      }
+    ]
+  },
+  "dtc_rx_redirects": {
+    "status": "PROVISIONAL_UNLINKED",
+    "installed": false,
+    "elf_words_verified": false,
+    "patches": [
+      {
+        "site": 5428,
+        "stock_word": "80c800ff",
+        "branch_word": "ff001510",
+        "hook": "rbm_h03_dtc_rx_hook",
+        "target": 26996,
+        "redirect_symbol": "rbm_h03_dtc_rx_redirect"
+      },
+      {
+        "site": 18232,
+        "stock_word": "fefff32e",
+        "branch_word": "fe0008da",
+        "hook": "rbm_h03_dtc_rx_dispatch_hook",
+        "target": 27296,
+        "redirect_symbol": "rbm_h03_dtc_rx_dispatch_redirect"
+      }
+    ],
+    "oem_overlay_bytes": 8,
+    "continuations": {
+      "h03_dtc_rx_resume": 5432,
+      "h03_dtc_rx_entry": 5104
+    },
+    "can_owner_address": 8425288,
+    "readonly_sections": [
+      ".text.lfj8_h03_dtc_rx_queue_capture_pending",
+      ".text.publish_locked",
+      ".text.rbm_h03_service_hooks",
+      ".text.lfj8_h03_dtc_rx_queue_capture_basic",
+      ".text",
+      ".text.expire",
+      ".text.capture_basic.part.0",
+      ".text.lfj8_h03_dtc_can_decode_basic",
+      ".text.rbm_h03_dtc_rx_observe",
+      ".text.rbm_h03_dtc_rx_hook",
+      ".text.rbm_h03_dtc_rx_begin",
+      ".text.rbm_h03_dtc_rx_dispatch_hook",
+      ".text.sample_clocks",
+      ".text.lfj8_h03_sensor_clock_registers_match",
+      ".text.lfj8_h03_service_span_allowed",
+      ".text.h03_can0_operational",
+      ".text.lfj8_h03_can0_read_timestamp",
+      ".text.can0_available",
+      ".text.lfj8_h03_dtc_rx_dispatch_begin",
+      ".text.lfj8_h03_dtc_rx_dispatch_skip_paired",
+      ".rodata.rbm_h03_service_policy",
+      ".text.lfj8_h03_sensor_clock_ready_locked",
+      ".text.native_rx_epoch",
+      ".text.ready",
+      ".text.basiccan_active",
+      ".text.lfj8_h03_service_copy_allowed",
+      ".text.read_word",
+      ".rodata.lfj8_h03_mmio",
+      ".text.lfj8_h03_can_owner_rx_epoch",
+      ".text.rbm_h03_early_irq_gate",
+      ".text.increment",
+      ".rodata.native_owner_ops",
+      ".text.enter",
+      ".text.lfj8_h03_tml0ct_m32r",
+      ".text.leave",
+      ".text.read_byte",
+      ".text.read_halfword",
+      ".text.write_byte",
+      ".rodata.learning_001C3C",
+      ".rodata.gear_001108"
+    ],
+    "resident_bytes": 5628,
+    "resident_extent": 5628
+  },
+  "early_irq_model": {
+    "elf_sha256": "588f7e8da408aff1e72b4949531794ba9ccc8d7df9624d5f2957c23aec9bae84",
+    "placements": [
+      {
+        "section": ".text.rbm_h03_dtc_rx_redirect",
+        "window": "dtc_rx_redirect",
+        "address": 5428,
+        "bytes": 4,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".service_site_002924",
+        "window": "service_site_002924",
+        "address": 10532,
+        "bytes": 4,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".service_site_00294c",
+        "window": "service_site_00294c",
+        "address": 10572,
+        "bytes": 4,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".service_site_002d1c",
+        "window": "service_site_002d1c",
+        "address": 11548,
+        "bytes": 4,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".service_site_002e9c",
+        "window": "service_site_002e9c",
+        "address": 11932,
+        "bytes": 4,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".service_site_003568",
+        "window": "service_site_003568",
+        "address": 13672,
+        "bytes": 4,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_early_irq_redirect",
+        "window": "rbm_h03_early_irq_redirect",
+        "address": 15804,
+        "bytes": 4,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_dtc_rx_dispatch_redirect",
+        "window": "dtc_rx_dispatch_redirect",
+        "address": 18232,
+        "bytes": 4,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.lfj8_h03_dtc_rx_queue_capture_pending",
+        "window": "dtc_rx_resident",
+        "address": 24576,
+        "bytes": 512,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.publish_locked",
+        "window": "dtc_rx_resident",
+        "address": 25088,
+        "bytes": 404,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_service_hooks",
+        "window": "dtc_rx_resident",
+        "address": 25492,
+        "bytes": 324,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.lfj8_h03_dtc_rx_queue_capture_basic",
+        "window": "dtc_rx_resident",
+        "address": 25816,
+        "bytes": 220,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text",
+        "window": "dtc_rx_resident",
+        "address": 26036,
+        "bytes": 216,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.expire",
+        "window": "dtc_rx_resident",
+        "address": 26252,
+        "bytes": 200,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.capture_basic.part.0",
+        "window": "dtc_rx_resident",
+        "address": 26452,
+        "bytes": 192,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.lfj8_h03_dtc_can_decode_basic",
+        "window": "dtc_rx_resident",
+        "address": 26644,
+        "bytes": 180,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_dtc_rx_observe",
+        "window": "dtc_rx_resident",
+        "address": 26824,
+        "bytes": 172,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_dtc_rx_hook",
+        "window": "dtc_rx_resident",
+        "address": 26996,
+        "bytes": 152,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_dtc_rx_begin",
+        "window": "dtc_rx_resident",
+        "address": 27148,
+        "bytes": 148,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_dtc_rx_dispatch_hook",
+        "window": "dtc_rx_resident",
+        "address": 27296,
+        "bytes": 148,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.sample_clocks",
+        "window": "dtc_rx_resident",
+        "address": 27444,
+        "bytes": 136,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.lfj8_h03_service_span_allowed",
+        "window": "dtc_rx_resident",
+        "address": 27684,
+        "bytes": 104,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.h03_can0_operational",
+        "window": "dtc_rx_resident",
+        "address": 27788,
+        "bytes": 92,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.lfj8_h03_can0_read_timestamp",
+        "window": "dtc_rx_resident",
+        "address": 27880,
+        "bytes": 92,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.can0_available",
+        "window": "dtc_rx_resident",
+        "address": 27972,
+        "bytes": 84,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.lfj8_h03_dtc_rx_dispatch_begin",
+        "window": "dtc_rx_resident",
+        "address": 28056,
+        "bytes": 84,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.lfj8_h03_dtc_rx_dispatch_skip_paired",
+        "window": "dtc_rx_resident",
+        "address": 28140,
+        "bytes": 84,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".rodata.rbm_h03_service_policy",
+        "window": "dtc_rx_resident",
+        "address": 28224,
+        "bytes": 68,
+        "alignment": 4,
+        "noload": false,
+        "flags": 2
+      },
+      {
+        "section": ".text.ready",
+        "window": "dtc_rx_resident",
+        "address": 28392,
+        "bytes": 40,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.basiccan_active",
+        "window": "dtc_rx_resident",
+        "address": 28432,
+        "bytes": 36,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.lfj8_h03_service_copy_allowed",
+        "window": "dtc_rx_resident",
+        "address": 28468,
+        "bytes": 32,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_early_irq_gate",
+        "window": "dtc_rx_resident",
+        "address": 28584,
+        "bytes": 24,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.increment",
+        "window": "dtc_rx_resident",
+        "address": 28608,
+        "bytes": 16,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_dma4_redirect",
+        "window": "rbm_h03_dma4_redirect",
+        "address": 53004,
+        "bytes": 4,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_dma4_guard",
+        "window": "prefix_primary",
+        "address": 178240,
+        "bytes": 128,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".bss.irq_target",
+        "window": "early_irq_pointer",
+        "address": 8417196,
+        "bytes": 4,
+        "alignment": 4,
+        "noload": true,
+        "flags": 3
+      }
+    ],
+    "roots": [
+      "rbm_h03_early_irq_redirect",
+      "rbm_h03_dma4_redirect",
+      "rbm_h03_dtc_rx_redirect",
+      "rbm_h03_dtc_rx_dispatch_redirect",
+      "rbm_h03_service_redirect_002924",
+      "rbm_h03_service_redirect_00294c",
+      "rbm_h03_service_redirect_002d1c",
+      "rbm_h03_service_redirect_002e9c",
+      "rbm_h03_service_redirect_003568"
+    ],
+    "irq_pointer": 8417196,
+    "policy_ranges": [
+      [
+        8416064,
+        8417196
+      ],
+      [
+        8417196,
+        8417200
+      ],
+      [
+        8422776,
+        8424884
+      ],
+      [
+        8425024,
+        8425632
+      ],
+      [
+        8425632,
+        8426708
+      ],
+      [
+        8427264,
+        8429568
+      ]
+    ],
+    "artifact_kind": "EARLY_IRQ_DMA4_SIMULATOR_ONLY",
+    "service_writers": [
+      {
+        "address": 10532,
+        "stock": "2e7f4ff8",
+        "branch": "ff000e9c",
+        "target": 25492
+      },
+      {
+        "address": 10572,
+        "stock": "fe0002f7",
+        "branch": "fe000e9a",
+        "target": 25524
+      },
+      {
+        "address": 11548,
+        "stock": "2e7f297f",
+        "branch": "ff000dbc",
+        "target": 25612
+      },
+      {
+        "address": 11932,
+        "stock": "a00a0008",
+        "branch": "ff000d78",
+        "target": 25724
+      },
+      {
+        "address": 13672,
+        "stock": "b810000b",
+        "branch": "ff00000b",
+        "target": 13716
+      }
+    ]
+  },
+  "status": "FAIL_BINDINGS",
+  "accepted_layout": false,
+  "unresolved_symbols": [
+    "fixture_engine_context",
+    "qualified_adaptation_blocks",
+    "rbm_h03_boot_writers_owned",
+    "rbm_h03_ram_psw_first",
+    "rbm_h03_ram_psw_reserve",
+    "rbm_h03_ram_spi_first",
+    "rbm_h03_ram_spi_reserve",
+    "rbm_h03_sensor_config",
+    "rbm_h03_target_clock_ready",
+    "rbm_h03_target_startup_gear",
+    "rbm_h03_target_startup_gp",
+    "rbm_h03_target_takeover_ops",
+    "test_can_service_config",
+    "test_initialize_inputs",
+    "test_input_capture"
+  ],
+  "size_scope": "Known retained objects only; unresolved platform data and code are not counted",
+  "scope": "All submitted C providers; simulator timing and input declarations only",
+  "simulator_profile": "#include \"lfj8_h03_target_platform.h\"\n#include \"lfj8_h03_target_service.h\"\nint test_initialize_inputs(void *);\nint test_capture_inputs(void *, const Lfj8H03SensorSnapshot *, uint32_t,\n                        Lfj8H03CycleInput *, Lfj8H03CycleLoad *);\n#define RBM_H03_PROFILE_PHASE_CONFIG {8u, 13u, 4u, 24u}\n#define RBM_H03_PROFILE_STARTUP_RANGE {0}\n#define RBM_H03_PROFILE_TOYOTA_MAX_PERIOD_TICKS 70u\n#define RBM_H03_PROFILE_STARTUP_REQUEST_1120 0u\n\n#define RBM_H03_PROFILE_TOYOTA_PERIOD_TICKS 64u\n#define RBM_H03_PROFILE_TOYOTA_MAX_LATENESS_TICKS 2u\n#define RBM_H03_PROFILE_INITIALIZE_INPUTS test_initialize_inputs\n#include \"lfj8_h03_input_binding.h\"\nextern const Lfj8H03ToyotaInputCapture test_input_capture;\n#define RBM_H03_PROFILE_TOYOTA_INPUT_CAPTURE test_input_capture\n#include \"lfj8_h03_toyota_input_profile.h\"\nextern const Lfj8H03TargetServiceConfig test_can_service_config;\n#define RBM_H03_PROFILE_CAN_SERVICE_CONFIG test_can_service_config\n\nint fixture_engine_context(void *, const Lfj8H03SensorSnapshot *, Ta2005EngineQualificationContext *, bool *, uint32_t *);\n#define RBM_H03_PROFILE_ENGINE_MAX_AGE_TICKS 1200u\n#define RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US 5000u\n#define RBM_H03_PROFILE_ENGINE_BIT_TIME_US 2u\n#define RBM_H03_PROFILE_ENGINE_CONTEXT fixture_engine_context\nextern const uint8_t qualified_adaptation_blocks[2];\n#define RBM_H03_PROFILE_ADAPTATION_BLOCKS qualified_adaptation_blocks\n#include \"lfj8_h03_toyota_nvm_profile.h\"\n",
+  "extra_providers": [
+    "lfj8_h03_target_memory.c",
+    "lfj8_h03_ram_owner.c",
+    "lfj8_h03_target_commit.c",
+    "lfj8_h03_nvm_native.c"
+  ],
+  "success_does_not_mean_release_ready": true
+}

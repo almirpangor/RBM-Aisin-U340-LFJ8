@@ -1,0 +1,2 @@
+MODE-03 policy: 128 restart profiles, 128 conflict profiles, 256 held-shift transitions and 501760 gear proposal cases PASS.
+MODE-03 initialization: cold state and five rejected profiles with recovery PASS.

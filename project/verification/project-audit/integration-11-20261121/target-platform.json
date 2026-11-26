@@ -1,0 +1,180 @@
+{
+  "status": "PASS",
+  "m32r": "H03 target platform: native startup, CAN service lifecycle, Toyota rollover and inhibition PASS",
+  "unprofiled_and_inconsistent_timing_refused": true,
+  "missing_can_service_profile_refused": true,
+  "manual_profile_m32r": "H03 manual profile: native foreground, Toyota hold, MAIN S1/S2 and revocation PASS",
+  "manual_profile_flash_section_bytes": 700,
+  "manual_placed_model": {
+    "release_ram": {
+      "field": "control/toyota_release",
+      "symbol": "rbm_h03_toyota_release_state",
+      "address": 8417028,
+      "end_exclusive": 8417044,
+      "bytes": 16,
+      "alignment": 4
+    },
+    "storage_report_sha256": "4d019e8225918af66bdb027e36a8e3d57e360c78fcd9fd0843fbb8a16587109a",
+    "flash_placements": [
+      {
+        "section": ".text.rbm_h03_target_take_toyota",
+        "window": "prefix_primary",
+        "address": 148120,
+        "bytes": 360,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_target_initialize",
+        "window": "prefix_primary",
+        "address": 162616,
+        "bytes": 212,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.startup_allowed_locked",
+        "window": "prefix_primary",
+        "address": 186032,
+        "bytes": 64,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".rodata.toyota_source",
+        "window": "prefix_primary",
+        "address": 189992,
+        "bytes": 32,
+        "alignment": 4,
+        "noload": false,
+        "flags": 2
+      },
+      {
+        "section": ".text.lfj8_h03_profile_capture_toyota",
+        "window": "prefix_primary",
+        "address": 190088,
+        "bytes": 32,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      }
+    ],
+    "common_layout_status": "FAIL_BINDINGS",
+    "unresolved_symbols": [
+      "lfj8_h03_target_service_prepare_locked",
+      "lfj8_h03_target_service_stop_locked",
+      "rbm_h03_application",
+      "rbm_h03_atf_state",
+      "rbm_h03_cycle_input",
+      "rbm_h03_cycle_state",
+      "rbm_h03_cycle_workspace",
+      "rbm_h03_main_result",
+      "rbm_h03_runtime_state",
+      "rbm_h03_selector_adc_state",
+      "rbm_h03_sensor_config",
+      "rbm_h03_sensor_state",
+      "rbm_h03_takeover_state",
+      "rbm_h03_target_clock_ready",
+      "rbm_h03_target_engine",
+      "rbm_h03_target_ram_owned",
+      "rbm_h03_target_service_phase",
+      "rbm_h03_target_startup_gear",
+      "rbm_h03_target_startup_gp",
+      "rbm_h03_target_takeover_ops",
+      "rbm_h03_tml0_1mhz_qualified",
+      "test_can_service_config",
+      "test_initialize_inputs",
+      "test_input_capture"
+    ],
+    "base_sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544",
+    "common_flash_bytes": 101112,
+    "typed_inventory_bytes": 2816
+  },
+  "flash_section_bytes": 396,
+  "required_release_alias_bytes": 16,
+  "platform_object_writable_bytes": 0,
+  "placed_model": {
+    "release_ram": {
+      "field": "control/toyota_release",
+      "symbol": "rbm_h03_toyota_release_state",
+      "address": 8417028,
+      "end_exclusive": 8417044,
+      "bytes": 16,
+      "alignment": 4
+    },
+    "storage_report_sha256": "4d019e8225918af66bdb027e36a8e3d57e360c78fcd9fd0843fbb8a16587109a",
+    "flash_placements": [
+      {
+        "section": ".text.rbm_h03_target_initialize",
+        "window": "prefix_primary",
+        "address": 162256,
+        "bytes": 212,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.rbm_h03_target_take_toyota",
+        "window": "prefix_primary",
+        "address": 181152,
+        "bytes": 88,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".text.startup_allowed_locked",
+        "window": "prefix_primary",
+        "address": 185760,
+        "bytes": 64,
+        "alignment": 4,
+        "noload": false,
+        "flags": 6
+      },
+      {
+        "section": ".rodata.toyota_source",
+        "window": "prefix_primary",
+        "address": 189720,
+        "bytes": 32,
+        "alignment": 4,
+        "noload": false,
+        "flags": 2
+      }
+    ],
+    "common_layout_status": "FAIL_BINDINGS",
+    "unresolved_symbols": [
+      "lfj8_h03_target_service_prepare_locked",
+      "lfj8_h03_target_service_stop_locked",
+      "rbm_h03_application",
+      "rbm_h03_atf_state",
+      "rbm_h03_cycle_input",
+      "rbm_h03_cycle_state",
+      "rbm_h03_cycle_workspace",
+      "rbm_h03_main_result",
+      "rbm_h03_runtime_state",
+      "rbm_h03_selector_adc_state",
+      "rbm_h03_sensor_config",
+      "rbm_h03_sensor_state",
+      "rbm_h03_takeover_state",
+      "rbm_h03_target_clock_ready",
+      "rbm_h03_target_engine",
+      "rbm_h03_target_ram_owned",
+      "rbm_h03_target_service_phase",
+      "rbm_h03_target_startup_gear",
+      "rbm_h03_target_startup_gp",
+      "rbm_h03_target_takeover_ops",
+      "rbm_h03_tml0_1mhz_qualified",
+      "test_can_service_config",
+      "test_capture_inputs",
+      "test_initialize_inputs"
+    ],
+    "base_sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544",
+    "common_flash_bytes": 100808,
+    "typed_inventory_bytes": 2816
+  },
+  "hardware_tested": false,
+  "flashable_image": null
+}

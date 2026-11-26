@@ -1,0 +1,74 @@
+#include "bench_engine_profile.h"
+#include "lfj8_h03_application_binding.h"
+#include "lfj8_h03_atf_target.h"
+#include "lfj8_h03_mmio.h"
+#include "lfj8_h03_sensor_target.h"
+
+extern CheryDtcState rbm_h03_dtc_state;
+
+enum {
+    H03_CAN0CONF = 0x801006,
+    H03_CAN0BRP = 0x801016,
+    H03_STOCK_CAN0CONF = 0x95a0,
+    H03_STOCK_CAN0BRP = 4,
+    H03_FCNT1 = 0x8007e2,
+    H03_SERVICE_MODE = 0x804887,
+    H03_PROGRAMMING_GATE = 0x80801c,
+    CURRENT_E02B = 3,
+    E02B_BUS_FAULTS = 0x84,
+    H03_SERVICE_ACTIVE = 4,
+};
+
+int rbm_h03_engine_context_for_task2(void *context, const Lfj8H03SensorSnapshot *sensors,
+    Ta2005EngineQualificationContext *engine, bool *inhibit_history, uint32_t *oldest_us)
+{
+    (void)context;
+    uint32_t before;
+    const Lfj8RegisterIo *const io = &lfj8_h03_mmio;
+    if (!sensors || !engine || !inhibit_history || !oldest_us ||
+        !rbm_h03_atf_now_us(&before) || sensors->epoch != rbm_h03_sensor_state.feed.epoch ||
+        before - sensors->capture.now_tml0 >= RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US ||
+        io->read8(io->context, H03_FCNT1) != 0u ||
+        io->read8(io->context, H03_SERVICE_MODE) == H03_SERVICE_ACTIVE ||
+        io->read8(io->context, H03_PROGRAMMING_GATE) != 0u) {
+        return 0;
+    }
+
+    const bool can_admitted = h03_can_owner.initialized && h03_can_owner.grant == 1u &&
+        h03_can_owner.setup_generation == h03_can_owner.admitted_generation;
+    if (can_admitted && (io->read16(io->context, H03_CAN0CONF) != H03_STOCK_CAN0CONF ||
+                         io->read8(io->context, H03_CAN0BRP) != H03_STOCK_CAN0BRP)) {
+        return 0;
+    }
+
+    uint32_t after;
+    if (!rbm_h03_atf_now_us(&after) ||
+        after - before > RBM_H03_PROFILE_ENGINE_MAX_CAN_SAMPLE_SPAN_US ||
+        after - sensors->capture.now_tml0 >= RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US) {
+        return 0;
+    }
+
+    uint16_t retained_fd10 = 0u;
+    uint8_t retained_e026 = 0u;
+    if (rbm_h03_cycle_input.qualified == 1u && rbm_h03_cycle_input.engine.coherent == 1u) {
+        retained_fd10 = rbm_h03_cycle_input.engine.fd10;
+        retained_e026 = rbm_h03_cycle_input.engine.e026;
+    }
+    const uint8_t e02b = rbm_h03_dtc_state.current[CURRENT_E02B];
+
+    /* Only FD10.12 and E026.1 are consumed by the Toyota projection;
+     * these bits belong to the qualifier. No auxiliary E02B flags are
+     * injected. The engine feed combines the shared DTC byte and native
+     * ownership/clock faults. CAN is the only ECT source in this profile. */
+    *engine = (Ta2005EngineQualificationContext){
+        .retained_fd10 = retained_fd10,
+        .fallback_fa7b = UINT8_MAX,
+        .retained_e026 = retained_e026,
+        .e02b = e02b,
+        .coolant_can_enabled = (uint8_t)can_admitted,
+        .coherent = 1u,
+    };
+    *inhibit_history = !can_admitted || (e02b & E02B_BUS_FAULTS) != 0u;
+    *oldest_us = sensors->capture.now_tml0;
+    return 1;
+}

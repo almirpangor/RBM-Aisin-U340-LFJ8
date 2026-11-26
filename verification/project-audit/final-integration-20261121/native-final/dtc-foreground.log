@@ -1,5 +1,0 @@
-PASS H03 DTC foreground: FIFO/FC, CAN generation, busy wrap, IRQ between peek and consume
-PASS BasicCAN pair: timestamp order, rollover, tie, loss, FIFO capacity, bus-off
-PASS BasicCAN dispatch markers: one attempt, generation, next dispatch
-PASS H03 DTC target: bound IRQ, FC, reset, bounded clocks and unbind
-PASS H03 C0 session: nine releases, coalescing, T6/CAN wrap, RX boundary and TX drain

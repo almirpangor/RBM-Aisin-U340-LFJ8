@@ -1,0 +1,14 @@
+{
+  "ready_for_flash": false,
+  "firmware_sources_unchanged": true,
+  "target_and_readiness_unchanged": true,
+  "continuations": 28,
+  "unique_priorities": true,
+  "ten_symbols_in_handoff": true,
+  "changed_sources": [
+    "tests/test_project_status.py",
+    "tests/test_task_coordination.py",
+    "tools/project_status.py",
+    "tools/task_coordination.py"
+  ]
+}

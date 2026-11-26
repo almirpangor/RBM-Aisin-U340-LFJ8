@@ -1,0 +1,25 @@
+{
+  "artifact_kind": "M32R_COLD_START_COMPONENT_ONLY",
+  "hardware_verified": false,
+  "bench_pair_ready": false,
+  "flashable_image": null,
+  "source_revision": "e61b319",
+  "seed_payload_bytes": 561,
+  "seed_aligned_flash_bytes": 564,
+  "seed_sha256": "673447d8f0461a229a0e51adf4a2bb06dad16aade00b154d8a90304f0f1cfbbb",
+  "seed_symbols": [
+    "00000000 00000168 R rbm_h03_target_startup_gear",
+    "00000000 00000231 R rbm_h03_target_startup_gp"
+  ],
+  "own_prologue": [
+    "   0:\t28 7f 29 7f \tpush r8 -> push r9",
+    "   4:\te9 00 00 00 \tld24 r9,0 <rbm_h03_bench_prepare_startup_inputs>",
+    "   8:\t2a 7f 25 c9 \tpush r10 -> ld r5,@r9",
+    "   c:\t2b 7f 2e 7f \tpush r11 -> push lr",
+    "  10:\t18 80 64 00 \tmv r8,r0 -> ldi r4,#0",
+    "  14:\tb0 15 00 1d \tbne r0,r5,88 <rbm_h03_bench_prepare_startup_inputs+0x88>",
+    "  18:\ta4 c9 00 14 \tld r4,@(20,r9)"
+  ],
+  "startup_admission_provider_linked_in_target": false,
+  "simulator": "PASS cold startup: typed read-only seeds, real runtime projection, DTC reset, and refuse gates"
+}

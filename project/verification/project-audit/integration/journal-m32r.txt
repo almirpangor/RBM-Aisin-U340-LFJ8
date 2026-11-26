@@ -1,0 +1,1 @@
+DTC journal: restore, wrap, clear, 30 interrupted prefixes and 240 bit faults PASS

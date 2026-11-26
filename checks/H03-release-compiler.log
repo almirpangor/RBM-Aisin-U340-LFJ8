@@ -1,0 +1,5 @@
+In file included from F:\RBM-Codex-temp\handoff-0e10ca9a\release-profile/h03_first_bench.h:3:0,
+                 from F:\RBM-Codex-temp\handoff-0e10ca9a\delivery\project\targets\lfj8\lfj8_h03_application_binding.c:11:
+F:\RBM-Codex-temp\handoff-0e10ca9a\delivery\project\targets\lfj8/bench_application_profile.h:47:2: error: #error "Supply the independent Toyota timing and source-qualified startup range/request"
+ #error "Supply the independent Toyota timing and source-qualified startup range/request"
+  ^

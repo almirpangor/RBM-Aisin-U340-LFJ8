@@ -1,0 +1,214 @@
+Toyota U340E [1]
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_adaptation_store.c:55:40: error: argument 1 of type 'uint8_t *' {aka 'unsigned char *'} declared as a pointer [-Werror=array-parameter=]
+   55 | int factory_adaptation_encode(uint8_t *r,const FactoryAdaptation *a,uint32_t generation) {
+      |                               ~~~~~~~~~^
+In file included from F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_adaptation_store.c:1:
+F:\RBM-Codex-temp\handoff-0e10ca9a\source\controller\vendor\toyota\include/factory_adaptation_store.h:16:39: note: previously declared as an array 'uint8_t[96]' {aka 'unsigned char[96]'}
+   16 | int factory_adaptation_encode(uint8_t record[FACTORY_ADAPT_RECORD_BYTES],const FactoryAdaptation *a,uint32_t generation);
+      |                               ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_adaptation_store.c:63:46: error: argument 1 of type 'const uint8_t *' {aka 'const unsigned char *'} declared as a pointer [-Werror=array-parameter=]
+   63 | int factory_adaptation_decode(const uint8_t *r,FactoryAdaptation *a,uint32_t *generation) {
+      |                               ~~~~~~~~~~~~~~~^
+F:\RBM-Codex-temp\handoff-0e10ca9a\source\controller\vendor\toyota\include/factory_adaptation_store.h:17:45: note: previously declared as an array 'const uint8_t[96]' {aka 'const unsigned char[96]'}
+   17 | int factory_adaptation_decode(const uint8_t record[FACTORY_ADAPT_RECORD_BYTES],FactoryAdaptation *a,uint32_t *generation);
+      |                               ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc1.exe: all warnings being treated as errors
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c: In function 'factory_gear_57b8a':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:305:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  305 |     if(!valid_gear(p)||!out) return 0;FactoryGearState t=*p; \
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:307:1: note: in expansion of macro 'RETURN_WRAPPER'
+  307 | RETURN_WRAPPER(57b8a,int8_t)
+      | ^~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:305:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  305 |     if(!valid_gear(p)||!out) return 0;FactoryGearState t=*p; \
+      |                                       ^~~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:307:1: note: in expansion of macro 'RETURN_WRAPPER'
+  307 | RETURN_WRAPPER(57b8a,int8_t)
+      | ^~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c: In function 'factory_gear_5641e':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:305:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  305 |     if(!valid_gear(p)||!out) return 0;FactoryGearState t=*p; \
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:308:1: note: in expansion of macro 'RETURN_WRAPPER'
+  308 | RETURN_WRAPPER(5641e,uint8_t)
+      | ^~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:305:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  305 |     if(!valid_gear(p)||!out) return 0;FactoryGearState t=*p; \
+      |                                       ^~~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:308:1: note: in expansion of macro 'RETURN_WRAPPER'
+  308 | RETURN_WRAPPER(5641e,uint8_t)
+      | ^~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c: In function 'factory_gear_567b6':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:305:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  305 |     if(!valid_gear(p)||!out) return 0;FactoryGearState t=*p; \
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:309:1: note: in expansion of macro 'RETURN_WRAPPER'
+  309 | RETURN_WRAPPER(567b6,uint8_t)
+      | ^~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:305:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  305 |     if(!valid_gear(p)||!out) return 0;FactoryGearState t=*p; \
+      |                                       ^~~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:309:1: note: in expansion of macro 'RETURN_WRAPPER'
+  309 | RETURN_WRAPPER(567b6,uint8_t)
+      | ^~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c: In function 'factory_gear_56b88':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:305:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  305 |     if(!valid_gear(p)||!out) return 0;FactoryGearState t=*p; \
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:310:1: note: in expansion of macro 'RETURN_WRAPPER'
+  310 | RETURN_WRAPPER(56b88,uint8_t)
+      | ^~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:305:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  305 |     if(!valid_gear(p)||!out) return 0;FactoryGearState t=*p; \
+      |                                       ^~~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:310:1: note: in expansion of macro 'RETURN_WRAPPER'
+  310 | RETURN_WRAPPER(56b88,uint8_t)
+      | ^~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c: In function 'factory_gear_5737e':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:305:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  305 |     if(!valid_gear(p)||!out) return 0;FactoryGearState t=*p; \
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:311:1: note: in expansion of macro 'RETURN_WRAPPER'
+  311 | RETURN_WRAPPER(5737e,uint8_t)
+      | ^~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:305:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  305 |     if(!valid_gear(p)||!out) return 0;FactoryGearState t=*p; \
+      |                                       ^~~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_gears.c:311:1: note: in expansion of macro 'RETURN_WRAPPER'
+  311 | RETURN_WRAPPER(5737e,uint8_t)
+      | ^~~~~~~~~~~~~~
+cc1.exe: all warnings being treated as errors
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_inputs.c: In function 'factory_load_limited':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_inputs.c:18:9: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+   18 |         if(v<s->v8306) v=s->v8306;if(v<s->v8298) v=s->v8298;
+      |         ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_inputs.c:18:35: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   18 |         if(v<s->v8306) v=s->v8306;if(v<s->v8298) v=s->v8298;
+      |                                   ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_inputs.c:19:9: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+   19 |         if(v>s->v8302) v=s->v8302;if(v>s->v8310) v=s->v8310;
+      |         ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_inputs.c:19:35: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   19 |         if(v>s->v8302) v=s->v8302;if(v>s->v8310) v=s->v8310;
+      |                                   ^~
+cc1.exe: all warnings being treated as errors
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_learning.c: In function 'up_observer':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_learning.c:143:9: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  143 |         if(v>1023) v=1023;s->u7102=(uint16_t)v;
+      |         ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_learning.c:143:27: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  143 |         if(v>1023) v=1023;s->u7102=(uint16_t)v;
+      |                           ^
+cc1.exe: all warnings being treated as errors
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_torque.c: In function 'timed_ramp':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_torque.c:98:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+   98 |     if(result>old) result=old;return (uint8_t)(counter>=duration?0:result);
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_torque.c:98:31: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   98 |     if(result>old) result=old;return (uint8_t)(counter>=duration?0:result);
+      |                               ^~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_torque.c: In function 'alternate_tail':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_torque.c:147:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  147 |     if(PHASE(w)>=3) B(4521)=(uint8_t)level;s->alternate=w;
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_torque.c:147:44: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  147 |     if(PHASE(w)>=3) B(4521)=(uint8_t)level;s->alternate=w;
+      |                                            ^
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_torque.c: In function 'factory_torque_5849a':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_torque.c:213:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  213 |     if(!valid(p)||slot>2) return 0;FactoryTorque t=*p;activate(&t,slot);if(!valid(&t)) return 0;*p=t;return 1;
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\vendor\factory_torque.c:213:36: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  213 |     if(!valid(p)||slot>2) return 0;FactoryTorque t=*p;activate(&t,slot);if(!valid(&t)) return 0;*p=t;return 1;
+      |                                    ^~~~~~~~~~~~~
+cc1.exe: all warnings being treated as errors
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c: In function 'factory_hydraulics_set':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:38:5: error: this 'for' clause does not guard... [-Werror=misleading-indentation]
+   38 |     for(unsigned i=0;i<bytes;++i) s->data[p+i]=(uint8_t)(value>>(8*i));return 1;
+      |     ^~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:38:72: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'for'
+   38 |     for(unsigned i=0;i<bytes;++i) s->data[p+i]=(uint8_t)(value>>(8*i));return 1;
+      |                                                                        ^~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c: In function 'factory_hydraulics_load_main':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:97:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+   97 |     if(!s) return;FactoryLoadInputs v;TRANSFER(FactoryLoadInputs,&v,0);
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:97:19: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   97 |     if(!s) return;FactoryLoadInputs v;TRANSFER(FactoryLoadInputs,&v,0);
+      |                   ^~~~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c: In function 'factory_hydraulics_load_observer':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:101:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  101 |     if(!s) return;FactoryLoadInputs v;TRANSFER(FactoryLoadInputs,&v,0);
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:101:19: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  101 |     if(!s) return;FactoryLoadInputs v;TRANSFER(FactoryLoadInputs,&v,0);
+      |                   ^~~~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c: In function 'factory_hydraulics_main':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:135:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  135 |     if(!s) return 0;FactoryHydraulics t=*s;if(!main_step(&t)) return 0;*s=t;return 1;
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:135:21: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  135 |     if(!s) return 0;FactoryHydraulics t=*s;if(!main_step(&t)) return 0;*s=t;return 1;
+      |                     ^~~~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c: In function 'torque_step':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:139:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  139 |     if(!factory_torque_step(&value)) return 0;TRANSFER(FactoryTorque,&value,1);return 1;
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:95:37: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   95 | #define TRANSFER(type,object,write) transfer(s,object,map_##type,sizeof map_##type/sizeof map_##type[0],write)
+      |                                     ^~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:139:47: note: in expansion of macro 'TRANSFER'
+  139 |     if(!factory_torque_step(&value)) return 0;TRANSFER(FactoryTorque,&value,1);return 1;
+      |                                               ^~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c: In function 'factory_hydraulics_torque_main':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:142:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  142 |     if(!s) return 0;FactoryHydraulics t=*s;if(!torque_step(&t)) return 0;*s=t;return 1;
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:142:21: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  142 |     if(!s) return 0;FactoryHydraulics t=*s;if(!torque_step(&t)) return 0;*s=t;return 1;
+      |                     ^~~~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c: In function 'factory_hydraulics_control_main':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:145:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  145 |     if(!s) return 0;FactoryHydraulics t=*s;if(!main_step(&t)||!torque_step(&t)) return 0;*s=t;return 1;
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:145:21: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  145 |     if(!s) return 0;FactoryHydraulics t=*s;if(!main_step(&t)||!torque_step(&t)) return 0;*s=t;return 1;
+      |                     ^~~~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c: In function 'factory_hydraulics_fast_learning':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:148:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  148 |     if(!s) return 0;FactoryLearning value;TRANSFER(FactoryLearning,&value,0);
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:148:21: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  148 |     if(!s) return 0;FactoryLearning value;TRANSFER(FactoryLearning,&value,0);
+      |                     ^~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c: In function 'factory_hydraulics_capture':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:153:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  153 |     if(!s||!a) return;FactoryLearning value;
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:153:23: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  153 |     if(!s||!a) return;FactoryLearning value;
+      |                       ^~~~~~~~~~~~~~~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c: In function 'factory_hydraulics_restore':
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:162:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+  162 |     if(!s||!factory_adaptation_valid(a)) return 0;FactoryLearning value;TRANSFER(FactoryLearning,&value,0);
+      |     ^~
+F:\RBM-Codex-temp\handoff-0e10ca9a\pc-checks\controller\tmp17laycqm\factory_hydraulics_port.c:162:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  162 |     if(!s||!factory_adaptation_valid(a)) return 0;FactoryLearning value;TRANSFER(FactoryLearning,&value,0);
+      |                                                   ^~~~~~~~~~~~~~~
+cc1.exe: all warnings being treated as errors
+Traceback (most recent call last):
+  File "F:\RBM-Codex-temp\handoff-0e10ca9a\source\controller\build.py", line 172, in <module>
+    main()
+    ~~~~^^
+  File "F:\RBM-Codex-temp\handoff-0e10ca9a\source\controller\build.py", line 168, in main
+    build(args.cc, args.out.resolve())
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\RBM-Codex-temp\handoff-0e10ca9a\source\controller\build.py", line 125, in build
+    subprocess.run([*driver, *flags, *shared, *source_args, "-o", str(stage / library)], check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python313\Lib\subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['C:/msys64/mingw64/bin\\gcc.exe', '-std=c11', '-O2', '-Wall', '-Wextra', '-Werror', '-I', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\source\\controller\\include', '-I', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\source\\controller\\vendor\\toyota\\include', '-shared', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\source\\controller\\src\\rbm_u340e.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\source\\controller\\src\\rbm_u340e_runtime.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\source\\controller\\src\\rbm_u340e_scheduler.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\vendor\\donor_shared_calibration.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\vendor\\factory_adaptation_store.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\vendor\\factory_core.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\vendor\\factory_correction.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\vendor\\factory_gear_strategy.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\vendor\\factory_gears.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\vendor\\factory_inputs.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\vendor\\factory_learning.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\vendor\\factory_outputs.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\vendor\\factory_phase_modes.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\vendor\\factory_pressure.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\vendor\\factory_torque.c', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\factory_hydraulics_port.c', '-o', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller\\tmp17laycqm\\rbm_u340e.dll']' returned non-zero exit status 1.
+Проверка на ПК остановлена: Command '['C:\\Program Files\\Python313\\python.exe', '-B', 'controller/build.py', '--cc', 'C:/msys64/mingw64/bin\\gcc.exe', '--out', 'F:\\RBM-Codex-temp\\handoff-0e10ca9a\\pc-checks\\controller']' returned non-zero exit status 1.

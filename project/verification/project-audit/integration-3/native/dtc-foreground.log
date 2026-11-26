@@ -1,0 +1,3 @@
+PASS H03 DTC foreground: FIFO/FC, CAN generation, busy wrap, IRQ between peek and consume
+PASS BasicCAN pair: timestamp order, rollover, tie, loss, FIFO capacity, bus-off
+PASS BasicCAN dispatch markers: one attempt, generation, next dispatch

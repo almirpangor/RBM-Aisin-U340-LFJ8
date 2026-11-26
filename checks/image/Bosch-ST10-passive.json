@@ -1,0 +1,62 @@
+{
+  "status": "PASS_OFFLINE_ONLY",
+  "sha256": "2fb7fbee3a7daf1f33f4e5612854bccc69fb6bda5a108b19fd75c2908981b75e",
+  "baseline_sha256": "5292fdd41cfb5e2055742ab28d85d5e109f509f840fb82c855ee0bd1b82d8875",
+  "the_same_byte_exact_build": true,
+  "checksum_records": 51,
+  "passive_pair_capture_cases": 65536,
+  "positive_rx_timing_cases": 9,
+  "rx_rejection_cases": [
+    "unarmed",
+    "dlc",
+    "msglst",
+    "checksum",
+    "clock_stopped",
+    "overflow_pending",
+    "torn_high_word",
+    "half_range",
+    "backward",
+    "late_bus_off",
+    "late_init"
+  ],
+  "rx_recovery_cases": [
+    "bus_off",
+    "can_init",
+    "busy_timeout"
+  ],
+  "rb_native_start_admission_cases": 48,
+  "rb_native_revocations": 6,
+  "startup_stack_paths": 4,
+  "coexistence": [
+    {
+      "if1_delay": 0,
+      "service_calls": 360,
+      "identical_wire_frames": 164,
+      "maximum_model_system_stack": 34
+    },
+    {
+      "if1_delay": 1,
+      "service_calls": 360,
+      "identical_wire_frames": 164,
+      "maximum_model_system_stack": 34
+    },
+    {
+      "if1_delay": 3,
+      "service_calls": 360,
+      "identical_wire_frames": 72,
+      "maximum_model_system_stack": 34
+    }
+  ],
+  "hardware_tested": false,
+  "new_diagnostic_services": false,
+  "chery_passive_capture": {
+    "raw_pair_word": "0xe7f2",
+    "raw_d1_bits": "7:0",
+    "raw_d4_bits": "15:8",
+    "validity_age_word": "0xe7ee",
+    "defer_mask_in_phase": "0x300",
+    "uses_existing_reserved_ram": true,
+    "affects_engine_authority": false,
+    "new_diagnostic_service": false
+  }
+}

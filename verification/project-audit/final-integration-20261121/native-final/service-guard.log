@@ -1,3 +1,0 @@
-{"status": "PASS_SELECTED_WRITERS_MODEL_ONLY", "guard_with_fixture_policy_bytes": 528, "new_mutable_state_bytes": 0, "policy_test": "H03 service policy: 20 boundary, overflow, original-span and invalid-policy assertions PASS", "flashable_image": null}
-native writer cases: 240
-native close cases: 56

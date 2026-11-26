@@ -1,0 +1,44 @@
+{
+  "artifact_kind": "H03_STARTUP_DIAGNOSTIC_LINK",
+  "source_revision": "e61b3195b19eea3fe8af3765c22882bf46450050",
+  "diagnostic_timing_ticks": {
+    "period": 5000,
+    "lateness": 1000,
+    "watchdog": 6000
+  },
+  "startup_included": true,
+  "bench_pair_ready": false,
+  "hardware_verified": false,
+  "flashable_image": null,
+  "error": "Production bindings unresolved: rbm_h03_bench_consume_cold_admission_locked, rbm_h03_bench_native_can_service, rbm_h03_bench_native_input_capture, rbm_h03_bench_native_input_startup",
+  "status": "FAIL_BINDINGS",
+  "accepted_layout": false,
+  "unresolved_symbols": [
+    "rbm_h03_bench_consume_cold_admission_locked",
+    "rbm_h03_bench_native_can_service",
+    "rbm_h03_bench_native_input_capture",
+    "rbm_h03_bench_native_input_startup"
+  ],
+  "known_sections_candidate_plan": {
+    "sections": 604,
+    "capacity_bytes": 110548,
+    "payload_bytes": 110496,
+    "ownership_verified": false,
+    "unresolved_material_counted": false
+  },
+  "flash_payload_bytes": 110552,
+  "new_static_ram_bytes": 4,
+  "retained_sections": 619,
+  "unit_sources": {
+    "lfj8_h03_bench_application_profile.c": "c82ea8407d00fe47fa7b186607c14cfc90748b7d5760490b893f86ff693d7819",
+    "bench_sensor_profile.c": "c8810e14269b088e3ec506caa1db233a729c2002647c75cc051146c4c9718a40",
+    "lfj8_h03_engine_context.c": "cc4f2fdbef66d1c6761905017d0b5584271427b3fe93c57a5ff3ec68c1b2f1ec",
+    "lfj8_h03_bench_outputs.c": "7e47f6649dffab544d661beeb31ee7abb143db07d01d906a3c42fe45a2ab6359",
+    "bench_mode_profile.c": "19d68a579498417d4acab82ff752255ec4c65072e38e23a8e887efb0ac4d2dd5",
+    "lfj8_h03_bench_can_service.c": "a5c8a5551d76599fc9d1ba1ee2b72cf2a9461ac746aa29fbc990e69e9e120f90",
+    "h03_s01_verified_phase_clock_alias.S": "79ce60f09b32f2f5a088eb050ed9d04321bc0b7d27e777bf0f04b4126341811c",
+    "lfj8_h03_bench_memory.c": "b7798f73e1de799ede0b838251513b591418de462b9de5b8f530123cbfabb374",
+    "lfj8_h03_s01_cold_start.c": "da7b2f1bc51364b9c24946815121ce3515bf8459ed1aab580f44478e91f4af0e",
+    "h03_s01_cold_seed.S": "196b88df97a2c8e09e5dd727dda32f386f93adb337385f418990273ae216b52d"
+  }
+}

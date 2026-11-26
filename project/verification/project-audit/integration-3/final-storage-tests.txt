@@ -1,0 +1,11 @@
+test_duplicate_missing_and_unknown_groups (test_h03_storage.H03StorageTests.test_duplicate_missing_and_unknown_groups) ... ok
+test_field_overlap_bounds_and_alignment (test_h03_storage.H03StorageTests.test_field_overlap_bounds_and_alignment) ... ok
+test_layout_uses_target_alignment_and_disjoint_ranges (test_h03_storage.H03StorageTests.test_layout_uses_target_alignment_and_disjoint_ranges) ... ok
+test_no_implicit_overlay_when_primary_has_spare_space (test_h03_storage.H03StorageTests.test_no_implicit_overlay_when_primary_has_spare_space) ... ok
+test_primary_and_secondary_overflow_are_refused (test_h03_storage.H03StorageTests.test_primary_and_secondary_overflow_are_refused) ... ok
+test_wrong_abi_endian_and_truncation (test_h03_storage.H03StorageTests.test_wrong_abi_endian_and_truncation) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
+
+OK

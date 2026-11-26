@@ -1,0 +1,119 @@
+{
+  "specification": {
+    "path": "docs/RBM_TZ_Aisin_U340_LFJ8_Codex_v1_0.pdf",
+    "revision": "1.0",
+    "date": "2026-11-19",
+    "bytes": 297030,
+    "sha256": "c4dcb1965702ff10f8d58b7a638a9c6e2562222277ea1c19fdcef20e4019d389"
+  },
+  "repositories": {
+    "R1": {
+      "url": "https://github.com/almirpangor/CM-AVEO-TCM-AKP-U340",
+      "branch": "main",
+      "commit": "8cf4308d8539253d4ac994dd99c9650f02da6236"
+    },
+    "R2": {
+      "url": "https://github.com/almirpangor/Chery-TA2005-U340E",
+      "branch": "main",
+      "commit": "39bf857d26ef32257c6b816c8a222d10e67763cb"
+    },
+    "R3": {
+      "url": "https://github.com/almirpangor/Chery-TA2005-U340E",
+      "branch": "codex/ta2005-memory-split",
+      "commit": "7585de6945b4b6b3ef381c6062070a5f417cf588"
+    },
+    "R4": {
+      "url": "https://github.com/almirpangor/GW4G15-CAN-U340e",
+      "branch": "main",
+      "commit": "dc6b4f08a24e648d3d0dab986c1765abb6fd294a"
+    }
+  },
+  "firmware": [
+    {
+      "id": "S01",
+      "repository": "R1",
+      "path": "firmware/tcm/toyota-u340e/89663-52f01/4770806_89663-52F01.bin",
+      "role": "Образ Toyota 1NZ-FE, донор алгоритмов U340E",
+      "status": "Донор согласован в ТЗ",
+      "bytes": 753664,
+      "sha256": "a3cd723e7e21bf547ca4c17ec49a1e098d203773547dba4d7af21991a2cbead1",
+      "git_blob_sha": "fd9afbbab30735e681ae0476b833b5c949aae5e6"
+    },
+    {
+      "id": "S02",
+      "repository": "R1",
+      "path": "firmware/engine/chery-tiggo-t11/CHERY_REFERENCE_DO_NOT_FLASH.bin",
+      "role": "Донор штатного CAN и диагностики со стороны Chery Tiggo T11",
+      "status": "Донор согласован в ТЗ",
+      "bytes": 851968,
+      "sha256": "99dc271a861ab6d9e6749e8beb4637ab5c6c7e111f3ff0d9df4e147b2a0a6e1c",
+      "git_blob_sha": "69612111a0b6a76010fedc2752d030048cad08dd"
+    },
+    {
+      "id": "S03",
+      "repository": "R1",
+      "path": "firmware/tcm/chery-ta2005/stock/EMS.bin",
+      "role": "Донор штатного CAN и диагностики со стороны Continental TA2005",
+      "status": "Донор согласован в ТЗ",
+      "bytes": 262144,
+      "sha256": "6f0433dc44871ed00e73f2766b0b37dce39b19c600f2b8248fb626554b0cfa79",
+      "git_blob_sha": "a9110c7c502a3502a1510fb6d1b556240f8c9713"
+    },
+    {
+      "id": "S04",
+      "repository": "R1",
+      "path": "firmware/engine/gw4g15/e4m3/GW4G15_REV8_E4M3.bin",
+      "role": "Кандидат текущей прошивки Bosch ME7.9.71 GW4G15 E4M3 для аудита",
+      "status": "Версия E4M3 подтверждена. Побайтовое совпадение с действующим ЭБУ предстоит установить",
+      "bytes": 851968,
+      "sha256": "e25a1c97492ae556b1a52043e6ae85b88d2da86c03a78ef01dc2151c8a0a4a2a",
+      "git_blob_sha": "cd0691c659cc3d159557e3bb2f6f675cd2309617"
+    },
+    {
+      "id": "S05",
+      "repository": null,
+      "path": "RB-J-P01.bin",
+      "role": "Предоставленный образ Mazda PCM LFJ8-18-881F, SuperH",
+      "status": "Исторический вариант PCM. Текущая аппаратная цель — отдельный TCM LFJ8-18-9E1C, программная основа H03. S05 не является основой выпуска",
+      "bytes": 1048576,
+      "sha256": "3d55f5be4cfda23a065371d71e84cc233aa111c8b237d063b1e8fc205337850d",
+      "git_blob_sha": null
+    },
+    {
+      "id": "S06",
+      "repository": null,
+      "path": "LFJ8TB000LFXA0A0-20260806-160523(TCM-adapt).bin",
+      "role": "Донор Mazda TCM с внутренним номером LFJ8-18-9E1B для анализа и разработки",
+      "status": "Согласован пользователем 20.11.2026 как донор для исследования и сравнения. Текущая цель — LFJ8-18-9E1C на основе H03. Запрос исходника 9E1D больше не относится к активному проекту",
+      "bytes": 524288,
+      "sha256": "624790698dcb39000c2a070c07e14f4857e3a46cc32142c3ee5ac4689fd8b7cc",
+      "git_blob_sha": null
+    }
+  ],
+  "supporting_materials": [
+    {
+      "id": "H01",
+      "path": "MotorData.pdf",
+      "role": "Предоставленная схема внешних цепей Mazda6 GH 2007–2012, отдельный TCM A65",
+      "status": "Владелец подтвердил применение цепей S51, S83, Tiptronic, CAN и питания. Маркировка TCM и геометрия его разъёмов в PDF отсутствуют",
+      "bytes": 429007,
+      "sha256": "dcb07d23df82c64914036f44f9ed0901e0baf746c80e6e37ba2bc1bbc4335958"
+    },
+    {
+      "id": "H02",
+      "path": "LFJ8-T-B.bin",
+      "role": "Архивный заводской 9E1B. Источник окон ADC и контрольных адресов",
+      "status": "Метаданные и размер проверены. Вариант 9E1B для сравнения",
+      "bytes": 524288,
+      "sha256": "4612d8b1473951509c9bc1dcff4215bf97380d31f083a210e3d971ecfd3553bc"
+    },
+    {
+      "id": "H03",
+      "path": "LFJ8-T-D.bin",
+      "role": "Согласованная программная основа TCM. Встроенный номер 9E1C, ПО LFJ8TC000LFXA0A0",
+      "status": "Владелец выбрал этот файл для разработки и подтвердил наличие блока под 9E1C. Встроенный ID соответствует выбранной версии.",
+      "bytes": 524288,
+      "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+    }
+  ]
+}

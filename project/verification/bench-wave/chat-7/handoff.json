@@ -1,0 +1,269 @@
+{
+  "chat": "7",
+  "task": "H03-05",
+  "related": [
+    "TOY-04",
+    "TOY-06"
+  ],
+  "base_main": "3fe28938163e1dddc98a37733c229390ab7f0fff",
+  "implementation_commit": "e52a5c665a185132a4e4335ca70605ee0cba50fe",
+  "branch": "codex/h03-05-bench-output-01a1f9a2",
+  "scope": "Профиль H03 для наблюдения и проверки запуска, обмена и диагностики с программно снятыми командами целевых соленоидов. Допуск физического управления остаётся открытым.",
+  "profile": {
+    "source": "targets/lfj8/lfj8_h03_bench_outputs.c",
+    "contract": "targets/lfj8/bench_output_profile.h",
+    "mode": "output_inhibited",
+    "isolated_pwm_mask": 0,
+    "hardware_isolation_claimed": false,
+    "authorization": "Для контролируемых путей D/E/F, Pressure A и TIO9 целевой OEM apply недоступен в этом профиле. При передаче RAM в сервис переходы подавляют OEM-вызовы без записи в переданное состояние.",
+    "engineering_calibration_values": [],
+    "confirmed_toyota_to_mazda_pin_mapping": null,
+    "discrete_h03": [
+      {
+        "channel": "D",
+        "pin_candidate": "1F",
+        "proposal": "0x8063D5",
+        "final": "0x8063D7",
+        "p3_bit": 7,
+        "p13_feedback_bit": 3
+      },
+      {
+        "channel": "E",
+        "pin_candidate": "1H",
+        "proposal": "0x8063D8",
+        "final": "0x8063DA",
+        "p3_bit": 6,
+        "p13_feedback_bit": 2
+      },
+      {
+        "channel": "F",
+        "pin_candidate": "1J",
+        "proposal": "0x8063DB",
+        "final": "0x8063DD",
+        "p3_bit": 5,
+        "p13_feedback_bit": 1
+      }
+    ],
+    "pressure_h03": {
+      "pins_candidate": [
+        "1E",
+        "1G"
+      ],
+      "proposal": "0x80508C",
+      "final": "0x805094",
+      "command_units": "A, IEEE 754 binary32",
+      "sense": "(uint16_t RAM[0x804BC0]) >> 6",
+      "sense_units": "10-bit ADC0/AN3 counts",
+      "time_of_conversion": null,
+      "calibration_to_amperes": null
+    },
+    "tio9_h03": {
+      "pin": "P97",
+      "external_pin": null,
+      "proposal": "0x8060F0",
+      "timer_reload1": "0x800394",
+      "timer_reload0": "0x800396",
+      "timer_units": "native TIO9 reload counts",
+      "physical_slu_mapping": null
+    },
+    "startup_without_actuation": {
+      "phase_startup": "lfj8_h03_phase_startup → lfj8_h03_takeover_init. Профиль наблюдения задаёт настоящий I/O, lfj8_h03_tml0ct_m32r, lfj8_h03_output_inhibit_locked и существующий phase_clock. При корректных временах оба состояния инициализируются с изначально пустой pending.",
+      "rejection_contract": "write32, qualified, arbitrate и apply все равны NULL, isolated_pwm_mask равна нулю. Смешанная конфигурация с частичными callbacks или ненулевой маской отвергается. Наличие ops означает установленный интерфейс наблюдения, а не допуск соленоидов.",
+      "startup_and_service": "Для H03-03/CAN-03 запуск и CAN остаются зависимыми от штатных условий владения RAM, часов и провайдеров. Отсутствие физического допуска выходов в профиле наблюдения само по себе не запрещает запуск или обслуживание. Обе штатные фазы продолжают принимать события после отзыва, не вызывая stop_service_locked.",
+      "prepare_and_apply": "qualified() возвращает отказ до чтения выходных условий в режиме наблюдения. Prepare не публикует предложения. Apply при любом старом поколении не вызывает драйвер. Commit в режиме наблюдения сразу снимает команды и возвращает HANDLED.",
+      "verification": "Native fixture в обеих моделях явно проверяет нулевую маску и отсутствующие четыре actuator callbacks, успешный lfj8_h03_phase_startup, новый release после отказа и отсутствие остановки сервиса. Хостовый takeover test отклоняет частичный qualified provider."
+    }
+  },
+  "entry_points": [
+    {
+      "symbol": "rbm_h03_target_takeover_ops",
+      "connection": "Целевое внешнее определение для lfj8_h03_application_binding.c. В общем профиле оставить RBM_H03_PROFILE_OUTPUT_ISOLATION_MASK и RBM_H03_PROFILE_OUTPUT_PHASE_CLOCK неопределёнными. Добавить модуль в список native bindings. Alias rbm_h03_bench_phase_clock связывается с существующим control/phase_clock по свежему RAM-инвентарю. В актуальной общей компоновке файл передаётся --binding-source targets/lfj8/lfj8_h03_bench_outputs.c."
+    },
+    {
+      "symbol": "rbm_h03_strategy_callback",
+      "h03_site": "0x036F30",
+      "connection": "Для профиля с запрещёнными выходами перенаправить в rbm_h03_commit_callback через штатную ASM-обёртку. Если H03-03 определяет одноимённую функцию, диспетчер профиля вызывает rbm_h03_commit_callback из неё. Для профиля выполняются оба перехода, а штатный арбитр 0x0717B8 не вызывается."
+    },
+    {
+      "symbol": "rbm_h03_commit_callback",
+      "h03_site": "0x07C10C",
+      "connection": "Обе фазы проходят через один отзыв под IRQ lock. Сбрасывается pending, отзываются D/E/F, Pressure A и TIO9/P97, очищаются их предложения. Владелец RAM проверяется до доступа. В физически квалифицированном профиле по-прежнему требуется соседняя принятая release и отдельная проверка допусков перед 0x046900."
+    },
+    {
+      "symbol": "lfj8_h03_bench_output_snapshot",
+      "connection": "Чтение под IRQ lock после запуска и при владении RAM. Вызывающий предоставляет отдельный буфер. Чат 10 может подключить его к согласованной диагностической странице. Формат сетевой выдачи и номер страницы здесь не назначены."
+    }
+  ],
+  "snapshot_units": {
+    "captured_at": "TML0 ticks at capture, 0x8003E0",
+    "pressure_sense_counts": "ADC0/AN3 raw 10-bit counts, RAM 0x804BC0 >> 6",
+    "pressure_reload1": "TIO4 counts, 0x800344",
+    "pressure_reload0": "TIO4 counts, 0x800346",
+    "tio9_reload1": "TIO9 counts, 0x800394",
+    "tio9_reload0": "TIO9 counts, 0x800396",
+    "shift_p3": "0x800703 & 0xE0, MCU latch bits",
+    "shift_feedback_p13": "0x80070D & 0x0E, MCU feedback bits",
+    "pressure_control": "bit 0 from P10DATA 0x80070A and bit 1 from P10SEL 0x80074A for P107",
+    "tio9_control": "bit 0 from P9DATA 0x800709 and bit 1 from P9SEL 0x800749 for P97"
+  },
+  "provenance": [
+    {
+      "source": "docs/lfj8-h03-output-adapter.md",
+      "facts": "Точные адреса и формат H03. Фазы 3 и 2 используют 0x036F30 и 0x07C10C. Сброс битов D/E/F повторяет ветви 0x00CA78, 0x00CADC и 0x00CB40."
+    },
+    {
+      "source": "docs/lfj8-h03-output-paths.md",
+      "facts": "Аппаратные кандидаты по схеме Mazda, выводы MCU, обратные входы P13 и монитор AN3. Назначение S1/S2/ST конкретного жгута открыто."
+    },
+    {
+      "source": "docs/lfj8-slt-calibration.md",
+      "facts": "0x0346F0–0x034854 использует AN3 для P0745. Шаг штатного пересчёта равен 5/1024 В на отсчёт. Коэффициент тока и кривая давления отсутствуют."
+    },
+    {
+      "source": "verification/project-audit/h03-05-tio9-inhibit.md",
+      "facts": "Унаследованные нулевые ветви 0x00B58C и 0x00B4B4 ставят ширину 1, перезагрузки TIO4 2998/0 и TIO9 248/0, переводят P107/P97 в GPIO с низкой защёлкой. Это команды в отсчётах таймера из H03, без предположения о силовом каскаде."
+    },
+    {
+      "source": "verification/project-audit/toy06-h03-slu-output-paths.md",
+      "facts": "Штатный P31 и TIO9 независимы. Аппаратное назначение TIO9 и пригодность для пропорционального SLU открыты."
+    }
+  ],
+  "memory": {
+    "measurement": "M32R GCC 4.8.0 -Os -m32r -msdata=none -Wa,-EB -ffunction-sections -fdata-sections, m32r-elf-size -A и m32r-elf-objdump -d. Указаны размеры секций без выравнивания конечного линка.",
+    "small": {
+      "takeover_delta_flash_bytes": 36,
+      "commit_delta_flash_bytes": 8,
+      "bench_ops_rodata_bytes": 36,
+      "optional_snapshot_flash_bytes": 256,
+      "total_delta_if_snapshot_linked_bytes": 336
+    },
+    "medium": {
+      "takeover_delta_flash_bytes": 36,
+      "commit_delta_flash_bytes": 4,
+      "bench_ops_rodata_bytes": 36,
+      "optional_snapshot_flash_bytes": 260,
+      "total_delta_if_snapshot_linked_bytes": 336
+    },
+    "additional_static_ram_bytes": 0,
+    "snapshot_caller_buffer_bytes": 20,
+    "stack": {
+      "snapshot_direct_frame_bytes": 24,
+      "application_running_locked_frame_bytes": 4,
+      "commit_direct_frame_bytes": 24,
+      "redirect_wrapper_save_bytes": 72,
+      "ownership_callback_and_interrupt_nesting_included": false
+    },
+    "composition": {
+      "medium_current_main_audit_with_takeover_and_commit": {
+        "flash_bytes_including_fixed_redirects": 107924,
+        "known_sections_bytes": 107868,
+        "unresolved_symbols": 15,
+        "native_bench_provider_linked": false,
+        "source_baseline": "10f7c1513b910f42473690255641140989cc10d0"
+      },
+      "small_candidate_with_bench_snapshot_root": {
+        "flash_bytes_including_fixed_redirects": 106944,
+        "known_sections_bytes": 106888,
+        "known_sections_capacity_bytes": 110548,
+        "unresolved_symbols": 14,
+        "rbm_h03_target_takeover_ops_resolved": true,
+        "phase_clock_typed_alias": "0x806EBC",
+        "phase_clock_bytes": 28,
+        "phase_clock_alignment": 4,
+        "both_output_redirects_tested_separately": true,
+        "source_baseline": "3fe28938163e1dddc98a37733c229390ab7f0fff"
+      },
+      "qualification": "Известные секции размещены в адресной модели. Размеры ещё не включают определения остального профиля, штатные переходы выходов в общей компоновке и диагностику сетевой выдачи."
+    }
+  },
+  "software_blockers": [
+    "Общая сборка должна включить native bench provider, alias control/phase_clock и оба redirect с описанным диспетчером H03-03. Нужна конечная проверка размещения, RAM owner, стека и целостности с остальными реальными поставщиками.",
+    "Диагностика DTC-02 должна вызвать lfj8_h03_bench_output_snapshot через согласованную страницу. Снимок сообщает состояние регистров и время чтения. Возраст АЦП и фактический ток в нём неизвестны.",
+    "Активному профилю нужны Lfj8H03ActuatorCalibration, свежие согласованные MAIN/FAST, Lfj8H03OemOutputState и измеренная рабочая область питания/ATF. Существующий lfj8_h03_cycle_prepare_outputs и OEM 0x0717B8/0x046900 проверены в квалифицированной модели, целевой включающий профиль отсутствует.",
+    "TOY-06 требует event-согласованный Lfj8H03SluSnapshot с производителями base_7054, override_7082, trim_7066, offset_7028/7030, learning_4616, mode_4505 и flags_1636/4828/4827/4825/4822, а также selector_4544 и начальные state/GP-4735. Выход lfj8_h03_cycle_tick_with_slu остаётся в единицах донора. Native физический драйвер SLU и преобразование отдельно.",
+    "Для A/B/C/Pressure B профиль не передаёт команды штатному apply и не утверждает физическую изоляцию. Самостоятельное состояние запасных PWM и каскадов при загрузке, передаче в сервис и остановке CPU требуют проверки."
+  ],
+  "post_flash_measurements": [
+    {
+      "step": "На установленном владельцем стендовом комплекте сопоставить снимки до и после штатных фаз с измерениями D/E/F, P107 и P97. Проверить программно снятые команды при reset, ошибке CAN, истечении события и сервисной передаче.",
+      "passed": false
+    },
+    {
+      "step": "Прозвонить драйверы 1F/1H/1J до катушек S1/S2/ST и 1E/1G до SLT. Записать полярность, сопротивление, напряжение и переходные процессы в подтверждённой электрической конфигурации.",
+      "passed": false
+    },
+    {
+      "step": "На инструментированном стенде снять пары отсчётов AN3 и тока SLT по питанию/ATF, зависимость тока и давления, а также спад после отзыва каждого канала.",
+      "passed": false
+    },
+    {
+      "step": "Определить исполнение Toyota SL или SLU, внешний вывод P97 и тип каскада. Для подтверждённого SLU записать ток/скольжение при удержании и снятии. Отдельно проверить изоляцию или состояние A/B/C/Pressure B и TIO9.",
+      "passed": false
+    }
+  ],
+  "hardware_tested": false,
+  "flashable_image": null,
+  "verification": {
+    "hardware_verified": false,
+    "commands": [
+      {
+        "command": "python -B targets/lfj8/check_h03_bench_outputs.py --base $h03 --gcc $m32rGcc --out $out/bench-outputs.json",
+        "result": "PASS, 9 сценариев в каждой из моделей small/medium. OEM байты сохранены за исключением двух проверяемых BL. Проверены отказ валидной команде, снятие всех пяти команд и отсутствие записи при отзыве владения."
+      },
+      {
+        "command": "python -B targets/lfj8/check_h03_target_outputs.py --base $h03 --gcc $m32rGcc --out $out/target-outputs.json",
+        "result": "PASS, 16 сценариев в каждой из моделей small/medium, включая штатный арбитр и положительную выдачу в квалифицированной модели, запрет ложной маски изоляции и отзыв."
+      },
+      {
+        "command": "zig cc -std=c11 -O0 -UNDEBUG -Wall -Wextra -Werror -pedantic -I controller/include -I controller/vendor/toyota/include -I diagnostics targets/lfj8/test_lfj8_h03_takeover.c targets/lfj8/lfj8_h03_takeover.c targets/lfj8/lfj8_h03_outputs.c targets/lfj8/lfj8_h03_phase_clock.c controller/vendor/toyota/src/factory_core.c -o $out/test-h03-takeover.exe; запуск test-h03-takeover.exe",
+        "result": "PASS, включая запрет неполного qualified provider и неполной маски изоляции."
+      },
+      {
+        "command": "python -B targets/lfj8/check_h03_slt_fault.py --base $h03 --gcc $m32rGcc",
+        "result": "PASS, 59 сценариев мониторов, защёлок отказа и отзыва."
+      },
+      {
+        "command": "python -B targets/lfj8/check_h03_slu_output_paths.py --base $h03 --gcc $m32rGcc",
+        "result": "PASS, 18 сценариев. Отдельные штатные пути Shift E и TIO9."
+      },
+      {
+        "command": "python -B targets/lfj8/check_toyota_slu.py --r1 $r1 --r3 $r3 --cc $zig --m32r-cc $m32rGcc",
+        "result": "PASS_DONOR_SLU_AND_H03_SECONDARY_HOST_ONLY. 3072 донорских сценария SECONDARY SLU, изолированный M32R 23 проверки. Целевая физическая привязка не заявлена."
+      },
+      {
+        "command": "python -B tools/check_integrated_h03.py --suite native --base $h03 --gcc $m32rGcc --controller $controller --bridge $bridge --out $out/native-final --jobs 1",
+        "result": "PASS 22/22 после повторного последовательного запуска. В первом параллельном прогоне atf-fault превысила 30 с, а can-monitor-revoke прочитал отчёт RAM до фиксации файлов. Повтор сформировал свежий RAM-инвентарь."
+      },
+      {
+        "command": "python -B tools/check_integrated_h03.py --suite components --base $h03 --gcc $m32rGcc --controller $controller --bridge $bridge --out $out/components --jobs 2",
+        "result": "PASS 8/8, в том числе cycle-load и cycle-slu."
+      },
+      {
+        "command": "python -B verification/project-audit/integration-11-20261121/check-composition.py --base $h03 --gcc $m32rGcc --controller $controller --bridge $bridge --storage-report $out/native-final/storage.json --out $out/composition-final",
+        "result": "FAIL_BINDINGS, 15 ссылок. Все 589 известных секций размещены. Базовый сценарий не подключает новый native provider."
+      },
+      {
+        "command": "python -B $out/check-composition-bench.py --base $h03 --gcc $m32rGcc --controller $controllerSmall --bridge $bridgeSmall --storage-report $out/native-final/storage.json --out $out/composition-bench-small",
+        "result": "FAIL_BINDINGS, 14 ссылок. Все 591 известная секция размещена. Новый поставщик и снимок production удержаны, существующие control/phase_clock связаны типизированным alias. Обёртка использует check-composition.py с memory_model=small, добавляет lfj8_h03_bench_outputs.c в PROVIDERS и rbm_h03_bench_phase_clock → control/phase_clock в существующий ram_owner.APPLICATION_FIELDS. Мост собран с -mmodel=small через build.py с полным манифестом источников. Общие исходники не изменялись."
+      },
+      {
+        "command": "python -B targets/lfj8/check_h03_link.py --base $h03 --gcc $m32rGcc --controller $controller --bridge $bridge --out $out/standard-link.json",
+        "result": "CAN extension window overflow. Тот же результат на архивном снимке 10f7c15 с теми же входными объектами."
+      },
+      {
+        "command": "python -B tools/check_integrated_h03.py --suite expanded --small-model --base $h03 --gcc $m32rGcc --controller $controller --bridge $bridge --out $out/expanded-small --jobs 1",
+        "result": "Ошибку в существующей expanded-обёртке воспроизводит несовместимая сигнатура split: передаётся 9 аргументов при 7 в самой обёртке. Скрипты совпадают с main. Модели small проверены отдельно прямым тестом двух выводных переходов и расширенным адресным кандидатом с native provider."
+      },
+      {
+        "command": "python -B $out/check-explicit-bench-small.py --base $h03 --gcc $m32rGcc --controller $controllerSmall --bridge $bridgeSmall --storage-report $out/native-final/storage.json --out $out/composition-explicit-bench-small",
+        "result": "На main 3fe2893 повторены 106944 байта и FAIL_BINDINGS c 14 ссылками. Новый выходной модуль принят через официальный повторяемый --binding-source, snapshot удержан, контрольный alias 0x806EBC подключён через RAM-инвентарь в параметрах эксперимента. Точный расчёт адреса использует проверенный control/phase_clock в текущей карте. Финальные redirect и alias в общий профиль добавляет интегратор."
+      },
+      {
+        "command": "python -B -m unittest discover -s tests -p test_h03_image*.py и python -B -m unittest discover -s tests -p test_h03_layout.py",
+        "result": "PASS, 12 + 13 тестов общего сериализатора и размещения после слияния 3fe2893."
+      }
+    ],
+    "logs": "D:/RBM-Codex-Work/h03-bench-wave-01a1f9a2"
+  },
+  "runtime_test_base_main": "10f7c1513b910f42473690255641140989cc10d0"
+}

@@ -1,0 +1,73 @@
+{
+  "status": "PASS",
+  "s04_sha256": "e25a1c97492ae556b1a52043e6ae85b88d2da86c03a78ef01dc2151c8a0a4a2a",
+  "rev8_sha256": "2e1621c4329661f3b6991cf540aea188497fff2a88e32e4eaa6a172b6d7360a0",
+  "s02_sha256": "99dc271a861ab6d9e6749e8beb4637ab5c6c7e111f3ff0d9df4e147b2a0a6e1c",
+  "gw_publication_oracle": {
+    "byte_identical_functions": [
+      {
+        "cpu_start": "0x4bc3a",
+        "cpu_end_exclusive": "0x4bc72",
+        "sha256": "d25f233357daba64609f2835563fff8f57251c8ff53fb072d3480f1f5231a7b5"
+      },
+      {
+        "cpu_start": "0x219a4",
+        "cpu_end_exclusive": "0x219b6",
+        "sha256": "9316935fbc0453ac50f7efc0354febc0cd9bfeb6ca71c264fd6a9b83449c37b8"
+      },
+      {
+        "cpu_start": "0x22f34",
+        "cpu_end_exclusive": "0x23016",
+        "sha256": "7977a4613a6806aba35a8b3134cd43852539099d355d8b3749ca64a3302caff2"
+      },
+      {
+        "cpu_start": "0x47ffa",
+        "cpu_end_exclusive": "0x48062",
+        "sha256": "4c400102c50049fe0230fb11aa36cb5905c93d053bb9897d0f5150192a6aa042"
+      },
+      {
+        "cpu_start": "0x218aa",
+        "cpu_end_exclusive": "0x218c2",
+        "sha256": "9aa92b022b3edc1aa54184d90327698a6c1054a55f2b39ad5b5f0ec5eb522f83"
+      }
+    ],
+    "byte_identical_calibration_and_edge_reads": 512,
+    "startup_dpp_initializers_unchanged": true,
+    "reference_proof_cases": 151062,
+    "reference_proof_instructions": 169
+  },
+  "chery_witness": {
+    "same_payload_hex": "0b2811393c191770",
+    "checksum": 155,
+    "native_execution": [
+      {
+        "local_offset_98ca": 10000,
+        "native_values": {
+          "0x8c86": 62915,
+          "0x8c84": 2621,
+          "0x8c96": 4758,
+          "0x8c90": 15242,
+          "0x8c9c": 4758,
+          "0x8186": 18,
+          "0x8187": 237
+        }
+      },
+      {
+        "local_offset_98ca": 32000,
+        "native_values": {
+          "0x8c86": 62915,
+          "0x8c84": 2621,
+          "0x8c96": 26758,
+          "0x8c90": 37242,
+          "0x8c9c": 26758,
+          "0x8186": 104,
+          "0x8187": 151
+        }
+      }
+    ],
+    "hardware_state_reachability_proven": false,
+    "conclusion": "Native Chery output is not a function of the wire frame alone"
+  },
+  "actuator_binding_proven": false,
+  "hardware_tested": false
+}

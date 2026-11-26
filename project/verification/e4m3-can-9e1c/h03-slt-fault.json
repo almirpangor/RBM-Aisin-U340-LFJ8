@@ -1,0 +1,27 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "compiler": "m32r-elf-gcc.exe (GCC) 4.8.0",
+  "simulated_scenarios": [
+    "in_range_loads_countdown",
+    "low_feedback_at_19_calls",
+    "low_feedback_latches_at_20_calls",
+    "fault_latch_leaves_actuator_registers_unchanged",
+    "in_range_feedback_does_not_clear_latch",
+    "separate_clear_path_without_request",
+    "separate_clear_path_with_request",
+    "high_feedback_latches_at_20_calls",
+    "voltage_at_8v_does_not_arm_monitor",
+    "current_below_arm_threshold_does_not_arm_monitor"
+  ],
+  "native_monitor": "0x0346F0",
+  "native_clear_path": "0x071FF4",
+  "consecutive_out_of_range_calls_before_fault": 20,
+  "in_range_feedback_clears_fault": false,
+  "latch_writes_actuator_registers": false,
+  "hardware_executed": false,
+  "target_image_emitted": false
+}

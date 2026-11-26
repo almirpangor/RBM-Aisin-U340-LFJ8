@@ -1,0 +1,77 @@
+{
+  "source": {
+    "part": "LFJ8 18 9E1B",
+    "name": "LFJ8TB000LFXA0A0-20260806-160523(TCM-adapt).bin",
+    "size_bytes": 524288,
+    "sha256": "624790698dcb39000c2a070c07e14f4857e3a46cc32142c3ee5ac4689fd8b7cc",
+    "software_id": "LFJ8TB000LFXA0A0",
+    "status": "donor_approved_by_owner"
+  },
+  "architecture": {
+    "isa": "M32R",
+    "byte_order": "big",
+    "physical_mcu_marking": null,
+    "reference_mmio_map": "Renesas 32185/32186 compatible",
+    "evidence": [
+      {"file_offset": "0x000000", "word": "FF000F65", "operation": "BRA24", "target": "0x003D94"},
+      {"file_offset": "0x000010", "word": "FF000FD0", "operation": "BRA24", "target": "0x003F50"},
+      {"file_offset": "0x000020", "word": "FF000F88", "operation": "BRA24", "target": "0x003E40"},
+      {"file_offset": "0x000040", "word": "FF000F80", "operation": "BRA24", "target": "0x003E40"},
+      {"file_offset": "0x000080", "word": "FF000F58", "operation": "BRA24", "target": "0x003DE0"}
+    ]
+  },
+  "initialization": {
+    "sequence_file_offset": "0x003620",
+    "channels": [
+      {
+        "index": 0,
+        "sequence_call_offset": "0x003624",
+        "setup_wrapper_offset": "0x0012CC",
+        "register_setup_call_offset": "0x001370",
+        "register_setup_routine_offset": "0x0010F8",
+        "register_loads": {
+          "control": {"address": "0x801000", "file_offset": "0x001104"},
+          "status": {"address": "0x801002", "file_offset": "0x001110"},
+          "baud_prescaler": {"address": "0x801016", "file_offset": "0x001168"},
+          "slot_control_base": {"address": "0x801050", "file_offset": "0x0012E0"},
+          "slot_data_base": {"address": "0x801100", "file_offset": "0x0012D4"}
+        }
+      },
+      {
+        "index": 1,
+        "sequence_call_offset": "0x00362C",
+        "setup_wrapper_offset": "0x001AE0",
+        "register_setup_call_offset": "0x001B84",
+        "register_setup_routine_offset": "0x00190C",
+        "register_loads": {
+          "control": {"address": "0x801400", "file_offset": "0x001918"},
+          "status": {"address": "0x801402", "file_offset": "0x001924"},
+          "baud_prescaler": {"address": "0x801416", "file_offset": "0x00197C"},
+          "slot_control_base": {"address": "0x801450", "file_offset": "0x001AF4"},
+          "slot_data_base": {"address": "0x801500", "file_offset": "0x001AE8"}
+        }
+      }
+    ]
+  },
+  "transmit_descriptors": {
+    "scope": "static_rom_configuration",
+    "can0_transmit_routine": "0x000FF0",
+    "can1_transmit_routine": "0x001804",
+    "sid_table_offset": "0x003D14",
+    "dlc_table_offset": "0x003D18",
+    "payload_pointer_table_offset": "0x003D1C",
+    "sid_encoding": "((SID0 & 0x1F) << 6) | (SID1 & 0x3F)",
+    "mailbox_offsets_bytes": {"sid0": 0, "sid1": 1, "dlc": 5, "payload": 6},
+    "descriptors": [
+      {"index": 0, "sid0": "0x1F", "sid1": "0x29", "standard_can_id": "0x7E9", "dlc": 8, "payload_ram": "0x808DEC"},
+      {"index": 1, "sid0": "0x18", "sid1": "0x03", "standard_can_id": "0x603", "dlc": 8, "payload_ram": "0x808DF4"}
+    ]
+  },
+  "unresolved": [
+    "exact_mcu_and_board_revision",
+    "can_transceiver_and_connector_pinout",
+    "active_physical_channels_and_measured_bitrates",
+    "complete_rx_and_tx_frame_lists_signal_layout_and_periods",
+    "applicability_of_implementations_to_9E1D_and_Chery"
+  ]
+}

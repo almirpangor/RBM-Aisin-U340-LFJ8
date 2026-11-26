@@ -1,9 +1,0 @@
-{
-  "cycle_rejected": true,
-  "missing_code_rejected": true,
-  "false_release_rejected": true,
-  "wrong_target_rejected": true,
-  "stale_code_rejected": true,
-  "local_links_checked": 521,
-  "markdown_files_checked": 11
-}

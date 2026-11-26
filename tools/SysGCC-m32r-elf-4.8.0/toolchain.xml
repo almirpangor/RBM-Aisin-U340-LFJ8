@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Toolchain xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ToolchainName>Renesas M32R</ToolchainName>
+  <ToolchainType>Embedded</ToolchainType>
+  <PathDetectionKeyStrip>0</PathDetectionKeyStrip>
+  <GNUTargetID>m32r-elf</GNUTargetID>
+  <ToolchainID>com.visualgdb.m32r-elf</ToolchainID>
+  <BinaryDirectory>bin</BinaryDirectory>
+  <Prefix>m32r-elf-</Prefix>
+  <Make>make.exe</Make>
+  <BSPIndexUrlFormat>http://visualgdb.com/hwsupport/BSP/?autofetch=1&amp;target=m32r-elf&amp;filter={0}</BSPIndexUrlFormat>
+  <IsCygwinBased>false</IsCygwinBased>
+  <GCCVersion>4.8.0</GCCVersion>
+  <GDBVersion>7.5.1</GDBVersion>
+</Toolchain>

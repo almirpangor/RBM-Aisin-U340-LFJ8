@@ -1,2 +1,0 @@
-DTC journal: restore, wrap, clear, 30 interrupted prefixes and 240 bit faults PASS
-DTC journal: 30 unconfirmed clears withheld reply, one durable clear survived restart PASS

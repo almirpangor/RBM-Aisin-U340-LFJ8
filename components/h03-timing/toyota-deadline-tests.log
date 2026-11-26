@@ -1,0 +1,4 @@
+PASS independent clock counterexample: 5000 period and 5500 polls fault on release 9
+PASS Toyota deadline includes capture completion, equality and one-tick overrun
+PASS independent clock counterexample: 5000 period and 5500 polls fault on release 9
+PASS Toyota deadline includes capture completion, equality and one-tick overrun

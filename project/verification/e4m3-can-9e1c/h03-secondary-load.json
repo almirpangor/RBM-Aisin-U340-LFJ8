@@ -1,0 +1,11 @@
+{
+  "status": "PASS_OFFLINE_ONLY",
+  "source": "054220 -> 05518C",
+  "s01_sha256": "a3cd723e7e21bf547ca4c17ec49a1e098d203773547dba4d7af21991a2cbead1",
+  "oracle_sha256_lf": "e4f356c28220f0132b8b9e99aebe469e9b7388981231e923a9e416af74f3ee19",
+  "instruction_listing_sha256_lf": "1a9daf8b988c21ffc123c58bb9211ded60e2286ccff93e0e216d0573f8a04ff6",
+  "controller_library_sha256": "5d0fe895cc6b67211a07d185cbaa3610ecdbd117b901324192d3ba98c2598f4f",
+  "native_comparisons": 8192,
+  "original_instructions_covered": 186,
+  "target_hardware_tested": false
+}

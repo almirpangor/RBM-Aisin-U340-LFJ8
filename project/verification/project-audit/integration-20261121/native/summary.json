@@ -1,0 +1,370 @@
+{
+  "checks": [
+    {
+      "name": "application-isolation",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_application_isolation.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--out",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\application-isolation.json"
+      ],
+      "exit_code": 0,
+      "log": "application-isolation.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "atf-fault",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_atf_fault.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe"
+      ],
+      "exit_code": 0,
+      "log": "atf-fault.log",
+      "sha256": "2f4578ab4ef6cc3ec2c393b27e6f7a62987736cffeab4fd94849e85227c64862"
+    },
+    {
+      "name": "atf-native",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_atf_native.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe"
+      ],
+      "exit_code": 0,
+      "log": "atf-native.log",
+      "sha256": "0ba77ab429038dc3d7b4866e00af002a26bc061e0c00ed93c7c6bff51f2f0d3e"
+    },
+    {
+      "name": "basiccan",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_dtc_basiccan.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--with-resident-rx"
+      ],
+      "exit_code": 0,
+      "log": "basiccan.log",
+      "sha256": "df97bc40c6118a78a5d8d811b2bda2740ae9180605d2e51b56750e1d688559ff"
+    },
+    {
+      "name": "can-lifecycle",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_can_lifecycle.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe"
+      ],
+      "exit_code": 0,
+      "log": "can-lifecycle.log",
+      "sha256": "f6163723ed0eaf6f088ae6350fe42f62bb4f3b92d03cb7ce9718b4e95f0cdc62"
+    },
+    {
+      "name": "can-monitor-revoke",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_can_monitor_revoke.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--storage-report",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\storage.json",
+        "--out",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\can-monitor-revoke.json"
+      ],
+      "exit_code": 0,
+      "log": "can-monitor-revoke.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "can-monitor-startup",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_can_monitor_startup.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--out",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\can-monitor-startup.json"
+      ],
+      "exit_code": 0,
+      "log": "can-monitor-startup.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "dtc-foreground",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_dtc_foreground.py",
+        "--cc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--controller",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\controller\\rbm_u340e_m32r_be.o"
+      ],
+      "exit_code": 0,
+      "log": "dtc-foreground.log",
+      "sha256": "a681f789625e5145f1653338ff61674061751a7bbb5842b56bc39d173cd13a2f"
+    },
+    {
+      "name": "native-hooks",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_native_hooks.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--controller",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\controller\\rbm_u340e_m32r_be.o"
+      ],
+      "exit_code": 0,
+      "log": "native-hooks.log",
+      "sha256": "a9d10a16c57c795b387321cdd472b6596af39e213bc80a864da4a8b2395b1a4a"
+    },
+    {
+      "name": "phase-boot",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_phase_boot.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--out",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\phase-boot.json"
+      ],
+      "exit_code": 0,
+      "log": "phase-boot.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "phase-clock",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_phase_clock.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--out",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\phase-clock.json"
+      ],
+      "exit_code": 0,
+      "log": "phase-clock.log",
+      "sha256": "4bf9c1ebb7330bbd3842b6d417388135b2ce0eb58039435cfbd0a504649f3702"
+    },
+    {
+      "name": "phase-hook",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_phase_hook.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--out",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\phase-hook.json"
+      ],
+      "exit_code": 0,
+      "log": "phase-hook.log",
+      "sha256": "217190bfd9bbd69402d47c5b37b35c8efbe39ea758d06fdeb9b08f678f46ee1f"
+    },
+    {
+      "name": "phase-wait",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_phase_wait.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--out",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\phase-wait.json"
+      ],
+      "exit_code": 0,
+      "log": "phase-wait.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "range-pnp",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_range_pnp.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe"
+      ],
+      "exit_code": 0,
+      "log": "range-pnp.log",
+      "sha256": "69e0d92b53f4322049f262f7617a7a620c73c15ae43c696a151a3a52d4fcf57e"
+    },
+    {
+      "name": "selector",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_selector_adc.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe"
+      ],
+      "exit_code": 0,
+      "log": "selector.log",
+      "sha256": "8b5f5427fca5c6a2d35416094d9919c29e146920440a6b5a76b1603b0143693a"
+    },
+    {
+      "name": "service",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_service_isolation.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--storage-report",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\storage.json"
+      ],
+      "exit_code": 0,
+      "log": "service.log",
+      "sha256": "d0e7f6195c508f762a5b94c0270aa6801a2b97bdc6074379c399f1d7f91fa4f4"
+    },
+    {
+      "name": "service-guard",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_service_guard.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--storage-report",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\storage.json",
+        "--out",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\service-guard.json"
+      ],
+      "exit_code": 0,
+      "log": "service-guard.log",
+      "sha256": "b3dcbff3e5c7a7106d2753fd9ea44641f310ace347cbc2de4f653c94d02b0eeb"
+    },
+    {
+      "name": "slt-fault",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_slt_fault.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe"
+      ],
+      "exit_code": 0,
+      "log": "slt-fault.log",
+      "sha256": "334242ed13a9297d4456b510fb30b9c9ebb40b45c61af60212ff15c15444ecc4"
+    },
+    {
+      "name": "storage",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_storage.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--out",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\storage.json"
+      ],
+      "exit_code": 0,
+      "log": "storage.log",
+      "sha256": "e8d6436b0b5f78827148076e5a8f6e2119ee50be0125603ef9f257ff27b243aa"
+    },
+    {
+      "name": "toyota-stack",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_toyota_stack.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--controller",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\controller\\rbm_u340e_m32r_be.o"
+      ],
+      "exit_code": 0,
+      "log": "toyota-stack.log",
+      "sha256": "3f61c6cb964c64250b3dc63ccf2e7ea94b5f102d138d9df3b85742ca35cae778"
+    },
+    {
+      "name": "tx-gate",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_torque_tx_gate.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe"
+      ],
+      "exit_code": 0,
+      "log": "tx-gate.log",
+      "sha256": "0b204e1d518f07dd15f285bf0284ab73f15cd1f17e9f0077cf6ae6e3ea603517"
+    },
+    {
+      "name": "vflash-lockout",
+      "command": [
+        "C:\\Users\\RBmotors\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+        "-B",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\targets\\lfj8\\check_h03_vflash_lockout.py",
+        "--base",
+        "D:\\Новая папка (2)\\Общая папка\\TCM\\LFJ8-T-D.bin",
+        "--gcc",
+        "C:\\Users\\RBmotors\\AppData\\Local\\Temp\\rbm-m32r-smoke\\gnu-m32r-elf\\bin\\m32r-elf-gcc.exe",
+        "--out",
+        "C:\\Users\\RBmotors\\Yandex.Disk\\Проекты\\Блок управление U340\\RBM-U340-H03-04\\local\\integration-20261121\\native\\vflash-lockout.json"
+      ],
+      "exit_code": 0,
+      "log": "vflash-lockout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "passed": true,
+  "suite": "native",
+  "compiler_memory_model": "medium",
+  "hardware_verified": false,
+  "flashable_image": null
+}

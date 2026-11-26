@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-21",
+  "base_commit": "abd3cba0093cf834950d7883fcc6cbacec4420d3",
+  "objective": "Два реализованных и воспроизводимо собираемых BIN для первых стендовых испытаний; физическая приемка после прошивки владельцем.",
+  "bench_pair_ready": false,
+  "hardware_verified": false,
+  "disposition": "Номера чатов — направления одной волны, а не число дефектов. 15 undefined references модели не являются исчерпывающим списком задач.",
+  "integrator": {
+    "chat": "Ведущй",
+    "task": "ORG-01",
+    "owns": [
+      "data/project-tasks.json",
+      "README.md",
+      "docs/project-map.md",
+      "tools/check_h03_image_layout.py",
+      "tools/h03_image.py"
+    ],
+    "delivers": "Общий профиль/ELF/BIN, размещение, целостность, сквозная проверка, манифест пары и перечень остатка."
+  },
+  "assignments": [
+    {
+      "chat": "1",
+      "task": "H03-03",
+      "related": [
+        "TOY-04"
+      ],
+      "title": "Реальные переходы штатного H03 в приложение",
+      "scope": "ASM-переходы strategy/apply/foreground/phase, application placement и отдельный профиль точек входа. Не менять общий check_h03_image_layout.py и application_binding.c.",
+      "action": "Проверь все пути вызова нового цикла от reset до переключения, включая штатные писатели, повторный запуск и monitor. Доделай недостающие OEM redirects на основе точных байтов H03 и предоставь relocatable объекты/план патчей для общего ELF. Четыре существующих entry veneers не доказывают, что все входящие штатные ветки подключены. Проверить конечный граф путей и устранить обходы.",
+      "deliverable": "Полный набор hooks/placement с проверкой original bytes, ссылками на native callbacks, проверкой CPU штатного/отказного/повторного пути; никаких fixture callbacks.",
+      "chat_id": "01a1f9ae-4a7e-7e31-951a-f6383e1831ee",
+      "status": "assignment_sent",
+      "acceptance_stage": "software_before_bench; hardware_after_images",
+      "handoff": "verification/bench-wave/chat-1/handoff.json",
+      "dispatch_confirmed": true
+    },
+    {
+      "chat": "2",
+      "task": "CAN-01",
+      "related": [
+        "TOY-03",
+        "CAN-05"
+      ],
+      "title": "Реальный контекст двигателя и разрешающие входы",
+      "scope": "lfj8_h03_engine_feed/rx, ta2005_engine_qualifier, отдельные engine_context.c и bench_engine_profile.h. application_binding.c оставить интегратору.",
+      "action": "Реализуй native context_for_task2 вместо fixture_engine_context, независимые разрешающие сигналы и их происхождение. Параметры age/poll/bit time вывести из кода/регистров/периодики там, где это возможно. Для неподтверждённой временной величины нужен явный инженерный диапазон и контроль в runtime, а не требование получить журнал до BIN. Не восстанавливать неоднозначную абсолютную нагрузку из разностей CAN. Общие CAN owner/RX/DTC уже есть.",
+      "deliverable": "Реальный поставщик и фрагмент профиля со всеми используемыми единицами/метками/таймаутами; replay ошибочного и устаревшего обмена и M32R-сборка.",
+      "chat_id": "01a1f9b1-c11a-7b23-abcf-3214ce643805",
+      "status": "assignment_sent",
+      "acceptance_stage": "software_before_bench; hardware_after_images",
+      "handoff": "verification/bench-wave/chat-2/handoff.json",
+      "dispatch_confirmed": true
+    },
+    {
+      "chat": "3",
+      "task": "CAN-03",
+      "related": [
+        "CAN-02",
+        "CAN-04",
+        "CAN-05"
+      ],
+      "title": "Полный CAN-сервис и согласование момента",
+      "scope": "lfj8_h03_target_service и CAN service placement/monitor, отдельный bench_can_profile.h. Нативный RX диагностики у чата 10, Bosch у чата 8.",
+      "action": "Доведи реальный Lfj8H03TargetServiceConfig, источник времени, сбор T6/status и отправку момента/диагностики через единственный TX13. START/REFRESH/ACK/CANCEL, шедулинг, bus-off, monitor, reset и смена поколения должны иметь реальные входы/выходы. Убери зависимость от test_can_service_config. Полнота CAN включает обратную связь и завершение запросов, а не только RPM/ОЖ.",
+      "deliverable": "Native CAN service profile/config с производителями статуса/момента и точками вызова; двусторонний сценарий и отказные проверки, точные Flash/RAM.",
+      "chat_id": "01a1f9b5-5d41-79e0-8cd2-3dadc922f1ce",
+      "status": "assignment_sent",
+      "acceptance_stage": "software_before_bench; hardware_after_images",
+      "handoff": "verification/bench-wave/chat-3/handoff.json",
+      "dispatch_confirmed": true
+    },
+    {
+      "chat": "4",
+      "task": "TOY-02",
+      "related": [
+        "TOY-03",
+        "CAN-05"
+      ],
+      "title": "Источники входов Toyota без неоднозначного обратного расчёта",
+      "scope": "lfj8_h03_input_binding, отдельный адаптер нагрузки и протокольный контракт inputs. Не менять код Bosch (чат 8) и общий профиль режимов (чат 11).",
+      "action": "Перепроверь все операнды full Toyota cycle: реальный источник Bosch, шкала, знаковость, возраст, startup и отказ. Если имеющийся CAN несёт только разности и обратное восстановление неоднозначно, не делать ещё один qualifier вокруг той же неопределённости. Подготовь минимальный дополнительный явный raw-source контракт Bosch→TCM с происхождением каждого поля и приёмник; штатный Chery сохранить. Документируй предложения/неизвестные поля, не выдумывать физический load. Самостоятельно подключи доступные producer→capture части и избавь native путь от test_input_capture.",
+      "deliverable": "Таблица всех необходимых операндов и реализованный capture/input backend; контракт для чата 8, реальные source offsets и отрицательные тесты неполного/устаревшего снимка.",
+      "chat_id": "01a1f9c7-675a-78c3-be98-5bd65e44995c",
+      "status": "assignment_sent",
+      "acceptance_stage": "software_before_bench; hardware_after_images",
+      "handoff": "verification/bench-wave/chat-4/handoff.json",
+      "dispatch_confirmed": true
+    },
+    {
+      "chat": "5",
+      "task": "VSS-02",
+      "related": [
+        "H03-02",
+        "VSS-01"
+      ],
+      "title": "Датчики S51/S83/ATF и непрерывные часы",
+      "scope": "sensor target/feed/config, phase clock, отдельный bench_sensor_profile.h/генератор. Селектор/кнопки у чата 11.",
+      "action": "Доведи rbm_h03_sensor_config и rbm_h03_target_clock_ready для H03, единый TML0 и статус непрерывности. Найди частоты/делители/коэффициенты в исходнике/схеме/регистрах. Раздели вычислимые параметры и будущую измерительную коррекцию; не требовать реальную частоту до выпуска образа. Неподтверждённая оценка должна иметь явный статус и проверку, не называться измеренной. 100/22 сохранять точно, не угадывать окружность колеса. Реализовать выдачу raw speed/capture для будущей калибровки.",
+      "deliverable": "Компилируемый native профиль часов и датчиков, проверка reset/wrap/stall/clock change; список только действительно аппаратных параметров для замера после прошивки.",
+      "chat_id": "01a1f9a8-7b61-7763-adaa-0e3e11d1dbf4",
+      "status": "assignment_sent",
+      "acceptance_stage": "software_before_bench; hardware_after_images",
+      "handoff": "verification/bench-wave/chat-5/handoff.json",
+      "dispatch_confirmed": true
+    },
+    {
+      "chat": "6",
+      "task": "H03-04",
+      "related": [],
+      "title": "RAM, SPI/PSW/IRQ и владение всеми писателями",
+      "scope": "target_memory/ram_owner/ram_placement, boot writers/stack guards и выделенный bench_memory_profile. Общий linker/check_h03_image_layout.py у интегратора.",
+      "action": "Закрой rbm_h03_boot_writers_owned и четыре диапазона SPI/PSW: first/reserve. Аудит reset/IRQ/DMA/service и стеков по штатному BIN, статический граф и симулятор. Нужно реальное владение RAM и отказ при потере, а не функция всегда true. Предоставь итоговые числовые диапазоны со статическим обоснованием и зарезервированными зонами; аппаратный high-water после BIN не должен мешать доказуемой программной части.",
+      "deliverable": "Пять реальных определений/профиль, полный список писателей, linker constraints и доказательства покрытия; стоимость RAM/стеков и сценарии отказа.",
+      "chat_id": "01a1f99f-5cb5-70e0-afd0-60e6b41a5d51",
+      "status": "assignment_sent",
+      "acceptance_stage": "software_before_bench; hardware_after_images",
+      "handoff": "verification/bench-wave/chat-6/handoff.json",
+      "dispatch_confirmed": true
+    },
+    {
+      "chat": "7",
+      "task": "H03-05",
+      "related": [
+        "TOY-04",
+        "TOY-06"
+      ],
+      "title": "Силовые каналы, SLT/SLU и снятие команды",
+      "scope": "takeover/outputs/target_commit/output_inhibit и отдельный bench_output_profile.h. Не менять общий application_binding.c, штатные entry redirects у чата 1.",
+      "action": "Доведи реальные native output ops, mapping D/E/F/Pressure A и весь путь command→arbitrate→apply→inhibit. Перепроверь соответствие SLT/SLU и отказов. Нельзя утверждать электрическую изоляцию TIO9 маской без основания. Если конкретное включение требует неизвестного электрического параметра, реализуй диагностическое/комиссионное измерение и явную блокировку именно этого включения; не останавливать запуск/CAN всей системы. Донорские значения с доказуемой применимостью могут быть начальной инженерной настройкой с явно указанными ограничениями, не выдуманной калибровкой давления. Все аппаратные измерения оформить после BIN.",
+      "deliverable": "Реальный output backend/профиль, завершённая программная последовательность переключений и SLU, ограничение непроверенного включения, проверка отзыва каждой команды и минимальный план замеров после сборки.",
+      "chat_id": "01a1f9a2-d0ae-78d3-86f1-21b27426fd3f",
+      "status": "assignment_sent",
+      "acceptance_stage": "software_before_bench; hardware_after_images",
+      "handoff": "verification/bench-wave/chat-7/handoff.json",
+      "dispatch_confirmed": true
+    },
+    {
+      "chat": "8",
+      "task": "ECU-01",
+      "related": [
+        "ECU-02",
+        "CAN-05",
+        "CAN-04"
+      ],
+      "title": "Bosch E4M3 для парного стендового выпуска",
+      "scope": "targets/bosch и отдельные tests/docs/verification Bosch; не править исходные R1–R4 или общий package_workset.py.",
+      "action": "Назначен владельцем целевого Bosch BIN. Полностью перепроверь ordinary/no-cruise OFFLINE_ONLY, причины ограничения, hooks, checksum и сохранение старта/впрыска/зажигания. Доделай реальные штатные Chery кадры и RB torque request/reply/cancel плюс требуемые Toyota operands. Чат 4 готовит таблицу исходных операндов и приёмник: совместимость через проверяемый контракт, не подстановку физических значений. Раздели реальные препятствия к первому стендовому образу от моторной калибровки после прошивки. Нельзя просто переименовать bd0afefa… в READY.",
+      "deliverable": "Воспроизводимый Bosch BIN для стендовой проверки только при наличии всех необходимых программных доказательств, либо точная реально неустранимая причина; source/final SHA, map diff, native integrity, CPU paths и ограничения. Аппаратные проверки честно false.",
+      "chat_id": "01a1f9ab-19c7-72c0-ac90-6aa98e4aa488",
+      "status": "assignment_sent",
+      "acceptance_stage": "software_before_bench; hardware_after_images",
+      "handoff": "verification/bench-wave/chat-8/handoff.json",
+      "dispatch_confirmed": true
+    },
+    {
+      "chat": "9",
+      "task": "DTC-04",
+      "related": [
+        "TOY-05"
+      ],
+      "title": "Native NVM и восстановление состояния",
+      "scope": "nvm/native/storage/flash backend, отдельный bench_nvm_profile.h. Startup GP/gear у чата 12, диагностический транспорт у чата 10.",
+      "action": "Доведи реальный read/write/erase backend с геометрией и исключением стёртых программных областей, two-slot commit и поведение при прерывании питания. Не назначать два пустых блока по догадке. Если безопасная запись объективно не выводится из имеющихся данных, доведи bootable non-destructive inspection/readout и явный статус unavailable persistence для первичного стенда, сохрани финальное требование открытым. Такую деградацию нельзя выдавать за полное выполнение ТЗ. Подготовь независимый backend без fixture qualified_adaptation_blocks.",
+      "deliverable": "Рабочий backend или конкретная доказанная граница его доступности, профиль носителя/проверка восстановления, подлинные Flash-адреса; телеметрия для получения недостающего после BIN.",
+      "chat_id": "01a1fa76-922b-7b11-a2f2-346a15d1dc95",
+      "status": "assignment_sent",
+      "acceptance_stage": "software_before_bench; hardware_after_images",
+      "handoff": "verification/bench-wave/chat-9/handoff.json",
+      "dispatch_confirmed": true
+    },
+    {
+      "chat": "10",
+      "task": "DTC-02",
+      "related": [
+        "DTC-01",
+        "DTC-03",
+        "REL-02"
+      ],
+      "title": "Полная диагностика и доступ к измерениям",
+      "scope": "dtc native RX/BasicCAN/diagnostic producer, diagnostics и отдельный bench_diag_profile. CAN service/TX13 owner у чата 3.",
+      "action": "Доведи штатный запрос→RX→сеанс→TX13 ответ и события всех подсистем, статусы/очистку. Перепроверь таблицу Toyota/Chery и не придумывай code correspondence. Первичный стенд должен позволять получить реальные сырые S51/S83/ATF, clock, voltage/current если доступны АЦП, output command/qualifier, torque handshake и причины inhibit. Добавь компактный реальный измерительный путь/документированные запросы, если имеющихся недостаточно. Никаких sample values; измерительный протокол должен работать в собираемой паре.",
+      "deliverable": "Полный native diagnostic path и реестр команд/полей; отказные проверки и минимальный протокол после BIN с местом/режимом/критерием измерения; что штатный Chery сканер поддерживает, а что проектный readout.",
+      "chat_id": "01a1fa76-b015-7640-a0ba-433b36dcf55f",
+      "status": "assignment_sent",
+      "acceptance_stage": "software_before_bench; hardware_after_images",
+      "handoff": "verification/bench-wave/chat-10/handoff.json",
+      "dispatch_confirmed": true
+    },
+    {
+      "chat": "11",
+      "task": "MODE-02",
+      "related": [
+        "MODE-01",
+        "MODE-03",
+        "TOY-03"
+      ],
+      "title": "Селектор шести положений и ручные режимы",
+      "scope": "selector/button/input_target/toyota input profile/mode policy и bench_mode_profile. Нагрузка отдельно у чата 4, sensors clock у чата 5.",
+      "action": "Доведи реальные P/R/N/D/2/L, Tiptronic +/−/toggle и OD до Toyota cycle с блокировкой опасных/противоречивых входов. Профиль из схемы, кода и расчёта ADC/резисторов, не test constants. Пересчитай сопротивления 2/L с номиналами/допусками/исходной схемой: если аппаратный делитель известен из исходников, рассчитать до замера; если нет — указать конкретно неизвестный элемент, не выдумывать ом. Режим после reset и допустимость команды фиксировать явно, с происхождением/решением.",
+      "deliverable": "Native mode/input profile, расчёт диапазонов/резисторов и полная цепь ручного запроса, debounce/hold/opposed/stale/reset tests.",
+      "chat_id": "01a1fa79-892d-7ca3-bb8a-44698892c53e",
+      "status": "assignment_sent",
+      "acceptance_stage": "software_before_bench; hardware_after_images",
+      "handoff": "verification/bench-wave/chat-11/handoff.json",
+      "dispatch_confirmed": true
+    },
+    {
+      "chat": "12",
+      "task": "TOY-05",
+      "related": [
+        "TOY-01"
+      ],
+      "title": "Полное стартовое состояние Toyota",
+      "scope": "controller runtime/startup и новые bench_startup_profile.c/h. Native NVM backend у чата 9; shared header edits согласовать через board.",
+      "action": "Перепроверь утверждение про 685 байт вне cold-проекции: действительно ли это неизвестные калибровки, или штатные BSS/reset/data/нечитаемые до записи поля? Используй S01/R3 и граф read-before-write, не требуй аппаратный снимок если значения следуют из программы. Доведи rbm_h03_target_startup_gp/gear и реальный initialize_inputs (без захвата транспортных модулей других чатов), init/restore/default paths и явные неподтверждённые поля. Не обнулять неизвестное без доказательства.",
+      "deliverable": "Полное начальное состояние со списком происхождения полей, вызовы cold/warm/restore, дифференциальные прогоны с донором и отсутствие неинициализированных чтений.",
+      "chat_id": "01a1fa79-a9fd-70c0-80a3-f59592edaf79",
+      "status": "assignment_sent",
+      "acceptance_stage": "software_before_bench; hardware_after_images",
+      "handoff": "verification/bench-wave/chat-12/handoff.json",
+      "dispatch_confirmed": true
+    }
+  ]
+}

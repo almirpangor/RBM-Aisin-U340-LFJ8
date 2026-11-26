@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "models": [
+    "small",
+    "medium"
+  ],
+  "scenarios": [
+    "binding and phase startup",
+    "stage and OEM arbitration",
+    "stock phase 2 applies D/Pressure A and produces TIO9 PWM",
+    "prepare before loss of clock",
+    "clock mismatch revokes the owned outputs, including TIO9/P97",
+    "restoring clock registers cannot replay the rejected apply",
+    "prepare before Flash monitor entry",
+    "Flash monitor entry revokes outputs",
+    "prepare before application shutdown",
+    "application shutdown revokes outputs",
+    "loss of RAM ownership suppresses OEM apply and preserves TIO9 and staged RAM",
+    "a skipped phase cannot commit the older prepared generation",
+    "a repeated phase 2 call revokes a consumed generation",
+    "phase 2 before application startup inhibits with owned RAM",
+    "phase 2 cannot consume the release used by phase 3",
+    "a next release that foreground has not consumed cannot apply"
+  ],
+  "rom_redirect": "0x07c10c",
+  "hardware_tested": false,
+  "flashable_image": null
+}

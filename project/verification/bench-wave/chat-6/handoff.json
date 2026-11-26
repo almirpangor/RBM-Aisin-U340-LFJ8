@@ -1,0 +1,204 @@
+{
+  "chat": "6",
+  "task": "H03-04",
+  "commit": "23cb720760b6ac96f90757ddb852e3d2eba04f38",
+  "base_main": "3fe28938163e1dddc98a37733c229390ab7f0fff",
+  "branch": "codex/rel02-h03-ram-owner-01a1f99f",
+  "status": "MEMORY_PROVIDER_VERIFIED_IN_SIMULATOR_FULL_LINK_PENDING",
+  "entry_points": [
+    {
+      "symbol": "rbm_h03_boot_writers_owned",
+      "source": "targets/lfj8/lfj8_h03_bench_memory.c",
+      "caller": "rbm_h03_target_ram_owned → lfj8_h03_ram_owned",
+      "contract": "NULL context under native IRQ exclusion. Return 0 if the 20 linked OEM ROM anchors or the lower veneer marker do not match."
+    },
+    {
+      "symbol": "rbm_h03_early_irq_gate",
+      "source": "targets/lfj8/h03_dma4_guard.S",
+      "oem_redirect": "0x003DBC",
+      "resume": "0x003DC0",
+      "contract": "Clear BasicCAN pointer 0x806FAC, application.running at 0x806F00 and TML0 qualification at 0x806F14 before restoring IE. No new writable allocation."
+    },
+    {
+      "symbol": "lfj8_h03_bench_memory_profile.prepare",
+      "source": "targets/lfj8/lfj8_h03_bench_memory_profile.py",
+      "contract": "Validate stock identity and typed inventory. Emit exact native boot anchors and four absolute linker symbols. Verify writable allocations with verify_ram_placements."
+    }
+  ],
+  "profile": {
+    "name": "pinned H03 bench memory",
+    "range_end": "exclusive",
+    "symbols": [
+      {
+        "name": "rbm_h03_ram_spi_first",
+        "value": "0x809700",
+        "units": "M32R byte address",
+        "source": "Stock diagnostic upper bound 0x8096FF at ROM 0x04606C and shared service reservation",
+        "status": "derived placement boundary"
+      },
+      {
+        "name": "rbm_h03_ram_spi_reserve",
+        "value": 1040,
+        "units": "bytes remaining",
+        "source": "824 bytes modeled OEM IRQ/SBI + 3 × 72-byte ASM wrapper frames",
+        "status": "engineering guard value; whole-image bound pending"
+      },
+      {
+        "name": "rbm_h03_ram_psw_first",
+        "value": "0x809F00",
+        "units": "M32R byte address",
+        "source": "first aligned word above stock SPI top 0x809EFC",
+        "status": "derived placement boundary"
+      },
+      {
+        "name": "rbm_h03_ram_psw_reserve",
+        "value": 64,
+        "units": "bytes remaining",
+        "source": "16 four-byte PSW entries; one SBI record measured in the model",
+        "status": "engineering guard value; whole-image bound pending"
+      }
+    ],
+    "spi_top": "0x809EFC",
+    "psw_cursor": "0x809F9C",
+    "psw_cursor_end": "0x809FA0",
+    "reserved_ram": [
+      "0x809700",
+      "0x80A000"
+    ],
+    "policy_ranges": [
+      [
+        "0x806B40",
+        "0x806FAC"
+      ],
+      [
+        "0x806FAC",
+        "0x806FB0"
+      ],
+      [
+        "0x808578",
+        "0x808DB4"
+      ],
+      [
+        "0x808E40",
+        "0x8090A0"
+      ],
+      [
+        "0x8090A0",
+        "0x8094D4"
+      ],
+      [
+        "0x809700",
+        "0x80A000"
+      ]
+    ],
+    "native_define": "RBM_H03_BENCH_EARLY_LATCHES=1",
+    "generated_header": "h03_bench_memory_profile.h"
+  },
+  "sources": {
+    "donor": {
+      "id": "H03 LFJ8-T-D.bin",
+      "bytes": 524288,
+      "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+    },
+    "typed_storage_sha256": "117435af1aed200a8eb753bf1a3661d2bb8e291f7b25efb4fdb9805b91314eaa",
+    "inventory": "verification/bench-wave/chat-6/memory.md",
+    "source_manifest": "The common composition records controller/bridge input manifests and the SHA-256 of preprocessed native translation units.",
+    "replay": "verification/bench-wave/chat-6/check-composition.py",
+    "artifact_root": "D:/rbm-codex-work-01a1f99f/bench-wave-memory",
+    "early_irq_model_sha256": "5485aa8e5805340f4fb77d1f8d72c59f487d86b8c28972fe70629c48eb782ef0"
+  },
+  "checks": [
+    {
+      "command": "python -B -m unittest discover -s tests -p 'test_h03*.py'",
+      "result": "94 tests passed"
+    },
+    {
+      "command": "python -B verification/bench-wave/chat-6/check-composition.py --base <H03> --gcc <M32R_GCC> --controller <controller.o> --bridge <bridge.o> --storage-report <typed-storage.json> --out <compose>",
+      "result": "All five H03-04 references resolved. Verified early aliases, policy and writable placement. FAIL_BINDINGS preserves ten outside references."
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_ram_owner.py --base <H03> --gcc <M32R_GCC> --controller <controller.o> --bridge <bridge.o> --storage-report <typed-storage.json> --out <owner.json>",
+      "result": "Three M32R owner configurations passed. Bench provider rejects mutation of each of 20 OEM words and incorrect lower veneer. SBI costs 40 bytes SPI and 4 bytes PSW."
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_boot_writers.py --base <H03> --gcc <M32R_GCC> --placed-elf <compose/early-irq.elf> --layout-report <compose/layout.json>",
+      "result": "Both reset vectors clear the pointer and both poisoned latches before IE. OEM continuation and DTC dispatch observed. DMA4 protected destination denied and OEM buffer accepted."
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_service_guard.py --base <H03> --gcc <M32R_GCC> --placed-elf <compose/early-irq.elf> --common-layout <compose/layout.json> --storage-report <typed-storage.json> --out <service.json>",
+      "result": "29 native writer, 28 close and 20 policy cases passed."
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_vflash_lockout.py --base <H03> --gcc <M32R_GCC> --placed-elf <compose/early-irq.elf> --common-layout <compose/layout.json> --storage-report <typed-storage.json> --out <vflash.json>",
+      "result": "512 linked Virtual Flash cases and stock/adjacent controls passed. OEM update lower/upper boundary verified in the simulator."
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_ram_init.py --base <H03> --gcc <M32R_GCC>",
+      "result": "Both OEM reset paths matched the stock early RAM image and recorded SPI/PSW setup."
+    },
+    {
+      "command": "python -B targets/lfj8/audit_h03_irq_stack.py --base <H03> --gcc <M32R_GCC> --stock-service-profile --stock-relocated-service-code",
+      "result": "Stock modeled IRQ 784 bytes and IRQ plus SBI 824 bytes for B800 extra entry budget 2. Four unresolved reset/foreground recursive edges."
+    },
+    {
+      "command": "python -B targets/lfj8/check_h03_toyota_stack.py --base <H03> --gcc <M32R_GCC> --controller <controller.o> --out <stack.json>",
+      "result": "744 bytes of stack writes over 28199 Toyota cycle calls. Both stack pointers restored."
+    },
+    {
+      "command": "python -B tools/project_status.py --check",
+      "result": "Shared registry flagged the changed code for integrator review. Shared registry and audit snapshots remain in the integrator's reservation."
+    }
+  ],
+  "flash": {
+    "units": "bytes",
+    "known_retained": 108228,
+    "delta_against_main": 344,
+    "in_packing_windows": 108172,
+    "window_capacity": 110548,
+    "fixed_oem_redirects": 56,
+    "moved_verified_oem_tables": 2016,
+    "boot_writer_code": 104,
+    "boot_writer_tables": 160,
+    "extra_lower_veneer": 12,
+    "final": null
+  },
+  "ram": {
+    "units": "bytes",
+    "profile_new_static": 0,
+    "typed_state": 2816,
+    "linked_basiccan_pointer": 4,
+    "stack_area_with_gaps": 2304
+  },
+  "stack": {
+    "units": "bytes",
+    "spi_area": 2044,
+    "psw_record_area": 156,
+    "spi_required_remaining": 1040,
+    "psw_required_remaining": 64,
+    "boot_writer_own_spi_frame": 20,
+    "early_gate_spi_frame": 4,
+    "stock_sbi_spi": 40,
+    "stock_sbi_psw": 4,
+    "toyota_cycle_probe": 744,
+    "toyota_plus_independent_oem_stack_estimate": 1676,
+    "estimate_margin_before_other_adapters": 368,
+    "final_high_water": null
+  },
+  "dependencies": [
+    "ORG-01 / common linker: call bench prepare with the same typed storage and actual allocated BasicCAN address, resolve four extra ABS symbols, verify the two early alias addresses and all writable placements, and apply the opt-in flags to the two existing translation units and the native provider. Use the durable replay as integration reference.",
+    "H03-03 / CAN / TOY / VSS / DTC providers: replace simulator app profile declarations with qualified native implementations, then repeat whole-image linked memory accounting."
+  ],
+  "software_blockers": [
+    "Full native link still has ten outside references in the simulator application profile. Some names are fixture declarations and identify dependency contracts, not implementations to ship.",
+    "Prove complete SPI/PSW bound in the final linked IRQ/foreground graph, including stock recursive/call edges at 0x0009E0, 0x0042E0, 0x0047E0 and 0x004DB8. The fixed-reference scan bounds only statically identified references.",
+    "Before writing, qualify a programming path that preserves and delivers the necessary lower Flash changes at addresses below 0x008000. The native update start at 0x008000 cannot deliver them in this model."
+  ],
+  "post_flash_measurements": [
+    "Physical SPI/PSW high-water and actual nesting under worst exercised CAN, SBI, DMA and recovery conditions.",
+    "CANHacker trace before and after controller reset and CAN recovery, including absence of project output until RAM and input qualification.",
+    "Hardware DMA request/rearm behavior, Virtual Flash remapping, and readback of the exact programmed regions."
+  ],
+  "hardware_tested": false,
+  "flashable_image": null,
+  "bosch_changed": false
+}

@@ -1,0 +1,190 @@
+{
+  "base": {
+    "id": "H03",
+    "bytes": 524288,
+    "sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544"
+  },
+  "oem_geometry_offset": "0x000920",
+  "halfword_bytes": 2,
+  "blocks": [
+    {
+      "block": 0,
+      "first": "0x000000",
+      "end_exclusive": "0x002000",
+      "last_even": "0x001FFE",
+      "erase_bytes": 8192,
+      "non_ff_bytes": 7503,
+      "overlaps": [
+        "stock service area"
+      ]
+    },
+    {
+      "block": 1,
+      "first": "0x002000",
+      "end_exclusive": "0x003000",
+      "last_even": "0x002FFE",
+      "erase_bytes": 4096,
+      "non_ff_bytes": 3971,
+      "overlaps": [
+        "stock service area"
+      ]
+    },
+    {
+      "block": 2,
+      "first": "0x003000",
+      "end_exclusive": "0x004000",
+      "last_even": "0x003FFE",
+      "erase_bytes": 4096,
+      "non_ff_bytes": 4000,
+      "overlaps": [
+        "stock service area"
+      ]
+    },
+    {
+      "block": 3,
+      "first": "0x004000",
+      "end_exclusive": "0x006000",
+      "last_even": "0x005FFE",
+      "erase_bytes": 8192,
+      "non_ff_bytes": 4849,
+      "overlaps": [
+        "stock service area"
+      ]
+    },
+    {
+      "block": 4,
+      "first": "0x006000",
+      "end_exclusive": "0x008000",
+      "last_even": "0x007FFE",
+      "erase_bytes": 8192,
+      "non_ff_bytes": 0,
+      "overlaps": [
+        "stock service area"
+      ]
+    },
+    {
+      "block": 5,
+      "first": "0x008000",
+      "end_exclusive": "0x010000",
+      "last_even": "0x00FFFE",
+      "erase_bytes": 32768,
+      "non_ff_bytes": 29454,
+      "overlaps": []
+    },
+    {
+      "block": 6,
+      "first": "0x010000",
+      "end_exclusive": "0x020000",
+      "last_even": "0x01FFFE",
+      "erase_bytes": 65536,
+      "non_ff_bytes": 53281,
+      "overlaps": []
+    },
+    {
+      "block": 7,
+      "first": "0x020000",
+      "end_exclusive": "0x030000",
+      "last_even": "0x02FFFE",
+      "erase_bytes": 65536,
+      "non_ff_bytes": 0,
+      "overlaps": [
+        "application layout primary"
+      ]
+    },
+    {
+      "block": 8,
+      "first": "0x030000",
+      "end_exclusive": "0x040000",
+      "last_even": "0x03FFFE",
+      "erase_bytes": 65536,
+      "non_ff_bytes": 57832,
+      "overlaps": []
+    },
+    {
+      "block": 9,
+      "first": "0x040000",
+      "end_exclusive": "0x050000",
+      "last_even": "0x04FFFE",
+      "erase_bytes": 65536,
+      "non_ff_bytes": 64004,
+      "overlaps": []
+    },
+    {
+      "block": 10,
+      "first": "0x050000",
+      "end_exclusive": "0x060000",
+      "last_even": "0x05FFFE",
+      "erase_bytes": 65536,
+      "non_ff_bytes": 65288,
+      "overlaps": []
+    },
+    {
+      "block": 11,
+      "first": "0x060000",
+      "end_exclusive": "0x070000",
+      "last_even": "0x06FFFE",
+      "erase_bytes": 65536,
+      "non_ff_bytes": 65019,
+      "overlaps": []
+    },
+    {
+      "block": 12,
+      "first": "0x070000",
+      "end_exclusive": "0x080000",
+      "last_even": "0x07FFFE",
+      "erase_bytes": 65536,
+      "non_ff_bytes": 49377,
+      "overlaps": [
+        "application layout tail",
+        "stock application end marker"
+      ]
+    }
+  ],
+  "assigned_nvm_blocks": [],
+  "checks": {
+    "pc": [
+      "H03 erase ends: 01FFE 02FFE 03FFE 05FFE 07FFE 0FFFE 1FFFE 2FFFE 3FFFE 4FFFE 5FFFE 6FFFE 7FFFE",
+      "H03 DTC NVM: eight lost-clear recoveries, sixteen interrupted erases and three unsafe retries PASS",
+      "H03 DTC NVM: four replacement losses, 64 retirement bit faults and three interrupted retries PASS",
+      "H03 DTC NVM: 48 write cuts, 35 erase prefixes, 256 bit faults and restart PASS"
+    ],
+    "m32r": [
+      "H03 erase ends: 01FFE 02FFE 03FFE 05FFE 07FFE 0FFFE 1FFFE 2FFFE 3FFFE 4FFFE 5FFFE 6FFFE 7FFFE",
+      "H03 DTC NVM: eight lost-clear recoveries, sixteen interrupted erases and three unsafe retries PASS",
+      "H03 DTC NVM: four replacement losses, 64 retirement bit faults and three interrupted retries PASS",
+      "H03 DTC NVM: 48 write cuts, 35 erase prefixes, 256 bit faults and restart PASS"
+    ],
+    "m32r_simulator_elf": {
+      "bytes": 358496,
+      "sha256": "5099f8e6857ebb33acc99b00919a026f31bd81bddfcf189c43c801f57b9b84bd",
+      "flags": 0,
+      "alloc_bytes": {
+        "code": 43668,
+        "read_only_data": 5436,
+        "writable_data": 2232,
+        "bss": 131144
+      },
+      "relocations": 0
+    },
+    "m32r_native_read": [
+      "PASS native H03 array: blank, both slots, rollover, CRC, retirement and IRQ state",
+      "PASS native H03 array: inaccessible, busy, erase/program error, E/W, Virtual Flash bank enable with FCNT1 clear, invalid blocks",
+      "PASS native H03 array: TOY-05 startup pair, wrap, unavailable array and invalid ownership input"
+    ],
+    "m32r_native_reader_object": {
+      "bytes": 2368,
+      "sha256": "975a1b261c1e7e16706b0554f56faefabdcc556bba4b6c11af2fd042dfb839f6",
+      "flags": 65536,
+      "alloc_bytes": {
+        "code": 664,
+        "read_only_data": 0,
+        "writable_data": 0,
+        "bss": 0
+      },
+      "relocations": 23
+    }
+  },
+  "status": "PASS_OFFLINE_ONLY",
+  "equipment_tested": false,
+  "flash_operations_executed": false
+}

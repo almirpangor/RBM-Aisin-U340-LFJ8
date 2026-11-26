@@ -1,0 +1,11 @@
+rbm_u340e_m32r_be.o: big-endian ELF, flags 0x0
+Toyota adaptation store: 96 write cuts, 768 bit faults, reset and rollover passed.
+Toyota adaptation recovery: 96 write cuts, 768 bit faults in either slot, and rollover passed.
+Toyota S01 adaptation baseline: empty, valid, and unreadable startup passed.
+Toyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.
+Toyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.
+Toyota 05518C: SECONDARY load qualifiers, hysteresis, clamp, fallback and MAIN handoff passed.
+Toyota S01 range: P/N to warm low-load D, standstill fill, S1/S2 and first upshift passed.
+Toyota scheduler: event release, FAST phase latch, busy drop and rollover passed.
+Verified 292 GP transfer fields and five donor hydraulic snapshots.
+Controller tests passed: six ADC ranges, relays, Auto, Tiptronic, OD, S1/S2, ST and SLT.

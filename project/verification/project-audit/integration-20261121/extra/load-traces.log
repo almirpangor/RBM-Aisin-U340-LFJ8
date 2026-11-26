@@ -1,0 +1,101 @@
+{
+  "status": "NO_PAIRED_GP_SAMPLES",
+  "toyota_s01": {
+    "image_sha256": "a3cd723e7e21bf547ca4c17ec49a1e098d203773547dba4d7af21991a2cbead1",
+    "stores": {
+      "GP-9046": {
+        "address": "0x033f82",
+        "bytes": "64efaadc"
+      },
+      "GP-8288": {
+        "address": "0x033eee",
+        "bytes": "6437a0df"
+      },
+      "GP-8330": {
+        "address": "0x033ee0",
+        "bytes": "643776df"
+      }
+    },
+    "upper_raw": 11010,
+    "fallback_raw": 786,
+    "normalization": "min(25600, floor(max(0, selected signed raw word) * 25600 / 11010))",
+    "arithmetic_cases": {
+      "primary": 65536,
+      "limited": 65536,
+      "difference": 65536,
+      "toyota_producer_clamp": 65536,
+      "gw_arithmetic": 983040,
+      "gw_publication": 20000
+    },
+    "arbitration_cases": 4352,
+    "hardware_test": false,
+    "gw_mapping_verified": false
+  },
+  "bosch_traces": [
+    {
+      "path": "development/E4M3/evidence/E4M2_BENCH_20261013/input_trace.trc",
+      "sha256": "7d541499762d5a5aa73e8613722da05eac597773704d6224ef06e45cbb9e4175",
+      "frame_counts": {
+        "5E0": 10323,
+        "5E1": 2256,
+        "5E2": 2256,
+        "5E8": 104,
+        "5E9": 10322
+      },
+      "torque_starts": 8,
+      "valid_running_samples": 3978,
+      "rpm_range": [
+        45,
+        3389
+      ],
+      "same_rpm_tps": {
+        "stream": "1",
+        "rpm": 1799,
+        "tps_percent": 15,
+        "spread": 28,
+        "load_min_and_line": [
+          38,
+          23078
+        ],
+        "load_max_and_line": [
+          66,
+          24737
+        ]
+      }
+    },
+    {
+      "path": "development/E4R4/evidence/E4M3_G4_BENCH_TEST2_20261014/input_trace.trc.gz",
+      "sha256": "aa0580a56bcad633406595a7ad98e7d7043d6d6dd762121d3922fe28c1e0353f",
+      "frame_counts": {
+        "5E0": 3230,
+        "5E1": 706,
+        "5E2": 706,
+        "5E8": 26,
+        "5E9": 3230
+      },
+      "torque_starts": 2,
+      "valid_running_samples": 2421,
+      "rpm_range": [
+        274,
+        3656
+      ],
+      "same_rpm_tps": {
+        "stream": "1",
+        "rpm": 2609,
+        "tps_percent": 17,
+        "spread": 21,
+        "load_min_and_line": [
+          34,
+          4905
+        ],
+        "load_max_and_line": [
+          55,
+          2432
+        ]
+      }
+    }
+  ],
+  "duplicate_trace_in_r1": "firmware/can/rb-bench/input_trace.trc",
+  "raw_load_bench_probe": "passed_c167_bench_diagnostic_model",
+  "paired_transition_samples": 0
+}

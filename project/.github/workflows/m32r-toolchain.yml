@@ -1,0 +1,39 @@
+name: M32R native toolchain build
+
+on:
+  push:
+    branches: [codex/m32r-toolchain-20261126]
+    paths:
+      - .github/workflows/m32r-toolchain.yml
+      - tools/ci_m32r_build.py
+      - controller/**
+      - targets/lfj8/**
+      - diagnostics/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-m32r:
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: '3.11'
+      - name: Extract verified toolchain, compile and execute M32R tests
+        run: python -u -B tools/ci_m32r_build.py --out local/ci-m32r
+      - name: Upload actual build evidence and component artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: m32r-native-${{ github.sha }}
+          path: |
+            local/ci-m32r/report.json
+            local/ci-m32r/logs/
+            local/ci-m32r/medium/
+            local/ci-m32r/small/
+          if-no-files-found: error
+          retention-days: 14

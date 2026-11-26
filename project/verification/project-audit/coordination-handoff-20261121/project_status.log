@@ -1,0 +1,14 @@
+test_continuation_cannot_reopen_closed_or_deferred_scope (test_project_status.ProjectStatusTests.test_continuation_cannot_reopen_closed_or_deferred_scope) ... ok
+test_continuation_rejects_missing_action_and_invalid_chat (test_project_status.ProjectStatusTests.test_continuation_rejects_missing_action_and_invalid_chat) ... ok
+test_default_digest_preserves_exact_binary_bytes (test_project_status.ProjectStatusTests.test_default_digest_preserves_exact_binary_bytes) ... ok
+test_dependency_cycle_is_rejected (test_project_status.ProjectStatusTests.test_dependency_cycle_is_rejected) ... ok
+test_handoff_fields_are_visible_in_task_map (test_project_status.ProjectStatusTests.test_handoff_fields_are_visible_in_task_map) ... ok
+test_handoff_fields_reject_empty_or_nontext_values (test_project_status.ProjectStatusTests.test_handoff_fields_reject_empty_or_nontext_values) ... ok
+test_lf_hash_survives_clone_conversion_and_detects_code_change (test_project_status.ProjectStatusTests.test_lf_hash_survives_clone_conversion_and_detects_code_change) ... ok
+test_register_cannot_claim_release_with_open_work (test_project_status.ProjectStatusTests.test_register_cannot_claim_release_with_open_work) ... ok
+test_task_map_orders_queue_before_closed_and_deferred (test_project_status.ProjectStatusTests.test_task_map_orders_queue_before_closed_and_deferred) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.585s
+
+OK

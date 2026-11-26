@@ -1,0 +1,80 @@
+[
+  {
+    "name": "placement-tests-final",
+    "exit_code": 0,
+    "command": [
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_h03*placement.py",
+      "-v"
+    ]
+  },
+  {
+    "name": "resident-tests-final",
+    "exit_code": 0,
+    "command": [
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_h03_resident_constants.py",
+      "-v"
+    ]
+  },
+  {
+    "name": "layout-tests-final",
+    "exit_code": 0,
+    "command": [
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_h03_layout.py",
+      "-v"
+    ]
+  },
+  {
+    "name": "placed-writers",
+    "exit_code": 0,
+    "command": [
+      "targets/lfj8/check_h03_service_guard.py",
+      "--base",
+      "D:/\u041d\u043e\u0432\u0430\u044f \u043f\u0430\u043f\u043a\u0430 (2)/\u041e\u0431\u0449\u0430\u044f \u043f\u0430\u043f\u043a\u0430/TCM/LFJ8-T-D.bin",
+      "--gcc",
+      "C:/Users/RBmotors/AppData/Local/Temp/rbm-m32r-smoke/gnu-m32r-elf/bin/m32r-elf-gcc.exe",
+      "--storage-report",
+      "D:\\RBM-Integration-11-20261121\\native\\storage.json",
+      "--placed-elf",
+      "D:\\RBM-Integration-11-20261121\\composition-spare\\early-irq.elf",
+      "--common-layout",
+      "D:\\RBM-Integration-11-20261121\\composition-spare\\layout.json",
+      "--out",
+      "D:\\RBM-Integration-11-20261121\\placed-writers.json"
+    ]
+  },
+  {
+    "name": "placed-dma4",
+    "exit_code": 1,
+    "command": [
+      "targets/lfj8/check_h03_dma4_guard.py",
+      "--base",
+      "D:/\u041d\u043e\u0432\u0430\u044f \u043f\u0430\u043f\u043a\u0430 (2)/\u041e\u0431\u0449\u0430\u044f \u043f\u0430\u043f\u043a\u0430/TCM/LFJ8-T-D.bin",
+      "--gcc",
+      "C:/Users/RBmotors/AppData/Local/Temp/rbm-m32r-smoke/gnu-m32r-elf/bin/m32r-elf-gcc.exe",
+      "--storage-report",
+      "D:\\RBM-Integration-11-20261121\\native\\storage.json",
+      "--placed-elf",
+      "D:\\RBM-Integration-11-20261121\\composition-spare\\early-irq.elf",
+      "--out",
+      "D:\\RBM-Integration-11-20261121\\placed-dma4.json"
+    ]
+  }
+]
