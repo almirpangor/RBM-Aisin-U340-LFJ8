@@ -1,0 +1,303 @@
+{
+  "task": "CAN-01",
+  "related_tasks": [
+    "TOY-03",
+    "CAN-05"
+  ],
+  "scope": "Native H03 Task 2 engine context for the first bench pair",
+  "branch": "codex/can-01-shared-engine-binding-32e6ac79",
+  "owner": "codex-32e6ac79-d63f-49c4-9d44-dd51c88bf0d3",
+  "claim_id": "1bfd0b8442764a5e8a833763cc57815a",
+  "base_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
+  "implementation_commit": "7cf3732aee20f40a9370e47e92b03c70783735ce",
+  "changed_files": [
+    "targets/lfj8/bench_engine_profile.h",
+    "targets/lfj8/check_h03_engine_context.py",
+    "targets/lfj8/lfj8_h03_engine_context.c",
+    "targets/lfj8/lfj8_h03_engine_context.h",
+    "targets/lfj8/lfj8_h03_engine_feed.c",
+    "targets/lfj8/lfj8_h03_engine_feed.h",
+    "targets/lfj8/lfj8_h03_engine_rx.c",
+    "targets/lfj8/lfj8_h03_engine_rx.h",
+    "targets/lfj8/test_lfj8_h03_engine_context.c",
+    "verification/bench-wave/chat-2/handoff.json"
+  ],
+  "entry_points": {
+    "application_caller": "targets/lfj8/lfj8_h03_application.c:prepare_engine (Task 2, native interrupt lock)",
+    "context_for_task2": "targets/lfj8/lfj8_h03_engine_context.c:rbm_h03_engine_context_for_task2",
+    "feed": "targets/lfj8/lfj8_h03_engine_feed.c:lfj8_h03_engine_feed_target_task2",
+    "can_rx": "targets/lfj8/lfj8_h03_engine_rx.c:lfj8_h03_engine_rx_poll_bounded",
+    "target_descriptor": "targets/lfj8/lfj8_h03_application_binding.c:rbm_h03_target_engine",
+    "native_source": "--binding-source targets/lfj8/lfj8_h03_engine_context.c",
+    "profile_include": "#include \"bench_engine_profile.h\"",
+    "target_initializer": ".max_can_sample_span_us = RBM_H03_PROFILE_ENGINE_MAX_CAN_SAMPLE_SPAN_US,",
+    "initializer_contract": "Set the field in rbm_h03_target_engine.target when the profile declares the bound. Zero selects legacy RX for existing profiles. The other four profile symbols already populate the descriptor."
+  },
+  "provenance": {
+    "h03_rom_sha256": "844a11b809cda1f2ccaf90cb6a75666009487ccedd2e8190b7eb46137b855544",
+    "can0_configuration": {
+      "rom": {
+        "offset": "0x003D86",
+        "bytes_hex": "95 A0 04",
+        "initialization": [
+          "0x00B8E4",
+          "0x00B98C"
+        ]
+      },
+      "live_registers": {
+        "CAN0CONF": "0x801006, 16-bit, expected 0x95A0",
+        "CAN0BRP": "0x801016, 8-bit, expected 0x04"
+      },
+      "sources": [
+        "docs/lfj8-9e1c-base.md",
+        "https://www.renesas.com/en/document/mah/32176-group-hardware-manual"
+      ],
+      "nominal_cpu_hz": 40000000,
+      "nominal_can_bits_per_second": 500000,
+      "nominal_can_tick_us": 2,
+      "status": "Stock ROM and live register pattern. Actual oscillator and bit timing reserved for measurement."
+    },
+    "bosch_tx": {
+      "sources": [
+        "targets/bosch/tx.py",
+        "docs/bosch-integration.md",
+        "verification/project-audit/integration-11-20261121/roundtrip.json"
+      ],
+      "t4_clock_basis": "40 MHz nominal CPU divided by 512, 12.8 us per T4 tick. Periods are TX attempts.",
+      "rpm": {
+        "id": "0x0FA",
+        "period_t4_ticks": 625,
+        "nominal_attempt_ms": 8,
+        "replay_hex": "12c05f7400230000",
+        "replay_rpm": 1200
+      },
+      "ect": {
+        "id": "0x278",
+        "period_t4_ticks": 1250,
+        "nominal_attempt_ms": 16,
+        "replay_hex": "b4ffffffffffffff",
+        "replay_celsius": 87
+      },
+      "replay_sha256": "e9df9cbcae6eb741b9863688f7bbacd16f19064c063b76549f8b56939ca03b4b",
+      "bosch_image_sha256": "bd0afefa40dfd1ea82e647ea5af7e64e2f652c27ccc5c3b91a986224fd77ec79",
+      "image_status": "OFFLINE_ONLY"
+    },
+    "independent_admission": [
+      {
+        "input": "Qualified TML0, matching sensor epoch and bounded snapshot age",
+        "provider": "rbm_h03_atf_now_us; rbm_h03_sensor_state.feed.epoch; sensors->capture.now_tml0",
+        "source": "targets/lfj8/lfj8_h03_atf_tml0.c; targets/lfj8/lfj8_h03_sensor_target.h"
+      },
+      {
+        "input": "Live CAN grant and admitted setup generation",
+        "provider": "h03_can_owner.initialized, grant, setup_generation, admitted_generation",
+        "source": "Existing H03 CAN owner, engine feed and RX"
+      },
+      {
+        "input": "Service, programming and flash gates",
+        "provider": "0x804887 must differ from OEM service mode 4; FCNT1 at 0x8007E2 and programming gate at 0x80801C must be zero",
+        "source": "targets/lfj8/lfj8_h03_can_monitor_revoke.c; docs/lfj8-h03-output-adapter.md"
+      },
+      {
+        "input": "Current engine-related DTC",
+        "provider": "Shared chery DTC current[3] projected to E02B with CAN ownership and clock state",
+        "source": "targets/lfj8/lfj8_h03_engine_feed.c"
+      }
+    ],
+    "qualifier": "FA7B=0xFF represents absent independent coolant in the CAN-only profile. Toyota supplies its protected fallback. Existing qualifier owns FD10.12 and E026.1. Lost CAN admission inhibits history by bench policy. No auxiliary E02B flags or absolute engine load are inferred. See docs/toyota-integration.md."
+  },
+  "runtime_bounds": [
+    {
+      "symbol": "RBM_H03_PROFILE_ENGINE_MAX_AGE_TICKS",
+      "value": 18000,
+      "unit": "CAN0TSTMP ticks",
+      "status": "Engineering ceiling",
+      "basis": "(2 * 16 ms + 4 ms arbitration margin) / 2 us. Raw expires at equality. Retained RPM expires at (18000 + 1) * 3 us = 54003 us from its conservative capture date."
+    },
+    {
+      "symbol": "RBM_H03_PROFILE_ENGINE_MAX_POLL_GAP_US",
+      "value": 10000,
+      "unit": "us of qualified TML0",
+      "status": "Engineering exclusive ceiling",
+      "basis": "Two nominal 5 ms H03 TOP10 phase increments. Existing RX configuration allows at most 30000 us. Applies to consecutive polls and sensor snapshot age. See docs/lfj8-h03-output-adapter.md."
+    },
+    {
+      "symbol": "RBM_H03_PROFILE_ENGINE_BIT_TIME_US",
+      "value": 3,
+      "unit": "us per CAN bit tick",
+      "status": "Engineering upper bound with 1 us lower bound",
+      "basis": "Conservative range about 2 us nominal. Lower bound is one qualified TML0 tick, corresponding to classic CAN at 1 Mbit/s. Compare elapsed CAN and TML0 with bracket and one-bit quantization slack."
+    },
+    {
+      "symbol": "RBM_H03_PROFILE_ENGINE_MAX_CAN_SAMPLE_SPAN_US",
+      "value": 32,
+      "unit": "us of qualified TML0",
+      "status": "Engineering inclusive read bracket",
+      "basis": "Limit early timestamp uncertainty around CAN samples and mailbox reads in the critical section. Clock failures, wide brackets, contradictory deltas and missed polls enter drain/warm-up."
+    }
+  ],
+  "software_blockers": [
+    {
+      "task": "CAN-01/H03-04",
+      "dependency": "Integrator's aggregate profile and application descriptor",
+      "required": "Include profile and source, set max_can_sample_span_us via the initializer above, regenerate typed RAM inventory after the header changes and validate final Flash layout and stack/IRQ with all providers."
+    },
+    {
+      "task": "TOY-03",
+      "dependency": "Independent normalized start/P-N request and Toyota permissives",
+      "required": "Supply a separately proven physical input or Bosch signal with validity, time and generation for lfj8_h03_range_snapshot. H03 0x806446 derives from AN2. S01 GP-5722.0..3 depend on GP-5483.5 and GP-5471.4/.1/.0. GP-5250.2 depends on GP-5266, GP-5265 and GP-5188.2 in 0x02CDBC..0x02CE4A. RPM alone is insufficient.",
+      "sources": [
+        "docs/lfj8-h03-input-paths.md",
+        "docs/toyota-integration.md",
+        "verification/project-audit/toy03-h03-pnp-source.md",
+        "verification/project-audit/toy03-range-freshness.md"
+      ]
+    },
+    {
+      "task": "CAN-05",
+      "dependency": "Final native Bosch target and paired integrated build",
+      "required": "Repeat with the final Bosch target. The replay input came from the pinned OFFLINE_ONLY candidate."
+    }
+  ],
+  "post_flash_measurements": [
+    "Measure CAN bit time and CAN0TSTMP vs external time and TML0, including both counter wraps and oscillator tolerance.",
+    "Measure 0x0FA/0x278 inter-arrival times under arbitration, crank, dropout and service transitions, plus worst-case TML0 lock/read bracket and poll gap.",
+    "Check authority removal and recovery with stale frames, timing violations and CAN ownership changes.",
+    "Measure stack high-water and nested IRQ depth on the exact final H03 composition."
+  ],
+  "hardware_tested": false,
+  "release_ready": false,
+  "flashable_image": null,
+  "memory": {
+    "compiler_flags": "-m32r -mmodel=medium -msdata=none -Wa,-EB -Os -ffreestanding -fno-builtin -fno-common -ffunction-sections -fdata-sections",
+    "raw_section_delta_bytes": {
+      "context": 348,
+      "feed": 80,
+      "rx": 208,
+      "flash_total": 636,
+      "bss_data": 0
+    },
+    "composition_against_main": {
+      "before_flash_bytes": 107884,
+      "after_flash_bytes": 108520,
+      "delta_bytes": 636,
+      "after_known_payload_in_packing_windows_bytes": 108464,
+      "candidate_window_capacity_bytes": 110548,
+      "before_new_static_ram_bytes": 4,
+      "after_new_static_ram_bytes": 4,
+      "status": "FAIL_BINDINGS",
+      "unresolved_before": 15,
+      "unresolved_after": 14,
+      "removed": "fixture_engine_context",
+      "candidate_capacity_note": "Includes only placed known sections. The 2084 bytes of aggregate nominal free space do not establish final capacity in each window or ownership."
+    },
+    "abi": "New feed-target uint8_t occupies former alignment padding. Existing M32R RAM inventory stays 2816 bytes (control 1132, communication 608, workspace 1076), measured by the repository checker.",
+    "stack_bytes_from_disassembly": {
+      "context_own_frame": 40,
+      "task2_feed_own_frame": 72,
+      "poll_target_locked_own_frame_before": 28,
+      "poll_target_locked_own_frame_after": 40,
+      "rx_bounded_own_frame": 72,
+      "bounded_sample_own_frame": 16,
+      "sum_of_listed_nested_runtime_frames": 200,
+      "note": "Context and feed run sequentially. The 200 B sum excludes application frames, downstream clock/MMIO calls and IRQ nesting; it is not a complete stack bound."
+    },
+    "diagnostics": {
+      "sections_sha256": "d4e69e3ee354cf3452ee0c1fc764bfd494194e52b0591eec8cee7d87b0cdc2bd",
+      "disassembly_sha256": "6f2836120cb2d9bc95a325f4d53a06054655e39675203514893392b8e063ac74",
+      "typed_ram_report_sha256": "357213c2e087004d6523aba159a53892197048b5c42d3290dfc99ecba215d0d2"
+    },
+    "composition": {
+      "tool": "tools/check_h03_image_layout.py (integration invocation derived from verification/project-audit/bench-first-20261121/repeat-composition.py)",
+      "inputs": "Fresh controller and bridge M32R objects, regenerated storage report, same incomplete integration profile, padding-candidate/medium, native entries/owner/CAN/DTC/early and service guards/resident constants",
+      "engine_changes": "Remove the old fixture_engine_context declaration and its four defines in the scratch profile; include bench_engine_profile.h; pass --binding-source targets/lfj8/lfj8_h03_engine_context.c. Apply only the target initializer shown in entry_points to a scratch copy of the integrator-owned binding, then run the common layout tool.",
+      "other_sources": [
+        "lfj8_h03_target_memory.c",
+        "lfj8_h03_ram_owner.c",
+        "lfj8_h03_target_commit.c",
+        "lfj8_h03_nvm_native.c"
+      ],
+      "result_sha256": "6ac7103a04a80730251d35e04f3900f668aa290722d54d8e99df356cc1eda7fe",
+      "unresolved_symbols": [
+        "qualified_adaptation_blocks",
+        "rbm_h03_boot_writers_owned",
+        "rbm_h03_ram_psw_first",
+        "rbm_h03_ram_psw_reserve",
+        "rbm_h03_ram_spi_first",
+        "rbm_h03_ram_spi_reserve",
+        "rbm_h03_sensor_config",
+        "rbm_h03_target_clock_ready",
+        "rbm_h03_target_startup_gear",
+        "rbm_h03_target_startup_gp",
+        "rbm_h03_target_takeover_ops",
+        "test_can_service_config",
+        "test_initialize_inputs",
+        "test_input_capture"
+      ]
+    }
+  },
+  "checks": [
+    {
+      "layer": "host and GNU M32R simulator",
+      "command": "python -B targets/lfj8/check_h03_engine_context.py --base <H03> --bosch-trace verification/project-audit/integration-11-20261121/roundtrip.json --zig <Zig> --gcc <M32R GCC> --out <D:>/engine",
+      "result": "PASS on both runtimes. Ownership, paired RPM/ECT frames, DTC and fallback, malformed frame, stale/retained expiry, both counter wraps, slow/fast clock, span limit, scheduling gap, drain/recovery and revocation.",
+      "report_sha256": "5c6a3afdf83d211a794f5b948e0f09b7f88cec418fa3ebd22dd1776978b88ef9",
+      "model_elf_sha256": "67d22cb4b4449509ed71bdcd3bfdce7a82b3bd95895d38b6fbf56d2cd0e155ac"
+    },
+    {
+      "layer": "GNU M32R simulator",
+      "command": "python -B targets/lfj8/check_h03_phase_boot.py --base <H03> --gcc <M32R GCC> --controller <controller.o> --out <D:>/phase-boot-current.json",
+      "result": "68 startup and phase scenarios PASS using the original application fixture; this exercises the existing application path independently of the production provider replay.",
+      "report_sha256": "c1aa07fce798d9fd72d71a5372801728bbd832997c7472d66d0b9152d6d3954"
+    },
+    {
+      "layer": "M32R compilation and simulation",
+      "command": "python -B controller/build_target.py m32r --cc <M32R GCC> --out <D:>/controller",
+      "result": "PASS; relocatable controller, simulator ELF",
+      "object_sha256": "13b42c89f3af237bbdc1307149918328561f0226f1443706d53160fc23c36ead"
+    },
+    {
+      "layer": "Host and M32R bridge",
+      "command": "python -B targets/lfj8/build.py --zig <Zig> --m32r-cc <M32R GCC> --base-9e1c <H03> --output <D:>/bridge",
+      "result": "PASS; exact H03 identity and relocatable bridge",
+      "object_sha256": "e16d8342fd0ed6df50a4878086d4239e959ee3d2f8d85b5d6457a394d44f36d4"
+    },
+    {
+      "layer": "M32R RAM ABI",
+      "command": "python -B targets/lfj8/check_h03_storage.py --base <H03> --gcc <M32R GCC> --out <D:>/storage.json",
+      "result": "PASS with regenerated typed inventory and candidate addresses; physical RAM ownership remains a whole-image requirement."
+    },
+    {
+      "layer": "M32R incomplete link/placement probe",
+      "command": "Repeat bench-first common composition with the native source and the scratch descriptor initializer detailed in memory.composition.",
+      "result": "Native engine symbol resolved and measured; overall FAIL_BINDINGS with 14 unrelated unresolved symbols. No full application ELF or H03 BIN."
+    },
+    {
+      "layer": "GNU M32R simulator",
+      "command": "python -B targets/lfj8/check_h03_can_monitor_revoke.py --base <H03> --gcc <M32R GCC> --storage-report <D:>/storage.json --out <D:>/can-monitor-revoke.json",
+      "result": "PASS on 8 direct and 12 native entry cases for guarded CAN revocation and setup recovery.",
+      "report_sha256": "ce1d4778e7c21104317fe4269f1be08bf05a841c3e3ec789388308c28aedccd4"
+    },
+    {
+      "layer": "Host",
+      "command": "python -B tools/build_pc_checks.py --cc <Zig> --out <D:>/pc-latest",
+      "result": "41 stages PASS on the current main baseline with this change. 228 Python tests reported, one S03 donor case skipped by the full runner and verified separately. The integrated C replay is PASS_OFFLINE_ONLY.",
+      "report_sha256": "9640e5979cb362076610156213077a6eb43031f4b10abeff4494ca7b7bb7f19e"
+    },
+    {
+      "layer": "Host",
+      "command": "RBM_S03=<S03> python -B -m unittest discover -s tests -p test_chery_dtc_table.py -v",
+      "result": "2 PASS including pinned donor image extraction"
+    },
+    {
+      "layer": "Host",
+      "command": "python -B -m unittest discover -s tests -p test_h03_image.py -v",
+      "result": "12 PASS from 3fe2893, including native source admission and byte-level image checks."
+    },
+    {
+      "layer": "Project registry",
+      "command": "python -B tools/project_status.py --check",
+      "result": "Exit 1, review/retest time for the nine changed code paths. Shared registry adoption remains with the integrator."
+    }
+  ]
+}

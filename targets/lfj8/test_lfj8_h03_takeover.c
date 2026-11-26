@@ -218,6 +218,10 @@ int main(void)
     ops.inhibit = NULL;
     assert(!lfj8_h03_takeover_init(&state, &ops, 8u));
     ops.inhibit = inhibit;
+    /* An incomplete actuator provider cannot become a monitor. */
+    ops.apply = NULL;
+    assert(!lfj8_h03_takeover_init(&state, &ops, 8u));
+    ops.apply = apply;
     assert(!lfj8_h03_takeover_init(&state, &ops, 0u));
     assert(!lfj8_h03_takeover_init(&state, &ops, UINT32_C(0x80000000)));
     assert(lfj8_h03_takeover_init(&state, &ops, 8u));

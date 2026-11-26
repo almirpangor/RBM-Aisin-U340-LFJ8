@@ -84,6 +84,27 @@ static void init(Fixture *f)
     };
 }
 
+static int ram_owned(void *platform)
+{
+    (void)platform;
+    return 1;
+}
+
+static int read_non_engine(void *platform, const Lfj8H03SensorSnapshot *sensors,
+    uint32_t due_at, Lfj8H03CycleInput *input, Lfj8H03CycleLoad *load,
+    Lfj8H03InputSources *sources)
+{
+    Fixture *const f = platform;
+    assert(!f->locked && sensors->epoch == f->sources.generation);
+    const uint32_t event = input->event;
+    *input = (Lfj8H03CycleInput){.event = event, .command_at = due_at - 1u, .qualified = 1u};
+    *load = (Lfj8H03CycleLoad){.now_us = due_at};
+    *sources = (Lfj8H03InputSources){
+        .driver = &f->driver, .range = &f->range, .generation = sensors->epoch,
+    };
+    return 1;
+}
+
 static void prepare_sources(Fixture *f, uint8_t pressed)
 {
     f->sources.now_us += 5;
@@ -144,6 +165,30 @@ static void test_six_positions(void)
         assert(f.proposal.cycle.command_at == f.range.range_5722[3].captured_us);
         assert(!f.proposal.driver.requested_gear && !f.proposal.driver.relay_mask);
     }
+}
+
+static void test_task2_feed_survives_capture(void)
+{
+    Fixture f;
+    init(&f);
+    f.binding.manual_max_age_us = 50u;
+    f.cycle.engine = (RbmU340eQualifiedEngineFeed){
+        .fa62 = 9600u, .fd10 = 0xd234u, .e026 = 0xa7u, .coherent = 1u,
+    };
+    qualify(&f, 500u);
+    prepare(&f, 500u, 0u);
+    assert(lfj8_h03_input_capture(&f.binding, &f.reading, f.sources.now_us));
+
+    Lfj8H03InputProposal proposal = {0};
+    Lfj8H03ToyotaInputCapture capture = {
+        .binding = &f.binding, .proposal = &proposal, .platform = &f,
+        .ram_owned = ram_owned, .read = read_non_engine,
+    };
+    const Lfj8H03SensorSnapshot sensors = {.epoch = f.sources.generation};
+    Lfj8H03CycleLoad load = {0};
+    assert(lfj8_h03_input_capture_toyota(&capture, &sensors, f.sources.now_us, &f.cycle, &load));
+    assert(f.cycle.engine.fa62 == 9600u && f.cycle.engine.fd10 == 0xd234u &&
+           f.cycle.engine.e026 == 0xa7u && f.cycle.engine.coherent == 1u);
 }
 
 static void test_shift_and_od(void)
@@ -569,6 +614,7 @@ static void test_manual_target(void)
 int main(void)
 {
     test_six_positions();
+    test_task2_feed_survives_capture();
     test_shift_and_od();
     test_auto_conflict();
     test_invalid_snapshots();

@@ -105,7 +105,9 @@ int lfj8_h03_engine_feed_target_init(const Lfj8H03EngineFeedTarget *target,
                                      uint16_t max_age_ticks, uint16_t max_poll_gap_us)
 {
     const Lfj8RegisterIo *const io = target->io;
-    if (!target->bit_time_us || !lfj8_h03_engine_rx_init(target->rx, max_age_ticks, max_poll_gap_us)) {
+    if (!target->bit_time_us ||
+        (target->max_can_sample_span_us && target->max_can_sample_span_us >= max_poll_gap_us) ||
+        !lfj8_h03_engine_rx_init(target->rx, max_age_ticks, max_poll_gap_us)) {
         return 0;
     }
     ta2005_engine_qualifier_init(target->qualifier);
@@ -123,7 +125,12 @@ static int poll_target_locked(const Lfj8H03EngineFeedTarget *target, Ta2005Chery
     const uint8_t ready = clock_ready && target->rx->generation_source == &owner->setup_generation &&
                           owner->initialized && owner->grant == 1u &&
                           owner->setup_generation == owner->admitted_generation;
-    lfj8_h03_engine_rx_poll(target->rx, target->io, *now_us, ready, raw);
+    const Lfj8H03EngineRxClock clock = {
+        .now_us = target->now_us, .max_span_us = target->max_can_sample_span_us,
+        .max_bit_time_us = target->bit_time_us,
+    };
+    lfj8_h03_engine_rx_poll_bounded(target->rx, target->io, *now_us, ready, raw,
+                                   clock.max_span_us ? &clock : NULL);
     return clock_ready;
 }
 
@@ -165,7 +172,9 @@ static void date_operands(const Lfj8H03EngineFeedTarget *target, const Ta2005Che
         rx->rpm_stamp_us = received_by(target, rx->inputs.speed_received_at);
         rx->rpm_stamp_valid = 1u;
     }
-    if (rx->rpm_stamp_valid && now_us - rx->rpm_stamp_us < TML0_HALF_RANGE) {
+    const uint32_t rpm_age_limit = target->max_can_sample_span_us
+        ? ((uint32_t)rx->max_age_ticks + 1u) * target->bit_time_us : TML0_HALF_RANGE;
+    if (rx->rpm_stamp_valid && now_us - rx->rpm_stamp_us < rpm_age_limit) {
         include_stamp(now_us, rx->rpm_stamp_us, oldest_us);
     } else {
         rx->rpm_stamp_valid = 0u;
