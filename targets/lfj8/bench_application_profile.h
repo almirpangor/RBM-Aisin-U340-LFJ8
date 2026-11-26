@@ -1,11 +1,41 @@
 #ifndef RBM_LFJ8_H03_BENCH_APPLICATION_PROFILE_H
 #define RBM_LFJ8_H03_BENCH_APPLICATION_PROFILE_H
 
+#include "lfj8_h03_input_binding.h"
+#include "lfj8_h03_target_service.h"
+
+enum {
+    LFJ8_H03_BENCH_AN2_FITS_10_BITS = 1u,
+    LFJ8_H03_BENCH_CLOCK_REGISTERS_MATCH_OEM = 2u,
+    LFJ8_H03_BENCH_TML0_MOVED = 4u,
+};
+
+/* Read-only commissioning observations. AN2 is the last OEM RAM value,
+ * not a newly timestamped ADC conversion. P1 and SFR bytes have no assigned
+ * switch polarity here. Flags describe numeric observations, not qualified
+ * P/N, load, range, conversion age or an independently measured clock.
+ * API_ONLY permits a diagnostic consumer before Toyota startup is available. */
+typedef struct {
+    uint32_t first_tml0;
+    uint32_t last_tml0;
+    uint16_t an2_raw;
+    uint8_t p1data;
+    uint8_t prs1;
+    uint8_t tml0_mode;
+    uint8_t tml1_mode;
+    uint8_t flags;
+    uint8_t reserved;
+} Lfj8H03BenchLocalRaw;
+
+/* Holds only the native IRQ exclusion, reads no application RAM, consumes
+ * no ADC mailbox and writes no device registers. Rejects changing observations or
+ * an overlong/wrong-way TML0 bracket; failure leaves out unchanged. */
+int rbm_h03_bench_raw_local_snapshot(Lfj8H03BenchLocalRaw *out);
+
+#ifndef RBM_H03_BENCH_PROFILE_API_ONLY
 #include "bench_sensor_profile.h"
 #include "bench_engine_profile.h"
 #include "bench_output_profile.h"
-#include "lfj8_h03_input_binding.h"
-#include "lfj8_h03_target_service.h"
 
 /* Include from the final, source-qualified application header. Toyota's
  * absolute cadence is independent of TOP10 and must be an explicit setting.
@@ -75,4 +105,5 @@ int rbm_h03_bench_profile_capture(void *context, const Lfj8H03SensorSnapshot *se
  * adaptation fallback does not acknowledge persistent erase or write. */
 #define RBM_H03_PROFILE_READ_ADAPTATION NULL
 
+#endif /* !RBM_H03_BENCH_PROFILE_API_ONLY */
 #endif

@@ -2,12 +2,16 @@
 #include "lfj8_h03_input_binding.h"
 #include "lfj8_h03_mmio.h"
 #include "lfj8_selector_adc.h"
+#include "bench_sensor_profile.h"
 
 #ifndef RBM_H03_APPLICATION_PROFILE
-#error "Use an explicit native H03 application profile"
+#define RBM_H03_BENCH_PROFILE_API_ONLY 1
+#include "bench_application_profile.h"
 #else
 #include RBM_H03_APPLICATION_PROFILE
+#endif
 
+#ifndef RBM_H03_BENCH_PROFILE_API_ONLY
 static const Lfj8H03InputBinding *native_input_binding(void)
 {
     const Lfj8H03ToyotaInputCapture *const capture = &rbm_h03_bench_native_input_capture;
@@ -50,3 +54,44 @@ int rbm_h03_bench_profile_capture(void *context, const Lfj8H03SensorSnapshot *se
                                        sensors, due_at, input, load);
 }
 #endif
+
+#define H03_AN2_RAM UINT32_C(0x804BC6)
+#define H03_TML0CT UINT32_C(0x8003E0)
+#define H03_PRS1 UINT32_C(0x800203)
+#define H03_TM0 UINT32_C(0x8003EB)
+#define H03_TM1 UINT32_C(0x800FEB)
+
+_Static_assert(sizeof(Lfj8H03BenchLocalRaw) == 16u, "Raw commissioning ABI");
+
+int rbm_h03_bench_raw_local_snapshot(Lfj8H03BenchLocalRaw *out)
+{
+    const Lfj8RegisterIo *const io = &lfj8_h03_mmio;
+    if (!out || !io->enter || !io->leave || !io->read8 || !io->read16 || !io->read32) {
+        return 0;
+    }
+    Lfj8H03BenchLocalRaw value = {0};
+    const uint32_t saved = io->enter(io->context);
+    value.first_tml0 = io->read32(io->context, H03_TML0CT);
+    value.prs1 = io->read8(io->context, H03_PRS1);
+    value.tml0_mode = io->read8(io->context, H03_TM0);
+    value.tml1_mode = io->read8(io->context, H03_TM1);
+    value.an2_raw = io->read16(io->context, H03_AN2_RAM);
+    value.p1data = io->read8(io->context, LFJ8_H03_P1DATA_ADDRESS);
+    const int stable = value.an2_raw == io->read16(io->context, H03_AN2_RAM) &&
+        value.p1data == io->read8(io->context, LFJ8_H03_P1DATA_ADDRESS) &&
+        value.prs1 == io->read8(io->context, H03_PRS1) &&
+        value.tml0_mode == io->read8(io->context, H03_TM0) &&
+        value.tml1_mode == io->read8(io->context, H03_TM1);
+    value.last_tml0 = io->read32(io->context, H03_TML0CT);
+    const int valid = stable && value.last_tml0 - value.first_tml0 <= LFJ8_H03_BENCH_MAX_READ_SPAN_TICKS;
+    io->leave(io->context, saved);
+    if (!valid) {
+        return 0;
+    }
+    value.flags = (uint8_t)((value.an2_raw <= 1023u ? LFJ8_H03_BENCH_AN2_FITS_10_BITS : 0u) |
+        (value.prs1 == 9u && value.tml0_mode == 1u && value.tml1_mode == 0x31u
+            ? LFJ8_H03_BENCH_CLOCK_REGISTERS_MATCH_OEM : 0u) |
+        (value.first_tml0 != value.last_tml0 ? LFJ8_H03_BENCH_TML0_MOVED : 0u));
+    *out = value;
+    return 1;
+}
