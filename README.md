@@ -1,6 +1,6 @@
 # Кто сейчас работает над проектом
 
-Обновлено UTC: **2026-11-26T07:05:42+00:00**. Изменение № **1024**.
+Обновлено UTC: **2026-11-26T07:35:23+00:00**. Изменение № **1029**.
 
 Это общий учёт исполнителей. Он не меняет готовность функции по ТЗ и не подтверждает выпуск BIN.
 Команды занятия и обновления задачи — в tools/task_coordination.py основной ветки.
@@ -21,17 +21,17 @@
 | Приоритет | Задача | Исполнитель | Обновление UTC | Текущий шаг / причина ожидания |
 | --- | --- | --- | --- | --- |
 | 6 | TOY-05 — Обучение и сохранение адаптаций | Codex 12 — TOY-05, стартовое состояние первой стендовой пары \[01a1fa79-a9fd-70c0-80a3-f59592edaf79\] | 2026-11-21T09:13:05+00:00 | По поручению ведущего переношу сброс DTC RAM в защищённый холодный вход. Application C и транспорт остаются у текущих владельцев. |
-| 8 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Codex — native application profile \[h03-profiles-20261126-0d9c5e74\] | 2026-11-26T07:05:41+00:00 | Continue after CAN-01 5020294 and output 0a9523: connect existing native sensor/engine/output profile fragments and explicit startup/input/service provider contracts without SIMULATOR_ONLY callbacks or invented load. |
+| 8 | CAN-01 — Форматы CAN и квалификация RPM/ОЖ | Codex — native application profile \[h03-profiles-20261126-0d9c5e74\] | 2026-11-26T07:35:22+00:00 | Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress. |
 | 10 | CAN-03 — Штатный запуск, IRQ и восстановление CAN0 | Codex чат 3 — стендовый CAN-сервис H03 \[codex-fea1b366-66b6-4667-8206-915153ca1033\] | 2026-11-21T09:10:01+00:00 | По передаче ведущего резервирую application.c/h, CAN revoke и свободные fixtures. Разделяю блокировку управления и жизнь диагностики; общие binding/strategy и проверки других чатов не правлю. |
-| 12 | CAN-05 — Полнота штатного обмена Chery | Codex — Bosch paired-build evidence \[18de1d89-c1a8-4713-a009-785a4898e8e7\] | 2026-11-26T07:05:42+00:00 | Reproduce ordinary and native-permit Bosch binaries and CPU verifiers from exact saved sources; identify remaining native Chery consumer/profile contract. Do not edit ECU-01 held files or rename OFFLINE_ONLY into a ready pair. |
+| 12 | CAN-05 — Полнота штатного обмена Chery | Codex — Bosch paired-build evidence \[18de1d89-c1a8-4713-a009-785a4898e8e7\] | 2026-11-26T07:35:23+00:00 | Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress. |
 | 17 | H03-03 — Единое расписание и запуск приложения H03 | Чат 1 — OEM-переходы стендовой H03 \[codex-7bd19ea4-0004-4aec-90c4-f2c6e804c046\] | 2026-11-21T09:12:39+00:00 | Проверены все 23 корня ранней пробы объёма. Дополняю защиту ожидания: ограниченный счётчик итераций повторно вызывает guard при остановке TML0/TOP10. Для теста добавлен файл h03_phase_wait_fixture.c. |
-| 18 | H03-04 — Память, стек и сервисные пути | Codex — native memory artifacts \[9fd4c5ba-b274-4d00-b557-024ef5f0196a\] | 2026-11-26T07:05:40+00:00 | Continue after f3a320f: emit genuine ABS symbol/linker fragments and exact native compile inputs from the pinned bench memory profile; verify final linked symbols/placements without monkeypatch bounds or weaker guards. |
+| 18 | H03-04 — Память, стек и сервисные пути | Codex — native memory artifacts \[9fd4c5ba-b274-4d00-b557-024ef5f0196a\] | 2026-11-26T07:35:22+00:00 | Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress. |
 | 25 | MODE-02 — Подключение селектора, Tiptronic и Overdrive | LFJ8 selector measurement contract \[b9841cd6-bb32-4ab5-a5d7-3d1df09009f5\] | 2026-11-24T06:46:28+00:00 | Closeout: main/script refreshed; reviewing exact report commit and scoped checks before review/block. |
 | 26 | MODE-03 — Окончательная политика режимов | Copilot — MODE-03 manual policy continuation \[copilot-mode03-20261124-0829-9b51a672-80d4-41d8-b003-2ccf7df38731\] | 2026-11-24T05:59:48+00:00 | Продолжаю MODE-03 только в пределах исходно разрешённых пяти путей; сохраняю физически неподтверждённые selector/ADC значения явными блокерами. Проверенный MODE-03 review d77a559150a3c586ca50caa4aa64488b4f02ce22 и обязательный CAN-01 review 50202944bbe2206d79c948757752b5a3e7669007 включены в ветку. |
-| 27 | REL-01 — Два целевых BIN и воспроизводимый комплект | Codex — общая сборка BIN \[6b07cffe-43b8-83eb-b32c-1978261f0046\] | 2026-11-26T07:05:39+00:00 | User requested parallel Codex work and two BINs: integrate actual providers, qualify execution/integrity and compose a reproducible TCM/Bosch pair without fixture promotion. |
+| 27 | REL-01 — Два целевых BIN и воспроизводимый комплект | Codex — общая сборка BIN \[6b07cffe-43b8-83eb-b32c-1978261f0046\] | 2026-11-26T07:35:21+00:00 | Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress. |
 | 30 | DTC-02 — Штатный приём BasicCAN для диагностического сеанса | Codex чат 10 — чтение статуса NVM \[01a1fa76-b015-7640-a0ba-433b36dcf55f\] | 2026-11-21T09:12:26+00:00 | Поверх сданного a1e1733 включён DTC-04 4842a32. Добавляю условную страницу статуса NVM/SFR для no-media профиля, проверяю реальные ответы через TX13. Без чтения массива, записи и положительного ACK очистки. |
 | 32 | DTC-04 — Хранение DTC после выключения питания | Чат 9 — холодный старт и транспорт NVM \[01a1fa76-922b-7b11-a2f2-346a15d1dc95\] | 2026-11-21T09:11:30+00:00 | Включён 4842a32. Совместный офлайн-прогон действующего холодного callback, профиля NVM и штатного CAN-диагностического пути. Проверю отсутствие ложной очистки и поведение после перепривязки. Файлы действующих резервов TOY-05/DTC-02/CAN-03 не затрагиваю. |
-| — | H03-01 — Выбранная основа 9E1C и карта подключения | Codex — M32R Windows CI \[d32061c3-c01f-44f5-aa31-d5ed8f982fc2\] | 2026-11-26T07:05:40+00:00 | New independent scope: official Sysprogs package extraction and real Windows CI M32R controller/bridge builds and CPU tests; local obsolete PE executables fail Windows 623. No sandbox or OS security changes. |
+| — | H03-01 — Выбранная основа 9E1C и карта подключения | Codex — M32R Windows CI \[d32061c3-c01f-44f5-aa31-d5ed8f982fc2\] | 2026-11-26T07:35:21+00:00 | Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress. |
 | — | ORG-01 — Основа проекта и локальная работа | Ведущй — общая сборка и задания для стендовой пары \[codex-integration-01a1f76d-20261120\] | 2026-11-21T09:15:21+00:00 | Опубликованы план и общая инфраструктура 3fe2893. Ведётся приёмка 12 чатов; локально объединены 9/5/10, native NVM/sensor/BasicCAN readout повторно PASS. Выявлен и передан CAN-03 дефект отключения диагностики при недостоверных датчиках. Окончательный native ELF/BIN ещё не собран. |
 
 ## Ожидают — резерв сохранён
@@ -829,6 +829,10 @@
 
 Чат: Codex — Bosch paired-build evidence. Claim ID: 26e9d44db4f1463a8c0fba7cafd4ed94.
 
+- targets/bosch/chery_native_consumer.py
+- targets/bosch/verify_chery_native_consumer.py
+- tests/test_chery_native_consumer.py
+- verification/bench-wave/bosch-native-consumer-20261126/handoff.json
 - verification/bench-wave/bosch-pair-20261126/handoff.json
 
 ### DTC-02
@@ -954,6 +958,11 @@
 
 | UTC | Задача | Действие | Чат |
 | --- | --- | --- | --- |
+| 2026-11-26T07:35:23+00:00 | CAN-05 | heartbeat | 18de1d89-c1a8-4713-a009-785a4898e8e7 |
+| 2026-11-26T07:35:22+00:00 | CAN-01 | heartbeat | h03-profiles-20261126-0d9c5e74 |
+| 2026-11-26T07:35:22+00:00 | H03-04 | heartbeat | 9fd4c5ba-b274-4d00-b557-024ef5f0196a |
+| 2026-11-26T07:35:21+00:00 | H03-01 | heartbeat | d32061c3-c01f-44f5-aa31-d5ed8f982fc2 |
+| 2026-11-26T07:35:21+00:00 | REL-01 | heartbeat | 6b07cffe-43b8-83eb-b32c-1978261f0046 |
 | 2026-11-26T07:05:42+00:00 | CAN-05 | claim | 18de1d89-c1a8-4713-a009-785a4898e8e7 |
 | 2026-11-26T07:05:41+00:00 | CAN-01 | claim | h03-profiles-20261126-0d9c5e74 |
 | 2026-11-26T07:05:40+00:00 | H03-04 | claim | 9fd4c5ba-b274-4d00-b557-024ef5f0196a |
@@ -979,8 +988,3 @@
 | 2026-11-24T06:36:08+00:00 | DTC-03 | heartbeat | copilot-0bc0cbc673de4134ab7d7b9afeb082a2 |
 | 2026-11-24T06:35:54+00:00 | REL-01 | claim | bd412180-9ccb-4a23-a04a-ad23931a72a0 |
 | 2026-11-24T06:35:14+00:00 | H03-04 | heartbeat | 6f772758-d43b-4665-ad67-3eeb2481501a |
-| 2026-11-24T06:34:37+00:00 | H03-04 | heartbeat | 6f772758-d43b-4665-ad67-3eeb2481501a |
-| 2026-11-24T06:33:44+00:00 | H03-04 | claim | 6f772758-d43b-4665-ad67-3eeb2481501a |
-| 2026-11-24T06:33:28+00:00 | REL-01 | review | bd412180-9ccb-4a23-a04a-ad23931a72a0 |
-| 2026-11-24T06:32:15+00:00 | DTC-03 | heartbeat | copilot-0bc0cbc673de4134ab7d7b9afeb082a2 |
-| 2026-11-24T06:31:49+00:00 | REL-01 | claim | bd412180-9ccb-4a23-a04a-ad23931a72a0 |

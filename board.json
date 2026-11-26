@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "sequence": 1024,
+  "sequence": 1029,
   "claims": {
     "ORG-01": {
       "owner": "codex-integration-01a1f76d-20261120",
@@ -107,8 +107,8 @@
       "stage": "in_progress",
       "claim_id": "2d0e308611314df984fdc5a729efad40",
       "claimed_at": "2026-11-26T07:05:39+00:00",
-      "updated_at": "2026-11-26T07:05:39+00:00",
-      "note": "User requested parallel Codex work and two BINs: integrate actual providers, qualify execution/integrity and compose a reproducible TCM/Bosch pair without fixture promotion.",
+      "updated_at": "2026-11-26T07:35:21+00:00",
+      "note": "Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress.",
       "result": null,
       "based_on_reviews": [
         "36a5a75d3ef44ab0a4cde5678f96bb0a",
@@ -158,8 +158,8 @@
       "stage": "in_progress",
       "claim_id": "f37b890641a04cb1aa5f8aa7c5d9cf70",
       "claimed_at": "2026-11-26T07:05:40+00:00",
-      "updated_at": "2026-11-26T07:05:40+00:00",
-      "note": "Continue after f3a320f: emit genuine ABS symbol/linker fragments and exact native compile inputs from the pinned bench memory profile; verify final linked symbols/placements without monkeypatch bounds or weaker guards.",
+      "updated_at": "2026-11-26T07:35:22+00:00",
+      "note": "Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress.",
       "result": null,
       "based_on_reviews": [
         "2287692bc6564719826ff62c12a7d829",
@@ -210,13 +210,17 @@
       "label": "Codex — Bosch paired-build evidence",
       "branch": "codex/bosch-pair-20261126",
       "files": [
+        "targets/bosch/chery_native_consumer.py",
+        "targets/bosch/verify_chery_native_consumer.py",
+        "tests/test_chery_native_consumer.py",
+        "verification/bench-wave/bosch-native-consumer-20261126/handoff.json",
         "verification/bench-wave/bosch-pair-20261126/handoff.json"
       ],
       "stage": "in_progress",
       "claim_id": "26e9d44db4f1463a8c0fba7cafd4ed94",
       "claimed_at": "2026-11-26T07:05:42+00:00",
-      "updated_at": "2026-11-26T07:05:42+00:00",
-      "note": "Reproduce ordinary and native-permit Bosch binaries and CPU verifiers from exact saved sources; identify remaining native Chery consumer/profile contract. Do not edit ECU-01 held files or rename OFFLINE_ONLY into a ready pair.",
+      "updated_at": "2026-11-26T07:35:23+00:00",
+      "note": "Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress.",
       "result": null,
       "based_on_reviews": []
     },
@@ -281,8 +285,8 @@
       "stage": "in_progress",
       "claim_id": "32a8dde5bafe410c965914d8bebf3e14",
       "claimed_at": "2026-11-26T07:05:41+00:00",
-      "updated_at": "2026-11-26T07:05:41+00:00",
-      "note": "Continue after CAN-01 5020294 and output 0a9523: connect existing native sensor/engine/output profile fragments and explicit startup/input/service provider contracts without SIMULATOR_ONLY callbacks or invented load.",
+      "updated_at": "2026-11-26T07:35:22+00:00",
+      "note": "Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress.",
       "result": null,
       "based_on_reviews": [
         "1bfd0b8442764a5e8a833763cc57815a",
@@ -603,8 +607,8 @@
       "stage": "in_progress",
       "claim_id": "82d76ac93c4045858b318d0452bffff2",
       "claimed_at": "2026-11-26T07:05:40+00:00",
-      "updated_at": "2026-11-26T07:05:40+00:00",
-      "note": "New independent scope: official Sysprogs package extraction and real Windows CI M32R controller/bridge builds and CPU tests; local obsolete PE executables fail Windows 623. No sandbox or OS security changes.",
+      "updated_at": "2026-11-26T07:35:21+00:00",
+      "note": "Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress.",
       "result": null,
       "based_on_reviews": []
     },
@@ -18485,9 +18489,153 @@
         "result": null,
         "based_on_reviews": []
       }
+    },
+    {
+      "operation_id": "2b301e79c6e24dd0b7e8dbe58e4f772d",
+      "task": "REL-01",
+      "owner": "6b07cffe-43b8-83eb-b32c-1978261f0046",
+      "action": "heartbeat",
+      "claim_id": "2d0e308611314df984fdc5a729efad40",
+      "at": "2026-11-26T07:35:21+00:00",
+      "record": {
+        "owner": "6b07cffe-43b8-83eb-b32c-1978261f0046",
+        "label": "Codex — общая сборка BIN",
+        "branch": "codex/bin-integration-6b07cffe",
+        "files": [
+          "tests/test_h03_bench_pair.py",
+          "tests/test_package_workset.py",
+          "tools/build_h03_bench_pair.py",
+          "tools/package_workset.py",
+          "verification/bin-release-20261126/"
+        ],
+        "stage": "in_progress",
+        "claim_id": "2d0e308611314df984fdc5a729efad40",
+        "claimed_at": "2026-11-26T07:05:39+00:00",
+        "updated_at": "2026-11-26T07:35:21+00:00",
+        "note": "Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress.",
+        "result": null,
+        "based_on_reviews": [
+          "36a5a75d3ef44ab0a4cde5678f96bb0a",
+          "45aa19ae7e9f404aba609cc7fd686cbd",
+          "7cb4836dcb9343c6bfcec71a4e5371e6",
+          "9c7cba27017d403db01fb18c16725dd9",
+          "9fafa66119bd4d68a67ffed2cc934265",
+          "b29ec3655b034f3c9d994624701a3e5a"
+        ]
+      }
+    },
+    {
+      "operation_id": "d6d5109ff9af4a158f7d303a47650a6e",
+      "task": "H03-01",
+      "owner": "d32061c3-c01f-44f5-aa31-d5ed8f982fc2",
+      "action": "heartbeat",
+      "claim_id": "82d76ac93c4045858b318d0452bffff2",
+      "at": "2026-11-26T07:35:21+00:00",
+      "record": {
+        "owner": "d32061c3-c01f-44f5-aa31-d5ed8f982fc2",
+        "label": "Codex — M32R Windows CI",
+        "branch": "codex/m32r-toolchain-20261126",
+        "files": [
+          ".github/workflows/m32r-toolchain.yml",
+          "tools/ci_m32r_build.py",
+          "verification/bin-release-20261126-toolchain/"
+        ],
+        "stage": "in_progress",
+        "claim_id": "82d76ac93c4045858b318d0452bffff2",
+        "claimed_at": "2026-11-26T07:05:40+00:00",
+        "updated_at": "2026-11-26T07:35:21+00:00",
+        "note": "Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress.",
+        "result": null,
+        "based_on_reviews": []
+      }
+    },
+    {
+      "operation_id": "f643710f64ca4af0a3fc3a09eba29348",
+      "task": "H03-04",
+      "owner": "9fd4c5ba-b274-4d00-b557-024ef5f0196a",
+      "action": "heartbeat",
+      "claim_id": "f37b890641a04cb1aa5f8aa7c5d9cf70",
+      "at": "2026-11-26T07:35:22+00:00",
+      "record": {
+        "owner": "9fd4c5ba-b274-4d00-b557-024ef5f0196a",
+        "label": "Codex — native memory artifacts",
+        "branch": "codex/h03-memory-20261126",
+        "files": [
+          "targets/lfj8/lfj8_h03_bench_memory_profile.py",
+          "tests/test_h03_bench_memory_profile.py",
+          "verification/bench-wave/h03-memory-20261126.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "f37b890641a04cb1aa5f8aa7c5d9cf70",
+        "claimed_at": "2026-11-26T07:05:40+00:00",
+        "updated_at": "2026-11-26T07:35:22+00:00",
+        "note": "Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress.",
+        "result": null,
+        "based_on_reviews": [
+          "2287692bc6564719826ff62c12a7d829",
+          "2c436323b8804fc3b5ce732970b858a4",
+          "734b4f9d3a9c43f6aaa67927cf88ab12"
+        ]
+      }
+    },
+    {
+      "operation_id": "39eaa8af3f954dbc8c496749b9ec41a7",
+      "task": "CAN-01",
+      "owner": "h03-profiles-20261126-0d9c5e74",
+      "action": "heartbeat",
+      "claim_id": "32a8dde5bafe410c965914d8bebf3e14",
+      "at": "2026-11-26T07:35:22+00:00",
+      "record": {
+        "owner": "h03-profiles-20261126-0d9c5e74",
+        "label": "Codex — native application profile",
+        "branch": "codex/h03-profiles-20261126",
+        "files": [
+          "targets/lfj8/bench_application_profile.h",
+          "targets/lfj8/check_h03_bench_application_profile.py",
+          "targets/lfj8/lfj8_h03_bench_application_profile.c",
+          "verification/bench-wave/h03-profiles-20261126.md"
+        ],
+        "stage": "in_progress",
+        "claim_id": "32a8dde5bafe410c965914d8bebf3e14",
+        "claimed_at": "2026-11-26T07:05:41+00:00",
+        "updated_at": "2026-11-26T07:35:22+00:00",
+        "note": "Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress.",
+        "result": null,
+        "based_on_reviews": [
+          "1bfd0b8442764a5e8a833763cc57815a",
+          "43c64ae0c01a43088c77386a743171c9"
+        ]
+      }
+    },
+    {
+      "operation_id": "a2dea8945925416b99a30ba32a9f8717",
+      "task": "CAN-05",
+      "owner": "18de1d89-c1a8-4713-a009-785a4898e8e7",
+      "action": "heartbeat",
+      "claim_id": "26e9d44db4f1463a8c0fba7cafd4ed94",
+      "at": "2026-11-26T07:35:23+00:00",
+      "record": {
+        "owner": "18de1d89-c1a8-4713-a009-785a4898e8e7",
+        "label": "Codex — Bosch paired-build evidence",
+        "branch": "codex/bosch-pair-20261126",
+        "files": [
+          "targets/bosch/chery_native_consumer.py",
+          "targets/bosch/verify_chery_native_consumer.py",
+          "tests/test_chery_native_consumer.py",
+          "verification/bench-wave/bosch-native-consumer-20261126/handoff.json",
+          "verification/bench-wave/bosch-pair-20261126/handoff.json"
+        ],
+        "stage": "in_progress",
+        "claim_id": "26e9d44db4f1463a8c0fba7cafd4ed94",
+        "claimed_at": "2026-11-26T07:05:42+00:00",
+        "updated_at": "2026-11-26T07:35:23+00:00",
+        "note": "Continuing parallel native BIN work after exact H03 input was provided; CI M32R components passed, actual source/profile/storage integration remains in progress.",
+        "result": null,
+        "based_on_reviews": []
+      }
     }
   ],
-  "updated_at": "2026-11-26T07:05:42+00:00",
+  "updated_at": "2026-11-26T07:35:23+00:00",
   "main_commit": "3fe28938163e1dddc98a37733c229390ab7f0fff",
   "catalog": [
     {
