@@ -1,0 +1,522 @@
+{
+  "task": "CAN-05",
+  "agent": "bosch_pair",
+  "owner": "18de1d89-c1a8-4713-a009-785a4898e8e7",
+  "claim_id": "26e9d44db4f1463a8c0fba7cafd4ed94",
+  "branch": "codex/bosch-pair-20261126",
+  "source_commit": "70b6d601fd5dda4e7d7b94d9ba2a65864c132e1a",
+  "date": "2026-11-26",
+  "status": "PASS_OFFLINE_ONLY",
+  "scope": "Fresh deterministic Bosch builds and native CPU checks. No tracked ECU-01 implementation was changed.",
+  "artifacts": [
+    {
+      "variant": "ordinary",
+      "file": "local/bosch-20261126/ordinary/E4M3_CHERY_ORDINARY_MODEL_NO_CRUISE_COMPACT_OFFLINE_ONLY.bin",
+      "bytes": 851968,
+      "sha256": "bd0afefa40dfd1ea82e647ea5af7e64e2f652c27ccc5c3b91a986224fd77ec79",
+      "status": "OFFLINE_ONLY_NOT_HARDWARE_TESTED",
+      "build_verified": true,
+      "model_verified": true,
+      "hardware_verified": false,
+      "bench_pair_ready": false,
+      "regions": {
+        "wrapper": {
+          "cpu": "0x1e200",
+          "offset": "0xe200",
+          "length": 7672
+        },
+        "speed_receiver": {
+          "cpu": "0x66000",
+          "offset": "0x56000",
+          "length": 590
+        },
+        "speed_selector": {
+          "cpu": "0xb8441",
+          "offset": "0xa8441",
+          "length": 1
+        },
+        "engine_signals_tx": {
+          "cpu": "0x66800",
+          "offset": "0x56800",
+          "length": 1116
+        }
+      }
+    },
+    {
+      "variant": "native-permit",
+      "file": "local/bosch-20261126/native-permit/E4M3_CHERY_ORDINARY_MODEL_NO_CRUISE_RB_NATIVE_PERMIT_COMPACT_OFFLINE_ONLY.bin",
+      "bytes": 851968,
+      "sha256": "1082487f2ca496197e73a46f31f3a76d0ba5ec7467b32013d3fd106fa51cf581",
+      "status": "OFFLINE_ONLY_NOT_HARDWARE_TESTED",
+      "build_verified": true,
+      "model_verified": true,
+      "hardware_verified": false,
+      "bench_pair_ready": false,
+      "regions": {
+        "wrapper": {
+          "cpu": "0x1e200",
+          "offset": "0xe200",
+          "length": 7672
+        },
+        "speed_receiver": {
+          "cpu": "0x66000",
+          "offset": "0x56000",
+          "length": 590
+        },
+        "speed_selector": {
+          "cpu": "0xb8441",
+          "offset": "0xa8441",
+          "length": 1
+        },
+        "engine_signals_tx": {
+          "cpu": "0x66800",
+          "offset": "0x56800",
+          "length": 1116
+        },
+        "rb_native_permit": {
+          "cpu": "0x66f00",
+          "offset": "0x56f00",
+          "length": 44
+        },
+        "rb_native_permit_hook": {
+          "cpu": "0x64e60",
+          "offset": "0x54e60",
+          "length": 4
+        }
+      }
+    },
+    {
+      "variant": "native-timestamp",
+      "file": "local/bosch-20261126/native-timestamp/E4M3_CHERY_ORDINARY_MODEL_NO_CRUISE_RX_TIMESTAMP_RB_NATIVE_PERMIT_COMPACT_OFFLINE_ONLY.bin",
+      "bytes": 851968,
+      "sha256": "5292fdd41cfb5e2055742ab28d85d5e109f509f840fb82c855ee0bd1b82d8875",
+      "status": "OFFLINE_ONLY_NOT_HARDWARE_TESTED",
+      "build_verified": true,
+      "model_verified": true,
+      "hardware_verified": false,
+      "bench_pair_ready": false,
+      "regions": {
+        "wrapper": {
+          "cpu": "0x1e200",
+          "offset": "0xe200",
+          "length": 7672
+        },
+        "speed_receiver": {
+          "cpu": "0x66000",
+          "offset": "0x56000",
+          "length": 804
+        },
+        "speed_selector": {
+          "cpu": "0xb8441",
+          "offset": "0xa8441",
+          "length": 1
+        },
+        "engine_signals_tx": {
+          "cpu": "0x66800",
+          "offset": "0x56800",
+          "length": 1116
+        },
+        "rb_native_permit": {
+          "cpu": "0x66f00",
+          "offset": "0x56f00",
+          "length": 44
+        },
+        "rb_native_permit_hook": {
+          "cpu": "0x64e60",
+          "offset": "0x54e60",
+          "length": 4
+        }
+      }
+    }
+  ],
+  "source_provenance": {
+    "s04": {
+      "bytes": 851968,
+      "sha256": "e25a1c97492ae556b1a52043e6ae85b88d2da86c03a78ef01dc2151c8a0a4a2a"
+    },
+    "r4_commit": "dc6b4f08a24e648d3d0dab986c1765abb6fd294a",
+    "s02_sha256": "99dc271a861ab6d9e6749e8beb4637ab5c6c7e111f3ff0d9df4e147b2a0a6e1c",
+    "c167_model": {
+      "sha256": "8fce10a083b28fe718f683bd0f26143b4b61a2f7a8e62555f8a224bbea3a8e36",
+      "sha256_lf": "7de99b47c8c077cc70f38239d4cdd5162b6faee0760f1b6bb93e46c58f7a6ae3"
+    },
+    "native_permit_local_commit": "9312c056ee46e8f0495a64840bb82b722c1ee9ca",
+    "native_source_has_additional_local_integrity_changes": true,
+    "native_source_sha256": {
+      "build.py": "b941c25945184a0142d684d524891387bf8b225549edb9fafef715085bfc9d4f",
+      "tx.py": "e019b8238f647c2698d9fd7cf0e135cff168e4747fbde57a1eac3b9e67f52aa8",
+      "rb_native_permit.py": "9e20e10db7d1d559c1170bf3cb89ee8b79eaba7ae7fe92268b1f2fb2a6c9a0bb",
+      "compact_branches.py": "25deebf984144ec4af7c4cf63791cba075ed20f83da6ed4791b56f53e1d309e4",
+      "rx_timestamp.py": "f97b5ac835afe8631613346078ff48c8296a54ea04680fad4750be1c8442f72b",
+      "verify_bench_profile.py": "a32de55856c8fef0494d3ea708a44a0a92ed7f0b39636aa07891370f3b477886",
+      "verify_ordinary_model_field.py": "289d48a9bfb137b4b7f84acfcd9caa89243b5eb342d2b34d6971340d1dd50e26",
+      "verify_rx_timestamp.py": "b539674a528141120c2908fc4a0bb222d363d3f59889f44ce91676f0204b79db"
+    },
+    "native_source_policy": "Read-only ECU-01 owner source; its active reservation and original files were preserved."
+  },
+  "commands": {
+    "build_ordinary": [
+      "python",
+      "-B",
+      "targets/bosch/build.py",
+      "--engine",
+      "$engine",
+      "--s04",
+      "$s04",
+      "--outdir",
+      "$ordinary",
+      "--with-model-fields",
+      "--with-ordinary-model-field",
+      "--compact"
+    ],
+    "build_native": [
+      "python",
+      "-B",
+      "$ecu01_source/build.py",
+      "--engine",
+      "$engine",
+      "--s04",
+      "$s04",
+      "--outdir",
+      "$native",
+      "--with-model-fields",
+      "--with-ordinary-model-field",
+      "--with-rb-native-permit",
+      "--compact"
+    ],
+    "build_native_timestamp": [
+      "python",
+      "-B",
+      "$ecu01_source/build.py",
+      "--engine",
+      "$engine",
+      "--s04",
+      "$s04",
+      "--outdir",
+      "$timestamp",
+      "--with-model-fields",
+      "--with-ordinary-model-field",
+      "--with-rb-native-permit",
+      "--with-rx-timestamp",
+      "--compact"
+    ],
+    "native_cpu": [
+      "python",
+      "-B",
+      "$ecu01_source/verify_bench_profile.py",
+      "--engine",
+      "$engine",
+      "--s04",
+      "$s04",
+      "--image",
+      "$timestamp_bin",
+      "--with-rx-timestamp"
+    ],
+    "ordinary_native_encoding": [
+      "python",
+      "-B",
+      "$ecu01_source/verify_ordinary_model_field.py",
+      "--engine",
+      "$engine",
+      "--s04",
+      "$s04",
+      "--model",
+      "$c167",
+      "--image",
+      "$native_bin",
+      "--with-rb-native-permit",
+      "--compact"
+    ],
+    "timestamp_native_encoding": [
+      "python",
+      "-B",
+      "local/verify_timed_tx.py"
+    ],
+    "host_attempts": [
+      "python",
+      "-u",
+      "-X",
+      "utf8",
+      "local/run_bosch_host.py"
+    ]
+  },
+  "native_cpu_results": {
+    "status": "PASS_OFFLINE_ONLY",
+    "checksum_records": 51,
+    "native_start_admission_cases": 48,
+    "native_revocation_cases": 6,
+    "startup_stack_paths": [
+      {
+        "caller": "0x1bc4a",
+        "register_bank": "0xf800",
+        "r0_top": "0xe7be"
+      },
+      {
+        "caller": "0x1bc4a",
+        "register_bank": "0xfc00",
+        "r0_top": "0xe7be"
+      },
+      {
+        "caller": "0x1baa4",
+        "register_bank": "0xf800",
+        "r0_top": "0xe7be"
+      },
+      {
+        "caller": "0x1baa4",
+        "register_bank": "0xfc00",
+        "r0_top": "0xe7be"
+      }
+    ],
+    "refresh_cancel": {
+      "qualified_refresh": true,
+      "unqualified_refresh_leaves_receipt_unchanged": true,
+      "cancel_with_and_without_rpm_permit": true
+    },
+    "chery_t4_receive": {
+      "sha256": "5292fdd41cfb5e2055742ab28d85d5e109f509f840fb82c855ee0bd1b82d8875",
+      "checksum_records": 51,
+      "receiver_bytes": 804,
+      "captures": [
+        {
+          "if1_delay": 0,
+          "lower": 101,
+          "completion": 103,
+          "age_upper_bound": 2
+        },
+        {
+          "if1_delay": 0,
+          "lower": 65535,
+          "completion": 65537,
+          "age_upper_bound": 2
+        },
+        {
+          "if1_delay": 0,
+          "lower": 4294967295,
+          "completion": 1,
+          "age_upper_bound": 2
+        },
+        {
+          "if1_delay": 1,
+          "lower": 101,
+          "completion": 103,
+          "age_upper_bound": 2
+        },
+        {
+          "if1_delay": 1,
+          "lower": 65535,
+          "completion": 65537,
+          "age_upper_bound": 2
+        },
+        {
+          "if1_delay": 1,
+          "lower": 4294967295,
+          "completion": 1,
+          "age_upper_bound": 2
+        },
+        {
+          "if1_delay": 3,
+          "lower": 101,
+          "completion": 105,
+          "age_upper_bound": 4
+        },
+        {
+          "if1_delay": 3,
+          "lower": 65535,
+          "completion": 65539,
+          "age_upper_bound": 4
+        },
+        {
+          "if1_delay": 3,
+          "lower": 4294967295,
+          "completion": 3,
+          "age_upper_bound": 4
+        }
+      ],
+      "rejections": [
+        "unarmed",
+        "dlc",
+        "msglst",
+        "checksum",
+        "clock_stopped",
+        "overflow_pending",
+        "torn_high_word",
+        "half_range",
+        "backward",
+        "late_bus_off",
+        "late_init"
+      ],
+      "back_to_back_requires_new_empty_poll": true,
+      "speed_expiry_service_calls": 32,
+      "idle_clock_recovery_requires_new_empty_poll": true,
+      "recovery": [
+        "bus_off",
+        "can_init",
+        "busy_timeout"
+      ]
+    },
+    "native_tx": {
+      "status": "PASS_OFFLINE_ONLY",
+      "sha256": "5292fdd41cfb5e2055742ab28d85d5e109f509f840fb82c855ee0bd1b82d8875",
+      "native_mode_guard_cases": 56,
+      "native_encoder_cases": 65536,
+      "qualification_wire_cases": 64,
+      "changed_input_wire_cases": 6,
+      "rpm_model_wire": "12c05f7400230000",
+      "checksum_records": 51,
+      "hardware_tested": false,
+      "method": "Existing native encoder and wire functions, no patched builders or firmware callbacks"
+    },
+    "raw_report": "local/bosch-20261126/native-timestamp/cpu-profile.json",
+    "tx_report": "local/bosch-20261126/native-timestamp/tx-encoding.json"
+  },
+  "paired_host_dialogues": {
+    "normal": {
+      "can_commands": 9,
+      "status_frames_for_token": 18,
+      "start_us": 400000,
+      "full_reduction_confirmed_us": 430000,
+      "first_cancel_us": 520000,
+      "engine_status_confirmed_zero_us": 606000,
+      "refresh_commands": 5,
+      "terminal_state": "complete"
+    },
+    "lost_status": {
+      "can_commands": 4,
+      "status_frames_for_token": 16,
+      "start_us": 400000,
+      "full_reduction_confirmed_us": null,
+      "first_cancel_us": 460000,
+      "engine_status_confirmed_zero_us": 510000,
+      "refresh_commands": 0,
+      "terminal_state": "failed"
+    },
+    "late_status": {
+      "can_commands": 4,
+      "status_frames_for_token": 16,
+      "start_us": 400000,
+      "full_reduction_confirmed_us": null,
+      "first_cancel_us": 460000,
+      "engine_status_confirmed_zero_us": 510000,
+      "refresh_commands": 0,
+      "terminal_state": "failed",
+      "late_full_status_delivered_us": 460000
+    }
+  },
+  "paired_host_report": "local/bosch-20261126/native-timestamp/cpu-profile-paired.json",
+  "host_fixture": {
+    "file": "local/bosch-20261126/host-controller/lfj8_h03_torque_test.exe",
+    "sha256": "044e07c1abe623a8f6c5f5378f344c8aa16ea609ac843d3706190b13a8b0ae38",
+    "bytes": 142122,
+    "compiler": "gcc.exe (Rev7, Built by MSYS2 project) 16.2.0",
+    "tests": "Toyota adaptation store: 96 write cuts, 768 bit faults, reset and rollover passed.\nToyota adaptation recovery: 96 write cuts, 768 bit faults in either slot, and rollover passed.\nToyota startup seed: selected projection before NVM, conflicting slots and closed failures passed.\nToyota S01 adaptation baseline: empty, valid, and unreadable startup passed.\nToyota GP runtime: typed shared state, FAST and MAIN handoff, and rollback passed.\nToyota S01 cold projection: flags, unavailable periods, preservation and rejection passed.\nToyota startup adaptations: conflicting and identical generations, half-range and rollover passed.\nToyota MAIN engine inputs: qualified source, ECT/RPM publication, and fallback passed.\nToyota 05518C: SECONDARY load qualifiers, hysteresis, clamp, fallback and MAIN handoff passed.\nToyota S01 range: P/N to warm low-load D, standstill fill, S1/S2 and first upshift passed.\nToyota scheduler: event release, FAST phase latch, busy drop and rollover passed.\nVerified 292 GP transfer fields and five donor hydraulic snapshots.\nController tests passed: six ADC ranges, relays, Auto, Tiptronic, OD, S1/S2, ST and SLT.\nMODE-03 policy: 128 restart profiles, 128 conflict profiles, 256 held-shift transitions and 501760 gear proposal cases PASS.\nMODE-03 initialization: cold state and five rejected profiles with recovery PASS.",
+    "compatibility_flags": [
+      "-Wno-error=array-parameter",
+      "-Wno-error=misleading-indentation",
+      "-Wno-error=missing-braces"
+    ],
+    "method": "Current unchanged C sources, own newly compiled controller and torque fixture. Compatibility changes are only diagnostic severity for three declaration/style warnings; Werror retained for other diagnostics.",
+    "source_sha256": {
+      "targets/lfj8/lfj8_h03_torque.c": "da6c29f633dda0caee546539e63ddba33f5cb494b63fca213cfecf1a098e3eb5",
+      "targets/lfj8/test_lfj8_h03_torque.c": "8e06bafaaa4e873f96ab728974734f0194d732080da78154bdcefe8381478bd5"
+    },
+    "host_only": true
+  },
+  "memory_and_map": {
+    "rb_native_guard_code_bytes": 44,
+    "rb_native_guard_hook_bytes": 4,
+    "rb_native_guard_additional_ram_bytes": 0,
+    "rb_native_guard_additional_call_stack_bytes": 0,
+    "timestamp_receiver_bytes": 804,
+    "timestamp_words": [
+      "0xE7F4",
+      "0xE7FE"
+    ],
+    "s04_reserved_ram_bytes": 64,
+    "native_r0_top": "0xE7BE",
+    "max_revocation_model_stack_bytes": 34,
+    "limits": "Selected startup/model paths only. No claim for full indirect-reference coverage, interrupt nesting or physical timing."
+  },
+  "host_fixture_attempt": [
+    {
+      "name": "controller-host",
+      "command": [
+        "C:\\Program Files\\Python313\\python.exe",
+        "-B",
+        "local/controller_gcc16_compat.py",
+        "--cc",
+        "C:\\msys64\\mingw64\\bin\\gcc.exe",
+        "--out",
+        "C:\\Users\\RB-Motors-EN\\Documents\\Codex\\2026-11-26\\https-github-com-almirpangor-rbm-aisin\\work\\agents\\bosch-pair\\local\\bosch-20261126\\host-controller"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "torque-host",
+      "command": [
+        "C:\\msys64\\mingw64\\bin\\gcc.exe",
+        "-std=c11",
+        "-O2",
+        "-UNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-pedantic",
+        "-I",
+        "controller/vendor/toyota/include",
+        "targets/lfj8/lfj8_h03_torque.c",
+        "targets/lfj8/test_lfj8_h03_torque.c",
+        "C:\\Users\\RB-Motors-EN\\Documents\\Codex\\2026-11-26\\https-github-com-almirpangor-rbm-aisin\\work\\agents\\bosch-pair\\local\\bosch-20261126\\host-controller\\rbm_u340e.dll",
+        "-o",
+        "C:\\Users\\RB-Motors-EN\\Documents\\Codex\\2026-11-26\\https-github-com-almirpangor-rbm-aisin\\work\\agents\\bosch-pair\\local\\bosch-20261126\\host-controller\\lfj8_h03_torque_test.exe"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "torque-host-run",
+      "command": [
+        "C:\\Users\\RB-Motors-EN\\Documents\\Codex\\2026-11-26\\https-github-com-almirpangor-rbm-aisin\\work\\agents\\bosch-pair\\local\\bosch-20261126\\host-controller\\lfj8_h03_torque_test.exe"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "software_blockers": [
+    "The target image consumes Chery 0x1AE speed, not native Chery torque bytes1/4. Portable chery_torque_rx.c is not bound to an ST10 generation/lease/operand consumer. RB0x5E8/0x5E9 remains a separate admitted protocol.",
+    "Current 0x0FA and 0x5E0 are many-to-one encodings. No production sender/coherent source snapshot and independently validated mapping to Toyota GP-9046/8288/8330/5299.1 has been completed.",
+    "S02 0x300 byte3 ATF and the remaining auxiliary Chery fields do not have a confirmed S04 producer/consumer binding.",
+    "The selected first-bench H03 target profile, complete executable image and shared pair manifest remain integration dependencies.",
+    "The new timestamp lower bound proves ordering, not the physical scale of a 32-service-call speed timeout. Existing clock/freshness limits remain explicitly scoped.",
+    "Native-permit source is held in the ECU-01 owner worktree. This handoff records its exact source digests and local commit, and does not replace that owners code review/publication."
+  ],
+  "next_programmable_step": {
+    "possible_independent_files": [
+      "targets/bosch/chery_native_consumer.py",
+      "targets/bosch/verify_chery_native_consumer.py"
+    ],
+    "existing_inputs": [
+      "targets/bosch/chery_torque_rx.c",
+      "targets/bosch/audit_chery_rx_clock.py",
+      "targets/bosch/rx_timestamp.py",
+      "R2 engine_integration/native_chery/chery_rx_native.c",
+      "R2 engine_integration/native_chery/chery_request_cycle.c",
+      "R2 engine_integration/native_chery/gw_native_selection.c",
+      "R2 engine_integration/native_chery/gw_request_publication.c"
+    ],
+    "required_internal_proofs": [
+      "Bind actual IF1 captured payload, earliest T4 sample and reset/CAN generation to one machine-owned request state; prove additional RAM does not alias S04/RB/TX/startup/stack.",
+      "Preserve exact donor qualification/fallback/stateful semantics; donor logical RAM addresses must not be copied into GW.",
+      "Prove encoded Chery requested operands and calibration map into identified GW authority. Existing GW CPU0x05B0BE/0x05B5D6 produce9708/970C/971E/971C; CPU0x04BC3A/0x047FFA then publish92EE/92F0/90AA/90AC/90AE/90A8/830D. These are audited numeric paths, not yet a calibrated torque-unit mapping.",
+      "Connect consumer through the existing three actuator arbitration hooks and unify withdraw/timeout/cancel behavior before binding in the held ECU-01 builder. Do not independently replace tx/build in another active lease."
+    ],
+    "requires_post_flash_logs_before_implementation": false,
+    "implementation_completed_in_this_handoff": false
+  },
+  "post_flash_measurements": [
+    "Readback/identity and startup on the intended Bosch unit; injection/ignition/watchdog and cold/warm restarts.",
+    "Native clock scale, service intervals, IF1 timing, interrupt stack and bus loss/recovery.",
+    "Actual enabled torque effect and matched engine/TCM operating samples after a coherent target pair exists."
+  ],
+  "build_verified": true,
+  "model_verified": true,
+  "hardware_verified": false,
+  "bench_pair_ready": false
+}
